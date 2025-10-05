@@ -1,0 +1,31 @@
+{
+  "name": "philjs-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm -r --filter './packages/**' run build",
+    "dev": "pnpm --filter examples/storefront dev",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "release": "changeset publish"
+  },
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "@types/node": "^20.11.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-security": "^3.0.1",
+    "playwright": "^1.48.0",
+    "prettier": "^3.4.2",
+    "rollup": "^4.28.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}
