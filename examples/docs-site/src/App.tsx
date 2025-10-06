@@ -8,9 +8,36 @@ import { DocNavigation } from './components/DocNavigation';
 import { renderMarkdown, playgroundCode } from './lib/markdown-renderer';
 import { docsStructure } from './lib/docs-structure';
 import { Router } from './Router';
+import { theme } from './lib/theme';
 import './styles/global.css';
 import './styles/code-playground.css';
-import 'highlight.js/styles/github-dark.css';
+
+// Dynamically load highlight.js theme based on current theme
+let currentHighlightTheme: HTMLLinkElement | null = null;
+
+function loadHighlightTheme(themeName: 'light' | 'dark') {
+  // Remove existing theme
+  if (currentHighlightTheme) {
+    currentHighlightTheme.remove();
+  }
+
+  // Load new theme
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = themeName === 'dark'
+    ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+    : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+  document.head.appendChild(link);
+  currentHighlightTheme = link;
+}
+
+// Load initial theme
+loadHighlightTheme(theme());
+
+// Watch for theme changes
+effect(() => {
+  loadHighlightTheme(theme());
+});
 
 // Client-side routing
 const currentPath = signal(window.location.pathname);

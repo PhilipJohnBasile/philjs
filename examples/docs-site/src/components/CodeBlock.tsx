@@ -41,8 +41,9 @@ export function CodeBlock(props: CodeBlockProps) {
           overflow-x: auto;
           font-size: 0.875rem;
           line-height: 1.7;
+          border: 1px solid var(--color-code-border);
         ">
-          <code style="font-family: var(--font-mono);">
+          <code style="font-family: var(--font-mono); color: var(--color-code-text);">
             {props.code}
           </code>
         </pre>
