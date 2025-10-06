@@ -1,6 +1,15 @@
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 
+// Store playground code for later component mounting
+// @ts-ignore - Using globalThis to persist across HMR reloads
+if (!(globalThis as any).__philjs_playgroundCode) {
+  (globalThis as any).__philjs_playgroundCode = new Map();
+  (globalThis as any).__philjs_playgroundCounter = 0;
+}
+export const playgroundCode: Map<string, { code: string; lang: string }> = (globalThis as any).__philjs_playgroundCode;
+let playgroundCounter = (globalThis as any).__philjs_playgroundCounter;
+
 // Custom renderer for marked
 const renderer = new marked.Renderer();
 
@@ -15,7 +24,29 @@ renderer.heading = function({ tokens, depth }) {
 // Enhance code blocks with copy button and language label
 renderer.code = function({ text, lang }) {
   const code = text;
-  const language = lang;
+  const language = lang || '';
+
+  console.log('[Renderer] Processing code block. Lang:', JSON.stringify(language), 'Code snippet:', code.substring(0, 50));
+
+  // Check if this should be an interactive playground
+  const isLive = language.endsWith(' live') || language.includes('playground');
+
+  if (isLive) {
+    console.log('[Renderer] 🎮 DETECTED LIVE CODE BLOCK!');
+    // Extract the actual language (remove "live" or "playground")
+    const actualLang = language.replace(/ live$/, '').replace(/playground/, '').trim() || 'javascript';
+    const playgroundId = `playground-${playgroundCounter++}`;
+    (globalThis as any).__philjs_playgroundCounter = playgroundCounter; // Persist counter
+
+    // Store the code for later component mounting
+    playgroundCode.set(playgroundId, { code, lang: actualLang });
+    console.log('[Renderer] Created playground:', playgroundId, 'Map size:', playgroundCode.size);
+
+    // Return a placeholder div
+    return `<div id="${playgroundId}" class="code-playground-placeholder"></div>`;
+  }
+
+  // Regular code block
   const validLanguage = language && hljs.getLanguage(language) ? language : 'plaintext';
   const highlighted = hljs.highlight(code, { language: validLanguage }).value;
 

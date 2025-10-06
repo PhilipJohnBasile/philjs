@@ -5,10 +5,11 @@ import { TableOfContents } from './components/TableOfContents';
 import { SearchModal } from './components/SearchModal';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { DocNavigation } from './components/DocNavigation';
-import { renderMarkdown } from './lib/markdown-renderer';
+import { renderMarkdown, playgroundCode } from './lib/markdown-renderer';
 import { docsStructure } from './lib/docs-structure';
 import { Router } from './Router';
 import './styles/global.css';
+import './styles/code-playground.css';
 import 'highlight.js/styles/github-dark.css';
 
 // Client-side routing
@@ -122,6 +123,92 @@ export function App() {
   );
 }
 
+// Helper function to create playground HTML
+function createPlaygroundHTML(code: string, lang: string, id: string): string {
+  return `
+    <div class="code-playground">
+      <div class="code-playground-header">
+        <div class="code-playground-toolbar">
+          <button class="playground-btn playground-btn-run" data-playground="${id}">
+            ▶ Run
+          </button>
+          <button class="playground-btn playground-btn-reset" data-playground="${id}">
+            ↻ Reset
+          </button>
+          <button class="playground-btn playground-btn-copy" data-playground="${id}">
+            📋 Copy
+          </button>
+        </div>
+      </div>
+      <div class="code-playground-content">
+        <div class="code-playground-editor">
+          <textarea class="code-editor-textarea" data-playground="${id}" spellcheck="false">${code}</textarea>
+        </div>
+        <div class="code-playground-preview">
+          <div class="preview-header">Output</div>
+          <div class="preview-content" data-playground="${id}">
+            <div class="preview-empty">Click "Run" to see output</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Helper function to attach event handlers to playground
+function attachPlaygroundHandlers(id: string, originalCode: string) {
+  const textarea = document.querySelector(`textarea[data-playground="${id}"]`) as HTMLTextAreaElement;
+  const runBtn = document.querySelector(`.playground-btn-run[data-playground="${id}"]`);
+  const resetBtn = document.querySelector(`.playground-btn-reset[data-playground="${id}"]`);
+  const copyBtn = document.querySelector(`.playground-btn-copy[data-playground="${id}"]`);
+  const preview = document.querySelector(`.preview-content[data-playground="${id}"]`);
+
+  if (!textarea || !runBtn || !resetBtn || !copyBtn || !preview) return;
+
+  // Run button
+  runBtn.addEventListener('click', () => {
+    const code = textarea.value;
+    try {
+      const logs: string[] = [];
+      const mockConsole = {
+        log: (...args: any[]) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+        error: (...args: any[]) => logs.push('ERROR: ' + args.join(' ')),
+        warn: (...args: any[]) => logs.push('WARN: ' + args.join(' ')),
+      };
+
+      const func = new Function('signal', 'effect', 'render', 'console', code);
+      const result = func(signal, effect, render, mockConsole);
+
+      if (result !== undefined) {
+        logs.push(`Return: ${typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result)}`);
+      }
+
+      preview.innerHTML = `<pre class="preview-output">${logs.join('\n') || 'Code executed successfully (no output)'}</pre>`;
+    } catch (err: any) {
+      preview.innerHTML = `<div class="preview-error">❌ ${err.message || 'An error occurred'}</div>`;
+    }
+  });
+
+  // Reset button
+  resetBtn.addEventListener('click', () => {
+    textarea.value = originalCode;
+    preview.innerHTML = '<div class="preview-empty">Click "Run" to see output</div>';
+  });
+
+  // Copy button
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(textarea.value);
+      copyBtn.textContent = '✓ Copied!';
+      setTimeout(() => {
+        copyBtn.textContent = '📋 Copy';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
+}
+
 // Component to render raw HTML
 function RawHTML({ htmlSignal, id }: { htmlSignal: () => string; id: string }) {
   effect(() => {
@@ -130,6 +217,28 @@ function RawHTML({ htmlSignal, id }: { htmlSignal: () => string; id: string }) {
       const el = document.getElementById(id);
       if (el) {
         el.innerHTML = html;
+
+        console.log('[App] Mounting playgrounds. Map size:', playgroundCode.size);
+        // Mount CodePlayground components for any placeholders
+        playgroundCode.forEach((data, playgroundId) => {
+          console.log('[App] Looking for placeholder:', playgroundId);
+          const placeholder = document.getElementById(playgroundId);
+          if (placeholder) {
+            console.log('[App] Found placeholder, mounting playground');
+            // Create playground HTML directly
+            const playgroundHTML = createPlaygroundHTML(data.code, data.lang, playgroundId);
+            placeholder.innerHTML = playgroundHTML;
+
+            // Attach event handlers
+            attachPlaygroundHandlers(playgroundId, data.code);
+            console.log('[App] Playground mounted successfully');
+          } else {
+            console.log('[App] Placeholder not found!');
+          }
+        });
+
+        // Clear the playground code map for next render
+        playgroundCode.clear();
       }
     }, 0);
   });

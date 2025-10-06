@@ -10,6 +10,32 @@ Unlike traditional frameworks that force you to choose between server rendering 
 
 At its core, PhilJS uses **fine-grained reactivity** with signals, meaning your UI updates surgically when data changes. No virtual DOM diffing. No unnecessary re-renders. Just direct, efficient updates to exactly what changed.
 
+## Try It Yourself
+
+Here's a simple PhilJS example you can edit and run right in your browser:
+
+```javascript live
+const count = signal(0);
+
+const increment = () => {
+  count.set(count.value + 1);
+};
+
+console.log('Initial count:', count.value);
+
+// Simulate clicking the button 3 times
+increment();
+console.log('After increment:', count.value);
+
+increment();
+console.log('After second increment:', count.value);
+
+increment();
+console.log('After third increment:', count.value);
+```
+
+Try modifying the code above! Change the initial value, add more increments, or experiment with the signal API.
+
 ## Why PhilJS?
 
 ### 1. **Instant First Load with Resumability**
