@@ -192,6 +192,7 @@ export const docsStructure: DocSection[] = [
       { title: 'WebSockets', file: 'websockets' },
       { title: 'WebAssembly', file: 'wasm' },
       { title: 'Advanced Patterns', file: 'advanced-patterns' },
+      { title: 'Ecosystem & Integrations', file: 'ecosystem' },
     ],
   },
   {
@@ -208,6 +209,16 @@ export const docsStructure: DocSection[] = [
       { title: 'SSR', file: 'ssr' },
       { title: 'CLI', file: 'cli' },
       { title: 'Configuration', file: 'config' },
+    ],
+  },
+  {
+    title: 'Deployment',
+    path: 'deployment',
+    items: [
+      { title: 'Overview', file: 'overview' },
+      { title: 'Vercel', file: 'vercel' },
+      { title: 'Netlify', file: 'netlify' },
+      { title: 'Docker', file: 'docker' },
     ],
   },
   {
