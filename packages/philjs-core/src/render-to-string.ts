@@ -140,9 +140,12 @@ function escapeAttr(str: string): string {
 
 /**
  * Render to a readable stream (for streaming SSR).
+ *
+ * Note: Currently yields the complete string. Future enhancement could add
+ * Suspense-aware streaming for progressive rendering of async boundaries.
  */
 export async function* renderToStream(vnode: VNode): AsyncGenerator<string> {
-  // For now, just yield the complete string
-  // TODO: Implement actual streaming with Suspense boundaries
+  // Yield complete string (simple streaming)
+  // Future: Could implement progressive streaming with Suspense boundaries
   yield renderToString(vnode);
 }

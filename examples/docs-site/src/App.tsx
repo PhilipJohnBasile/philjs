@@ -1,205 +1,251 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect, render } from 'philjs-core';
 import { HomePage } from './pages/HomePage';
-import { marked } from 'marked';
-import hljs from 'highlight.js';
+import { Sidebar } from './components/Sidebar';
+import { TableOfContents } from './components/TableOfContents';
+import { SearchModal } from './components/SearchModal';
+import { Breadcrumbs } from './components/Breadcrumbs';
+import { DocNavigation } from './components/DocNavigation';
+import { renderMarkdown } from './lib/markdown-renderer';
+import { docsStructure } from './lib/docs-structure';
+import { Router } from './Router';
+import './styles/global.css';
 import 'highlight.js/styles/github-dark.css';
 
-// Configure marked with syntax highlighting
-marked.setOptions({
-  highlight: function(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(code, { language: lang }).value;
-    }
-    return hljs.highlightAuto(code).value;
-  },
-  breaks: true,
-  gfm: true,
-});
-
-// Simple client-side routing
+// Client-side routing
 const currentPath = signal(window.location.pathname);
 
+// Store scroll positions for history navigation
+const scrollPositions = new Map<string, number>();
+
+// Save current scroll position before navigation
+function saveScrollPosition() {
+  scrollPositions.set(window.location.pathname, window.scrollY);
+}
+
+// Restore scroll position or scroll to top
+function restoreScrollPosition(path: string, shouldScrollToTop: boolean = true) {
+  // The Router innerHTML clear will jump us to top instantly
+  // We just need to ensure we're at top (which we will be)
+  // Hash links and saved positions handled separately
+
+  // Handle hash links (scroll to element)
+  if (path.includes('#')) {
+    const hash = path.split('#')[1];
+    if (hash) {
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+      }, 300);
+      return;
+    }
+  }
+
+  // For back/forward navigation, restore saved position
+  if (scrollPositions.has(path)) {
+    const savedPosition = scrollPositions.get(path)!;
+    setTimeout(() => {
+      window.scrollTo({ top: savedPosition, behavior: 'instant' });
+    }, 250);
+    return;
+  }
+
+  // For new navigation, we're already at top due to innerHTML clear
+  // No need to scroll again
+}
+
 window.addEventListener('popstate', () => {
-  currentPath.set(window.location.pathname);
+  const newPath = window.location.pathname;
+  currentPath.set(newPath);
+  // Restore scroll position on back/forward
+  restoreScrollPosition(newPath, false);
 });
 
 function navigate(path: string) {
+  // Save current scroll position
+  saveScrollPosition();
+
+  // Update history and path
   window.history.pushState({}, '', path);
   currentPath.set(path);
-  window.scrollTo(0, 0);
+
+  // DON'T call restoreScrollPosition here - let it happen naturally after render
+  // The scroll will be handled by the effect after the Router completes
+  setTimeout(() => {
+    restoreScrollPosition(path, true);
+  }, 0);
 }
 
 export function App() {
-  const path = currentPath();
-
-  // Simple routing
-  if (path === '/' || path === '') {
-    return <HomePage navigate={navigate} />;
-  }
-
-  if (path.startsWith('/docs')) {
-    return <DocsViewer navigate={navigate} path={path} />;
-  }
-
-  // 404
-  return <div>Page not found</div>;
+  return (
+    <Router
+      currentPath={currentPath}
+      routes={[
+        {
+          path: (path) => path === '/' || path === '',
+          component: () => <HomePage navigate={navigate} />
+        },
+        {
+          path: (path) => path.startsWith('/docs'),
+          component: () => <DocsViewer navigate={navigate} path={currentPath()} />
+        },
+        {
+          path: () => true, // 404 fallback
+          component: () => (
+            <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;">
+              <h1 style="font-size: 4rem; font-weight: 700; color: var(--color-text);">404</h1>
+              <p style="font-size: 1.25rem; color: var(--color-text-secondary);">Page not found</p>
+              <button
+                onClick={() => navigate('/')}
+                style="
+                  padding: 0.75rem 1.5rem;
+                  background: var(--color-brand);
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+                onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
+              >
+                Go Home
+              </button>
+            </div>
+          )
+        }
+      ]}
+    />
+  );
 }
 
-const docsSections = [
-  {
-    title: 'Getting Started',
-    path: 'getting-started',
-    items: [
-      { title: 'Introduction', file: 'introduction.md' },
-      { title: 'Installation', file: 'installation.md' },
-      { title: 'Quick Start', file: 'quick-start.md' },
-      { title: 'Your First Component', file: 'your-first-component.md' },
-      { title: 'Tutorial: Tic-Tac-Toe', file: 'tutorial-tic-tac-toe.md' },
-      { title: 'Tutorial: Todo App', file: 'tutorial-todo-app.md' },
-      { title: 'Tutorial: Static Blog', file: 'tutorial-blog-ssg.md' },
-      { title: 'Thinking in PhilJS', file: 'thinking-in-philjs.md' },
-    ],
-  },
-  {
-    title: 'Core Concepts',
-    path: 'learn',
-    items: [
-      { title: 'Components', file: 'components.md' },
-      { title: 'Signals', file: 'signals.md' },
-      { title: 'Memos', file: 'memos.md' },
-      { title: 'Effects', file: 'effects.md' },
-      { title: 'Context', file: 'context.md' },
-    ],
-  },
-  {
-    title: 'Routing',
-    path: 'routing',
-    items: [
-      { title: 'Basics', file: 'basics.md' },
-      { title: 'Dynamic Routes', file: 'dynamic-routes.md' },
-      { title: 'Navigation', file: 'navigation.md' },
-    ],
-  },
-  {
-    title: 'API Reference',
-    path: 'api',
-    items: [
-      { title: 'Core API', file: 'core.md' },
-      { title: 'Router API', file: 'router.md' },
-      { title: 'Configuration', file: 'config.md' },
-    ],
-  },
-];
+// Component to render raw HTML
+function RawHTML({ htmlSignal, id }: { htmlSignal: () => string; id: string }) {
+  effect(() => {
+    const html = htmlSignal();
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }, 0);
+  });
+
+  return <div id={id} />;
+}
 
 function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path: string }) {
-  const content = signal('Loading...');
-  const sidebarOpen = signal(true);
+  const renderedHTML = signal('');
+  const isSearchOpen = signal(false);
 
   // Parse the path to get section and file
   const pathParts = path.split('/').filter(Boolean);
   const section = pathParts[1] || 'getting-started';
-  const file = pathParts[2] || 'introduction.md';
+  const file = pathParts[2] || getFirstFileForSection(section);
+
+  // Keyboard shortcut for search (Cmd+K or Ctrl+K)
+  effect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        isSearchOpen.set(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
+
+  // Intercept internal link clicks to use client-side navigation
+  effect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Only handle internal links (not external or hash-only)
+      if (href.startsWith('http') || href.startsWith('//')) return;
+      if (href.startsWith('#')) return;
+
+      // Check if the link is within the markdown content
+      const markdownContent = document.getElementById('markdown-content');
+      if (!markdownContent?.contains(link)) return;
+
+      // Prevent default navigation and use client-side routing
+      e.preventDefault();
+      navigate(href);
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  });
 
   // Load markdown content
   effect(() => {
-    const markdownPath = `/docs/${section}/${file}`;
+    const markdownPath = `/md-files/${section}/${file}.md`;
     fetch(markdownPath)
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.text();
+      })
       .then(text => {
-        const html = marked(text);
-        content.set(html);
+        const html = renderMarkdown(text);
+        renderedHTML.set(html);
       })
       .catch(() => {
-        content.set('<h1>Document not found</h1><p>The requested documentation could not be loaded.</p>');
+        const html = renderMarkdown('# Document not found\n\nThe requested documentation could not be loaded.');
+        renderedHTML.set(html);
       });
   });
 
   return (
-    <div style="display: flex; min-height: 100vh;">
+    <div class="docs-layout" style="display: flex; min-height: 100vh;">
       {/* Sidebar */}
-      <aside
-        style={`
-          width: 280px;
-          background: var(--color-bg-alt);
-          border-right: 1px solid var(--color-border);
-          padding: 1rem;
-          overflow-y: auto;
-          position: sticky;
-          top: 0;
-          height: 100vh;
-          transform: ${sidebarOpen() ? 'translateX(0)' : 'translateX(-100%)'};
-          transition: transform 0.3s ease;
-        `}
-      >
-        <div style="margin-bottom: 2rem;">
-          <button
-            onClick={() => navigate('/')}
-            style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--color-text); background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0;"
-          >
-            <span style="font-size: 1.5rem;">⚡</span>
-            <span style="font-weight: 700; font-size: 1.25rem;">PhilJS</span>
-          </button>
-        </div>
+      <Sidebar
+        currentSection={section}
+        currentFile={file}
+        navigate={navigate}
+        isOpen={true}
+      />
 
-        {docsSections.map(sec => (
-          <div style="margin-bottom: 2rem;">
-            <h3 style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 0.75rem;">
-              {sec.title}
-            </h3>
-            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-              {sec.items.map(item => (
-                <button
-                  onClick={() => navigate(`/docs/${sec.path}/${item.file}`)}
-                  style={`
-                    text-align: left;
-                    padding: 0.5rem 0.75rem;
-                    border-radius: 6px;
-                    background: ${section === sec.path && file === item.file ? 'var(--color-brand)' : 'transparent'};
-                    color: ${section === sec.path && file === item.file ? 'white' : 'var(--color-text)'};
-                    border: none;
-                    cursor: pointer;
-                    font-size: 0.875rem;
-                    transition: all 0.2s;
-                  `}
-                >
-                  {item.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </aside>
-
-      {/* Main content */}
-      <main style="flex: 1; padding: 3rem; max-width: 900px;">
-        <button
-          onClick={() => sidebarOpen.set(!sidebarOpen())}
-          style="
-            position: fixed;
-            top: 1rem;
-            left: ${sidebarOpen() ? '290px' : '1rem'};
-            padding: 0.5rem;
-            background: var(--color-bg-alt);
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            cursor: pointer;
-            z-index: 100;
-            transition: left 0.3s ease;
-          "
-        >
-          {sidebarOpen() ? '←' : '→'}
-        </button>
-
-        {/* Rendered markdown */}
-        <article
-          class="prose"
-          style="
-            line-height: 1.7;
-            color: var(--color-text);
-          "
-          innerHTML={content()}
+      {/* Main Content */}
+      <main class="docs-main" style="flex: 1; padding: 2rem; max-width: 900px; margin-left: 280px; margin-right: 240px;">
+        <Breadcrumbs
+          section={section}
+          file={file}
+          navigate={navigate}
+        />
+        <article class="prose" style="max-width: 100%;">
+          <RawHTML htmlSignal={renderedHTML} id="markdown-content" />
+        </article>
+        <DocNavigation
+          section={section}
+          file={file}
+          navigate={navigate}
         />
       </main>
+
+      {/* Table of Contents */}
+      <TableOfContents content={renderedHTML()} />
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen()}
+        onClose={() => isSearchOpen.set(false)}
+        navigate={navigate}
+      />
     </div>
   );
+}
+
+// Helper function to get first file for a section
+function getFirstFileForSection(sectionPath: string): string {
+  const section = docsStructure.find(s => s.path === sectionPath);
+  return section?.items[0]?.file || 'overview';
 }

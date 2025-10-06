@@ -7,14 +7,10 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-      },
-    },
+    minify: 'esbuild',
   },
   server: {
     port: 3000,
   },
+  appType: 'spa', // Enable SPA mode for client-side routing
 });

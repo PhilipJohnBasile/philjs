@@ -115,9 +115,13 @@ export function render(vnode: VNode, container: Element): void {
   container.innerHTML = "";
 
   // Create and append new elements
-  const element = createDOMElement(vnode);
-  if (element) {
-    container.appendChild(element);
+  const result = createDOMElement(vnode);
+  if (result) {
+    if (result instanceof DocumentFragment) {
+      container.appendChild(result);
+    } else {
+      container.appendChild(result);
+    }
   }
 }
 

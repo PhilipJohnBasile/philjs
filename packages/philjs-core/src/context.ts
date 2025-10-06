@@ -113,11 +113,37 @@ export function createSignalContext<T>(defaultValue: T) {
 
 /**
  * Create a reducer-based context for complex state management.
+ *
+ * @deprecated This function encourages Redux-style patterns that signals eliminate.
+ * Use `signal()` and `createSignalContext()` instead for simpler, more direct state management.
+ *
+ * @example
+ * // ❌ Old way (deprecated):
+ * const CounterContext = createReducerContext(
+ *   (state, action) => action.type === 'increment' ? state + 1 : state,
+ *   0
+ * );
+ *
+ * // ✅ New way (recommended):
+ * const CounterContext = createSignalContext(0);
+ * // Then use: count.set(count() + 1) directly
+ *
+ * This function will be removed in v1.0.0.
  */
 export function createReducerContext<State, Action>(
   reducer: (state: State, action: Action) => State,
   initialState: State
 ) {
+  // Deprecation warning
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+    console.warn(
+      '[PhilJS] DEPRECATION WARNING: createReducerContext() is deprecated.\n' +
+      'Use signal() and createSignalContext() instead for simpler state management.\n' +
+      'This function will be removed in v1.0.0.\n' +
+      'See: https://philjs.dev/docs/migration/from-redux'
+    );
+  }
+
   const stateSignal = signal(initialState);
 
   const dispatch = (action: Action) => {

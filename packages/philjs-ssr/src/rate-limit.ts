@@ -176,14 +176,32 @@ export class RateLimiter {
 
   constructor(config: RateLimitConfig, store?: RateLimitStore) {
     this.store = store || new MemoryRateLimitStore();
+
+    const message = config.message || "Too many requests, please try again later.";
+    const defaultHandler = (request: Request): Response => {
+      return new Response(
+        JSON.stringify({
+          error: message,
+          retryAfter: Math.ceil(config.windowMs / 1000),
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(Math.ceil(config.windowMs / 1000)),
+          },
+        }
+      );
+    };
+
     this.config = {
       windowMs: config.windowMs,
       maxRequests: config.maxRequests,
       keyGenerator: config.keyGenerator || this.defaultKeyGenerator,
       skipSuccessfulRequests: config.skipSuccessfulRequests ?? false,
       skipFailedRequests: config.skipFailedRequests ?? false,
-      handler: config.handler || this.defaultHandler,
-      message: config.message || "Too many requests, please try again later.",
+      handler: config.handler || defaultHandler,
+      message: message,
     };
   }
 
@@ -196,22 +214,6 @@ export class RateLimiter {
 
     const url = new URL(request.url);
     return `${ip}:${url.pathname}`;
-  }
-
-  private defaultHandler(request: Request): Response {
-    return new Response(
-      JSON.stringify({
-        error: this.config.message,
-        retryAfter: Math.ceil(this.config.windowMs / 1000),
-      }),
-      {
-        status: 429,
-        headers: {
-          "Content-Type": "application/json",
-          "Retry-After": String(Math.ceil(this.config.windowMs / 1000)),
-        },
-      }
-    );
   }
 
   async check(request: Request): Promise<Response | null> {

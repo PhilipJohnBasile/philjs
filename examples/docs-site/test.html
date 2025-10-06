@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Render</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module">
+    // Simple test to see if basic DOM manipulation works
+    const root = document.getElementById('root');
+    root.innerHTML = '<h1>Hello World</h1><p>If you see this, basic JS works!</p>';
+
+    // Now test PhilJS render
+    console.log('Testing render...');
+
+    // Import and test
+    import('/Users/pjb/Git/philjs/packages/philjs-core/dist/hydrate.js').then(module => {
+      console.log('Module loaded:', module);
+      const { render } = module;
+
+      // Create a simple VNode manually
+      const vnode = {
+        type: 'div',
+        props: {
+          children: [
+            {
+              type: 'h1',
+              props: { children: ['PhilJS Test'] }
+            },
+            {
+              type: 'p',
+              props: { children: ['Render function is working!'] }
+            }
+          ]
+        }
+      };
+
+      render(vnode, root);
+    }).catch(err => {
+      console.error('Error loading module:', err);
+      root.innerHTML += '<p style="color: red;">Error: ' + err.message + '</p>';
+    });
+  </script>
+</body>
+</html>

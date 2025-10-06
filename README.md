@@ -13,27 +13,43 @@ A revolutionary JavaScript framework for 2026 that combines fine-grained reactiv
 
 > **Status**: Core features production-ready • 110 pages of documentation • 9 packages built successfully
 
-## ✨ Novel Features
+## ✨ Optional Advanced Features
 
-PhilJS is the **only framework** with these intelligence capabilities:
+PhilJS includes **optional advanced features** for teams that need them. These are **not required** for basic usage:
+
+> **Note:** These features are experimental and opt-in. Most applications won't need them. Start with the core features below and add these only when needed.
 
 ### 1. **Intent-Based Smart Preloading** 🎯
 Predicts user navigation from mouse movement with 60-80% accuracy.
+- **Optional:** Enable with `smartPreload: true` in router config
+- **Best for:** Content-heavy sites with predictable navigation
 
 ### 2. **Production Usage Analytics** 📊
 Tracks which components/props are used in production. Finds dead code with confidence.
+- **Optional:** Opt-in with `usageAnalytics.enable()`
+- **Best for:** Large applications with unused code concerns
+- **Privacy:** All data stays local, nothing sent to servers
 
 ### 3. **Cloud Cost Tracking** 💰
 Estimates AWS/GCP/Azure costs per route. See costs in IDE tooltips.
+- **Optional:** Opt-in with `costTracker.enable()`
+- **Best for:** High-traffic applications monitoring infrastructure costs
 
-### 4. **Performance Budgets That Block Builds** ⚠️
-Hard limits on bundle size, LCP, CLS. Build fails if exceeded.
+### 4. **Performance Budgets** ⚠️
+Hard limits on bundle size, LCP, CLS. Warns or blocks builds if exceeded.
+- **Optional:** Configure in `philjs.config.js`
+- **Best for:** Teams enforcing performance standards
+- **Default:** Warnings only, opt-in to block builds
 
-### 5. **Time-Travel Debugging with Branching** ⏱️
+### 5. **Time-Travel Debugging** ⏱️
 Explore "what if" scenarios. Export sessions for bug reports.
+- **Optional:** Available in devtools
+- **Best for:** Debugging complex state transitions
 
 ### 6. **Mixed Rendering Modes** 🔄
 SSG, ISR, SSR, CSR - all in one app, per-route configuration.
+- **Optional:** Use SSR/SSG only when needed
+- **Default:** Client-side rendering (simplest)
 
 ## 🏗️ Core Features
 
@@ -197,6 +213,45 @@ Security is a priority:
 - Smart preloading (60-80% accuracy from mouse intent)
 
 **Detailed Status**: See [FRAMEWORK_STATUS.md](./FRAMEWORK_STATUS.md) for complete feature breakdown.
+
+## 🔒 API Stability Guarantees
+
+PhilJS follows [Semantic Versioning](https://semver.org/) with the following stability commitments:
+
+### ✅ Stable APIs (No Breaking Changes Before v2.0)
+These APIs are stable and will not have breaking changes:
+- **Core Reactivity:** `signal()`, `memo()`, `effect()`, `batch()`, `untrack()`
+- **JSX & Rendering:** `render()`, `hydrate()`, JSX syntax
+- **Context:** `createContext()`, `useContext()`, `createSignalContext()`
+- **Error Boundaries:** `ErrorBoundary`, error handling
+
+### ⚠️ Evolving APIs (May Change Before v1.0)
+These APIs may evolve with clear migration paths:
+- **Router API:** May add features, breaking changes will have codemods
+- **Data Fetching:** `createQuery()`, `createMutation()` - API refinements possible
+- **Forms:** May enhance validation API
+
+### 🧪 Experimental Features (Subject to Change)
+These features are experimental and may change significantly:
+- **Cost Tracking** (`costTracker`) - Optional advanced feature
+- **Usage Analytics** (`usageAnalytics`) - Optional advanced feature
+- **Performance Budgets** (`performanceBudgets`) - Optional advanced feature
+- **Smart Preloading** - Prediction algorithm may improve
+
+### 🗑️ Deprecated APIs
+These APIs will be removed in future versions:
+- **`createReducerContext()`** ⚠️ - Use `signal()` and `createSignalContext()` instead
+  - Deprecated: v0.1.0-beta
+  - Will be removed: v1.0.0
+  - [Migration Guide](./docs/migration/from-redux.md)
+
+### 📋 Change Policy
+- **Breaking changes:** 6 months advance notice + deprecation warnings
+- **Deprecations:** Supported for one major version
+- **Codemods:** Provided for all automated migrations
+- **Changelog:** All changes documented in [CHANGELOG.md](./CHANGELOG.md)
+
+For detailed versioning history, see [CHANGELOG.md](./CHANGELOG.md).
 
 ## 🎯 Roadmap
 

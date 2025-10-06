@@ -90,13 +90,15 @@ export function signal<T>(initialValue: T): Signal<T> {
 
     // Notify all subscribers
     if (batchDepth > 0) {
-      // Queue updates for batching
-      subscribers.forEach(computation => {
+      // Queue updates for batching - convert to array to avoid iteration issues
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(computation => {
         batchedUpdates.add(computation.execute);
       });
     } else {
-      // Execute immediately
-      subscribers.forEach(computation => computation.execute());
+      // Execute immediately - convert to array to avoid modification during iteration
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(computation => computation.execute());
     }
   };
 
@@ -139,16 +141,18 @@ export function memo<T>(calc: () => T): Memo<T> {
   const computation: Computation = {
     execute: () => {
       isStale = true;
-      // Notify subscribers that we're stale
-      subscribers.forEach(sub => sub.execute());
+      // Notify subscribers that we're stale - convert to array to avoid iteration issues
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(sub => sub.execute());
     },
     dependencies: new Set(),
   };
 
   const read = () => {
     if (isStale) {
-      // Clear old dependencies
-      computation.dependencies.forEach(deps => deps.delete(computation));
+      // Clear old dependencies - convert to array first to avoid iteration issues
+      const oldDeps = Array.from(computation.dependencies);
+      oldDeps.forEach(deps => deps.delete(computation));
       computation.dependencies.clear();
 
       // Track new dependencies
@@ -202,6 +206,8 @@ export function effect(fn: () => void | EffectCleanup): EffectCleanup {
   let cleanup: void | EffectCleanup;
   let isDisposed = false;
 
+  let owner: Owner | null = null;
+
   const computation: Computation = {
     execute: () => {
       if (isDisposed) return;
@@ -211,13 +217,20 @@ export function effect(fn: () => void | EffectCleanup): EffectCleanup {
         cleanup();
       }
 
-      // Clear old dependencies
-      computation.dependencies.forEach(deps => deps.delete(computation));
+      // Run onCleanup callbacks from previous execution
+      if (owner) {
+        owner.cleanups.forEach(fn => fn());
+        owner.cleanups = [];
+      }
+
+      // Clear old dependencies - convert to array first to avoid iteration issues
+      const oldDeps = Array.from(computation.dependencies);
+      oldDeps.forEach(deps => deps.delete(computation));
       computation.dependencies.clear();
 
       // Create owner for this effect
       const prevOwner = currentOwner;
-      const owner: Owner = {
+      owner = {
         cleanups: [],
         owned: [],
       };
@@ -251,7 +264,16 @@ export function effect(fn: () => void | EffectCleanup): EffectCleanup {
     if (typeof cleanup === "function") {
       cleanup();
     }
-    computation.dependencies.forEach(deps => deps.delete(computation));
+
+    // Run onCleanup callbacks
+    if (owner) {
+      owner.cleanups.forEach(fn => fn());
+      owner.cleanups = [];
+    }
+
+    // Convert to array first to avoid iteration issues during deletion
+    const oldDeps = Array.from(computation.dependencies);
+    oldDeps.forEach(deps => deps.delete(computation));
     computation.dependencies.clear();
   };
 }

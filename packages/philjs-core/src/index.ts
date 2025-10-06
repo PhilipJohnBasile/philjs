@@ -46,7 +46,7 @@ export {
   createContext,
   useContext,
   createSignalContext,
-  createReducerContext,
+  createReducerContext, // @deprecated - Use signal() and createSignalContext() instead
   combineProviders,
   createThemeContext
 } from "./context.js";
@@ -97,6 +97,8 @@ export type { PerformanceBudget, RouteMetrics, RegressionReport } from "./perfor
 
 export { costTracker, CostTracker } from "./cost-tracking.js";
 export type { CostMetrics, CostEstimate, CloudProvider } from "./cost-tracking.js";
+
+// Note: estimateCost and compareCosts are methods on CostTracker class, not standalone functions
 
 export { usageAnalytics, UsageAnalytics } from "./usage-analytics.js";
 export type { ComponentUsage, DeadCodeReport, OptimizationSuggestion } from "./usage-analytics.js";

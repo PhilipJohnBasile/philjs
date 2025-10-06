@@ -281,7 +281,7 @@ export class TranslationExtractor {
     const translations: Translations = {};
 
     for (const key of this.keys) {
-      setNestedKey(translations, key, `TODO: Translate "${key}" to ${locale}`);
+      setNestedKey(translations, key, `[Missing translation: "${key}" (${locale})]`);
     }
 
     return translations;

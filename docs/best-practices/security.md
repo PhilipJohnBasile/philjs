@@ -74,42 +74,190 @@ const userData = JSON.parse(userInput);
 
 ## CSRF Protection
 
-### CSRF Tokens
+PhilJS includes built-in CSRF (Cross-Site Request Forgery) protection for server-side actions and API routes.
 
-```tsx
-// services/api.ts
-class ApiClient {
-  private csrfToken: string | null = null;
+### Built-in CSRF Protection
 
-  async getCsrfToken(): Promise<string> {
-    if (!this.csrfToken) {
-      const response = await fetch('/api/csrf-token');
-      const data = await response.json();
-      this.csrfToken = data.token;
-    }
-    return this.csrfToken;
+```typescript
+import { csrfProtection, generateCSRFToken, csrfField } from 'philjs-ssr';
+
+// Set up CSRF middleware
+const csrf = csrfProtection({
+  getSessionId: (request) => {
+    // Get session ID from cookie or header
+    return request.headers.get('x-session-id') || 'default';
+  },
+  skip: (request) => {
+    // Skip CSRF for certain routes (e.g., webhooks)
+    return request.url.includes('/webhooks/');
+  }
+});
+
+// Generate token for a request
+const token = csrf.generateToken(request);
+
+// Verify request
+const isValid = csrf.verifyRequest(request);
+if (!isValid) {
+  return new Response('CSRF verification failed', { status: 403 });
+}
+```
+
+### Form Protection
+
+```typescript
+import { csrfField } from 'philjs-ssr';
+
+// Server-side: Generate token and include in form
+export async function GET({ request }: { request: Request }) {
+  const csrf = csrfProtection({ getSessionId: getSession });
+  const csrfToken = csrf.generateToken(request);
+
+  return new Response(`
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <form method="POST" action="/submit">
+          ${csrfField(csrfToken)}
+          <input type="text" name="data" />
+          <button type="submit">Submit</button>
+        </form>
+      </body>
+    </html>
+  `);
+}
+
+// Server-side: Verify on POST
+export async function POST({ request }: { request: Request }) {
+  const csrf = csrfProtection({ getSessionId: getSession });
+
+  if (!csrf.verifyRequest(request)) {
+    return new Response('CSRF verification failed', { status: 403 });
   }
 
-  async post<T>(endpoint: string, body: any): Promise<T> {
-    const csrfToken = await this.getCsrfToken();
+  // Process form submission
+  const formData = await request.formData();
+  // ...
+}
+```
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+### AJAX Request Protection
+
+```typescript
+// Client-side: Fetch CSRF token
+async function submitForm(data: any) {
+  // Get CSRF token from meta tag or API
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')
+    ?.getAttribute('content');
+
+  const response = await fetch('/api/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken || ''
+    },
+    body: JSON.stringify(data)
+  });
+
+  return response.json();
+}
+```
+
+### PhilJS Component Integration
+
+```tsx
+import { signal } from 'philjs-core';
+import { csrfProtection } from 'philjs-ssr';
+
+function SecureForm() {
+  const formData = signal({ name: '', email: '' });
+  const csrfToken = signal('');
+
+  // Load CSRF token on mount
+  effect(async () => {
+    const response = await fetch('/api/csrf-token');
+    const data = await response.json();
+    csrfToken.set(data.token);
+  });
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+
+    await fetch('/api/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
+        'X-CSRF-Token': csrfToken()
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(formData())
     });
+  };
 
-    return response.json();
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="hidden" name="_csrf" value={csrfToken()} />
+      <input
+        type="text"
+        value={formData().name}
+        onInput={(e) => formData.set({ ...formData(), name: e.target.value })}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### Custom Token Storage
+
+PhilJS uses an in-memory token store by default. For production, use Redis:
+
+```typescript
+import { csrfProtection, csrfStore } from 'philjs-ssr';
+import Redis from 'ioredis';
+
+const redis = new Redis();
+
+// Replace default store with Redis
+class RedisCSRFStore {
+  async set(sessionId: string, token: string, ttl: number = 3600000) {
+    await redis.set(`csrf:${sessionId}`, token, 'PX', ttl);
   }
+
+  async get(sessionId: string): Promise<string | null> {
+    return await redis.get(`csrf:${sessionId}`);
+  }
+
+  async verify(sessionId: string, token: string): Promise<boolean> {
+    const stored = await this.get(sessionId);
+    return stored === token;
+  }
+}
+
+// Use custom store
+const customStore = new RedisCSRFStore();
+```
+
+### Extract CSRF Token
+
+```typescript
+import { extractCSRFToken } from 'philjs-ssr';
+
+export async function POST({ request }: { request: Request }) {
+  const token = await extractCSRFToken(request);
+
+  if (!token) {
+    return new Response('Missing CSRF token', { status: 400 });
+  }
+
+  // Verify token...
 }
 ```
 
 ### SameSite Cookies
 
-```tsx
+In addition to CSRF tokens, use SameSite cookies:
+
+```typescript
 // Server-side (example)
 res.cookie('session', sessionId, {
   httpOnly: true,
@@ -496,9 +644,208 @@ res.setHeader('Content-Security-Policy', cspHeader);
 
 ## Rate Limiting
 
+PhilJS provides comprehensive rate limiting for API routes, protecting against abuse and DDoS attacks.
+
+### Built-in Rate Limiting
+
+```typescript
+import {
+  rateLimit,
+  apiRateLimit,
+  authRateLimit,
+  MemoryRateLimitStore
+} from 'philjs-ssr';
+
+// Basic rate limiting
+const limiter = rateLimit({
+  windowMs: 60 * 1000,      // 1 minute window
+  maxRequests: 100,         // 100 requests per window
+  message: 'Too many requests'
+});
+
+// Use as middleware
+app.use(async (request, next) => {
+  const rateLimitResponse = await limiter(request, next);
+  if (rateLimitResponse) {
+    return rateLimitResponse; // 429 Too Many Requests
+  }
+  return next();
+});
+```
+
+### Pre-configured Rate Limiters
+
+```typescript
+// API routes: 60 requests per minute
+const apiLimiter = apiRateLimit(60);
+
+// Authentication routes: 5 attempts per minute
+const authLimiter = authRateLimit(5);
+
+// API key-based: 1000 requests per minute
+const apiKeyLimiter = apiKeyRateLimit(1000);
+
+// User-based: Custom user ID extractor
+const userLimiter = userRateLimit(
+  100,
+  (request) => request.headers.get('x-user-id')
+);
+```
+
+### Custom Key Generation
+
+```typescript
+const customLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 50,
+  keyGenerator: (request) => {
+    // Rate limit by API key
+    const apiKey = request.headers.get('x-api-key');
+    if (apiKey) {
+      return `api:${apiKey}`;
+    }
+
+    // Fallback to IP
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    return `ip:${ip}`;
+  }
+});
+```
+
+### Redis Store for Production
+
+```typescript
+import { RedisRateLimitStore } from 'philjs-ssr';
+import Redis from 'ioredis';
+
+const redis = new Redis({
+  host: 'localhost',
+  port: 6379
+});
+
+const store = new RedisRateLimitStore(redis, 'philjs:ratelimit:');
+
+const limiter = rateLimit(
+  {
+    windowMs: 60 * 1000,
+    maxRequests: 100
+  },
+  store
+);
+```
+
+### Sliding Window Rate Limiting
+
+PhilJS includes a more accurate sliding window algorithm:
+
+```typescript
+import { SlidingWindowRateLimiter } from 'philjs-ssr';
+
+const limiter = new SlidingWindowRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 100,
+  message: 'Rate limit exceeded'
+});
+
+// Check rate limit
+const rateLimitResponse = await limiter.check(request);
+if (rateLimitResponse) {
+  return rateLimitResponse; // 429 if exceeded
+}
+```
+
+### Adaptive Rate Limiting
+
+Automatically adjust limits based on error rates:
+
+```typescript
+import { AdaptiveRateLimiter } from 'philjs-ssr';
+
+const limiter = new AdaptiveRateLimiter({
+  baseLimit: 100,
+  windowMs: 60 * 1000,
+  errorThreshold: 0.1,      // 10% error rate triggers reduction
+  adaptationFactor: 0.5     // Reduce by 50% when errors high
+});
+
+// Use in request handler
+const rateLimitResponse = await limiter.check(request);
+if (rateLimitResponse) return rateLimitResponse;
+
+// Record result for adaptation
+const success = response.status < 400;
+await limiter.recordResult(success);
+```
+
+### Rate Limit Headers
+
+PhilJS automatically adds standard rate limit headers:
+
+```typescript
+// Response headers
+X-RateLimit-Limit: 100          // Max requests per window
+X-RateLimit-Remaining: 95       // Remaining requests
+X-RateLimit-Reset: 2024-01-01T12:00:00Z  // When limit resets
+```
+
+### Skip Successful/Failed Requests
+
+```typescript
+// Don't count successful login attempts
+const loginLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 5,
+  skipSuccessfulRequests: true  // Only count failed logins
+});
+
+// Don't count failed requests
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 10,
+  skipFailedRequests: true      // Only count successful uploads
+});
+```
+
+### Custom Error Handling
+
+```typescript
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 100,
+  handler: (request) => {
+    // Custom 429 response
+    return new Response(
+      JSON.stringify({
+        error: 'Rate limit exceeded',
+        retryAfter: 60,
+        message: 'Please slow down your requests'
+      }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': '60'
+        }
+      }
+    );
+  }
+});
+```
+
+### Per-Route Rate Limiting
+
+```typescript
+// Different limits for different routes
+app.get('/api/search', apiRateLimit(30), searchHandler);
+app.post('/api/login', authRateLimit(5), loginHandler);
+app.post('/api/upload', uploadRateLimit(10), uploadHandler);
+```
+
 ### Client-Side Rate Limiting
 
-```tsx
+For client-side protection:
+
+```typescript
 function createRateLimiter(maxRequests: number, windowMs: number) {
   const requests: number[] = [];
 
@@ -521,20 +868,116 @@ function createRateLimiter(maxRequests: number, windowMs: number) {
 
     getRemainingRequests(): number {
       return Math.max(0, maxRequests - requests.length);
+    },
+
+    getResetTime(): number {
+      return requests[0] + windowMs;
     }
   };
 }
 
-// Usage
-const rateLimiter = createRateLimiter(5, 60000); // 5 requests per minute
+// Usage in component
+function SearchForm() {
+  const rateLimiter = createRateLimiter(5, 60000); // 5/min
+  const query = signal('');
 
-async function searchProducts(query: string) {
-  if (!rateLimiter.canMakeRequest()) {
-    throw new Error('Rate limit exceeded. Please try again later.');
-  }
+  const search = async () => {
+    if (!rateLimiter.canMakeRequest()) {
+      const resetTime = rateLimiter.getResetTime();
+      const waitSeconds = Math.ceil((resetTime - Date.now()) / 1000);
 
-  return api.get(`/search?q=${query}`);
+      alert(`Rate limit exceeded. Try again in ${waitSeconds} seconds.`);
+      return;
+    }
+
+    const results = await api.get(`/search?q=${query()}`);
+    // ...
+  };
+
+  return (
+    <div>
+      <input value={query()} onInput={(e) => query.set(e.target.value)} />
+      <button onClick={search}>
+        Search ({rateLimiter.getRemainingRequests()} remaining)
+      </button>
+    </div>
+  );
 }
+```
+
+### Monitor Rate Limit Usage
+
+```typescript
+// Get rate limit info
+const info = await limiter.getRateLimitInfo(request);
+
+console.log(`Limit: ${info.limit}`);
+console.log(`Remaining: ${info.remaining}`);
+console.log(`Resets at: ${new Date(info.reset)}`);
+
+// Show in UI
+function RateLimitStatus() {
+  const info = signal<RateLimitInfo | null>(null);
+
+  effect(async () => {
+    const response = await fetch('/api/rate-limit-status');
+    info.set(await response.json());
+  });
+
+  return info() ? (
+    <div class="rate-limit-status">
+      Requests: {info().remaining}/{info().limit}
+      <progress value={info().remaining} max={info().limit} />
+    </div>
+  ) : null;
+}
+```
+
+### Best Practices
+
+```typescript
+// ✅ Use different limits for different routes
+app.post('/api/auth/login', authRateLimit(5));      // Strict
+app.get('/api/products', apiRateLimit(100));        // Generous
+app.post('/api/upload', uploadRateLimit(10));       // Moderate
+
+// ✅ Use Redis in production (distributed)
+const redisStore = new RedisRateLimitStore(redis);
+const limiter = rateLimit(config, redisStore);
+
+// ✅ Whitelist trusted IPs
+const limiter = rateLimit({
+  windowMs: 60000,
+  maxRequests: 100,
+  keyGenerator: (request) => {
+    const ip = request.headers.get('x-forwarded-for');
+    const trustedIPs = ['10.0.0.1', '192.168.1.1'];
+
+    if (trustedIPs.includes(ip)) {
+      return 'trusted'; // Higher or no limit
+    }
+
+    return `ip:${ip}`;
+  }
+});
+
+// ✅ Log rate limit violations
+const limiter = rateLimit({
+  windowMs: 60000,
+  maxRequests: 100,
+  handler: (request) => {
+    const ip = request.headers.get('x-forwarded-for');
+    console.warn(`Rate limit exceeded for IP: ${ip}`);
+
+    // Alert if too many violations
+    violations++;
+    if (violations > 100) {
+      alertSecurity(`High rate limit violations: ${violations}`);
+    }
+
+    return new Response('Too many requests', { status: 429 });
+  }
+});
 ```
 
 ## Dependency Security
