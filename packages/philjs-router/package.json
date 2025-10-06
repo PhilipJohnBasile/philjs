@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build": "rollup -c",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-router'",
     "typecheck": "tsc --noEmit"

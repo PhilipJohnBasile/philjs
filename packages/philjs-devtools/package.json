@@ -15,10 +15,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build": "rollup -c",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-devtools'",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.28.1",

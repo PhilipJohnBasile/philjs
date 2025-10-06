@@ -1,0 +1,475 @@
+ultrathink
+
+CRITICAL MISSION: Ensure 100% alignment between PhilJS documentation and actual implementation. Every documented feature must exist, work perfectly, and match its documentation exactly. Work autonomously to verify, fix, and test everything.
+
+YOUR MISSION (3 PHASES):
+PHASE 1: Documentation-Code Audit (Find all mismatches)
+PHASE 2: Implementation Fixes (Make code match docs 1:1)
+PHASE 3: Comprehensive Testing (Verify 100% functionality)
+
+===============================================================================
+PHASE 1: COMPREHENSIVE AUDIT (120-180 min estimated)
+===============================================================================
+
+OBJECTIVE: Create a complete inventory of what's documented vs what exists in code.
+
+STEP 1.1: Parse All Documentation
+Parse every documentation file in /docs and extract:
+- API function/component mentioned
+- Code example shown
+- Feature described
+- Configuration option documented
+- CLI command documented
+- Hook/composable documented
+- Component prop documented
+- Type signature shown
+
+Create: DOCUMENTATION_INVENTORY.md with complete list
+
+STEP 1.2: Scan All Source Code
+Read every source file in packages/ and extract:
+- Exported function
+- Exported component
+- Exported type
+- API implementation
+- Configuration option
+- CLI command
+
+Create: CODE_INVENTORY.md with complete list
+
+STEP 1.3: Cross-Reference Analysis
+Compare DOCUMENTATION_INVENTORY.md with CODE_INVENTORY.md
+
+Generate: MISMATCHES.md with three categories:
+1. CRITICAL: Documented but NOT Implemented (Code Missing)
+2. WARNING: Implemented but NOT Documented (Docs Missing)
+3. MISMATCH: Implementation Differs from Documentation
+4. Code Examples That Don't Work
+
+STEP 1.4: Test All Documentation Examples
+Extract every code example from documentation
+Attempt to run each example
+Document which examples work vs fail
+
+Create: EXAMPLE_TEST_RESULTS.md
+
+STEP 1.5: Validate TypeScript Signatures
+Compare documented TypeScript signatures with actual code
+Check every function, component, hook for type accuracy
+
+Create: TYPE_MISMATCHES.md
+
+STEP 1.6: Check All Features Listed
+Go through the original PhilJS specification
+Verify each feature is:
+a) Implemented in code
+b) Documented
+c) Has examples
+d) Has tests
+
+Create: FEATURE_COMPLETENESS.md
+
+DELIVERABLE FOR PHASE 1:
+- DOCUMENTATION_INVENTORY.md
+- CODE_INVENTORY.md
+- MISMATCHES.md
+- EXAMPLE_TEST_RESULTS.md
+- TYPE_MISMATCHES.md
+- FEATURE_COMPLETENESS.md
+
+===============================================================================
+PHASE 2: FIX ALL MISMATCHES (180-300 min estimated)
+===============================================================================
+
+OBJECTIVE: Make code and documentation perfectly aligned. Every documented feature works exactly as documented.
+
+PRIORITY ORDER:
+1. CRITICAL - Implement missing documented features
+2. HIGH - Fix signature mismatches
+3. MEDIUM - Fix broken examples
+4. LOW - Add missing documentation
+
+STEP 2.1: Implement Missing Features
+For each "Documented but NOT Implemented" item:
+- Implement the feature EXACTLY as documented
+- Match the documented API signature exactly
+- Support all documented parameters/props
+- Implement all documented behavior
+- Add TypeScript types matching docs
+- Export from correct package
+
+STEP 2.2: Fix Signature Mismatches
+For each signature mismatch:
+OPTION A: Update code to match docs (preferred)
+OPTION B: Update docs to match code (only if code is correct)
+
+Fix function signatures, component prop types, return types
+Update TypeScript definitions
+Ensure backwards compatibility or add migration guide
+
+STEP 2.3: Fix All Broken Examples
+For each broken example in documentation:
+- Fix imports
+- Implement missing features
+- Correct syntax
+- Add missing props
+- Test the example actually runs
+- Update documentation if needed
+
+STEP 2.4: Implement Missing Components
+For each documented component that doesn't exist, implement with:
+- Exact props from docs
+- Documented behavior
+- TypeScript types
+- Working examples
+- Tests
+
+Priority list (implement in order):
+1. Show component
+2. For component
+3. Switch/Match components
+4. ErrorBoundary
+5. Suspense
+6. Portal
+7. Dynamic component
+8. Outlet (routing)
+9. Link/NavLink (routing)
+... all documented components
+
+STEP 2.5: Implement Missing Hooks/Composables
+For each documented hook that doesn't exist:
+- Implement exactly as documented
+- Match signatures
+- Implement all options
+- Add TypeScript types
+- Create examples
+
+Priority list:
+1. createSignal()
+2. createEffect()
+3. createMemo()
+4. createContext()
+5. useContext()
+6. createResource()
+7. useNavigate()
+8. useParams()
+9. useSearchParams()
+10. useLocation()
+11. createQuery()
+12. createMutation()
+... all documented hooks
+
+STEP 2.6: Implement Missing CLI Commands
+For each documented CLI command:
+- Implement command
+- Add all documented flags
+- Match documented behavior
+- Add help text
+- Test command works
+
+STEP 2.7: Implement Configuration Options
+- Implement philjs.config.ts support
+- Add all documented configuration options
+- Add TypeScript types for config
+- Validate configuration
+- Add defaults
+- Test all options work
+
+STEP 2.8: Add Missing Exports
+- Verify all documented APIs are exported
+- Check package.json exports field
+- Verify imports work from documented paths
+- Test tree-shaking works
+
+STEP 2.9: Implement Novel Features
+These were documented as PhilJS differentiators - ensure they exist:
+- Performance budgets enforcement
+- Automatic bundle size tracking
+- Cost tracking for routes
+- Smart prop drilling detection
+- Automatic accessibility fixes
+- Component usage analytics
+- Dead code detection
+- Dependency health monitoring
+- A/B testing infrastructure
+- Feature flags system
+- Visual regression testing
+- Performance regression detection
+- Automatic API documentation generation
+... all novel features from spec
+
+STEP 2.10: Update Documentation for Code-Only Features
+For "Implemented but NOT Documented" items:
+- Write complete documentation
+- Add to appropriate docs section
+- Create examples
+- Add to API reference
+- Update navigation/TOC
+
+VERIFICATION AFTER EACH FIX:
+1. Feature works exactly as documented ✅
+2. All documented examples using it now work ✅
+3. TypeScript types match documentation ✅
+4. Exports are correct ✅
+5. Tests pass (or create tests) ✅
+
+DELIVERABLE FOR PHASE 2:
+- All features implemented matching documentation
+- All examples in documentation work
+- All signatures match
+- All packages export correctly
+- FIXES_APPLIED.md (log of all changes made)
+
+===============================================================================
+PHASE 3: COMPREHENSIVE TESTING (120-240 min estimated)
+===============================================================================
+
+OBJECTIVE: Verify 100% of PhilJS features work correctly with automated tests.
+
+STEP 3.1: Create Test Plan
+List every feature, API, component, integration to test
+Create: TEST_PLAN.md
+
+STEP 3.2: Unit Tests for Core APIs
+Write comprehensive unit tests for @philjs/core:
+
+createSignal() - 10+ test cases:
+- Basic get/set
+- Type safety
+- Update notifications
+- Multiple signals
+- Derived values
+
+createEffect() - 10+ test cases:
+- Basic effect execution
+- Dependency tracking
+- Cleanup functions
+- Effect timing
+- Nested effects
+- Conditional dependencies
+
+createMemo() - 8+ test cases:
+- Memoization works
+- Recomputes when dependencies change
+- Doesn't recompute unnecessarily
+- Multiple memos
+
+createContext() / useContext() - 8+ test cases
+Show component - 8+ test cases
+For component - 10+ test cases
+Switch/Match - 6+ test cases
+ErrorBoundary - 8+ test cases
+Suspense - 8+ test cases
+Portal - 6+ test cases
+
+... Every documented API
+
+Target: 200+ unit tests for core package
+
+STEP 3.3: Unit Tests for Router
+- Route matching - 10+ tests
+- Dynamic routes - 8+ tests
+- Nested routes - 10+ tests
+- Navigation - 8+ tests
+- useParams() - 6+ tests
+- useSearchParams() - 8+ tests
+- Link component - 8+ tests
+- View transitions - 6+ tests
+- Route guards - 6+ tests
+
+Target: 70+ tests for router package
+
+STEP 3.4: Unit Tests for Data Fetching
+createQuery() - 15+ tests:
+- Basic fetching
+- Caching
+- Revalidation
+- Error handling
+- Loading states
+
+createMutation() - 10+ tests:
+- Basic mutations
+- Optimistic updates
+- Error handling
+- Cache invalidation
+
+QueryClient - 8+ tests
+
+Target: 40+ tests for data package
+
+STEP 3.5: Integration Tests
+Test features working together:
+- Components + Routing (10+ tests)
+- Data Fetching + Components (10+ tests)
+- Forms + Validation (10+ tests)
+- SSR + Routing (8+ tests)
+- Code Splitting (6+ tests)
+
+Target: 50+ integration tests
+
+STEP 3.6: E2E Tests
+Use Playwright or Cypress:
+- Example Apps E2E (Todo app, Blog app, E-commerce app)
+- Core User Flows
+- Navigation flow
+- Form submission flow
+- Data loading flow
+- Error handling flow
+
+Target: 40+ E2E tests
+
+STEP 3.7: Test All Documentation Examples
+Extract every code example from docs
+Create test file for each example
+Run example code
+Verify it produces expected output
+
+Target: 100+ tests (one per documented example)
+
+STEP 3.8: Performance Tests
+- Bundle size tests (Core package < 50KB)
+- Runtime performance tests
+- Memory leak tests
+
+Target: 20+ performance tests
+
+STEP 3.9: Type Tests
+- TypeScript compilation tests
+- Type inference tests
+- Generic type tests
+- Error case type tests
+
+Target: 30+ type tests
+
+STEP 3.10: Manual Testing Checklist
+Execute manual test checklist:
+- Create new project with create-philjs ✅
+- Dev server runs ✅
+- HMR works ✅
+- Build command works ✅
+- Build output is correct ✅
+- Preview command works ✅
+- Production build is optimized ✅
+- SSR works ✅
+- SSG works ✅
+- ISR works (if implemented) ✅
+- All CLI commands work ✅
+- All examples run ✅
+- All tutorials work ✅
+- Documentation site builds ✅
+
+STEP 3.11: Test Coverage Report
+- Generate test coverage report
+- Aim for 90%+ line coverage, 85%+ branch coverage
+- 100% of public APIs tested
+- Identify untested code
+- Write tests for gaps
+
+STEP 3.12: Browser Compatibility Testing
+- Test in Chrome (latest)
+- Test in Firefox (latest)
+- Test in Safari (latest)
+- Test in Edge (latest)
+- Test on mobile browsers
+
+STEP 3.13: Regression Test Suite
+- Create regression test suite for CI
+- Tests all critical paths
+- Tests all documented examples
+- Tests all integrations
+
+DELIVERABLE FOR PHASE 3:
+- 500+ automated tests (unit + integration + e2e)
+- All tests passing ✅
+- Coverage report showing 90%+ coverage
+- Manual testing checklist completed
+- TEST_RESULTS.md with summary
+- CI/CD configuration for running tests
+
+===============================================================================
+FINAL VALIDATION
+===============================================================================
+
+Create: VALIDATION_REPORT.md
+
+Documentation-Code Alignment: ✅ 100%
+- All documented features implemented
+- All code features documented
+- All signatures match
+- All examples work
+
+Feature Completeness: ✅ 100%
+- Core reactive system: ✅
+- Routing: ✅
+- Data fetching: ✅
+- SSR/SSG/ISR: ✅
+- Forms: ✅
+- Styling: ✅
+- Performance features: ✅
+- Novel features: ✅
+- Developer tools: ✅
+- CLI: ✅
+
+Testing: ✅ 100%
+- Unit tests: 300+ passing
+- Integration tests: 50+ passing
+- E2E tests: 40+ passing
+- Documentation examples: 100+ passing
+- Manual tests: All passing
+- Coverage: 92%
+
+Example Applications: ✅ 100%
+- Todo app: ✅ Works perfectly
+- Blog app: ✅ Works perfectly
+- E-commerce app: ✅ Works perfectly
+
+Documentation Quality: ✅ 100%
+- All pages complete
+- All examples work
+- All API documented
+- All features explained
+
+Ready for Release: ✅ YES
+
+===============================================================================
+WORKING STANDARDS
+===============================================================================
+
+REQUIREMENTS:
+- Never skip a feature as "good enough" - make it perfect
+- If documentation says it works a certain way, code MUST work that way
+- Every example in docs must run without modification
+- Every test must pass
+- Zero tolerance for "close enough" - aim for perfection
+- Document every change in detailed logs
+- No TODOs or placeholders - everything must be complete
+
+PROCESS:
+1. Start with Phase 1 (Audit) - be thorough
+2. Create all inventory files
+3. Move to Phase 2 (Fix) - work systematically
+4. Fix highest priority issues first
+5. Move to Phase 3 (Test) - comprehensive testing
+6. Create final validation report
+
+LOGGING:
+As you work, maintain these logs:
+- PROGRESS.md - Real-time progress updates
+- ISSUES_FOUND.md - All problems discovered
+- FIXES_APPLIED.md - All changes made
+- TEST_RESULTS.md - All test outcomes
+
+===============================================================================
+START NOW
+===============================================================================
+
+Begin Phase 1: Comprehensive Audit. Work systematically through every step. Be thorough and precise. Document everything.
+
+When you complete all 3 phases, provide:
+1. Final validation report
+2. Summary of all mismatches found
+3. Summary of all fixes applied
+4. Test coverage statistics
+5. Confidence assessment (is PhilJS production-ready?)
+
+LET'S ACHIEVE 100% DOCUMENTATION-CODE ALIGNMENT AND PERFECT FUNCTIONALITY. GO.

@@ -3,12 +3,28 @@
  * Shows hydration map, performance budgets, and AI cost panel.
  */
 
+// Time-Travel Debugging
+export {
+  TimeTravelDebugger,
+  initTimeTravel,
+  getTimeTravelDebugger,
+  debugSignal,
+  diffState,
+} from "./time-travel.js";
+export type {
+  StateSnapshot,
+  TimelineNode,
+  TimeTravelConfig,
+  DiffType,
+  StateDiff,
+} from "./time-travel.js";
+
 /**
  * Show the developer overlay.
  */
 export function showOverlay() {
   // Only show in development
-  if (import.meta.env?.PROD) return;
+  if (typeof window !== 'undefined' && (window as any).__PHILJS_PROD__) return;
 
   const overlay = document.createElement("div");
   overlay.id = "philjs-devtools";

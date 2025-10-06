@@ -1,0 +1,329 @@
+ultrathink
+
+Write comprehensive, world-class documentation content for PhilJS. Create every single documentation page with production-ready content. Work autonomously until you've written complete docs for the entire framework.
+
+MISSION:
+Write clear, comprehensive, engaging documentation that makes PhilJS accessible to developers of all skill levels. Every page should have real content, real examples, and real value.
+
+WRITING PRINCIPLES:
+- Clear and concise - no jargon without explanation
+- Show, don't just tell - code examples for everything
+- Progressive disclosure - simple first, complex later
+- Practical and actionable - developers can use it immediately
+- Honest about tradeoffs - explain when NOT to use something
+- Consistent voice and style throughout
+- Assume intelligence but not knowledge
+
+TARGET: 120+ pages, 150,000+ words, Every page has 5+ working code examples
+
+CONTENT TO WRITE:
+
+1. GETTING STARTED SECTION (Write 8 complete pages)
+
+PAGE: Introduction
+- What is PhilJS? (2-3 paragraphs)
+- Why PhilJS? (5-7 key benefits with explanations)
+- Who should use PhilJS? (different user personas)
+- How is it different from React/Vue/Svelte? (honest comparison)
+- Quick feature overview
+- Link to quick start
+
+PAGE: Installation
+- Prerequisites (Node.js version, etc.)
+- Installing via npm, pnpm, yarn, bun (commands for each)
+- Creating a new project with create-philjs
+- Project structure explanation
+- Troubleshooting common installation issues
+- Next steps
+
+PAGE: Quick Start (Complete Tutorial)
+Write a full tutorial that builds a working counter app:
+- Step 1: Create the project
+- Step 2: Create your first component
+- Step 3: Add signals for state
+- Step 4: Add interactivity
+- Step 5: Style the component
+- Step 6: Run in browser
+Include complete code for each step, explanations of what's happening, and why.
+
+PAGE: Your First Component
+- What is a component?
+- Creating a simple component (complete example)
+- JSX syntax explained
+- Props explained with examples
+- Composing components
+- Component best practices
+- Common mistakes to avoid
+
+PAGE: Tutorial: Tic-Tac-Toe Game
+Write a complete, step-by-step tutorial building tic-tac-toe:
+- Planning the component structure
+- Creating the game board
+- Adding state with signals
+- Handling click events
+- Determining the winner
+- Adding game history
+- Time travel functionality
+Full working code at each step, 2000+ words
+
+PAGE: Tutorial: Todo App
+Write a complete tutorial building a todo app:
+- Setting up the project
+- Creating the todo list component
+- Adding new todos
+- Marking todos complete
+- Filtering todos (all, active, completed)
+- Persisting to localStorage
+- Adding routing for filters
+Full working code, 2000+ words
+
+PAGE: Tutorial: Blog with SSG
+Write a complete tutorial building a static blog:
+- Setting up file-based routing
+- Creating blog post pages
+- Markdown/MDX support
+- Generating static pages at build time
+- Adding SEO meta tags
+- Creating an RSS feed
+- Deploying to production
+Full working code, 2500+ words
+
+PAGE: Thinking in PhilJS
+- How PhilJS differs from React mentally
+- Understanding fine-grained reactivity
+- When to use signals vs context vs props
+- Component composition patterns
+- Avoiding common pitfalls
+- Mental model diagrams
+1500+ words
+
+2. CORE CONCEPTS SECTION (Write 20 complete pages)
+
+PAGE: Components (1500+ words, 5+ examples)
+PAGE: Signals (2000+ words, 10+ examples)
+PAGE: Derived State with Memos (1500+ words, 8+ examples)
+PAGE: Effects and Side Effects (2000+ words, 10+ examples)
+PAGE: Context API (1500+ words, complete theme context example)
+PAGE: Conditional Rendering (1200+ words, 10+ examples)
+PAGE: Lists and Keys (1500+ words, 8+ examples)
+PAGE: Event Handling (1200+ words, 10+ examples)
+PAGE: Refs and DOM Access (1000+ words, 6+ examples)
+PAGE: Error Boundaries (1500+ words, complete working examples)
+PAGE: Lifecycle and Cleanup (1200+ words, 8+ examples)
+PAGE: TypeScript with PhilJS (1800+ words, 10+ typed examples)
+PAGE: Performance Optimization (1500+ words)
+PAGE: Testing Components (1800+ words, 8+ test examples)
+PAGE: Styling Components (1500+ words, 10+ examples)
+PAGE: Forms and Inputs (1800+ words, complete form examples)
+PAGE: Animations (1500+ words, 8+ animated examples)
+PAGE: Code Splitting (1200+ words)
+PAGE: Server vs Client Code (1500+ words)
+
+3. ROUTING SECTION (Write 10 complete pages)
+
+PAGE: Routing Basics (1500+ words)
+PAGE: Dynamic Routes (1500+ words, 8+ examples)
+PAGE: Nested Routes and Layouts (1800+ words)
+PAGE: Navigation and Links (1200+ words, 8+ examples)
+PAGE: Route Parameters and Search Params (1500+ words, 10+ examples)
+PAGE: Data Loading per Route (1800+ words)
+PAGE: Route Guards and Protection (1500+ words, complete auth example)
+PAGE: Parallel Routes (1200+ words)
+PAGE: Intercepting Routes (1200+ words)
+PAGE: View Transitions (1200+ words)
+
+4. DATA FETCHING SECTION (Write 10 complete pages)
+
+PAGE: Data Fetching Overview (1200+ words)
+PAGE: createQuery() (2000+ words, 10+ examples)
+PAGE: Mutations with createMutation() (1800+ words, complete CRUD example)
+PAGE: Loading States (1200+ words, 8+ examples)
+PAGE: Error Handling (1500+ words)
+PAGE: Caching Strategies (1500+ words)
+PAGE: Real-time Data (2000+ words, complete real-time app)
+PAGE: Optimistic Updates (1500+ words)
+PAGE: Pagination (1500+ words)
+PAGE: Prefetching (1200+ words)
+
+5. FORMS SECTION (Write 8 complete pages)
+
+PAGE: Form Basics (1500+ words, complete form example)
+PAGE: Form Validation (2000+ words, complete validated form)
+PAGE: Form Actions (1800+ words)
+PAGE: File Uploads (1500+ words, complete upload component)
+PAGE: Multi-Step Forms (1800+ words, complete wizard)
+PAGE: Form Libraries Integration (1000+ words)
+PAGE: Accessibility in Forms (1500+ words, complete accessible form)
+PAGE: Complex Forms (2000+ words)
+
+6. STYLING SECTION (Write 8 complete pages)
+
+PAGE: Styling Overview (1200+ words)
+PAGE: CSS Modules (1500+ words)
+PAGE: Inline Styles (1200+ words, 8+ examples)
+PAGE: Tailwind CSS (1800+ words, complete component library)
+PAGE: CSS-in-JS (1500+ words)
+PAGE: Animations and Transitions (1800+ words, 10+ animated examples)
+PAGE: Responsive Design (1500+ words, complete responsive layout)
+PAGE: Theming (1800+ words, complete theme system)
+
+7. PERFORMANCE SECTION (Write 10 complete pages)
+
+PAGE: Performance Overview (1200+ words)
+PAGE: Bundle Size Optimization (1500+ words)
+PAGE: Runtime Performance (1800+ words)
+PAGE: Image Optimization (1500+ words, complete image component)
+PAGE: Code Splitting Strategies (1800+ words)
+PAGE: Lazy Loading (1500+ words)
+PAGE: Memoization (1200+ words)
+PAGE: Server-Side Performance (1500+ words)
+PAGE: Performance Budgets (1200+ words)
+PAGE: Web Vitals (1800+ words, complete monitoring setup)
+
+8. ADVANCED TOPICS SECTION (Write 12 complete pages)
+
+PAGE: Server-Side Rendering (SSR) (2500+ words, complete SSR app)
+PAGE: Static Site Generation (SSG) (2000+ words, complete static blog)
+PAGE: Incremental Static Regeneration (ISR) (1800+ words)
+PAGE: Islands Architecture (1800+ words)
+PAGE: Resumability (2000+ words)
+PAGE: Middleware (1800+ words, complete examples)
+PAGE: Internationalization (i18n) (2500+ words, complete i18n app)
+PAGE: Authentication (2500+ words, complete auth system)
+PAGE: Web Workers (1500+ words, complete worker example)
+PAGE: WebAssembly (1500+ words)
+PAGE: Progressive Web Apps (PWA) (2000+ words, complete PWA setup)
+PAGE: SEO Optimization (1800+ words, complete SEO guide)
+
+9. API REFERENCE (Write complete reference - 3000+ words total)
+
+For each API, include:
+- Function signature with TypeScript
+- Parameters (name, type, description)
+- Return value
+- Detailed explanation
+- 3-5 usage examples
+- Common mistakes
+- Related APIs
+
+Document ALL APIs:
+@philjs/core: createSignal, createMemo, createEffect, createContext, useContext, createResource, batch, untrack, on, Show, For, Switch/Match, ErrorBoundary, Suspense, Portal, Dynamic
+@philjs/router: Route, Link, Navigate, useNavigate, useParams, useSearchParams, useLocation, useRoutes, Outlet, NavLink, createBrowserRouter, createHashRouter
+@philjs/data: createQuery, createMutation, QueryClient, useQueryClient, invalidateQueries, prefetchQuery, setQueryData
+@philjs/cli: All commands and flags
+Configuration: philjs.config.ts complete reference
+
+10. MIGRATION GUIDES (Write 3 complete guides)
+
+PAGE: Migrating from React (3000+ words)
+- Key differences
+- Component conversion
+- Hooks to signals mapping
+- useState → createSignal
+- useEffect → createEffect
+- useContext → useContext
+- useMemo → createMemo
+- Routing differences
+- Data fetching changes
+- Complete conversion example
+- Step-by-step migration strategy
+
+PAGE: Migrating from Vue (2500+ words)
+- Key differences
+- Composition API to PhilJS
+- ref/reactive to signals
+- computed to memos
+- watch to effects
+- Template syntax to JSX
+- Routing migration
+- Complete conversion example
+
+PAGE: Migrating from Svelte (2000+ words)
+- Key differences
+- Stores to signals
+- $: to createMemo
+- onMount to createEffect
+- Routing migration
+- Complete conversion example
+
+11. BEST PRACTICES & PATTERNS (Write 10 pages)
+
+PAGE: Component Patterns (2000+ words, 10+ complete patterns)
+PAGE: State Management Patterns (2000+ words)
+PAGE: Code Organization (1500+ words)
+PAGE: Error Handling Patterns (1500+ words)
+PAGE: Testing Strategies (1500+ words)
+PAGE: Accessibility Best Practices (2000+ words, complete accessible app)
+PAGE: Security Best Practices (1800+ words)
+PAGE: Performance Best Practices (1500+ words)
+PAGE: TypeScript Best Practices (1500+ words)
+PAGE: Deployment Best Practices (1800+ words)
+
+12. TROUBLESHOOTING & FAQ (Write 5 pages)
+
+PAGE: Common Issues (2000+ words, 20+ problems and solutions)
+PAGE: FAQ - General (2000+ words, 30+ questions)
+PAGE: FAQ - Performance (1500+ words, 15+ questions)
+PAGE: FAQ - TypeScript (1200+ words, 15+ questions)
+PAGE: Debugging Guide (1500+ words)
+
+WRITING REQUIREMENTS:
+- Every page has real, complete content (no Lorem Ipsum, no TODOs)
+- Every code example is complete and working
+- Consistent voice and terminology throughout
+- Progressive complexity (simple → advanced)
+- Clear section headings (H2, H3 hierarchy)
+- Code examples have comments explaining key concepts
+- Cross-references to related pages
+- Callout boxes for important info (💡 Tip, ⚠️ Warning, 💡 Note)
+- "What you'll learn" at top of tutorial pages
+- "Next steps" at bottom of pages
+- Proper markdown formatting
+
+STYLE GUIDE:
+- Use "you" (second person)
+- Active voice over passive
+- Short paragraphs (3-4 sentences max)
+- Bullet points for lists
+- Bold for emphasis (not italics)
+- Code blocks with language tags
+- Inline code for API names, values, file names
+- Clear, descriptive headings
+- Examples before explanation when possible
+
+CODE EXAMPLE STANDARDS:
+- Complete, working code (not snippets)
+- Include imports
+- TypeScript when showing types
+- Comments for non-obvious parts
+- Console.log for showing output where helpful
+- Realistic variable names
+- Follow PhilJS best practices
+
+Create files in this structure:
+/docs
+  /getting-started
+    /introduction.md
+    /installation.md
+    /quick-start.md
+    ... etc
+  /learn
+    /components.md
+    /signals.md
+    ... etc
+  /routing
+  /data-fetching
+  /forms
+  /styling
+  /performance
+  /advanced
+  /api
+  /migration
+  /best-practices
+  /troubleshooting
+
+START NOW. Write ALL the documentation content. Create every page with complete, production-ready content. Work systematically through each section. Show progress as you complete each major section.
+
+When finished provide: Total word count, total pages written, list of all pages, summary of coverage.
+
+LET'S WRITE THE MOST COMPREHENSIVE FRAMEWORK DOCUMENTATION EVER. GO.

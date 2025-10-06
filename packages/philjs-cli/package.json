@@ -1,0 +1,49 @@
+{
+  "name": "philjs-cli",
+  "version": "0.1.0",
+  "description": "CLI tools for PhilJS - The framework that thinks ahead",
+  "type": "module",
+  "bin": {
+    "philjs": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "philjs",
+    "cli",
+    "framework",
+    "build-tool",
+    "dev-server"
+  ],
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-router": "workspace:*",
+    "philjs-ssr": "workspace:*",
+    "vite": "^6.0.7",
+    "rollup": "^4.28.1",
+    "esbuild": "^0.24.2",
+    "chokidar": "^4.0.3",
+    "picocolors": "^1.1.1",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "@types/node": "^22.10.5"
+  }
+}

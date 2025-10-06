@@ -1,0 +1,17 @@
+{
+  "name": "eslint-config-philjs",
+  "version": "0.1.0",
+  "description": "ESLint config with a11y and security plugins for PhilJS",
+  "type": "module",
+  "main": "./index.js",
+  "files": [
+    "index.js"
+  ],
+  "peerDependencies": {
+    "eslint": "^9.0.0"
+  },
+  "dependencies": {
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-security": "^3.0.1"
+  }
+}

@@ -2,6 +2,9 @@
  * Islands architecture for selective hydration.
  */
 
+export { registerIsland, loadIsland, initIslands, Island } from "./island-loader.js";
+export type { IslandModule, IslandManifest } from "./island-loader.js";
+
 /**
  * Mount islands marked with the [island] attribute.
  * Loads component chunks on visibility or interaction.
@@ -10,16 +13,29 @@
 export function mountIslands(root = document.body) {
   const islands = root.querySelectorAll("[island]");
 
-  islands.forEach(el => {
-    const componentName = el.getAttribute("island");
+  islands.forEach((el) => {
+    const componentName = el.getAttribute("island") ?? "anonymous";
 
-    // Use IntersectionObserver for lazy loading
+    const hydrate = () => {
+      if (el.hasAttribute("data-hydrated")) return;
+      el.setAttribute("data-hydrated", "true");
+      el.dispatchEvent(
+        new CustomEvent("phil:island-hydrated", {
+          bubbles: false,
+          detail: { name: componentName, element: el }
+        })
+      );
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      hydrate();
+      return;
+    }
+
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // In a real implementation, this would dynamically import the component
-          // For now, just mark as hydrated
-          el.setAttribute("data-hydrated", "true");
+          hydrate();
           observer.disconnect();
         }
       });
@@ -36,6 +52,14 @@ export function mountIslands(root = document.body) {
 export function hydrateIsland(element) {
   const componentName = element.getAttribute("island");
   if (componentName) {
-    element.setAttribute("data-hydrated", "true");
+    if (!element.hasAttribute("data-hydrated")) {
+      element.setAttribute("data-hydrated", "true");
+      element.dispatchEvent(
+        new CustomEvent("phil:island-hydrated", {
+          bubbles: false,
+          detail: { name: componentName, element }
+        })
+      );
+    }
   }
 }

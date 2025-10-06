@@ -1,0 +1,19 @@
+{
+  "name": "philjs-todo-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-router": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^6.0.7",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.5"
+  }
+}

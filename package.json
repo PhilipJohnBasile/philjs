@@ -4,19 +4,23 @@
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "build": "pnpm -r --filter './packages/**' run build",
+    "build": "pnpm -r --filter './packages/**' run build && pnpm --filter examples/storefront build",
     "dev": "pnpm --filter examples/storefront dev",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "check:budgets": "node --no-warnings scripts/check-budgets.mjs"
   },
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "docs-site"
   ],
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
+    "@rollup/plugin-node-resolve": "^16.0.2",
+    "@rollup/plugin-typescript": "^12.1.4",
     "@types/node": "^20.11.0",
     "eslint": "^9.16.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
@@ -24,6 +28,7 @@
     "playwright": "^1.48.0",
     "prettier": "^3.4.2",
     "rollup": "^4.28.1",
+    "tslib": "^2.8.1",
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
     "vitest": "^2.1.8"

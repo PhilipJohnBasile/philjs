@@ -1,0 +1,35 @@
+{
+  "name": "create-philjs",
+  "version": "0.1.0",
+  "description": "Scaffolding tool for PhilJS apps - The framework that thinks ahead",
+  "type": "module",
+  "bin": {
+    "create-philjs": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "echo 'Test create-philjs'",
+    "lint": "echo 'Lint create-philjs'"
+  },
+  "keywords": [
+    "philjs",
+    "create",
+    "scaffold",
+    "starter"
+  ],
+  "dependencies": {
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "rollup": "^4.28.1",
+    "@types/node": "^22.10.5",
+    "@types/prompts": "^2.4.9"
+  }
+}

@@ -1,54 +1,467 @@
 /**
- * Minimal signals implementation for PhilJS.
- * JSDoc types generate .d.ts on build.
+ * Fine-grained reactive signals implementation for PhilJS.
+ * Inspired by SolidJS with automatic dependency tracking.
  */
 
-/** @typedef {(v: any) => void} Listener */
+// ============================================================================
+// Types
+// ============================================================================
+
+export type Signal<T> = {
+  (): T;
+  set: (next: T | ((prev: T) => T)) => void;
+  subscribe: (fn: (v: T) => void) => () => void;
+  peek: () => T;
+};
+
+export type Memo<T> = {
+  (): T;
+};
+
+export type Resource<T> = {
+  (): T;
+  refresh: () => void;
+  loading: () => boolean;
+  error: () => Error | null;
+};
+
+export type EffectCleanup = () => void;
+
+// ============================================================================
+// Reactive Context
+// ============================================================================
+
+interface Computation {
+  execute: () => void;
+  dependencies: Set<Set<Computation>>;
+}
+
+let activeComputation: Computation | null = null;
+let batchDepth = 0;
+let batchedUpdates = new Set<() => void>();
+
+// Owner tree for cleanup and disposal
+interface Owner {
+  cleanups: EffectCleanup[];
+  owned: Owner[];
+  context?: Map<symbol, unknown>;
+}
+
+let currentOwner: Owner | null = null;
+
+// ============================================================================
+// Core Signal Implementation
+// ============================================================================
 
 /**
- * Create a reactive signal.
- * @template T
- * @param {T} initial - Initial value
- * @returns {(() => T) & { set: (next: T | ((prev: T) => T)) => void, subscribe: (fn: (v: T) => void) => () => void }}
+ * Create a reactive signal with automatic dependency tracking.
+ *
+ * @example
+ * ```ts
+ * const count = signal(0);
+ * console.log(count()); // 0
+ * count.set(5);
+ * console.log(count()); // 5
+ * count.set(c => c + 1); // Updater function
+ * ```
  */
-export function signal(initial) {
-  let v = initial;
-  /** @type {Set<(v: any) => void>} */
-  const subs = new Set();
+export function signal<T>(initialValue: T): Signal<T> {
+  let value = initialValue;
+  const subscribers = new Set<Computation>();
 
-  const read = () => v;
+  const read = (() => {
+    // Track this signal as a dependency of the active computation
+    if (activeComputation) {
+      subscribers.add(activeComputation);
+      activeComputation.dependencies.add(subscribers);
+    }
+    return value;
+  }) as Signal<T>;
 
-  read.subscribe = (fn) => {
-    subs.add(fn);
-    return () => subs.delete(fn);
+  read.set = (nextValue: T | ((prev: T) => T)) => {
+    const newValue = typeof nextValue === "function"
+      ? (nextValue as (prev: T) => T)(value)
+      : nextValue;
+
+    // Only update if value actually changed (reference equality)
+    if (Object.is(value, newValue)) return;
+
+    value = newValue;
+
+    // Notify all subscribers
+    if (batchDepth > 0) {
+      // Queue updates for batching
+      subscribers.forEach(computation => {
+        batchedUpdates.add(computation.execute);
+      });
+    } else {
+      // Execute immediately
+      subscribers.forEach(computation => computation.execute());
+    }
   };
 
-  const write = (next) => {
-    v = typeof next === "function" ? next(v) : next;
-    subs.forEach(fn => fn(v));
+  read.subscribe = (fn: (v: T) => void) => {
+    const computation: Computation = {
+      execute: () => fn(value),
+      dependencies: new Set(),
+    };
+    subscribers.add(computation);
+    return () => subscribers.delete(computation);
   };
 
-  return Object.assign(read, { set: write });
+  // Peek reads the value without tracking dependencies
+  read.peek = () => value;
+
+  return read;
 }
 
-/**
- * Create a memoized computation.
- * @template T
- * @param {() => T} calc - Computation function
- * @returns {() => T}
- */
-export function memo(calc) {
-  let cached = calc();
-  return () => cached;
-}
+// ============================================================================
+// Computed Values (Memos)
+// ============================================================================
 
 /**
- * Create a resource that can be refreshed.
- * @template T
- * @param {() => T} calc - Computation function
- * @returns {(() => T) & { refresh: () => void }}
+ * Create a memoized computation that automatically tracks dependencies.
+ *
+ * @example
+ * ```ts
+ * const count = signal(0);
+ * const doubled = memo(() => count() * 2);
+ * console.log(doubled()); // 0
+ * count.set(5);
+ * console.log(doubled()); // 10
+ * ```
  */
-export function resource(calc) {
-  const s = signal(calc());
-  return Object.assign(() => s(), { refresh: () => s.set(calc()) });
+export function memo<T>(calc: () => T): Memo<T> {
+  let cachedValue: T;
+  let isStale = true;
+  const subscribers = new Set<Computation>();
+
+  const computation: Computation = {
+    execute: () => {
+      isStale = true;
+      // Notify subscribers that we're stale
+      subscribers.forEach(sub => sub.execute());
+    },
+    dependencies: new Set(),
+  };
+
+  const read = () => {
+    if (isStale) {
+      // Clear old dependencies
+      computation.dependencies.forEach(deps => deps.delete(computation));
+      computation.dependencies.clear();
+
+      // Track new dependencies
+      const prevComputation = activeComputation;
+      activeComputation = computation;
+
+      try {
+        cachedValue = calc();
+        isStale = false;
+      } finally {
+        activeComputation = prevComputation;
+      }
+    }
+
+    // Track this memo as a dependency if we're in a computation
+    if (activeComputation && activeComputation !== computation) {
+      subscribers.add(activeComputation);
+      activeComputation.dependencies.add(subscribers);
+    }
+
+    return cachedValue;
+  };
+
+  // Initialize the memo
+  read();
+
+  return read as Memo<T>;
 }
+
+// ============================================================================
+// Side Effects
+// ============================================================================
+
+/**
+ * Create a side effect that automatically tracks dependencies and re-runs when they change.
+ * Returns a cleanup function to dispose the effect.
+ *
+ * @example
+ * ```ts
+ * const count = signal(0);
+ * const dispose = effect(() => {
+ *   console.log('Count is:', count());
+ *   return () => console.log('Cleanup!');
+ * });
+ *
+ * count.set(5); // Logs: "Cleanup!" then "Count is: 5"
+ * dispose(); // Stop the effect
+ * ```
+ */
+export function effect(fn: () => void | EffectCleanup): EffectCleanup {
+  let cleanup: void | EffectCleanup;
+  let isDisposed = false;
+
+  const computation: Computation = {
+    execute: () => {
+      if (isDisposed) return;
+
+      // Run cleanup from previous execution
+      if (typeof cleanup === "function") {
+        cleanup();
+      }
+
+      // Clear old dependencies
+      computation.dependencies.forEach(deps => deps.delete(computation));
+      computation.dependencies.clear();
+
+      // Create owner for this effect
+      const prevOwner = currentOwner;
+      const owner: Owner = {
+        cleanups: [],
+        owned: [],
+      };
+      currentOwner = owner;
+      if (prevOwner) {
+        prevOwner.owned.push(owner);
+      }
+
+      // Track new dependencies
+      const prevComputation = activeComputation;
+      activeComputation = computation;
+
+      try {
+        cleanup = fn();
+      } finally {
+        activeComputation = prevComputation;
+        currentOwner = prevOwner;
+      }
+    },
+    dependencies: new Set(),
+  };
+
+  // Run the effect initially
+  computation.execute();
+
+  // Return cleanup function
+  return () => {
+    if (isDisposed) return;
+    isDisposed = true;
+
+    if (typeof cleanup === "function") {
+      cleanup();
+    }
+    computation.dependencies.forEach(deps => deps.delete(computation));
+    computation.dependencies.clear();
+  };
+}
+
+// ============================================================================
+// Batching
+// ============================================================================
+
+/**
+ * Batch multiple signal updates into a single update cycle.
+ * This prevents unnecessary re-computations.
+ *
+ * @example
+ * ```ts
+ * const firstName = signal('John');
+ * const lastName = signal('Doe');
+ *
+ * batch(() => {
+ *   firstName.set('Jane');
+ *   lastName.set('Smith');
+ * }); // Only triggers one update to dependents
+ * ```
+ */
+export function batch<T>(fn: () => T): T {
+  batchDepth++;
+  try {
+    return fn();
+  } finally {
+    batchDepth--;
+    if (batchDepth === 0) {
+      // Execute all batched updates
+      const updates = Array.from(batchedUpdates);
+      batchedUpdates.clear();
+      updates.forEach(update => update());
+    }
+  }
+}
+
+// ============================================================================
+// Untrack
+// ============================================================================
+
+/**
+ * Run a function without tracking dependencies.
+ * Useful for reading signals without creating dependencies.
+ *
+ * @example
+ * ```ts
+ * const a = signal(1);
+ * const b = signal(2);
+ *
+ * const sum = memo(() => {
+ *   const aVal = a(); // Tracked
+ *   const bVal = untrack(() => b()); // Not tracked
+ *   return aVal + bVal;
+ * });
+ *
+ * b.set(100); // Won't trigger sum to recompute
+ * a.set(5); // Will trigger sum to recompute
+ * ```
+ */
+export function untrack<T>(fn: () => T): T {
+  const prevComputation = activeComputation;
+  activeComputation = null;
+  try {
+    return fn();
+  } finally {
+    activeComputation = prevComputation;
+  }
+}
+
+// ============================================================================
+// Cleanup
+// ============================================================================
+
+/**
+ * Register a cleanup function to be called when the current effect is disposed.
+ *
+ * @example
+ * ```ts
+ * effect(() => {
+ *   const timer = setInterval(() => console.log('tick'), 1000);
+ *   onCleanup(() => clearInterval(timer));
+ * });
+ * ```
+ */
+export function onCleanup(cleanup: EffectCleanup): void {
+  if (currentOwner) {
+    currentOwner.cleanups.push(cleanup);
+  }
+}
+
+// ============================================================================
+// Root (Owner Management)
+// ============================================================================
+
+/**
+ * Create a root scope for effects that lives until explicitly disposed.
+ * Useful for managing long-lived reactive scopes.
+ *
+ * @example
+ * ```ts
+ * const dispose = createRoot(dispose => {
+ *   const count = signal(0);
+ *   effect(() => console.log(count()));
+ *   return dispose; // Return dispose function
+ * });
+ *
+ * // Later...
+ * dispose(); // Clean up all effects
+ * ```
+ */
+export function createRoot<T>(fn: (dispose: () => void) => T): T {
+  const prevOwner = currentOwner;
+  const owner: Owner = {
+    cleanups: [],
+    owned: [],
+  };
+  currentOwner = owner;
+
+  const dispose = () => {
+    // Dispose all owned children
+    owner.owned.forEach(child => disposeOwner(child));
+    owner.owned = [];
+
+    // Run cleanups
+    owner.cleanups.forEach(cleanup => cleanup());
+    owner.cleanups = [];
+  };
+
+  try {
+    return fn(dispose);
+  } finally {
+    currentOwner = prevOwner;
+  }
+}
+
+function disposeOwner(owner: Owner): void {
+  owner.owned.forEach(child => disposeOwner(child));
+  owner.cleanups.forEach(cleanup => cleanup());
+}
+
+// ============================================================================
+// Resources (Async Signals)
+// ============================================================================
+
+/**
+ * Create a resource that tracks loading and error states.
+ *
+ * @example
+ * ```ts
+ * const userId = signal(1);
+ * const user = resource(async () => {
+ *   const response = await fetch(`/api/users/${userId()}`);
+ *   return response.json();
+ * });
+ *
+ * if (user.loading()) {
+ *   return <div>Loading...</div>;
+ * }
+ * if (user.error()) {
+ *   return <div>Error: {user.error().message}</div>;
+ * }
+ * return <div>User: {user().name}</div>;
+ * ```
+ */
+export function resource<T>(fetcher: () => T | Promise<T>): Resource<T> {
+  const data = signal<T | undefined>(undefined);
+  const loading = signal(true);
+  const error = signal<Error | null>(null);
+
+  const refresh = () => {
+    loading.set(true);
+    error.set(null);
+
+    try {
+      const result = fetcher();
+
+      if (result instanceof Promise) {
+        result
+          .then(value => {
+            data.set(value as T);
+            loading.set(false);
+          })
+          .catch(err => {
+            error.set(err instanceof Error ? err : new Error(String(err)));
+            loading.set(false);
+          });
+      } else {
+        data.set(result);
+        loading.set(false);
+      }
+    } catch (err) {
+      error.set(err instanceof Error ? err : new Error(String(err)));
+      loading.set(false);
+    }
+  };
+
+  // Initial fetch
+  refresh();
+
+  const read = (() => {
+    if (error()) throw error();
+    return data() as T;
+  }) as Resource<T>;
+
+  read.refresh = refresh;
+  read.loading = () => loading();
+  read.error = () => error();
+
+  return read;
+}
+
