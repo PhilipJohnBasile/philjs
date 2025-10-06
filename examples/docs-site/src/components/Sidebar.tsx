@@ -9,9 +9,7 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-// Global signal to persist scroll position across component re-renders
-const savedScrollPosition = signal(0);
-let isRestoring = false;
+const SIDEBAR_SCROLL_KEY = 'philjs-docs-sidebar-scroll';
 
 export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose }: SidebarProps) {
   // Track which sections are expanded
@@ -28,59 +26,41 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
   };
 
   const handleNavClick = (path: string) => {
-    // Scroll position is already saved by the scroll listener
     navigate(path);
     if (onClose) onClose();
   };
 
-  // Continuously save scroll position as user scrolls
+  // Save and restore scroll position using sessionStorage
   effect(() => {
     let cleanup: (() => void) | null = null;
 
-    // Wait for sidebar to be in DOM
-    setTimeout(() => {
+    // Small delay to ensure DOM is fully ready
+    const timer = setTimeout(() => {
       const sidebar = document.querySelector('.sidebar');
       if (!sidebar) return;
 
-      const handleScroll = () => {
-        // Don't save scroll position while we're restoring it
-        if (isRestoring) return;
+      // Restore scroll position from sessionStorage
+      const saved = sessionStorage.getItem(SIDEBAR_SCROLL_KEY);
+      if (saved) {
+        const scrollPos = parseInt(saved, 10);
+        sidebar.scrollTop = scrollPos;
+      }
 
-        const scrollValue = sidebar.scrollTop;
-        // Only save if scrollTop > 0 to avoid saving the reset position
-        if (scrollValue > 0) {
-          savedScrollPosition.set(scrollValue);
-        }
+      const handleScroll = () => {
+        sessionStorage.setItem(SIDEBAR_SCROLL_KEY, sidebar.scrollTop.toString());
       };
 
-      sidebar.addEventListener('scroll', handleScroll);
+      sidebar.addEventListener('scroll', handleScroll, { passive: true });
 
       cleanup = () => {
         sidebar.removeEventListener('scroll', handleScroll);
+        clearTimeout(timer);
       };
-    }, 0);
+    }, 10);
 
     return () => {
       if (cleanup) cleanup();
     };
-  });
-
-  // Restore sidebar scroll position after render (run once per mount)
-  effect(() => {
-    const scrollValue = savedScrollPosition();
-    if (scrollValue > 0) {
-      isRestoring = true;
-      setTimeout(() => {
-        const sidebar = document.querySelector('.sidebar');
-        if (sidebar) {
-          sidebar.scrollTop = scrollValue;
-          // Allow saving scroll position again after restoration is complete
-          setTimeout(() => {
-            isRestoring = false;
-          }, 100);
-        }
-      }, 300);
-    }
   });
 
   return (

@@ -59,6 +59,6 @@ export function Router({ routes, currentPath }: RouterProps) {
   });
 
   return (
-    <div id={containerId} style="min-height: 100vh;" />
+    <div id={containerId} />
   );
 }
