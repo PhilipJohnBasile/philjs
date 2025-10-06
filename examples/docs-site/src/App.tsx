@@ -171,7 +171,19 @@ function attachPlaygroundHandlers(id: string, originalCode: string) {
     try {
       const logs: string[] = [];
       const mockConsole = {
-        log: (...args: any[]) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+        log: (...args: any[]) => {
+          const formatted = args.map(a => {
+            if (typeof a === 'object' && a !== null) {
+              // Check if it's a signal-like object
+              if ('value' in a || 'get' in a) {
+                return `Signal(${a.value ?? a.get?.()})`;
+              }
+              return JSON.stringify(a, null, 2);
+            }
+            return String(a);
+          }).join(' ');
+          logs.push(formatted);
+        },
         error: (...args: any[]) => logs.push('ERROR: ' + args.join(' ')),
         warn: (...args: any[]) => logs.push('WARN: ' + args.join(' ')),
       };
@@ -304,6 +316,7 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
         return res.text();
       })
       .then(text => {
+        console.log('[App] Raw markdown snippet:', text.substring(0, 500));
         const html = renderMarkdown(text);
         renderedHTML.set(html);
       })

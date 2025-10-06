@@ -1,5 +1,6 @@
 import { signal, effect } from 'philjs-core';
 import { docsStructure } from '../lib/docs-structure';
+import { theme, toggleTheme } from '../lib/theme';
 
 interface SidebarProps {
   currentSection: string;
@@ -81,16 +82,75 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
         transition: transform 0.3s ease;
       `}
     >
-      {/* Logo */}
-      <div style="padding: 0 1.5rem; margin-bottom: 2rem;">
+      {/* Logo and Theme Toggle */}
+      <div style="padding: 0 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <button
+            onClick={() => handleNavClick('/')}
+            style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--color-text); background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0;"
+          >
+            <span style="font-size: 2rem;">⚡</span>
+            <span style="font-weight: 700; font-size: 1.5rem; background: linear-gradient(135deg, var(--color-brand), var(--color-brand-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              PhilJS
+            </span>
+          </button>
+          <button
+            onClick={toggleTheme}
+            aria-label={theme() === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme() === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
+            style="display: flex; align-items: center; padding: 0.5rem; background: none; border: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; transition: color 0.2s;"
+            onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-text)'}
+            onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+          >
+            {theme() === 'dark' ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            )}
+          </button>
+        </div>
+        {/* Search Button */}
         <button
-          onClick={() => handleNavClick('/')}
-          style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--color-text); background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0;"
+          onClick={() => {
+            const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true });
+            window.dispatchEvent(event);
+          }}
+          style="
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.875rem;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+          "
+          onMouseEnter={(e) => {
+            (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
+            (e.target as HTMLElement).style.background = 'var(--color-hover)';
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
+            (e.target as HTMLElement).style.background = 'var(--color-bg)';
+          }}
+          aria-label="Search documentation"
+          title="Search (⌘K)"
         >
-          <span style="font-size: 2rem;">⚡</span>
-          <span style="font-weight: 700; font-size: 1.5rem; background: linear-gradient(135deg, var(--color-brand), var(--color-brand-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            PhilJS
-          </span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="m21 21-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span style="flex: 1; text-align: left;">Search...</span>
+          <kbd style="padding: 0.125rem 0.375rem; font-size: 0.6875rem; background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: 3px;">⌘K</kbd>
         </button>
       </div>
 

@@ -18,20 +18,20 @@ Here's a simple PhilJS example you can edit and run right in your browser:
 const count = signal(0);
 
 const increment = () => {
-  count.set(count.value + 1);
+  count.set(count() + 1);
 };
 
-console.log('Initial count:', count.value);
+console.log('Initial count:', count());
 
 // Simulate clicking the button 3 times
 increment();
-console.log('After increment:', count.value);
+console.log('After increment:', count());
 
 increment();
-console.log('After second increment:', count.value);
+console.log('After second increment:', count());
 
 increment();
-console.log('After third increment:', count.value);
+console.log('After third increment:', count());
 ```
 
 Try modifying the code above! Change the initial value, add more increments, or experiment with the signal API.

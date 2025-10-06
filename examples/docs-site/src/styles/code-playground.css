@@ -54,57 +54,37 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
-  min-height: 300px;
+  min-height: 500px;
 }
 
 .code-playground-editor {
   position: relative;
   border-right: 1px solid var(--color-border);
-  background: #1e1e1e;
+  background: var(--color-bg-code);
+  display: flex;
+  flex-direction: column;
 }
 
 .code-editor-textarea {
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex: 1;
   width: 100%;
-  height: 100%;
   padding: 1.25rem;
   margin: 0;
   border: none;
   outline: none;
-  background: transparent;
-  color: transparent;
-  caret-color: #d4d4d4;
+  background: var(--color-bg-code);
+  color: var(--color-code-text);
+  caret-color: var(--color-brand);
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.7;
-  resize: none;
-  z-index: 2;
+  resize: vertical;
   white-space: pre;
   overflow-wrap: normal;
   overflow-x: auto;
-}
-
-.code-editor-highlight {
-  position: relative;
-  margin: 0;
-  padding: 1.25rem;
-  background: #1e1e1e;
-  pointer-events: none;
-  z-index: 1;
-  overflow-x: auto;
-  height: 100%;
-}
-
-.code-editor-highlight code {
-  background: transparent !important;
-  color: #d4d4d4;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.7;
-  display: block;
-  white-space: pre;
+  overflow-y: auto;
+  tab-size: 2;
+  min-height: 300px;
 }
 
 .code-playground-preview {
@@ -130,14 +110,15 @@
 
 .preview-output {
   margin: 0;
-  padding: 0;
+  padding: 1rem;
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.7;
-  color: var(--color-text);
-  background: transparent;
+  color: var(--color-code-text);
+  background: var(--color-bg-code);
   white-space: pre-wrap;
   word-break: break-word;
+  border-radius: 6px;
 }
 
 .preview-error {
