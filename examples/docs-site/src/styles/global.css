@@ -16,9 +16,9 @@
   /* Light mode */
   --color-bg: #ffffff;
   --color-bg-alt: #f5f6f7;
-  --color-bg-code: #1e1e1e;
-  --color-code-border: #2a2a2a;
-  --color-code-text: #d4d4d4;
+  --color-bg-code: #f8f9fa;
+  --color-code-border: #e0e0e0;
+  --color-code-text: #24292f;
   --color-border: #d0d0d0;
   --color-border-light: #e5e5e5;
   --color-text: #0f0f0f;
@@ -212,12 +212,12 @@ button {
 }
 
 .prose pre {
-  background: #1e1e1e !important;
+  background: var(--color-bg-code) !important;
   padding: 1.25rem;
   border-radius: 8px;
   overflow-x: auto;
   margin-bottom: 1.5rem;
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--color-code-border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -230,19 +230,19 @@ button {
 .prose pre code {
   background: transparent;
   padding: 0;
-  color: #d4d4d4;
+  color: var(--color-code-text);
   font-size: 0.875rem;
   line-height: 1.7;
 }
 
 .prose :not(pre) > code {
-  background: #2a2a2a;
-  color: #00c4e6;
+  background: var(--color-bg-code);
+  color: var(--color-accent);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-size: 0.875em;
   font-family: var(--font-mono);
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--color-code-border);
 }
 
 .prose blockquote {
