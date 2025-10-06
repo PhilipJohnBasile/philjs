@@ -1,19 +1,24 @@
 interface CalloutProps {
-  type?: 'info' | 'warning' | 'success' | 'error';
+  type?: 'info' | 'warning' | 'success' | 'error' | 'tip' | 'important' | 'security' | 'accessibility' | 'gotcha';
   title?: string;
   children: any;
 }
 
 export function Callout(props: CalloutProps) {
   const type = props.type || 'info';
-  
+
   const icons = {
     info: 'ℹ️',
     warning: '⚠️',
     success: '✅',
     error: '❌',
+    tip: '💡',
+    important: '🔔',
+    security: '🔒',
+    accessibility: '♿',
+    gotcha: '⚡',
   };
-  
+
   const colors = {
     info: {
       bg: 'rgba(59, 130, 246, 0.1)',
@@ -34,6 +39,31 @@ export function Callout(props: CalloutProps) {
       bg: 'rgba(239, 68, 68, 0.1)',
       border: 'var(--color-error)',
       text: 'var(--color-error)',
+    },
+    tip: {
+      bg: 'rgba(139, 92, 246, 0.1)',
+      border: '#8b5cf6',
+      text: '#8b5cf6',
+    },
+    important: {
+      bg: 'rgba(236, 72, 153, 0.1)',
+      border: '#ec4899',
+      text: '#ec4899',
+    },
+    security: {
+      bg: 'rgba(239, 68, 68, 0.1)',
+      border: '#dc2626',
+      text: '#dc2626',
+    },
+    accessibility: {
+      bg: 'rgba(34, 197, 94, 0.1)',
+      border: '#22c55e',
+      text: '#22c55e',
+    },
+    gotcha: {
+      bg: 'rgba(251, 191, 36, 0.1)',
+      border: '#fbbf24',
+      text: '#fbbf24',
     },
   };
   

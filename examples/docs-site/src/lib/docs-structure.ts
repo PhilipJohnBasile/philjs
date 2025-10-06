@@ -212,6 +212,25 @@ export const docsStructure: DocSection[] = [
     ],
   },
   {
+    title: 'Recipes',
+    path: 'recipes',
+    items: [
+      { title: 'Overview', file: 'overview' },
+      { title: 'Fetch Data on Mount', file: 'fetch-data-on-mount' },
+      { title: 'Debounce Search Input', file: 'debounce-search-input' },
+      { title: 'Form with Validation', file: 'form-with-validation' },
+      { title: 'Dark Mode Toggle', file: 'dark-mode-toggle' },
+      { title: 'Infinite Scroll', file: 'infinite-scroll' },
+    ],
+  },
+  {
+    title: 'Examples',
+    path: 'examples',
+    items: [
+      { title: 'Overview', file: 'overview' },
+    ],
+  },
+  {
     title: 'Deployment',
     path: 'deployment',
     items: [
@@ -261,6 +280,20 @@ export const docsStructure: DocSection[] = [
       { title: 'General FAQ', file: 'faq-general' },
       { title: 'Performance FAQ', file: 'faq-performance' },
       { title: 'TypeScript FAQ', file: 'faq-typescript' },
+    ],
+  },
+  {
+    title: 'Community',
+    path: 'community',
+    items: [
+      { title: 'Overview', file: 'overview' },
+    ],
+  },
+  {
+    title: 'Changelog',
+    path: 'changelog',
+    items: [
+      { title: 'Release Notes', file: 'overview' },
     ],
   },
 ];

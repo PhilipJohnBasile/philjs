@@ -1,5 +1,7 @@
 import { signal } from "philjs-core";
 import { theme, toggleTheme } from "../lib/theme";
+import { VersionSwitcher } from "./VersionSwitcher";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 
 export function Header({
   navigate,
@@ -77,6 +79,10 @@ export function Header({
             </svg>
             <span style={styles.searchShortcut}>⌘K</span>
           </button>
+
+          <LocaleSwitcher />
+
+          <VersionSwitcher />
 
           <a
             href="https://github.com/philjs/philjs"

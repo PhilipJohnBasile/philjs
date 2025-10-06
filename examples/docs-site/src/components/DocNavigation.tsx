@@ -13,6 +13,19 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
   const hasPrev = !!prev;
   const hasNext = !!next;
 
+  // Prefetch function - creates link element to trigger browser prefetch
+  const prefetchPage = (path: string) => {
+    // Check if already prefetched
+    const existingLink = document.querySelector(`link[href="${path}"]`);
+    if (existingLink) return;
+
+    // Create prefetch link
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = path;
+    document.head.appendChild(link);
+  };
+
   return (
     <nav
       style="
@@ -39,9 +52,11 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
           pointer-events: ${hasPrev ? 'auto' : 'none'};
         `}
         onMouseEnter={(e) => {
-          if (hasPrev) {
+          if (hasPrev && prev) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
             (e.target as HTMLElement).style.transform = 'translateX(-4px)';
+            // Prefetch previous page on hover
+            prefetchPage(`/docs/${prev.path}/${prev.file}`);
           }
         }}
         onMouseLeave={(e) => {
@@ -79,9 +94,11 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
           pointer-events: ${hasNext ? 'auto' : 'none'};
         `}
         onMouseEnter={(e) => {
-          if (hasNext) {
+          if (hasNext && next) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
             (e.target as HTMLElement).style.transform = 'translateX(4px)';
+            // Prefetch next page on hover
+            prefetchPage(`/docs/${next.path}/${next.file}`);
           }
         }}
         onMouseLeave={(e) => {
