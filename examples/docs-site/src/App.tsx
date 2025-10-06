@@ -355,6 +355,25 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
 
   return (
     <div class="docs-layout" style="display: flex; min-height: 100vh;">
+      {/* Skip to content link for accessibility */}
+      <a
+        href="#main-content"
+        style="
+          position: absolute;
+          left: -9999px;
+          z-index: 999;
+          padding: 1rem;
+          background: var(--color-brand);
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+        "
+        onFocus={(e) => (e.target as HTMLElement).style.left = '1rem'}
+        onBlur={(e) => (e.target as HTMLElement).style.left = '-9999px'}
+      >
+        Skip to main content
+      </a>
+
       {/* Sidebar */}
       <Sidebar
         currentSection={section}
@@ -364,7 +383,7 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
       />
 
       {/* Main Content */}
-      <main class="docs-main" style="flex: 1; padding: 2rem; max-width: 900px; margin-left: 280px; margin-right: 240px;">
+      <main id="main-content" class="docs-main" style="flex: 1; padding: 2rem; max-width: 900px; margin-left: 280px; margin-right: 240px;" tabindex="-1">
         <Breadcrumbs
           section={section}
           file={file}
@@ -373,6 +392,63 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
         <article class="prose" style="max-width: 100%;">
           <RawHTML htmlSignal={renderedHTML} id="markdown-content" />
         </article>
+
+        {/* Page Footer */}
+        <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
+          {/* Edit this page */}
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+            <a
+              href={`https://github.com/philjs/philjs/edit/main/docs/${section}/${file}.md`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="display: flex; align-items: center; gap: 0.5rem; color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none; transition: color 0.2s;"
+              onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
+              onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Edit this page on GitHub
+            </a>
+            <span style="color: var(--color-text-tertiary); font-size: 0.75rem;">
+              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+            </span>
+          </div>
+
+          {/* Feedback */}
+          <div style="background: var(--color-bg-alt); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--color-text);">Was this page helpful?</div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button
+                onClick={() => {
+                  alert('Thanks for your feedback!');
+                  console.log('Positive feedback for:', section, file);
+                }}
+                style="padding: 0.5rem 1rem; background: var(--color-success); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem; transition: opacity 0.2s;"
+                onMouseEnter={(e) => (e.target as HTMLElement).style.opacity = '0.9'}
+                onMouseLeave={(e) => (e.target as HTMLElement).style.opacity = '1'}
+              >
+                👍 Yes
+              </button>
+              <button
+                onClick={() => {
+                  const feedback = prompt('What could we improve?');
+                  if (feedback) {
+                    console.log('Negative feedback for:', section, file, feedback);
+                    alert('Thank you! Your feedback helps us improve.');
+                  }
+                }}
+                style="padding: 0.5rem 1rem; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;"
+                onMouseEnter={(e) => { (e.target as HTMLElement).style.background = 'var(--color-hover)'; }}
+                onMouseLeave={(e) => { (e.target as HTMLElement).style.background = 'var(--color-bg)'; }}
+              >
+                👎 No
+              </button>
+            </div>
+          </div>
+        </div>
+
         <DocNavigation
           section={section}
           file={file}

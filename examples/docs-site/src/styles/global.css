@@ -61,6 +61,44 @@
   --color-hover: rgba(175, 75, 204, 0.15);
 }
 
+[data-theme="high-contrast"] {
+  /* High contrast mode for accessibility */
+  --color-brand: #ff00ff;
+  --color-brand-dark: #cc00cc;
+  --color-brand-light: #ff66ff;
+  --color-accent: #00ffff;
+
+  --color-bg: #000000;
+  --color-bg-alt: #1a1a1a;
+  --color-bg-code: #0a0a0a;
+  --color-code-border: #ffffff;
+  --color-code-text: #ffffff;
+  --color-border: #ffffff;
+  --color-border-light: #cccccc;
+  --color-text: #ffffff;
+  --color-text-secondary: #ffff00;
+  --color-text-tertiary: #00ffff;
+
+  /* Semantic colors - highly visible */
+  --color-success: #00ff00;
+  --color-warning: #ffff00;
+  --color-error: #ff0000;
+  --color-info: #00ffff;
+
+  --color-hover: rgba(255, 255, 255, 0.2);
+}
+
+/* Ensure high contrast meets WCAG AAA */
+[data-theme="high-contrast"] a {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+[data-theme="high-contrast"] *:focus-visible {
+  outline: 3px solid #ffff00;
+  outline-offset: 3px;
+}
+
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -406,5 +444,63 @@ button {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* RTL (Right-to-Left) Support for Arabic, Hebrew, etc. */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .prose {
+  text-align: right;
+}
+
+[dir="rtl"] .prose ul,
+[dir="rtl"] .prose ol {
+  padding-right: 1.75rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .prose blockquote {
+  border-left: none;
+  border-right: 4px solid var(--color-brand);
+  padding-left: 0;
+  padding-right: 1.25rem;
+}
+
+/* Flip layout for RTL */
+[dir="rtl"] .docs-layout {
+  direction: rtl;
+}
+
+[dir="rtl"] .sidebar {
+  text-align: right;
+}
+
+/* Flip arrows and icons for RTL */
+[dir="rtl"] .prev-arrow::before {
+  content: "→";
+}
+
+[dir="rtl"] .next-arrow::before {
+  content: "←";
+}
+
+/* Flip transforms for RTL */
+[dir="rtl"] *[style*="translateX"] {
+  transform: scaleX(-1);
+}
+
+/* RTL-specific navigation adjustments */
+@media (min-width: 1280px) {
+  [dir="rtl"] .docs-layout {
+    grid-template-columns: 240px 1fr 280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  [dir="rtl"] .docs-layout {
+    grid-template-columns: 280px 1fr 320px;
   }
 }

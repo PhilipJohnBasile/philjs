@@ -1,3 +1,6 @@
+import { PackageManagerTabs } from '../components/PackageManagerTabs';
+import { LanguageTabs } from '../components/LanguageTabs';
+
 export function createDocContent(path: string, navigate: (path: string) => void, styles: Record<string, React.CSSProperties>) {
   const docs: Record<string, { title: string; content: JSX.Element }> = {
     // GETTING STARTED
@@ -33,7 +36,19 @@ export function createDocContent(path: string, navigate: (path: string) => void,
           </div>
 
           <h2>Quick Example</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "philjs-core";
+          <LanguageTabs
+            ts={`import { signal, Signal } from "philjs-core";
+
+export function Counter() {
+  const count: Signal<number> = signal(0);
+
+  return (
+    <button onClick={() => count.set(count() + 1)}>
+      Count: {count()}
+    </button>
+  );
+}`}
+            js={`import { signal } from "philjs-core";
 
 export function Counter() {
   const count = signal(0);
@@ -43,7 +58,8 @@ export function Counter() {
       Count: {count()}
     </button>
   );
-}`}</code></pre>
+}`}
+          />
 
           <h2>Next Steps</h2>
           <ul>
@@ -64,14 +80,16 @@ export function Counter() {
 
           <h2>Create a New Project</h2>
           <p>The fastest way to start is with our CLI:</p>
-          <pre style={styles.codeBlock || {}}><code>{`npm create philjs@latest my-app
-cd my-app
-npm install
-npm run dev`}</code></pre>
+          <PackageManagerTabs npm="npm create philjs@latest my-app" />
+          <p>Then navigate to your project and install dependencies:</p>
+          <pre style={styles.codeBlock || {}}><code>{`cd my-app`}</code></pre>
+          <PackageManagerTabs npm="npm install" />
+          <p>Start the development server:</p>
+          <PackageManagerTabs npm="npm run dev" />
 
           <h2>Manual Installation</h2>
           <p>Or install PhilJS packages manually:</p>
-          <pre style={styles.codeBlock || {}}><code>{`npm install philjs-core philjs-router philjs-ssr`}</code></pre>
+          <PackageManagerTabs npm="npm install philjs-core philjs-router philjs-ssr" />
 
           <h2>What's Included</h2>
           <ul>
@@ -104,7 +122,24 @@ npm run dev`}</code></pre>
           <p>Build your first PhilJS app in 5 minutes.</p>
 
           <h2>1. Create a Component</h2>
-          <pre style={styles.codeBlock || {}}><code>{`// src/Counter.tsx
+          <LanguageTabs
+            filename="src/Counter.tsx"
+            ts={`// src/Counter.tsx
+import { signal, Signal } from "philjs-core";
+
+export function Counter() {
+  const count: Signal<number> = signal(0);
+
+  return (
+    <div>
+      <h1>Count: {count()}</h1>
+      <button onClick={() => count.set(count() + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}`}
+            js={`// src/Counter.jsx
 import { signal } from "philjs-core";
 
 export function Counter() {
@@ -118,7 +153,8 @@ export function Counter() {
       </button>
     </div>
   );
-}`}</code></pre>
+}`}
+          />
 
           <h2>2. Render to the DOM</h2>
           <pre style={styles.codeBlock || {}}><code>{`// src/main.tsx
@@ -311,11 +347,18 @@ function Button({ label, onClick, variant = "primary" }: ButtonProps) {
           <p>Signals are the foundation of PhilJS's fine-grained reactivity system.</p>
 
           <h2>Creating Signals</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "philjs-core";
+          <LanguageTabs
+            ts={`import { signal, Signal } from "philjs-core";
+
+const count: Signal<number> = signal(0);
+const name: Signal<string> = signal("Alice");
+const user: Signal<{ id: number; name: string }> = signal({ id: 1, name: "Bob" });`}
+            js={`import { signal } from "philjs-core";
 
 const count = signal(0);
 const name = signal("Alice");
-const user = signal({ id: 1, name: "Bob" });`}</code></pre>
+const user = signal({ id: 1, name: "Bob" });`}
+          />
 
           <h2>Reading Signals</h2>
           <pre style={styles.codeBlock || {}}><code>{`// Call the signal to read its value
@@ -331,12 +374,20 @@ name.set("Charlie");
 count.set(count() + 1);`}</code></pre>
 
           <h2>Computed Signals</h2>
-          <pre style={styles.codeBlock || {}}><code>{`const count = signal(5);
+          <LanguageTabs
+            ts={`const count: Signal<number> = signal(5);
+const doubled = (): number => count() * 2;
+
+console.log(doubled()); // 10
+count.set(10);
+console.log(doubled()); // 20`}
+            js={`const count = signal(5);
 const doubled = () => count() * 2;
 
 console.log(doubled()); // 10
 count.set(10);
-console.log(doubled()); // 20`}</code></pre>
+console.log(doubled()); // 20`}
+          />
 
           <h2>Fine-Grained Updates</h2>
           <p>PhilJS only updates the DOM elements that depend on changed signals:</p>
@@ -360,7 +411,17 @@ const lastName = signal("Smith");
           <p>Effects run side effects when signals change. Perfect for logging, API calls, and subscriptions.</p>
 
           <h2>Basic Effects</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, effect } from "philjs-core";
+          <LanguageTabs
+            ts={`import { signal, effect, Signal } from "philjs-core";
+
+const count: Signal<number> = signal(0);
+
+effect(() => {
+  console.log("Count changed:", count());
+});
+
+count.set(1); // Logs: "Count changed: 1"`}
+            js={`import { signal, effect } from "philjs-core";
 
 const count = signal(0);
 
@@ -368,7 +429,8 @@ effect(() => {
   console.log("Count changed:", count());
 });
 
-count.set(1); // Logs: "Count changed: 1"`}</code></pre>
+count.set(1); // Logs: "Count changed: 1"`}
+          />
 
           <h2>Cleanup</h2>
           <p>Effects can return a cleanup function:</p>
@@ -2188,13 +2250,45 @@ preserveState({
           <p>PhilJS provides a powerful forms system with validation, error handling, and optimistic updates.</p>
 
           <h2>Basic Form</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "philjs-core";
+          <LanguageTabs
+            ts={`import { signal, Signal } from "philjs-core";
+
+export function ContactForm() {
+  const name: Signal<string> = signal("");
+  const email: Signal<string> = signal("");
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    console.log({ name: name(), email: email() });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={name()}
+        onInput={(e: InputEvent) => name.set((e.target as HTMLInputElement).value)}
+        placeholder="Name"
+      />
+
+      <input
+        type="email"
+        value={email()}
+        onInput={(e: InputEvent) => email.set((e.target as HTMLInputElement).value)}
+        placeholder="Email"
+      />
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}`}
+            js={`import { signal } from "philjs-core";
 
 export function ContactForm() {
   const name = signal("");
   const email = signal("");
 
-  const handleSubmit = (e: Event) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log({ name: name(), email: email() });
   };
@@ -2218,7 +2312,8 @@ export function ContactForm() {
       <button type="submit">Submit</button>
     </form>
   );
-}`}</code></pre>
+}`}
+          />
 
           <h2>Form Validation</h2>
           <pre style={styles.codeBlock || {}}><code>{`import { signal, memo } from "philjs-core";

@@ -1,0 +1,198 @@
+# PhilJS Documentation
+
+> PhilJS: A modern JavaScript framework with fine-grained reactivity, zero hydration, and intelligent features.
+
+## Overview
+
+PhilJS is a web framework that combines:
+- Fine-grained reactivity with signals (like Solid.js)
+- Zero-hydration resumability (like Qwik)
+- Islands architecture for minimal JavaScript
+- Built-in cost tracking and usage analytics
+- TypeScript-first design
+
+## Core Concepts
+
+### Reactivity
+- `signal(value)` - Create reactive state
+- `memo(() => expr)` - Computed values
+- `effect(() => {})` - Side effects
+- Reading: `count()` (function call, not `.value`)
+- Writing: `count.set(newValue)`
+
+### Components
+- JSX-based component syntax
+- Props are typed with TypeScript
+- No virtual DOM - direct DOM updates
+- Automatic dependency tracking
+
+### Server Functions
+```typescript
+export const getData = serverFn(async (id: string) => {
+  // Runs only on server
+  return await db.query(id);
+});
+```
+
+### Routing
+- File-based routing in `src/routes/`
+- `[param]` for dynamic segments
+- Layouts and nested routes
+- Data loading per route
+
+## Documentation Structure
+
+### Getting Started
+- /docs/getting-started/introduction - Framework overview
+- /docs/getting-started/installation - Setup guide
+- /docs/getting-started/quick-start - First app in 5 minutes
+- /docs/getting-started/your-first-component - Component basics
+- /docs/getting-started/thinking-in-philjs - Mental models
+
+### Learn
+- /docs/learn/components - Component patterns
+- /docs/learn/signals - Reactive state
+- /docs/learn/effects - Side effects
+- /docs/learn/forms - Form handling
+- /docs/learn/styling - CSS and styling approaches
+
+### Routing
+- /docs/routing/basics - Routing fundamentals
+- /docs/routing/dynamic-routes - URL parameters
+- /docs/routing/data-loading - Loading data per route
+- /docs/routing/layouts - Shared layouts
+
+### Data Fetching
+- /docs/data-fetching/queries - Fetching data
+- /docs/data-fetching/mutations - Updating data
+- /docs/data-fetching/caching - Cache strategies
+- /docs/data-fetching/server-functions - Server-side code
+
+### Advanced
+- /docs/advanced/ssr - Server-side rendering
+- /docs/advanced/islands - Islands architecture
+- /docs/advanced/resumability - Zero-hydration explained
+- /docs/advanced/ecosystem - Third-party integrations
+
+### Deployment
+- /docs/deployment/overview - Deployment strategies
+- /docs/deployment/vercel - Deploy to Vercel
+- /docs/deployment/netlify - Deploy to Netlify
+- /docs/deployment/docker - Containerized deployment
+
+### API Reference
+- /docs/api-reference/core - Core APIs
+- /docs/api-reference/reactivity - Signals, memo, effect
+- /docs/api-reference/router - Routing APIs
+
+## Key Differences from Other Frameworks
+
+### vs React
+- Uses signals instead of hooks
+- No virtual DOM or reconciliation
+- Direct DOM updates (faster)
+- Zero hydration cost
+- Smaller bundle sizes
+
+### vs Vue
+- TypeScript-first (not optional)
+- JSX instead of templates
+- More explicit reactivity
+- Resumability instead of hydration
+
+### vs Svelte
+- Runtime reactivity (not compiled away)
+- Zero-hydration architecture
+- Islands support built-in
+
+## Common Patterns
+
+### Counter Example
+```typescript
+function Counter() {
+  const count = signal(0);
+
+  return (
+    <div>
+      <p>Count: {count()}</p>
+      <button onClick={() => count.set(count() + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+```
+
+### Data Fetching
+```typescript
+const user = createQuery(() =>
+  fetch(`/api/users/${userId()}`).then(r => r.json())
+);
+
+if (user.loading) return <div>Loading...</div>;
+return <div>{user.data.name}</div>;
+```
+
+### Forms
+```typescript
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  await submitForm(formData);
+};
+```
+
+## Safety and Security
+
+- Always sanitize user input
+- Use server functions for sensitive operations
+- Environment variables: `PUBLIC_*` for client, others server-only
+- CSRF protection built-in for forms
+- CSP headers recommended
+
+## Performance Best Practices
+
+1. Use static generation where possible
+2. Lazy load routes and components
+3. Implement proper caching strategies
+4. Minimize JavaScript in islands
+5. Use memoization for expensive computations
+6. Profile with DevTools
+
+## Common Pitfalls
+
+1. **Signal reading**: Use `count()` not `count.value`
+2. **Effect dependencies**: Automatic tracking, no dependency arrays
+3. **Server vs client**: Mark server functions with `serverFn`
+4. **Hydration**: Not needed! That's the point of resumability
+5. **State updates**: Must use `.set()`, not direct assignment
+
+## Community Resources
+
+- GitHub: https://github.com/philjs/philjs
+- Discord: https://discord.gg/philjs
+- Twitter: @philjs
+- Stack Overflow: Tag with `philjs`
+
+## Version Information
+
+Current stable version: 1.0.0
+Documentation last updated: 2025
+License: MIT
+
+## Notes for AI Assistants
+
+1. PhilJS uses signals with **function call syntax** `count()` to read values
+2. Always use `.set()` to update signal values
+3. No virtual DOM - updates are direct and fine-grained
+4. "Resumability" means zero hydration, not lazy hydration
+5. Server functions run only on server, never bundled to client
+6. Islands are partial hydration points - most HTML is static
+7. File-based routing matches Next.js patterns
+8. TypeScript is the recommended and primary way to use PhilJS
+
+## Search and Discovery
+
+Use the search bar (Press `/` or `⌘K`) to find any documentation.
+All pages include "Edit this page" links to contribute improvements.
+Examples are interactive and editable in the browser.
