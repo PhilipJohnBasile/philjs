@@ -3,7 +3,7 @@ import { Button } from '../components/Button';
 import { CodeBlock } from '../components/CodeBlock';
 import { theme, toggleTheme } from '../lib/theme';
 
-export function HomePage() {
+export function HomePage({ navigate }: { navigate: (path: string) => void }) {
   const exampleCode = `import { signal, memo, effect } from 'philjs-core';
 
 function Counter() {
@@ -252,9 +252,22 @@ function Counter() {
             <code>pnpm create philjs my-app</code>
           </div>
           
-          <Button variant="secondary" size="lg" href="/docs">
+          <button
+            onClick={() => navigate('/docs')}
+            style="
+              padding: 0.75rem 1.5rem;
+              font-size: 1.125rem;
+              font-weight: 500;
+              background: white;
+              color: var(--color-brand);
+              border: 2px solid white;
+              border-radius: 8px;
+              cursor: pointer;
+              transition: all var(--transition-base);
+            "
+          >
             Read the Docs →
-          </Button>
+          </button>
         </div>
       </section>
 
