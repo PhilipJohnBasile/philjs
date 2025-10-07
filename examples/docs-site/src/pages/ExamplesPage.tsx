@@ -1,5 +1,6 @@
 import { signal, memo } from 'philjs-core';
 import { CodeBlock } from '../components/CodeBlock';
+import { ExampleButton } from '../components/ExampleButton';
 import { theme, toggleTheme } from '../lib/theme';
 
 // Define examples as a const outside the component for reusability
@@ -315,91 +316,31 @@ export function ExamplesPage({ navigate }: { navigate: (path: string) => void })
             margin-bottom: 3rem;
             flex-wrap: wrap;
           ">
-            <button
-              onClick={() => {
-                console.log('Counter clicked!');
-                activeExample.set('counter');
-              }}
-              style={`
-                padding: 0.75rem 1.5rem;
-                background: ${activeExample() === 'counter' ? 'var(--color-brand)' : 'var(--color-bg-alt)'};
-                color: ${activeExample() === 'counter' ? 'white' : 'var(--color-text)'};
-                border: 1px solid ${activeExample() === 'counter' ? 'var(--color-brand)' : 'var(--color-border)'};
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-base);
-              `}
-            >
-              Counter
-            </button>
-            <button
-              onClick={() => {
-                console.log('Todo clicked!');
-                console.log('Before set:', activeExample());
-                console.log('Calling activeExample.set with:', 'todo');
-                activeExample.set('todo');
-                console.log('After set:', activeExample());
-                console.log('Using peek:', activeExample.peek());
-              }}
-              style={`
-                padding: 0.75rem 1.5rem;
-                background: ${activeExample() === 'todo' ? 'var(--color-brand)' : 'var(--color-bg-alt)'};
-                color: ${activeExample() === 'todo' ? 'white' : 'var(--color-text)'};
-                border: 1px solid ${activeExample() === 'todo' ? 'var(--color-brand)' : 'var(--color-border)'};
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-base);
-              `}
-            >
-              Todo List
-            </button>
-            <button
+            <ExampleButton
+              label="Counter"
+              isActive={() => activeExample() === 'counter'}
+              onClick={() => activeExample.set('counter')}
+            />
+            <ExampleButton
+              label="Todo List"
+              isActive={() => activeExample() === 'todo'}
+              onClick={() => activeExample.set('todo')}
+            />
+            <ExampleButton
+              label="Data Fetching"
+              isActive={() => activeExample() === 'fetch'}
               onClick={() => activeExample.set('fetch')}
-              style={`
-                padding: 0.75rem 1.5rem;
-                background: ${activeExample() === 'fetch' ? 'var(--color-brand)' : 'var(--color-bg-alt)'};
-                color: ${activeExample() === 'fetch' ? 'white' : 'var(--color-text)'};
-                border: 1px solid ${activeExample() === 'fetch' ? 'var(--color-brand)' : 'var(--color-border)'};
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-base);
-              `}
-            >
-              Data Fetching
-            </button>
-            <button
+            />
+            <ExampleButton
+              label="Forms"
+              isActive={() => activeExample() === 'form'}
               onClick={() => activeExample.set('form')}
-              style={`
-                padding: 0.75rem 1.5rem;
-                background: ${activeExample() === 'form' ? 'var(--color-brand)' : 'var(--color-bg-alt)'};
-                color: ${activeExample() === 'form' ? 'white' : 'var(--color-text)'};
-                border: 1px solid ${activeExample() === 'form' ? 'var(--color-brand)' : 'var(--color-border)'};
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-base);
-              `}
-            >
-              Forms
-            </button>
-            <button
+            />
+            <ExampleButton
+              label="Animations"
+              isActive={() => activeExample() === 'animation'}
               onClick={() => activeExample.set('animation')}
-              style={`
-                padding: 0.75rem 1.5rem;
-                background: ${activeExample() === 'animation' ? 'var(--color-brand)' : 'var(--color-bg-alt)'};
-                color: ${activeExample() === 'animation' ? 'white' : 'var(--color-text)'};
-                border: 1px solid ${activeExample() === 'animation' ? 'var(--color-brand)' : 'var(--color-border)'};
-                border-radius: 8px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-base);
-              `}
-            >
-              Animations
-            </button>
+            />
           </div>
 
           {/* Example Content - using computed functions */}
@@ -415,13 +356,13 @@ export function ExamplesPage({ navigate }: { navigate: (path: string) => void })
                 <div style="padding: 0.75rem 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px 8px 0 0; font-weight: 600; color: #10b981;">
                   ✅ PhilJS (Simple)
                 </div>
-                <CodeBlock code={currentCode()} language="tsx" />
+                <CodeBlock code={currentCode} language="tsx" />
               </div>
               <div>
                 <div style="padding: 0.75rem 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px 8px 0 0; font-weight: 600; color: #ef4444;">
                   ❌ React (Complex)
                 </div>
-                <CodeBlock code={currentComparison()} language="tsx" />
+                <CodeBlock code={currentComparison} language="tsx" />
               </div>
             </div>
 

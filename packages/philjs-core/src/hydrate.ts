@@ -96,13 +96,59 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
 }
 
 /**
- * Attach event handlers to a DOM element.
+ * Attach event handlers and reactive attributes to a DOM element.
  */
 function attachEventHandlers(element: Element, props: Record<string, any>): void {
   for (const [key, value] of Object.entries(props)) {
+    if (key === "children") continue;
+
     if (key.startsWith("on") && typeof value === "function") {
       const eventName = key.slice(2).toLowerCase();
       element.addEventListener(eventName, value);
+    } else if (key === "style") {
+      // Handle reactive style
+      if (typeof value === "function") {
+        const update = () => {
+          const styleValue = value();
+          if (typeof styleValue === "object") {
+            Object.assign((element as HTMLElement).style, styleValue);
+          } else if (typeof styleValue === "string") {
+            (element as HTMLElement).setAttribute("style", styleValue);
+          }
+        };
+        update();
+        if (typeof value.subscribe === "function") {
+          value.subscribe(update);
+        }
+      }
+    } else if (key === "class" || key === "className") {
+      // Handle reactive class
+      if (typeof value === "function") {
+        const update = () => {
+          const className = value();
+          element.className = className || "";
+        };
+        update();
+        if (typeof value.subscribe === "function") {
+          value.subscribe(update);
+        }
+      }
+    } else if (typeof value === "function") {
+      // Handle any other reactive attribute
+      const update = () => {
+        const attrValue = value();
+        if (attrValue == null || attrValue === false) {
+          element.removeAttribute(key);
+        } else if (attrValue === true) {
+          element.setAttribute(key, "");
+        } else {
+          element.setAttribute(key, String(attrValue));
+        }
+      };
+      update();
+      if (typeof value.subscribe === "function") {
+        value.subscribe(update);
+      }
     }
   }
 }
@@ -200,11 +246,69 @@ function createDOMElement(vnode: VNode): Node | null {
         const eventName = key.slice(2).toLowerCase();
         element.addEventListener(eventName, value);
       } else if (key === "className") {
-        element.className = value;
+        if (typeof value === "function") {
+          // Reactive className
+          const update = () => {
+            element.className = value() || "";
+          };
+          update();
+          if (typeof value.subscribe === "function") {
+            value.subscribe(update);
+          }
+        } else {
+          element.className = value;
+        }
+      } else if (key === "class") {
+        if (typeof value === "function") {
+          // Reactive class
+          const update = () => {
+            element.className = value() || "";
+          };
+          update();
+          if (typeof value.subscribe === "function") {
+            value.subscribe(update);
+          }
+        } else {
+          element.className = value;
+        }
       } else if (key === "htmlFor") {
         (element as any).htmlFor = value;
-      } else if (key === "style" && typeof value === "object") {
-        Object.assign(element.style, value);
+      } else if (key === "style") {
+        if (typeof value === "function") {
+          // Reactive style
+          const update = () => {
+            const styleValue = value();
+            if (typeof styleValue === "object") {
+              Object.assign(element.style, styleValue);
+            } else if (typeof styleValue === "string") {
+              element.setAttribute("style", styleValue);
+            }
+          };
+          update();
+          if (typeof value.subscribe === "function") {
+            value.subscribe(update);
+          }
+        } else if (typeof value === "object") {
+          Object.assign(element.style, value);
+        } else if (typeof value === "string") {
+          element.setAttribute("style", value);
+        }
+      } else if (typeof value === "function") {
+        // Reactive attribute
+        const update = () => {
+          const attrValue = value();
+          if (attrValue == null || attrValue === false) {
+            element.removeAttribute(key);
+          } else if (attrValue === true) {
+            element.setAttribute(key, "");
+          } else {
+            element.setAttribute(key, String(attrValue));
+          }
+        };
+        update();
+        if (typeof value.subscribe === "function") {
+          value.subscribe(update);
+        }
       } else if (typeof value === "boolean") {
         if (value) element.setAttribute(key, "");
       } else if (value != null && !key.startsWith("__")) {
