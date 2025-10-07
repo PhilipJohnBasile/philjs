@@ -603,4 +603,175 @@ effect(() => {
 
 ---
 
+## Reactive Attributes
+
+PhilJS supports reactive attributes, styles, and classes. You can pass signals or memos directly to element attributes, and they will automatically update the DOM when their values change.
+
+### Reactive Styles
+
+#### Using Reactive Style Objects
+
+```typescript
+import { signal, memo } from 'philjs-core';
+
+function Button() {
+  const isActive = signal(false);
+
+  const buttonStyle = memo(() => ({
+    background: isActive() ? '#9d3eb8' : '#f5f6f7',
+    color: isActive() ? 'white' : '#333',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '8px'
+  }));
+
+  return (
+    <button
+      style={buttonStyle}
+      onClick={() => isActive.set(!isActive())}
+    >
+      Toggle
+    </button>
+  );
+}
+```
+
+#### Using Reactive Style Strings
+
+```typescript
+const bgColor = signal('red');
+
+const buttonStyle = memo(() =>
+  `background: ${bgColor()}; padding: 10px;`
+);
+
+<button style={buttonStyle}>Click Me</button>
+```
+
+### Reactive Classes
+
+```typescript
+import { signal, memo } from 'philjs-core';
+
+function TodoItem({ completed }: { completed: boolean }) {
+  const isCompleted = signal(completed);
+
+  const className = memo(() =>
+    isCompleted() ? 'todo-item completed' : 'todo-item'
+  );
+
+  return (
+    <div class={className}>
+      <input
+        type="checkbox"
+        checked={isCompleted()}
+        onChange={() => isCompleted.set(!isCompleted())}
+      />
+      Todo text
+    </div>
+  );
+}
+```
+
+### Reactive Attributes
+
+Any attribute can be reactive by passing a signal or memo:
+
+```typescript
+const isDisabled = signal(false);
+const placeholder = signal('Enter your name');
+const maxLength = signal(50);
+
+<input
+  disabled={isDisabled}
+  placeholder={placeholder}
+  maxLength={maxLength}
+/>
+```
+
+### Examples
+
+#### Dynamic Theme Switching
+
+```typescript
+const theme = signal<'light' | 'dark'>('light');
+
+const themeStyles = memo(() => ({
+  background: theme() === 'dark' ? '#1a1a1a' : '#ffffff',
+  color: theme() === 'dark' ? '#ffffff' : '#000000',
+  minHeight: '100vh',
+  transition: 'all 0.3s ease'
+}));
+
+function App() {
+  return (
+    <div style={themeStyles}>
+      <button onClick={() => theme.set(theme() === 'light' ? 'dark' : 'light')}>
+        Toggle Theme
+      </button>
+      <h1>Hello, {theme()} mode!</h1>
+    </div>
+  );
+}
+```
+
+#### Conditional Styling
+
+```typescript
+function ExampleButton({ label, isActive }: { label: string; isActive: () => boolean }) {
+  const backgroundColor = memo(() =>
+    isActive() ? 'var(--color-brand)' : 'var(--color-bg-alt)'
+  );
+
+  const textColor = memo(() =>
+    isActive() ? 'white' : 'var(--color-text)'
+  );
+
+  const buttonStyle = memo(() => ({
+    background: backgroundColor(),
+    color: textColor(),
+    padding: '0.75rem 1.5rem',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  }));
+
+  return <button style={buttonStyle}>{label}</button>;
+}
+```
+
+#### Progressive Form Validation
+
+```typescript
+const email = signal('');
+const isValid = memo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email()));
+
+const inputClass = memo(() =>
+  email() === '' ? 'input' :
+  isValid() ? 'input valid' : 'input invalid'
+);
+
+const borderColor = memo(() =>
+  email() === '' ? '#ccc' :
+  isValid() ? 'green' : 'red'
+);
+
+<input
+  type="email"
+  value={email()}
+  onInput={(e) => email.set(e.target.value)}
+  class={inputClass}
+  style={memo(() => ({ borderColor: borderColor() }))}
+/>
+```
+
+### Notes
+
+- All attribute values that are functions with a `subscribe` method will be treated as reactive
+- The DOM updates automatically when the signal/memo value changes
+- Reactive attributes work with both hydration and client-side rendering
+- Use memos to combine multiple signals for better performance
+- Style objects are more performant than style strings for dynamic updates
+
+---
+
 **Next:** [Components API →](./components.md) Component rendering and JSX

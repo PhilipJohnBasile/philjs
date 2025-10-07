@@ -1,7 +1,7 @@
-import { signal } from 'philjs-core';
+import { signal, memo } from 'philjs-core';
 
 interface CodeBlockProps {
-  code: string;
+  code: string | (() => string);
   language?: string;
   filename?: string;
   showLineNumbers?: boolean;
@@ -9,9 +9,14 @@ interface CodeBlockProps {
 
 export function CodeBlock(props: CodeBlockProps) {
   const copied = signal(false);
-  
+
+  // Create a memo that handles both string and function props
+  const codeValue = memo(() =>
+    typeof props.code === 'function' ? props.code() : props.code
+  );
+
   const copyCode = async () => {
-    await navigator.clipboard.writeText(props.code);
+    await navigator.clipboard.writeText(codeValue());
     copied.set(true);
     setTimeout(() => copied.set(false), 2000);
   };
@@ -44,7 +49,7 @@ export function CodeBlock(props: CodeBlockProps) {
           border: 1px solid var(--color-code-border);
         ">
           <code style="font-family: var(--font-mono); color: var(--color-code-text);">
-            {props.code}
+            {codeValue}
           </code>
         </pre>
         
