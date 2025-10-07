@@ -1,5 +1,7 @@
 import { signal, effect, render } from 'philjs-core';
 import { HomePage } from './pages/HomePage';
+import { ExamplesPage } from './pages/ExamplesPage';
+import { CompetitiveAnalysisPage } from './pages/CompetitiveAnalysisPage';
 import { Sidebar } from './components/Sidebar';
 import { TableOfContents } from './components/TableOfContents';
 import { SearchModal } from './components/SearchModal';
@@ -114,6 +116,14 @@ export function App() {
         {
           path: (path) => path === '/' || path === '',
           component: () => <HomePage navigate={navigate} />
+        },
+        {
+          path: (path) => path === '/examples' || path.startsWith('/examples'),
+          component: () => <ExamplesPage navigate={navigate} />
+        },
+        {
+          path: (path) => path === '/analysis' || path.startsWith('/analysis'),
+          component: () => <CompetitiveAnalysisPage navigate={navigate} />
         },
         {
           path: (path) => path.startsWith('/docs'),

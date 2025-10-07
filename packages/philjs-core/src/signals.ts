@@ -148,7 +148,7 @@ export function memo<T>(calc: () => T): Memo<T> {
     dependencies: new Set(),
   };
 
-  const read = () => {
+  const read = (() => {
     if (isStale) {
       // Clear old dependencies - convert to array first to avoid iteration issues
       const oldDeps = Array.from(computation.dependencies);
@@ -174,12 +174,22 @@ export function memo<T>(calc: () => T): Memo<T> {
     }
 
     return cachedValue;
+  }) as Memo<T> & { subscribe: (fn: (v: T) => void) => () => void };
+
+  // Add subscribe method for JSX reactivity
+  read.subscribe = (fn: (v: T) => void) => {
+    const subscriberComputation: Computation = {
+      execute: () => fn(read()),
+      dependencies: new Set(),
+    };
+    subscribers.add(subscriberComputation);
+    return () => subscribers.delete(subscriberComputation);
   };
 
   // Initialize the memo
   read();
 
-  return read as Memo<T>;
+  return read;
 }
 
 // ============================================================================
