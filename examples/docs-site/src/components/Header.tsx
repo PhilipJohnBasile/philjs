@@ -121,29 +121,112 @@ export function Header({
             style={styles.mobileMenuButton}
             onClick={() => mobileMenuOpen.set(!mobileMenuOpen())}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen()}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round" />
+              {mobileMenuOpen() ? (
+                // X icon when menu is open
+                <>
+                  <path d="M18 6L6 18" stroke-width="2" stroke-linecap="round" />
+                  <path d="M6 6l12 12" stroke-width="2" stroke-linecap="round" />
+                </>
+              ) : (
+                // Hamburger icon when menu is closed
+                <>
+                  <path d="M3 12h18" stroke-width="2" stroke-linecap="round" />
+                  <path d="M3 6h18" stroke-width="2" stroke-linecap="round" />
+                  <path d="M3 18h18" stroke-width="2" stroke-linecap="round" />
+                </>
+              )}
             </svg>
           </button>
         </div>
 
+        {/* Mobile Menu Backdrop */}
+        {mobileMenuOpen() && (
+          <div
+            style={styles.mobileMenuBackdrop}
+            onClick={() => mobileMenuOpen.set(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Mobile Menu */}
         {mobileMenuOpen() && (
-          <div style={styles.mobileMenu} class="slide-down">
-            {navLinks.map((link) => (
-              <a
-                href={link.path}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(link.path);
-                  mobileMenuOpen.set(false);
-                }}
-                style={styles.mobileMenuLink}
-              >
-                {link.label}
-              </a>
-            ))}
+          <div
+            style={styles.mobileMenu}
+            role="dialog"
+            aria-label="Mobile navigation"
+          >
+            <div style={styles.mobileMenuContent}>
+              {/* Mobile Menu Header */}
+              <div style={styles.mobileMenuHeader}>
+                <span style={styles.mobileMenuTitle}>Navigation</span>
+                <button
+                  onClick={() => mobileMenuOpen.set(false)}
+                  style={styles.mobileMenuClose}
+                  aria-label="Close menu"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav style={styles.mobileMenuNav}>
+                {navLinks.map((link) => (
+                  <a
+                    href={link.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(link.path);
+                      mobileMenuOpen.set(false);
+                    }}
+                    style={{
+                      ...styles.mobileMenuLink,
+                      ...(currentPage().startsWith(link.path)
+                        ? styles.mobileMenuLinkActive
+                        : {}),
+                    }}
+                  >
+                    <span style={styles.mobileMenuLinkText}>{link.label}</span>
+                    {currentPage().startsWith(link.path) && (
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        style={styles.mobileMenuLinkIcon}
+                      >
+                        <polyline
+                          points="9 18 15 12 9 6"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </a>
+                ))}
+              </nav>
+
+              {/* Mobile Menu Footer */}
+              <div style={styles.mobileMenuFooter}>
+                <a
+                  href="https://github.com/philjs/philjs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={styles.mobileMenuFooterLink}
+                >
+                  <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                  </svg>
+                  <span>View on GitHub</span>
+                </a>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -261,24 +344,112 @@ const styles: Record<string, React.CSSProperties> = {
       display: "none",
     },
   },
-  mobileMenu: {
-    position: "absolute",
-    top: "100%",
+  mobileMenuBackdrop: {
+    position: "fixed",
+    top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
+    background: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
+    animation: "fadeIn 0.2s ease-out",
+  },
+  mobileMenu: {
+    position: "fixed",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: "85%",
+    maxWidth: "360px",
     background: "var(--color-bg)",
-    borderBottom: "1px solid var(--color-border)",
-    padding: "var(--space-4)",
+    boxShadow: "-2px 0 12px rgba(0, 0, 0, 0.1)",
+    zIndex: 1000,
+    animation: "slideInRight 0.3s ease-out",
     display: "flex",
     flexDirection: "column",
-    gap: "var(--space-2)",
+  },
+  mobileMenuContent: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    overflow: "hidden",
+  },
+  mobileMenuHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "1.25rem 1.5rem",
+    borderBottom: "1px solid var(--color-border)",
+    flexShrink: 0,
+  },
+  mobileMenuTitle: {
+    fontSize: "1.125rem",
+    fontWeight: 600,
+    color: "var(--color-text)",
+  },
+  mobileMenuClose: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "36px",
+    height: "36px",
+    background: "var(--color-bg-alt)",
+    border: "1px solid var(--color-border)",
+    borderRadius: "8px",
+    color: "var(--color-text-secondary)",
+    cursor: "pointer",
+    transition: "all var(--transition-fast)",
+  },
+  mobileMenuNav: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "1.5rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem",
   },
   mobileMenuLink: {
-    padding: "var(--space-3)",
-    fontSize: "var(--text-base)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "1rem 1.25rem",
+    fontSize: "1rem",
     fontWeight: 500,
     color: "var(--color-text)",
-    borderRadius: "var(--radius-sm)",
-    transition: "background var(--transition-fast)",
+    background: "var(--color-bg-alt)",
+    border: "1px solid var(--color-border)",
+    borderRadius: "10px",
+    transition: "all var(--transition-fast)",
+    textDecoration: "none",
+  },
+  mobileMenuLinkActive: {
+    background: "var(--color-accent-light)",
+    borderColor: "var(--color-accent)",
+    color: "var(--color-accent)",
+  },
+  mobileMenuLinkText: {
+    flex: 1,
+  },
+  mobileMenuLinkIcon: {
+    flexShrink: 0,
+  },
+  mobileMenuFooter: {
+    padding: "1.5rem",
+    borderTop: "1px solid var(--color-border)",
+    flexShrink: 0,
+  },
+  mobileMenuFooterLink: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.75rem",
+    padding: "1rem",
+    background: "var(--color-bg-alt)",
+    border: "1px solid var(--color-border)",
+    borderRadius: "10px",
+    color: "var(--color-text)",
+    textDecoration: "none",
+    fontSize: "0.9375rem",
+    fontWeight: 500,
+    transition: "all var(--transition-fast)",
   },
 };

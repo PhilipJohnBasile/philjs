@@ -112,10 +112,47 @@ function Counter() {
       </header>
 
       {/* Hero Section */}
-      <section style="padding: 6rem 0; text-align: center;">
-        <div class="container">
+      <section style="padding: 8rem 0 6rem; text-align: center; position: relative; overflow: hidden;">
+        {/* Animated background gradient */}
+        <div style="
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+          animation: pulse 8s ease-in-out infinite;
+          pointer-events: none;
+        "></div>
+
+        <div class="container" style="position: relative; z-index: 1;">
+          {/* Badge */}
+          <div style="
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-alt);
+            border: 1px solid var(--color-border);
+            border-radius: 50px;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+          ">
+            <span style="
+              display: inline-block;
+              width: 8px;
+              height: 8px;
+              background: #10b981;
+              border-radius: 50%;
+              animation: pulse 2s ease-in-out infinite;
+            "></span>
+            Production Ready • v1.0.0
+          </div>
+
           <h1 style="
-            font-size: 4.5rem;
+            font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: 1.5rem;
@@ -123,6 +160,7 @@ function Counter() {
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
           ">
             The framework that<br/>thinks ahead
           </h1>
@@ -138,13 +176,63 @@ function Counter() {
             Build faster, ship less, analyze smarter.
           </p>
           
-          <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 4rem;">
-            <Button variant="primary" size="lg" href="#get-started">
+          <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 4rem; flex-wrap: wrap;">
+            <a
+              href="#get-started"
+              style="
+                padding: 1rem 2rem;
+                background: var(--color-brand);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 1.125rem;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all var(--transition-base);
+                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+              "
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+                (e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+                (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+              }}
+            >
               Get Started →
-            </Button>
-            <Button variant="secondary" size="lg" href="#why-philjs">
+            </a>
+            <a
+              href="#why-philjs"
+              style="
+                padding: 1rem 2rem;
+                background: var(--color-bg);
+                color: var(--color-text);
+                border: 2px solid var(--color-border);
+                border-radius: 8px;
+                font-size: 1.125rem;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                transition: all var(--transition-base);
+              "
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+              }}
+            >
               Why PhilJS?
-            </Button>
+            </a>
           </div>
           
           {/* Stats */}
@@ -178,47 +266,181 @@ function Counter() {
         </div>
       </section>
 
+      {/* Comparison Section */}
+      <section style="padding: 6rem 0; background: var(--color-bg);">
+        <div class="container" style="max-width: 1000px;">
+          <h2 style="
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+          ">
+            Why Choose PhilJS?
+          </h2>
+          <p style="
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+          ">
+            See how PhilJS compares to other popular frameworks
+          </p>
+
+          <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+          ">
+            {[
+              { label: 'Bundle Size', philjs: '< 50KB', others: '~150KB+', better: true },
+              { label: 'Hydration Time', philjs: '0ms', others: '100-500ms', better: true },
+              { label: 'Learning Curve', philjs: 'Simple', others: 'Moderate', better: true },
+              { label: 'TypeScript', philjs: 'Built-in', others: 'Optional', better: true },
+            ].map(item => (
+              <div style="
+                padding: 1.5rem;
+                background: var(--color-bg-alt);
+                border: 1px solid var(--color-border);
+                border-radius: 12px;
+                transition: all var(--transition-base);
+              "
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-brand)';
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)';
+                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+              }}
+              >
+                <div style="
+                  font-size: 0.875rem;
+                  font-weight: 600;
+                  color: var(--color-text-secondary);
+                  text-transform: uppercase;
+                  letter-spacing: 0.05em;
+                  margin-bottom: 0.75rem;
+                ">
+                  {item.label}
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+                  <div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-brand);">
+                      {item.philjs}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">PhilJS</div>
+                  </div>
+                  <div style="color: var(--color-text-tertiary);">vs</div>
+                  <div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-secondary);">
+                      {item.others}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-tertiary);">Others</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
-      <section id="why-philjs" style="padding: 6rem 0;">
+      <section id="why-philjs" style="padding: 6rem 0; background: var(--color-bg-alt);">
         <div class="container">
           <h2 style="
             font-size: 3rem;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
           ">
             Novel Features
           </h2>
+          <p style="
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+          ">
+            Industry-first capabilities that set PhilJS apart from traditional frameworks
+          </p>
           
           <div style="
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
           ">
-            {features.map(feature => (
-              <div style="
+            {features.map((feature, index) => (
+              <div style={`
                 padding: 2rem;
                 background: var(--color-bg);
                 border: 1px solid var(--color-border);
-                border-radius: 12px;
+                border-radius: 16px;
                 transition: all var(--transition-base);
-              ">
-                <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+                position: relative;
+                overflow: hidden;
+                animation: fadeInUp 0.6s ease-out ${index * 0.1}s both;
+              `}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.transform = 'translateY(-8px)';
+                el.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
+                el.style.borderColor = 'var(--color-brand)';
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.transform = 'translateY(0)';
+                el.style.boxShadow = 'none';
+                el.style.borderColor = 'var(--color-border)';
+              }}
+              >
+                {/* Icon container with gradient background */}
+                <div style="
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 60px;
+                  height: 60px;
+                  background: linear-gradient(135deg, var(--color-brand), var(--color-accent));
+                  border-radius: 12px;
+                  font-size: 1.75rem;
+                  margin-bottom: 1.5rem;
+                  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+                ">
                   {feature.icon}
                 </div>
                 <h3 style="
                   font-size: 1.25rem;
                   font-weight: 600;
                   margin-bottom: 0.75rem;
+                  color: var(--color-text);
                 ">
                   {feature.title}
                 </h3>
                 <p style="
                   color: var(--color-text-secondary);
                   line-height: 1.6;
+                  font-size: 0.9375rem;
                 ">
                   {feature.description}
                 </p>
+
+                {/* Decorative gradient corner */}
+                <div style="
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  width: 100px;
+                  height: 100px;
+                  background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.05), transparent);
+                  pointer-events: none;
+                "></div>
               </div>
             ))}
           </div>
