@@ -113,6 +113,28 @@ importers:
         specifier: ^5.0.0
         version: 5.4.20(@types/node@20.19.19)
 
+  examples/kitchen-sink:
+    dependencies:
+      philjs-core:
+        specifier: workspace:*
+        version: link:../../packages/philjs-core
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.49.0
+        version: 1.55.1
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.18.8
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.7
+        version: 6.3.6(@types/node@22.18.8)
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.18.8)(jsdom@27.0.0(postcss@8.5.6))
+
   examples/storefront:
     dependencies:
       philjs-ai:
@@ -3438,6 +3460,14 @@ snapshots:
     optionalDependencies:
       vite: 5.4.20(@types/node@20.19.19)
 
+  '@vitest/mocker@2.1.9(vite@5.4.20(@types/node@22.18.8))':
+    dependencies:
+      '@vitest/spy': 2.1.9
+      estree-walker: 3.0.3
+      magic-string: 0.30.19
+    optionalDependencies:
+      vite: 5.4.20(@types/node@22.18.8)
+
   '@vitest/pretty-format@2.1.9':
     dependencies:
       tinyrainbow: 1.2.0
@@ -5115,7 +5145,7 @@ snapshots:
   vitest@2.1.9(@types/node@22.18.8)(jsdom@27.0.0(postcss@8.5.6)):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.20(@types/node@20.19.19))
+      '@vitest/mocker': 2.1.9(vite@5.4.20(@types/node@22.18.8))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
