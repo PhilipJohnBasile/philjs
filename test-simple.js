@@ -1,30 +1,36 @@
 const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
-  console.log('Opening page...\n');
+  console.log('Navigating to http://localhost:3001/examples');
 
-  page.on('console', msg => {
-    const type = msg.type();
-    if (type === 'error') {
-      console.log('❌ CONSOLE ERROR:', msg.text());
+  try {
+    await page.goto('http://localhost:3001/examples', { waitUntil: 'domcontentloaded', timeout: 5000 });
+    console.log('✅ Page loaded');
+
+    // Check if buttons exist
+    const buttons = await page.$$('button');
+    console.log(`✅ Found ${buttons.length} buttons`);
+
+    // Get button text
+    for (let i = 0; i < Math.min(buttons.length, 8); i++) {
+      const text = await buttons[i].textContent();
+      console.log(`  Button ${i}: "${text}"`);
     }
-  });
 
-  page.on('pageerror', err => {
-    console.log('❌ PAGE ERROR:', err.message);
-  });
+    // Check for h2 elements (example titles)
+    const h2s = await page.$$('h2');
+    console.log(`✅ Found ${h2s.length} h2 elements`);
+    if (h2s.length > 0) {
+      const firstH2 = await h2s[0].textContent();
+      console.log(`  First h2: "${firstH2}"`);
+    }
 
-  await page.goto('http://localhost:3000/docs/introduction');
-  await page.waitForTimeout(5000);
-
-  await page.screenshot({ path: 'simple-test.png', fullPage: true });
-  console.log('Screenshot saved: simple-test.png\n');
-
-  console.log('Keeping browser open for 60 seconds...\n');
-  await page.waitForTimeout(60000);
-
-  await browser.close();
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+  } finally {
+    await browser.close();
+  }
 })();

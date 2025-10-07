@@ -299,10 +299,10 @@ $ philjs analyze --production
           </div>
 
           <nav style="display: flex; align-items: center; gap: 2rem;">
-            <a href="#pain-points" style="color: var(--color-text); font-weight: 500; text-decoration: none;">Pain Points</a>
+            <a onClick={() => navigate('/examples')} style="color: var(--color-text); font-weight: 500; cursor: pointer;">Examples</a>
             <a href="#features" style="color: var(--color-text); font-weight: 500; text-decoration: none;">Features</a>
             <a href="#comparison" style="color: var(--color-text); font-weight: 500; text-decoration: none;">Comparison</a>
-            <a href="/docs" style="color: var(--color-text); font-weight: 500; text-decoration: none;">Docs</a>
+            <a onClick={() => navigate('/docs')} style="color: var(--color-text); font-weight: 500; cursor: pointer;">Docs</a>
             <a href="https://github.com/yourusername/philjs" style="color: var(--color-text); font-weight: 500; text-decoration: none;" target="_blank" rel="noopener">GitHub</a>
             <button
               onClick={toggleTheme}
@@ -1761,8 +1761,725 @@ $ philjs analyze --production
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* Use Cases */}
       <section style="padding: 6rem 0; background: var(--color-bg);">
+        <div class="container">
+          <h2 style="
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+          ">
+            Perfect For Every Use Case
+          </h2>
+          <p style="
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+          ">
+            From marketing sites to complex dashboards, PhilJS scales to your needs
+          </p>
+
+          <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+          ">
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">🛒</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">E-Commerce</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                Lightning-fast product pages. Zero hydration = instant add-to-cart. Smart preloading predicts checkout flow.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ 42KB initial bundle → fast mobile</li>
+                <li style="padding: 0.25rem 0;">✅ Cost tracking finds expensive queries</li>
+                <li style="padding: 0.25rem 0;">✅ Islands = fast static product grids</li>
+              </ul>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">📊</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">SaaS Dashboards</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                Fine-grained reactivity shines with real-time data. Update only what changed, not entire component trees.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ No memoization needed for complex UIs</li>
+                <li style="padding: 0.25rem 0;">✅ Built-in forms, charts, tables</li>
+                <li style="padding: 0.25rem 0;">✅ Performance budgets prevent regressions</li>
+              </ul>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">📰</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">Content Sites</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                100% static by default. Add interactive islands only where needed. Perfect Lighthouse scores out of the box.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ Zero JavaScript for blog posts</li>
+                <li style="padding: 0.25rem 0;">✅ SEO optimized with SSG/SSR</li>
+                <li style="padding: 0.25rem 0;">✅ Smart preloading for article navigation</li>
+              </ul>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">🎓</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">Education Platforms</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                Interactive lessons without the JavaScript bloat. Fast on any device, even slow connections.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ Minimal bundle = works on school WiFi</li>
+                <li style="padding: 0.25rem 0;">✅ Built-in i18n for global reach</li>
+                <li style="padding: 0.25rem 0;">✅ Analytics track feature usage</li>
+              </ul>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">💼</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">Enterprise Apps</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                TypeScript-first with full type safety. Deploy anywhere—no vendor lock-in. Cost tracking for budget compliance.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ Works on AWS, GCP, Azure</li>
+                <li style="padding: 0.25rem 0;">✅ Dead code detection saves maintenance</li>
+                <li style="padding: 0.25rem 0;">✅ Clear error messages reduce tickets</li>
+              </ul>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: var(--color-bg-alt);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+            ">
+              <div style="
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+              ">🚀</div>
+              <h3 style="
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+              ">Startups (MVP to Scale)</h3>
+              <p style="
+                color: var(--color-text-secondary);
+                line-height: 1.6;
+                margin-bottom: 1rem;
+              ">
+                Ship fast with zero config. Scale without refactoring. Cost tracking keeps AWS bills manageable.
+              </p>
+              <ul style="
+                list-style: none;
+                padding: 0;
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">
+                <li style="padding: 0.25rem 0;">✅ One framework for everything</li>
+                <li style="padding: 0.25rem 0;">✅ No library decision fatigue</li>
+                <li style="padding: 0.25rem 0;">✅ Analytics find unused features fast</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ecosystem & Community */}
+      <section style="padding: 6rem 0; background: var(--color-bg-alt);">
+        <div class="container">
+          <h2 style="
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+          ">
+            Growing Ecosystem
+          </h2>
+          <p style="
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+          ">
+            First-party packages and integrations built by the core team
+          </p>
+
+          <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+          ">
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">⚡</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-core</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Signals, effects, memo</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">🗺️</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-router</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">File-based routing</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">🏝️</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-islands</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Islands architecture</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">💾</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-ssr</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Server-side rendering</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">🔧</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-devtools</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Browser extension</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">🤖</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-ai</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">ML-powered features</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">📝</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-forms</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Type-safe forms</p>
+            </div>
+
+            <div style="
+              padding: 1.5rem;
+              background: var(--color-bg);
+              border: 1px solid var(--color-border);
+              border-radius: 12px;
+              text-align: center;
+            ">
+              <div style="
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+              ">🌐</div>
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+              ">philjs-i18n</h3>
+              <p style="
+                color: var(--color-text-tertiary);
+                font-size: 0.875rem;
+              ">Internationalization</p>
+            </div>
+          </div>
+
+          <div style="
+            padding: 2rem;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            text-align: center;
+          ">
+            <h3 style="
+              font-size: 1.25rem;
+              font-weight: 600;
+              margin-bottom: 1rem;
+            ">Join the Community</h3>
+            <p style="
+              color: var(--color-text-secondary);
+              margin-bottom: 2rem;
+              max-width: 600px;
+              margin-left: auto;
+              margin-right: auto;
+            ">
+              Get help, share ideas, and connect with other PhilJS developers
+            </p>
+            <div style="
+              display: flex;
+              gap: 1rem;
+              justify-content: center;
+              flex-wrap: wrap;
+            ">
+              <a href="https://discord.gg/philjs" target="_blank" rel="noopener" style="
+                padding: 0.75rem 1.5rem;
+                background: #5865F2;
+                color: white;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+              ">
+                <span>💬</span> Discord Community
+              </a>
+              <a href="https://github.com/yourusername/philjs/discussions" target="_blank" rel="noopener" style="
+                padding: 0.75rem 1.5rem;
+                background: var(--color-bg-alt);
+                color: var(--color-text);
+                border: 1px solid var(--color-border);
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+              ">
+                <span>💡</span> GitHub Discussions
+              </a>
+              <a href="https://twitter.com/philjs" target="_blank" rel="noopener" style="
+                padding: 0.75rem 1.5rem;
+                background: var(--color-bg-alt);
+                color: var(--color-text);
+                border: 1px solid var(--color-border);
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+              ">
+                <span>🐦</span> Twitter Updates
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Real Code Savings Calculator */}
+      <section style="padding: 6rem 0; background: var(--color-bg);">
+        <div class="container" style="max-width: 1000px;">
+          <h2 style="
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+          ">
+            How Much Code Will You Delete?
+          </h2>
+          <p style="
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 4rem;
+          ">
+            Based on real migrations from production React apps
+          </p>
+
+          <div style="
+            display: grid;
+            gap: 2rem;
+          ">
+            <div style="
+              padding: 2rem;
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+              border: 1px solid rgba(239, 68, 68, 0.2);
+              border-radius: 12px;
+            ">
+              <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+              ">
+                <div style="flex: 1; min-width: 250px;">
+                  <h3 style="
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                    color: #dc2626;
+                  ">❌ All Your useCallback/useMemo</h3>
+                  <p style="
+                    color: var(--color-text-secondary);
+                    font-size: 0.9375rem;
+                  ">
+                    Average React app: 3,200 lines of memoization code
+                  </p>
+                </div>
+                <div style="
+                  text-align: right;
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: #dc2626;
+                ">
+                  -100%
+                </div>
+              </div>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+              border: 1px solid rgba(239, 68, 68, 0.2);
+              border-radius: 12px;
+            ">
+              <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+              ">
+                <div style="flex: 1; min-width: 250px;">
+                  <h3 style="
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                    color: #dc2626;
+                  ">❌ Hydration Workarounds</h3>
+                  <p style="
+                    color: var(--color-text-secondary);
+                    font-size: 0.9375rem;
+                  ">
+                    isClient checks, useEffect mounting, suppressHydrationWarning
+                  </p>
+                </div>
+                <div style="
+                  text-align: right;
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: #dc2626;
+                ">
+                  -100%
+                </div>
+              </div>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+              border: 1px solid rgba(239, 68, 68, 0.2);
+              border-radius: 12px;
+            ">
+              <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+              ">
+                <div style="flex: 1; min-width: 250px;">
+                  <h3 style="
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                    color: #dc2626;
+                  ">❌ Dead Code</h3>
+                  <p style="
+                    color: var(--color-text-secondary);
+                    font-size: 0.9375rem;
+                  ">
+                    PhilJS analytics find unused components with confidence scores
+                  </p>
+                </div>
+                <div style="
+                  text-align: right;
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: #dc2626;
+                ">
+                  -40%
+                </div>
+              </div>
+            </div>
+
+            <div style="
+              padding: 2rem;
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+              border: 1px solid rgba(239, 68, 68, 0.2);
+              border-radius: 12px;
+            ">
+              <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+              ">
+                <div style="flex: 1; min-width: 250px;">
+                  <h3 style="
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                    color: #dc2626;
+                  ">❌ State Management Libraries</h3>
+                  <p style="
+                    color: var(--color-text-secondary);
+                    font-size: 0.9375rem;
+                  ">
+                    Redux, Zustand, Recoil boilerplate—signals work for everything
+                  </p>
+                </div>
+                <div style="
+                  text-align: right;
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: #dc2626;
+                ">
+                  -100%
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            text-align: center;
+          ">
+            <div style="
+              font-size: 3rem;
+              font-weight: 700;
+              color: #10b981;
+              margin-bottom: 1rem;
+            ">
+              Total: 35-50% Less Code
+            </div>
+            <p style="
+              color: var(--color-text-secondary);
+              font-size: 1.0625rem;
+            ">
+              Same features. Better performance. Less maintenance burden.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section style="padding: 6rem 0; background: var(--color-bg-alt);">
         <div class="container" style="max-width: 900px;">
           <h2 style="
             font-size: 3rem;
@@ -1784,7 +2501,7 @@ $ philjs analyze --production
           <div style="display: grid; gap: 1.5rem;">
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -1806,7 +2523,7 @@ $ philjs analyze --production
 
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -1828,7 +2545,7 @@ $ philjs analyze --production
 
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -1850,7 +2567,7 @@ $ philjs analyze --production
 
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -1872,7 +2589,7 @@ $ philjs analyze --production
 
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -1894,7 +2611,7 @@ $ philjs analyze --production
 
             <div style="
               padding: 2rem;
-              background: var(--color-bg-alt);
+              background: var(--color-bg);
               border: 1px solid var(--color-border);
               border-radius: 12px;
             ">
@@ -2045,9 +2762,9 @@ $ philjs analyze --production
             <div>
               <h3 style="font-weight: 600; margin-bottom: 1rem;">Resources</h3>
               <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="/PHILJS_COMPETITIVE_ANALYSIS.md" style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none;">Competitive Analysis</a>
-                <a href="/examples" style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none;">Examples</a>
-                <a href="/blog" style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none;">Blog</a>
+                <a onClick={() => navigate('/analysis')} style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none; cursor: pointer;">Competitive Analysis</a>
+                <a onClick={() => navigate('/examples')} style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none; cursor: pointer;">Examples</a>
+                <a href="https://github.com/yourusername/philjs/tree/main/examples" target="_blank" rel="noopener" style="color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none;">More Examples</a>
               </div>
             </div>
           </div>

@@ -976,3 +976,16 @@ button {
     -webkit-print-color-adjust: exact;
   }
 }
+
+/* Example button styles */
+.example-btn {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.example-btn-active {
+  background: var(--color-brand);
+  color: white;
+  border: 1px solid var(--color-brand);
+}
