@@ -83,6 +83,8 @@ export type RouteTypeGenerationOptions = RouteManifestOptions & {
   moduleName?: string;
 };
 
+export type RouteMatcher = (pathname: string) => MatchedRoute | null;
+
 export type NavigateFunction = (to: string, options?: { replace?: boolean; state?: any }) => Promise<void>;
 
 export type RouteModule = {
@@ -186,6 +188,14 @@ export function createRouteManifest(
   options: RouteManifestOptions = {}
 ): Record<string, RouteModule> {
   return buildManifestGraph(routes, normalizeBase(options.base ?? "")).manifest;
+}
+
+export function createRouteMatcher(
+  routes: RouteDefinition[],
+  options: RouteManifestOptions = {}
+): RouteMatcher {
+  const { routeMap } = buildManifestGraph(routes, normalizeBase(options.base ?? ""));
+  return (pathname: string) => matchCurrentRoute(routeMap, pathname);
 }
 
 export function generateRouteTypes(

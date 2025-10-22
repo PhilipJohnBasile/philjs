@@ -723,7 +723,7 @@ showOverlay();
 // - Island count & hydration status
 // - Bundle size
 // - AI calls and costs
-// - Current route path & params (from createAppRouter)
+// - Current route path, params, and loader error (from createAppRouter)
 ```
 
 ### Custom Overlay

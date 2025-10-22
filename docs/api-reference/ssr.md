@@ -1,596 +1,231 @@
 # SSR API
 
-Server-side rendering APIs for PhilJS.
-
-## renderToString()
-
-Renders a component to an HTML string on the server.
-
-### Signature
-
-```typescript
-function renderToString(component: JSX.Element): Promise<string>
-```
-
-### Parameters
-
-- **component**: `JSX.Element` - The component to render
-
-### Returns
-
-`Promise<string>` - HTML string
-
-### Examples
-
-#### Basic SSR
-
-```typescript
-import { renderToString } from 'philjs-ssr';
-
-async function handler(req, res) {
-  const html = await renderToString(<App />);
-
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <div id="app">${html}</div>
-        <script src="/client.js"></script>
-      </body>
-    </html>
-  `);
-}
-```
-
-#### With Props
-
-```typescript
-const html = await renderToString(
-  <App user={currentUser} theme="dark" />
-);
-```
-
-#### With Data
-
-```typescript
-async function handler(req, res) {
-  const data = await fetchData();
-
-  const html = await renderToString(<App initialData={data} />);
-
-  const fullHTML = `
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <div id="app">${html}</div>
-        <script>
-          window.__INITIAL_DATA__ = ${JSON.stringify(data)};
-        </script>
-        <script src="/client.js"></script>
-      </body>
-    </html>
-  `;
-
-  res.send(fullHTML);
-}
-```
-
-### Notes
-
-- Async - waits for all data loading
-- Returns static HTML string
-- No interactivity until hydration
-- Use with `hydrate()` on client
+The `philjs-ssr` package provides the server runtime that pairs with the high-level router. It knows how to execute loaders, serialize `Result` values, hydrate nested layouts, and stream HTML. This guide covers the request handler, server adapters, and streaming helpers that ship today.
 
 ---
 
-## renderToStream()
+## Quick Start
 
-Streams HTML to the client as it's generated.
+```ts
+// routes.ts
+import type { RouteDefinition } from "philjs-router";
+import { Ok } from "philjs-core";
 
-### Signature
-
-```typescript
-import { Readable } from 'stream';
-
-function renderToStream(
-  component: JSX.Element,
-  options?: StreamOptions
-): Readable
-```
-
-### Parameters
-
-- **component**: `JSX.Element` - Component to render
-- **options**: `StreamOptions` - Stream configuration (optional)
-
-### Returns
-
-Node.js `Readable` stream
-
-### StreamOptions
-
-```typescript
-interface StreamOptions {
-  onShellReady?: () => void;
-  onAllReady?: () => void;
-  onError?: (error: Error) => void;
-}
-```
-
-### Examples
-
-#### Basic Streaming
-
-```typescript
-import { renderToStream } from 'philjs-ssr';
-
-app.get('*', (req, res) => {
-  res.setHeader('Content-Type', 'text/html');
-
-  res.write('<!DOCTYPE html><html><body><div id="app">');
-
-  const stream = renderToStream(<App />);
-
-  stream.pipe(res, { end: false });
-
-  stream.on('end', () => {
-    res.write('</div><script src="/client.js"></script></body></html>');
-    res.end();
-  });
-});
-```
-
-#### With Suspense
-
-```typescript
-const stream = renderToStream(<App />, {
-  onShellReady: () => {
-    // Shell (non-suspended parts) ready
-    console.log('Shell ready to stream');
+export const routes: RouteDefinition[] = [
+  {
+    path: "/",
+    component: ({ data }) => `<h1>${data.title}</h1>`,
+    loader: async () => Ok({ title: "Welcome to PhilJS" }),
   },
-  onAllReady: () => {
-    // Everything ready (including Suspense content)
-    console.log('All content ready');
+];
+```
+
+```ts
+// server.ts
+import { createServer } from "node:http";
+import { createNodeHttpHandler } from "philjs-ssr";
+import { routes } from "./routes";
+
+const handler = createNodeHttpHandler({ routes });
+const server = createServer(handler);
+server.listen(3000);
+```
+
+The handler will execute matching route loaders, serialize their data or errors into `window.__PHILJS_ROUTE_*__`, and return a full HTML document ready to hydrate on the client.
+
+---
+
+## Core Request Handler
+
+### `handleRequest(request, options)`
+
+Low-level building block that powers every adapter.
+
+```ts
+import { handleRequest } from "philjs-ssr";
+import { createRouteMatcher } from "philjs-router";
+import { routes } from "./routes";
+
+const match = createRouteMatcher(routes);
+const response = await handleRequest(request, { match });
+```
+
+**Parameters**
+
+- `request: Request` – the incoming Fetch API request.
+- `options.match: RouteMatcher` – generated from `createRouteMatcher(routes)`.
+- `options.baseUrl?: string` – base URL used when computing route URLs (handy for reverse proxies).
+- `options.render?: (component: VNode) => string | Promise<string>` – override the server renderer (defaults to `philjs-core`’s `renderToString`).
+
+**Loader execution**
+
+- The handler passes `{ request, url, params, headers, method, formData? }` to your route loader.
+- If the loader returns a `Result`, the helper unwraps it and hydrates either `data` or `error`.
+- Throwing from a loader populates `error` and still renders the component so you can surface graceful fallbacks.
+
+**Component props**
+
+Route components receive `params`, `data`, `error`, the current `url`, and a stub `navigate` function (throws on the server) so they can reuse the same prop signature in SSR and the browser.
+
+---
+
+## Server Adapters
+
+All adapters share the same options bag:
+
+```ts
+type PhilJSServerOptions = {
+  routes: RouteDefinition[];
+  baseUrl?: string;
+  render?: (component: VNode) => string | Promise<string>;
+  routeOptions?: RouteManifestOptions;
+};
+```
+
+Most apps only provide `routes`; the rest are optional.
+
+> `VNode` comes from `philjs-core` and matches the JSX runtime output of your components.
+
+### `createFetchHandler(options)`
+
+Returns a `(request: Request) => Promise<Response>` function that you can plug into any Fetch-compatible runtime.
+
+```ts
+const handler = createFetchHandler({ routes });
+addEventListener("fetch", (event) => {
+  event.respondWith(handler(event.request));
+});
+```
+
+### `createNodeHttpHandler(options)`
+
+Wraps the Fetch handler for Node’s built-in `http` server.
+
+```ts
+import { createServer } from "node:http";
+import { createNodeHttpHandler } from "philjs-ssr";
+import { routes } from "./routes";
+
+const server = createServer(createNodeHttpHandler({ routes }));
+server.listen(3000, () => {
+  console.log("PhilJS SSR running at http://localhost:3000");
+});
+```
+
+### `createExpressMiddleware(options)`
+
+Connect-style middleware for Express. It responds to every request it handles and forwards errors to `next(err)` so you can rely on default Express error handling.
+
+```ts
+import express from "express";
+import { createExpressMiddleware } from "philjs-ssr";
+import { routes } from "./routes";
+
+const app = express();
+app.use(createExpressMiddleware({ routes }));
+app.listen(3000);
+```
+
+> If you need body parsing for API routes, register those middleware before the PhilJS handler so POST bodies are still readable.
+
+### `createViteMiddleware(options)`
+
+Useful during local development when you want Vite to serve assets and fall back to PhilJS for SSR.
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import { createViteMiddleware } from "philjs-ssr";
+import { routes } from "./routes";
+
+export default defineConfig({
+  server: {
+    middlewareMode: true,
   },
-  onError: (error) => {
-    console.error('SSR error:', error);
-  }
+  plugins: [
+    {
+      name: "philjs-ssr",
+      configureServer(server) {
+        server.middlewares.use(createViteMiddleware({ routes }));
+      },
+    },
+  ],
 });
 ```
 
-### Notes
+### `createWorkerHandler(options)`
 
-- Faster Time to First Byte (TTFB)
-- Streams shell immediately
-- Suspense boundaries stream when ready
-- Better for large pages
+Returns a fetch handler you can deploy to Cloudflare Workers, Service Workers, Bun, Deno, or any runtime that expects `(request: Request) => Response`.
+
+```ts
+import { createWorkerHandler } from "philjs-ssr";
+import { routes } from "./routes";
+
+const handler = createWorkerHandler({ routes });
+
+export default {
+  fetch(request: Request) {
+    return handler(request);
+  },
+};
+```
 
 ---
 
-## renderToStaticMarkup()
+## Data Hydration & Error Surfacing
 
-Renders to static HTML without hydration markers.
+The request handler automatically serializes loader data, errors, and params into the following globals:
 
-### Signature
+- `window.__PHILJS_ROUTE_DATA__[pathname]`
+- `window.__PHILJS_ROUTE_ERROR__[pathname]`
+- `window.__PHILJS_ROUTE_INFO__.current`
 
-```typescript
-function renderToStaticMarkup(component: JSX.Element): Promise<string>
-```
+The high-level router reads these during the first client navigation so loaders aren’t re-run unnecessarily.
 
-### Parameters
-
-- **component**: `JSX.Element` - Component to render
-
-### Returns
-
-`Promise<string>` - Static HTML string
-
-### Examples
-
-```typescript
-import { renderToStaticMarkup } from 'philjs-ssr';
-
-// For emails, PDFs, or static content
-const emailHTML = await renderToStaticMarkup(<EmailTemplate />);
-
-sendEmail({
-  to: user.email,
-  html: emailHTML
-});
-```
-
-### Notes
-
-- No hydration markers
-- Smaller HTML output
-- Cannot be hydrated on client
-- Use for truly static content
+Because loaders support the `Result` helpers from `philjs-core`, you can return `Ok(data)` or `Err(problem)` and render consistent fallbacks across SSR and the client.
 
 ---
 
-## hydrate()
+## Streaming Responses
 
-Hydrates server-rendered HTML on the client.
+For long rendering chains you can opt into streaming HTML. The streaming helpers are independent from the route-aware handler, so you can decide where to integrate them.
 
-### Signature
+### `renderToStreamingResponse(vnode, options?)`
 
-```typescript
-function hydrate(
-  component: JSX.Element,
-  container: HTMLElement
-): void
-```
+```ts
+import { renderToStreamingResponse, Suspense } from "philjs-ssr";
 
-### Parameters
-
-- **component**: `JSX.Element` - Component matching server render
-- **container**: `HTMLElement` - Container with server HTML
-
-### Examples
-
-#### Basic Hydration
-
-```typescript
-// Client entry point
-import { hydrate } from 'philjs-core';
-
-hydrate(<App />, document.getElementById('app')!);
-```
-
-#### With Initial Data
-
-```typescript
-const initialData = (window as any).__INITIAL_DATA__;
-
-hydrate(
-  <App initialData={initialData} />,
-  document.getElementById('app')!
-);
-```
-
-### Notes
-
-- Must match server component exactly
-- Attaches event listeners
-- Makes app interactive
-- Warns on mismatches in development
-
----
-
-## Server Functions
-
-Execute functions on the server from the client.
-
-### createServerFunction()
-
-```typescript
-function createServerFunction<T extends (...args: any[]) => any>(
-  fn: T
-): T
-```
-
-### Examples
-
-#### Define Server Function
-
-```typescript
-// server/functions.ts
-import { createServerFunction } from 'philjs-ssr';
-
-export const getUser = createServerFunction(async (id: string) => {
-  const user = await db.users.findById(id);
-  return user;
-});
-
-export const updateProfile = createServerFunction(
-  async (userId: string, data: ProfileData) => {
-    await db.users.update(userId, data);
-    return { success: true };
+const stream = await renderToStreamingResponse(
+  <App>
+    <Suspense fallback={<p>Loading…</p>}>
+      <SlowComponent />
+    </Suspense>
+  </App>,
+  {
+    onShellReady: () => console.log("Shell flushed"),
+    onComplete: () => console.log("All content sent"),
   }
 );
-```
 
-#### Use in Component
-
-```typescript
-import { getUser } from './server/functions';
-
-function UserProfile({ userId }: { userId: string }) {
-  const user = signal(null);
-
-  effect(async () => {
-    const data = await getUser(userId);
-    user.set(data);
-  });
-
-  return <div>{user()?.name}</div>;
-}
-```
-
-### Notes
-
-- Functions run on server only
-- Automatically serialized
-- Type-safe RPC calls
-- Secure by default
-
----
-
-## Headers and Cookies
-
-### useRequest()
-
-Access request data in components.
-
-```typescript
-interface RequestContext {
-  headers: Headers;
-  cookies: Map<string, string>;
-  url: URL;
-}
-
-function useRequest(): RequestContext
-```
-
-### Examples
-
-```typescript
-function Component() {
-  const request = useRequest();
-
-  const userAgent = request.headers.get('user-agent');
-  const sessionId = request.cookies.get('sessionId');
-
-  return (
-    <div>
-      <p>User Agent: {userAgent}</p>
-      <p>Session: {sessionId}</p>
-    </div>
-  );
-}
-```
-
----
-
-## Static Generation
-
-### generateStaticParams()
-
-Generate paths for static generation.
-
-```typescript
-interface StaticParams {
-  params: Record<string, string>;
-}
-
-function generateStaticParams(): Promise<StaticParams[]>
-```
-
-### Examples
-
-```typescript
-// Generate static pages for all blog posts
-export async function generateStaticParams() {
-  const posts = await fetchAllPosts();
-
-  return posts.map(post => ({
-    params: { slug: post.slug }
-  }));
-}
-
-// Used during build
-export async function getStaticProps({ params }) {
-  const post = await fetchPost(params.slug);
-
-  return {
-    props: { post }
-  };
-}
-```
-
----
-
-## Suspense and Streaming
-
-### Using Suspense in SSR
-
-```typescript
-import { Suspense } from 'philjs-core';
-
-function App() {
-  return (
-    <div>
-      <Header />
-
-      <Suspense fallback={<Loading />}>
-        <AsyncContent />
-      </Suspense>
-
-      <Footer />
-    </div>
-  );
-}
-
-// Server streams:
-// 1. Header and Footer immediately
-// 2. Loading fallback
-// 3. AsyncContent when ready
-```
-
-### Nested Suspense
-
-```typescript
-<Suspense fallback={<AppLoading />}>
-  <Layout>
-    <Suspense fallback={<SidebarLoading />}>
-      <Sidebar />
-    </Suspense>
-
-    <Suspense fallback={<ContentLoading />}>
-      <Content />
-    </Suspense>
-  </Layout>
-</Suspense>
-```
-
----
-
-## Error Handling
-
-### Server-Side Error Boundaries
-
-```typescript
-import { ErrorBoundary } from 'philjs-core';
-
-function App() {
-  return (
-    <ErrorBoundary
-      fallback={(error) => <ServerError error={error} />}
-      onError={(error) => {
-        logError(error);
-      }}
-    >
-      <Routes />
-    </ErrorBoundary>
-  );
-}
-```
-
-### Handle SSR Errors
-
-```typescript
-app.get('*', async (req, res) => {
-  try {
-    const html = await renderToString(<App />);
-    res.send(wrapHTML(html));
-  } catch (error) {
-    console.error('SSR Error:', error);
-
-    // Send fallback HTML
-    res.status(500).send(`
-      <!DOCTYPE html>
-      <html>
-        <body>
-          <h1>Something went wrong</h1>
-          <script src="/client.js"></script>
-        </body>
-      </html>
-    `);
-  }
+return new Response(stream, {
+  headers: { "Content-Type": "text/html; charset=utf-8" },
 });
 ```
 
----
-
-## Meta Tags
-
-### Set Meta Tags During SSR
-
-```typescript
-interface HeadProps {
-  title: string;
-  description: string;
-  image?: string;
-}
-
-function Head({ title, description, image }: HeadProps) {
-  return (
-    <head>
-      <title>{title}</title>
-      <meta name="description" content={description} />
-
-      {/* Open Graph */}
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      {image && <meta property="og:image" content={image} />}
-
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-    </head>
-  );
-}
-
-// Usage
-function BlogPost({ post }: { post: Post }) {
-  return (
-    <>
-      <Head
-        title={post.title}
-        description={post.excerpt}
-        image={post.coverImage}
-      />
-
-      <article>{post.content}</article>
-    </>
-  );
-}
-```
+Streaming keeps the same hydration contract as the regular handler: suspense boundaries progressively inject HTML on the client.
 
 ---
 
-## Best Practices
+## Typed Manifests
 
-### Serialize Data Safely
+Pair the SSR adapters with the router helpers to generate types for your loaders and params:
 
-```typescript
-// ✅ Escape data to prevent XSS
-function serializeData(data: any): string {
-  return JSON.stringify(data)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026');
-}
+```ts
+import { createRouteManifest, generateRouteTypes } from "philjs-router";
+import { routes } from "./routes";
 
-const html = `
-  <script>
-    window.__DATA__ = ${serializeData(data)};
-  </script>
-`;
+export const manifest = createRouteManifest(routes);
+const dts = generateRouteTypes(routes, { moduleName: "./routes" });
 ```
 
-### Avoid Browser APIs
-
-```typescript
-// ❌ Crashes on server
-function Component() {
-  const width = window.innerWidth;
-}
-
-// ✅ Check environment
-function Component() {
-  const width = signal(
-    typeof window !== 'undefined' ? window.innerWidth : 0
-  );
-}
-```
-
-### Use Streaming for Large Pages
-
-```typescript
-// ✅ Stream for better TTFB
-const stream = renderToStream(<App />);
-
-// ❌ String waits for everything
-const html = await renderToString(<App />);
-```
-
-### Handle Errors Gracefully
-
-```typescript
-// ✅ Always have fallback
-try {
-  const html = await renderToString(<App />);
-  res.send(wrapHTML(html));
-} catch (error) {
-  res.status(500).send(fallbackHTML);
-}
-```
-
----
-
-**Complete!** You now have comprehensive API documentation for PhilJS.
-
-Return to [API Reference Overview](./overview.md) for navigation.
+Use the manifest for static generation or build-time validation, and ship the generated `.d.ts` file to provide strongly typed `params` across your app.

@@ -5,6 +5,7 @@
 
 import type { JSXElement, VNode } from "./jsx-runtime.js";
 import { Fragment, isJSXElement } from "./jsx-runtime.js";
+import { effect } from "./signals.js";
 
 type HydrationContext = {
   /** Current DOM node being hydrated */
@@ -215,23 +216,7 @@ function createDOMElement(vnode: VNode): Node | null {
 
   // Handle functions as reactive values (signals/computations)
   if (typeof vnode === "function") {
-    const textNode = document.createTextNode("");
-
-    // Subscribe to signal changes if it has a subscribe method
-    const update = () => {
-      const value = (vnode as any)();
-      textNode.textContent = value == null ? "" : String(value);
-    };
-
-    // Initial update
-    update();
-
-    // Subscribe to changes if it's a signal
-    if (typeof (vnode as any).subscribe === "function") {
-      (vnode as any).subscribe(update);
-    }
-
-    return textNode;
+    return createDynamicNode(vnode as () => any);
   }
 
   // Handle HTML elements
@@ -322,24 +307,13 @@ function createDOMElement(vnode: VNode): Node | null {
       children.forEach((child: any) => {
         // Handle functions (signals/computations) as children
         if (typeof child === "function") {
-          const textNode = document.createTextNode("");
-
-          const update = () => {
-            const value = child();
-            textNode.textContent = value == null ? "" : String(value);
-          };
-
-          update();
-
-          if (typeof child.subscribe === "function") {
-            child.subscribe(update);
-          }
-
-          element.appendChild(textNode);
-        } else {
-          const childNode = createDOMElement(child);
-          if (childNode) element.appendChild(childNode);
+          const dynamic = createDynamicNode(child);
+          element.appendChild(dynamic);
+          return;
         }
+
+        const childNode = createDOMElement(child);
+        if (childNode) element.appendChild(childNode);
       });
     }
 
@@ -347,4 +321,100 @@ function createDOMElement(vnode: VNode): Node | null {
   }
 
   return null;
+}
+
+/**
+ * Create a reactive DOM range that updates when the accessor changes.
+ */
+function createDynamicNode(accessor: (() => any) & { subscribe?: (fn: () => void) => void | (() => void) }): Node {
+  const fragment = document.createDocumentFragment();
+  const startMarker = document.createComment("philjs:dynamic-start");
+  const endMarker = document.createComment("philjs:dynamic-end");
+  fragment.appendChild(startMarker);
+  fragment.appendChild(endMarker);
+
+  let currentNodes: Node[] = [];
+
+  const clearCurrent = () => {
+    currentNodes.forEach((node) => {
+      // Call nested disposal hooks if present
+      if (node instanceof Comment && (node as any).__philjs_dispose) {
+        (node as any).__philjs_dispose();
+      }
+      if (node.parentNode) {
+        node.parentNode.removeChild(node);
+      }
+    });
+    currentNodes = [];
+  };
+
+  const update = () => {
+    const parent = startMarker.parentNode;
+    if (!parent) return;
+
+    clearCurrent();
+
+    const value = accessor();
+    const nextNodes = normalizeToNodes(value);
+    nextNodes.forEach((node) => {
+      parent.insertBefore(node, endMarker);
+    });
+    currentNodes = nextNodes;
+  };
+
+  update();
+
+  if (typeof accessor.subscribe === "function") {
+    const dispose = accessor.subscribe(update);
+    if (typeof dispose === "function") {
+      (endMarker as any).__philjs_dispose = dispose;
+    }
+  } else {
+    const dispose = effect(() => {
+      update();
+    });
+    (endMarker as any).__philjs_dispose = dispose;
+  }
+
+  return fragment;
+}
+
+/**
+ * Normalize dynamic values (strings, numbers, JSX, arrays) into DOM nodes.
+ */
+function normalizeToNodes(value: any): Node[] {
+  if (value == null || value === false) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    const nodes: Node[] = [];
+    value.forEach((child) => {
+      nodes.push(...normalizeToNodes(child));
+    });
+    return nodes;
+  }
+
+  if (value instanceof DocumentFragment) {
+    return Array.from(value.childNodes);
+  }
+
+  if (value instanceof Node) {
+    return [value];
+  }
+
+  if (typeof value === "function") {
+    return normalizeToNodes(value());
+  }
+
+  if (isJSXElement(value)) {
+    const node = createDOMElement(value);
+    if (!node) return [];
+    if (node instanceof DocumentFragment) {
+      return Array.from(node.childNodes);
+    }
+    return [node];
+  }
+
+  return [document.createTextNode(String(value))];
 }

@@ -1,4 +1,3 @@
-import { signal, createAnimatedValue, createQuery, easings } from "philjs-core";
 import { Counter } from "./components/Counter";
 import { DataFetcher } from "./components/DataFetcher";
 import { AnimationDemo } from "./components/AnimationDemo";

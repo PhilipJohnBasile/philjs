@@ -51,3 +51,12 @@ export type {
   RateLimitStore,
   AdaptiveConfig,
 } from "./rate-limit.js";
+
+export {
+  createFetchHandler,
+  createNodeHttpHandler,
+  createExpressMiddleware,
+  createViteMiddleware,
+  createWorkerHandler,
+} from "./adapters.js";
+export type { PhilJSServerOptions } from "./adapters.js";

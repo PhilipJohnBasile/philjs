@@ -1,4 +1,4 @@
-import { signal, createAnimatedValue, easings } from "philjs-core";
+import { createAnimatedValue, memo } from "philjs-core";
 
 export function AnimationDemo() {
   const position = createAnimatedValue(0, {
@@ -9,6 +9,20 @@ export function AnimationDemo() {
     const target = position.value === 0 ? 200 : 0;
     position.set(target);
   };
+
+  const circleStyle = memo(() => ({
+    position: "absolute",
+    top: "50%",
+    left: "0",
+    transform: `translate(${position.value}px, -50%)`,
+    width: "50px",
+    height: "50px",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    borderRadius: "50%",
+    transition: "none"
+  }));
+
+  const statusText = memo(() => `Spring physics with natural motion — ${Math.round(position.value)}px`);
 
   return (
     <div>
@@ -37,17 +51,7 @@ export function AnimationDemo() {
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <div style={{
-          position: 'absolute',
-          left: `${position.value}px`,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '50px',
-          height: '50px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          borderRadius: '50%',
-          transition: 'none'
-        }} />
+        <div style={circleStyle} />
       </div>
 
       <p style={{
@@ -56,7 +60,7 @@ export function AnimationDemo() {
         fontSize: '0.9rem',
         textAlign: 'center'
       }}>
-        Spring physics with natural motion
+        {statusText}
       </p>
     </div>
   );

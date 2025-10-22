@@ -1,4 +1,4 @@
-import { signal } from "philjs-core";
+import { memo, signal } from "philjs-core";
 
 export function DataFetcher() {
   const data = signal<any>(null);
@@ -20,67 +20,78 @@ export function DataFetcher() {
     }
   };
 
-  const currentData = data();
-  const isLoading = loading();
-  const currentError = error();
+  const buttonLabel = memo(() => loading() ? "Loading..." : "Fetch GitHub Data");
+  const buttonStyle = memo(() => ({
+    width: "100%",
+    padding: "0.75rem",
+    fontSize: "1rem",
+    background: "#667eea",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: loading() ? "not-allowed" : "pointer",
+    opacity: loading() ? 0.6 : 1,
+    transition: "all 0.2s"
+  }));
+
+  const errorStyle = memo(() => ({
+    marginTop: "1rem",
+    padding: "0.75rem",
+    background: "#fee",
+    color: "#c33",
+    borderRadius: "6px",
+    fontSize: "0.9rem",
+    display: error() ? "block" : "none"
+  }));
+
+  const errorText = memo(() => (error() ? `Error: ${error()}` : ""));
+
+  const hasData = memo(() => !!data() && !loading());
+  const dataCardStyle = memo(() => ({
+    marginTop: "1rem",
+    fontSize: "0.85rem",
+    lineHeight: "1.6",
+    display: hasData() ? "block" : "none"
+  }));
+
+  const repoName = memo(() => data()?.name ?? "");
+  const repoStars = memo(() => data()?.stargazers_count?.toLocaleString() ?? "");
+  const repoForks = memo(() => data()?.forks_count?.toLocaleString() ?? "");
+  const repoLanguage = memo(() => data()?.language ?? "");
+
+  const showEmptyState = memo(() => !data() && !loading());
+  const emptyStateStyle = memo(() => ({
+    marginTop: "1rem",
+    color: "#666",
+    fontSize: "0.9rem",
+    textAlign: "center",
+    display: showEmptyState() ? "block" : "none"
+  }));
 
   return (
     <div>
       <button
         onClick={fetchData}
-        disabled={isLoading}
-        style={{
-          width: '100%',
-          padding: '0.75rem',
-          fontSize: '1rem',
-          background: '#667eea',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: isLoading ? 'not-allowed' : 'pointer',
-          opacity: isLoading ? 0.6 : 1,
-          transition: 'all 0.2s'
-        }}
+        disabled={loading}
+        style={buttonStyle}
       >
-        {isLoading ? 'Loading...' : 'Fetch GitHub Data'}
+        {buttonLabel}
       </button>
 
-      {currentError && (
-        <div style={{
-          marginTop: '1rem',
-          padding: '0.75rem',
-          background: '#fee',
-          color: '#c33',
-          borderRadius: '6px',
-          fontSize: '0.9rem'
-        }}>
-          Error: {currentError}
-        </div>
-      )}
+      <div style={errorStyle}>
+        {errorText}
+      </div>
 
-      {currentData && !isLoading && (
-        <div style={{
-          marginTop: '1rem',
-          fontSize: '0.85rem',
-          lineHeight: '1.6'
-        }}>
-          <div><strong>Repo:</strong> {currentData.name}</div>
-          <div><strong>Stars:</strong> {currentData.stargazers_count?.toLocaleString()}</div>
-          <div><strong>Forks:</strong> {currentData.forks_count?.toLocaleString()}</div>
-          <div><strong>Language:</strong> {currentData.language}</div>
-        </div>
-      )}
+      <div style={dataCardStyle}>
+        <div><strong>Repo:</strong> {repoName}</div>
+        <div><strong>Stars:</strong> {repoStars}</div>
+        <div><strong>Forks:</strong> {repoForks}</div>
+        <div><strong>Language:</strong> {repoLanguage}</div>
+      </div>
 
-      {!currentData && !isLoading && (
-        <p style={{
-          marginTop: '1rem',
-          color: '#666',
-          fontSize: '0.9rem',
-          textAlign: 'center'
-        }}>
-          Click to fetch data with SWR-style caching
-        </p>
-      )}
+      <p style={emptyStateStyle}>
+        Click to fetch data with SWR-style caching
+      </p>
     </div>
   );
 }

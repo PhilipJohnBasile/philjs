@@ -156,6 +156,22 @@ fs.writeFileSync('src/routes.d.ts', dts);
 - `options.moduleName` – emit `declare module "moduleName" { ... }` so the types augment that module.
 - `options.base` – prepend a base path to every route.
 
+### `createRouteMatcher(routes, options?)`
+
+Returns a function you can use on the server (SSR/SSG) to map a pathname to its route module and params.
+
+```ts
+import { createRouteMatcher } from 'philjs-router';
+import { routes } from './routes';
+
+const match = createRouteMatcher(routes);
+
+const matched = match('/blog/hello');
+// => { path: '/blog/:slug', params: { slug: 'hello' }, module, component, ... }
+```
+
+Use this together with `createRouteManifest()` when wiring `philjs-ssr` or a custom server adapter.
+
 ---
 
 ## File-Based Discovery

@@ -39,7 +39,7 @@ function ReactiveStylesExample() {
           <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
             <input
               type="checkbox"
-              checked={isActive()}
+              checked={isActive}
               onChange={(e) => isActive.set((e.target as HTMLInputElement).checked)}
               data-test="style-active"
             />
@@ -49,13 +49,13 @@ function ReactiveStylesExample() {
 
         <div>
           <label style="display: block; margin-bottom: 0.5rem;">
-            Size: <strong data-test="style-size-value">{size}px</strong>
+            Size: <strong data-test="style-size-value">{() => `${size()}px`}</strong>
           </label>
           <input
             type="range"
             min="50"
             max="200"
-            value={size()}
+            value={size}
             onInput={(e) => size.set(Number((e.target as HTMLInputElement).value))}
             style="width: 100%;"
             data-test="style-size"
@@ -68,7 +68,7 @@ function ReactiveStylesExample() {
           </label>
           <input
             type="color"
-            value={color()}
+            value={color}
             onInput={(e) => color.set((e.target as HTMLInputElement).value)}
             style="width: 100%; height: 40px;"
             data-test="style-color"
@@ -110,7 +110,7 @@ function ReactiveClassesExample() {
       <h3 style="margin: 0 0 1rem 0;">Reactive Classes & Conditional Styling</h3>
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div class={statusClass} style={statusStyle} data-test="status-box">
-          Status: {status().toUpperCase()}
+          Status: {() => status().toUpperCase()}
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
@@ -173,7 +173,7 @@ function ReactiveAttributesExample() {
           <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
             <input
               type="checkbox"
-              checked={isDisabled()}
+              checked={isDisabled}
               onChange={(e) => isDisabled.set((e.target as HTMLInputElement).checked)}
               data-test="attr-disabled"
             />
@@ -189,7 +189,7 @@ function ReactiveAttributesExample() {
             type="range"
             min="10"
             max="100"
-            value={maxLength()}
+            value={maxLength}
             onInput={(e) => maxLength.set(Number((e.target as HTMLInputElement).value))}
             style="width: 100%;"
             data-test="attr-maxlength"
@@ -242,7 +242,7 @@ function ThemeSwitcherExample() {
       <h3 style="margin: 0 0 1rem 0;">Theme Switcher</h3>
       <div style={containerStyle}>
         <h4 style="margin: 0 0 1rem 0;">
-          Current Theme: <span data-test="theme-name">{theme().toUpperCase()}</span>
+          Current Theme: <span data-test="theme-name">{() => theme().toUpperCase()}</span>
         </h4>
         <p style="margin: 0 0 1.5rem 0;">
           This container's background, text color, and border all update reactively!
@@ -252,7 +252,7 @@ function ThemeSwitcherExample() {
           onClick={() => theme.set(theme() === "light" ? "dark" : "light")}
           data-test="theme-toggle"
         >
-          Switch to {theme() === "light" ? "Dark" : "Light"} Theme
+          {() => `Switch to ${theme() === "light" ? "Dark" : "Light"} Theme`}
         </button>
       </div>
 

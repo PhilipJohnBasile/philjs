@@ -14,7 +14,7 @@ export function Counter() {
         color: '#667eea',
         margin: '1rem 0'
       }}>
-        {count()}
+        {count}
       </div>
       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
         <button

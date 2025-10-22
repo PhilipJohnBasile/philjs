@@ -41,7 +41,7 @@ function BasicSignalsExample() {
           <p style="margin: 0 0 0.5rem 0;">Name: <strong data-test="name-value">{name}</strong></p>
           <input
             class="input"
-            value={name()}
+            value={name}
             onInput={(e) => name.set((e.target as HTMLInputElement).value)}
             placeholder="Enter name..."
             data-test="name-input"
@@ -78,14 +78,14 @@ function MemosExample() {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <input
             class="input"
-            value={firstName()}
+            value={firstName}
             onInput={(e) => firstName.set((e.target as HTMLInputElement).value)}
             placeholder="First name"
             data-test="first-name"
           />
           <input
             class="input"
-            value={lastName()}
+            value={lastName}
             onInput={(e) => lastName.set((e.target as HTMLInputElement).value)}
             placeholder="Last name"
             data-test="last-name"
@@ -98,7 +98,7 @@ function MemosExample() {
             type="range"
             min="0"
             max="100"
-            value={age()}
+            value={age}
             onInput={(e) => age.set(Number((e.target as HTMLInputElement).value))}
             style="width: 100%;"
             data-test="age-slider"
@@ -108,7 +108,7 @@ function MemosExample() {
         <div style="background: var(--bg-alt); padding: 1rem; border-radius: 6px;">
           <p style="margin: 0 0 0.5rem 0;"><strong>Full Name:</strong> <span data-test="full-name">{fullName}</span></p>
           <p style="margin: 0 0 0.5rem 0;"><strong>Greeting:</strong> <span data-test="greeting">{greeting}</span></p>
-          <p style="margin: 0 0 0.5rem 0;"><strong>Can Vote:</strong> <span data-test="can-vote">{canVote() ? "Yes" : "No"}</span></p>
+          <p style="margin: 0 0 0.5rem 0;"><strong>Can Vote:</strong> <span data-test="can-vote">{() => (canVote() ? "Yes" : "No")}</span></p>
           <p style="margin: 0;"><strong>Age Group:</strong> <span data-test="age-group">{ageGroup}</span></p>
         </div>
 
@@ -149,7 +149,7 @@ function EffectsExample() {
             onClick={() => enabled.set(!enabled())}
             data-test="toggle-effect"
           >
-            {enabled() ? "Stop" : "Start"} Counter
+            {() => `${enabled() ? "Stop" : "Start"} Counter`}
           </button>
           <span data-test="effect-counter">Counter: <strong>{counter}</strong></span>
         </div>
@@ -157,13 +157,15 @@ function EffectsExample() {
         <div style="background: var(--bg-alt); padding: 1rem; border-radius: 6px; max-height: 150px; overflow-y: auto;">
           <strong>Effect Log:</strong>
           <div style="margin-top: 0.5rem;" data-test="effect-log">
-            {log().length === 0 ? (
-              <p style="margin: 0; color: var(--text-secondary);">No events yet...</p>
-            ) : (
-              log().map((entry, i) => (
+            {() => {
+              const entries = log();
+              if (entries.length === 0) {
+                return <p style="margin: 0; color: var(--text-secondary);">No events yet...</p>;
+              }
+              return entries.map((entry, i) => (
                 <p key={i} style="margin: 0.25rem 0; font-size: 0.9rem;">{entry}</p>
-              ))
-            )}
+              ));
+            }}
           </div>
         </div>
 

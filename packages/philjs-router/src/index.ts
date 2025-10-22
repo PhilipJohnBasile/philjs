@@ -24,6 +24,7 @@ export {
   Link,
   RouterView,
   createRouteManifest,
+  createRouteMatcher,
   generateRouteTypes,
 } from "./high-level.js";
 export type {
@@ -35,6 +36,7 @@ export type {
   RouteTransitionOptions,
   RouteManifestOptions,
   RouteTypeGenerationOptions,
+  RouteMatcher,
 } from "./high-level.js";
 
 // Smart Preloading
