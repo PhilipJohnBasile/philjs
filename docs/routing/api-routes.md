@@ -2,6 +2,8 @@
 
 Build backend API endpoints alongside your frontend pages using file-based API routes.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any high-level helpers referenced in this guide are part of the planned ergonomic API and are included here for conceptual guidance.
+
 ## What You'll Learn
 
 - Creating API routes

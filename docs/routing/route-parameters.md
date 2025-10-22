@@ -2,6 +2,8 @@
 
 Route parameters allow you to create dynamic routes that match patterns in URLs. PhilJS makes it easy to extract and use these parameters in your components.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `useParams()` referenced in this guide belong to the planned ergonomic API and are shown for conceptual guidance.
+
 ## Dynamic Segments
 
 ### Basic Parameters

@@ -2,6 +2,8 @@
 
 PhilJS provides powerful data loading capabilities that work seamlessly on both server and client. Load data before rendering, stream it progressively, or fetch it on demand.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `createDataLoader()` and related hooks referenced throughout this guide are part of the planned ergonomic API and appear for conceptual guidance.
+
 ## Server Data Loaders
 
 ### Basic Loader

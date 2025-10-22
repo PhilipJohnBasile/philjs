@@ -2,6 +2,8 @@
 
 Implement secure authentication patterns in PhilJS applications.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers referenced in this guide—such as `useRouter()`, `redirect()`, and `<Navigate>`—are part of the planned ergonomic API and are shown for conceptual guidance.
+
 ## What You'll Learn
 
 - Authentication strategies

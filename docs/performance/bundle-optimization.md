@@ -2,6 +2,8 @@
 
 Minimize bundle size for faster downloads and better performance.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any references to high-level router helpers are part of the planned ergonomic API and are included here for conceptual guidance.
+
 ## What You'll Learn
 
 - Bundle analysis

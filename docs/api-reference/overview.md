@@ -27,11 +27,10 @@ Core reactive primitives and rendering.
 
 ### @philjs/router
 
-Client-side routing.
+Low-level routing utilities.
 
-- **[Router API](./router.md)**: `Router`, `Route`, `Link`
-- **[Navigation API](./navigation.md)**: `useRouter()`, `useNavigate()`, `useParams()`
-- **[Guards API](./guards.md)**: Route guards and middleware
+- **[Router API](./router.md)**: `createRouter()`, `discoverRoutes()`, `matchRoute()`, `findLayouts()`, `SmartPreloader`, `ViewTransitionManager`
+- **[Routing Guides](../routing/overview.md)**: Conceptual walkthroughs (some examples show planned high-level helpers such as `<Router>` and `Link`)
 
 ### @philjs/ssr
 
@@ -84,23 +83,39 @@ type Component<P = {}> = (props: P) => JSX.Element;
 ### Router Types
 
 ```typescript
-// Route config
-interface RouteConfig {
-  path: string;
-  component: Component;
-  children?: RouteConfig[];
-}
+// Route module discovered from the filesystem
+type RouteModule = {
+  loader?: () => Promise<unknown>;
+  action?: (request: Request) => Promise<Response>;
+  default?: (props: any) => any;
+  config?: Record<string, unknown>;
+};
 
-// Router params
-interface RouteParams {
-  [key: string]: string;
-}
+// Pattern metadata produced by discoverRoutes()
+type RoutePattern = {
+  pattern: string;
+  regex: RegExp;
+  params: string[];
+  filePath: string;
+  priority: number;
+};
 
-// Navigation options
-interface NavigateOptions {
-  replace?: boolean;
-  state?: any;
-}
+// Smart preloading options
+type PreloadOptions = {
+  strategy?: 'hover' | 'visible' | 'intent' | 'eager' | 'manual';
+  hoverDelay?: number;
+  intentThreshold?: number;
+  maxConcurrent?: number;
+  priority?: 'high' | 'low' | 'auto';
+};
+
+// View transition options
+type ViewTransitionOptions = {
+  type?: 'slide-left' | 'slide-right' | 'slide-up' | 'slide-down' | 'fade' | 'scale' | 'custom';
+  duration?: number;
+  easing?: string;
+  customCSS?: string;
+};
 ```
 
 ### SSR Types
@@ -134,8 +149,15 @@ import { render, hydrate } from 'philjs-core';
 import { createContext, useContext } from 'philjs-core';
 
 // Router APIs
-import { Router, Route, Link } from 'philjs-router';
-import { useRouter, useNavigate, useParams } from 'philjs-router';
+import {
+  createRouter,
+  discoverRoutes,
+  matchRoute,
+  findLayouts,
+  applyLayouts,
+  initSmartPreloader,
+  initViewTransitions,
+} from 'philjs-router';
 
 // SSR APIs
 import { renderToString, renderToStream } from 'philjs-ssr';
@@ -154,7 +176,15 @@ import { DevTools } from 'philjs-devtools';
 const { signal, memo, effect } = require('philjs-core');
 
 // Router
-const { Router, Route } = require('philjs-router');
+const {
+  createRouter,
+  discoverRoutes,
+  matchRoute,
+  findLayouts,
+  applyLayouts,
+  initSmartPreloader,
+  initViewTransitions,
+} = require('philjs-router');
 
 // SSR
 const { renderToString } = require('philjs-ssr');

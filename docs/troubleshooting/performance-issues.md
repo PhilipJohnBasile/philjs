@@ -2,6 +2,8 @@
 
 Diagnose and fix performance problems in PhilJS applications.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). If this guide references high-level router helpers, treat them as conceptual placeholders for the planned ergonomic API.
+
 ## Identifying Performance Issues
 
 ### Symptoms

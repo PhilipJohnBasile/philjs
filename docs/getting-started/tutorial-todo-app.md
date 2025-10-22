@@ -2,6 +2,8 @@
 
 Build a full-featured todo application with persistence, filtering, and routing. This tutorial covers real-world patterns you'll use in every PhilJS app.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers referenced in this tutorial—`useSearchParams()`, `<Router>`, etc.—are part of the planned ergonomic API and are shown for conceptual guidance.
+
 ## What You'll Learn
 
 - Managing lists of data
@@ -234,21 +236,23 @@ Create `src/components/TodoApp.tsx`:
 
 ```typescript
 import { signal, memo, effect } from 'philjs-core';
-import { useSearchParams } from 'philjs-router';
 import { TodoItem } from './TodoItem';
 import { createTodo } from '../types/todo';
 import type { Todo, Filter } from '../types/todo';
 import { loadTodos, saveTodos } from '../utils/storage';
 
-export function TodoApp() {
+type TodoAppProps = {
+  url: URL;
+  navigate: (to: string) => Promise<void>;
+};
+
+export function TodoApp({ url, navigate }: TodoAppProps) {
   // Load initial todos from localStorage
   const todos = signal<Todo[]>(loadTodos());
 
   // Get filter from URL (?filter=active)
-  const [searchParams, setSearchParams] = useSearchParams();
-  const filter = signal<Filter>(
-    (searchParams.get('filter') as Filter) || 'all'
-  );
+  const filterParam = (url.searchParams.get('filter') as Filter) || 'all';
+  const filter = signal<Filter>(filterParam);
 
   // New todo input
   const newTodoText = signal('');
@@ -328,13 +332,15 @@ export function TodoApp() {
     todos.set(todos().filter(todo => !todo.completed));
   };
 
-  const setFilter = (newFilter: Filter) => {
+  const setFilter = async (newFilter: Filter) => {
     filter.set(newFilter);
+    const next = new URL(window.location.href);
     if (newFilter === 'all') {
-      setSearchParams({});
+      next.searchParams.delete('filter');
     } else {
-      setSearchParams({ filter: newFilter });
+      next.searchParams.set('filter', newFilter);
     }
+    await navigate(next.pathname + next.search);
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -527,17 +533,96 @@ const styles = {
 };
 ```
 
-## Step 5: Create the Main App
+## Step 5: Wire up the router
+
+Create `src/router.ts` so the current low-level APIs can mount and navigate your routes:
+
+```typescript
+import { createRouter } from 'philjs-router';
+import { render } from 'philjs-core';
+
+type RouteEntry = {
+  pattern: string;
+  load: () => Promise<{ default: (props: any) => any }>;
+};
+
+const routes: RouteEntry[] = [
+  { pattern: '/', load: () => import('./routes/index.tsx') },
+];
+
+const router = createRouter(
+  Object.fromEntries(routes.map((route) => [route.pattern, route.load]))
+);
+
+let outlet: HTMLElement | null = null;
+
+async function renderRoute(url: URL) {
+  if (!outlet) throw new Error('Router not started');
+
+  const entry =
+    routes.find((route) => route.pattern === url.pathname) ?? routes[0];
+  const loader = router.manifest[entry.pattern];
+  const mod = await loader();
+  const Component = mod.default;
+  render(() => Component({ url, navigate: navigateInternal }), outlet);
+}
+
+async function navigateInternal(to: string) {
+  const url = new URL(to, window.location.origin);
+  window.history.pushState({}, '', url.toString());
+  await renderRoute(url);
+}
+
+export const navigate = navigateInternal;
+
+export function startRouter(target: HTMLElement) {
+  outlet = target;
+
+  document.addEventListener('click', (event) => {
+    const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[data-router-link]');
+    if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+
+    const url = new URL(anchor.href);
+    if (url.origin !== window.location.origin) return;
+
+    event.preventDefault();
+    void navigateInternal(url.pathname + url.search + url.hash);
+  });
+
+  window.addEventListener('popstate', () => {
+    renderRoute(new URL(window.location.href));
+  });
+
+  renderRoute(new URL(window.location.href));
+}
+```
+
+Update `src/main.tsx` to bootstrap the router:
+
+```typescript
+import { startRouter } from './router.ts';
+
+startRouter(document.getElementById('app')!);
+```
+
+Now your routes render through the shared router, and every component receives the `url` and `navigate` props shown above.
+
+## Step 6: Create the Main App
 
 Update `src/routes/index.tsx`:
 
 ```typescript
 import { TodoApp } from '../components/TodoApp';
 
-export default function Home() {
+type HomeProps = {
+  url: URL;
+  navigate: (to: string) => Promise<void>;
+};
+
+export default function Home({ url, navigate }: HomeProps) {
   return (
     <div style={styles.app}>
-      <TodoApp />
+      <TodoApp url={url} navigate={navigate} />
 
       <footer style={styles.info}>
         <p>Double-click to edit a todo</p>
@@ -597,19 +682,22 @@ const filteredTodos = memo(() => {
 ### URL-Based Filtering
 
 ```typescript
-const [searchParams, setSearchParams] = useSearchParams();
+const filterParam = (url.searchParams.get('filter') as Filter) || 'all';
+const filter = signal<Filter>(filterParam);
 
-const setFilter = (newFilter: Filter) => {
+const setFilter = async (newFilter: Filter) => {
   filter.set(newFilter);
+  const next = new URL(window.location.href);
   if (newFilter === 'all') {
-    setSearchParams({});
+    next.searchParams.delete('filter');
   } else {
-    setSearchParams({ filter: newFilter });
+    next.searchParams.set('filter', newFilter);
   }
+  await navigate(next.pathname + next.search);
 };
 ```
 
-Filters are stored in the URL (`?filter=active`). Users can bookmark filtered views and use browser back/forward!
+The current filter lives in the URL (`?filter=active`). Updating it keeps the UI in sync with the browser history and makes filtered views shareable.
 
 ### Immutable Updates
 
@@ -630,7 +718,7 @@ We create a new array instead of mutating. This is crucial for:
 - Time travel debugging
 - Avoiding bugs
 
-## Step 6: Add Features
+## Step 7: Add Features
 
 ### Bulk Actions
 
@@ -784,9 +872,11 @@ Create `src/components/TodoApp.test.tsx`:
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TodoApp } from './TodoApp';
 
+const mockNavigate = async () => {};
+
 describe('TodoApp', () => {
   it('adds a new todo', async () => {
-    render(<TodoApp />);
+    render(<TodoApp url={new URL('http://localhost/')} navigate={mockNavigate} />);
 
     const input = screen.getByPlaceholderText('What needs to be done?');
     fireEvent.change(input, { target: { value: 'Buy milk' } });
@@ -796,7 +886,7 @@ describe('TodoApp', () => {
   });
 
   it('toggles a todo', () => {
-    render(<TodoApp />);
+    render(<TodoApp url={new URL('http://localhost/')} navigate={mockNavigate} />);
 
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
@@ -805,7 +895,7 @@ describe('TodoApp', () => {
   });
 
   it('filters todos', () => {
-    render(<TodoApp />);
+    render(<TodoApp url={new URL('http://localhost/?filter=completed')} navigate={mockNavigate} />);
 
     // Add todos
     // ...

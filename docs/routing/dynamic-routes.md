@@ -2,6 +2,8 @@
 
 Handle dynamic URL segments like user IDs, product slugs, and category filters with dynamic routes.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers referenced in these examples—including `useParams()` and other JSX components—are part of the planned ergonomic API and are shown here for conceptual guidance.
+
 ## What You'll Learn
 
 - Dynamic route parameters

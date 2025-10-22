@@ -2,6 +2,8 @@
 
 Properly managing loading states creates a better user experience. PhilJS provides multiple patterns for handling loading, from simple spinners to sophisticated skeleton screens.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `useNavigation()` referenced here belong to the planned ergonomic API and are shown for conceptual guidance.
+
 ## Basic Loading States
 
 ### Component-Level Loading

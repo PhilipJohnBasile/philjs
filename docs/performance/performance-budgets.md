@@ -2,6 +2,8 @@
 
 Set and enforce performance goals to maintain fast application performance.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any mentions of high-level router helpers in this guide are part of the planned ergonomic API and appear for conceptual guidance.
+
 ## What You'll Learn
 
 - Setting performance budgets

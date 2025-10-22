@@ -2,6 +2,8 @@
 
 Best practices for structuring and organizing PhilJS projects.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). References to high-level helpers like `<Router>` or `Link` in this guide are part of the planned ergonomic API and are shared for conceptual planning.
+
 ## Project Structure
 
 ### Standard Structure

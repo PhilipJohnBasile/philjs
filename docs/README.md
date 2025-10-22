@@ -4,6 +4,8 @@
 
 PhilJS is a modern JavaScript framework featuring fine-grained reactivity, zero hydration, and industry-first intelligence features for building fast, modern web applications.
 
+> Maintainers: see [`CONSOLIDATED_REFERENCE.md`](./CONSOLIDATED_REFERENCE.md) for a source-of-truth mapping between documentation and the current code exports.
+
 ## 📚 Documentation Sections
 
 ### [Getting Started](/docs/getting-started/)

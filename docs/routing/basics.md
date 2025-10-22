@@ -2,6 +2,8 @@
 
 PhilJS includes a powerful file-based routing system that automatically creates routes from your file structure. No configuration needed—just create files and PhilJS handles the rest.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers demonstrated here—like `<Router>`, `<Route>`, `Link`, and `useRouter()`—are part of the planned ergonomic API and are shown for conceptual guidance.
+
 ## File-Based Routing
 
 Routes are defined by files in your `routes/` directory:
@@ -61,73 +63,156 @@ export default function BlogIndex() {
 }
 ```
 
-## Navigation
+## Wiring navigation with the current APIs
 
-### Link Component
+Until the high-level `<Router>`/`Link` helpers land, you can wire up navigation yourself with the low-level exports from `philjs-router`.
+
+Create `src/router.ts`:
+
+```ts
+import { createRouter } from 'philjs-router';
+import { render } from 'philjs-core';
+
+type RouteEntry = {
+  pattern: string;
+  load: () => Promise<{ default: (props: any) => any }>;
+};
+
+const routes: RouteEntry[] = [
+  { pattern: '/', load: () => import('./routes/index.js') },
+  { pattern: '/about', load: () => import('./routes/about.js') },
+  { pattern: '/blog/:slug', load: () => import('./routes/blog/[slug].js') },
+];
+
+const router = createRouter(
+  Object.fromEntries(routes.map((route) => [route.pattern, route.load]))
+);
+
+let outlet: HTMLElement | null = null;
+
+function matchPath(pattern: string, pathname: string): Record<string, string> | null {
+  const paramNames: string[] = [];
+  const regex = new RegExp(
+    '^' +
+      pattern
+        .replace(/\//g, '\\/')
+        .replace(/:[^/]+/g, (segment) => {
+          paramNames.push(segment.slice(1));
+          return '([^/]+)';
+        }) +
+      '$'
+  );
+
+  const match = pathname.match(regex);
+  if (!match) return null;
+
+  const params: Record<string, string> = {};
+  paramNames.forEach((name, index) => {
+    params[name] = decodeURIComponent(match[index + 1]);
+  });
+  return params;
+}
+
+async function renderRoute(url: URL) {
+  if (!outlet) throw new Error('Router not started');
+
+  for (const entry of routes) {
+    const params = matchPath(entry.pattern, url.pathname);
+    if (!params) continue;
+
+    const loader = router.manifest[entry.pattern];
+    const mod = await loader();
+    const Component = mod.default;
+    render(() => Component({ params, url, navigate: navigateInternal }), outlet);
+    return;
+  }
+
+  render(() => 'Not Found', outlet);
+}
+
+async function navigateInternal(to: string) {
+  const url = new URL(to, window.location.origin);
+  window.history.pushState({}, '', url.toString());
+  await renderRoute(url);
+}
+
+export const navigate = navigateInternal;
+
+export function startRouter(target: HTMLElement) {
+  outlet = target;
+
+  document.addEventListener('click', (event) => {
+    const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[data-router-link]');
+    if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+
+    const url = new URL(anchor.href);
+    if (url.origin !== window.location.origin) return;
+
+    event.preventDefault();
+    navigateInternal(url.pathname + url.search + url.hash);
+  });
+
+  window.addEventListener('popstate', () => {
+    renderRoute(new URL(window.location.href));
+  });
+
+  renderRoute(new URL(window.location.href));
+}
+```
+
+Initialize it in `src/main.tsx`:
+
+```ts
+import { startRouter } from './router.ts';
+
+startRouter(document.getElementById('app')!);
+```
+
+### Declarative links
+
+Use regular anchor tags and mark them with `data-router-link` so the router can intercept them:
 
 ```tsx
-import { Link } from 'philjs-router';
-
-function Navigation() {
+export function Navigation() {
   return (
     <nav>
-      <Link href="/">Home</Link>
-      <Link href="/about">About</Link>
-      <Link href="/blog">Blog</Link>
-      <Link href="/contact">Contact</Link>
+      <a href="/" data-router-link>
+        Home
+      </a>
+      <a href="/about" data-router-link>
+        About
+      </a>
+      <a href="/blog/introducing-philjs" data-router-link>
+        Blog
+      </a>
     </nav>
   );
 }
 ```
 
-### Active Links
+Add an `aria-current` attribute for the active link by comparing with `window.location.pathname` or by tracking the current route in a signal you update inside `renderRoute`.
+
+### Programmatic navigation
+
+Call the `navigate` helper you receive from the router when you need to redirect after a mutation:
 
 ```tsx
-import { Link, useLocation } from 'philjs-router';
+type LoginFormProps = {
+  navigate: (to: string) => Promise<void>;
+};
 
-function NavLink({ href, children }) {
-  const location = useLocation();
-  const isActive = location.pathname === href;
-
-  return (
-    <Link
-      href={href}
-      class={isActive ? 'active' : ''}
-    >
-      {children}
-    </Link>
-  );
-}
-
-// Usage
-<nav>
-  <NavLink href="/">Home</NavLink>
-  <NavLink href="/about">About</NavLink>
-</nav>
-```
-
-### Programmatic Navigation
-
-```tsx
-import { useNavigate } from 'philjs-router';
-
-function LoginForm() {
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+export function LoginForm({ navigate }: LoginFormProps) {
+  const handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
     const success = await login();
-
     if (success) {
-      navigate('/dashboard');
+      await navigate('/dashboard');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="email" name="email" />
-      <input type="password" name="password" />
+      {/* form fields */}
       <button type="submit">Login</button>
     </form>
   );
@@ -136,20 +221,18 @@ function LoginForm() {
 
 ## Route Parameters
 
+Because we manually fetched the component and passed `params` into it, your route modules can read the params from the props they receive:
+
 ### Dynamic Segments
 
 ```tsx
 // routes/users/[id].tsx
-import { useParams } from 'philjs-router';
-
-export default function UserProfile() {
-  const params = useParams();
-
+export default function UserProfile({ params }: { params: { id: string } }) {
   return (
-    <div>
+    <section>
       <h1>User Profile</h1>
       <p>User ID: {params.id}</p>
-    </div>
+    </section>
   );
 }
 ```
@@ -158,43 +241,34 @@ export default function UserProfile() {
 
 ```tsx
 // routes/blog/[category]/[slug].tsx
-import { useParams } from 'philjs-router';
-
-export default function BlogPost() {
-  const params = useParams();
-
+export default function BlogPost({
+  params,
+}: {
+  params: { category: string; slug: string };
+}) {
   return (
-    <div>
-      <h1>Blog Post</h1>
+    <article>
+      <h1>{params.slug.replace(/-/g, ' ')}</h1>
       <p>Category: {params.category}</p>
-      <p>Slug: {params.slug}</p>
-    </div>
+    </article>
   );
 }
 ```
 
 ### Catch-All Routes
 
+For catch-all segments, record the remainder inside your router’s `matchPath` helper (for example by translating `*` into `(.*)` and returning it as a single param) and pass it through the component props:
+
 ```tsx
 // routes/docs/[...path].tsx
-import { useParams } from 'philjs-router';
-
-export default function Docs() {
-  const params = useParams();
-  const path = params.path; // Can be multiple segments
-
+export default function Docs({ params }: { params: { path: string } }) {
   return (
     <div>
       <h1>Documentation</h1>
-      <p>Path: {path}</p>
+      <p>Path: {params.path}</p>
     </div>
   );
 }
-
-// Matches:
-// /docs/getting-started → path = "getting-started"
-// /docs/api/core → path = "api/core"
-// /docs/guides/tutorials/intro → path = "guides/tutorials/intro"
 ```
 
 ## Query Parameters
