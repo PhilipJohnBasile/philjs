@@ -3,7 +3,7 @@
  * Demonstrates signals, forms, and state management
  */
 
-import { signal, type Signal } from "philjs-core";
+import { memo, signal } from "philjs-core";
 
 type Todo = {
   id: number;
@@ -53,7 +53,7 @@ export function App() {
   };
 
   // Filtered todos
-  const filteredTodos = () => {
+  const filteredTodos = memo(() => {
     const all = todos();
     const currentFilter = filter();
 
@@ -64,11 +64,24 @@ export function App() {
       return all.filter((t) => t.completed);
     }
     return all;
-  };
+  });
 
-  // Stats
-  const activeCount = () => todos().filter((t) => !t.completed).length;
-  const completedCount = () => todos().filter((t) => t.completed).length;
+  const totalCount = memo(() => todos().length);
+  const activeCount = memo(() => todos().filter((t) => !t.completed).length);
+  const completedCount = memo(() => todos().filter((t) => t.completed).length);
+
+  const allButtonStyle = memo(() => ({
+    ...styles.filterButton,
+    ...(filter() === "all" ? styles.filterButtonActive : {}),
+  }));
+  const activeButtonStyle = memo(() => ({
+    ...styles.filterButton,
+    ...(filter() === "active" ? styles.filterButtonActive : {}),
+  }));
+  const completedButtonStyle = memo(() => ({
+    ...styles.filterButton,
+    ...(filter() === "completed" ? styles.filterButtonActive : {}),
+  }));
 
   return (
     <div style={styles.container}>
@@ -82,7 +95,7 @@ export function App() {
       <div style={styles.inputContainer}>
         <input
           type="text"
-          value={inputValue()}
+          value={inputValue}
           onInput={(e) => inputValue.set((e.target as HTMLInputElement).value)}
           onKeyPress={(e) => e.key === "Enter" && addTodo()}
           placeholder="What needs to be done?"
@@ -96,59 +109,56 @@ export function App() {
       <div style={styles.filters}>
         <button
           onClick={() => filter.set("all")}
-          style={{
-            ...styles.filterButton,
-            ...(filter() === "all" ? styles.filterButtonActive : {}),
-          }}
+          style={allButtonStyle}
         >
-          All ({todos().length})
+          {() => `All (${totalCount()})`}
         </button>
         <button
           onClick={() => filter.set("active")}
-          style={{
-            ...styles.filterButton,
-            ...(filter() === "active" ? styles.filterButtonActive : {}),
-          }}
+          style={activeButtonStyle}
         >
-          Active ({activeCount()})
+          {() => `Active (${activeCount()})`}
         </button>
         <button
           onClick={() => filter.set("completed")}
-          style={{
-            ...styles.filterButton,
-            ...(filter() === "completed" ? styles.filterButtonActive : {}),
-          }}
+          style={completedButtonStyle}
         >
-          Completed ({completedCount()})
+          {() => `Completed (${completedCount()})`}
         </button>
       </div>
 
       <ul style={styles.todoList}>
-        {filteredTodos().map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            onToggle={() => toggleTodo(todo.id)}
-            onDelete={() => deleteTodo(todo.id)}
-          />
-        ))}
+        {() =>
+          filteredTodos().map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onToggle={() => toggleTodo(todo.id)}
+              onDelete={() => deleteTodo(todo.id)}
+            />
+          ))
+        }
 
-        {filteredTodos().length === 0 && (
-          <li style={styles.emptyState}>
-            {filter() === "all"
+        {() => {
+          if (filteredTodos().length > 0) return null;
+          const currentFilter = filter();
+          const message =
+            currentFilter === "all"
               ? "No todos yet. Add one above!"
-              : filter() === "active"
+              : currentFilter === "active"
               ? "No active todos"
-              : "No completed todos"}
-          </li>
-        )}
+              : "No completed todos";
+          return <li style={styles.emptyState}>{message}</li>;
+        }}
       </ul>
 
-      {completedCount() > 0 && (
-        <button onClick={clearCompleted} style={styles.clearButton}>
-          Clear completed ({completedCount()})
-        </button>
-      )}
+      {() =>
+        completedCount() > 0 ? (
+          <button onClick={clearCompleted} style={styles.clearButton}>
+            {`Clear completed (${completedCount()})`}
+          </button>
+        ) : null
+      }
 
       <footer style={styles.footer}>
         <p style={styles.footerText}>
@@ -194,7 +204,7 @@ function TodoItem({
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, Partial<CSSStyleDeclaration>> = {
   container: {
     maxWidth: "600px",
     margin: "0 auto",

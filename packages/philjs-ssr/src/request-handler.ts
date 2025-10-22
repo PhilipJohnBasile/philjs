@@ -4,17 +4,14 @@
 
 // Types would come from other packages
 export type VNode = any;
-export type RoutePattern = any;
 
-// Placeholder implementations for build
-const renderToString = (vnode: VNode): string => {
-  return "<div>Rendered</div>";
-};
-const matchRoute = (pathname: string, routes: any[]): any => null;
-const findLayouts = async (filePath: string, routesDir: string, loadModule: any): Promise<any[]> => [];
-const applyLayouts = (vnode: VNode, layouts: any[], params: any): VNode => vnode;
 import type { Loader, Action, ActionCtx } from "./types.js";
-import { isResult } from "philjs-core";
+import { isResult, renderToString } from "philjs-core";
+import type { RouteMatcher } from "philjs-router";
+
+const defaultRenderToString = async (vnode: VNode): Promise<string> => {
+  return renderToString(vnode);
+};
 
 function safeSerialize(value: any): string {
   try {
@@ -28,7 +25,7 @@ function safeSerialize(value: any): string {
 export type RouteModule = {
   loader?: Loader<any>;
   action?: Action<any>;
-  default: (props: { data?: any; params: Record<string, string> }) => VNode;
+  default: (props: { data?: any; error?: any; params: Record<string, string> }) => VNode;
 };
 
 export type RequestContext = {
@@ -47,14 +44,12 @@ export type RequestContext = {
 };
 
 export type RenderOptions = {
-  /** Routes directory (absolute path) */
-  routesDir: string;
-  /** Available route patterns */
-  routes: RoutePattern[];
-  /** Function to load route modules */
-  loadModule: (filePath: string) => Promise<RouteModule>;
+  /** Function to match a pathname to a route module */
+  match: RouteMatcher;
   /** Base URL for the application */
   baseUrl?: string;
+  /** Custom renderer (defaults to philjs-core renderToString) */
+  render?: (component: VNode) => Promise<string> | string;
 };
 
 /**
@@ -68,17 +63,15 @@ export async function handleRequest(
   const pathname = url.pathname;
 
   // Match route
-  const match = matchRoute(pathname, options.routes);
+  const match = options.match(pathname);
   if (!match) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const { route, params } = match;
+  const { module, params } = match;
 
   try {
     // Load route module
-    const routeModule = await options.loadModule(route.filePath);
-
     // Create request context
     const ctx: RequestContext = {
       request,
@@ -90,12 +83,12 @@ export async function handleRequest(
     };
 
     // Handle POST requests (actions)
-    if (request.method === "POST" && routeModule.action) {
+    if (request.method === "POST" && module.action) {
       const actionCtx: ActionCtx = {
         ...ctx,
         formData: ctx.formData!,  // Safe to assert since we're in POST handler
       };
-      const actionResult = await routeModule.action(actionCtx);
+      const actionResult = await module.action(actionCtx);
 
       // If action returns a redirect, return it
       if (actionResult && typeof actionResult === "object" && "redirect" in actionResult) {
@@ -110,9 +103,9 @@ export async function handleRequest(
     // Execute loader
     let loaderData: any = undefined;
     let loaderError: any = undefined;
-    if (routeModule.loader) {
+    if (module.loader) {
       try {
-        const result = await routeModule.loader(ctx);
+        const result = await module.loader(ctx);
         if (isResult(result)) {
           if (result.ok) {
             loaderData = result.value;
@@ -128,22 +121,24 @@ export async function handleRequest(
     }
 
     // Render component
-    const Component = routeModule.default;
+    const Component = match.component ?? module.default;
     if (!Component) {
       return new Response("No default export in route module", { status: 500 });
     }
 
-    const componentTree = Component({ data: loaderData, error: loaderError, params });
-
-    // Apply layouts
-    const layouts = await findLayouts(route.filePath, options.routesDir, async (path) => {
-      return (await options.loadModule(path)) as any;
+    const componentTree = Component({
+      data: loaderData,
+      error: loaderError,
+      params,
+      url,
+      navigate: async () => {
+        throw new Error("navigate() is not available during SSR rendering.");
+      },
     });
 
-    const wrapped = applyLayouts(componentTree, layouts, params);
-
     // Render to HTML
-    const html = renderToString(wrapped);
+    const renderer = options.render ?? defaultRenderToString;
+    const html = await renderer(componentTree);
 
     // Wrap in HTML document
     const serializedData = safeSerialize(loaderData);

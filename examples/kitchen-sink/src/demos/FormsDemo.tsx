@@ -28,13 +28,13 @@ function ControlledInputsExample() {
           <input
             class="input"
             type="text"
-            value={textValue()}
+            value={textValue}
             onInput={(e) => textValue.set((e.target as HTMLInputElement).value)}
             placeholder="Enter text..."
             data-test="text-input"
           />
           <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">
-            Value: <span data-test="text-value">{textValue()}</span>
+            Value: <span data-test="text-value">{textValue}</span>
           </p>
         </div>
 
@@ -45,7 +45,7 @@ function ControlledInputsExample() {
           <input
             class="input"
             type="number"
-            value={numberValue()}
+            value={numberValue}
             onInput={(e) => numberValue.set(Number((e.target as HTMLInputElement).value))}
             data-test="number-input"
           />
@@ -54,12 +54,12 @@ function ControlledInputsExample() {
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <input
             type="checkbox"
-            checked={checkboxValue()}
+            checked={checkboxValue}
             onChange={(e) => checkboxValue.set((e.target as HTMLInputElement).checked)}
             data-test="checkbox-input"
           />
           <label style="font-weight: 600;">
-            Checkbox: <span data-test="checkbox-value">{checkboxValue() ? "Checked" : "Unchecked"}</span>
+            Checkbox: <span data-test="checkbox-value">{() => (checkboxValue() ? "Checked" : "Unchecked")}</span>
           </label>
         </div>
 
@@ -71,7 +71,7 @@ function ControlledInputsExample() {
                 <input
                   type="radio"
                   name="radio-group"
-                  checked={radioValue() === opt}
+                  checked={() => radioValue() === opt}
                   onChange={() => radioValue.set(opt)}
                   data-test={`radio-${opt}`}
                 />
@@ -88,7 +88,7 @@ function ControlledInputsExample() {
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Select:</label>
           <select
             class="input"
-            value={selectValue()}
+            value={selectValue}
             onChange={(e) => selectValue.set((e.target as HTMLSelectElement).value)}
             data-test="select-input"
           >
@@ -116,6 +116,18 @@ function FormValidationExample() {
   const passwordValid = memo(() => password().length >= 8);
   const passwordsMatch = memo(() => password() === confirmPassword() && confirmPassword().length > 0);
   const formValid = memo(() => emailValid() && passwordValid() && passwordsMatch());
+
+  const emailTouched = memo(() => email().length > 0);
+  const passwordTouched = memo(() => password().length > 0);
+  const confirmTouched = memo(() => confirmPassword().length > 0);
+
+  const emailStyle = memo(() => inputStyle(emailValid(), emailTouched()));
+  const passwordStyle = memo(() => inputStyle(passwordValid(), passwordTouched()));
+  const confirmStyle = memo(() => inputStyle(passwordsMatch(), confirmTouched()));
+  const submitDisabled = memo(() => !formValid());
+  const submitStyle = memo(() =>
+    submitDisabled() ? { opacity: "0.5", cursor: "not-allowed" } : {}
+  );
 
   const inputStyle = (isValid: boolean, touched: boolean) => ({
     ...({
@@ -148,69 +160,77 @@ function FormValidationExample() {
         <div>
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email:</label>
           <input
-            style={inputStyle(emailValid(), email().length > 0)}
+            style={emailStyle}
             type="email"
-            value={email()}
+            value={email}
             onInput={(e) => email.set((e.target as HTMLInputElement).value)}
             placeholder="you@example.com"
             data-test="email-input"
           />
-          {email().length > 0 && !emailValid() && (
-            <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="email-error">
-              Please enter a valid email
-            </p>
-          )}
+          {() =>
+            emailTouched() && !emailValid()
+              ? <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="email-error">
+                  Please enter a valid email
+                </p>
+              : null
+          }
         </div>
 
         <div>
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password (min 8 chars):</label>
           <input
-            style={inputStyle(passwordValid(), password().length > 0)}
+            style={passwordStyle}
             type="password"
-            value={password()}
+            value={password}
             onInput={(e) => password.set((e.target as HTMLInputElement).value)}
             placeholder="********"
             data-test="password-input"
           />
-          {password().length > 0 && !passwordValid() && (
-            <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="password-error">
-              Password must be at least 8 characters
-            </p>
-          )}
+          {() =>
+            passwordTouched() && !passwordValid()
+              ? <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="password-error">
+                  Password must be at least 8 characters
+                </p>
+              : null
+          }
         </div>
 
         <div>
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Confirm Password:</label>
           <input
-            style={inputStyle(passwordsMatch(), confirmPassword().length > 0)}
+            style={confirmStyle}
             type="password"
-            value={confirmPassword()}
+            value={confirmPassword}
             onInput={(e) => confirmPassword.set((e.target as HTMLInputElement).value)}
             placeholder="********"
             data-test="confirm-password-input"
           />
-          {confirmPassword().length > 0 && !passwordsMatch() && (
-            <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="confirm-error">
-              Passwords don't match
-            </p>
-          )}
+          {() =>
+            confirmTouched() && !passwordsMatch()
+              ? <p style="margin: 0.5rem 0 0 0; color: var(--error); font-size: 0.9rem;" data-test="confirm-error">
+                  Passwords don't match
+                </p>
+              : null
+          }
         </div>
 
         <button
           type="submit"
           class="button"
-          disabled={!formValid()}
-          style={formValid() ? {} : { opacity: "0.5", cursor: "not-allowed" }}
+          disabled={submitDisabled}
+          style={submitStyle}
           data-test="submit-button"
         >
           Submit
         </button>
 
-        {submitted() && (
-          <div style="background: var(--success); color: white; padding: 1rem; border-radius: 6px;" data-test="success-message">
-            ✓ Form submitted successfully!
-          </div>
-        )}
+        {() =>
+          submitted()
+            ? <div style="background: var(--success); color: white; padding: 1rem; border-radius: 6px;" data-test="success-message">
+                ✓ Form submitted successfully!
+              </div>
+            : null
+        }
       </form>
     </div>
   );
@@ -230,6 +250,16 @@ function MultiStepFormExample() {
   });
 
   const progressPercent = memo(() => (step() / 3) * 100);
+  const progressStyle = memo(() => ({
+    background: "var(--primary)",
+    height: "100%",
+    width: `${progressPercent()}%`,
+    transition: "width 0.3s ease",
+  }));
+  const proceedDisabled = memo(() => !canProceed());
+  const proceedStyle = memo(() =>
+    proceedDisabled() ? { opacity: "0.5", cursor: "not-allowed" } : {}
+  );
 
   const reset = () => {
     step.set(1);
@@ -245,105 +275,123 @@ function MultiStepFormExample() {
       {/* Progress Bar */}
       <div style="background: var(--bg-alt); height: 8px; border-radius: 4px; margin-bottom: 1.5rem; overflow: hidden;">
         <div
-          style={memo(() => ({
-            background: "var(--primary)",
-            height: "100%",
-            width: `${progressPercent()}%`,
-            transition: "width 0.3s ease",
-          }))}
+          style={progressStyle}
           data-test="progress-bar"
         ></div>
       </div>
 
       <div style="min-height: 200px;">
-        {step() === 1 && (
-          <div data-test="step-1">
-            <h4 style="margin: 0 0 1rem 0;">Step 1: Personal Info</h4>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Name:</label>
-            <input
-              class="input"
-              value={name()}
-              onInput={(e) => name.set((e.target as HTMLInputElement).value)}
-              placeholder="Enter your name"
-              data-test="name-input"
-            />
-          </div>
-        )}
-
-        {step() === 2 && (
-          <div data-test="step-2">
-            <h4 style="margin: 0 0 1rem 0;">Step 2: Demographics</h4>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Age:</label>
-            <input
-              class="input"
-              type="number"
-              value={age()}
-              onInput={(e) => age.set((e.target as HTMLInputElement).value)}
-              placeholder="Enter your age"
-              data-test="age-input"
-            />
-          </div>
-        )}
-
-        {step() === 3 && (
-          <div data-test="step-3">
-            <h4 style="margin: 0 0 1rem 0;">Step 3: Location</h4>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Country:</label>
-            <input
-              class="input"
-              value={country()}
-              onInput={(e) => country.set((e.target as HTMLInputElement).value)}
-              placeholder="Enter your country"
-              data-test="country-input"
-            />
-          </div>
-        )}
-
-        {step() === 4 && (
-          <div data-test="step-4">
-            <h4 style="margin: 0 0 1rem 0;">✓ Complete!</h4>
-            <div style="background: var(--bg-alt); padding: 1rem; border-radius: 6px;">
-              <p style="margin: 0 0 0.5rem 0;"><strong>Name:</strong> {name}</p>
-              <p style="margin: 0 0 0.5rem 0;"><strong>Age:</strong> {age}</p>
-              <p style="margin: 0;"><strong>Country:</strong> {country}</p>
-            </div>
-          </div>
-        )}
+        {() => {
+          const currentStep = step();
+          if (currentStep === 1) {
+            return (
+              <div data-test="step-1">
+                <h4 style="margin: 0 0 1rem 0;">Step 1: Personal Info</h4>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Name:</label>
+                <input
+                  class="input"
+                  value={name}
+                  onInput={(e) => name.set((e.target as HTMLInputElement).value)}
+                  placeholder="Enter your name"
+                  data-test="name-input"
+                />
+              </div>
+            );
+          }
+          if (currentStep === 2) {
+            return (
+              <div data-test="step-2">
+                <h4 style="margin: 0 0 1rem 0;">Step 2: Demographics</h4>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Age:</label>
+                <input
+                  class="input"
+                  type="number"
+                  value={age}
+                  onInput={(e) => age.set((e.target as HTMLInputElement).value)}
+                  placeholder="Enter your age"
+                  data-test="age-input"
+                />
+              </div>
+            );
+          }
+          if (currentStep === 3) {
+            return (
+              <div data-test="step-3">
+                <h4 style="margin: 0 0 1rem 0;">Step 3: Location</h4>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Country:</label>
+                <input
+                  class="input"
+                  value={country}
+                  onInput={(e) => country.set((e.target as HTMLInputElement).value)}
+                  placeholder="Enter your country"
+                  data-test="country-input"
+                />
+              </div>
+            );
+          }
+          if (currentStep === 4) {
+            return (
+              <div data-test="step-4">
+                <h4 style="margin: 0 0 1rem 0;">✓ Complete!</h4>
+                <div style="background: var(--bg-alt); padding: 1rem; border-radius: 6px;">
+                  <p style="margin: 0 0 0.5rem 0;"><strong>Name:</strong> {name}</p>
+                  <p style="margin: 0 0 0.5rem 0;"><strong>Age:</strong> {age}</p>
+                  <p style="margin: 0;"><strong>Country:</strong> {country}</p>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        }}
       </div>
 
       <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
-        {step() > 1 && step() < 4 && (
-          <button class="button" onClick={() => step.set(step() - 1)} data-test="prev-button">
-            Previous
-          </button>
-        )}
-        {step() < 3 && (
-          <button
-            class="button"
-            onClick={() => step.set(step() + 1)}
-            disabled={!canProceed()}
-            style={canProceed() ? {} : { opacity: "0.5", cursor: "not-allowed" }}
-            data-test="next-button"
-          >
-            Next
-          </button>
-        )}
-        {step() === 3 && (
-          <button
-            class="button"
-            onClick={() => step.set(4)}
-            disabled={!canProceed()}
-            style={canProceed() ? {} : { opacity: "0.5", cursor: "not-allowed" }}
-            data-test="finish-button"
-          >
-            Finish
-          </button>
-        )}
-        {step() === 4 && (
-          <button class="button" onClick={reset} data-test="reset-button">
-            Start Over
-          </button>
-        )}
+        {() => {
+          const currentStep = step();
+          const buttons: any[] = [];
+
+          if (currentStep > 1 && currentStep < 4) {
+            buttons.push(
+              <button class="button" onClick={() => step.set(step() - 1)} data-test="prev-button">
+                Previous
+              </button>
+            );
+          }
+
+          if (currentStep < 3) {
+            buttons.push(
+              <button
+                class="button"
+                onClick={() => step.set(step() + 1)}
+                disabled={proceedDisabled}
+                style={proceedStyle}
+                data-test="next-button"
+              >
+                Next
+              </button>
+            );
+          } else if (currentStep === 3) {
+            buttons.push(
+              <button
+                class="button"
+                onClick={() => step.set(4)}
+                disabled={proceedDisabled}
+                style={proceedStyle}
+                data-test="finish-button"
+              >
+                Finish
+              </button>
+            );
+          } else if (currentStep === 4) {
+            buttons.push(
+              <button class="button" onClick={reset} data-test="reset-button">
+                Start Over
+              </button>
+            );
+          }
+
+          return buttons;
+        }}
       </div>
     </div>
   );
