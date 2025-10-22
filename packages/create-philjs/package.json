@@ -23,6 +23,7 @@
     "starter"
   ],
   "dependencies": {
+    "philjs-router": "workspace:*",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2"
   },

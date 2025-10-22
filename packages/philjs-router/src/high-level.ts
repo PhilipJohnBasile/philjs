@@ -4,7 +4,7 @@
  * frameworks like Next.js or Remix, but backed by PhilJS signals and resumability.
  */
 
-import { render, signal } from "philjs-core";
+import { render, signal, isResult } from "philjs-core";
 import type { JSXElement, VNode } from "philjs-core";
 import {
   SmartPreloader,
@@ -34,6 +34,7 @@ export type RouteDefinition = {
 export type RouteComponentProps = {
   params: Record<string, string>;
   data?: any;
+  error?: any;
   url: URL;
   navigate: NavigateFunction;
 };
@@ -74,6 +75,14 @@ export type RouterOptions = {
   target?: string | HTMLElement;
 };
 
+export type RouteManifestOptions = {
+  base?: string;
+};
+
+export type RouteTypeGenerationOptions = RouteManifestOptions & {
+  moduleName?: string;
+};
+
 export type NavigateFunction = (to: string, options?: { replace?: boolean; state?: any }) => Promise<void>;
 
 export type RouteModule = {
@@ -87,6 +96,7 @@ export type MatchedRoute = {
   path: string;
   params: Record<string, string>;
   data?: any;
+  error?: any;
   component: RouteComponent<RouteComponentProps>;
   module: RouteModule;
 };
@@ -125,10 +135,10 @@ export function createAppRouter(options: RouterOptions): HighLevelRouter {
   const preloader = ensureSmartPreloader(options.prefetch);
   const transitionManager = ensureTransitionManager(options.transitions);
 
-  const manifestEntries: Record<string, RouteModule> = Object.create(null);
-  const routeMap = new Map<string, InternalRouteEntry>();
-
-  buildManifest(options.routes, manifestEntries, routeMap, normalizeBase(options.base ?? ""), []);
+  const { manifest, routeMap } = buildManifestGraph(
+    options.routes,
+    normalizeBase(options.base ?? "")
+  );
 
   const historyListeners = new Set<() => void>();
 
@@ -147,7 +157,7 @@ export function createAppRouter(options: RouterOptions): HighLevelRouter {
   const getCurrentRoute = () => routerStateSignal().route;
 
   const router: HighLevelRouter = {
-    manifest: manifestEntries,
+    manifest,
     navigate,
     getCurrentRoute,
     dispose: () => {
@@ -160,7 +170,6 @@ export function createAppRouter(options: RouterOptions): HighLevelRouter {
 
   activeRouter = router;
   routerStateSignal.set({ route: null, navigate });
-  routerStateSignal.set({ route: null, navigate });
 
   function handlePopState() {
     void renderCurrentRoute(routeMap, transitionManager, preloader, targetElement, new URL(window.location.href), navigate);
@@ -170,6 +179,35 @@ export function createAppRouter(options: RouterOptions): HighLevelRouter {
   void renderCurrentRoute(routeMap, transitionManager, preloader, targetElement, new URL(window.location.href), navigate);
 
   return router;
+}
+
+export function createRouteManifest(
+  routes: RouteDefinition[],
+  options: RouteManifestOptions = {}
+): Record<string, RouteModule> {
+  return buildManifestGraph(routes, normalizeBase(options.base ?? "")).manifest;
+}
+
+export function generateRouteTypes(
+  routes: RouteDefinition[],
+  options: RouteTypeGenerationOptions = {}
+): string {
+  const base = normalizeBase(options.base ?? "");
+  const entries = collectRouteEntries(routes, base);
+
+  const inModule = Boolean(options.moduleName);
+  const header = inModule
+    ? [`declare module "${options.moduleName}" {`, "  export interface RouteParams {"]
+    : ["export interface RouteParams {"];
+
+  const entryIndent = inModule ? "    " : "  ";
+  const body = entries.map((entry) => formatRouteEntry(entry, entryIndent));
+
+  const footer = inModule
+    ? ["  }", "  export type RoutePath = keyof RouteParams;", "}"]
+    : ["}", "export type RoutePath = keyof RouteParams;"];
+
+  return [...header, ...body, ...footer, ""].join("\n");
 }
 
 /**
@@ -196,6 +234,7 @@ export function RouterView(): VNode | JSXElement | string | null {
   return Component({
     params: state.route.params,
     data: state.route.data,
+    error: state.route.error,
     url: new URL(window.location.href),
     navigate: state.navigate,
   });
@@ -269,13 +308,25 @@ function ensureTransitionManager(transitions: RouterOptions["transitions"]) {
   return initViewTransitions();
 }
 
-function buildManifest(
+type BuildManifestResult = {
+  manifest: Record<string, RouteModule>;
+  routeMap: Map<string, InternalRouteEntry>;
+};
+
+function buildManifestGraph(routes: RouteDefinition[], base: string): BuildManifestResult {
+  const manifest: Record<string, RouteModule> = Object.create(null);
+  const routeMap = new Map<string, InternalRouteEntry>();
+  addRoutes(routes, base || "", [], null, manifest, routeMap);
+  return { manifest, routeMap };
+}
+
+function addRoutes(
   routes: RouteDefinition[],
-  manifest: Record<string, RouteModule>,
-  routeMap: Map<string, InternalRouteEntry>,
   base: string,
   parentLayouts: RouteComponent<LayoutComponentProps>[],
-  parentPath: string | null = null
+  parentPath: string | null,
+  manifest: Record<string, RouteModule>,
+  routeMap: Map<string, InternalRouteEntry>
 ) {
   for (const route of routes) {
     const path = resolvePath(base, route.path);
@@ -300,16 +351,58 @@ function buildManifest(
     });
 
     if (route.children?.length) {
-      buildManifest(
-        route.children,
-        manifest,
-        routeMap,
-        path,
-        layouts,
-        path
-      );
+      addRoutes(route.children, path, layouts, path, manifest, routeMap);
     }
   }
+}
+
+type RouteTypeEntry = {
+  path: string;
+  params: Array<{ name: string; type: string }>;
+};
+
+function collectRouteEntries(routes: RouteDefinition[], base: string): RouteTypeEntry[] {
+  const entries: RouteTypeEntry[] = [];
+  addRouteEntries(routes, base || "", entries);
+  return entries;
+}
+
+function addRouteEntries(routes: RouteDefinition[], base: string, entries: RouteTypeEntry[]) {
+  for (const route of routes) {
+    const path = resolvePath(base, route.path);
+    entries.push({ path, params: extractParamsFromPath(path) });
+
+    if (route.children?.length) {
+      addRouteEntries(route.children, path, entries);
+    }
+  }
+}
+
+function extractParamsFromPath(path: string): Array<{ name: string; type: string }> {
+  const parts = path.split("/").filter(Boolean);
+  const params: Array<{ name: string; type: string }> = [];
+
+  for (const part of parts) {
+    if (part.startsWith(":")) {
+      params.push({ name: part.slice(1), type: "string" });
+    } else if (part === "*") {
+      params.push({ name: "*", type: "string" });
+    }
+  }
+
+  return params;
+}
+
+function formatRouteEntry(entry: RouteTypeEntry, indent: string): string {
+  if (!entry.params.length) {
+    return `${indent}${JSON.stringify(entry.path)}: {};`;
+  }
+
+  const paramLines = entry.params
+    .map((param) => `${indent}  ${JSON.stringify(param.name)}: ${param.type};`)
+    .join("\n");
+
+  return `${indent}${JSON.stringify(entry.path)}: {\n${paramLines}\n${indent}};`;
 }
 
 function composeComponent(
@@ -362,22 +455,62 @@ async function renderCurrentRoute(
     preloader.recordNavigation?.(url.pathname);
   }
 
-  const loader = match.module.loader;
-  let data: any;
-  if (loader) {
-    data = await loader({
-      params: match.params,
-      request: new Request(url.toString()),
-    });
+  const cacheKey = url.pathname;
+  const ssrDataCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_DATA__ ||= {}) : undefined;
+  const ssrErrorCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_ERROR__ ||= {}) : undefined;
+
+  let data: any = undefined;
+  let error: any = undefined;
+
+  if (ssrDataCache && cacheKey in ssrDataCache) {
+    data = ssrDataCache[cacheKey];
+    delete ssrDataCache[cacheKey];
+    if (ssrErrorCache && cacheKey in ssrErrorCache) {
+      error = ssrErrorCache[cacheKey];
+      delete ssrErrorCache[cacheKey];
+    }
+  } else if (match.module.loader) {
+    try {
+      const result = await match.module.loader({
+        params: match.params,
+        request: new Request(url.toString()),
+      });
+
+      if (isResult(result)) {
+        if (result.ok) {
+          data = result.value;
+        } else {
+          error = result.error;
+        }
+      } else {
+        data = result;
+      }
+    } catch (err) {
+      error = err;
+    }
   }
 
-  const routeInfo: MatchedRoute = { ...match, data };
+  const routeInfo: MatchedRoute = { ...match, data, error };
   routerStateSignal.set({ route: routeInfo, navigate });
+
+  if (typeof window !== "undefined") {
+    const routeInfoStore = ((window as any).__PHILJS_ROUTE_INFO__ ||= {});
+    routeInfoStore.current = {
+      path: url.pathname,
+      params: match.params,
+      error,
+    };
+    const dataStore = ((window as any).__PHILJS_ROUTE_DATA__ ||= {});
+    dataStore[cacheKey] = data;
+    const errorStore = ((window as any).__PHILJS_ROUTE_ERROR__ ||= {});
+    errorStore[cacheKey] = error;
+  }
 
   const renderFn = () => {
     const vnode = match.component({
       params: match.params,
       data,
+      error,
       url,
       navigate,
     });

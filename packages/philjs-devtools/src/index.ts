@@ -50,6 +50,9 @@ export function showOverlay() {
       <div>Bundle size: <span id="bundle-size">--</span> KB</div>
       <div>AI calls: <span id="ai-calls">0</span></div>
       <div>AI cost: $<span id="ai-cost">0.00</span></div>
+      <div>Route: <span id="route-path">/</span></div>
+      <pre id="route-params" style="margin-top: 8px; white-space: pre-wrap; color: #a5b4fc; max-height: 80px; overflow: auto;"></pre>
+      <pre id="route-error" style="margin-top: 8px; white-space: pre-wrap; color: #fca5a5; max-height: 80px; overflow: auto;"></pre>
     </div>
     <button id="close-devtools" style="margin-top: 8px; cursor: pointer;">Close</button>
   `;
@@ -71,9 +74,18 @@ function updateStats() {
 
   const islandCount = document.getElementById("island-count");
   const hydratedCount = document.getElementById("hydrated-count");
+  const routePath = document.getElementById("route-path");
+  const routeParams = document.getElementById("route-params");
+  const routeError = document.getElementById("route-error");
 
   if (islandCount) islandCount.textContent = String(islands.length);
   if (hydratedCount) hydratedCount.textContent = String(hydrated.length);
+  if (routePath && routeParams && routeError) {
+    const info = (window as any).__PHILJS_ROUTE_INFO__?.current;
+    routePath.textContent = info?.path ?? "(unknown)";
+    routeParams.textContent = info?.params ? JSON.stringify(info.params, null, 2) : "{}";
+    routeError.textContent = info?.error ? JSON.stringify(info.error, null, 2) : "";
+  }
 
   // Re-check every second
   setTimeout(updateStats, 1000);

@@ -129,6 +129,35 @@ function AppShell() {
 
 ---
 
+### `createRouteManifest(routes, options?)`
+
+Returns the plain manifest object that `createAppRouter` uses internally. Useful for SSR/SSG pipelines where you need to feed route modules to `philjs-ssr`:
+
+```ts
+import { createRouteManifest } from 'philjs-router';
+import { routes } from './routes';
+
+export const routeManifest = createRouteManifest(routes);
+```
+
+- `options.base` – optional base path when deploying under a subdirectory.
+
+### `generateRouteTypes(routes, options?)`
+
+Generates a string containing TypeScript definitions for route params/pathnames. You can write this to `routes.d.ts` to get typed `params` in every component.
+
+```ts
+import { generateRouteTypes } from 'philjs-router';
+
+const dts = generateRouteTypes(routes, { moduleName: './routes' });
+fs.writeFileSync('src/routes.d.ts', dts);
+```
+
+- `options.moduleName` – emit `declare module "moduleName" { ... }` so the types augment that module.
+- `options.base` – prepend a base path to every route.
+
+---
+
 ## File-Based Discovery
 
 ### `discoverRoutes(routesDir)`
