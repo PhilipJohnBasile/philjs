@@ -21,31 +21,37 @@ describe("Animation - Animated Values", () => {
     expect(anim.isAnimating).toBe(false);
   });
 
-  it("should animate to new value", (done) => {
+  it("should animate to new value", async () => {
     const anim = createAnimatedValue(0);
 
-    anim.set(100, {
-      duration: 50,
-      onComplete: () => {
-        expect(anim.value).toBe(100);
-        done();
-      },
+    const animation = new Promise<void>((resolve) => {
+      anim.set(100, {
+        duration: 50,
+        onComplete: () => {
+          expect(anim.value).toBe(100);
+          resolve();
+        },
+      });
     });
 
     expect(anim.isAnimating).toBe(true);
+    await animation;
+    expect(anim.isAnimating).toBe(false);
   });
 
-  it("should call onUpdate callback during animation", (done) => {
+  it("should call onUpdate callback during animation", async () => {
     const anim = createAnimatedValue(0);
     const updates: number[] = [];
 
-    anim.set(100, {
-      duration: 50,
-      onUpdate: (value) => updates.push(value),
-      onComplete: () => {
-        expect(updates.length).toBeGreaterThan(0);
-        done();
-      },
+    await new Promise<void>((resolve) => {
+      anim.set(100, {
+        duration: 50,
+        onUpdate: (value) => updates.push(value),
+        onComplete: () => {
+          expect(updates.length).toBeGreaterThan(0);
+          resolve();
+        },
+      });
     });
   });
 
@@ -59,7 +65,7 @@ describe("Animation - Animated Values", () => {
     expect(anim.isAnimating).toBe(false);
   });
 
-  it("should support spring physics", (done) => {
+  it("should support spring physics", async () => {
     const spring: SpringConfig = {
       stiffness: 0.2,
       damping: 0.9,
@@ -68,12 +74,14 @@ describe("Animation - Animated Values", () => {
 
     const anim = createAnimatedValue(0);
 
-    anim.set(100, {
-      easing: spring,
-      onComplete: () => {
-        expect(anim.value).toBeCloseTo(100, 0);
-        done();
-      },
+    await new Promise<void>((resolve) => {
+      anim.set(100, {
+        easing: spring,
+        onComplete: () => {
+          expect(anim.value).toBeCloseTo(100, 0);
+          resolve();
+        },
+      });
     });
   }, 2000);
 
@@ -88,17 +96,20 @@ describe("Animation - Animated Values", () => {
     expect(typeof anim.velocity).toBe("number");
   });
 
-  it("should cancel previous animation when starting new one", () => {
+  it("should cancel previous animation when starting new one", async () => {
     const anim = createAnimatedValue(0);
     const onComplete1 = vi.fn();
 
     anim.set(50, { duration: 1000, onComplete: onComplete1 });
     anim.set(100, { duration: 50 });
 
-    setTimeout(() => {
-      // First animation should be cancelled
-      expect(onComplete1).not.toHaveBeenCalled();
-    }, 100);
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        // First animation should be cancelled
+        expect(onComplete1).not.toHaveBeenCalled();
+        resolve();
+      }, 120);
+    });
   });
 
   it("should subscribe to value changes", () => {
@@ -147,30 +158,34 @@ describe("Animation - Easing Functions", () => {
 });
 
 describe("Animation - Duration-based", () => {
-  it("should use custom easing function", (done) => {
+  it("should use custom easing function", async () => {
     const customEasing = (t: number) => t * t; // quadratic
     const anim = createAnimatedValue(0);
 
-    anim.set(100, {
-      duration: 50,
-      easing: customEasing,
-      onComplete: () => {
-        expect(anim.value).toBe(100);
-        done();
-      },
+    await new Promise<void>((resolve) => {
+      anim.set(100, {
+        duration: 50,
+        easing: customEasing,
+        onComplete: () => {
+          expect(anim.value).toBe(100);
+          resolve();
+        },
+      });
     });
   });
 
-  it("should default to 300ms duration", (done) => {
+  it("should default to 300ms duration", async () => {
     const anim = createAnimatedValue(0);
     const startTime = Date.now();
 
-    anim.set(100, {
-      onComplete: () => {
-        const elapsed = Date.now() - startTime;
-        expect(elapsed).toBeGreaterThanOrEqual(250);
-        done();
-      },
+    await new Promise<void>((resolve) => {
+      anim.set(100, {
+        onComplete: () => {
+          const elapsed = Date.now() - startTime;
+          expect(elapsed).toBeGreaterThanOrEqual(250);
+          resolve();
+        },
+      });
     });
   }, 500);
 });

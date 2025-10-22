@@ -16,6 +16,23 @@ export type { LayoutComponent, LayoutChain } from "./layouts.js";
 export { discoverRoutes, matchRoute } from "./discovery.js";
 export { findLayouts, applyLayouts } from "./layouts.js";
 
+// High-level router API
+export {
+  createAppRouter,
+  useRouter,
+  useRoute,
+  Link,
+  RouterView,
+} from "./high-level.js";
+export type {
+  RouteDefinition,
+  RouterOptions,
+  NavigateFunction,
+  MatchedRoute,
+  PrefetchOptions,
+  RouteTransitionOptions,
+} from "./high-level.js";
+
 // Smart Preloading
 export {
   SmartPreloader,

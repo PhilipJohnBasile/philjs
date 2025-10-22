@@ -20,6 +20,9 @@
     "lint": "echo 'Lint philjs-router'",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
   "devDependencies": {
     "rollup": "^4.28.1",
     "typescript": "^5.7.2",
