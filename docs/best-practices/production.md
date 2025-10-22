@@ -2,6 +2,8 @@
 
 Deploy PhilJS applications with confidence.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). If this guide references high-level helpers like `<Router>` or `Link`, treat them as conceptual placeholders for the planned ergonomic API.
+
 ## Build Optimization
 
 ### Production Build

@@ -2,6 +2,8 @@
 
 Split your application into smaller chunks for faster initial load times.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `<Router>`, `Route`, or `lazy()` referenced in this guide are part of the planned ergonomic API and are provided for conceptual guidance.
+
 ## What You'll Learn
 
 - Route-based splitting

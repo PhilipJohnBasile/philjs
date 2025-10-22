@@ -2,6 +2,8 @@
 
 Route guards protect routes by controlling access based on authentication, authorization, or other conditions. PhilJS provides flexible patterns for implementing route protection.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `redirect()`, `createDataLoader()`, and `<Navigate>` referenced here are part of the planned ergonomic API and are shown for conceptual guidance.
+
 ## Authentication Guards
 
 ### Basic Auth Guard

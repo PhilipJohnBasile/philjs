@@ -2,6 +2,8 @@
 
 Show beautiful loading UI during route transitions and data fetching.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers referenced throughout this guide—`useRouter()`, `<Router>`, `Link`, etc.—belong to the planned ergonomic API and are provided here for conceptual guidance.
+
 ## What You'll Learn
 
 - Route loading indicators

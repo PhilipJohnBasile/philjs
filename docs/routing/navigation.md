@@ -2,6 +2,8 @@
 
 Master client-side navigation with the Link component and programmatic routing.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers showcased here—`Link`, `useRouter()`, `useNavigate()`, etc.—are part of the planned ergonomic API and are provided for conceptual guidance.
+
 ## What You'll Learn
 
 - Link component

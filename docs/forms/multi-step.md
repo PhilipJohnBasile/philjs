@@ -2,6 +2,8 @@
 
 Build wizard-style forms with multiple steps, progress indicators, and state persistence.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). If this guide references `useSearchParams()` or other high-level helpers, treat them as conceptual placeholders for the planned ergonomic API.
+
 ## What You'll Learn
 
 - Multi-step form structure

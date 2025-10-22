@@ -2,6 +2,8 @@
 
 PhilJS is designed for performance from the ground up. This guide covers how to build blazing-fast applications and optimize them for production.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any mentions of high-level router helpers in this guide are part of the planned ergonomic API and are included for conceptual guidance.
+
 ## Why PhilJS is Fast
 
 PhilJS achieves exceptional performance through:

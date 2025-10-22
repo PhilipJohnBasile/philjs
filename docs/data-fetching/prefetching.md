@@ -2,6 +2,8 @@
 
 Prefetching loads data before it's needed, making navigation feel instant. PhilJS provides automatic and manual prefetching strategies.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `Link` or `useRouter()` mentioned in this guide are part of the planned ergonomic API and appear for conceptual guidance.
+
 ## Link Prefetching
 
 ### Automatic Prefetch on Hover

@@ -2,6 +2,8 @@
 
 Learn how to build a fully static blog with PhilJS that loads instantly and ranks well in search engines. This tutorial covers static site generation (SSG), markdown content, SEO, and deployment.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers referenced in this tutorial—like `<Router>` or `useParams()`—are part of the planned ergonomic API and appear for conceptual guidance.
+
 ## What You'll Learn
 
 - File-based routing for blog posts
@@ -301,7 +303,6 @@ export function SEO({
 Create `src/components/PostCard.tsx`:
 
 ```typescript
-import { Link } from 'philjs-router';
 import type { Post } from '../lib/posts';
 import { formatDate } from '../lib/posts';
 
@@ -313,13 +314,13 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <article style={styles.card}>
       {post.image && (
-        <Link href={`/blog/${post.slug}`}>
+        <a href={`/blog/${post.slug}`} data-router-link>
           <img
             src={post.image}
             alt={post.title}
             style={styles.image}
           />
-        </Link>
+        </a>
       )}
 
       <div style={styles.content}>
@@ -328,31 +329,34 @@ export function PostCard({ post }: PostCardProps) {
           <span style={styles.author}>by {post.author}</span>
         </div>
 
-        <Link href={`/blog/${post.slug}`} style={styles.titleLink}>
+        <a href={`/blog/${post.slug}`} data-router-link style={styles.titleLink}>
           <h2 style={styles.title}>{post.title}</h2>
-        </Link>
+        </a>
 
         <p style={styles.excerpt}>{post.excerpt}</p>
 
         <div style={styles.tags}>
           {post.tags.map(tag => (
-            <Link
+            <a
               key={tag}
               href={`/tags/${tag}`}
+              data-router-link
               style={styles.tag}
             >
               #{tag}
-            </Link>
+            </a>
           ))}
         </div>
 
-        <Link href={`/blog/${post.slug}`} style={styles.readMore}>
+        <a href={`/blog/${post.slug}`} data-router-link style={styles.readMore}>
           Read more →
-        </Link>
+        </a>
       </div>
     </article>
   );
 }
+
+The exported `config` object tells PhilJS to pre-render each post at build time. Instead of relying on framework-specific hooks, the router passes `params`, `url`, and `navigate` into the component so it stays in sync with the low-level APIs available today.
 
 const styles = {
   card: {
@@ -425,19 +429,17 @@ Create `src/routes/blog/index.tsx`:
 import { PostCard } from '../../components/PostCard';
 import { SEO } from '../../components/SEO';
 import { getAllPosts } from '../../lib/posts';
-import type { Post } from '../../lib/posts';
 
-// This runs at build time to generate static page
-export async function generateStaticParams() {
-  return [{}]; // Generate one static page
-}
+export const config = {
+  mode: 'ssg' as const,
+};
 
-interface BlogPageProps {
-  posts: Post[];
-}
+type BlogPageProps = {
+  url: URL;
+  navigate: (to: string) => Promise<void>;
+};
 
-export default async function BlogPage() {
-  // Fetch posts at build time
+export default async function BlogPage(_props: BlogPageProps) {
   const posts = await getAllPosts();
 
   return (
@@ -505,6 +507,8 @@ const styles = {
 };
 ```
 
+The `config` export marks the listing route for static generation—PhilJS renders it during the build so readers get an instant HTML response.
+
 ## Step 7: Create Individual Post Page
 
 Create `src/routes/blog/[slug].tsx`:
@@ -512,20 +516,19 @@ Create `src/routes/blog/[slug].tsx`:
 ```typescript
 import { SEO } from '../../components/SEO';
 import { getAllPosts, getPostBySlug, formatDate } from '../../lib/posts';
-import type { Post } from '../../lib/posts';
-import { Link } from 'philjs-router';
 
-// Generate static pages for all posts at build time
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-
-  return posts.map(post => ({
-    slug: post.slug,
-  }));
-}
+export const config = {
+  mode: 'ssg' as const,
+  async getStaticPaths() {
+    const posts = await getAllPosts();
+    return posts.map(post => `/blog/${post.slug}`);
+  },
+};
 
 interface PostPageProps {
   params: { slug: string };
+  url: URL;
+  navigate: (to: string) => Promise<void>;
 }
 
 export default async function PostPage({ params }: PostPageProps) {
@@ -546,9 +549,9 @@ export default async function PostPage({ params }: PostPageProps) {
 
       <article style={styles.article}>
         <header style={styles.header}>
-          <Link href="/blog" style={styles.back}>
+          <a href="/blog" data-router-link style={styles.back}>
             ← Back to blog
-          </Link>
+          </a>
 
           <h1 style={styles.title}>{post.title}</h1>
 
@@ -559,13 +562,14 @@ export default async function PostPage({ params }: PostPageProps) {
 
           <div style={styles.tags}>
             {post.tags.map(tag => (
-              <Link
+              <a
                 key={tag}
                 href={`/tags/${tag}`}
+                data-router-link
                 style={styles.tag}
               >
                 #{tag}
-              </Link>
+              </a>
             ))}
           </div>
         </header>
@@ -584,9 +588,9 @@ export default async function PostPage({ params }: PostPageProps) {
         />
 
         <footer style={styles.footer}>
-          <Link href="/blog" style={styles.backButton}>
+          <a href="/blog" data-router-link style={styles.backButton}>
             ← Back to all posts
-          </Link>
+          </a>
         </footer>
       </article>
     </>
@@ -663,7 +667,112 @@ const styles = {
 };
 ```
 
-## Step 8: Generate RSS Feed
+## Step 8: Wire up the router
+
+Static pages still work with regular hyperlinks, but if you want seamless client-side navigation you can reuse the low-level router utilities.
+
+Create `src/router.ts`:
+
+```typescript
+import { createRouter } from 'philjs-router';
+import { render } from 'philjs-core';
+
+type RouteEntry = {
+  pattern: string;
+  load: () => Promise<{ default: (props: any) => any }>;
+};
+
+const routes: RouteEntry[] = [
+  { pattern: '/', load: () => import('./routes/index.tsx') },
+  { pattern: '/blog', load: () => import('./routes/blog/index.tsx') },
+  { pattern: '/blog/:slug', load: () => import('./routes/blog/[slug].tsx') },
+  { pattern: '/tags/:tag', load: () => import('./routes/tags/[tag].tsx') },
+];
+
+const router = createRouter(
+  Object.fromEntries(routes.map((route) => [route.pattern, route.load]))
+);
+
+let outlet: HTMLElement | null = null;
+
+function matchPath(pattern: string, pathname: string): Record<string, string> | null {
+  const paramNames: string[] = [];
+  const regex = new RegExp(
+    '^' +
+      pattern
+        .replace(/\//g, '\\/')
+        .replace(/:[^/]+/g, segment => {
+          paramNames.push(segment.slice(1));
+          return '([^/]+)';
+        }) +
+      '$'
+  );
+
+  const match = pathname.match(regex);
+  if (!match) return null;
+
+  const params: Record<string, string> = {};
+  paramNames.forEach((name, index) => {
+    params[name] = decodeURIComponent(match[index + 1]);
+  });
+  return params;
+}
+
+async function renderRoute(url: URL) {
+  if (!outlet) throw new Error('Router not started');
+
+  for (const entry of routes) {
+    const params = matchPath(entry.pattern, url.pathname);
+    if (!params) continue;
+
+    const mod = await router.manifest[entry.pattern]();
+    const Component = mod.default;
+    render(() => Component({ params, url, navigate }), outlet);
+    return;
+  }
+
+  render(() => 'Not Found', outlet);
+}
+
+export async function navigate(to: string) {
+  const url = new URL(to, window.location.origin);
+  window.history.pushState({}, '', url.toString());
+  await renderRoute(url);
+}
+
+export function startRouter(target: HTMLElement) {
+  outlet = target;
+
+  document.addEventListener('click', (event) => {
+    const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[data-router-link]');
+    if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+
+    const url = new URL(anchor.href);
+    if (url.origin !== window.location.origin) return;
+
+    event.preventDefault();
+    void navigate(url.pathname + url.search + url.hash);
+  });
+
+  window.addEventListener('popstate', () => {
+    renderRoute(new URL(window.location.href));
+  });
+
+  renderRoute(new URL(window.location.href));
+}
+```
+
+Update `src/main.tsx`:
+
+```typescript
+import { startRouter } from './router.ts';
+
+startRouter(document.getElementById('app')!);
+```
+
+With the router in place, all of the anchors marked with `data-router-link` perform client-side navigation while still working as normal links when JavaScript is disabled.
+
+## Step 9: Generate RSS Feed
 
 Create `src/lib/rss.ts`:
 
@@ -734,7 +843,7 @@ export async function GET() {
 }
 ```
 
-## Step 9: Generate Sitemap
+## Step 10: Generate Sitemap
 
 Create `src/routes/sitemap.xml.ts`:
 
@@ -786,7 +895,7 @@ export async function GET() {
 }
 ```
 
-## Step 10: Configure Static Generation
+## Step 11: Configure Static Generation
 
 Create `philjs.config.ts`:
 
@@ -817,7 +926,7 @@ export default defineConfig({
 });
 ```
 
-## Step 11: Build and Deploy
+## Step 12: Build and Deploy
 
 ### Build for Production
 
@@ -875,18 +984,20 @@ pnpm add -g wrangler
 wrangler pages publish dist
 ```
 
-## Step 12: Add Incremental Static Regeneration
+## Step 13: Add Incremental Static Regeneration
 
-Update `src/routes/blog/[slug].tsx` for ISR:
+Update the `config` export in `src/routes/blog/[slug].tsx` for ISR:
 
 ```typescript
-// Revalidate every hour
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map(post => ({ slug: post.slug }));
-}
+export const config = {
+  mode: 'isr' as const,
+  revalidate: 3600, // Revalidate every hour
+  fallback: 'blocking' as const,
+  async getStaticPaths() {
+    const posts = await getAllPosts();
+    return posts.map(post => `/blog/${post.slug}`);
+  },
+};
 ```
 
 Now pages regenerate automatically after 1 hour, keeping content fresh without rebuilding the entire site.
@@ -922,12 +1033,18 @@ const Comments = lazy(() => import('./Comments'));
 ### Prefetching
 
 ```typescript
-import { Link } from 'philjs-router';
+import { initSmartPreloader } from 'philjs-router';
+
+const preloader = initSmartPreloader({ strategy: 'hover' });
 
 // Prefetch on hover
-<Link href={`/blog/${post.slug}`} prefetch="hover">
+<a
+  href={`/blog/${post.slug}`}
+  data-router-link
+  onMouseEnter={() => preloader?.preload(`/blog/${post.slug}`, { strategy: 'hover' })}
+>
   {post.title}
-</Link>
+</a>
 ```
 
 ## What You Learned

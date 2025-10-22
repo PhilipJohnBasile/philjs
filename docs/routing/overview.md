@@ -2,6 +2,8 @@
 
 Learn how routing works in PhilJS with file-based routing, navigation, and route parameters.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers shown in this guide—such as `<Router>`, `<Route>`, `Link`, and `useRouter()`—represent the planned ergonomic API and are provided here for conceptual guidance.
+
 ## What You'll Learn
 
 - File-based routing system

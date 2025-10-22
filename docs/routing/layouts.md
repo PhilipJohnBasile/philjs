@@ -2,6 +2,8 @@
 
 Create reusable layouts that wrap multiple pages with shared UI like headers, sidebars, and footers.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers referenced here—such as `<Router>`, `<Route>`, and `useRouter()`—are part of the planned ergonomic API and are shown for conceptual guidance.
+
 ## What You'll Learn
 
 - Creating layouts

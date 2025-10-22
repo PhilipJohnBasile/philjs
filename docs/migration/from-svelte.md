@@ -2,6 +2,8 @@
 
 Complete guide for migrating Svelte applications to PhilJS.
 
+> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any high-level router helpers referenced in this migration guide—such as `<Router>` or `Link`—are part of the planned ergonomic API and are presented for conceptual guidance.
+
 ## Overview
 
 Svelte and PhilJS share a similar philosophy of fine-grained reactivity and compile-time optimizations. This guide helps you migrate your Svelte applications to PhilJS.
