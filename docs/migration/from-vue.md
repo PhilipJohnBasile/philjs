@@ -2,7 +2,6 @@
 
 Complete guide for migrating Vue applications to PhilJS.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level router helpers referenced in this migration guide—such as `<Router>`, `Route`, or `Link`—are part of the planned ergonomic API and appear for conceptual guidance.
 
 ## Overview
 

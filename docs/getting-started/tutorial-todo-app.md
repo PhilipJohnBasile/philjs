@@ -2,7 +2,6 @@
 
 Build a full-featured todo application with persistence, filtering, and routing. This tutorial covers real-world patterns you'll use in every PhilJS app.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers referenced in this tutorial—`useSearchParams()`, `<Router>`, etc.—are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## What You'll Learn
 

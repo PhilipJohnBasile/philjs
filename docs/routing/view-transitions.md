@@ -2,7 +2,6 @@
 
 Create smooth, app-like animations between routes using the View Transitions API.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `<Router>`, `Link`, and `useRouter()` used in the examples are part of the planned ergonomic API and are provided for conceptual guidance.
 
 ## What You'll Learn
 

@@ -2,7 +2,6 @@
 
 Catch and handle errors gracefully in PhilJS applications.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). If this guide references `useRouter()` or other high-level helpers, treat them as conceptual examples of the planned ergonomic API.
 
 ## What You'll Learn
 

@@ -2,7 +2,6 @@
 
 PhilJS makes it easy to create smooth, performant animations. This guide covers everything from simple CSS transitions to complex spring animations.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any routing helpers referenced here—such as `useNavigate()` in transition examples—are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## CSS Transitions
 

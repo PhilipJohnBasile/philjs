@@ -2,7 +2,6 @@
 
 Learn how to build a fully static blog with PhilJS that loads instantly and ranks well in search engines. This tutorial covers static site generation (SSG), markdown content, SEO, and deployment.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers referenced in this tutorial—like `<Router>` or `useParams()`—are part of the planned ergonomic API and appear for conceptual guidance.
 
 ## What You'll Learn
 

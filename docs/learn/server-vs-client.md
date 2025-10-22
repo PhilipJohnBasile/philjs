@@ -2,7 +2,6 @@
 
 Understanding when code runs on the server versus the client is crucial for building efficient PhilJS applications. This guide explains the differences and how to leverage both environments.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `createDataLoader()` or `useNavigate()` referenced here are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## The Rendering Spectrum
 

@@ -4,8 +4,8 @@
  * frameworks like Next.js or Remix, but backed by PhilJS signals and resumability.
  */
 
-import { render, signal } from "../../philjs-core/dist/index.js";
-import type { JSXElement, VNode } from "../../philjs-core/dist/index.js";
+import { render, signal } from "philjs-core";
+import type { JSXElement, VNode } from "philjs-core";
 import {
   SmartPreloader,
   initSmartPreloader,

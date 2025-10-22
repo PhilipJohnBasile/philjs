@@ -2,7 +2,6 @@
 
 Comprehensive testing strategies for PhilJS applications.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any high-level router helpers referenced in this guide are part of the planned ergonomic API and should be treated as conceptual examples when writing tests.
 
 ## What You'll Learn
 

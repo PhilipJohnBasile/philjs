@@ -2,7 +2,6 @@
 
 Complete guide for migrating React applications to PhilJS.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level router helpers referenced in this migration guide—such as `<Router>` or `Link`—are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## Overview
 

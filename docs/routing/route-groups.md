@@ -2,7 +2,6 @@
 
 Organize your routes into logical groups without affecting the URL structure.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers mentioned here (for example `useParams()` or `<Router>`) are part of the planned ergonomic API and appear for conceptual guidance.
 
 ## What You'll Learn
 

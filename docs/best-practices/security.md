@@ -2,7 +2,6 @@
 
 Protect your PhilJS application and users from security vulnerabilities.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any high-level router helpers referenced here—for example `Navigate` in guard examples—are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## XSS Prevention
 
