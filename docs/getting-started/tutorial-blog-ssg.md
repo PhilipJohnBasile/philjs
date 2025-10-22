@@ -667,7 +667,126 @@ const styles = {
 };
 ```
 
-## Step 8: Wire up the router
+## Step 8: Create Tag Page
+
+Create `src/routes/tags/[tag].tsx`:
+
+```typescript
+import { SEO } from '../../components/SEO';
+import { getAllTags, getPostsByTag } from '../../lib/posts';
+
+export const config = {
+  mode: 'ssg' as const,
+  async getStaticPaths() {
+    const tags = await getAllTags();
+    return tags.map(tag => `/tags/${tag}`);
+  },
+};
+
+interface TagPageProps {
+  params: { tag: string };
+  url: URL;
+  navigate: (to: string) => Promise<void>;
+}
+
+export default async function TagPage({ params }: TagPageProps) {
+  const posts = await getPostsByTag(params.tag);
+
+  return (
+    <>
+      <SEO
+        title={`Posts tagged "${params.tag}"`}
+        description={`All PhilJS blog posts tagged with ${params.tag}`}
+        url={`https://myblog.com/tags/${params.tag}`}
+      />
+
+      <div style={styles.container}>
+        <header style={styles.header}>
+          <a href="/blog" data-router-link style={styles.back}>
+            ← Back to all posts
+          </a>
+
+          <h1 style={styles.title}>#{params.tag}</h1>
+          <p style={styles.subtitle}>
+            {posts.length} {posts.length === 1 ? 'post' : 'posts'} with this tag
+          </p>
+        </header>
+
+        <div style={styles.list}>
+          {posts.map(post => (
+            <article key={post.slug} style={styles.post}>
+              <a href={`/blog/${post.slug}`} data-router-link style={styles.postTitle}>
+                {post.title}
+              </a>
+              <p style={styles.excerpt}>{post.excerpt}</p>
+            </article>
+          ))}
+        </div>
+
+        {posts.length === 0 && (
+          <div style={styles.empty}>
+            <p>No posts yet for this tag.</p>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+const styles = {
+  container: {
+    maxWidth: '900px',
+    margin: '0 auto',
+    padding: '2rem',
+  },
+  header: {
+    marginBottom: '2rem',
+  },
+  back: {
+    display: 'inline-block',
+    marginBottom: '1rem',
+    color: '#667eea',
+    textDecoration: 'none',
+  },
+  title: {
+    fontSize: '2.5rem',
+    margin: '0 0 0.5rem',
+    color: '#333',
+  },
+  subtitle: {
+    color: '#666',
+    margin: 0,
+  },
+  list: {
+    display: 'grid',
+    gap: '2rem',
+  },
+  post: {
+    padding: '1.5rem',
+    borderRadius: '12px',
+    background: '#f8fafc',
+  },
+  postTitle: {
+    fontSize: '1.5rem',
+    color: '#1f2937',
+    textDecoration: 'none',
+  },
+  excerpt: {
+    marginTop: '0.75rem',
+    color: '#4b5563',
+    lineHeight: 1.6,
+  },
+  empty: {
+    textAlign: 'center' as const,
+    padding: '3rem',
+    color: '#94a3b8',
+  },
+};
+```
+
+This page uses the same `config` pattern to pre-render tag listings. Because the router passes `params`, the component can render the correct posts without any extra helpers.
+
+## Step 9: Wire up the router
 
 Static pages still work with regular hyperlinks, but if you want seamless client-side navigation you can reuse the low-level router utilities.
 
@@ -772,7 +891,7 @@ startRouter(document.getElementById('app')!);
 
 With the router in place, all of the anchors marked with `data-router-link` perform client-side navigation while still working as normal links when JavaScript is disabled.
 
-## Step 9: Generate RSS Feed
+## Step 10: Generate RSS Feed
 
 Create `src/lib/rss.ts`:
 
@@ -843,7 +962,7 @@ export async function GET() {
 }
 ```
 
-## Step 10: Generate Sitemap
+## Step 11: Generate Sitemap
 
 Create `src/routes/sitemap.xml.ts`:
 
@@ -895,7 +1014,7 @@ export async function GET() {
 }
 ```
 
-## Step 11: Configure Static Generation
+## Step 12: Configure Static Generation
 
 Create `philjs.config.ts`:
 
@@ -926,7 +1045,7 @@ export default defineConfig({
 });
 ```
 
-## Step 12: Build and Deploy
+## Step 13: Build and Deploy
 
 ### Build for Production
 
@@ -984,7 +1103,7 @@ pnpm add -g wrangler
 wrangler pages publish dist
 ```
 
-## Step 13: Add Incremental Static Regeneration
+## Step 14: Add Incremental Static Regeneration
 
 Update the `config` export in `src/routes/blog/[slug].tsx` for ISR:
 

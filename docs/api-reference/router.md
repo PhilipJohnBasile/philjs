@@ -37,6 +37,98 @@ The router package intentionally stays unopinionated about rendering. Pair the m
 
 ---
 
+## High-Level Router API
+
+PhilJS also ships a declarative router built on top of the manifest utilities. It handles DOM rendering, signal-aware navigation, view transitions, and intent-based prefetching out of the box.
+
+### `createAppRouter(options)`
+
+```ts
+import { createAppRouter } from 'philjs-router';
+
+const router = createAppRouter({
+  target: '#app',
+  routes: [
+    { path: '/', component: () => <Home /> },
+    {
+      path: '/blog',
+      layout: ({ children }) => <BlogLayout>{children}</BlogLayout>,
+      component: () => <BlogIndex />,
+      children: [
+        {
+          path: '/:slug',
+          component: ({ params }) => <BlogPost slug={params.slug} />,
+        },
+      ],
+    },
+  ],
+  prefetch: true,         // Smart preloading enabled globally
+  transitions: { type: 'fade', duration: 250 },
+});
+```
+
+- `target`: CSS selector or element where the router should render (defaults to `#app`).
+- `routes`: Array of route definitions with optional nested routes, loaders, actions, layouts, prefetch, and transition metadata.
+- Returns a `HighLevelRouter` with `navigate(to, options)` and `dispose()` methods.
+
+### Route Definition Options
+
+```ts
+type RouteDefinition = {
+  path: string;                       // e.g. '/', '/docs/:slug'
+  component: (props) => VNode;        // page component
+  loader?: (ctx) => Promise<any>;     // optional data loader (params + Request)
+  action?: (ctx) => Promise<Response>; // optional action handler
+  layout?: (props) => VNode;          // wraps child routes / page
+  children?: RouteDefinition[];       // nested routes
+  transition?: RouteTransitionOptions;// per-route view transition overrides
+  prefetch?: PrefetchOptions;         // per-route smart prefetch overrides
+  config?: Record<string, unknown>;   // forwarded to SSR/static generation
+};
+```
+
+Layouts from parents automatically wrap child routes, giving you nested layouts similar to Remix/Next while still using resumable PhilJS components.
+
+### Hooks & Components
+
+- `useRouter()` → `{ route, navigate }` reactive state for the current route.
+- `useRoute()` → `MatchedRoute | null` convenience hook returning the active match (params, data, component).
+- `RouterView()` → renders the current route’s component; useful if you want the router to live inside a larger PhilJS tree instead of the default `target`.
+- `Link` – declarative navigation with optional `replace`, `class`, etc.
+
+```tsx
+import { Link, RouterView, useRoute } from 'philjs-router';
+
+function Nav() {
+  return (
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/docs">Docs</Link>
+      <Link to="/blog" replace>Blog</Link>
+    </nav>
+  );
+}
+
+function CurrentRouteDebugger() {
+  const route = useRoute();
+  return <pre>{JSON.stringify(route?.params ?? {}, null, 2)}</pre>;
+}
+
+function AppShell() {
+  return (
+    <main>
+      <Nav />
+      <RouterView />
+      <CurrentRouteDebugger />
+    </main>
+  );
+}
+```
+
+`Link` is implemented with PhilJS signals so navigation is instant—no full page reloads—and integrates with the smart preloader when enabled.
+
+---
+
 ## File-Based Discovery
 
 ### `discoverRoutes(routesDir)`
