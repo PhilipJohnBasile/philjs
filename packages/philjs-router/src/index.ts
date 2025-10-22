@@ -23,6 +23,8 @@ export {
   useRoute,
   Link,
   RouterView,
+  createRouteManifest,
+  generateRouteTypes,
 } from "./high-level.js";
 export type {
   RouteDefinition,
@@ -31,6 +33,8 @@ export type {
   MatchedRoute,
   PrefetchOptions,
   RouteTransitionOptions,
+  RouteManifestOptions,
+  RouteTypeGenerationOptions,
 } from "./high-level.js";
 
 // Smart Preloading

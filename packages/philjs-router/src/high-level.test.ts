@@ -1,10 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { createAppRouter, useRouter, Link } from "./high-level.js";
+import { createAppRouter, useRouter, Link, createRouteManifest } from "./high-level.js";
+import { Err } from "philjs-core";
 
 describe("High-level router", () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="app"></div>';
     window.history.replaceState({}, "", "/");
+    delete (window as any).__PHILJS_ROUTE_DATA__;
+    delete (window as any).__PHILJS_ROUTE_ERROR__;
+    delete (window as any).__PHILJS_ROUTE_INFO__;
   });
 
   afterEach(() => {
@@ -70,6 +74,34 @@ describe("High-level router", () => {
     await vnode.props.onClick(clickEvent);
 
     expect(document.getElementById("app")?.textContent).toContain("Docs");
+    router.dispose();
+  });
+
+  it("creates manifest for server usage", () => {
+    const manifest = createRouteManifest([
+      { path: "/", component: () => "Home" },
+      { path: "/about", component: () => "About" },
+    ]);
+
+    expect(typeof manifest["/about"].default).toBe("function");
+  });
+
+  it("surfaces loader errors via route state", async () => {
+    const router = createAppRouter({
+      routes: [
+        {
+          path: "/",
+          component: ({ error }) => (error ? `Error:${error}` : "Home"),
+          loader: async () => Err("boom"),
+        },
+      ],
+    });
+
+    await router.navigate("/");
+    const state = useRouter();
+    expect(state.route?.error).toBe("boom");
+    expect(document.getElementById("app")?.textContent).toContain("Error:boom");
+
     router.dispose();
   });
 });

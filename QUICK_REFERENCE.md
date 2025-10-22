@@ -109,6 +109,38 @@ a.set(5); // Will trigger sum to recompute
 
 ---
 
+## Result Helpers (Rust-Style)
+
+PhilJS ships a lightweight `Result` with `Ok`/`Err` to make loader and action error handling ergonomic.
+
+```ts
+import { Ok, Err, isResult, unwrapOr } from 'philjs-core';
+
+const result = await fetchUser();
+
+if (isResult(result)) {
+  if (result.ok) {
+    console.log(result.value);
+  } else {
+    console.error(result.error);
+  }
+}
+
+// In loaders
+loader: async () => {
+  const res = await fetch('/api/user');
+  if (!res.ok) return Err('not-found');
+  return Ok(await res.json());
+};
+
+// Fallbacks
+const name = unwrapOr(Err('missing'), 'Anonymous');
+```
+
+Loaders that return `Err` automatically surface the error via `props.error` and `useRoute()`.
+
+---
+
 ## Components
 
 ### Basic Component

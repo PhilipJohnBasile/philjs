@@ -14,6 +14,16 @@ const matchRoute = (pathname: string, routes: any[]): any => null;
 const findLayouts = async (filePath: string, routesDir: string, loadModule: any): Promise<any[]> => [];
 const applyLayouts = (vnode: VNode, layouts: any[], params: any): VNode => vnode;
 import type { Loader, Action, ActionCtx } from "./types.js";
+import { isResult } from "philjs-core";
+
+function safeSerialize(value: any): string {
+  try {
+    return JSON.stringify(value ?? null);
+  } catch (error) {
+    console.warn("Failed to serialize loader data", error);
+    return "null";
+  }
+}
 
 export type RouteModule = {
   loader?: Loader<any>;
@@ -98,9 +108,23 @@ export async function handleRequest(
     }
 
     // Execute loader
-    let loaderData: any = {};
+    let loaderData: any = undefined;
+    let loaderError: any = undefined;
     if (routeModule.loader) {
-      loaderData = await routeModule.loader(ctx);
+      try {
+        const result = await routeModule.loader(ctx);
+        if (isResult(result)) {
+          if (result.ok) {
+            loaderData = result.value;
+          } else {
+            loaderError = result.error;
+          }
+        } else {
+          loaderData = result;
+        }
+      } catch (err) {
+        loaderError = err;
+      }
     }
 
     // Render component
@@ -109,7 +133,7 @@ export async function handleRequest(
       return new Response("No default export in route module", { status: 500 });
     }
 
-    const componentTree = Component({ data: loaderData, params });
+    const componentTree = Component({ data: loaderData, error: loaderError, params });
 
     // Apply layouts
     const layouts = await findLayouts(route.filePath, options.routesDir, async (path) => {
@@ -122,6 +146,10 @@ export async function handleRequest(
     const html = renderToString(wrapped);
 
     // Wrap in HTML document
+    const serializedData = safeSerialize(loaderData);
+    const serializedParams = safeSerialize(params);
+    const serializedError = safeSerialize(loaderError);
+
     const document = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,6 +159,19 @@ export async function handleRequest(
 </head>
 <body>
   ${html}
+  <script>
+    (function(){
+      const path = ${JSON.stringify(pathname)};
+      const data = ${serializedData};
+      const params = ${serializedParams};
+      const routeInfo = (window.__PHILJS_ROUTE_INFO__ = window.__PHILJS_ROUTE_INFO__ || {});
+      routeInfo.current = { path, params, error: ${serializedError} };
+      const routeData = (window.__PHILJS_ROUTE_DATA__ = window.__PHILJS_ROUTE_DATA__ || {});
+      routeData[path] = data;
+      const routeError = (window.__PHILJS_ROUTE_ERROR__ = window.__PHILJS_ROUTE_ERROR__ || {});
+      routeError[path] = ${serializedError};
+    })();
+  </script>
 </body>
 </html>`;
 

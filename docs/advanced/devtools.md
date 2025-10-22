@@ -720,10 +720,10 @@ import { showOverlay } from 'philjs-devtools';
 showOverlay();
 
 // Updates automatically with:
-// - Island count
-// - Hydrated components
+// - Island count & hydration status
 // - Bundle size
 // - AI calls and costs
+// - Current route path & params (from createAppRouter)
 ```
 
 ### Custom Overlay

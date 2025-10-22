@@ -40,27 +40,26 @@ export function PostsRoute({ data }: { data: Post[] }) {
 Loaders receive the same context object as actions. Use params to tailor fetches:
 
 ```ts
+import { Ok, Err } from 'philjs-core';
+
 {
   path: '/posts/:slug',
   component: BlogPostRoute,
   loader: async ({ params }) => {
     const res = await fetch(`/api/posts/${params.slug}`);
-    if (!res.ok) throw new Response('Not found', { status: 404 });
-    return res.json();
+    if (!res.ok) return Err('not-found');
+    return Ok(await res.json());
   },
 }
 ```
 
 ```tsx
-export function BlogPostRoute({ params, data }: { params: { slug: string }; data: Post }) {
-  return (
-    <article>
-      <h1>{data.title}</h1>
-      <p>Slug: {params.slug}</p>
-      <div>{data.body}</div>
-    </article>
-  );
+export function BlogPostRoute({ params, data, error }: RouteComponentProps) {
+  if (error) return <ErrorState code={error} slug={params.slug} />;
+  return <ArticleView post={data} />;
 }
+
+> Tip: `Ok`/`Err` come from `philjs-core`'s Rust-inspired `Result` helpers (`import { Ok, Err } from 'philjs-core'`). Use `isResult` if you want to branch manually.
 ```
 
 ## Error Handling

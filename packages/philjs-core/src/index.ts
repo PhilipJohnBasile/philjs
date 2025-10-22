@@ -103,6 +103,22 @@ export type { CostMetrics, CostEstimate, CloudProvider } from "./cost-tracking.j
 export { usageAnalytics, UsageAnalytics } from "./usage-analytics.js";
 export type { ComponentUsage, DeadCodeReport, OptimizationSuggestion } from "./usage-analytics.js";
 
+// Error handling & Result
+export {
+  Ok,
+  Err,
+  isOk,
+  isErr,
+  isResult,
+  map,
+  mapErr,
+  andThen,
+  unwrap,
+  unwrapOr,
+  matchResult,
+} from "./result.js";
+export type { Result } from "./result.js";
+
 // Forms & Validation
 export { useForm, v as validators, createField } from "./forms.js";
 export type {

@@ -8,6 +8,8 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
+import { generateRouteTypes } from "philjs-router";
+import type { RouteDefinition } from "philjs-router";
 
 const TEMPLATES = {
   basic: "Basic app with routing and data fetching",
@@ -240,26 +242,13 @@ function generateAppFiles(path: string, template: string) {
 
   // main.tsx
   const main = `import { createAppRouter } from "philjs-router";
-import { AppLayout } from "./routes/_layout";
-import { HomeRoute } from "./routes/index";
-import { AboutRoute } from "./routes/about";
-import { DocsRoute } from "./routes/docs";
+import { routes } from "./routes";
 
 createAppRouter({
   target: "#app",
   prefetch: true,
   transitions: { type: "fade", duration: 220 },
-  routes: [
-    {
-      path: "/",
-      layout: AppLayout,
-      component: HomeRoute,
-      children: [
-        { path: "/about", component: AboutRoute },
-        { path: "/docs", component: DocsRoute },
-      ],
-    },
-  ],
+  routes,
 });`;
 
   writeFileSync(join(path, "src/main.tsx"), main);
@@ -349,6 +338,48 @@ export function DocsRoute() {
 }`;
 
   writeFileSync(join(path, "src/routes/docs.tsx"), docsRoute);
+
+  const routesModule = `import type { RouteDefinition } from "philjs-router";
+import { createRouteManifest } from "philjs-router";
+import { AppLayout } from "./routes/_layout";
+import { HomeRoute } from "./routes/index";
+import { AboutRoute } from "./routes/about";
+import { DocsRoute } from "./routes/docs";
+
+export const routes: RouteDefinition[] = [
+  {
+    path: "/",
+    layout: AppLayout,
+    component: HomeRoute,
+    children: [
+      { path: "/about", component: AboutRoute },
+      { path: "/docs", component: DocsRoute },
+    ],
+  },
+];
+
+export const routeManifest = createRouteManifest(routes);
+`;
+
+  writeFileSync(join(path, "src/routes.ts"), routesModule);
+
+  const routeDefinitionsForTypes: RouteDefinition[] = [
+    {
+      path: "/",
+      layout: () => null,
+      component: () => null,
+      children: [
+        { path: "/about", component: () => null },
+        { path: "/docs", component: () => null },
+      ],
+    },
+  ];
+
+  const routeTypes = generateRouteTypes(routeDefinitionsForTypes, {
+    moduleName: "./routes",
+  });
+
+  writeFileSync(join(path, "src/routes.d.ts"), routeTypes);
 }
 
 async function prompt(message: string, defaultValue: string): Promise<string> {
