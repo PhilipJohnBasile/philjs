@@ -2,7 +2,6 @@
 
 Parallel routes allow you to simultaneously render multiple pages in the same layout. This is perfect for dashboards, split views, and complex UIs that need to show multiple independent sections.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `useParams()` and `useNavigate()` referenced in this guide are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## Basic Parallel Routes
 

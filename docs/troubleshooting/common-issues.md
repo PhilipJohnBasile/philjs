@@ -2,7 +2,6 @@
 
 Solutions to frequently encountered problems in PhilJS applications.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level router helpers mentioned in this guide—like `Link`—are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## Signal Issues
 

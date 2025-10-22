@@ -2,7 +2,6 @@
 
 Protect routes, authenticate users, and modify requests with routing middleware.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). The high-level helpers referenced here—`useRouter()`, `redirect()`, `createDataLoader()`, etc.—are part of the planned ergonomic API and are provided for conceptual guidance.
 
 ## What You'll Learn
 

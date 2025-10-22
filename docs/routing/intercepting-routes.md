@@ -2,7 +2,6 @@
 
 Intercepting routes allow you to load a route from another part of your application while keeping the user in their current context. This is perfect for modals, drawers, and overlays that maintain the background page state.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Mentioned high-level helpers in this guide are part of the planned ergonomic API and are shown for conceptual guidance.
 
 ## Basic Interception
 

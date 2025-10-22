@@ -2,7 +2,6 @@
 
 Handle routing errors, 404 pages, and error boundaries for robust navigation.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). High-level helpers such as `Link`, `<Router>`, and `useRouter()` shown in this guide are part of the planned ergonomic API and appear here for conceptual guidance.
 
 ## What You'll Learn
 

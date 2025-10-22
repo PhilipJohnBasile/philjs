@@ -2,7 +2,6 @@
 
 Learn how to deploy your PhilJS application to production on various platforms.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any references to high-level router helpers in this guide are part of the planned ergonomic API and appear for conceptual guidance.
 
 ## Quick Start
 

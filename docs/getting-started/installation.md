@@ -2,7 +2,6 @@
 
 Get PhilJS up and running in less than a minute.
 
-> ⚠️ PhilJS currently ships low-level routing utilities (see [`/docs/api-reference/router.md`](../api-reference/router.md)). Any mention of high-level helpers such as `<Router>` or `Link` later in this guide reflects the planned ergonomic API and is provided for conceptual guidance.
 
 ## Prerequisites
 

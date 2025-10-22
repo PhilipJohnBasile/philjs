@@ -71,8 +71,8 @@ async function main() {
 function createProjectStructure(path: string, template: string) {
   mkdirSync(path, { recursive: true });
   mkdirSync(join(path, "src"), { recursive: true });
-  mkdirSync(join(path, "src/components"), { recursive: true });
   mkdirSync(join(path, "src/routes"), { recursive: true });
+  mkdirSync(join(path, "src/components"), { recursive: true });
   mkdirSync(join(path, "src/lib"), { recursive: true });
   mkdirSync(join(path, "public"), { recursive: true });
 }
@@ -173,18 +173,17 @@ dist
 function generateReadme(path: string, name: string) {
   const readme = `# ${name}
 
-Built with [PhilJS](https://github.com/yourusername/philjs) - The Revolutionary Frontend Framework
+Built with [PhilJS](https://github.com/yourusername/philjs) – the resumable framework with intelligent routing.
 
 ## Features
 
 - ⚡ Fine-grained reactivity with signals
-- 🏝️ Islands architecture for optimal performance
-- 🔄 Resumability (zero hydration cost)
-- 📊 Built-in performance budgets
-- 💰 Cloud cost tracking per route
-- 📈 Component usage analytics
-- 🎨 Spring physics animations
-- 🔒 Security by default (CSRF, XSS protection)
+- 🔄 Zero-hydration resumability
+- 🧠 Smart prefetching + intent-based navigation
+- 🎬 Built-in view transitions
+- 🏝️ Islands architecture
+- 📊 Performance budgets & usage analytics
+- 💰 Route-level cost tracking
 
 ## Getting Started
 
@@ -206,10 +205,10 @@ npm run preview
 
 \`\`\`
 src/
-  routes/          # File-based routing
-  components/      # Reusable components
-  lib/             # Utilities and helpers
-public/            # Static assets
+  routes/            # High-level router pages & layouts
+  components/        # Reusable UI
+  lib/               # Utilities and helpers
+public/              # Static assets
 \`\`\`
 
 ## Learn More
@@ -240,48 +239,116 @@ function generateAppFiles(path: string, template: string) {
   writeFileSync(join(path, "index.html"), html);
 
   // main.tsx
-  const main = `import { render } from "philjs-core";
-import { App } from "./App";
+  const main = `import { createAppRouter } from "philjs-router";
+import { AppLayout } from "./routes/_layout";
+import { HomeRoute } from "./routes/index";
+import { AboutRoute } from "./routes/about";
+import { DocsRoute } from "./routes/docs";
 
-const root = document.getElementById("app");
-if (root) {
-  render(<App />, root);
-}`;
+createAppRouter({
+  target: "#app",
+  prefetch: true,
+  transitions: { type: "fade", duration: 220 },
+  routes: [
+    {
+      path: "/",
+      layout: AppLayout,
+      component: HomeRoute,
+      children: [
+        { path: "/about", component: AboutRoute },
+        { path: "/docs", component: DocsRoute },
+      ],
+    },
+  ],
+});`;
 
   writeFileSync(join(path, "src/main.tsx"), main);
 
   // App.tsx
-  const app = `import { signal } from "philjs-core";
-import { Counter } from "./components/Counter";
+  const layout = `import { Link } from "philjs-router";
 
-export function App() {
+export function AppLayout({ children }: { children: any }) {
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Welcome to PhilJS</h1>
-      <p>Start building revolutionary web applications!</p>
-      <Counter />
+    <div style={{ fontFamily: "system-ui, sans-serif", minHeight: "100vh", background: "#f8fafc" }}>
+      <header style={{ padding: "1.5rem", display: "flex", gap: "1rem", alignItems: "center", background: "white", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.1)" }}>
+        <strong>PhilJS</strong>
+        <nav style={{ display: "flex", gap: "0.75rem" }}>
+          <Link to="/" style={{ color: "#334155", textDecoration: "none" }}>Home</Link>
+          <Link to="/about" style={{ color: "#334155", textDecoration: "none" }}>About</Link>
+          <Link to="/docs" style={{ color: "#334155", textDecoration: "none" }}>Docs</Link>
+        </nav>
+      </header>
+      <main style={{ padding: "2rem" }}>{children}</main>
     </div>
   );
 }`;
 
-  writeFileSync(join(path, "src/App.tsx"), app);
+  writeFileSync(join(path, "src/routes/_layout.tsx"), layout);
 
-  // Counter.tsx
   const counter = `import { signal } from "philjs-core";
 
 export function Counter() {
   const count = signal(0);
 
   return (
-    <div>
-      <h2>Count: {count()}</h2>
-      <button onClick={() => count.set(c => c + 1)}>Increment</button>
-      <button onClick={() => count.set(c => c - 1)}>Decrement</button>
+    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+      <button onClick={() => count.set(c => c - 1)}>-</button>
+      <strong>{count()}</strong>
+      <button onClick={() => count.set(c => c + 1)}>+</button>
     </div>
   );
 }`;
 
   writeFileSync(join(path, "src/components/Counter.tsx"), counter);
+
+  const homeRoute = `import { Counter } from "../components/Counter";
+
+export function HomeRoute() {
+  return (
+    <section style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Welcome to PhilJS</h1>
+      <p style={{ color: "#475569", marginBottom: "1.5rem" }}>
+        Start building apps with fine-grained reactivity, zero hydration resumability, and intelligent routing.
+      </p>
+      <Counter />
+    </section>
+  );
+}`;
+
+  writeFileSync(join(path, "src/routes/index.tsx"), homeRoute);
+
+  const aboutRoute = `export function AboutRoute() {
+  return (
+    <section style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Why PhilJS?</h1>
+      <ul style={{ color: "#475569", lineHeight: 1.7 }}>
+        <li>Fine-grained signals keep components fast.</li>
+        <li>Smart prefetching predicts where users will go next.</li>
+        <li>View transitions make navigation feel native.</li>
+      </ul>
+    </section>
+  );
+}`;
+
+  writeFileSync(join(path, "src/routes/about.tsx"), aboutRoute);
+
+  const docsRoute = `import { Link } from "philjs-router";
+
+export function DocsRoute() {
+  return (
+    <section style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Docs & Resources</h1>
+      <p style={{ color: "#475569" }}>Explore the documentation to learn about loaders, actions, resumability, and more.</p>
+      <p style={{ marginTop: "1rem" }}>
+        <Link to="https://philjs.dev" style={{ color: "#2563eb", textDecoration: "none" }}>
+          philjs.dev ↗
+        </Link>
+      </p>
+    </section>
+  );
+}`;
+
+  writeFileSync(join(path, "src/routes/docs.tsx"), docsRoute);
 }
 
 async function prompt(message: string, defaultValue: string): Promise<string> {
