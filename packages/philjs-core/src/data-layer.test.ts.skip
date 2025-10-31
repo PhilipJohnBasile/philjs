@@ -28,7 +28,7 @@ describe("Data Layer - Query Basics", () => {
     });
 
     // Initially loading
-    expect(query.isLoading).toBe(true);
+    expect(query.isLoading()).toBe(true);
 
     // Wait for fetch
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -59,7 +59,7 @@ describe("Data Layer - Query Basics", () => {
 
     // Should use cached data
     expect(fetcher).toHaveBeenCalledTimes(1);
-    expect(query2.data).toBeDefined();
+    expect(query2.data()).toBeDefined();
   });
 
   it("should handle initial data", () => {
@@ -69,7 +69,7 @@ describe("Data Layer - Query Basics", () => {
       initialData: { id: 1 },
     });
 
-    expect(query.data).toEqual({ id: 1 });
+    expect(query.data()).toEqual({ id: 1 });
   });
 
   it.skip("should handle errors", async () => {
@@ -86,8 +86,8 @@ describe("Data Layer - Query Basics", () => {
     // Note: This test is skipped because the data-layer returns static snapshots
     // instead of reactive values. The isError and error properties are captured
     // at creation time and don't update.
-    expect(query.isError).toBe(true);
-    expect(query.error).toBe(error);
+    expect(query.isError()).toBe(true);
+    expect(query.error()).toBe(error);
   });
 });
 
@@ -167,7 +167,7 @@ describe("Data Layer - Query Retry Logic", () => {
     });
 
     // Check loading state immediately
-    expect(query.isLoading).toBe(true);
+    expect(query.isLoading()).toBe(true);
 
     // Wait for completion
     await new Promise((resolve) => setTimeout(resolve, 250));
@@ -180,7 +180,7 @@ describe("Data Layer - Cache Management", () => {
   });
 
   it("should invalidate cache entries", () => {
-    queryCache.set("test-key", { data: "old" });
+    queryCache.set("test-key", "old");
 
     invalidateQueries("test-key");
 
@@ -190,8 +190,8 @@ describe("Data Layer - Cache Management", () => {
   });
 
   it("should clear all cache", () => {
-    queryCache.set("key1", { data: 1 });
-    queryCache.set("key2", { data: 2 });
+    queryCache.set("key1", 1);
+    queryCache.set("key2", 2);
 
     queryCache.clear();
 
@@ -200,19 +200,21 @@ describe("Data Layer - Cache Management", () => {
   });
 
   it("should delete specific cache entry", () => {
-    queryCache.set("delete-me", { data: "test" });
+    queryCache.set("delete-me", "test");
 
     queryCache.delete("delete-me");
 
     expect(queryCache.get("delete-me")).toBeUndefined();
   });
 
-  it("should track cache staleness", () => {
+  it("should track cache staleness", async () => {
     const key = "stale-key";
-    queryCache.set(key, { data: "test" });
+    queryCache.set(key, "test");
 
     // Fresh data
     expect(queryCache.isStale(key, 5000)).toBe(false);
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
 
     // Stale immediately
     expect(queryCache.isStale(key, 0)).toBe(true);
@@ -243,14 +245,13 @@ describe("Data Layer - Cache Management", () => {
 describe("Data Layer - Background Refetching", () => {
   beforeEach(() => {
     queryCache.clear();
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.useRealTimers();
   });
 
-  it("should refetch on interval", () => {
+  it("should refetch on interval", async () => {
+    vi.useFakeTimers();
     const fetcher = vi.fn().mockResolvedValue({ data: "test" });
 
     createQuery({
@@ -263,17 +264,18 @@ describe("Data Layer - Background Refetching", () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
 
     // Fast-forward time
-    vi.advanceTimersByTime(1000);
+    await vi.runOnlyPendingTimersAsync();
     expect(fetcher).toHaveBeenCalledTimes(2);
 
-    vi.advanceTimersByTime(1000);
+    await vi.runOnlyPendingTimersAsync();
     expect(fetcher).toHaveBeenCalledTimes(3);
+    vi.useRealTimers();
   });
 
-  it("should support refetch on window focus", () => {
+  it("should support refetch on window focus", async () => {
     const fetcher = vi.fn().mockResolvedValue({ data: "test" });
 
-    createQuery({
+    const query = createQuery({
       key: "focus-test",
       fetcher,
       refetchOnFocus: true,
@@ -282,16 +284,20 @@ describe("Data Layer - Background Refetching", () => {
 
     expect(fetcher).toHaveBeenCalledTimes(1);
 
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     // Simulate focus event
     window.dispatchEvent(new Event("focus"));
+
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
 
-  it("should refetch on reconnect", () => {
+  it("should refetch on reconnect", async () => {
     const fetcher = vi.fn().mockResolvedValue({ data: "test" });
 
-    createQuery({
+    const query = createQuery({
       key: "reconnect-test",
       fetcher,
       refetchOnReconnect: true,
@@ -299,8 +305,12 @@ describe("Data Layer - Background Refetching", () => {
 
     expect(fetcher).toHaveBeenCalledTimes(1);
 
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     // Simulate online event
     window.dispatchEvent(new Event("online"));
+
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
@@ -321,7 +331,7 @@ describe("Data Layer - Mutations", () => {
     const result = await mutation.mutateAsync({ id: 1 });
 
     expect(result).toEqual({ id: 1, updated: true });
-    expect(mutation.isSuccess).toBe(true);
+    expect(mutation.isSuccess()).toBe(true);
   });
 
   it("should handle mutation errors", async () => {
@@ -333,8 +343,8 @@ describe("Data Layer - Mutations", () => {
     });
 
     await expect(mutation.mutateAsync({})).rejects.toThrow("Mutation failed");
-    expect(mutation.isError).toBe(true);
-    expect(mutation.error).toBe(error);
+    expect(mutation.isError()).toBe(true);
+    expect(mutation.error()).toBe(error);
   });
 
   it("should call success callback", async () => {
@@ -427,13 +437,13 @@ describe("Data Layer - Mutations", () => {
 
     await mutation.mutateAsync({});
 
-    expect(mutation.data).toEqual({ data: "test" });
+    expect(mutation.data()).toEqual({ data: "test" });
 
     mutation.reset();
 
-    expect(mutation.data).toBeUndefined();
-    expect(mutation.error).toBeUndefined();
-    expect(mutation.isPending).toBe(false);
+    expect(mutation.data()).toBeUndefined();
+    expect(mutation.error()).toBeUndefined();
+    expect(mutation.isPending()).toBe(false);
   });
 
   it("should handle synchronous mutate (fire-and-forget)", () => {
@@ -444,7 +454,7 @@ describe("Data Layer - Mutations", () => {
     // Non-async mutate
     mutation.mutate({});
 
-    expect(mutation.isPending).toBe(true);
+    expect(mutation.isPending()).toBe(true);
   });
 });
 
@@ -454,7 +464,7 @@ describe("Data Layer - Query Invalidation", () => {
   });
 
   it("should invalidate by string key", () => {
-    queryCache.set("user-1", { data: "test" });
+    queryCache.set("user-1", "test");
 
     invalidateQueries("user-1");
 
@@ -464,7 +474,7 @@ describe("Data Layer - Query Invalidation", () => {
 
   it("should invalidate by array key", () => {
     const key = ["users", { id: 1 }];
-    queryCache.set(JSON.stringify(key), { data: "test" });
+    queryCache.set(JSON.stringify(key), "test");
 
     invalidateQueries(key);
 
@@ -472,8 +482,8 @@ describe("Data Layer - Query Invalidation", () => {
   });
 
   it("should invalidate by predicate function", () => {
-    queryCache.set("user-1", { data: "test" });
-    queryCache.set("post-1", { data: "test" });
+    queryCache.set("user-1", "test");
+    queryCache.set("post-1", "test");
 
     invalidateQueries((key) => {
       return typeof key === "string" && key.startsWith("user");
@@ -558,19 +568,15 @@ describe("Data Layer - Query Callbacks", () => {
     const onError = vi.fn();
     const error = new Error("Query failed");
 
-    try {
-      createQuery({
-        key: "error-callback",
-        fetcher: vi.fn().mockRejectedValue(error),
-        onError,
-      });
+    createQuery({
+      key: "error-callback",
+      fetcher: vi.fn().mockRejectedValue(error),
+      onError,
+    });
 
-      await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
-      expect(onError).toHaveBeenCalledWith(error);
-    } catch (e) {
-      // Expected error path
-    }
+    expect(onError).toHaveBeenCalledWith(error);
   });
 });
 
@@ -591,7 +597,7 @@ describe("Data Layer - Optimistic Updates", () => {
     // Optimistically update
     query.mutate({ count: 1 });
 
-    expect(query.data).toEqual({ count: 1 });
+    expect(query.data()).toEqual({ count: 1 });
   });
 
   it("should support functional updates", () => {
@@ -606,6 +612,6 @@ describe("Data Layer - Optimistic Updates", () => {
     // Functional update
     query.mutate((prev) => ({ count: (prev?.count || 0) + 1 }));
 
-    expect(query.data).toEqual({ count: 1 });
+    expect(query.data()).toEqual({ count: 1 });
   });
 });

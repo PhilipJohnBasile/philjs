@@ -193,6 +193,9 @@ importers:
 
   packages/create-philjs:
     dependencies:
+      philjs-router:
+        specifier: workspace:*
+        version: link:../philjs-router
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -311,6 +314,18 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.18.8)(jsdom@27.0.0(postcss@8.5.6))
 
+  packages/philjs-devtools-extension:
+    devDependencies:
+      rollup:
+        specifier: ^4.28.1
+        version: 4.52.4
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.18.8)(jsdom@27.0.0(postcss@8.5.6))
+
   packages/philjs-islands:
     devDependencies:
       rollup:
@@ -324,6 +339,10 @@ importers:
         version: 2.1.9(@types/node@22.18.8)(jsdom@27.0.0(postcss@8.5.6))
 
   packages/philjs-router:
+    dependencies:
+      philjs-core:
+        specifier: workspace:*
+        version: link:../philjs-core
     devDependencies:
       rollup:
         specifier: ^4.28.1
