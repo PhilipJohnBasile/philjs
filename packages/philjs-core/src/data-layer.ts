@@ -157,6 +157,8 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
     error.set(cached.error);
   }
 
+  let listenersAttached = false;
+
   // Fetch function
   const fetchData = async (): Promise<T> => {
     isFetching.set(true);
@@ -194,11 +196,35 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
 
       // Call error callback
       options.onError?.(e);
-
-      throw e;
     } finally {
       isFetching.set(false);
       isLoading.set(false);
+
+      if (!listenersAttached) {
+        listenersAttached = true;
+        // Set up refetch on focus
+        if (options.refetchOnFocus && typeof window !== "undefined") {
+          window.addEventListener("focus", () => {
+            if (queryCache.isStale(keyStr, options.staleTime || 0)) {
+              fetchData();
+            }
+          });
+        }
+
+        // Set up refetch on reconnect
+        if (options.refetchOnReconnect && typeof window !== "undefined") {
+          window.addEventListener("online", () => {
+            fetchData();
+          });
+        }
+
+        // Set up refetch interval
+        if (options.refetchInterval && typeof window !== "undefined") {
+          setInterval(() => {
+            fetchData();
+          }, options.refetchInterval);
+        }
+      }
     }
   };
 
@@ -243,17 +269,17 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
   const isError = memo(() => error() !== undefined);
 
   return {
-    data: data(),
-    error: error(),
-    isLoading: isLoading(),
-    isFetching: isFetching(),
-    isSuccess: isSuccess(),
-    isError: isError(),
+    data,
+    error,
+    isLoading,
+    isFetching,
+    isSuccess,
+    isError,
     refetch: fetchData,
     mutate: (newData: T | ((prev: T | undefined) => T)) => {
       const updated = typeof newData === "function" ? (newData as (prev: T | undefined) => T)(data()) : newData;
       data.set(updated);
-      queryCache.set(keyStr, updated);
+      queryCache.set(keyStr, { ...queryCache.get(keyStr), data: updated });
     },
   };
 }
@@ -316,11 +342,11 @@ export function createMutation<TData, TVariables>(
       return Promise.resolve(data()!);
     },
     mutateAsync: execute,
-    data: data(),
-    error: error(),
-    isPending: isPending(),
-    isSuccess: isSuccess(),
-    isError: isError(),
+    data,
+    error,
+    isPending,
+    isSuccess,
+    isError,
     reset: () => {
       data.set(undefined);
       error.set(undefined);

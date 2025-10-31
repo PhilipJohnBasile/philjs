@@ -14,6 +14,7 @@
   },
   "workspaces": [
     "packages/*",
+    "packages/philjs-devtools-extension",
     "examples/*",
     "docs-site"
   ],

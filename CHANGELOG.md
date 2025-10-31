@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Comprehensive test coverage for the Islands architecture.
+- Scaffolding for the browser DevTools extension.
+
 ### Changed
 - Marked `createReducerContext` as deprecated - use signals directly instead
 - Documented novel features (cost tracking, usage analytics) as optional advanced features
@@ -99,9 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ES2020+ required
 
 ### Known Issues
-- Islands architecture has no test coverage yet (planned for 0.2.0)
 - Some data-layer tests failing (edge cases in cache invalidation)
-- DevTools extension not yet available (planned for 0.3.0)
 
 ### Breaking Changes from Pre-Alpha
 - N/A - First beta release
