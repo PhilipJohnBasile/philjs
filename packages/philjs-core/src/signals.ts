@@ -18,6 +18,13 @@ export type Memo<T> = {
   (): T;
 };
 
+export type LinkedSignal<T> = {
+  (): T;
+  set: (next: T | ((prev: T) => T)) => void;
+  reset: () => void;
+  isOverridden: () => boolean;
+};
+
 export type Resource<T> = {
   (): T;
   refresh: () => void;
@@ -187,6 +194,135 @@ export function memo<T>(calc: () => T): Memo<T> {
   };
 
   // Initialize the memo
+  read();
+
+  return read;
+}
+
+// ============================================================================
+// Linked Signals (Writable Computed)
+// ============================================================================
+
+/**
+ * Create a writable computed signal (like Angular's linkedSignal).
+ * Acts like a memo by default, but can be manually overridden.
+ * When dependencies change, it resets to the computed value unless configured otherwise.
+ *
+ * @example
+ * ```ts
+ * const firstName = signal('John');
+ * const lastName = signal('Doe');
+ * const fullName = linkedSignal(() => `${firstName()} ${lastName()}`);
+ *
+ * console.log(fullName()); // "John Doe"
+ * fullName.set('Jane Smith'); // Manual override
+ * console.log(fullName()); // "Jane Smith"
+ * console.log(fullName.isOverridden()); // true
+ *
+ * firstName.set('Bob'); // Dependency changed - resets to computed
+ * console.log(fullName()); // "Bob Doe"
+ * console.log(fullName.isOverridden()); // false
+ * ```
+ */
+export function linkedSignal<T>(
+  computation: () => T,
+  options: { resetOnChange?: boolean } = {}
+): LinkedSignal<T> {
+  const { resetOnChange = true } = options;
+
+  let cachedValue: T;
+  let isOverridden = false;
+  let isStale = true;
+  const subscribers = new Set<Computation>();
+
+  const comp: Computation = {
+    execute: () => {
+      // When dependencies change, mark as stale
+      if (resetOnChange || !isOverridden) {
+        isStale = true;
+        isOverridden = false;
+      }
+
+      // Notify subscribers
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(sub => sub.execute());
+    },
+    dependencies: new Set(),
+  };
+
+  const read = (() => {
+    if (isStale && !isOverridden) {
+      // Clear old dependencies
+      const oldDeps = Array.from(comp.dependencies);
+      oldDeps.forEach(deps => deps.delete(comp));
+      comp.dependencies.clear();
+
+      // Track new dependencies
+      const prevComputation = activeComputation;
+      activeComputation = comp;
+
+      try {
+        cachedValue = computation();
+        isStale = false;
+      } finally {
+        activeComputation = prevComputation;
+      }
+    }
+
+    // Track this linked signal as a dependency if we're in a computation
+    if (activeComputation && activeComputation !== comp) {
+      subscribers.add(activeComputation);
+      activeComputation.dependencies.add(subscribers);
+    }
+
+    return cachedValue;
+  }) as LinkedSignal<T>;
+
+  read.set = (nextValue: T | ((prev: T) => T)) => {
+    const newValue = typeof nextValue === "function"
+      ? (nextValue as (prev: T) => T)(cachedValue)
+      : nextValue;
+
+    if (Object.is(cachedValue, newValue)) return;
+
+    cachedValue = newValue;
+    isOverridden = true;
+    isStale = false;
+
+    // Notify all subscribers
+    if (batchDepth > 0) {
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(subscriber => {
+        batchedUpdates.add(subscriber.execute);
+      });
+    } else {
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(subscriber => subscriber.execute());
+    }
+  };
+
+  read.reset = () => {
+    isOverridden = false;
+    isStale = true;
+
+    // Force recomputation
+    read();
+
+    // Notify subscribers about the reset
+    if (batchDepth > 0) {
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(subscriber => {
+        batchedUpdates.add(subscriber.execute);
+      });
+    } else {
+      const subscribersList = Array.from(subscribers);
+      subscribersList.forEach(subscriber => subscriber.execute());
+    }
+  };
+
+  read.isOverridden = () => isOverridden;
+
+  // Initialize
   read();
 
   return read;

@@ -2,6 +2,7 @@
 export {
   signal,
   memo,
+  linkedSignal,
   resource,
   effect,
   batch,
@@ -9,7 +10,7 @@ export {
   onCleanup,
   createRoot
 } from "./signals.js";
-export type { Signal, Memo, Resource, EffectCleanup } from "./signals.js";
+export type { Signal, Memo, LinkedSignal, Resource, EffectCleanup } from "./signals.js";
 
 // JSX Runtime
 export { jsx, jsxs, jsxDEV, Fragment, createElement, isJSXElement } from "./jsx-runtime.js";
@@ -131,3 +132,51 @@ export type {
   UseFormOptions,
   FieldProps
 } from "./forms.js";
+
+// Accessibility (2026 Innovation)
+export {
+  configureA11y,
+  getA11yConfig,
+  enhanceWithAria,
+  validateHeadingHierarchy,
+  getHeadingWarnings,
+  resetHeadingTracker,
+  getContrastRatio,
+  validateColorContrast,
+  auditAccessibility,
+  startA11yMonitoring,
+  addSkipLink,
+  announceToScreenReader,
+  createLoadingState,
+  createFocusManager,
+  KeyboardNavigator
+} from "./accessibility.js";
+export type {
+  A11yConfig,
+  A11yWarning,
+  A11yReport,
+  FocusManager
+} from "./accessibility.js";
+
+// A/B Testing (2026 Innovation)
+export {
+  ABTestEngine,
+  initABTesting,
+  getABTestEngine,
+  useExperiment,
+  ABTest,
+  useFeatureFlag,
+  createMultivariateTest,
+  calculateSignificance
+} from "./ab-testing.js";
+export type {
+  Experiment,
+  Variant,
+  TargetingRules,
+  User,
+  ExperimentAssignment,
+  ExperimentEvent,
+  ExperimentResults,
+  VariantResults,
+  ABTestConfig
+} from "./ab-testing.js";
