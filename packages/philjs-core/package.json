@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Core signals, memos, and resources for PhilJS",
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -61,6 +62,38 @@
     "./result": {
       "types": "./dist/result.d.ts",
       "import": "./dist/result.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./resumability": {
+      "types": "./dist/resumability.d.ts",
+      "import": "./dist/resumability.js"
+    },
+    "./data-layer": {
+      "types": "./dist/data-layer.d.ts",
+      "import": "./dist/data-layer.js"
+    },
+    "./service-worker": {
+      "types": "./dist/service-worker.d.ts",
+      "import": "./dist/service-worker.js"
+    },
+    "./performance-budgets": {
+      "types": "./dist/performance-budgets.d.ts",
+      "import": "./dist/performance-budgets.js"
+    },
+    "./cost-tracking": {
+      "types": "./dist/cost-tracking.d.ts",
+      "import": "./dist/cost-tracking.js"
+    },
+    "./usage-analytics": {
+      "types": "./dist/usage-analytics.d.ts",
+      "import": "./dist/usage-analytics.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js"
     }
   },
   "files": [
