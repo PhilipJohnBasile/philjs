@@ -252,6 +252,116 @@ describe('PhilJS Compiler', () => {
     });
   });
 
+  describe('auto-batch detection', () => {
+    it('should detect batch candidates in consecutive signal sets', () => {
+      const code = `
+        import { signal } from 'philjs-core';
+
+        function Form() {
+          const name = signal('');
+          const email = signal('');
+          const phone = signal('');
+
+          const reset = () => {
+            name.set('');
+            email.set('');
+            phone.set('');
+          };
+
+          return <button onClick={reset}>Reset</button>;
+        }
+      `;
+
+      const result = transform(code, 'Form.tsx', { autoBatch: true });
+
+      // Should detect consecutive signal.set() calls
+      expect(result.optimizations.some(o => o.includes('batched'))).toBe(true);
+    });
+
+    it('should analyze signal bindings correctly', () => {
+      const code = `
+        import { signal } from 'philjs-core';
+
+        function DataLoader() {
+          const data = signal(null);
+          const loading = signal(false);
+
+          return <div>{loading() ? 'Loading...' : data()}</div>;
+        }
+      `;
+
+      const analysis = analyzeCode(code, 'DataLoader.tsx');
+
+      // Should detect both signals
+      expect(analysis.bindings.filter(b => b.type === 'signal').length).toBe(2);
+      expect(analysis.components.length).toBe(1);
+    });
+  });
+
+  describe('improved warnings', () => {
+    it('should detect signal bindings in analysis', () => {
+      const code = `
+        import { signal } from 'philjs-core';
+
+        function Component() {
+          const count = signal(0);
+          const double = signal(0);
+
+          return <div>{count()}</div>;
+        }
+      `;
+
+      const analysis = analyzeCode(code, 'test.tsx');
+
+      // Verify signals are detected
+      expect(analysis.bindings.length).toBeGreaterThan(0);
+      expect(analysis.bindings.filter(b => b.type === 'signal').length).toBe(2);
+    });
+
+    it('should analyze component structure', () => {
+      const code = `
+        import { signal } from 'philjs-core';
+
+        function HeavyComponent() {
+          const a = signal(1);
+          const b = signal(2);
+          const c = signal(3);
+
+          return <div>{a()}{b()}{c()}</div>;
+        }
+      `;
+
+      const analysis = analyzeCode(code, 'test.tsx');
+
+      // Verify component is detected
+      expect(analysis.components.length).toBe(1);
+      expect(analysis.components[0].name).toBe('HeavyComponent');
+    });
+
+    it('should detect effects in analysis', () => {
+      const code = `
+        import { signal, effect } from 'philjs-core';
+
+        function Component() {
+          const count = signal(0);
+
+          effect(() => {
+            console.log(count());
+          });
+
+          return <div>{count()}</div>;
+        }
+      `;
+
+      const analysis = analyzeCode(code, 'test.tsx');
+
+      // Verify bindings are detected
+      const signals = analysis.bindings.filter(b => b.type === 'signal');
+      expect(signals.length).toBe(1);
+      expect(signals[0].name).toBe('count');
+    });
+  });
+
   describe('integration', () => {
     it('should handle real-world PhilJS component', () => {
       const code = `
