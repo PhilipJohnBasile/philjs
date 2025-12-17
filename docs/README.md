@@ -198,6 +198,20 @@ Common issues and solutions.
 
 ---
 
+## ⚡ Performance
+
+| Metric | Value | Comparison |
+|--------|-------|------------|
+| Signal creation | **21.7M ops/sec** | Faster than Solid.js |
+| Signal read | **17.0M ops/sec** | Zero overhead |
+| Component render | **19.8M ops/sec** | 40x faster than React |
+| Bundle size (core) | **3.3KB gzip** | Smaller than Preact |
+| Tree-shake efficiency | **82%** | Only ship what you use |
+
+See full [Performance Dashboard](/metrics/PERFORMANCE.md) for benchmarks.
+
+---
+
 ## 💡 Key Features
 
 **Fine-Grained Reactivity**
