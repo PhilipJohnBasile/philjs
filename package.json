@@ -10,6 +10,8 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "release": "changeset publish",
+    "bench": "pnpm --filter philjs-core vitest bench",
+    "bench:save": "node scripts/benchmark.js --save",
     "check:budgets": "node --no-warnings scripts/check-budgets.mjs",
     "size": "size-limit",
     "size:why": "size-limit --why"
