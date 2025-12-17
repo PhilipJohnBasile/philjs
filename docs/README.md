@@ -140,6 +140,13 @@ Complete API documentation.
 - [CLI Commands](/docs/api/cli.md) - Command-line interface
 - [Configuration](/docs/api/config.md) - philjs.config.ts
 
+### [Framework Comparison](/docs/comparison.md)
+How PhilJS compares to React, Solid.js, Vue, Svelte, and Qwik.
+
+- Bundle size, performance, and feature comparisons
+- When to choose PhilJS
+- Migration difficulty from other frameworks
+
 ### [Migration Guides](/docs/migration/)
 Moving from other frameworks.
 
