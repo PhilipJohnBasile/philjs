@@ -1,7 +1,7 @@
 import { PackageManagerTabs } from '../components/PackageManagerTabs';
 import { LanguageTabs } from '../components/LanguageTabs';
 
-export function createDocContent(path: string, navigate: (path: string) => void, styles: Record<string, React.CSSProperties>) {
+export function createDocContent(path: string, navigate: (path: string) => void, styles: Record<string, Record<string, any>>) {
   const docs: Record<string, { title: string; content: JSX.Element }> = {
     // GETTING STARTED
     "/docs": {
@@ -63,9 +63,9 @@ export function Counter() {
 
           <h2>Next Steps</h2>
           <ul>
-            <li><a href="/docs/installation" onClick={(e) => { e.preventDefault(); navigate("/docs/installation"); }}>Install PhilJS</a> and set up your first project</li>
-            <li>Follow the <a href="/docs/tutorial" onClick={(e) => { e.preventDefault(); navigate("/docs/tutorial"); }}>step-by-step tutorial</a></li>
-            <li>Try the <a href="/playground" onClick={(e) => { e.preventDefault(); navigate("/playground"); }}>interactive playground</a></li>
+            <li><a href="/docs/installation" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/installation"); }}>Install PhilJS</a> and set up your first project</li>
+            <li>Follow the <a href="/docs/tutorial" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/tutorial"); }}>step-by-step tutorial</a></li>
+            <li>Try the <a href="/playground" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/playground"); }}>interactive playground</a></li>
           </ul>
         </div>
       ),
@@ -245,7 +245,7 @@ export function TodoList() {
       <h1>My Todos</h1>
       <input
         value={input()}
-        onInput={(e) => input.set(e.target.value)}
+        onInput={(e: Event) => input.set(e.target.value)}
         onKeyPress={(e) => e.key === "Enter" && addTodo()}
       />
       <button onClick={addTodo}>Add</button>
@@ -269,9 +269,9 @@ export function TodoList() {
 
           <h2>Next Steps</h2>
           <ul>
-            <li>Add <a href="/docs/routing" onClick={(e) => { e.preventDefault(); navigate("/docs/routing"); }}>routing</a> for different views</li>
-            <li>Implement <a href="/docs/data-layer" onClick={(e) => { e.preventDefault(); navigate("/docs/data-layer"); }}>data persistence</a></li>
-            <li>Add <a href="/docs/animations" onClick={(e) => { e.preventDefault(); navigate("/docs/animations"); }}>animations</a></li>
+            <li>Add <a href="/docs/routing" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/routing"); }}>routing</a> for different views</li>
+            <li>Implement <a href="/docs/data-layer" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/data-layer"); }}>data persistence</a></li>
+            <li>Add <a href="/docs/animations" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/animations"); }}>animations</a></li>
           </ul>
         </div>
       ),
@@ -567,7 +567,7 @@ function ThemedButton() {
   Click me
 </button>
 
-<input onInput={(e) => setValue(e.target.value)} />`}</code></pre>
+<input onInput={(e: Event) => setValue(e.target.value)} />`}</code></pre>
 
           <h2>Conditional Rendering</h2>
           <pre style={styles.codeBlock || {}}><code>{`function Status({ isOnline }: { isOnline: boolean }) {
@@ -1453,7 +1453,7 @@ export const SearchBox = island(() => {
     <input
       type="text"
       value={query()}
-      onInput={(e) => query.set(e.target.value)}
+      onInput={(e: Event) => query.set(e.target.value)}
     />
   );
 });
@@ -2298,14 +2298,14 @@ export function ContactForm() {
       <input
         type="text"
         value={name()}
-        onInput={(e) => name.set(e.target.value)}
+        onInput={(e: Event) => name.set(e.target.value)}
         placeholder="Name"
       />
 
       <input
         type="email"
         value={email()}
-        onInput={(e) => email.set(e.target.value)}
+        onInput={(e: Event) => email.set(e.target.value)}
         placeholder="Email"
       />
 
@@ -2344,13 +2344,13 @@ export function SignupForm() {
     <form>
       <div>
         <input type="email" value={email()}
-          onInput={(e) => email.set(e.target.value)} />
+          onInput={(e: Event) => email.set(e.target.value)} />
         {emailError() && <span class="error">{emailError()}</span>}
       </div>
 
       <div>
         <input type="password" value={password()}
-          onInput={(e) => password.set(e.target.value)} />
+          onInput={(e: Event) => password.set(e.target.value)} />
         {passwordError() && <span class="error">{passwordError()}</span>}
       </div>
 
@@ -2488,7 +2488,7 @@ export function FileUpload() {
     <div>
       <input
         type="file"
-        onChange={(e) => file.set(e.target.files?.[0] || null)}
+        onChange={(e: Event) => file.set(e.target.files?.[0] || null)}
       />
 
       <button onClick={handleUpload} disabled={!file() || uploading()}>
@@ -2915,7 +2915,7 @@ export function LocaleSwitcher() {
   return (
     <select
       value={locale()}
-      onChange={(e) => setLocale(e.target.value)}
+      onChange={(e: Event) => setLocale(e.target.value)}
     >
       {locales.map(loc => (
         <option value={loc}>{loc.toUpperCase()}</option>
@@ -3842,9 +3842,9 @@ chat.sendMessage("Tell me a story");`}</code></pre>
         <h1>Documentation</h1>
         <p>This page is currently being written. Check out these pages:</p>
         <ul>
-          <li><a href="/docs" onClick={(e) => { e.preventDefault(); navigate("/docs"); }}>Introduction</a></li>
-          <li><a href="/docs/signals" onClick={(e) => { e.preventDefault(); navigate("/docs/signals"); }}>Signals</a></li>
-          <li><a href="/docs/routing" onClick={(e) => { e.preventDefault(); navigate("/docs/routing"); }}>Routing</a></li>
+          <li><a href="/docs" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs"); }}>Introduction</a></li>
+          <li><a href="/docs/signals" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/signals"); }}>Signals</a></li>
+          <li><a href="/docs/routing" onClick={(e: MouseEvent) => { e.preventDefault(); navigate("/docs/routing"); }}>Routing</a></li>
         </ul>
       </div>
     ),

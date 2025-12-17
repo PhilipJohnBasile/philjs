@@ -33,7 +33,7 @@ export default function SignupForm() {
 ### With State Management
 
 ```tsx
-import { createMutation } from 'philjs-data';
+import { createMutation } from 'philjs-core';
 
 export default function CommentForm({ postId }) {
   const addComment = createMutation(

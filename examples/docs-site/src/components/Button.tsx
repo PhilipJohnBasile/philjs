@@ -1,5 +1,3 @@
-import type { JSX } from 'philjs-core';
-
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';

@@ -1,5 +1,5 @@
 import { signal } from "philjs-core";
-import { createDocContent } from "../utils/docContent.tsx";
+import { createDocContent } from "../utils/docContent";
 
 export function DocsPage({
   navigate,
@@ -151,7 +151,7 @@ export function DocsPage({
                     <li>
                       <a
                         href={item.path}
-                        onClick={(e) => {
+                        onClick={(e: MouseEvent) => {
                           e.preventDefault();
                           navigate(item.path);
                           mobileMenuOpen.set(false);
@@ -190,7 +190,7 @@ export function DocsPage({
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, Record<string, any>> = {
   docsPage: {
     display: "grid",
     gridTemplateColumns: "280px 1fr 200px",

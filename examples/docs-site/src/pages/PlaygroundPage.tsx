@@ -104,7 +104,7 @@ export function TodoList() {
         <input
           type="text"
           value={input()}
-          onInput={(e) => input.set(e.target.value)}
+          onInput={(e: Event) => input.set(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && addTodo()}
           placeholder="Add a todo..."
           style={{
@@ -203,7 +203,7 @@ export function SignupForm() {
             <input
               type="email"
               value={email()}
-              onInput={(e) => email.set(e.target.value)}
+              onInput={(e: Event) => email.set(e.target.value)}
               style={{
                 width: "100%",
                 padding: "0.5rem",
@@ -226,7 +226,7 @@ export function SignupForm() {
             <input
               type="password"
               value={password()}
-              onInput={(e) => password.set(e.target.value)}
+              onInput={(e: Event) => password.set(e.target.value)}
               style={{
                 width: "100%",
                 padding: "0.5rem",
@@ -458,7 +458,7 @@ export function AnimatedCounter() {
           </div>
           <textarea
             value={code()}
-            onInput={(e) => code.set((e.target as HTMLTextAreaElement).value)}
+            onInput={(e: Event) => code.set((e.target as HTMLTextAreaElement).value)}
             onKeyDown={(e: any) => {
               if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
                 handleRun();
@@ -513,7 +513,7 @@ export function AnimatedCounter() {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, Record<string, any>> = {
   playground: {
     padding: "var(--space-8) var(--space-6)",
     maxWidth: "var(--max-width-2xl)",

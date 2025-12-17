@@ -415,11 +415,11 @@ $ philjs analyze --production
                 transition: all var(--transition-base);
                 box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
               "
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.transform = 'translateY(-2px)';
                 (e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.4)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.transform = 'translateY(0)';
                 (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
               }}
@@ -442,11 +442,11 @@ $ philjs analyze --production
                 align-items: center;
                 transition: all var(--transition-base);
               "
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
                 (e.target as HTMLElement).style.transform = 'translateY(-2px)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
                 (e.target as HTMLElement).style.transform = 'translateY(0)';
               }}
@@ -524,11 +524,11 @@ $ philjs analyze --production
                   transition: all var(--transition-base);
                   animation: fadeInUp 0.6s ease-out ${index * 0.1}s both;
                 `}
-                onMouseEnter={(e) => {
+                onMouseEnter={(e: MouseEvent) => {
                   (e.currentTarget as HTMLElement).style.transform = 'translateX(8px)';
                   (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={(e: MouseEvent) => {
                   (e.currentTarget as HTMLElement).style.transform = 'translateX(0)';
                   (e.currentTarget as HTMLElement).style.boxShadow = 'none';
                 }}
@@ -746,13 +746,13 @@ $ philjs analyze --production
                 overflow: hidden;
                 animation: fadeInUp 0.6s ease-out ${index * 0.1}s both;
               `}
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: MouseEvent) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.transform = 'translateY(-8px)';
                 el.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
                 el.style.borderColor = 'var(--color-brand)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: MouseEvent) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.transform = 'translateY(0)';
                 el.style.boxShadow = 'none';
@@ -2678,10 +2678,10 @@ $ philjs analyze --production
                 cursor: pointer;
                 transition: all var(--transition-base);
               "
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.transform = 'scale(1.05)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.transform = 'scale(1)';
               }}
             >
@@ -2704,10 +2704,10 @@ $ philjs analyze --production
                 display: inline-block;
                 transition: all var(--transition-base);
               "
-              onMouseEnter={(e) => {
+              onMouseEnter={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.3)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={(e: MouseEvent) => {
                 (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.2)';
               }}
             >

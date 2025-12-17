@@ -1,0 +1,129 @@
+{
+  "name": "philjs-vscode",
+  "displayName": "PhilJS for VS Code",
+  "description": "Official VS Code extension for PhilJS - snippets, IntelliSense, and tooling",
+  "version": "1.0.0",
+  "publisher": "philjs",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Formatters"
+  ],
+  "keywords": [
+    "philjs",
+    "javascript",
+    "typescript",
+    "jsx",
+    "tsx",
+    "signals",
+    "reactive"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "philjs",
+        "aliases": ["PhilJS", "philjs"],
+        "extensions": [".philjs"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/philjs.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "philjs.createComponent",
+        "title": "PhilJS: Create Component"
+      },
+      {
+        "command": "philjs.createRoute",
+        "title": "PhilJS: Create Route"
+      },
+      {
+        "command": "philjs.createPage",
+        "title": "PhilJS: Create Page"
+      },
+      {
+        "command": "philjs.createHook",
+        "title": "PhilJS: Create Hook"
+      },
+      {
+        "command": "philjs.createStore",
+        "title": "PhilJS: Create Store"
+      },
+      {
+        "command": "philjs.openDevTools",
+        "title": "PhilJS: Open DevTools"
+      }
+    ],
+    "configuration": {
+      "title": "PhilJS",
+      "properties": {
+        "philjs.enableIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable PhilJS IntelliSense features"
+        },
+        "philjs.signalHighlighting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight signal usage in code"
+        },
+        "philjs.componentDirectory": {
+          "type": "string",
+          "default": "src/components",
+          "description": "Default directory for generated components"
+        },
+        "philjs.routesDirectory": {
+          "type": "string",
+          "default": "src/routes",
+          "description": "Default directory for generated routes"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist",
+    "snippets",
+    "language-configuration.json",
+    "README.md"
+  ],
+  "license": "MIT"
+}

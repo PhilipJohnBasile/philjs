@@ -313,7 +313,7 @@ export function TableOfContents({
                 {/* TOC Link */}
                 <a
                   href={`#${item.id}`}
-                  onClick={(e) => {
+                  onClick={(e: MouseEvent) => {
                     e.preventDefault();
                     scrollToHeading(item.id);
                   }}
@@ -342,12 +342,12 @@ export function TableOfContents({
                     };
                     font-weight: ${isActive ? '600' : '400'};
                   `}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={(e: MouseEvent) => {
                     if (!isActive) {
                       (e.target as HTMLElement).style.color = 'var(--color-text)';
                     }
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={(e: MouseEvent) => {
                     if (!isActive) {
                       (e.target as HTMLElement).style.color =
                         'var(--color-text-secondary)';

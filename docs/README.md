@@ -136,7 +136,7 @@ Complete API documentation.
 
 - [Core APIs](/docs/api/core.md) - `philjs-core` package
 - [Router APIs](/docs/api/router.md) - `philjs-router` package
-- [Data APIs](/docs/api/data.md) - `philjs-data` package
+- [Data APIs](/docs/api/data.md) - `philjs-core` package
 - [CLI Commands](/docs/api/cli.md) - Command-line interface
 - [Configuration](/docs/api/config.md) - philjs.config.ts
 

@@ -9,3 +9,27 @@ playwright-report/
 test-results/
 .vite/
 .cache/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Compiled files in src directories (should only be in dist)
+examples/**/src/**/*.js
+examples/**/src/**/*.js.map
+examples/**/src/**/*.d.ts
+examples/**/src/**/*.d.ts.map
+examples/**/*.config.js
+examples/**/*.config.js.map
+examples/**/*.config.d.ts
+examples/**/*.config.d.ts.map
+examples/**/tests/**/*.js
+examples/**/tests/**/*.js.map
+examples/**/tests/**/*.d.ts
+examples/**/tests/**/*.d.ts.map
+
+# Debug files at root
+/test-*.js
+/analyze_docs.py
+/*-debug.png
+/*-test.png
+/light-mode*.png
+/scroll-debug.png

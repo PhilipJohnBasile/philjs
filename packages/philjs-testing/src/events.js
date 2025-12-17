@@ -1,0 +1,136 @@
+/**
+ * PhilJS Testing - Event Utilities
+ */
+import { fireEvent as dtlFireEvent, createEvent as dtlCreateEvent } from '@testing-library/dom';
+// Re-export from @testing-library/dom
+export const fireEvent = dtlFireEvent;
+export const createEvent = dtlCreateEvent;
+/**
+ * Extended fireEvent with PhilJS-specific event handling
+ */
+export const fire = {
+    ...dtlFireEvent,
+    /**
+     * Fire input event with value change
+     */
+    inputValue(element, value) {
+        // Set the value
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(element.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value')?.set;
+        if (nativeInputValueSetter) {
+            nativeInputValueSetter.call(element, value);
+        }
+        else {
+            element.value = value;
+        }
+        // Dispatch input event
+        dtlFireEvent.input(element, { target: { value } });
+    },
+    /**
+     * Fire change event with value
+     */
+    changeValue(element, value) {
+        dtlFireEvent.change(element, { target: { value } });
+    },
+    /**
+     * Fire select change event
+     */
+    selectOption(element, value) {
+        element.value = value;
+        dtlFireEvent.change(element, { target: { value } });
+    },
+    /**
+     * Fire checkbox toggle
+     */
+    toggleCheckbox(element) {
+        element.checked = !element.checked;
+        dtlFireEvent.click(element);
+        dtlFireEvent.change(element, { target: { checked: element.checked } });
+    },
+    /**
+     * Fire form submission
+     */
+    submitForm(form) {
+        dtlFireEvent.submit(form);
+    },
+    /**
+     * Fire keyboard events for a key sequence
+     */
+    type(element, text) {
+        element.focus();
+        for (const char of text) {
+            dtlFireEvent.keyDown(element, { key: char });
+            dtlFireEvent.keyPress(element, { key: char });
+            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+                element.value += char;
+                dtlFireEvent.input(element, { target: { value: element.value } });
+            }
+            dtlFireEvent.keyUp(element, { key: char });
+        }
+    },
+    /**
+     * Fire special key
+     */
+    pressKey(element, key, options = {}) {
+        dtlFireEvent.keyDown(element, { key, ...options });
+        dtlFireEvent.keyUp(element, { key, ...options });
+    },
+    /**
+     * Simulate Enter key press
+     */
+    pressEnter(element) {
+        fire.pressKey(element, 'Enter', { code: 'Enter' });
+    },
+    /**
+     * Simulate Escape key press
+     */
+    pressEscape(element) {
+        fire.pressKey(element, 'Escape', { code: 'Escape' });
+    },
+    /**
+     * Simulate Tab key press
+     */
+    pressTab(element, shiftKey = false) {
+        fire.pressKey(element, 'Tab', { code: 'Tab', shiftKey });
+    },
+    /**
+     * Fire hover events
+     */
+    hover(element) {
+        dtlFireEvent.mouseOver(element);
+        dtlFireEvent.mouseEnter(element);
+    },
+    /**
+     * Fire unhover events
+     */
+    unhover(element) {
+        dtlFireEvent.mouseOut(element);
+        dtlFireEvent.mouseLeave(element);
+    },
+    /**
+     * Fire focus events
+     */
+    focus(element) {
+        dtlFireEvent.focus(element);
+        dtlFireEvent.focusIn(element);
+    },
+    /**
+     * Fire blur events
+     */
+    blur(element) {
+        dtlFireEvent.blur(element);
+        dtlFireEvent.focusOut(element);
+    },
+    /**
+     * Fire drag and drop sequence
+     */
+    dragAndDrop(source, target) {
+        const dataTransfer = new DataTransfer();
+        dtlFireEvent.dragStart(source, { dataTransfer });
+        dtlFireEvent.drag(source, { dataTransfer });
+        dtlFireEvent.dragEnter(target, { dataTransfer });
+        dtlFireEvent.dragOver(target, { dataTransfer });
+        dtlFireEvent.drop(target, { dataTransfer });
+        dtlFireEvent.dragEnd(source, { dataTransfer });
+    },
+};
+//# sourceMappingURL=events.js.map

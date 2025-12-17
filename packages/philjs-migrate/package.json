@@ -1,0 +1,54 @@
+{
+  "name": "philjs-migrate",
+  "version": "1.0.0",
+  "description": "Migration codemods to convert React, Vue, and Svelte applications to PhilJS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "philjs-migrate": "./bin/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/transforms/react.d.ts",
+      "import": "./dist/transforms/react.js"
+    },
+    "./vue": {
+      "types": "./dist/transforms/vue.d.ts",
+      "import": "./dist/transforms/vue.js"
+    },
+    "./svelte": {
+      "types": "./dist/transforms/svelte.d.ts",
+      "import": "./dist/transforms/svelte.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "jscodeshift": "^0.15.0",
+    "recast": "^0.23.0",
+    "glob": "^10.0.0",
+    "picocolors": "^1.0.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/jscodeshift": "^0.11.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "keywords": ["philjs", "migration", "codemod", "react", "vue", "svelte"],
+  "license": "MIT"
+}

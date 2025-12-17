@@ -17,7 +17,7 @@ export function HeadingWithAnchor({ level, id, children }: HeadingWithAnchorProp
     setTimeout(() => copied.set(false), 2000);
   };
 
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  const Tag = `h${level}` as any;
 
   return (
     <Tag

@@ -199,8 +199,12 @@ export class Analyzer {
         }
       }
 
+      if (!current) break;
+
       if (t.isVariableDeclarator(current.node) && t.isIdentifier(current.node.id)) {
-        const binding = analysis.bindings.find(b => b.name === current.node.id.name);
+        const node = current.node as t.VariableDeclarator;
+        const id = node.id as t.Identifier;
+        const binding = analysis.bindings.find(b => b.name === id.name);
         if (binding) return binding;
       }
 

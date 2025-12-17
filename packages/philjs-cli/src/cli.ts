@@ -11,6 +11,7 @@ import { startDevServer } from "./dev-server.js";
 import { buildProduction } from "./build.js";
 import { analyze } from "./analyze.js";
 import { generateTypes } from "./generate-types.js";
+import { generateComponent, generateRoute, generatePage, generateHook, generateStore } from "./generators.js";
 
 const program = new Command();
 
@@ -137,6 +138,134 @@ program
 
     await server.listen();
     server.printUrls();
+  });
+
+// Generate command group
+const generate = program
+  .command("generate")
+  .alias("g")
+  .description("Generate components, routes, pages, hooks, and stores");
+
+// Generate component
+generate
+  .command("component <name>")
+  .alias("c")
+  .description("Generate a new component")
+  .option("-d, --directory <dir>", "Target directory", "src/components")
+  .option("--no-test", "Skip test file generation")
+  .option("--with-styles", "Generate CSS module file")
+  .option("--js", "Use JavaScript instead of TypeScript")
+  .action(async (name, options) => {
+    console.log(pc.cyan(`\n📦 Generating component: ${name}\n`));
+    try {
+      await generateComponent({
+        name,
+        directory: options.directory,
+        typescript: !options.js,
+        withTest: options.test !== false,
+        withStyles: options.withStyles,
+      });
+      console.log(pc.green(`\n✓ Component ${name} created!\n`));
+    } catch (error) {
+      console.error(pc.red("Failed to generate component:"), error);
+      process.exit(1);
+    }
+  });
+
+// Generate route
+generate
+  .command("route <name>")
+  .alias("r")
+  .description("Generate a new route with loader")
+  .option("-d, --directory <dir>", "Target directory", "src/routes")
+  .option("--no-test", "Skip test file generation")
+  .option("--js", "Use JavaScript instead of TypeScript")
+  .action(async (name, options) => {
+    console.log(pc.cyan(`\n🛤️  Generating route: ${name}\n`));
+    try {
+      await generateRoute({
+        name,
+        directory: options.directory,
+        typescript: !options.js,
+        withTest: options.test !== false,
+      });
+      console.log(pc.green(`\n✓ Route ${name} created!\n`));
+    } catch (error) {
+      console.error(pc.red("Failed to generate route:"), error);
+      process.exit(1);
+    }
+  });
+
+// Generate page
+generate
+  .command("page <name>")
+  .alias("p")
+  .description("Generate a new page component with SEO")
+  .option("-d, --directory <dir>", "Target directory", "src/pages")
+  .option("--no-test", "Skip test file generation")
+  .option("--js", "Use JavaScript instead of TypeScript")
+  .action(async (name, options) => {
+    console.log(pc.cyan(`\n📄 Generating page: ${name}\n`));
+    try {
+      await generatePage({
+        name,
+        directory: options.directory,
+        typescript: !options.js,
+        withTest: options.test !== false,
+      });
+      console.log(pc.green(`\n✓ Page ${name} created!\n`));
+    } catch (error) {
+      console.error(pc.red("Failed to generate page:"), error);
+      process.exit(1);
+    }
+  });
+
+// Generate hook
+generate
+  .command("hook <name>")
+  .alias("h")
+  .description("Generate a custom hook")
+  .option("-d, --directory <dir>", "Target directory", "src/hooks")
+  .option("--no-test", "Skip test file generation")
+  .option("--js", "Use JavaScript instead of TypeScript")
+  .action(async (name, options) => {
+    console.log(pc.cyan(`\n🪝 Generating hook: ${name}\n`));
+    try {
+      await generateHook({
+        name,
+        directory: options.directory,
+        typescript: !options.js,
+        withTest: options.test !== false,
+      });
+      console.log(pc.green(`\n✓ Hook ${name} created!\n`));
+    } catch (error) {
+      console.error(pc.red("Failed to generate hook:"), error);
+      process.exit(1);
+    }
+  });
+
+// Generate store
+generate
+  .command("store <name>")
+  .alias("s")
+  .description("Generate a state store")
+  .option("-d, --directory <dir>", "Target directory", "src/stores")
+  .option("--no-test", "Skip test file generation")
+  .option("--js", "Use JavaScript instead of TypeScript")
+  .action(async (name, options) => {
+    console.log(pc.cyan(`\n🗃️  Generating store: ${name}\n`));
+    try {
+      await generateStore({
+        name,
+        directory: options.directory,
+        typescript: !options.js,
+        withTest: options.test !== false,
+      });
+      console.log(pc.green(`\n✓ Store ${name} created!\n`));
+    } catch (error) {
+      console.error(pc.red("Failed to generate store:"), error);
+      process.exit(1);
+    }
   });
 
 program.parse();

@@ -108,7 +108,7 @@ export function Modal({
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
           animation: 'modalSlideIn 0.3s ease-out',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: MouseEvent) => e.stopPropagation()}
       >
         {/* Header */}
         {(title || showClose) && (

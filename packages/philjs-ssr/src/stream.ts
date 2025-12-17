@@ -7,7 +7,7 @@
  * @param {AsyncIterable<string>} parts - Async iterable of HTML strings
  * @returns {ReadableStream<Uint8Array>}
  */
-export function streamHTML(parts) {
+export function streamHTML(parts: AsyncIterable<string>): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const iterator = parts[Symbol.asyncIterator]();
 

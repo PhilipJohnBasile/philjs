@@ -1,0 +1,37 @@
+{
+  "name": "philjs-errors",
+  "version": "0.1.0",
+  "description": "Error tracking and monitoring for PhilJS - Sentry, LogRocket, Rollbar integrations",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./sentry": "./dist/sentry.js",
+    "./logrocket": "./dist/logrocket.js",
+    "./rollbar": "./dist/rollbar.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@sentry/browser": "^8.0.0",
+    "logrocket": "^5.0.0",
+    "rollbar": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sentry/browser": { "optional": true },
+    "logrocket": { "optional": true },
+    "rollbar": { "optional": true }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": ["philjs", "error-tracking", "sentry", "logrocket", "rollbar", "monitoring"],
+  "license": "MIT"
+}

@@ -99,8 +99,8 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
             aria-label={theme() === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
             title={theme() === 'dark' ? "Switch to light mode" : "Switch to dark mode"}
             style="display: flex; align-items: center; padding: 0.5rem; background: none; border: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; transition: color 0.2s;"
-            onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-text)'}
-            onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+            onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-text)'}
+            onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
           >
             {theme() === 'dark' ? (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -134,11 +134,11 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
             transition: all 0.2s;
             font-size: 0.875rem;
           "
-          onMouseEnter={(e) => {
+          onMouseEnter={(e: MouseEvent) => {
             (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
             (e.target as HTMLElement).style.background = 'var(--color-hover)';
           }}
-          onMouseLeave={(e) => {
+          onMouseLeave={(e: MouseEvent) => {
             (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
             (e.target as HTMLElement).style.background = 'var(--color-bg)';
           }}
@@ -183,12 +183,12 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
                     transition: color 0.2s;
                     border-radius: 6px;
                   `}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={(e: MouseEvent) => {
                     if (!hasActiveItem) {
                       (e.target as HTMLElement).style.color = 'var(--color-text)';
                     }
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={(e: MouseEvent) => {
                     if (!hasActiveItem) {
                       (e.target as HTMLElement).style.color = 'var(--color-text-secondary)';
                     }
@@ -206,12 +206,12 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
                     color: ${hasActiveItem ? 'var(--color-brand)' : 'var(--color-text-secondary)'};
                     transition: transform 0.2s;
                   `}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={(e: MouseEvent) => {
                     if (!hasActiveItem) {
                       (e.target as HTMLElement).style.color = 'var(--color-text)';
                     }
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={(e: MouseEvent) => {
                     if (!hasActiveItem) {
                       (e.target as HTMLElement).style.color = 'var(--color-text-secondary)';
                     }
@@ -246,12 +246,12 @@ export function Sidebar({ currentSection, currentFile, navigate, isOpen, onClose
                           display: block;
                           margin-bottom: 2px;
                         `}
-                        onMouseEnter={(e) => {
+                        onMouseEnter={(e: MouseEvent) => {
                           if (!isActive) {
                             (e.target as HTMLElement).style.background = 'var(--color-hover)';
                           }
                         }}
-                        onMouseLeave={(e) => {
+                        onMouseLeave={(e: MouseEvent) => {
                           if (!isActive) {
                             (e.target as HTMLElement).style.background = 'transparent';
                           }

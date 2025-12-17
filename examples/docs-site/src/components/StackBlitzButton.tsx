@@ -75,15 +75,21 @@ export function StackBlitzButton({
         cursor: 'pointer',
         transition: 'all var(--transition-fast)',
       }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.background = 'var(--color-brand)';
-        e.currentTarget.style.color = 'white';
-        e.currentTarget.style.borderColor = 'var(--color-brand)';
+      onMouseOver={(e: MouseEvent) => {
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.background = 'var(--color-brand)';
+          target.style.color = 'white';
+          target.style.borderColor = 'var(--color-brand)';
+        }
       }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.background = 'var(--color-bg-alt)';
-        e.currentTarget.style.color = 'var(--color-text)';
-        e.currentTarget.style.borderColor = 'var(--color-border)';
+      onMouseOut={(e: MouseEvent) => {
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.background = 'var(--color-bg-alt)';
+          target.style.color = 'var(--color-text)';
+          target.style.borderColor = 'var(--color-border)';
+        }
       }}
       aria-label="Open in StackBlitz"
     >
@@ -130,15 +136,21 @@ export function CodeSandboxButton({
         cursor: 'pointer',
         transition: 'all var(--transition-fast)',
       }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.background = '#151515';
-        e.currentTarget.style.color = 'white';
-        e.currentTarget.style.borderColor = '#151515';
+      onMouseOver={(e: MouseEvent) => {
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.background = '#151515';
+          target.style.color = 'white';
+          target.style.borderColor = '#151515';
+        }
       }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.background = 'var(--color-bg-alt)';
-        e.currentTarget.style.color = 'var(--color-text)';
-        e.currentTarget.style.borderColor = 'var(--color-border)';
+      onMouseOut={(e: MouseEvent) => {
+        const target = e.currentTarget as HTMLElement;
+        if (target) {
+          target.style.background = 'var(--color-bg-alt)';
+          target.style.color = 'var(--color-text)';
+          target.style.borderColor = 'var(--color-border)';
+        }
       }}
       aria-label="Open in CodeSandbox"
     >

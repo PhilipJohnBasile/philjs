@@ -3,7 +3,7 @@
  * Combines server-side loading with client-side SWR-style caching.
  */
 
-import { signal, memo } from "./signals.js";
+import { signal, memo, type Signal, type Memo } from "./signals.js";
 
 export type QueryKey = string | readonly unknown[];
 
@@ -34,17 +34,17 @@ export type QueryOptions<T> = {
 
 export type QueryResult<T> = {
   /** The data returned by the query */
-  data: T | undefined;
+  data: Signal<T | undefined>;
   /** Error if the query failed */
-  error: Error | undefined;
+  error: Signal<Error | undefined>;
   /** True while the query is fetching */
-  isLoading: boolean;
+  isLoading: Signal<boolean>;
   /** True while refetching (has data but fetching new) */
-  isFetching: boolean;
+  isFetching: Signal<boolean>;
   /** True if the query has been fetched at least once */
-  isSuccess: boolean;
+  isSuccess: Memo<boolean>;
   /** True if the query failed */
-  isError: boolean;
+  isError: Memo<boolean>;
   /** Manually trigger a refetch */
   refetch: () => Promise<T>;
   /** Manually set the data (for optimistic updates) */
@@ -70,15 +70,15 @@ export type MutationResult<TData, TVariables> = {
   /** Trigger the mutation (async version) */
   mutateAsync: (variables: TVariables) => Promise<TData>;
   /** The data returned by the mutation */
-  data: TData | undefined;
+  data: Signal<TData | undefined>;
   /** Error if the mutation failed */
-  error: Error | undefined;
+  error: Signal<Error | undefined>;
   /** True while the mutation is running */
-  isPending: boolean;
+  isPending: Signal<boolean>;
   /** True if the mutation succeeded */
-  isSuccess: boolean;
+  isSuccess: Memo<boolean>;
   /** True if the mutation failed */
-  isError: boolean;
+  isError: Memo<boolean>;
   /** Reset the mutation state */
   reset: () => void;
 };
@@ -196,6 +196,8 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
 
       // Call error callback
       options.onError?.(e);
+
+      throw e;
     } finally {
       isFetching.set(false);
       isLoading.set(false);

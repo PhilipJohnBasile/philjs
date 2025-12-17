@@ -1,0 +1,31 @@
+{
+  "name": "philjs-api",
+  "version": "0.1.0",
+  "description": "API routes and full-stack utilities for PhilJS",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/server.js",
+    "./client": "./dist/client.js",
+    "./cookies": "./dist/cookies.js",
+    "./session": "./dist/session.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": ["philjs", "api", "routes", "server", "full-stack"],
+  "license": "MIT"
+}

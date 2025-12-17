@@ -1,0 +1,38 @@
+{
+  "name": "philjs-ui",
+  "version": "1.0.0",
+  "description": "Official UI component library for PhilJS with dark mode, accessibility, and theming",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "import": "./dist/theme/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc && node scripts/build-css.js",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "storybook": "storybook dev -p 6006"
+  },
+  "keywords": ["philjs", "ui", "components", "design-system", "accessibility"],
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "philjs-core": "workspace:*"
+  }
+}

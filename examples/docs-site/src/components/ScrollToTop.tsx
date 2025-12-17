@@ -98,11 +98,11 @@ export function ScrollToTop({
         transition: 'all var(--transition-fast)',
         animation: 'fadeInUp 0.3s ease-out',
       }}
-      onMouseOver={(e) => {
+      onMouseOver={(e: MouseEvent) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
         (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.15)';
       }}
-      onMouseOut={(e) => {
+      onMouseOut={(e: MouseEvent) => {
         (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
         (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
       }}

@@ -7,7 +7,7 @@
  * @param {unknown} obj - Object to serialize
  * @returns {string}
  */
-export function serializeState(obj) {
+export function serializeState(obj: unknown): string {
   const json = JSON.stringify(obj);
 
   if (typeof Buffer !== "undefined") {
@@ -26,7 +26,7 @@ export function serializeState(obj) {
  * @param {string} b64 - Base64 encoded state
  * @returns {unknown}
  */
-export function deserializeState(b64) {
+export function deserializeState(b64: string): unknown {
   if (typeof Buffer !== "undefined") {
     return JSON.parse(Buffer.from(b64, "base64").toString());
   }

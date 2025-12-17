@@ -192,7 +192,7 @@ function TodoListExample() {
 
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-alt); border-radius: 6px;">
         <span style="font-size: 0.9rem;" data-test="todo-stats">
-          <strong data-test="active-count">{activeCount}</strong> active, <strong data-test="completed-count">{completedCount}</strong> completed
+          <strong data-test="active-count">{activeCount()}</strong> active, <strong data-test="completed-count">{completedCount()}</strong> completed
         </span>
         {completedCount() > 0 && (
           <button

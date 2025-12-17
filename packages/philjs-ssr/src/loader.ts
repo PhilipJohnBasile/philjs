@@ -6,7 +6,7 @@ import type { Loader, Action } from "./types.js";
  * @param {Loader<T>} fn - Loader function
  * @returns {Loader<T>}
  */
-export function defineLoader(fn) {
+export function defineLoader<T>(fn: Loader<T>): Loader<T> {
   return fn;
 }
 
@@ -16,6 +16,6 @@ export function defineLoader(fn) {
  * @param {Action<T>} fn - Action function
  * @returns {Action<T>}
  */
-export function defineAction(fn) {
+export function defineAction<T>(fn: Action<T>): Action<T> {
   return fn;
 }

@@ -1,0 +1,285 @@
+{
+  "PhilJS Signal": {
+    "prefix": ["signal", "psig"],
+    "body": [
+      "const ${1:name} = signal(${2:initialValue});"
+    ],
+    "description": "Create a PhilJS signal"
+  },
+  "PhilJS Computed": {
+    "prefix": ["computed", "pcomp"],
+    "body": [
+      "const ${1:name} = computed(() => ${2:expression});"
+    ],
+    "description": "Create a PhilJS computed value"
+  },
+  "PhilJS Effect": {
+    "prefix": ["effect", "peff"],
+    "body": [
+      "effect(() => {",
+      "\t${1:// side effect}",
+      "});"
+    ],
+    "description": "Create a PhilJS effect"
+  },
+  "PhilJS Effect with Cleanup": {
+    "prefix": ["effectc", "peffc"],
+    "body": [
+      "effect(() => {",
+      "\t${1:// side effect}",
+      "",
+      "\treturn () => {",
+      "\t\t${2:// cleanup}",
+      "\t};",
+      "});"
+    ],
+    "description": "Create a PhilJS effect with cleanup"
+  },
+  "PhilJS onMount": {
+    "prefix": ["onmount", "pmount"],
+    "body": [
+      "onMount(() => {",
+      "\t${1:// mount logic}",
+      "});"
+    ],
+    "description": "Create a PhilJS onMount lifecycle hook"
+  },
+  "PhilJS onCleanup": {
+    "prefix": ["oncleanup", "pclean"],
+    "body": [
+      "onCleanup(() => {",
+      "\t${1:// cleanup logic}",
+      "});"
+    ],
+    "description": "Create a PhilJS onCleanup hook"
+  },
+  "PhilJS Component": {
+    "prefix": ["pfc", "philcomponent"],
+    "body": [
+      "import { JSX } from 'philjs-core';",
+      "",
+      "export interface ${1:ComponentName}Props {",
+      "\tchildren?: JSX.Element;",
+      "\tclassName?: string;",
+      "}",
+      "",
+      "export function ${1:ComponentName}(props: ${1:ComponentName}Props) {",
+      "\tconst { children, className = '' } = props;",
+      "",
+      "\treturn (",
+      "\t\t<div className={className}>",
+      "\t\t\t{children}",
+      "\t\t</div>",
+      "\t);",
+      "}"
+    ],
+    "description": "Create a PhilJS functional component"
+  },
+  "PhilJS Component with Signal": {
+    "prefix": ["pfcs", "philcomponentsignal"],
+    "body": [
+      "import { JSX, signal } from 'philjs-core';",
+      "",
+      "export function ${1:ComponentName}() {",
+      "\tconst ${2:count} = signal(${3:0});",
+      "",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t<p>Value: {${2:count}.get()}</p>",
+      "\t\t\t<button onClick={() => ${2:count}.update(n => n + 1)}>",
+      "\t\t\t\tIncrement",
+      "\t\t\t</button>",
+      "\t\t</div>",
+      "\t);",
+      "}"
+    ],
+    "description": "Create a PhilJS component with signal state"
+  },
+  "PhilJS Memo Component": {
+    "prefix": ["pmemo", "philmemo"],
+    "body": [
+      "import { JSX, memo } from 'philjs-core';",
+      "",
+      "export interface ${1:ComponentName}Props {",
+      "\t${2:propName}: ${3:string};",
+      "}",
+      "",
+      "export const ${1:ComponentName} = memo((props: ${1:ComponentName}Props) => {",
+      "\tconst { ${2:propName} } = props;",
+      "",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t{${2:propName}}",
+      "\t\t</div>",
+      "\t);",
+      "});"
+    ],
+    "description": "Create a memoized PhilJS component"
+  },
+  "PhilJS Context": {
+    "prefix": ["pctx", "philcontext"],
+    "body": [
+      "import { createContext, useContext, JSX } from 'philjs-core';",
+      "",
+      "interface ${1:ContextName}Value {",
+      "\t${2:value}: ${3:string};",
+      "}",
+      "",
+      "const ${1:ContextName}Context = createContext<${1:ContextName}Value | null>(null);",
+      "",
+      "export function ${1:ContextName}Provider(props: { children: JSX.Element }) {",
+      "\tconst value: ${1:ContextName}Value = {",
+      "\t\t${2:value}: ${4:''},",
+      "\t};",
+      "",
+      "\treturn (",
+      "\t\t<${1:ContextName}Context.Provider value={value}>",
+      "\t\t\t{props.children}",
+      "\t\t</${1:ContextName}Context.Provider>",
+      "\t);",
+      "}",
+      "",
+      "export function use${1:ContextName}(): ${1:ContextName}Value {",
+      "\tconst context = useContext(${1:ContextName}Context);",
+      "\tif (!context) {",
+      "\t\tthrow new Error('use${1:ContextName} must be used within ${1:ContextName}Provider');",
+      "\t}",
+      "\treturn context;",
+      "}"
+    ],
+    "description": "Create a PhilJS context with provider and hook"
+  },
+  "PhilJS Custom Hook": {
+    "prefix": ["phook", "philhook"],
+    "body": [
+      "import { signal } from 'philjs-core';",
+      "",
+      "export function use${1:HookName}(initialValue${2:: string} = ${3:''}) {",
+      "\tconst state = signal(initialValue);",
+      "",
+      "\tconst setValue = (newValue${2:: string}) => {",
+      "\t\tstate.set(newValue);",
+      "\t};",
+      "",
+      "\treturn {",
+      "\t\tvalue: state.get(),",
+      "\t\tsetValue,",
+      "\t};",
+      "}"
+    ],
+    "description": "Create a PhilJS custom hook"
+  },
+  "PhilJS Store": {
+    "prefix": ["pstore", "philstore"],
+    "body": [
+      "import { signal, computed } from 'philjs-core';",
+      "",
+      "interface ${1:StoreName}State {",
+      "\t${2:items}: ${3:string}[];",
+      "\tloading: boolean;",
+      "}",
+      "",
+      "const state = signal<${1:StoreName}State>({",
+      "\t${2:items}: [],",
+      "\tloading: false,",
+      "});",
+      "",
+      "export const ${4:store}Store = {",
+      "\tget ${2:items}() {",
+      "\t\treturn state.get().${2:items};",
+      "\t},",
+      "",
+      "\tget loading() {",
+      "\t\treturn state.get().loading;",
+      "\t},",
+      "",
+      "\tadd(item: ${3:string}) {",
+      "\t\tconst current = state.get();",
+      "\t\tstate.set({",
+      "\t\t\t...current,",
+      "\t\t\t${2:items}: [...current.${2:items}, item],",
+      "\t\t});",
+      "\t},",
+      "",
+      "\tremove(item: ${3:string}) {",
+      "\t\tconst current = state.get();",
+      "\t\tstate.set({",
+      "\t\t\t...current,",
+      "\t\t\t${2:items}: current.${2:items}.filter(i => i !== item),",
+      "\t\t});",
+      "\t},",
+      "};"
+    ],
+    "description": "Create a PhilJS store"
+  },
+  "PhilJS Route": {
+    "prefix": ["proute", "philroute"],
+    "body": [
+      "import { JSX } from 'philjs-core';",
+      "import { useLoaderData } from 'philjs-router';",
+      "",
+      "export async function loader() {",
+      "\treturn {",
+      "\t\t${1:data}: ${2:null},",
+      "\t};",
+      "}",
+      "",
+      "export default function ${3:RouteName}() {",
+      "\tconst data = useLoaderData<typeof loader>();",
+      "",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t<h1>${3:RouteName}</h1>",
+      "\t\t\t{/* Route content */}",
+      "\t\t</div>",
+      "\t);",
+      "}"
+    ],
+    "description": "Create a PhilJS route with loader"
+  },
+  "PhilJS Page with SEO": {
+    "prefix": ["ppage", "philpage"],
+    "body": [
+      "import { JSX } from 'philjs-core';",
+      "import { Head, Title, Meta } from 'philjs-meta';",
+      "",
+      "export function ${1:PageName}Page() {",
+      "\treturn (",
+      "\t\t<>",
+      "\t\t\t<Head>",
+      "\t\t\t\t<Title>${2:Page Title}</Title>",
+      "\t\t\t\t<Meta name=\"description\" content=\"${3:Page description}\" />",
+      "\t\t\t</Head>",
+      "",
+      "\t\t\t<main>",
+      "\t\t\t\t<h1>${2:Page Title}</h1>",
+      "\t\t\t\t{/* Page content */}",
+      "\t\t\t</main>",
+      "\t\t</>",
+      "\t);",
+      "}"
+    ],
+    "description": "Create a PhilJS page with SEO meta tags"
+  },
+  "PhilJS Import Core": {
+    "prefix": ["ipc", "importphilcore"],
+    "body": [
+      "import { ${1:signal, computed, effect} } from 'philjs-core';"
+    ],
+    "description": "Import from philjs-core"
+  },
+  "PhilJS Import Router": {
+    "prefix": ["ipr", "importphilrouter"],
+    "body": [
+      "import { ${1:Link, useNavigate, useParams} } from 'philjs-router';"
+    ],
+    "description": "Import from philjs-router"
+  },
+  "PhilJS Import UI": {
+    "prefix": ["ipu", "importphilui"],
+    "body": [
+      "import { ${1:Button, Input, Card} } from 'philjs-ui';"
+    ],
+    "description": "Import from philjs-ui"
+  }
+}

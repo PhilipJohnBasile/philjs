@@ -353,7 +353,7 @@ export function performanceBudgetPlugin(options: {
   return {
     name: "performance-budget",
 
-    generateBundle(_, bundle: any) {
+    generateBundle(_options: any, bundle: any) {
       for (const [fileName, chunk] of Object.entries(bundle)) {
         const metrics: RouteMetrics = {
           route: fileName,

@@ -51,7 +51,7 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
           opacity: ${hasPrev ? '1' : '0'};
           pointer-events: ${hasPrev ? 'auto' : 'none'};
         `}
-        onMouseEnter={(e) => {
+        onMouseEnter={(e: MouseEvent) => {
           if (hasPrev && prev) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
             (e.target as HTMLElement).style.transform = 'translateX(-4px)';
@@ -59,7 +59,7 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
             prefetchPage(`/docs/${prev.path}/${prev.file}`);
           }
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={(e: MouseEvent) => {
           if (hasPrev) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
             (e.target as HTMLElement).style.transform = 'translateX(0)';
@@ -93,7 +93,7 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
           opacity: ${hasNext ? '1' : '0'};
           pointer-events: ${hasNext ? 'auto' : 'none'};
         `}
-        onMouseEnter={(e) => {
+        onMouseEnter={(e: MouseEvent) => {
           if (hasNext && next) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-brand)';
             (e.target as HTMLElement).style.transform = 'translateX(4px)';
@@ -101,7 +101,7 @@ export function DocNavigation({ section, file, navigate }: DocNavigationProps) {
             prefetchPage(`/docs/${next.path}/${next.file}`);
           }
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={(e: MouseEvent) => {
           if (hasNext) {
             (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
             (e.target as HTMLElement).style.transform = 'translateX(0)';

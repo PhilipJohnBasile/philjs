@@ -439,7 +439,7 @@ function ProductCard({ productId }: { productId: number }) {
 ### Optimize Data Fetching
 
 ```tsx
-import { createQuery } from 'philjs-data';
+import { createQuery } from 'philjs-core';
 
 function UserProfile({ userId }: { userId: number }) {
   // Cached and deduplicated

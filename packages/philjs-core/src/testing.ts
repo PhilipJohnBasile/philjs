@@ -291,7 +291,7 @@ export const mock = {
 /**
  * Create a test component wrapper
  */
-export function createTestComponent<P = {}>(
+export function createTestComponent<P extends Record<string, any> = Record<string, any>>(
   Component: (props: P) => VNode
 ) {
   return {

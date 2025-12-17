@@ -336,7 +336,7 @@ export default function Page({ data }) {
 ### Client to Server
 
 ```tsx
-import { createMutation } from 'philjs-data';
+import { createMutation } from 'philjs-core';
 
 function ContactForm() {
   const sendMessage = createMutation(async (data: FormData) => {

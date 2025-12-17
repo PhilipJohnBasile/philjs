@@ -74,6 +74,6 @@ export type {
  * @param {Record<string, RouteModule>} manifest - Route manifest
  * @returns {{ manifest: Record<string, RouteModule> }}
  */
-export function createRouter(manifest) {
+export function createRouter(manifest: Record<string, RouteModule>) {
   return { manifest };
 }

@@ -13,7 +13,7 @@ export function App() {
     { id: "signals", label: "Signals & Reactivity" },
     { id: "attributes", label: "Reactive Attributes" },
     { id: "forms", label: "Forms & Validation" },
-    // { id: "lists", label: "Lists & Rendering" }, // TODO: Fix infinite loop issue
+    { id: "lists", label: "Lists & Rendering" },
     { id: "async", label: "Async & Data Fetching" },
     { id: "advanced", label: "Advanced Patterns" },
   ];
@@ -76,6 +76,9 @@ export function App() {
           </div>
           <div style={formsDisplay}>
             <FormsDemo />
+          </div>
+          <div style={listsDisplay}>
+            <ListsDemo />
           </div>
           <div style={asyncDisplay}>
             <AsyncDemo />

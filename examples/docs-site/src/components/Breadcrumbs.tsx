@@ -37,8 +37,8 @@ export function Breadcrumbs({ section, file, navigate }: BreadcrumbsProps) {
           text-decoration: none;
           transition: color 0.2s;
         "
-        onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
-        onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+        onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
+        onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
       >
         Home
       </button>
@@ -56,8 +56,8 @@ export function Breadcrumbs({ section, file, navigate }: BreadcrumbsProps) {
           text-decoration: none;
           transition: color 0.2s;
         "
-        onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
-        onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+        onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
+        onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
       >
         {sectionTitle}
       </button>

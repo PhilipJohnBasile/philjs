@@ -1,0 +1,40 @@
+{
+  "name": "philjs-db",
+  "version": "0.1.0",
+  "description": "Database integration utilities for PhilJS - Prisma, Drizzle, Supabase",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./prisma": "./dist/prisma.js",
+    "./drizzle": "./dist/drizzle.js",
+    "./supabase": "./dist/supabase.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^5.0.0",
+    "drizzle-orm": "^0.29.0",
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@prisma/client": { "optional": true },
+    "drizzle-orm": { "optional": true },
+    "@supabase/supabase-js": { "optional": true }
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": ["philjs", "database", "prisma", "drizzle", "supabase", "orm"],
+  "license": "MIT"
+}

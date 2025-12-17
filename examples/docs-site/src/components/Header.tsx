@@ -46,7 +46,7 @@ export function Header({
           {navLinks.map((link) => (
             <a
               href={link.path}
-              onClick={(e) => {
+              onClick={(e: MouseEvent) => {
                 e.preventDefault();
                 navigate(link.path);
               }}
@@ -178,7 +178,7 @@ export function Header({
                 {navLinks.map((link) => (
                   <a
                     href={link.path}
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent) => {
                       e.preventDefault();
                       navigate(link.path);
                       mobileMenuOpen.set(false);
@@ -234,7 +234,7 @@ export function Header({
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, Record<string, any>> = {
   header: {
     position: "sticky",
     top: 0,

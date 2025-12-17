@@ -16,7 +16,7 @@ const renderer = new marked.Renderer();
 // Add IDs to headings for TOC
 renderer.heading = function({ tokens, depth }) {
   const text = this.parser.parseInline(tokens);
-  const rawText = tokens.map(t => t.raw || t.text || '').join('');
+  const rawText = tokens.map((t: any) => t.raw || t.text || '').join('');
   const id = rawText.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
   return `<h${depth} id="${id}">${text}</h${depth}>`;
 };
@@ -99,8 +99,9 @@ renderer.code = function({ text, lang }) {
 
 // Enhance blockquotes for callouts
 const originalBlockquote = renderer.blockquote.bind(renderer);
-renderer.blockquote = function({ tokens }) {
-  const quote = this.parser.parse(tokens);
+renderer.blockquote = function(quote: any) {
+  const { tokens } = quote;
+  const content = this.parser.parse(tokens);
   // Check for callout patterns
   const tipPattern = /^<p>💡\s*<strong>Tip:?<\/strong>/i;
   const warningPattern = /^<p>⚠️\s*<strong>Warning:?<\/strong>/i;
@@ -111,19 +112,19 @@ renderer.blockquote = function({ tokens }) {
   let icon = '';
   let color = '';
 
-  if (tipPattern.test(quote)) {
+  if (tipPattern.test(content)) {
     type = 'tip';
     icon = '💡';
     color = '#10b981'; // green
-  } else if (warningPattern.test(quote)) {
+  } else if (warningPattern.test(content)) {
     type = 'warning';
     icon = '⚠️';
     color = '#f59e0b'; // amber
-  } else if (notePattern.test(quote)) {
+  } else if (notePattern.test(content)) {
     type = 'note';
     icon = 'ℹ️';
     color = '#3b82f6'; // blue
-  } else if (importantPattern.test(quote)) {
+  } else if (importantPattern.test(content)) {
     type = 'important';
     icon = '❗';
     color = '#ef4444'; // red
@@ -145,12 +146,12 @@ renderer.blockquote = function({ tokens }) {
           top: 1rem;
           font-size: 1.25rem;
         ">${icon}</div>
-        ${quote}
+        ${content}
       </div>
     `;
   }
 
-  return originalBlockquote.call(this, { tokens });
+  return originalBlockquote.call(this, quote);
 };
 
 // Enhanced link rendering with external link indicator
@@ -172,16 +173,10 @@ renderer.link = function({ href, title, tokens }) {
 // Configure marked
 marked.setOptions({
   renderer,
-  highlight: function(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(code, { language: lang }).value;
-    }
-    return hljs.highlightAuto(code).value;
-  },
   breaks: true,
   gfm: true,
 });
 
 export function renderMarkdown(markdown: string): string {
-  return marked(markdown);
+  return marked(markdown) as string;
 }

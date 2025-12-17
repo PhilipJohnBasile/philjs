@@ -4,7 +4,7 @@
  * frameworks like Next.js or Remix, but backed by PhilJS signals and resumability.
  */
 
-import { render, signal, isResult } from "philjs-core";
+import { render, signal, isResult, isOk, isErr } from "philjs-core";
 import type { JSXElement, VNode } from "philjs-core";
 import {
   SmartPreloader,
@@ -487,9 +487,9 @@ async function renderCurrentRoute(
       });
 
       if (isResult(result)) {
-        if (result.ok) {
+        if (isOk(result)) {
           data = result.value;
-        } else {
+        } else if (isErr(result)) {
           error = result.error;
         }
       } else {

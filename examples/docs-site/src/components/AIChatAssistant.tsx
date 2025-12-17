@@ -427,7 +427,7 @@ export function AIChatAssistant({
         <input
           type="text"
           value={inputValue()}
-          onInput={(e) => inputValue.set((e.target as HTMLInputElement).value)}
+          onInput={(e: Event) => inputValue.set((e.target as HTMLInputElement).value)}
           placeholder={placeholder}
           style={{
             flex: 1,

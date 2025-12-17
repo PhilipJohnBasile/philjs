@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import type { TLSSocket } from "node:tls";
 import { createRouteMatcher } from "philjs-router";
 import type { RouteDefinition, RouteManifestOptions } from "philjs-router";
 import { handleRequest } from "./request-handler.js";
@@ -154,7 +155,9 @@ async function sendNodeResponse(
 
 function resolveOrigin(req: IncomingMessage, baseUrl?: string): string {
   if (baseUrl) return baseUrl;
-  const protocol = req.socket.encrypted ? "https" : "http";
+  // Type guard to check if socket is a TLS socket
+  const isTLS = req.socket && 'encrypted' in req.socket;
+  const protocol = isTLS && (req.socket as TLSSocket).encrypted ? "https" : "http";
   const host = req.headers.host ?? "localhost";
   return `${protocol}://${host}`;
 }

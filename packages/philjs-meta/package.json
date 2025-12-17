@@ -1,0 +1,40 @@
+{
+  "name": "philjs-meta",
+  "version": "1.0.0",
+  "description": "SEO and meta tag management for PhilJS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "seo",
+    "meta",
+    "og",
+    "opengraph",
+    "twitter",
+    "sitemap"
+  ],
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

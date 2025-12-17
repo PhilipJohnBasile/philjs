@@ -68,7 +68,7 @@ function TodoList() {
 
   return (
     <div>
-      <input value={input()} onInput={(e) => input.set(e.target.value)} />
+      <input value={input()} onInput={(e: Event) => input.set(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <ul>
         {todos().map(todo => (
@@ -394,8 +394,8 @@ export function ExamplesPage({ navigate }: { navigate: (path: string) => void })
                     cursor: pointer;
                     transition: all var(--transition-base);
                   "
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
+                  onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1)'}
                 >
                   Read the Docs →
                 </button>
@@ -411,8 +411,8 @@ export function ExamplesPage({ navigate }: { navigate: (path: string) => void })
                     cursor: pointer;
                     transition: all var(--transition-base);
                   "
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.borderColor = 'var(--color-brand)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.borderColor = 'var(--color-border)'}
+                  onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.borderColor = 'var(--color-brand)'}
+                  onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.borderColor = 'var(--color-border)'}
                 >
                   ← Back to Home
                 </button>
@@ -756,8 +756,8 @@ export function ExamplesPageOLD({ navigate }: { navigate: (path: string) => void
                     cursor: pointer;
                     transition: all var(--transition-base);
                   "
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
+                  onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1)'}
                 >
                   Read the Docs →
                 </button>
@@ -773,8 +773,8 @@ export function ExamplesPageOLD({ navigate }: { navigate: (path: string) => void
                     cursor: pointer;
                     transition: all var(--transition-base);
                   "
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.borderColor = 'var(--color-brand)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.borderColor = 'var(--color-border)'}
+                  onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.borderColor = 'var(--color-brand)'}
+                  onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.borderColor = 'var(--color-border)'}
                 >
                   ← Back to Home
                 </button>

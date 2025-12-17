@@ -48,7 +48,7 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
       // Create function with the code
       const func = new Function(
         ...Object.keys(executionContext),
-        code.value
+        code()
       );
 
       // Execute with context
@@ -74,7 +74,7 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
 
   const copyCode = async () => {
     try {
-      await navigator.clipboard.writeText(code.value);
+      await navigator.clipboard.writeText(code());
       // Could add a toast notification here
     } catch (err) {
       console.error('Failed to copy:', err);
@@ -85,7 +85,7 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
   effect(() => {
     const editorEl = document.getElementById('code-editor-content');
     if (editorEl) {
-      editorEl.textContent = code.value;
+      editorEl.textContent = code();
       hljs.highlightElement(editorEl);
     }
   });
@@ -119,7 +119,7 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
         <div class="code-playground-editor">
           <textarea
             class="code-editor-textarea"
-            value={code.value}
+            value={code()}
             oninput={(e: Event) => {
               const target = e.target as HTMLTextAreaElement;
               code.set(target.value);
@@ -128,7 +128,7 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
           />
           <pre class="code-editor-highlight">
             <code id="code-editor-content" class={`language-${language}`}>
-              {code.value}
+              {code()}
             </code>
           </pre>
         </div>
@@ -136,12 +136,12 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
         <div class="code-playground-preview">
           <div class="preview-header">Output</div>
           <div class="preview-content">
-            {error.value ? (
+            {error() ? (
               <div class="preview-error">
-                ❌ {error.value}
+                ❌ {error()}
               </div>
-            ) : output.value ? (
-              <pre class="preview-output">{output.value}</pre>
+            ) : output() ? (
+              <pre class="preview-output">{output()}</pre>
             ) : (
               <div class="preview-empty">
                 Click "Run" to see output

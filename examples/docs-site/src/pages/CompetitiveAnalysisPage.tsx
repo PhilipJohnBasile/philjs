@@ -323,8 +323,8 @@ export function CompetitiveAnalysisPage({ navigate }: { navigate: (path: string)
                   cursor: pointer;
                   transition: all var(--transition-base);
                 "
-                onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
+                onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
+                onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1)'}
               >
                 Explore PhilJS →
               </button>
@@ -340,8 +340,8 @@ export function CompetitiveAnalysisPage({ navigate }: { navigate: (path: string)
                   cursor: pointer;
                   transition: all var(--transition-base);
                 "
-                onMouseEnter={(e) => (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.3)'}
-                onMouseLeave={(e) => (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.2)'}
+                onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.3)'}
+                onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.2)'}
               >
                 View Examples
               </button>

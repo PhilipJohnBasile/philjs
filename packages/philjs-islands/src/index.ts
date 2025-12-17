@@ -49,7 +49,7 @@ export function mountIslands(root = document.body) {
  * Hydrate a specific island immediately.
  * @param {HTMLElement} element - Island element to hydrate
  */
-export function hydrateIsland(element) {
+export function hydrateIsland(element: HTMLElement): void {
   const componentName = element.getAttribute("island");
   if (componentName) {
     if (!element.hasAttribute("data-hydrated")) {

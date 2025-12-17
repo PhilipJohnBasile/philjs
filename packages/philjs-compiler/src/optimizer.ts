@@ -79,9 +79,9 @@ export class Optimizer {
 
     return {
       code: output.code,
-      map: output.map || undefined,
+      map: output.map || null,
       analysis,
-      optimizationsApplied,
+      optimizations: optimizationsApplied,
       warnings,
     };
   }
@@ -260,14 +260,14 @@ export class Optimizer {
     });
 
     // Add imports if needed
-    if (philjsImport) {
+    if (philjsImport && t.isImportDeclaration(philjsImport)) {
       if (needsMemo && !this.hasImport(philjsImport, 'memo')) {
-        philjsImport.specifiers.push(
+        (philjsImport as t.ImportDeclaration).specifiers.push(
           t.importSpecifier(t.identifier('memo'), t.identifier('memo'))
         );
       }
       if (needsBatch && !this.hasImport(philjsImport, 'batch')) {
-        philjsImport.specifiers.push(
+        (philjsImport as t.ImportDeclaration).specifiers.push(
           t.importSpecifier(t.identifier('batch'), t.identifier('batch'))
         );
       }

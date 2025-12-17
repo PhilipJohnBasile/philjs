@@ -1,7 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { createServer } from "node:http";
+import { createServer as createSecureServer } from "node:https";
 import { once } from "node:events";
-import { Ok } from "philjs-core";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { Ok, Err } from "philjs-core";
 import type { RouteDefinition } from "philjs-router";
 import {
   createFetchHandler,
@@ -109,5 +112,47 @@ describe("philjs-ssr adapters", () => {
     expect(response.status).toBe(200);
     const html = await response.text();
     expect(html).toContain("Hello PhilJS");
+  });
+
+  it("handles HTTP protocol detection for non-TLS connections", async () => {
+    const handler = createFetchHandler({ routes });
+    const server = createServer(createNodeHttpHandler({ routes }));
+    await new Promise<void>((resolve) => server.listen(0, resolve));
+    const address = server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Unexpected server address");
+    }
+
+    const response = await fetch(`http://127.0.0.1:${address.port}/`);
+    expect(response.status).toBe(200);
+    const html = await response.text();
+    expect(html).toContain("Hello PhilJS");
+
+    server.close();
+    await once(server, "close");
+  });
+
+  it("handles Result types from loaders correctly", async () => {
+    const okRoute: RouteDefinition = {
+      path: "/ok",
+      component: ({ data }) => `Data: ${data}`,
+      loader: async () => Ok("success"),
+    };
+
+    const errRoute: RouteDefinition = {
+      path: "/err",
+      component: ({ error }) => `Error: ${error}`,
+      loader: async () => Err("failed"),
+    };
+
+    const handler = createFetchHandler({ routes: [okRoute, errRoute] });
+
+    const okResponse = await handler(new Request("http://localhost/ok"));
+    const okHtml = await okResponse.text();
+    expect(okHtml).toContain("Data: success");
+
+    const errResponse = await handler(new Request("http://localhost/err"));
+    const errHtml = await errResponse.text();
+    expect(errHtml).toContain("Error: failed");
   });
 });

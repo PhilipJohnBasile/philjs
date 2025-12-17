@@ -231,7 +231,7 @@ export function SearchFacets({
         </label>
         <select
           value={selectedSort()}
-          onChange={(e) => handleSortChange((e.target as HTMLSelectElement).value)}
+          onChange={(e: Event) => handleSortChange((e.target as HTMLSelectElement).value)}
           style={{
             width: '100%',
             padding: '0.625rem 0.875rem',
@@ -337,7 +337,7 @@ export function SearchFacets({
                         type={group.type === 'radio' ? 'radio' : 'checkbox'}
                         name={group.type === 'radio' ? group.id : undefined}
                         checked={isSelected}
-                        onChange={(e) =>
+                        onChange={(e: Event) =>
                           handleFacetChange(
                             group.id,
                             facet.id,

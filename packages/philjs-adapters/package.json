@@ -1,0 +1,45 @@
+{
+  "name": "philjs-adapters",
+  "version": "0.1.0",
+  "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./vercel": "./dist/vercel/index.js",
+    "./netlify": "./dist/netlify/index.js",
+    "./cloudflare": "./dist/cloudflare/index.js",
+    "./aws": "./dist/aws/index.js",
+    "./node": "./dist/node/index.js",
+    "./static": "./dist/static/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-ssr": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  },
+  "peerDependencies": {
+    "@vercel/node": "^3.0.0",
+    "@netlify/functions": "^2.0.0",
+    "@cloudflare/workers-types": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vercel/node": { "optional": true },
+    "@netlify/functions": { "optional": true },
+    "@cloudflare/workers-types": { "optional": true }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": ["philjs", "adapter", "vercel", "netlify", "cloudflare", "aws", "deployment"],
+  "license": "MIT"
+}

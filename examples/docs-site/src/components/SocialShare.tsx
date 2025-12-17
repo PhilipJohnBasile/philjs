@@ -189,7 +189,7 @@ export function SocialShare({
       }}
     >
       {/* Native share button (mobile) */}
-      {typeof navigator !== 'undefined' && navigator.share && (
+      {typeof navigator !== 'undefined' && typeof navigator.share !== 'undefined' && (
         <button
           onClick={useNativeShare}
           style={{
@@ -242,11 +242,11 @@ export function SocialShare({
               cursor: 'pointer',
               transition: 'all var(--transition-fast)',
             }}
-            onMouseOver={(e) => {
+            onMouseOver={(e: MouseEvent) => {
               (e.currentTarget as HTMLElement).style.borderColor = config.color;
               (e.currentTarget as HTMLElement).style.color = config.color;
             }}
-            onMouseOut={(e) => {
+            onMouseOut={(e: MouseEvent) => {
               (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)';
               (e.currentTarget as HTMLElement).style.color = 'var(--color-text)';
             }}

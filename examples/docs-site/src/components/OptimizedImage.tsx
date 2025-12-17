@@ -82,7 +82,7 @@ export function OptimizedImage({
     console.error(`Failed to load image: ${src}`);
   };
 
-  const imgStyle: React.CSSProperties = {
+  const imgStyle: Record<string, any> = {
     width: width ? `${width}px` : '100%',
     height: height ? `${height}px` : 'auto',
     objectFit,
@@ -91,7 +91,7 @@ export function OptimizedImage({
     cursor: onClick ? 'pointer' : 'default',
   };
 
-  const containerStyle: React.CSSProperties = {
+  const containerStyle: Record<string, any> = {
     position: 'relative',
     width: width ? `${width}px` : '100%',
     height: height ? `${height}px` : 'auto',
@@ -99,7 +99,7 @@ export function OptimizedImage({
     background: 'var(--color-bg-alt)',
   };
 
-  const placeholderStyle: React.CSSProperties = {
+  const placeholderStyle: Record<string, any> = {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -158,7 +158,7 @@ export function OptimizedImage({
 
       {/* Main image */}
       <img
-        ref={(el) => imgRef.set(el)}
+        ref={(el: HTMLImageElement | null) => imgRef.set(el)}
         src={lazy ? undefined : src}
         data-src={lazy ? src : undefined}
         alt={alt}

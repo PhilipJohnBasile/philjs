@@ -286,7 +286,7 @@ export function KeyboardShortcuts({
           flexDirection: 'column',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: MouseEvent) => e.stopPropagation()}
       >
         {/* Header */}
         <div
@@ -348,7 +348,7 @@ export function KeyboardShortcuts({
             type="text"
             placeholder="Search shortcuts..."
             value={searchQuery()}
-            onInput={(e) => searchQuery.set((e.target as HTMLInputElement).value)}
+            onInput={(e: Event) => searchQuery.set((e.target as HTMLInputElement).value)}
             style={{
               width: '100%',
               padding: '0.75rem 1rem',

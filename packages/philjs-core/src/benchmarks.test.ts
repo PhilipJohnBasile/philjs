@@ -43,16 +43,24 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Signal Update Performance', () => {
-    bench('update signal 1,000 times', () => {
+    it('should update signal 1,000 times quickly', () => {
       const count = signal(0);
+      const start = performance.now();
       for (let i = 0; i < 1000; i++) {
         count.set(i);
       }
+      const duration = performance.now() - start;
+      console.log(`Updated signal 1,000 times in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(50);
     });
 
-    bench('update 100 signals once each', () => {
+    it('should update 100 signals once each quickly', () => {
       const signals = Array.from({ length: 100 }, () => signal(0));
+      const start = performance.now();
       signals.forEach((s, i) => s.set(i));
+      const duration = performance.now() - start;
+      console.log(`Updated 100 signals in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(50);
     });
 
     it('should update 1 million signals in under 500ms', () => {
@@ -70,19 +78,26 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Computed (Memo) Performance', () => {
-    bench('create 1,000 memos', () => {
+    it('should create 1,000 memos quickly', () => {
       const source = signal(0);
+      const start = performance.now();
       for (let i = 0; i < 1000; i++) {
         memo(() => source() * 2);
       }
+      const duration = performance.now() - start;
+      console.log(`Created 1,000 memos in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(50);
     });
 
-    bench('trigger 1,000 memo recomputations', () => {
+    it('should trigger 1,000 memo recomputations quickly', () => {
       const source = signal(0);
       const memos = Array.from({ length: 1000 }, () => memo(() => source() * 2));
-
+      const start = performance.now();
       source.set(5);
       memos.forEach(m => m()); // Force evaluation
+      const duration = performance.now() - start;
+      console.log(`Triggered 1,000 memo recomputations in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(50);
     });
 
     it('should handle diamond dependency graph efficiently', () => {
@@ -110,8 +125,9 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('Effect Performance', () => {
-    bench('create and run 1,000 effects', () => {
+    it('should create and run 1,000 effects quickly', () => {
       const disposers: Array<() => void> = [];
+      const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
         const dispose = effect(() => {
@@ -121,9 +137,12 @@ describe('Performance Benchmarks', () => {
       }
 
       disposers.forEach(d => d());
+      const duration = performance.now() - start;
+      console.log(`Created and ran 1,000 effects in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(100);
     });
 
-    bench('trigger 1,000 effect updates', () => {
+    it('should trigger 1,000 effect updates quickly', () => {
       const source = signal(0);
       let sum = 0;
 
@@ -133,9 +152,13 @@ describe('Performance Benchmarks', () => {
         })
       );
 
+      const start = performance.now();
       source.set(1);
+      const duration = performance.now() - start;
 
       disposers.forEach(d => d());
+      console.log(`Triggered 1,000 effect updates in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(50);
     });
 
     it('should batch 10,000 updates efficiently', () => {
@@ -163,23 +186,32 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('SSR Rendering Performance', () => {
-    bench('render simple component 1,000 times', () => {
+    it('should render simple component 1,000 times quickly', () => {
       const Component = () => jsx('div', { children: 'Hello' });
+      const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
         renderToString(jsx(Component, {}));
       }
+
+      const duration = performance.now() - start;
+      console.log(`Rendered simple component 1,000 times in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(100);
     });
 
-    bench('render nested components', () => {
-      const Nested = ({ depth }: { depth: number }) => {
+    it('should render nested components quickly', () => {
+      const Nested = ({ depth }: { depth: number }): ReturnType<typeof jsx> => {
         if (depth === 0) return jsx('div', { children: 'Leaf' });
         return jsx('div', { children: jsx(Nested, { depth: depth - 1 }) });
       };
 
+      const start = performance.now();
       for (let i = 0; i < 100; i++) {
         renderToString(jsx(Nested, { depth: 10 }));
       }
+      const duration = performance.now() - start;
+      console.log(`Rendered nested components 100 times in ${duration.toFixed(2)}ms`);
+      expect(duration).toBeLessThan(100);
     });
 
     it('should render 1,000 item list in under 100ms', () => {

@@ -149,14 +149,14 @@ export interface CompilerWarning {
 export interface TransformResult {
   /** Transformed code */
   code: string;
-  /** Source map */
-  map?: object;
+  /** Source map (compatible with Rollup/Vite) */
+  map?: any;
   /** Analysis data */
-  analysis: FileAnalysis;
+  analysis?: FileAnalysis;
   /** Applied optimizations */
-  optimizationsApplied: string[];
+  optimizations: string[];
   /** Warnings */
-  warnings: CompilerWarning[];
+  warnings?: CompilerWarning[];
 }
 
 export interface CompilerPlugin {

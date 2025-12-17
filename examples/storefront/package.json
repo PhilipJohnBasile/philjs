@@ -16,12 +16,13 @@
     "philjs-ssr": "workspace:*",
     "philjs-islands": "workspace:*",
     "philjs-ai": "workspace:*",
-    "philjs-devtools": "workspace:*"
+    "philjs-devtools": "workspace:*",
+    "philjs-compiler": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
-    "@types/node": "^20.11.0",
-    "vite": "^5.4.11",
+    "@types/node": "^22.10.5",
+    "vite": "^6.0.7",
     "vitest": "^2.1.8",
     "playwright": "^1.48.0"
   }

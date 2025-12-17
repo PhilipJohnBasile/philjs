@@ -10,7 +10,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "philjs-core": "workspace:*",
+    "philjs-compiler": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.0.7",

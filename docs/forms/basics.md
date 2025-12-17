@@ -116,7 +116,7 @@ export default function UserForm() {
 ### Server Action
 
 ```tsx
-import { createMutation } from 'philjs-data';
+import { createMutation } from 'philjs-core';
 
 export default function CreatePost() {
   const createPost = createMutation(async (data: FormData) => {

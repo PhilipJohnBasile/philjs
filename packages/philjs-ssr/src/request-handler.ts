@@ -6,7 +6,7 @@
 export type VNode = any;
 
 import type { Loader, Action, ActionCtx } from "./types.js";
-import { isResult, renderToString } from "philjs-core";
+import { isResult, isOk, isErr, renderToString } from "philjs-core";
 import type { RouteMatcher } from "philjs-router";
 
 const defaultRenderToString = async (vnode: VNode): Promise<string> => {
@@ -107,9 +107,9 @@ export async function handleRequest(
       try {
         const result = await module.loader(ctx);
         if (isResult(result)) {
-          if (result.ok) {
+          if (isOk(result)) {
             loaderData = result.value;
-          } else {
+          } else if (isErr(result)) {
             loaderError = result.error;
           }
         } else {

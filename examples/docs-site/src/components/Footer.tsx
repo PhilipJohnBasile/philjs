@@ -88,7 +88,7 @@ export function Footer({ navigate }: { navigate: (path: string) => void }) {
                 <li>
                   <a
                     href={link.path}
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent) => {
                       e.preventDefault();
                       navigate(link.path);
                     }}
@@ -121,7 +121,7 @@ export function Footer({ navigate }: { navigate: (path: string) => void }) {
                   <li>
                     <a
                       href={link.path}
-                      onClick={(e) => {
+                      onClick={(e: MouseEvent) => {
                         e.preventDefault();
                         navigate(link.path!);
                       }}
@@ -143,7 +143,7 @@ export function Footer({ navigate }: { navigate: (path: string) => void }) {
                 <li>
                   <a
                     href={link.path}
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent) => {
                       e.preventDefault();
                       navigate(link.path);
                     }}
@@ -176,7 +176,7 @@ export function Footer({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, Record<string, any>> = {
   footer: {
     background: "var(--color-bg-secondary)",
     borderTop: "1px solid var(--color-border)",

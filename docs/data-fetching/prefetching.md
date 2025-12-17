@@ -64,7 +64,7 @@ export default function ProductCard({ product }) {
 ### Prefetch with Data
 
 ```tsx
-import { prefetchQuery } from 'philjs-data';
+import { prefetchQuery } from 'philjs-core';
 
 const prefetchProduct = (id: number) => {
   prefetchQuery(`/api/products/${id}`);
@@ -80,7 +80,7 @@ const prefetchProduct = (id: number) => {
 ### Prefetch in Component
 
 ```tsx
-import { useQueryClient } from 'philjs-data';
+import { useQueryClient } from 'philjs-core';
 
 export default function ProductList() {
   const queryClient = useQueryClient();

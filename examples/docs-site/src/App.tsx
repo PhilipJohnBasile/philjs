@@ -17,7 +17,11 @@ import './styles/code-playground.css';
 // Dynamically load highlight.js theme based on current theme
 let currentHighlightTheme: HTMLLinkElement | null = null;
 
-function loadHighlightTheme(themeName: 'light' | 'dark') {
+type Theme = 'light' | 'dark' | 'high-contrast';
+
+function loadHighlightTheme(themeName: Theme) {
+  // Map high-contrast to dark theme for syntax highlighting
+  const effectiveTheme = themeName === 'high-contrast' ? 'dark' : themeName;
   // Remove existing theme
   if (currentHighlightTheme) {
     currentHighlightTheme.remove();
@@ -26,7 +30,7 @@ function loadHighlightTheme(themeName: 'light' | 'dark') {
   // Load new theme
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = themeName === 'dark'
+  link.href = effectiveTheme === 'dark'
     ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
     : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
   document.head.appendChild(link);
@@ -147,8 +151,8 @@ export function App() {
                   cursor: pointer;
                   transition: all 0.2s;
                 "
-                onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
+                onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1.05)'}
+                onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.transform = 'scale(1)'}
               >
                 Go Home
               </button>
@@ -378,8 +382,8 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
           text-decoration: none;
           border-radius: 4px;
         "
-        onFocus={(e) => (e.target as HTMLElement).style.left = '1rem'}
-        onBlur={(e) => (e.target as HTMLElement).style.left = '-9999px'}
+        onFocus={(e: FocusEvent) => (e.target as HTMLElement).style.left = '1rem'}
+        onBlur={(e: FocusEvent) => (e.target as HTMLElement).style.left = '-9999px'}
       >
         Skip to main content
       </a>
@@ -412,8 +416,8 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
               target="_blank"
               rel="noopener noreferrer"
               style="display: flex; align-items: center; gap: 0.5rem; color: var(--color-text-secondary); font-size: 0.875rem; text-decoration: none; transition: color 0.2s;"
-              onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
-              onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
+              onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-brand)'}
+              onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -436,8 +440,8 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
                   console.log('Positive feedback for:', section, file);
                 }}
                 style="padding: 0.5rem 1rem; background: var(--color-success); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem; transition: opacity 0.2s;"
-                onMouseEnter={(e) => (e.target as HTMLElement).style.opacity = '0.9'}
-                onMouseLeave={(e) => (e.target as HTMLElement).style.opacity = '1'}
+                onMouseEnter={(e: MouseEvent) => (e.target as HTMLElement).style.opacity = '0.9'}
+                onMouseLeave={(e: MouseEvent) => (e.target as HTMLElement).style.opacity = '1'}
               >
                 👍 Yes
               </button>
@@ -450,8 +454,8 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
                   }
                 }}
                 style="padding: 0.5rem 1rem; background: var(--color-bg); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;"
-                onMouseEnter={(e) => { (e.target as HTMLElement).style.background = 'var(--color-hover)'; }}
-                onMouseLeave={(e) => { (e.target as HTMLElement).style.background = 'var(--color-bg)'; }}
+                onMouseEnter={(e: MouseEvent) => { (e.target as HTMLElement).style.background = 'var(--color-hover)'; }}
+                onMouseLeave={(e: MouseEvent) => { (e.target as HTMLElement).style.background = 'var(--color-bg)'; }}
               >
                 👎 No
               </button>

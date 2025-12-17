@@ -92,7 +92,7 @@ export function SearchModal({ isOpen, onClose, navigate }: SearchModalProps) {
           box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
           animation: slideDown 0.2s ease-out;
         "
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: MouseEvent) => e.stopPropagation()}
       >
         {/* Search Input */}
         <div style="padding: 1.25rem; border-bottom: 1px solid var(--color-border);">
@@ -102,7 +102,7 @@ export function SearchModal({ isOpen, onClose, navigate }: SearchModalProps) {
               type="text"
               placeholder="Search documentation..."
               value={query()}
-              onInput={(e) => query.set((e.target as HTMLInputElement).value)}
+              onInput={(e: Event) => query.set((e.target as HTMLInputElement).value)}
               style="
                 flex: 1;
                 font-size: 1rem;

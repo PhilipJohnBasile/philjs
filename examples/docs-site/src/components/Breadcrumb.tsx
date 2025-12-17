@@ -110,11 +110,11 @@ export function Breadcrumb({
                       borderRadius: '4px',
                       transition: 'all var(--transition-fast)',
                     }}
-                    onMouseOver={(e) => {
+                    onMouseOver={(e: MouseEvent) => {
                       (e.target as HTMLElement).style.color = 'var(--color-brand)';
                       (e.target as HTMLElement).style.background = 'var(--color-hover)';
                     }}
-                    onMouseOut={(e) => {
+                    onMouseOut={(e: MouseEvent) => {
                       (e.target as HTMLElement).style.color = 'var(--color-text-secondary)';
                       (e.target as HTMLElement).style.background = 'transparent';
                     }}

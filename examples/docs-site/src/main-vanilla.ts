@@ -7,12 +7,12 @@ import 'highlight.js/styles/github-dark.css';
 // Configure marked with renderer
 const renderer = new marked.Renderer();
 const originalCode = renderer.code.bind(renderer);
-renderer.code = function(code: string, language: string | undefined) {
-  if (language && hljs.getLanguage(language)) {
-    const highlighted = hljs.highlight(code, { language }).value;
-    return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`;
+renderer.code = function({ text, lang }: { text: string; lang?: string }) {
+  if (lang && hljs.getLanguage(lang)) {
+    const highlighted = hljs.highlight(text, { language: lang }).value;
+    return `<pre><code class="hljs language-${lang}">${highlighted}</code></pre>`;
   }
-  const highlighted = hljs.highlightAuto(code).value;
+  const highlighted = hljs.highlightAuto(text).value;
   return `<pre><code class="hljs">${highlighted}</code></pre>`;
 };
 

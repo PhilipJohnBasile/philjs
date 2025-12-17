@@ -8,7 +8,7 @@ export * from "./types.js";
  * @param {PromptSpec<TI, TO>} spec - Prompt specification
  * @returns {PromptSpec<TI, TO>}
  */
-export function createPrompt(spec) {
+export function createPrompt<TI = any, TO = any>(spec: PromptSpec<TI, TO>): PromptSpec<TI, TO> {
   return spec;
 }
 
@@ -16,9 +16,9 @@ export function createPrompt(spec) {
  * Create an AI client with a provider.
  * @param {Provider} provider - AI provider
  */
-export function createAI(provider) {
+export function createAI(provider: Provider) {
   return {
-    async generate(spec, input, opts) {
+    async generate<TI = any, TO = any>(spec: PromptSpec<TI, TO>, input: TI, opts?: any) {
       // Check PII policy
       if (spec.policy?.pii === "block") {
         // In a real implementation, scan input for PII
@@ -42,9 +42,9 @@ export const providers = {
    * @param {string} url - AI endpoint URL
    * @returns {Provider}
    */
-  http: (url) => ({
+  http: (url: string): Provider => ({
     name: "http",
-    async generate(prompt, opts) {
+    async generate(prompt: string, opts?: any): Promise<string> {
       const res = await fetch(url, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -60,9 +60,9 @@ export const providers = {
    * Echo provider for testing (returns the prompt as-is).
    * @returns {Provider}
    */
-  echo: () => ({
+  echo: (): Provider => ({
     name: "echo",
-    async generate(prompt) {
+    async generate(prompt: string): Promise<string> {
       return `Echo: ${prompt}`;
     }
   })
