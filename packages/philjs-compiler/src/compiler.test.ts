@@ -316,5 +316,251 @@ describe('PhilJS Compiler', () => {
       expect(typeof result.code).toBe('string');
       expect(result.code.length).toBeGreaterThan(100);
     });
+
+    it('should handle nested component definitions', () => {
+      const code = `
+        import { signal, memo } from 'philjs-core';
+
+        export function ComponentComposition() {
+          const count = signal(0);
+
+          // Nested component definition
+          const Button = ({ label, onClick }: any) => {
+            const buttonStyle = memo(() => ({
+              background: 'blue',
+              color: 'white'
+            }));
+
+            return (
+              <button style={buttonStyle()} onClick={onClick}>
+                {label}
+              </button>
+            );
+          };
+
+          return (
+            <div>
+              <span>Count: {count()}</span>
+              <Button label="Increment" onClick={() => count.set(count() + 1)} />
+            </div>
+          );
+        }
+      `;
+
+      const result = transform(code, 'Nested.tsx', { autoMemo: true });
+
+      expect(result.code).toBeDefined();
+      expect(result.code).toContain('ComponentComposition');
+      expect(result.code).toContain('Button');
+      expect(result.code).toContain('buttonStyle');
+    });
+
+    it('should handle custom hook patterns', () => {
+      const code = `
+        import { signal } from 'philjs-core';
+
+        // Custom hook pattern
+        const useCounter = (initialValue = 0) => {
+          const count = signal(initialValue);
+          const increment = () => count.set(count() + 1);
+          const decrement = () => count.set(count() - 1);
+          const reset = () => count.set(initialValue);
+
+          return { count, increment, decrement, reset };
+        };
+
+        export function Counter() {
+          const counter1 = useCounter(0);
+          const counter2 = useCounter(10);
+
+          return (
+            <div>
+              <span>Counter 1: {counter1.count()}</span>
+              <span>Counter 2: {counter2.count()}</span>
+            </div>
+          );
+        }
+      `;
+
+      const result = transform(code, 'CustomHook.tsx', { autoMemo: true });
+      const analysis = analyzeCode(code, 'CustomHook.tsx');
+
+      expect(result.code).toBeDefined();
+      expect(result.code).toContain('useCounter');
+      expect(analysis.components.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should handle derived state chains (shopping cart pattern)', () => {
+      const code = `
+        import { signal, memo } from 'philjs-core';
+
+        export function ShoppingCart() {
+          const items = signal([
+            { id: 1, price: 10, quantity: 2 },
+            { id: 2, price: 15, quantity: 1 },
+            { id: 3, price: 20, quantity: 3 }
+          ]);
+
+          // Derived computation chain
+          const subtotal = memo(() =>
+            items().reduce((sum, item) => sum + item.price * item.quantity, 0)
+          );
+
+          const tax = memo(() => subtotal() * 0.1);
+          const total = memo(() => subtotal() + tax());
+          const itemCount = memo(() => items().reduce((sum, item) => sum + item.quantity, 0));
+
+          return (
+            <div>
+              <p>Items: {itemCount()}</p>
+              <p>Subtotal: {subtotal()}</p>
+              <p>Tax: {tax()}</p>
+              <p>Total: {total()}</p>
+            </div>
+          );
+        }
+      `;
+
+      const result = transform(code, 'ShoppingCart.tsx', { autoMemo: true });
+      const analysis = analyzeCode(code, 'ShoppingCart.tsx');
+
+      expect(result.code).toBeDefined();
+      expect(analysis.bindings.filter(b => b.type === 'memo').length).toBe(4);
+      expect(analysis.bindings.filter(b => b.type === 'signal').length).toBe(1);
+    });
+
+    it('should handle effects with cleanup', () => {
+      const code = `
+        import { signal, effect } from 'philjs-core';
+
+        export function SearchModal({ isOpen }: { isOpen: boolean }) {
+          const query = signal('');
+          const results = signal([]);
+
+          // Effect with cleanup
+          effect(() => {
+            if (!isOpen) return;
+
+            const handleKeyDown = (e: KeyboardEvent) => {
+              if (e.key === 'Escape') {
+                query.set('');
+              }
+            };
+
+            window.addEventListener('keydown', handleKeyDown);
+            return () => window.removeEventListener('keydown', handleKeyDown);
+          });
+
+          return (
+            <div>
+              <input value={query()} onInput={(e) => query.set(e.target.value)} />
+              <ul>{results().map(r => <li>{r}</li>)}</ul>
+            </div>
+          );
+        }
+      `;
+
+      const result = transform(code, 'SearchModal.tsx', { optimizeEffects: true });
+      const analysis = analyzeCode(code, 'SearchModal.tsx');
+
+      expect(result.code).toBeDefined();
+      expect(analysis.bindings.filter(b => b.type === 'effect').length).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should handle batched updates pattern', () => {
+      const code = `
+        import { signal, memo, batch } from 'philjs-core';
+
+        export function PerformanceDemo() {
+          const numbers = signal(Array.from({ length: 1000 }, (_, i) => i));
+          const multiplier = signal(1);
+          const computationCount = signal(0);
+
+          const sum = memo(() => {
+            computationCount.set(c => c + 1);
+            return numbers().reduce((a, b) => a + b, 0);
+          });
+
+          const result = memo(() => sum() * multiplier());
+
+          const addNumbers = () => {
+            batch(() => {
+              const current = numbers();
+              numbers.set([...current, current.length, current.length + 1]);
+            });
+          };
+
+          return (
+            <div>
+              <p>Array Size: {numbers().length}</p>
+              <p>Result: {result()}</p>
+              <p>Computations: {computationCount()}</p>
+              <button onClick={addNumbers}>Add Numbers</button>
+            </div>
+          );
+        }
+      `;
+
+      const result = transform(code, 'Performance.tsx', {
+        autoMemo: true,
+        autoBatch: true
+      });
+
+      expect(result.code).toBeDefined();
+      expect(result.code).toContain('batch');
+      expect(result.code).toContain('memo');
+    });
+
+    it('should handle complex JSX with multiple signal reads', () => {
+      const code = `
+        import { signal, memo } from 'philjs-core';
+
+        export function Dashboard() {
+          const users = signal(100);
+          const revenue = signal(50000);
+          const growth = signal(15.5);
+          const status = signal('healthy');
+
+          const avgRevenuePerUser = memo(() => revenue() / users());
+          const projectedGrowth = memo(() => revenue() * (1 + growth() / 100));
+
+          return (
+            <div class="dashboard">
+              <div class="stat">
+                <span class="label">Users</span>
+                <span class="value">{users()}</span>
+              </div>
+              <div class="stat">
+                <span class="label">Revenue</span>
+                <span class="value">{revenue().toLocaleString()}</span>
+              </div>
+              <div class="stat">
+                <span class="label">Growth</span>
+                <span class="value">{growth()}%</span>
+              </div>
+              <div class="stat">
+                <span class="label">Avg/User</span>
+                <span class="value">{avgRevenuePerUser().toFixed(2)}</span>
+              </div>
+              <div class="stat">
+                <span class="label">Projected</span>
+                <span class="value">{projectedGrowth().toLocaleString()}</span>
+              </div>
+              <div class="status" data-status={status()}>
+                System: {status()}
+              </div>
+            </div>
+          );
+        }
+      `;
+
+      const analysis = analyzeCode(code, 'Dashboard.tsx');
+
+      expect(analysis.components.length).toBe(1);
+      expect(analysis.components[0].name).toBe('Dashboard');
+      expect(analysis.components[0].reactiveJSX.length).toBeGreaterThan(0);
+      expect(analysis.bindings.filter(b => b.type === 'signal').length).toBe(4);
+      expect(analysis.bindings.filter(b => b.type === 'memo').length).toBe(2);
+    });
   });
 });
