@@ -2,7 +2,7 @@
  * PhilJS UI - Select Component
  */
 
-import { JSX, signal, effect, onMount } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type SelectSize = 'sm' | 'md' | 'lg';
 
@@ -188,7 +188,7 @@ export function MultiSelect(props: MultiSelectProps) {
   });
 
   const toggleOption = (optionValue: string) => {
-    const current = selectedValues.get();
+    const current = selectedValues();
     let newValues: string[];
 
     if (current.includes(optionValue)) {
@@ -205,7 +205,7 @@ export function MultiSelect(props: MultiSelectProps) {
   };
 
   const removeValue = (optionValue: string) => {
-    const newValues = selectedValues.get().filter(v => v !== optionValue);
+    const newValues = selectedValues().filter(v => v !== optionValue);
     selectedValues.set(newValues);
     onChange?.(newValues);
   };
@@ -230,13 +230,13 @@ export function MultiSelect(props: MultiSelectProps) {
             ${hasError ? 'border-red-500' : 'border-gray-300'}
             ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'}
           `}
-          onClick={() => !disabled && isOpen.set(!isOpen.get())}
+          onClick={() => !disabled && isOpen.set(!isOpen())}
         >
-          {selectedValues.get().length === 0 && (
+          {selectedValues().length === 0 && (
             <span className="text-gray-400">{placeholder}</span>
           )}
 
-          {selectedValues.get().map(val => {
+          {selectedValues().map(val => {
             const option = options.find(o => o.value === val);
             return (
               <span
@@ -247,7 +247,7 @@ export function MultiSelect(props: MultiSelectProps) {
                 <button
                   type="button"
                   className="ml-1 hover:text-blue-600"
-                  onClick={(e) => {
+                  onClick={(e: any) => {
                     e.stopPropagation();
                     removeValue(val);
                   }}
@@ -259,7 +259,7 @@ export function MultiSelect(props: MultiSelectProps) {
           })}
         </div>
 
-        {isOpen.get() && !disabled && (
+        {isOpen() && !disabled && (
           <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
             {options.map(option => (
               <div
@@ -267,13 +267,13 @@ export function MultiSelect(props: MultiSelectProps) {
                 className={`
                   px-4 py-2 cursor-pointer
                   ${option.disabled ? 'text-gray-400 cursor-not-allowed' : 'hover:bg-gray-100'}
-                  ${selectedValues.get().includes(option.value) ? 'bg-blue-50' : ''}
+                  ${selectedValues().includes(option.value) ? 'bg-blue-50' : ''}
                 `}
                 onClick={() => !option.disabled && toggleOption(option.value)}
               >
                 <input
                   type="checkbox"
-                  checked={selectedValues.get().includes(option.value)}
+                  checked={selectedValues().includes(option.value)}
                   disabled={option.disabled}
                   readOnly
                   className="mr-2"

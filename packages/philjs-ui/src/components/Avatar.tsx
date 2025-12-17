@@ -2,7 +2,7 @@
  * PhilJS UI - Avatar Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
@@ -82,7 +82,7 @@ export function Avatar(props: AvatarProps) {
     hasError.set(true);
   };
 
-  const showImage = src && !hasError.get();
+  const showImage = src && !hasError();
   const initials = name ? getInitials(name) : '?';
   const bgColor = name ? getBgColor(name) : 'bg-gray-400';
 
@@ -132,7 +132,7 @@ export function Avatar(props: AvatarProps) {
  * Avatar Group
  */
 export interface AvatarGroupProps {
-  children: JSX.Element[];
+  children: any;
   max?: number;
   size?: AvatarSize;
   spacing?: number;
@@ -185,8 +185,8 @@ export function AvatarGroup(props: AvatarGroupProps) {
  * Avatar Badge - Overlay badge on avatar
  */
 export interface AvatarBadgeProps {
-  children: JSX.Element;
-  badge: JSX.Element;
+  children: any;
+  badge: any;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
   className?: string;
 }

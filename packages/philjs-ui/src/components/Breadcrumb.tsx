@@ -2,11 +2,9 @@
  * PhilJS UI - Breadcrumb Component
  */
 
-import { JSX } from 'philjs-core';
-
 export interface BreadcrumbProps {
-  children: JSX.Element | JSX.Element[];
-  separator?: JSX.Element | string;
+  children: any | any[];
+  separator?: any | string;
   className?: string;
 }
 
@@ -43,7 +41,7 @@ export function Breadcrumb(props: BreadcrumbProps) {
  * Breadcrumb Item
  */
 export interface BreadcrumbItemProps {
-  children: JSX.Element;
+  children: any;
   href?: string;
   isCurrentPage?: boolean;
   onClick?: () => void;
@@ -108,7 +106,7 @@ export function BreadcrumbLink(props: BreadcrumbItemProps) {
  * Breadcrumb Separator
  */
 export interface BreadcrumbSeparatorProps {
-  children?: JSX.Element | string;
+  children?: any | string;
   className?: string;
 }
 

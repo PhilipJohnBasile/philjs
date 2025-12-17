@@ -124,16 +124,14 @@ export function render(
   const boundQueries = bindQueries(container);
 
   return {
+    ...boundQueries,
     container,
     baseElement,
-
     debug: (el = baseElement) => debug(el),
-
     rerender: (newUI: any) => {
       const toRender = Wrapper ? Wrapper({ children: newUI }) : newUI;
       renderToContainer(toRender, container);
     },
-
     unmount: () => {
       if (unmountFn) {
         unmountFn();
@@ -141,7 +139,6 @@ export function render(
       container.innerHTML = '';
       mountedContainers.delete(container);
     },
-
     asFragment: () => {
       const fragment = document.createDocumentFragment();
       Array.from(container.childNodes).forEach(node => {
@@ -149,8 +146,6 @@ export function render(
       });
       return fragment;
     },
-
-    ...boundQueries,
   };
 }
 

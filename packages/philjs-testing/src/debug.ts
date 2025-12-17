@@ -3,7 +3,6 @@
  */
 
 import { prettyDOM as dtlPrettyDOM } from '@testing-library/dom';
-import prettyFormat from 'pretty-format';
 
 /**
  * Pretty print a DOM element
@@ -11,7 +10,7 @@ import prettyFormat from 'pretty-format';
 export function prettyDOM(
   element?: Element | null,
   maxLength?: number,
-  options?: prettyFormat.OptionsReceived
+  options?: any
 ): string {
   if (!element) {
     element = document.body;
@@ -26,7 +25,7 @@ export function prettyDOM(
 export function logDOM(
   element?: Element | null,
   maxLength?: number,
-  options?: prettyFormat.OptionsReceived
+  options?: any
 ): void {
   console.log(prettyDOM(element, maxLength, options));
 }

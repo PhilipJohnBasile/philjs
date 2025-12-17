@@ -2,7 +2,7 @@
  * PhilJS UI - Switch Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type SwitchSize = 'sm' | 'md' | 'lg';
 
@@ -46,7 +46,7 @@ export function Switch(props: SwitchProps) {
   const switchId = id || `switch-${Math.random().toString(36).slice(2, 9)}`;
   const descriptionId = description ? `${switchId}-description` : undefined;
 
-  const isChecked = isControlled ? checked : internalChecked.get();
+  const isChecked = isControlled ? checked : internalChecked();
 
   const handleClick = () => {
     if (disabled) return;
@@ -60,7 +60,7 @@ export function Switch(props: SwitchProps) {
     onChange?.(newValue);
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: any) => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       handleClick();

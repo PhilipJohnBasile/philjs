@@ -2,13 +2,13 @@
  * PhilJS UI - Dropdown Component
  */
 
-import { JSX, signal, onMount, onCleanup } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type DropdownPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
 
 export interface DropdownProps {
-  trigger: JSX.Element;
-  children: JSX.Element | JSX.Element[];
+  trigger: any;
+  children: any;
   placement?: DropdownPlacement;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -28,7 +28,7 @@ export function Dropdown(props: DropdownProps) {
   } = props;
 
   const internalIsOpen = signal(false);
-  const isOpen = controlledIsOpen ?? internalIsOpen.get();
+  const isOpen = controlledIsOpen ?? internalIsOpen();
 
   let dropdownRef: HTMLDivElement | null = null;
 
@@ -47,7 +47,7 @@ export function Dropdown(props: DropdownProps) {
     onOpenChange?.(false);
   };
 
-  onMount(() => {
+  effect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef && !dropdownRef.contains(e.target as Node) && isOpen) {
         close();
@@ -63,10 +63,10 @@ export function Dropdown(props: DropdownProps) {
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
-    });
+    };
   });
 
   const placementStyles: Record<DropdownPlacement, string> = {
@@ -83,7 +83,7 @@ export function Dropdown(props: DropdownProps) {
   };
 
   return (
-    <div ref={(el) => (dropdownRef = el)} className="relative inline-block">
+    <div ref={(el: any) => (dropdownRef = el)} className="relative inline-block">
       <div onClick={toggleOpen}>{trigger}</div>
 
       {isOpen && (
@@ -110,10 +110,10 @@ export function Dropdown(props: DropdownProps) {
  * Dropdown Item
  */
 export interface DropdownItemProps {
-  children: JSX.Element;
+  children: any;
   onClick?: () => void;
   disabled?: boolean;
-  icon?: JSX.Element;
+  icon?: any;
   danger?: boolean;
   className?: string;
 }
@@ -175,7 +175,7 @@ export function DropdownDivider() {
 /**
  * Dropdown Label
  */
-export function DropdownLabel(props: { children: JSX.Element }) {
+export function DropdownLabel(props: { children: any }) {
   return (
     <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
       {props.children}

@@ -2,7 +2,7 @@
  * PhilJS UI - Input Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'outline' | 'filled' | 'flushed';
@@ -22,8 +22,8 @@ export interface InputProps {
   label?: string;
   id?: string;
   name?: string;
-  leftElement?: JSX.Element;
-  rightElement?: JSX.Element;
+  leftElement?: any;
+  rightElement?: any;
   onInput?: (e: InputEvent) => void;
   onChange?: (e: Event) => void;
   onFocus?: (e: FocusEvent) => void;

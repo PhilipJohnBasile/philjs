@@ -2,13 +2,13 @@
  * PhilJS UI - Tooltip Component
  */
 
-import { JSX, signal, onMount, onCleanup } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 
 export interface TooltipProps {
-  content: string | JSX.Element;
-  children: JSX.Element;
+  content: string | any;
+  children: any;
   placement?: TooltipPlacement;
   delay?: number;
   disabled?: boolean;
@@ -67,10 +67,12 @@ export function Tooltip(props: TooltipProps) {
     isVisible.set(false);
   };
 
-  onCleanup(() => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
+  effect(() => {
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   });
 
   return (
@@ -83,7 +85,7 @@ export function Tooltip(props: TooltipProps) {
     >
       {children}
 
-      {isVisible.get() && (
+      {isVisible() && (
         <div
           role="tooltip"
           className={`
@@ -114,8 +116,8 @@ export function Tooltip(props: TooltipProps) {
  * Popover - More complex tooltip with interactive content
  */
 export interface PopoverProps {
-  trigger: JSX.Element;
-  children: JSX.Element;
+  trigger: any;
+  children: any;
   placement?: TooltipPlacement;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -135,7 +137,7 @@ export function Popover(props: PopoverProps) {
   } = props;
 
   const internalIsOpen = signal(false);
-  const isOpen = controlledIsOpen ?? internalIsOpen.get();
+  const isOpen = controlledIsOpen ?? internalIsOpen();
 
   let popoverRef: HTMLDivElement | null = null;
 
@@ -154,7 +156,7 @@ export function Popover(props: PopoverProps) {
     onOpenChange?.(false);
   };
 
-  onMount(() => {
+  effect(() => {
     if (!closeOnClickOutside) return;
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -165,9 +167,9 @@ export function Popover(props: PopoverProps) {
 
     document.addEventListener('mousedown', handleClickOutside);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    });
+    };
   });
 
   const placementClasses: Record<TooltipPlacement, string> = {
@@ -178,7 +180,7 @@ export function Popover(props: PopoverProps) {
   };
 
   return (
-    <div ref={(el) => (popoverRef = el)} className="relative inline-block">
+    <div ref={(el: any) => (popoverRef = el)} className="relative inline-block">
       <div onClick={toggleOpen}>{trigger}</div>
 
       {isOpen && (

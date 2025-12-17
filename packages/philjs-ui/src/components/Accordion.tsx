@@ -2,7 +2,7 @@
  * PhilJS UI - Accordion Component
  */
 
-import { JSX, signal, createContext, useContext } from 'philjs-core';
+import { signal, createContext, useContext } from 'philjs-core';
 
 interface AccordionContextValue {
   expandedItems: () => string[];
@@ -13,7 +13,7 @@ interface AccordionContextValue {
 const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 export interface AccordionProps {
-  children: JSX.Element | JSX.Element[];
+  children: any;
   allowMultiple?: boolean;
   defaultExpanded?: string[];
   className?: string;
@@ -30,7 +30,7 @@ export function Accordion(props: AccordionProps) {
   const expandedItems = signal<string[]>(defaultExpanded);
 
   const toggleItem = (id: string) => {
-    const current = expandedItems.get();
+    const current = expandedItems();
 
     if (current.includes(id)) {
       expandedItems.set(current.filter(item => item !== id));
@@ -44,7 +44,7 @@ export function Accordion(props: AccordionProps) {
   };
 
   const contextValue: AccordionContextValue = {
-    expandedItems: () => expandedItems.get(),
+    expandedItems: () => expandedItems(),
     toggleItem,
     allowMultiple,
   };
@@ -63,7 +63,7 @@ export function Accordion(props: AccordionProps) {
  */
 export interface AccordionItemProps {
   id: string;
-  children: JSX.Element | JSX.Element[];
+  children: any;
   className?: string;
 }
 
@@ -82,7 +82,7 @@ export function AccordionItem(props: AccordionItemProps) {
  */
 export interface AccordionButtonProps {
   itemId: string;
-  children: JSX.Element;
+  children: any;
   className?: string;
 }
 
@@ -145,7 +145,7 @@ export function AccordionButton(props: AccordionButtonProps) {
  */
 export interface AccordionPanelProps {
   itemId: string;
-  children: JSX.Element;
+  children: any;
   className?: string;
 }
 

@@ -2,14 +2,14 @@
  * PhilJS UI - Modal Component
  */
 
-import { JSX, signal, effect, onMount, onCleanup } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  children: JSX.Element;
+  children: any;
   title?: string;
   size?: ModalSize;
   closeOnOverlay?: boolean;
@@ -53,7 +53,7 @@ export function Modal(props: ModalProps) {
   let previousActiveElement: Element | null = null;
 
   // Handle escape key
-  onMount(() => {
+  effect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && closeOnEscape && isOpen) {
         onClose();
@@ -62,9 +62,9 @@ export function Modal(props: ModalProps) {
 
     document.addEventListener('keydown', handleKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    });
+    };
   });
 
   // Focus management
@@ -140,7 +140,7 @@ export function Modal(props: ModalProps) {
 
       {/* Modal */}
       <div
-        ref={(el) => (modalRef = el)}
+        ref={(el: any) => (modalRef = el)}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId || ariaLabel}
@@ -200,7 +200,7 @@ export function Modal(props: ModalProps) {
 /**
  * Modal Header
  */
-export function ModalHeader(props: { children: JSX.Element; className?: string }) {
+export function ModalHeader(props: { children: any; className?: string }) {
   return (
     <div className={`px-4 pt-4 pb-2 ${props.className || ''}`}>
       {props.children}
@@ -211,7 +211,7 @@ export function ModalHeader(props: { children: JSX.Element; className?: string }
 /**
  * Modal Body
  */
-export function ModalBody(props: { children: JSX.Element; className?: string }) {
+export function ModalBody(props: { children: any; className?: string }) {
   return (
     <div className={`px-4 py-2 ${props.className || ''}`}>
       {props.children}
@@ -222,7 +222,7 @@ export function ModalBody(props: { children: JSX.Element; className?: string }) 
 /**
  * Modal Footer
  */
-export function ModalFooter(props: { children: JSX.Element; className?: string }) {
+export function ModalFooter(props: { children: any; className?: string }) {
   return (
     <div className={`px-4 pt-2 pb-4 flex justify-end gap-2 ${props.className || ''}`}>
       {props.children}

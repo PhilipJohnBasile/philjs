@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Core signals only",
+    "path": "packages/philjs-core/dist/signals.js",
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "Minimal app (signals + jsx)",
+    "path": ["packages/philjs-core/dist/signals.js", "packages/philjs-core/dist/jsx-runtime.js"],
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "With SSR (signals + jsx + render-to-string)",
+    "path": [
+      "packages/philjs-core/dist/signals.js",
+      "packages/philjs-core/dist/jsx-runtime.js",
+      "packages/philjs-core/dist/render-to-string.js"
+    ],
+    "limit": "3 KB",
+    "gzip": true
+  },
+  {
+    "name": "Full bundle (all features)",
+    "path": "packages/philjs-core/dist/index.js",
+    "limit": "25 KB",
+    "gzip": true
+  }
+]

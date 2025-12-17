@@ -6,7 +6,6 @@
 
 import { Meta, Link } from './Head';
 import type { OpenGraphConfig, TwitterConfig, JSONLDConfig, MetaConfig } from './types';
-import { JSX } from 'philjs-core';
 
 /**
  * SEO Component - All-in-one SEO meta tags
@@ -88,7 +87,7 @@ export function OpenGraph(props: { config: OpenGraphConfig }) {
       {locale && <Meta property="og:locale" content={locale} />}
 
       {alternateLocales?.map((loc, i) => (
-        <Meta key={i} property="og:locale:alternate" content={loc} />
+        <Meta key={`locale-${i}`} property="og:locale:alternate" content={loc} />
       ))}
 
       {allImages.map((img, i) => (
@@ -109,7 +108,7 @@ export function OpenGraph(props: { config: OpenGraphConfig }) {
           {article.author && <Meta property="article:author" content={article.author} />}
           {article.section && <Meta property="article:section" content={article.section} />}
           {article.tags?.map((tag, i) => (
-            <Meta key={i} property="article:tag" content={tag} />
+            <Meta key={`tag-${i}`} property="article:tag" content={tag} />
           ))}
         </>
       )}
@@ -203,7 +202,7 @@ export function AlternateLanguages(props: {
   return (
     <>
       {props.languages.map((lang, i) => (
-        <Link key={i} rel="alternate" href={lang.url} hrefLang={lang.lang} />
+        <Link key={`lang-${i}`} rel="alternate" href={lang.url} hrefLang={lang.lang} />
       ))}
       {props.default && (
         <Link rel="alternate" href={props.default} hrefLang="x-default" />

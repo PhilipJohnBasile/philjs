@@ -18,16 +18,16 @@ export async function createDatabaseConnection(config: DatabaseConfig) {
     case 'drizzle':
       const { createDrizzleClient } = await import('./drizzle');
       return createDrizzleClient({
-        type: config.options.dialect as any,
+        type: config.options.dialect as 'postgres' | 'mysql' | 'sqlite',
         connectionString: config.connectionString,
-        logger: config.options.logging,
+        logger: config.options.logging as boolean | undefined,
       });
 
     case 'supabase':
       const { createSupabaseClient } = await import('./supabase');
       return createSupabaseClient({
         url: config.connectionString,
-        anonKey: config.options.anonKey,
+        anonKey: config.options.anonKey as string,
       });
 
     default:

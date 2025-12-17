@@ -2,13 +2,13 @@
  * PhilJS UI - Table Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type TableVariant = 'simple' | 'striped' | 'unstyled';
 export type TableSize = 'sm' | 'md' | 'lg';
 
 export interface TableProps {
-  children: JSX.Element;
+  children: any;
   variant?: TableVariant;
   size?: TableSize;
   hoverable?: boolean;
@@ -55,7 +55,7 @@ export function Table(props: TableProps) {
 /**
  * Table Head
  */
-export function Thead(props: { children: JSX.Element; className?: string }) {
+export function Thead(props: { children: any; className?: string }) {
   return (
     <thead className={`bg-gray-50 ${props.className || ''}`}>
       {props.children}
@@ -66,7 +66,7 @@ export function Thead(props: { children: JSX.Element; className?: string }) {
 /**
  * Table Body
  */
-export function Tbody(props: { children: JSX.Element | JSX.Element[]; className?: string }) {
+export function Tbody(props: { children: any; className?: string }) {
   return (
     <tbody className={`divide-y divide-gray-200 bg-white ${props.className || ''}`}>
       {props.children}
@@ -77,7 +77,7 @@ export function Tbody(props: { children: JSX.Element | JSX.Element[]; className?
 /**
  * Table Foot
  */
-export function Tfoot(props: { children: JSX.Element; className?: string }) {
+export function Tfoot(props: { children: any; className?: string }) {
   return (
     <tfoot className={`bg-gray-50 ${props.className || ''}`}>
       {props.children}
@@ -89,7 +89,7 @@ export function Tfoot(props: { children: JSX.Element; className?: string }) {
  * Table Row
  */
 export interface TrProps {
-  children: JSX.Element | JSX.Element[];
+  children: any;
   selected?: boolean;
   onClick?: () => void;
   className?: string;
@@ -116,7 +116,7 @@ export function Tr(props: TrProps) {
  * Table Header Cell
  */
 export interface ThProps {
-  children?: JSX.Element;
+  children?: any;
   sortable?: boolean;
   sortDirection?: 'asc' | 'desc' | null;
   onSort?: () => void;
@@ -187,7 +187,7 @@ export function Th(props: ThProps) {
  * Table Data Cell
  */
 export interface TdProps {
-  children?: JSX.Element;
+  children?: any;
   align?: 'left' | 'center' | 'right';
   colSpan?: number;
   rowSpan?: number;
@@ -229,7 +229,7 @@ export function Td(props: TdProps) {
  * Table Caption
  */
 export function TableCaption(props: {
-  children: JSX.Element;
+  children: any;
   placement?: 'top' | 'bottom';
   className?: string;
 }) {
@@ -254,7 +254,7 @@ export function TableCaption(props: {
 export function TableEmpty(props: {
   colSpan: number;
   message?: string;
-  icon?: JSX.Element;
+  icon?: any;
 }) {
   const { colSpan, message = 'No data available', icon } = props;
 

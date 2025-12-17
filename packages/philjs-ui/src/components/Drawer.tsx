@@ -2,7 +2,7 @@
  * PhilJS UI - Drawer Component
  */
 
-import { JSX, signal, effect, onMount, onCleanup } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
 export type DrawerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -10,7 +10,7 @@ export type DrawerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 export interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  children: JSX.Element;
+  children: any;
   placement?: DrawerPlacement;
   size?: DrawerSize;
   title?: string;
@@ -101,7 +101,7 @@ export function Drawer(props: DrawerProps) {
   let drawerRef: HTMLDivElement | null = null;
 
   // Handle escape key
-  onMount(() => {
+  effect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && closeOnEscape && isOpen) {
         onClose();
@@ -110,9 +110,9 @@ export function Drawer(props: DrawerProps) {
 
     document.addEventListener('keydown', handleKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    });
+    };
   });
 
   // Lock body scroll
@@ -147,7 +147,7 @@ export function Drawer(props: DrawerProps) {
       {/* Drawer Container */}
       <div className={`fixed ${styles.container}`}>
         <div
-          ref={(el) => (drawerRef = el)}
+          ref={(el: any) => (drawerRef = el)}
           className={`
             ${styles.panel}
             ${sizeClass}
@@ -203,7 +203,7 @@ export function Drawer(props: DrawerProps) {
 /**
  * Drawer Header
  */
-export function DrawerHeader(props: { children: JSX.Element; className?: string }) {
+export function DrawerHeader(props: { children: any; className?: string }) {
   return (
     <div className={`px-4 py-3 border-b border-gray-200 ${props.className || ''}`}>
       {props.children}
@@ -214,7 +214,7 @@ export function DrawerHeader(props: { children: JSX.Element; className?: string 
 /**
  * Drawer Body
  */
-export function DrawerBody(props: { children: JSX.Element; className?: string }) {
+export function DrawerBody(props: { children: any; className?: string }) {
   return (
     <div className={`flex-1 overflow-y-auto px-4 py-3 ${props.className || ''}`}>
       {props.children}
@@ -225,7 +225,7 @@ export function DrawerBody(props: { children: JSX.Element; className?: string })
 /**
  * Drawer Footer
  */
-export function DrawerFooter(props: { children: JSX.Element; className?: string }) {
+export function DrawerFooter(props: { children: any; className?: string }) {
   return (
     <div className={`px-4 py-3 border-t border-gray-200 flex justify-end gap-2 ${props.className || ''}`}>
       {props.children}

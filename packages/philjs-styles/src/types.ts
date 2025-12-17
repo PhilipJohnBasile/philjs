@@ -2,11 +2,13 @@
  * PhilJS Styles - Type Definitions
  */
 
-import type { CSSProperties as ReactCSSProperties } from 'react';
-
-export type CSSProperties = ReactCSSProperties & {
+/**
+ * CSS Properties type - standard CSS properties plus CSS custom properties
+ */
+export interface CSSProperties {
+  [key: string]: string | number | undefined;
   [key: `--${string}`]: string | number;
-};
+}
 
 export interface StyleObject {
   [selector: string]: CSSProperties | StyleObject;
@@ -119,7 +121,7 @@ export interface StyleVariant<Props = {}> {
     };
   };
   compoundVariants?: Array<{
-    [key: string]: string | boolean;
+    [key: string]: string | boolean | CSSProperties;
     css: CSSProperties;
   }>;
   defaultVariants?: {

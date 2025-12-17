@@ -4,7 +4,7 @@
  * Provides theming context including dark mode support
  */
 
-import { createContext, useContext, signal, effect, onMount, JSX } from 'philjs-core';
+import { createContext, useContext, signal, effect } from 'philjs-core';
 import { defaultTheme, type Theme } from './tokens';
 
 type ColorMode = 'light' | 'dark' | 'system';
@@ -20,7 +20,7 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 interface ThemeProviderProps {
-  children: JSX.Element;
+  children: any;
   theme?: Partial<Theme>;
   defaultColorMode?: ColorMode;
   storageKey?: string;
@@ -49,7 +49,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
   const resolvedMode = signal<'light' | 'dark'>('light');
 
   // Initialize from storage
-  onMount(() => {
+  effect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(storageKey) as ColorMode | null;
       if (stored) {
@@ -60,7 +60,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
 
   // Resolve system preference and apply
   effect(() => {
-    const mode = colorMode.get();
+    const mode = colorMode();
 
     if (typeof window === 'undefined') return;
 
@@ -86,16 +86,16 @@ export function ThemeProvider(props: ThemeProviderProps) {
   });
 
   // Listen for system changes
-  onMount(() => {
+  effect(() => {
     if (typeof window === 'undefined') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleChange = () => {
-      if (colorMode.get() === 'system') {
+      if (colorMode() === 'system') {
         resolvedMode.set(mediaQuery.matches ? 'dark' : 'light');
         document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(resolvedMode.get());
+        document.documentElement.classList.add(resolvedMode());
       }
     };
 
@@ -110,16 +110,16 @@ export function ThemeProvider(props: ThemeProviderProps) {
     colorMode.set(mode);
   };
 
-  const isDark = () => resolvedMode.get() === 'dark';
+  const isDark = () => resolvedMode() === 'dark';
 
   const toggleColorMode = () => {
-    const current = resolvedMode.get();
+    const current = resolvedMode();
     colorMode.set(current === 'dark' ? 'light' : 'dark');
   };
 
   const value: ThemeContextValue = {
     theme,
-    colorMode: () => colorMode.get(),
+    colorMode: () => colorMode(),
     setColorMode,
     isDark,
     toggleColorMode,

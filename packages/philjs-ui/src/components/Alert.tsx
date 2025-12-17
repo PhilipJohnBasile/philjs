@@ -2,7 +2,7 @@
  * PhilJS UI - Alert Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type AlertStatus = 'info' | 'success' | 'warning' | 'error';
 export type AlertVariant = 'subtle' | 'solid' | 'left-accent' | 'top-accent';
@@ -11,8 +11,8 @@ export interface AlertProps {
   status?: AlertStatus;
   variant?: AlertVariant;
   title?: string;
-  children?: JSX.Element;
-  icon?: JSX.Element;
+  children?: any;
+  icon?: any;
   showIcon?: boolean;
   dismissible?: boolean;
   onDismiss?: () => void;
@@ -42,7 +42,7 @@ const statusStyles: Record<AlertStatus, { subtle: string; solid: string; icon: s
   },
 };
 
-const defaultIcons: Record<AlertStatus, JSX.Element> = {
+const defaultIcons: Record<AlertStatus, any> = {
   info: (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
       <path
@@ -101,7 +101,7 @@ export function Alert(props: AlertProps) {
     onDismiss?.();
   };
 
-  if (isDismissed.get()) return null;
+  if (isDismissed()) return null;
 
   const styles = statusStyles[status];
   const displayIcon = icon || (showIcon ? defaultIcons[status] : null);
@@ -173,13 +173,13 @@ export function Alert(props: AlertProps) {
 /**
  * Alert Title
  */
-export function AlertTitle(props: { children: JSX.Element }) {
+export function AlertTitle(props: { children: any }) {
   return <h3 className="font-medium">{props.children}</h3>;
 }
 
 /**
  * Alert Description
  */
-export function AlertDescription(props: { children: JSX.Element }) {
+export function AlertDescription(props: { children: any }) {
   return <div className="mt-1 text-sm opacity-90">{props.children}</div>;
 }

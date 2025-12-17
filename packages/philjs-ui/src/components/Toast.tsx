@@ -2,7 +2,7 @@
  * PhilJS UI - Toast Component
  */
 
-import { JSX, signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 export type ToastStatus = 'info' | 'success' | 'warning' | 'error';
 export type ToastPosition =
@@ -17,7 +17,7 @@ export interface ToastOptions {
   duration?: number;
   isClosable?: boolean;
   position?: ToastPosition;
-  render?: (props: { onClose: () => void }) => JSX.Element;
+  render?: (props: { onClose: () => void }) => any;
 }
 
 interface ToastState extends Required<Omit<ToastOptions, 'render'>> {
@@ -43,7 +43,7 @@ export function toast(options: ToastOptions): string {
     render: options.render,
   };
 
-  toasts.set([...toasts.get(), newToast]);
+  toasts.set([...toasts(), newToast]);
 
   if (newToast.duration > 0) {
     setTimeout(() => {
@@ -67,7 +67,7 @@ toast.info = (options: Omit<ToastOptions, 'status'>) =>
   toast({ ...options, status: 'info' });
 
 toast.close = (id: string) => {
-  toasts.set(toasts.get().filter(t => t.id !== id));
+  toasts.set(toasts().filter((t: ToastState) => t.id !== id));
 };
 
 toast.closeAll = () => {
@@ -94,8 +94,8 @@ export function ToastContainer() {
 
   return (
     <>
-      {positions.map(position => {
-        const positionToasts = toasts.get().filter(t => t.position === position);
+      {positions.map((position: ToastPosition) => {
+        const positionToasts = toasts().filter((t: ToastState) => t.position === position);
 
         if (positionToasts.length === 0) return null;
 
@@ -105,7 +105,7 @@ export function ToastContainer() {
             className={`fixed z-50 ${positionClasses[position]} flex flex-col gap-2`}
             aria-live="polite"
           >
-            {positionToasts.map(t => (
+            {positionToasts.map((t: ToastState) => (
               <ToastItem key={t.id} toast={t} />
             ))}
           </div>
@@ -145,7 +145,7 @@ const statusStyles: Record<ToastStatus, { bg: string; border: string; icon: stri
   },
 };
 
-const statusIcons: Record<ToastStatus, JSX.Element> = {
+const statusIcons: Record<ToastStatus, any> = {
   info: (
     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />

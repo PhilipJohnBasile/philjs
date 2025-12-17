@@ -4,7 +4,7 @@
  * Manages document head tags (title, meta, link)
  */
 
-import { createContext, useContext, onMount, JSX, signal } from 'philjs-core';
+import { createContext, useContext, effect, signal } from 'philjs-core';
 import type { MetaTag, LinkTag } from './types';
 
 interface HeadContextValue {
@@ -18,14 +18,14 @@ const HeadContext = createContext<HeadContextValue | null>(null);
 /**
  * Head Provider - Should wrap the app root
  */
-export function HeadProvider(props: { children: JSX.Element }) {
+export function HeadProvider(props: { children: any }) {
   const metaTags = signal<MetaTag[]>([]);
   const linkTags = signal<LinkTag[]>([]);
   const title = signal<string>('');
 
   const addMeta = (tag: MetaTag): (() => void) => {
     const key = tag.key || `${tag.name || tag.property}-${tag.content}`;
-    const existing = metaTags.get().find(t =>
+    const existing = metaTags().find(t =>
       (t.key && t.key === key) ||
       ((t.name === tag.name || t.property === tag.property) && !t.key)
     );
@@ -33,30 +33,30 @@ export function HeadProvider(props: { children: JSX.Element }) {
     if (existing) {
       // Update existing
       metaTags.set(
-        metaTags.get().map(t =>
+        metaTags().map(t =>
           (t.key === key || (t.name === tag.name || t.property === tag.property)) ? tag : t
         )
       );
     } else {
       // Add new
-      metaTags.set([...metaTags.get(), { ...tag, key }]);
+      metaTags.set([...metaTags(), { ...tag, key }]);
     }
 
     // Return cleanup function
     return () => {
-      metaTags.set(metaTags.get().filter(t => t.key !== key));
+      metaTags.set(metaTags().filter(t => t.key !== key));
     };
   };
 
   const addLink = (tag: LinkTag): (() => void) => {
     const key = `${tag.rel}-${tag.href}`;
 
-    linkTags.set([...linkTags.get().filter(t =>
+    linkTags.set([...linkTags().filter(t =>
       !(t.rel === tag.rel && t.href === tag.href)
     ), tag]);
 
     return () => {
-      linkTags.set(linkTags.get().filter(t =>
+      linkTags.set(linkTags().filter(t =>
         !(t.rel === tag.rel && t.href === tag.href)
       ));
     };
@@ -67,7 +67,7 @@ export function HeadProvider(props: { children: JSX.Element }) {
   };
 
   // Apply to actual document
-  onMount(() => {
+  effect(() => {
     const cleanup: Array<() => void> = [];
 
     // Update title
@@ -133,14 +133,14 @@ export function HeadProvider(props: { children: JSX.Element }) {
 /**
  * Head Component - Declarative head management
  */
-export function Head(props: { children: JSX.Element | JSX.Element[] }) {
+export function Head(props: { children: any }) {
   const context = useContext(HeadContext);
 
   if (!context) {
     throw new Error('Head must be used within HeadProvider');
   }
 
-  onMount(() => {
+  effect(() => {
     const cleanups: Array<() => void> = [];
 
     // Process children
@@ -197,7 +197,7 @@ export function Meta(props: MetaTag) {
     throw new Error('Meta must be used within HeadProvider');
   }
 
-  onMount(() => {
+  effect(() => {
     return context.addMeta(props);
   });
 
@@ -214,7 +214,7 @@ export function Link(props: LinkTag) {
     throw new Error('Link must be used within HeadProvider');
   }
 
-  onMount(() => {
+  effect(() => {
     return context.addLink(props);
   });
 
@@ -231,7 +231,7 @@ export function Title(props: { children: string; template?: string }) {
     throw new Error('Title must be used within HeadProvider');
   }
 
-  onMount(() => {
+  effect(() => {
     const title = props.template
       ? props.template.replace('%s', props.children)
       : props.children;

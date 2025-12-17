@@ -2,7 +2,7 @@
  * PhilJS UI - Checkbox Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { signal } from 'philjs-core';
 
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 
@@ -129,7 +129,7 @@ export function Checkbox(props: CheckboxProps) {
  * Checkbox Group
  */
 export interface CheckboxGroupProps {
-  children: JSX.Element | JSX.Element[];
+  children: any | any[];
   label?: string;
   description?: string;
   required?: boolean;

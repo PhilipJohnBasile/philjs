@@ -5,11 +5,11 @@
  * responsive sizing, lazy loading, and blur placeholders.
  */
 
-import { signal, memo, onMount, JSX } from 'philjs-core';
+import { signal, memo, effect } from 'philjs-core';
 import type { ImageProps, OptimizedImage } from './types';
 import { generateSrcSet, generateBlurDataURL, isExternalUrl } from './utils';
 
-export function Image(props: ImageProps): JSX.Element {
+export function Image(props: ImageProps) {
   const {
     src,
     alt,
@@ -87,14 +87,14 @@ export function Image(props: ImageProps): JSX.Element {
   };
 
   // Preload if priority
-  onMount(() => {
+  effect(() => {
     if (priority) {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
       link.href = src;
-      if (optimizedSources.get()?.srcSet) {
-        link.setAttribute('imagesrcset', optimizedSources.get()!.srcSet);
+      if (optimizedSources()?.srcSet) {
+        link.setAttribute('imagesrcset', optimizedSources()!.srcSet);
       }
       if (sizes) {
         link.setAttribute('imagesizes', sizes);
@@ -106,14 +106,14 @@ export function Image(props: ImageProps): JSX.Element {
   // Compute final src
   const finalSrc = memo(() => {
     if (unoptimized) return src;
-    const optimized = optimizedSources.get();
+    const optimized = optimizedSources();
     return optimized?.src || src;
   });
 
   // Compute srcSet
   const finalSrcSet = memo(() => {
     if (unoptimized) return undefined;
-    return optimizedSources.get()?.srcSet;
+    return optimizedSources()?.srcSet;
   });
 
   // Styles for the container
@@ -130,7 +130,7 @@ export function Image(props: ImageProps): JSX.Element {
     width: width ? `${width}px` : '100%',
     height: height ? `${height}px` : 'auto',
     transition: 'opacity 0.3s ease-in-out',
-    opacity: isLoaded.get() ? '1' : '0',
+    opacity: isLoaded() ? '1' : '0',
   };
 
   // Styles for placeholder
@@ -141,7 +141,7 @@ export function Image(props: ImageProps): JSX.Element {
     width: '100%',
     height: '100%',
     objectFit: fit,
-    opacity: isLoaded.get() ? '0' : '1',
+    opacity: isLoaded() ? '0' : '1',
     transition: 'opacity 0.3s ease-in-out',
     pointerEvents: 'none',
   };
@@ -149,9 +149,9 @@ export function Image(props: ImageProps): JSX.Element {
   return (
     <span style={containerStyle} className={className}>
       {/* Placeholder */}
-      {placeholder !== 'none' && placeholderDataURL.get() && (
+      {placeholder !== 'none' && placeholderDataURL() && (
         <img
-          src={placeholderDataURL.get()!}
+          src={placeholderDataURL()!}
           alt=""
           aria-hidden="true"
           style={placeholderStyle}
@@ -165,21 +165,21 @@ export function Image(props: ImageProps): JSX.Element {
         {!unoptimized && formats.includes('avif') && (
           <source
             type="image/avif"
-            srcSet={finalSrcSet.get()?.replace(/\.(webp|jpg|jpeg|png)/g, '.avif')}
+            srcSet={finalSrcSet()?.replace(/\.(webp|jpg|jpeg|png)/g, '.avif')}
             sizes={sizes}
           />
         )}
         {!unoptimized && formats.includes('webp') && (
           <source
             type="image/webp"
-            srcSet={finalSrcSet.get()}
+            srcSet={finalSrcSet()}
             sizes={sizes}
           />
         )}
 
         {/* Fallback */}
         <img
-          src={finalSrc.get()}
+          src={finalSrc()}
           alt={alt}
           width={width}
           height={height}
@@ -187,7 +187,7 @@ export function Image(props: ImageProps): JSX.Element {
           decoding={decoding}
           crossOrigin={crossOrigin}
           referrerPolicy={referrerPolicy}
-          srcSet={finalSrcSet.get()}
+          srcSet={finalSrcSet()}
           sizes={sizes}
           onLoad={handleLoad}
           onError={handleError}
@@ -196,7 +196,7 @@ export function Image(props: ImageProps): JSX.Element {
       </picture>
 
       {/* Error state */}
-      {hasError.get() && (
+      {hasError() && (
         <div style={{
           position: 'absolute',
           top: 0,

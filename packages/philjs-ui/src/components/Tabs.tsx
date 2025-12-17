@@ -2,7 +2,7 @@
  * PhilJS UI - Tabs Component
  */
 
-import { JSX, signal, createContext, useContext } from 'philjs-core';
+import { signal, createContext, useContext } from 'philjs-core';
 
 export type TabsVariant = 'line' | 'enclosed' | 'soft-rounded' | 'solid-rounded';
 export type TabsSize = 'sm' | 'md' | 'lg';
@@ -17,7 +17,7 @@ interface TabsContextValue {
 const TabsContext = createContext<TabsContextValue | null>(null);
 
 export interface TabsProps {
-  children: JSX.Element;
+  children: any;
   defaultValue?: string;
   value?: string;
   variant?: TabsVariant;
@@ -39,7 +39,7 @@ export function Tabs(props: TabsProps) {
 
   const internalValue = signal(defaultValue);
 
-  const activeTab = () => value ?? internalValue.get();
+  const activeTab = () => value ?? internalValue();
 
   const setActiveTab = (id: string) => {
     if (value === undefined) {
@@ -66,7 +66,7 @@ export function Tabs(props: TabsProps) {
  * Tab List - Container for tab triggers
  */
 export interface TabListProps {
-  children: JSX.Element | JSX.Element[];
+  children: any;
   className?: string;
 }
 
@@ -100,9 +100,9 @@ export function TabList(props: TabListProps) {
  */
 export interface TabProps {
   value: string;
-  children: JSX.Element;
+  children: any;
   disabled?: boolean;
-  icon?: JSX.Element;
+  icon?: any;
   className?: string;
 }
 
@@ -196,7 +196,7 @@ export function Tab(props: TabProps) {
  * Tab Panels - Container for tab content
  */
 export interface TabPanelsProps {
-  children: JSX.Element | JSX.Element[];
+  children: any;
   className?: string;
 }
 
@@ -211,7 +211,7 @@ export function TabPanels(props: TabPanelsProps) {
  */
 export interface TabPanelProps {
   value: string;
-  children: JSX.Element;
+  children: any;
   className?: string;
 }
 

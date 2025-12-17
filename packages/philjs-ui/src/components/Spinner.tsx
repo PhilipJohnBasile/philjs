@@ -2,7 +2,7 @@
  * PhilJS UI - Spinner & Progress Components
  */
 
-import { JSX } from 'philjs-core';
+import {} from 'philjs-core';
 
 export type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

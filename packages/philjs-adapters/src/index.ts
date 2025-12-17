@@ -11,6 +11,7 @@
  */
 
 // Types
+import type { Adapter, AdapterConfig } from './types';
 export type {
   Adapter,
   AdapterConfig,

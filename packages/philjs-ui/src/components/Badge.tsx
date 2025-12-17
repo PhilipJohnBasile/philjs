@@ -2,14 +2,12 @@
  * PhilJS UI - Badge Component
  */
 
-import { JSX } from 'philjs-core';
-
 export type BadgeVariant = 'solid' | 'subtle' | 'outline';
 export type BadgeColor = 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'cyan' | 'purple' | 'pink';
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 export interface BadgeProps {
-  children: JSX.Element;
+  children: any;
   variant?: BadgeVariant;
   color?: BadgeColor;
   size?: BadgeSize;

@@ -17,6 +17,7 @@ export interface LinkTag {
   sizes?: string;
   media?: string;
   crossOrigin?: string;
+  hrefLang?: string;
 }
 
 export interface MetaConfig {

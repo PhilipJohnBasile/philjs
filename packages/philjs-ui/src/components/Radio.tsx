@@ -2,7 +2,7 @@
  * PhilJS UI - Radio Component
  */
 
-import { JSX, signal, createContext, useContext } from 'philjs-core';
+import { signal, createContext, useContext } from 'philjs-core';
 
 export type RadioSize = 'sm' | 'md' | 'lg';
 
@@ -116,7 +116,7 @@ export interface RadioGroupProps {
   name: string;
   value?: string;
   defaultValue?: string;
-  children: JSX.Element | JSX.Element[];
+  children: any;
   label?: string;
   description?: string;
   required?: boolean;
@@ -156,7 +156,7 @@ export function RadioGroup(props: RadioGroupProps) {
 
   const contextValue: RadioContextValue = {
     name,
-    value: value ?? internalValue.get(),
+    value: value ?? internalValue(),
     onChange: handleChange,
     disabled,
     size,

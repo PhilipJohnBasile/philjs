@@ -2,12 +2,10 @@
  * PhilJS UI - Card Component
  */
 
-import { JSX } from 'philjs-core';
-
 export type CardVariant = 'elevated' | 'outlined' | 'filled';
 
 export interface CardProps {
-  children: JSX.Element;
+  children: any;
   variant?: CardVariant;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   hoverable?: boolean;
@@ -65,8 +63,8 @@ export function Card(props: CardProps) {
  * Card Header
  */
 export function CardHeader(props: {
-  children: JSX.Element;
-  action?: JSX.Element;
+  children: any;
+  action?: any;
   className?: string;
 }) {
   const { children, action, className = '' } = props;
@@ -83,7 +81,7 @@ export function CardHeader(props: {
  * Card Title
  */
 export function CardTitle(props: {
-  children: JSX.Element;
+  children: any;
   subtitle?: string;
   className?: string;
 }) {
@@ -100,7 +98,7 @@ export function CardTitle(props: {
 /**
  * Card Body
  */
-export function CardBody(props: { children: JSX.Element; className?: string }) {
+export function CardBody(props: { children: any; className?: string }) {
   return <div className={props.className || ''}>{props.children}</div>;
 }
 
@@ -108,7 +106,7 @@ export function CardBody(props: { children: JSX.Element; className?: string }) {
  * Card Footer
  */
 export function CardFooter(props: {
-  children: JSX.Element;
+  children: any;
   divider?: boolean;
   className?: string;
 }) {

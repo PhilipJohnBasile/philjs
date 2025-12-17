@@ -90,7 +90,7 @@ export interface Adapter {
 
 export interface EdgeAdapter extends Adapter {
   /** Supports edge runtime */
-  edge: true;
+  edge: boolean;
   /** Edge-specific configuration */
   edgeConfig?: {
     regions?: string[];

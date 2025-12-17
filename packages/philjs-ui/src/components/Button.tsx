@@ -2,22 +2,22 @@
  * PhilJS UI - Button Component
  */
 
-import { JSX, signal, memo } from 'philjs-core';
+import { signal, memo } from 'philjs-core';
 
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 
 export interface ButtonProps {
-  children: JSX.Element;
+  children: any;
   variant?: ButtonVariant;
   size?: ButtonSize;
   color?: ButtonColor;
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
-  leftIcon?: JSX.Element;
-  rightIcon?: JSX.Element;
+  leftIcon?: any;
+  rightIcon?: any;
   type?: 'button' | 'submit' | 'reset';
   onClick?: (e: MouseEvent) => void;
   className?: string;
@@ -149,7 +149,7 @@ export function Button(props: ButtonProps) {
  * Icon Button - Button with only an icon
  */
 export function IconButton(props: Omit<ButtonProps, 'children' | 'leftIcon' | 'rightIcon'> & {
-  icon: JSX.Element;
+  icon: any;
   'aria-label': string;
 }) {
   const { icon, size = 'md', ...rest } = props;
@@ -177,7 +177,7 @@ export function IconButton(props: Omit<ButtonProps, 'children' | 'leftIcon' | 'r
  * Button Group
  */
 export function ButtonGroup(props: {
-  children: JSX.Element | JSX.Element[];
+  children: any | any[];
   attached?: boolean;
   className?: string;
 }) {

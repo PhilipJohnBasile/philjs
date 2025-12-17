@@ -10,10 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js"
-    },
     "./signals": {
       "types": "./dist/signals.d.ts",
       "import": "./dist/signals.js"
@@ -26,13 +22,21 @@
       "types": "./dist/jsx-dev-runtime.d.ts",
       "import": "./dist/jsx-dev-runtime.js"
     },
-    "./accessibility": {
-      "types": "./dist/accessibility.d.ts",
-      "import": "./dist/accessibility.js"
+    "./render-to-string": {
+      "types": "./dist/render-to-string.d.ts",
+      "import": "./dist/render-to-string.js"
     },
-    "./ab-testing": {
-      "types": "./dist/ab-testing.d.ts",
-      "import": "./dist/ab-testing.js"
+    "./hydrate": {
+      "types": "./dist/hydrate.d.ts",
+      "import": "./dist/hydrate.js"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "import": "./dist/context.js"
+    },
+    "./error-boundary": {
+      "types": "./dist/error-boundary.d.ts",
+      "import": "./dist/error-boundary.js"
     },
     "./forms": {
       "types": "./dist/forms.d.ts",
@@ -46,13 +50,17 @@
       "types": "./dist/animation.d.ts",
       "import": "./dist/animation.js"
     },
-    "./ppr": {
-      "types": "./dist/ppr.d.ts",
-      "import": "./dist/ppr.js"
+    "./accessibility": {
+      "types": "./dist/accessibility.d.ts",
+      "import": "./dist/accessibility.js"
     },
-    "./activity": {
-      "types": "./dist/activity.d.ts",
-      "import": "./dist/activity.js"
+    "./ab-testing": {
+      "types": "./dist/ab-testing.d.ts",
+      "import": "./dist/ab-testing.js"
+    },
+    "./result": {
+      "types": "./dist/result.d.ts",
+      "import": "./dist/result.js"
     }
   },
   "files": [
