@@ -3,9 +3,16 @@
  *
  * Integrates PhilJS automatic optimizations into the Vite build pipeline.
  * Applies transformations during development and production builds.
+ *
+ * Features:
+ * - Auto-memoization of expensive computations
+ * - Auto-batching of multiple signal updates
+ * - Dead code elimination
+ * - Effect optimization warnings
+ * - Full HMR support
  */
 
-import type { Plugin } from 'vite';
+import type { Plugin, HmrContext } from 'vite';
 import { createFilter } from '@rollup/pluginutils';
 import { Optimizer } from '../optimizer';
 import type { CompilerConfig } from '../types';
@@ -139,16 +146,44 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           }
         }
 
+        // Log warnings in development mode
+        if (isDevelopment && result.warnings && result.warnings.length > 0) {
+          result.warnings.forEach(warning => {
+            const loc = warning.location;
+            const location = loc?.start ? `:${loc.start.line}${loc.start.column ? `:${loc.start.column}` : ''}` : '';
+            console.warn(`[philjs-compiler] ⚠️  ${id}${location}: ${warning.message}`);
+            if (warning.suggestion) {
+              console.warn(`  💡 Suggestion: ${warning.suggestion}`);
+            }
+          });
+        }
+
         // Return transformed code with source map
         return {
           code: result.code,
           map: result.map || null
         };
       } catch (error) {
-        // Log error but don't fail the build
-        console.error(`[philjs-compiler] Error optimizing ${id}:`, error);
+        // Format error message with helpful context
+        const err = error as Error & { loc?: { line: number; column: number } };
+        const location = err.loc ? ` at line ${err.loc.line}, column ${err.loc.column}` : '';
 
-        // Return original code on error
+        console.error(`\n[philjs-compiler] ❌ Error optimizing ${id}${location}:`);
+        console.error(`  ${err.message}`);
+
+        // Provide helpful suggestions based on common errors
+        if (err.message.includes('Unexpected token')) {
+          console.error(`\n  💡 This might be a syntax error. Check for:`);
+          console.error(`     - Missing semicolons or brackets`);
+          console.error(`     - Invalid JSX syntax`);
+          console.error(`     - Unsupported TypeScript features\n`);
+        } else if (err.message.includes('Cannot find')) {
+          console.error(`\n  💡 This might be an import error. Check for:`);
+          console.error(`     - Correct import paths`);
+          console.error(`     - Missing dependencies\n`);
+        }
+
+        // Return original code on error (don't break the build)
         return null;
       }
     },
@@ -169,6 +204,30 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
       if (verbose && enabled) {
         console.log('[philjs-compiler] Build completed');
       }
+    },
+
+    /**
+     * HMR hook - Handle hot module replacement
+     */
+    handleHotUpdate(ctx: HmrContext) {
+      const { file, modules } = ctx;
+
+      // Only process PhilJS files
+      if (!filter(file)) {
+        return;
+      }
+
+      // Check if this is a PhilJS component file
+      const isPhilJSFile = modules.some(mod =>
+        mod.file && (mod.file.includes('philjs') || mod.file.endsWith('.tsx') || mod.file.endsWith('.jsx'))
+      );
+
+      if (isPhilJSFile && verbose) {
+        console.log(`[philjs-compiler] HMR update: ${file}`);
+      }
+
+      // Return modules to invalidate - Vite will handle the rest
+      return modules;
     }
   };
 }
