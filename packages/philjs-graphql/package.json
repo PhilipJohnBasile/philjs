@@ -30,7 +30,7 @@
     "@graphql-tools/utils": "^10.5.7",
     "vitest": "^3.2.4",
     "typescript": "^5.7.2",
-    "rollup": "^4.28.1"
+    "rollup": "^4.53.5"
   },
   "peerDependencies": {
     "graphql": "^16.0.0"

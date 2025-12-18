@@ -24,7 +24,7 @@
     "philjs-core": "workspace:*"
   },
   "devDependencies": {
-    "rollup": "^4.28.1",
+    "rollup": "^4.53.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.4"
   },
