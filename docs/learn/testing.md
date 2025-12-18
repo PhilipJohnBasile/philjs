@@ -1544,6 +1544,491 @@ it('calculates total price correctly', () => {
 });
 ```
 
+## Snapshot Testing
+
+PhilJS provides powerful snapshot testing utilities for capturing and comparing component state.
+
+### DOM Snapshots
+
+```tsx
+// snapshot.test.tsx
+import { describe, it } from 'vitest';
+import { render, takeSnapshot, createSnapshotMatcher } from 'philjs-testing';
+import { UserCard } from './UserCard';
+
+describe('UserCard snapshots', () => {
+  const matcher = createSnapshotMatcher();
+
+  it('matches snapshot for default user', () => {
+    const { container } = render(() => (
+      <UserCard
+        user={{ name: 'Alice', email: 'alice@example.com' }}
+      />
+    ));
+
+    matcher.matchSnapshot('default-user', container);
+  });
+
+  it('matches snapshot for premium user', () => {
+    const { container } = render(() => (
+      <UserCard
+        user={{ name: 'Bob', email: 'bob@example.com', premium: true }}
+      />
+    ));
+
+    matcher.matchSnapshot('premium-user', container);
+  });
+});
+```
+
+### Signal State Snapshots
+
+```tsx
+// signalSnapshot.test.ts
+import { describe, it, expect } from 'vitest';
+import { snapshotSignalState, compareSignalSnapshots } from 'philjs-testing';
+import { signal } from 'philjs-core';
+
+describe('Signal state snapshots', () => {
+  it('captures signal state', () => {
+    const count = signal(0);
+    const name = signal('test');
+    const active = signal(true);
+
+    const snapshot = snapshotSignalState({ count, name, active });
+
+    expect(snapshot).toMatchInlineSnapshot(`
+      {
+        "count": 0,
+        "name": "test",
+        "active": true
+      }
+    `);
+  });
+
+  it('compares signal states', () => {
+    const count = signal(5);
+    const name = signal('test');
+
+    const result = compareSignalSnapshots(
+      { count, name },
+      { count: 5, name: 'test' }
+    );
+
+    expect(result.match).toBe(true);
+  });
+});
+```
+
+### Custom Snapshot Options
+
+```tsx
+import { takeSnapshot } from 'philjs-testing';
+
+const result = takeSnapshot(element, {
+  maxLength: 5000,
+  includeSignals: true,
+  serializer: (el) => el.outerHTML,
+});
+
+if (!result.toMatch(expectedSnapshot)) {
+  console.log('Diff:', result.diff(expectedSnapshot));
+}
+```
+
+## Setup Files
+
+### Vitest Setup
+
+```ts
+// vitest.setup.ts
+import 'philjs-testing/vitest';
+
+// Custom setup if needed
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+```
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
+    globals: true,
+  },
+});
+```
+
+### Jest Setup
+
+```ts
+// jest.setup.ts
+import 'philjs-testing/jest';
+
+// Custom matchers will be automatically extended
+```
+
+```js
+// jest.config.js
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+};
+```
+
+## Advanced Testing Patterns
+
+### Testing Custom Hooks
+
+```tsx
+// useCounter.ts
+import { signal } from 'philjs-core';
+
+export function useCounter(initialValue = 0) {
+  const count = signal(initialValue);
+
+  return {
+    count,
+    increment: () => count.set(c => c + 1),
+    decrement: () => count.set(c => c - 1),
+    reset: () => count.set(initialValue),
+  };
+}
+
+// useCounter.test.ts
+import { describe, it, expect } from 'vitest';
+import { renderHook, act } from 'philjs-testing';
+import { useCounter } from './useCounter';
+
+describe('useCounter', () => {
+  it('increments count', () => {
+    const { result } = renderHook(() => useCounter());
+
+    expect(result.current.count()).toBe(0);
+
+    act(() => {
+      result.current.increment();
+    });
+
+    expect(result.current.count()).toBe(1);
+  });
+
+  it('supports initial value', () => {
+    const { result } = renderHook(() => useCounter(10));
+    expect(result.current.count()).toBe(10);
+  });
+});
+```
+
+### Testing Server Functions
+
+```tsx
+// api.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, waitFor } from 'philjs-testing';
+import { UserList } from './UserList';
+
+describe('Server function integration', () => {
+  it('loads users from server', async () => {
+    // Mock server function
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([
+          { id: 1, name: 'Alice' },
+          { id: 2, name: 'Bob' },
+        ]),
+      } as Response)
+    );
+
+    render(() => <UserList />);
+
+    // Wait for data to load
+    await waitFor(() => {
+      expect(screen.getByText('Alice')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+  });
+
+  it('handles server errors', async () => {
+    global.fetch = vi.fn(() =>
+      Promise.reject(new Error('Server error'))
+    );
+
+    render(() => <UserList />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/error/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### Testing with Context Providers
+
+```tsx
+// ThemeContext.test.tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from 'philjs-testing';
+import userEvent from 'philjs-testing/user-event';
+import { ThemeProvider, useTheme } from './ThemeContext';
+
+function TestComponent() {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <div>
+      <span data-testid="theme">{theme()}</span>
+      <button onClick={toggleTheme}>Toggle</button>
+    </div>
+  );
+}
+
+describe('ThemeContext', () => {
+  it('provides theme to children', () => {
+    render(() => (
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    ));
+
+    expect(screen.getByTestId('theme')).toHaveTextContent('light');
+  });
+
+  it('toggles theme', async () => {
+    const user = userEvent.setup();
+
+    render(() => (
+      <ThemeProvider>
+        <TestComponent />
+      </ThemeProvider>
+    ));
+
+    await user.click(screen.getByRole('button'));
+
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
+  });
+});
+```
+
+### Testing Async Data Loading
+
+```tsx
+// DataLoader.test.tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen, waitForLoadingToFinish } from 'philjs-testing';
+import { DataLoader } from './DataLoader';
+
+describe('DataLoader', () => {
+  it('shows loading state', () => {
+    render(() => <DataLoader url="/api/data" />);
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('loads and displays data', async () => {
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ message: 'Success' }),
+      } as Response)
+    );
+
+    render(() => <DataLoader url="/api/data" />);
+
+    await waitForLoadingToFinish();
+
+    expect(screen.getByText('Success')).toBeInTheDocument();
+  });
+});
+```
+
+### Testing Forms with Validation
+
+```tsx
+// ContactForm.test.tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from 'philjs-testing';
+import userEvent from 'philjs-testing/user-event';
+import { ContactForm } from './ContactForm';
+
+describe('ContactForm validation', () => {
+  it('validates required fields', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+
+    render(() => <ContactForm onSubmit={onSubmit} />);
+
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(screen.getByText(/name is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('validates email format', async () => {
+    const user = userEvent.setup();
+
+    render(() => <ContactForm />);
+
+    await user.type(screen.getByLabelText(/email/i), 'invalid-email');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(screen.getByText(/valid email/i)).toBeInTheDocument();
+  });
+
+  it('submits valid form', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+
+    render(() => <ContactForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/name/i), 'Alice');
+    await user.type(screen.getByLabelText(/email/i), 'alice@example.com');
+    await user.type(screen.getByLabelText(/message/i), 'Hello!');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledWith({
+      name: 'Alice',
+      email: 'alice@example.com',
+      message: 'Hello!',
+    });
+  });
+});
+```
+
+### Performance Testing
+
+```tsx
+// performance.test.ts
+import { describe, it, expect } from 'vitest';
+import { render } from 'philjs-testing';
+import { signal, memo } from 'philjs-core';
+import { HeavyComponent } from './HeavyComponent';
+
+describe('Performance tests', () => {
+  it('memoizes expensive computations', () => {
+    let computeCount = 0;
+
+    const data = signal([1, 2, 3]);
+    const sum = memo(() => {
+      computeCount++;
+      return data().reduce((a, b) => a + b, 0);
+    });
+
+    // Access multiple times
+    sum();
+    sum();
+    sum();
+
+    // Should only compute once
+    expect(computeCount).toBe(1);
+
+    // Update data
+    data.set([1, 2, 3, 4]);
+    sum();
+
+    // Should compute again
+    expect(computeCount).toBe(2);
+  });
+
+  it('renders large lists efficiently', () => {
+    const items = Array.from({ length: 1000 }, (_, i) => ({
+      id: i,
+      name: `Item ${i}`,
+    }));
+
+    const start = performance.now();
+    const { container } = render(() => <HeavyComponent items={items} />);
+    const duration = performance.now() - start;
+
+    expect(container.querySelectorAll('li')).toHaveLength(1000);
+    expect(duration).toBeLessThan(100); // Should render in < 100ms
+  });
+});
+```
+
+## Test Organization
+
+### Grouping Related Tests
+
+```tsx
+describe('UserProfile', () => {
+  describe('rendering', () => {
+    it('displays user name', () => {
+      // ...
+    });
+
+    it('displays user avatar', () => {
+      // ...
+    });
+  });
+
+  describe('editing', () => {
+    it('enables edit mode', () => {
+      // ...
+    });
+
+    it('saves changes', () => {
+      // ...
+    });
+  });
+
+  describe('permissions', () => {
+    it('shows edit button for own profile', () => {
+      // ...
+    });
+
+    it('hides edit button for other profiles', () => {
+      // ...
+    });
+  });
+});
+```
+
+### Shared Setup
+
+```tsx
+describe('TodoList', () => {
+  let mockTodos: Todo[];
+  let onAdd: Mock;
+  let onDelete: Mock;
+
+  beforeEach(() => {
+    mockTodos = [
+      { id: 1, text: 'Task 1', completed: false },
+      { id: 2, text: 'Task 2', completed: true },
+    ];
+
+    onAdd = vi.fn();
+    onDelete = vi.fn();
+  });
+
+  it('displays todos', () => {
+    render(() => <TodoList todos={mockTodos} />);
+    expect(screen.getByText('Task 1')).toBeInTheDocument();
+  });
+
+  it('adds new todo', async () => {
+    const user = userEvent.setup();
+
+    render(() => <TodoList todos={mockTodos} onAdd={onAdd} />);
+
+    await user.type(screen.getByPlaceholderText(/add/i), 'New task');
+    await user.click(screen.getByRole('button', { name: /add/i }));
+
+    expect(onAdd).toHaveBeenCalledWith('New task');
+  });
+});
+```
+
 ## Next Steps
 
 - [Error Boundaries](/docs/learn/error-boundaries.md) - Handle errors gracefully

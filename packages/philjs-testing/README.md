@@ -371,7 +371,7 @@ act(() => {
 });
 ```
 
-### Debug
+### Debug & Snapshots
 
 - `debug(element?)` - Print DOM to console
 - `logDOM(element?)` - Same as debug
@@ -380,6 +380,60 @@ act(() => {
 - `debugA11y(element)` - Check accessibility tree
 - `snapshot(element)` - Create DOM snapshot
 - `compareSnapshots(snap1, snap2)` - Compare snapshots
+
+#### `takeSnapshot(element, options?)`
+
+Create a snapshot of DOM or component state:
+
+```typescript
+const result = takeSnapshot(container, {
+  maxLength: 5000,
+  includeSignals: true,
+  serializer: (el) => el.outerHTML
+});
+
+if (!result.toMatch(expectedSnapshot)) {
+  console.log(result.diff(expectedSnapshot));
+}
+```
+
+#### `createSnapshotMatcher(options?)`
+
+Create a snapshot matcher for testing:
+
+```typescript
+const matcher = createSnapshotMatcher({ updateMode: false });
+
+it('matches snapshot', () => {
+  const { container } = render(<Component />);
+  matcher.matchSnapshot('component-default', container);
+});
+```
+
+#### `snapshotSignalState(signals)`
+
+Capture signal state as JSON:
+
+```typescript
+const snapshot = snapshotSignalState({
+  count: signal(5),
+  name: signal('test')
+});
+// Returns: { "count": 5, "name": "test" }
+```
+
+#### `compareSignalSnapshots(actual, expected)`
+
+Compare signal states:
+
+```typescript
+const result = compareSignalSnapshots(
+  { count: signal(5) },
+  { count: 5 }
+);
+
+expect(result.match).toBe(true);
+```
 
 ## Vitest Configuration
 

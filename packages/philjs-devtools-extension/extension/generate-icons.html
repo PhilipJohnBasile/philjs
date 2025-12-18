@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Generate Icons</title>
+</head>
+<body>
+  <h1>Icon Generator</h1>
+  <p>Open browser console and right-click to save the generated icons.</p>
+  <canvas id="canvas16" width="16" height="16"></canvas>
+  <canvas id="canvas48" width="48" height="48"></canvas>
+  <canvas id="canvas128" width="128" height="128"></canvas>
+
+  <script>
+    // Generate 16x16 icon
+    const canvas16 = document.getElementById('canvas16');
+    const ctx16 = canvas16.getContext('2d');
+
+    ctx16.fillStyle = '#3b82f6';
+    ctx16.fillRect(0, 0, 16, 16);
+
+    ctx16.fillStyle = 'white';
+    ctx16.beginPath();
+    ctx16.moveTo(8, 3);
+    ctx16.lineTo(4, 6);
+    ctx16.lineTo(8, 9);
+    ctx16.lineTo(12, 6);
+    ctx16.closePath();
+    ctx16.fill();
+
+    ctx16.fillStyle = '#93c5fd';
+    ctx16.beginPath();
+    ctx16.moveTo(4, 10);
+    ctx16.lineTo(8, 13);
+    ctx16.lineTo(12, 10);
+    ctx16.lineTo(12, 7);
+    ctx16.lineTo(8, 10);
+    ctx16.lineTo(4, 7);
+    ctx16.closePath();
+    ctx16.fill();
+
+    console.log('16x16 icon:', canvas16.toDataURL());
+
+    // Generate 48x48 icon
+    const canvas48 = document.getElementById('canvas48');
+    const ctx48 = canvas48.getContext('2d');
+
+    ctx48.fillStyle = '#3b82f6';
+    ctx48.fillRect(0, 0, 48, 48);
+
+    ctx48.fillStyle = 'white';
+    ctx48.beginPath();
+    ctx48.moveTo(24, 9);
+    ctx48.lineTo(12, 18);
+    ctx48.lineTo(24, 27);
+    ctx48.lineTo(36, 18);
+    ctx48.closePath();
+    ctx48.fill();
+
+    ctx48.fillStyle = '#93c5fd';
+    ctx48.beginPath();
+    ctx48.moveTo(12, 30);
+    ctx48.lineTo(24, 39);
+    ctx48.lineTo(36, 30);
+    ctx48.lineTo(36, 21);
+    ctx48.lineTo(24, 30);
+    ctx48.lineTo(12, 21);
+    ctx48.closePath();
+    ctx48.fill();
+
+    ctx48.fillStyle = 'white';
+    ctx48.beginPath();
+    ctx48.arc(24, 24, 3, 0, Math.PI * 2);
+    ctx48.fill();
+
+    console.log('48x48 icon:', canvas48.toDataURL());
+
+    // Generate 128x128 icon
+    const canvas128 = document.getElementById('canvas128');
+    const ctx128 = canvas128.getContext('2d');
+
+    ctx128.fillStyle = '#3b82f6';
+    ctx128.fillRect(0, 0, 128, 128);
+
+    ctx128.fillStyle = 'white';
+    ctx128.beginPath();
+    ctx128.moveTo(64, 24);
+    ctx128.lineTo(32, 48);
+    ctx128.lineTo(64, 72);
+    ctx128.lineTo(96, 48);
+    ctx128.closePath();
+    ctx128.fill();
+
+    ctx128.fillStyle = '#93c5fd';
+    ctx128.beginPath();
+    ctx128.moveTo(32, 80);
+    ctx128.lineTo(64, 104);
+    ctx128.lineTo(96, 80);
+    ctx128.lineTo(96, 56);
+    ctx128.lineTo(64, 80);
+    ctx128.lineTo(32, 56);
+    ctx128.closePath();
+    ctx128.fill();
+
+    ctx128.fillStyle = 'white';
+    ctx128.beginPath();
+    ctx128.arc(64, 64, 8, 0, Math.PI * 2);
+    ctx128.fill();
+
+    console.log('128x128 icon:', canvas128.toDataURL());
+
+    // Instructions
+    console.log('\nTo save icons:');
+    console.log('1. Right-click on each canvas above');
+    console.log('2. Select "Save Image As..."');
+    console.log('3. Save as icon16.png, icon48.png, and icon128.png in the icons folder');
+  </script>
+</body>
+</html>

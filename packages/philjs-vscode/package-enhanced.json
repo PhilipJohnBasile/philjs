@@ -1,0 +1,283 @@
+{
+  "name": "philjs-vscode",
+  "displayName": "PhilJS for VS Code",
+  "description": "Official VS Code extension for PhilJS - IntelliSense, snippets, debugging, and code generation",
+  "version": "1.0.0",
+  "publisher": "philjs",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/philjs/philjs/issues"
+  },
+  "homepage": "https://philjs.dev",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Formatters",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "philjs",
+    "javascript",
+    "typescript",
+    "jsx",
+    "tsx",
+    "signals",
+    "reactive",
+    "ssr",
+    "islands",
+    "framework",
+    "web components"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "philjs",
+        "aliases": [
+          "PhilJS",
+          "philjs"
+        ],
+        "extensions": [
+          ".philjs"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/philjs.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/philjs-enhanced.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/philjs-enhanced.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/philjs-enhanced.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/philjs-enhanced.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "philjs.createComponent",
+        "title": "PhilJS: Create Component",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.createRoute",
+        "title": "PhilJS: Create Route",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.createPage",
+        "title": "PhilJS: Create Page",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.createHook",
+        "title": "PhilJS: Create Hook",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.createStore",
+        "title": "PhilJS: Create Store",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.openDevTools",
+        "title": "PhilJS: Open DevTools",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.showCommands",
+        "title": "PhilJS: Show Commands",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.wrapInMemo",
+        "title": "PhilJS: Wrap Component in memo()",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.extractToSignal",
+        "title": "PhilJS: Extract to Signal",
+        "category": "PhilJS"
+      },
+      {
+        "command": "philjs.convertToIsland",
+        "title": "PhilJS: Convert to Island Component",
+        "category": "PhilJS"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "philjs.createComponent",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "philjs.createRoute",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "philjs.showCommands",
+        "key": "ctrl+shift+p p",
+        "mac": "cmd+shift+p p"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "philjs.contextMenu",
+          "group": "1_modification"
+        }
+      ],
+      "philjs.contextMenu": [
+        {
+          "command": "philjs.extractToSignal",
+          "when": "editorHasSelection",
+          "group": "1_refactor"
+        },
+        {
+          "command": "philjs.wrapInMemo",
+          "group": "1_refactor"
+        },
+        {
+          "command": "philjs.convertToIsland",
+          "group": "1_refactor"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "philjs.contextMenu",
+        "label": "PhilJS Refactor"
+      }
+    ],
+    "configuration": {
+      "title": "PhilJS",
+      "properties": {
+        "philjs.enableIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable PhilJS IntelliSense features (completions, hover, signatures)"
+        },
+        "philjs.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time diagnostics and error detection"
+        },
+        "philjs.signalHighlighting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight signal usage in code"
+        },
+        "philjs.componentDirectory": {
+          "type": "string",
+          "default": "src/components",
+          "description": "Default directory for generated components"
+        },
+        "philjs.routesDirectory": {
+          "type": "string",
+          "default": "src/routes",
+          "description": "Default directory for generated routes"
+        },
+        "philjs.formatOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Format PhilJS code on save"
+        },
+        "philjs.autoImport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically add missing imports"
+        },
+        "philjs.experimental": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable experimental features"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./dist/test/runTest.js",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "files": [
+    "dist",
+    "snippets",
+    "images",
+    "language-configuration.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "badges": [
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/v/philjs.philjs-vscode",
+      "href": "https://marketplace.visualstudio.com/items?itemName=philjs.philjs-vscode",
+      "description": "Version"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/d/philjs.philjs-vscode",
+      "href": "https://marketplace.visualstudio.com/items?itemName=philjs.philjs-vscode",
+      "description": "Downloads"
+    }
+  ]
+}

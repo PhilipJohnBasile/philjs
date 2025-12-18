@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhilJS DevTools</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#3b82f6"/>
+          <path d="M2 17L12 22L22 17V12L12 17L2 12V17Z" fill="#60a5fa"/>
+        </svg>
+        <h1>PhilJS DevTools</h1>
+      </div>
+      <div class="connection-status">
+        <span id="connection-indicator" class="status-indicator disconnected"></span>
+        <span id="connection-text">Disconnected</span>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="signals">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <circle cx="8" cy="8" r="6"/>
+        </svg>
+        Signals
+      </button>
+      <button class="tab" data-tab="components">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/>
+        </svg>
+        Components
+      </button>
+      <button class="tab" data-tab="performance">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 14L8 2L14 14H2Z"/>
+        </svg>
+        Performance
+      </button>
+      <button class="tab" data-tab="timetravel">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6h-2c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4V2zm4 0v4h-4"/>
+        </svg>
+        Time Travel
+      </button>
+      <button class="tab" data-tab="network">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 2v12M2 8h12M4 4l8 8M12 4l-8 8"/>
+        </svg>
+        Network
+      </button>
+    </nav>
+
+    <!-- Tab Content -->
+    <main class="content">
+      <!-- Signals Panel -->
+      <div id="signals-panel" class="panel active">
+        <div class="panel-header">
+          <div class="search-box">
+            <input type="text" id="signal-search" placeholder="Search signals...">
+          </div>
+          <div class="toolbar">
+            <button id="signal-clear-btn" class="btn-icon" title="Clear all signals">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+            <button id="signal-refresh-btn" class="btn-icon" title="Refresh">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2v4M8 10v4M2 8h4M10 8h4M3 3l2 2M11 3l-2 2M3 13l2-2M11 13l-2-2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="signal-list">
+            <div class="list-header">
+              <span>Signal Name</span>
+              <span>Value</span>
+              <span>Updates</span>
+            </div>
+            <div id="signal-items" class="list-items">
+              <div class="empty-state">
+                <p>No signals detected</p>
+                <small>Signals will appear here when your app creates them</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="signal-details">
+            <div id="signal-detail-content" class="detail-content">
+              <div class="empty-state">
+                <p>Select a signal to view details</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dependency-graph">
+          <h3>Signal Dependency Graph</h3>
+          <canvas id="dependency-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Components Panel -->
+      <div id="components-panel" class="panel">
+        <div class="panel-header">
+          <div class="search-box">
+            <input type="text" id="component-search" placeholder="Search components...">
+          </div>
+          <div class="toolbar">
+            <button id="component-expand-btn" class="btn-icon" title="Expand all">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 4h12M2 8h8M2 12h12"/>
+              </svg>
+            </button>
+            <button id="component-collapse-btn" class="btn-icon" title="Collapse all">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 8h12"/>
+              </svg>
+            </button>
+            <button id="component-refresh-btn" class="btn-icon" title="Refresh">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2v4M8 10v4M2 8h4M10 8h4M3 3l2 2M11 3l-2 2M3 13l2-2M11 13l-2-2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="component-tree">
+            <div id="component-tree-items" class="tree-items">
+              <div class="empty-state">
+                <p>No components detected</p>
+                <small>The component tree will appear here</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="component-details">
+            <div id="component-detail-content" class="detail-content">
+              <div class="empty-state">
+                <p>Select a component to view details</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Panel -->
+      <div id="performance-panel" class="panel">
+        <div class="panel-header">
+          <div class="metrics-summary">
+            <div class="metric">
+              <label>FPS</label>
+              <span id="fps-value">0</span>
+            </div>
+            <div class="metric">
+              <label>Memory</label>
+              <span id="memory-value">0 MB</span>
+            </div>
+            <div class="metric">
+              <label>Renders</label>
+              <span id="render-count">0</span>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button id="perf-record-btn" class="btn-icon" title="Start recording">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="8" cy="8" r="6"/>
+              </svg>
+            </button>
+            <button id="perf-clear-btn" class="btn-icon" title="Clear">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="perf-charts">
+          <div class="chart-container">
+            <h3>FPS Over Time</h3>
+            <canvas id="fps-chart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Memory Usage</h3>
+            <canvas id="memory-chart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Render Timeline</h3>
+            <div id="render-timeline" class="timeline"></div>
+          </div>
+        </div>
+
+        <div class="render-list">
+          <h3>Component Renders</h3>
+          <div id="render-items" class="list-items">
+            <div class="empty-state">
+              <p>No renders recorded</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Time Travel Panel -->
+      <div id="timetravel-panel" class="panel">
+        <div class="panel-header">
+          <div class="timeline-controls">
+            <button id="tt-prev-btn" class="btn" disabled>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M10 2L4 8L10 14"/>
+              </svg>
+              Previous
+            </button>
+            <span id="tt-position">0 / 0</span>
+            <button id="tt-next-btn" class="btn" disabled>
+              Next
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 2L12 8L6 14"/>
+              </svg>
+            </button>
+          </div>
+          <div class="toolbar">
+            <button id="tt-snapshot-btn" class="btn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <rect x="2" y="2" width="12" height="12" rx="2"/>
+              </svg>
+              Capture Snapshot
+            </button>
+            <button id="tt-clear-btn" class="btn-icon" title="Clear history">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="timeline-view">
+          <div id="snapshot-timeline" class="snapshot-timeline"></div>
+        </div>
+
+        <div class="split-view">
+          <div class="snapshot-list">
+            <h3>State Snapshots</h3>
+            <div id="snapshot-items" class="list-items">
+              <div class="empty-state">
+                <p>No snapshots captured</p>
+                <small>Click "Capture Snapshot" to save the current state</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="snapshot-details">
+            <div id="snapshot-detail-content" class="detail-content">
+              <div class="empty-state">
+                <p>Select a snapshot to view details</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network Panel -->
+      <div id="network-panel" class="panel">
+        <div class="panel-header">
+          <div class="search-box">
+            <input type="text" id="network-search" placeholder="Filter requests...">
+          </div>
+          <div class="toolbar">
+            <button id="network-clear-btn" class="btn-icon" title="Clear">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="network-items" class="list-items">
+          <div class="empty-state">
+            <p>No network requests</p>
+            <small>Network requests will appear here</small>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>

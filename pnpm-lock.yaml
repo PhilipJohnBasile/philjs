@@ -512,6 +512,9 @@ importers:
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
+      prompts:
+        specifier: ^2.4.2
+        version: 2.4.2
       rollup:
         specifier: ^4.28.1
         version: 4.52.4
@@ -522,6 +525,9 @@ importers:
       '@types/node':
         specifier: ^22.10.5
         version: 22.18.8
+      '@types/prompts':
+        specifier: ^2.4.9
+        version: 2.4.9
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

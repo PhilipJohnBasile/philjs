@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 /**
  * PhilJS CLI
@@ -11,9 +12,6 @@ import { buildProduction } from "./build.js";
 import { analyze } from "./analyze.js";
 import { generateTypes } from "./generate-types.js";
 import { generateComponent, generateRoute, generatePage, generateHook, generateStore } from "./generators.js";
-import { createProject } from "./create.js";
-import { addFeature } from "./add.js";
-import { migrateProject } from "./migrate.js";
 
 const program = new Command();
 
@@ -23,46 +21,6 @@ program
   .version("0.1.0");
 
 // Dev server command
-
-// Create project command
-program
-  .command("create [project-name]")
-  .description("Create a new PhilJS project with interactive setup")
-  .action(async (projectName) => {
-    try {
-      await createProject(projectName);
-    } catch (error) {
-      console.error(pc.red("Failed to create project:"), error);
-      process.exit(1);
-    }
-  });
-
-// Add feature command
-program
-  .command("add [feature]")
-  .description("Add features to an existing PhilJS project")
-  .action(async (feature) => {
-    try {
-      await addFeature(feature);
-    } catch (error) {
-      console.error(pc.red("Failed to add feature:"), error);
-      process.exit(1);
-    }
-  });
-
-// Migrate command
-program
-  .command("migrate [framework]")
-  .description("Migrate from React, Vue, or Svelte to PhilJS")
-  .action(async (framework) => {
-    try {
-      await migrateProject(framework);
-    } catch (error) {
-      console.error(pc.red("Migration failed:"), error);
-      process.exit(1);
-    }
-  });
-
 program
   .command("dev")
   .description("Start development server with HMR")

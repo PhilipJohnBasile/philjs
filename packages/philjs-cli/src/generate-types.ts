@@ -25,7 +25,7 @@ export async function generateTypes() {
   await fs.writeFile(outputPath, typeDefinitions, "utf-8");
 
   console.log(pc.green(`✓ Generated types for ${routes.length} routes`));
-  console.log(pc.dim(`  ${outputPath}`));
+  console.log(pc.gray(`  ${outputPath}`));
 }
 
 async function discoverRoutes(

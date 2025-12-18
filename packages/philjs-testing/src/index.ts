@@ -70,3 +70,14 @@ export {
   assertSignalHistory,
   MockSignal,
 } from './signals';
+
+// Snapshot testing
+export {
+  takeSnapshot,
+  createSnapshotMatcher,
+  snapshotSignalState,
+  compareSignalSnapshots,
+  SnapshotOptions,
+  SnapshotResult,
+  SnapshotMatcher,
+} from './snapshot';

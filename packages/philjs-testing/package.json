@@ -13,6 +13,10 @@
     "./vitest": {
       "types": "./dist/vitest.d.ts",
       "import": "./dist/vitest.js"
+    },
+    "./jest": {
+      "types": "./dist/jest.d.ts",
+      "import": "./dist/jest.js"
     }
   },
   "scripts": {
