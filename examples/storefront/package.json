@@ -23,7 +23,7 @@
     "@playwright/test": "^1.48.0",
     "@types/node": "^22.10.5",
     "vite": "^6.4.1",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.16",
     "playwright": "^1.48.0"
   }
 }
