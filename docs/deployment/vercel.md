@@ -41,8 +41,68 @@ Create `vercel.json` in your project root:
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
   ]
 }
+```
+
+### Vite Configuration for SSR
+
+For server-side rendering on Vercel:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import philjs from 'philjs-compiler/vite';
+
+export default defineConfig({
+  plugins: [
+    philjs({
+      output: 'server', // Enable SSR
+      ssr: {
+        target: 'vercel',
+        streaming: true,
+      },
+      adapter: 'vercel',
+    }),
+  ],
+  build: {
+    ssr: true,
+    rollupOptions: {
+      output: {
+        // Optimize for serverless
+        manualChunks: undefined,
+      },
+    },
+  },
+});
 ```
 
 ### Environment Variables
@@ -188,21 +248,95 @@ Configure function memory, timeout, and regions:
 
 ## Edge Functions
 
-Deploy to Vercel Edge (faster, global):
+Deploy to Vercel Edge Network for ultra-low latency (faster than serverless):
+
+### Edge Middleware
 
 ```typescript
-// src/middleware.ts
+// middleware.ts (in project root)
+import { NextRequest, NextResponse } from 'next/server';
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
+
+export function middleware(request: NextRequest) {
+  // Runs on Vercel Edge Network (100+ locations worldwide)
+  const country = request.geo?.country || 'Unknown';
+  const city = request.geo?.city || 'Unknown';
+
+  // Add custom headers
+  const response = NextResponse.next();
+  response.headers.set('X-User-Country', country);
+  response.headers.set('X-User-City', city);
+
+  return response;
+}
+```
+
+### Edge API Routes
+
+```typescript
+// api/edge-hello.ts
 export const config = {
   runtime: 'edge',
 };
 
-export function middleware(request: Request) {
-  // Runs on Vercel Edge Network (100+ locations)
-  const country = request.headers.get('x-vercel-ip-country');
+export default async function handler(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const name = searchParams.get('name') || 'World';
 
-  return new Response(JSON.stringify({ country }));
+  return new Response(
+    JSON.stringify({
+      message: `Hello ${name} from the edge!`,
+      timestamp: new Date().toISOString(),
+    }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate',
+      },
+    }
+  );
 }
 ```
+
+### Edge vs Serverless
+
+| Feature | Edge Functions | Serverless Functions |
+|---------|---------------|---------------------|
+| **Cold start** | ~0ms | 50-200ms |
+| **Runtime** | V8 isolates | Node.js |
+| **Locations** | 100+ cities | Regional |
+| **Size limit** | 1MB (compressed) | 50MB |
+| **Max duration** | 30s | 10s (Hobby), 60s (Pro) |
+| **Use cases** | Auth, redirects, A/B testing | Complex logic, database queries |
+
+### When to Use Edge Functions
+
+Use Edge Functions for:
+- Authentication and authorization
+- Geo-redirects and localization
+- A/B testing and feature flags
+- Request/response modification
+- Rate limiting
+- Simple API endpoints
+
+Use Serverless Functions for:
+- Database queries
+- Complex business logic
+- Third-party API calls
+- File processing
+- Heavy computations
 
 ## Domains
 

@@ -1,0 +1,160 @@
+name: Bundle Size Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  size:
+    name: Check Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Check bundle size
+        run: pnpm size
+
+      - name: Check performance budgets
+        run: pnpm check:budgets
+
+  size-report:
+    name: Size Report with Comparison
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Get PR branch sizes
+        id: pr-size
+        run: |
+          pnpm size --json > pr-size.json
+          echo "pr_core=$(stat -c%s packages/philjs-core/dist/index.js)" >> $GITHUB_OUTPUT
+          echo "pr_signals=$(stat -c%s packages/philjs-core/dist/signals.js)" >> $GITHUB_OUTPUT
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          clean: false
+
+      - name: Install dependencies (base)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages (base)
+        run: pnpm build
+
+      - name: Get base branch sizes
+        id: base-size
+        run: |
+          pnpm size --json > base-size.json
+          echo "base_core=$(stat -c%s packages/philjs-core/dist/index.js)" >> $GITHUB_OUTPUT
+          echo "base_signals=$(stat -c%s packages/philjs-core/dist/signals.js)" >> $GITHUB_OUTPUT
+
+      - name: Compare sizes
+        id: compare
+        run: |
+          PR_CORE=${{ steps.pr-size.outputs.pr_core }}
+          BASE_CORE=${{ steps.base-size.outputs.base_core }}
+          PR_SIGNALS=${{ steps.pr-size.outputs.pr_signals }}
+          BASE_SIGNALS=${{ steps.base-size.outputs.base_signals }}
+
+          CORE_DIFF=$((PR_CORE - BASE_CORE))
+          SIGNALS_DIFF=$((PR_SIGNALS - BASE_SIGNALS))
+
+          echo "core_diff=$CORE_DIFF" >> $GITHUB_OUTPUT
+          echo "signals_diff=$SIGNALS_DIFF" >> $GITHUB_OUTPUT
+          echo "core_percent=$(echo "scale=2; $CORE_DIFF * 100 / $BASE_CORE" | bc)" >> $GITHUB_OUTPUT
+          echo "signals_percent=$(echo "scale=2; $SIGNALS_DIFF * 100 / $BASE_SIGNALS" | bc)" >> $GITHUB_OUTPUT
+
+      - name: Format size in KB
+        id: format
+        run: |
+          echo "pr_core_kb=$(echo "scale=2; ${{ steps.pr-size.outputs.pr_core }} / 1024" | bc)" >> $GITHUB_OUTPUT
+          echo "base_core_kb=$(echo "scale=2; ${{ steps.base-size.outputs.base_core }} / 1024" | bc)" >> $GITHUB_OUTPUT
+          echo "pr_signals_kb=$(echo "scale=2; ${{ steps.pr-size.outputs.pr_signals }} / 1024" | bc)" >> $GITHUB_OUTPUT
+          echo "base_signals_kb=$(echo "scale=2; ${{ steps.base-size.outputs.base_signals }} / 1024" | bc)" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with size comparison
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const coreDiff = parseInt('${{ steps.compare.outputs.core_diff }}');
+            const signalsDiff = parseInt('${{ steps.compare.outputs.signals_diff }}');
+
+            const coreIcon = coreDiff > 0 ? '📈' : coreDiff < 0 ? '📉' : '➡️';
+            const signalsIcon = signalsDiff > 0 ? '📈' : signalsDiff < 0 ? '📉' : '➡️';
+
+            const coreStatus = Math.abs(coreDiff) > 1024 ? (coreDiff > 0 ? '⚠️ Warning: Significant increase' : '✅ Great: Size reduced') : '✅ OK';
+            const signalsStatus = Math.abs(signalsDiff) > 512 ? (signalsDiff > 0 ? '⚠️ Warning: Significant increase' : '✅ Great: Size reduced') : '✅ OK';
+
+            const body = `## Bundle Size Report
+
+            ### Core Package (\`philjs-core/dist/index.js\`)
+            - **Current PR**: ${{ steps.format.outputs.pr_core_kb }} KB
+            - **Base (${{ github.base_ref }})**: ${{ steps.format.outputs.base_core_kb }} KB
+            - **Difference**: ${coreIcon} ${coreDiff > 0 ? '+' : ''}${coreDiff} bytes (${{ steps.compare.outputs.core_percent }}%)
+            - **Status**: ${coreStatus}
+
+            ### Signals Only (\`philjs-core/dist/signals.js\`)
+            - **Current PR**: ${{ steps.format.outputs.pr_signals_kb }} KB
+            - **Base (${{ github.base_ref }})**: ${{ steps.format.outputs.base_signals_kb }} KB
+            - **Difference**: ${signalsIcon} ${signalsDiff > 0 ? '+' : ''}${signalsDiff} bytes (${{ steps.compare.outputs.signals_percent }}%)
+            - **Status**: ${signalsStatus}
+
+            ### Size Limits (from .size-limit.json)
+            - Core signals only: 2 KB (gzipped)
+            - Minimal app (signals + jsx): 2 KB (gzipped)
+            - With SSR: 3 KB (gzipped)
+            - Full bundle: 25 KB (gzipped)
+
+            ${Math.abs(coreDiff) > 2048 ? '\n⚠️ **Warning**: Core package size changed by more than 2 KB. Please review the changes.' : ''}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

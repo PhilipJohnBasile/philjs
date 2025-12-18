@@ -372,25 +372,33 @@ getUserData.ts
 
 ### Code Style
 
+We use Prettier for code formatting. Configuration is in `.prettierrc`:
+
 - Use 2 spaces for indentation
-- Use single quotes for strings
-- Add trailing commas
+- Use double quotes for strings (per Prettier config)
+- No trailing commas (per Prettier config)
 - Max line length: 100 characters
 - Use semicolons
+
+**Format your code before committing:**
+
+```bash
+pnpm exec prettier --write .
+```
 
 ```typescript
 // ✅ Good
 const items = [
-  'item1',
-  'item2',
-  'item3',
-];
-
-// ❌ Bad
-const items = [
   "item1",
   "item2",
   "item3"
+];
+
+// ❌ Bad - will be auto-formatted
+const items = [
+  'item1',
+  'item2',
+  'item3',
 ]
 ```
 
@@ -538,6 +546,110 @@ Include:
 - **Alternatives**: Other approaches considered
 - **Examples**: Code examples of proposed API
 
+## Release Process
+
+PhilJS uses [Changesets](https://github.com/changesets/changesets) for version management and publishing. This process is primarily handled by maintainers, but understanding it can help contributors.
+
+### For Contributors
+
+When your PR introduces changes that should be reflected in a version bump, you need to add a changeset:
+
+```bash
+pnpm changeset
+```
+
+This will prompt you to:
+1. Select which packages are affected
+2. Choose the bump type (major, minor, patch)
+3. Write a summary of the changes
+
+**When to add a changeset:**
+- New features (minor bump)
+- Bug fixes (patch bump)
+- Breaking changes (major bump)
+- API changes
+
+**When NOT to add a changeset:**
+- Documentation updates
+- Test improvements
+- Internal refactoring with no API changes
+- CI/build configuration changes
+
+### For Maintainers
+
+#### 1. Version Packages
+
+When ready to release, create a PR with version bumps:
+
+```bash
+pnpm changeset version
+```
+
+This will:
+- Update package versions based on changesets
+- Update CHANGELOGs
+- Remove consumed changeset files
+
+#### 2. Review and Merge
+
+Review the version bump PR:
+- Check that all versions are correct
+- Verify CHANGELOG entries
+- Ensure no unintended changes
+
+Merge the PR to the main branch.
+
+#### 3. Publish to npm
+
+After merging the version bump PR:
+
+```bash
+# Ensure you're on main and up to date
+git checkout main
+git pull
+
+# Build all packages
+pnpm build
+
+# Publish to npm (requires npm authentication)
+pnpm release
+```
+
+This will publish all changed packages to npm.
+
+#### 4. Create GitHub Release
+
+After publishing:
+1. Go to [GitHub Releases](https://github.com/philjs/philjs/releases)
+2. Click "Draft a new release"
+3. Use the version as the tag (e.g., `v1.0.0`)
+4. Copy the CHANGELOG entries as the release notes
+5. Publish the release
+
+### Release Schedule
+
+- **Patch releases**: As needed for critical bug fixes
+- **Minor releases**: Bi-weekly for new features
+- **Major releases**: Quarterly or when breaking changes are necessary
+
+### Pre-release Versions
+
+For testing before official releases:
+
+```bash
+# Create a pre-release version
+pnpm changeset version --snapshot canary
+
+# Publish pre-release
+pnpm changeset publish --tag canary
+```
+
+Users can install pre-releases with:
+
+```bash
+pnpm add philjs-core@canary
+```
+
 ## Recognition
 
 Contributors are recognized in:
@@ -545,6 +657,7 @@ Contributors are recognized in:
 - Release notes
 - Contributors page
 - Package README files
+- GitHub contributor graph
 
 ## Questions?
 

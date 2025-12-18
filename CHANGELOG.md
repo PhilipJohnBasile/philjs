@@ -10,13 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Comprehensive test coverage for the Islands architecture.
 - Scaffolding for the browser DevTools extension.
+- Release documentation templates (RELEASE_NOTES_TEMPLATE.md and CHANGELOG.md structure)
 
 ### Changed
 - Marked `createReducerContext` as deprecated - use signals directly instead
 - Documented novel features (cost tracking, usage analytics) as optional advanced features
+- Enhanced CHANGELOG.md structure with guidelines and references
 
 ### Deprecated
 - `createReducerContext` - Encourages Redux-style patterns that signals eliminate. Use `signal()` and `createSignalContext()` instead.
+
+### Fixed
+
+### Security
 
 ## [0.1.0-beta] - 2025-10-06
 
@@ -118,12 +124,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## Release Notes Format
+
+For detailed release notes for each version, please see:
+- [GitHub Releases](https://github.com/philjs/philjs/releases) - Detailed release notes for each version
+- [RELEASE_NOTES_TEMPLATE.md](./RELEASE_NOTES_TEMPLATE.md) - Template for creating new release notes
+
+---
+
 ## Migration Guide
 
 For breaking changes between versions, see:
 - [React Migration Guide](/docs/migration/from-react.md)
 - [Vue Migration Guide](/docs/migration/from-vue.md)
 - [Svelte Migration Guide](/docs/migration/from-svelte.md)
+
+---
+
+## Changelog Guidelines
+
+### For Contributors
+
+When adding entries to this changelog:
+
+1. **Add to [Unreleased] section first**: All changes should go into the Unreleased section until a release is made
+2. **Use the correct category**:
+   - **Added** for new features
+   - **Changed** for changes in existing functionality
+   - **Deprecated** for soon-to-be removed features
+   - **Removed** for now removed features
+   - **Fixed** for any bug fixes
+   - **Security** for vulnerability fixes
+3. **Write clear, user-focused descriptions**: Explain what changed and why it matters to users
+4. **Link to issues and PRs**: Use `#123` format for GitHub issues/PRs
+5. **Credit contributors**: Use `@username` format when appropriate
+6. **Be specific about breaking changes**: Clearly mark breaking changes with `**BREAKING:**` prefix
+
+### Example Entry Format
+
+```markdown
+### Added
+- New `useSignalEffect` hook for side effects (#123) @contributor
+- **BREAKING:** Redesigned context API for better TypeScript support (#456)
+  - Old API: `createContext(defaultValue)`
+  - New API: `createContext<T>(options)`
+  - See migration guide: [docs/migrations/context-api.md]
+
+### Fixed
+- Fixed memory leak in signal cleanup (#789) @contributor
+- Resolved hydration mismatch in server islands (#790)
+```
 
 ---
 

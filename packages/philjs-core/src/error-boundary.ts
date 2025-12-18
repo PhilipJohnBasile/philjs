@@ -20,6 +20,12 @@ export type ErrorInfo = {
   suggestions: ErrorSuggestion[];
   /** Similar errors from community */
   similarErrors?: SimilarError[];
+  /** Timestamp when error occurred */
+  timestamp: number;
+  /** Number of times this error has occurred */
+  occurrences: number;
+  /** Whether the error is recoverable */
+  recoverable: boolean;
 };
 
 export type ErrorCategory =
@@ -55,6 +61,13 @@ export type SimilarError = {
   similarity: number;
 };
 
+export type FallbackUIPattern =
+  | "default"
+  | "skeleton"
+  | "empty-state"
+  | "partial"
+  | "minimal";
+
 export type ErrorBoundaryProps = {
   /** Fallback UI when error occurs */
   fallback?: (error: ErrorInfo, retry: () => void) => VNode;
@@ -66,7 +79,62 @@ export type ErrorBoundaryProps = {
   children: VNode;
   /** Name for debugging */
   name?: string;
+  /** Fallback UI pattern to use */
+  fallbackPattern?: FallbackUIPattern;
+  /** Maximum retry attempts before giving up */
+  maxRetries?: number;
+  /** Enable automatic recovery for certain error types */
+  autoRecover?: boolean;
+  /** Retry delay in milliseconds */
+  retryDelay?: number;
+  /** Reset error state after successful render */
+  resetOnSuccess?: boolean;
 };
+
+/**
+ * Circuit breaker to prevent repeated error cascades
+ */
+class CircuitBreaker {
+  private failureCount = 0;
+  private lastFailureTime = 0;
+  private state: "closed" | "open" | "half-open" = "closed";
+  private readonly threshold = 5;
+  private readonly timeout = 60000; // 1 minute
+
+  recordFailure(): void {
+    this.failureCount++;
+    this.lastFailureTime = Date.now();
+
+    if (this.failureCount >= this.threshold) {
+      this.state = "open";
+    }
+  }
+
+  recordSuccess(): void {
+    this.failureCount = 0;
+    this.state = "closed";
+  }
+
+  canAttempt(): boolean {
+    if (this.state === "closed") return true;
+    if (this.state === "open") {
+      if (Date.now() - this.lastFailureTime > this.timeout) {
+        this.state = "half-open";
+        return true;
+      }
+      return false;
+    }
+    return true; // half-open
+  }
+
+  reset(): void {
+    this.failureCount = 0;
+    this.state = "closed";
+  }
+}
+
+// Global error tracking
+const errorCache = new Map<string, { count: number; lastSeen: number }>();
 
 /**
  * Error boundary component.
@@ -74,19 +142,65 @@ export type ErrorBoundaryProps = {
 export function ErrorBoundary(props: ErrorBoundaryProps) {
   const error = signal<ErrorInfo | null>(null);
   const retryCount = signal(0);
+  const isRetrying = signal(false);
+  const circuitBreaker = new CircuitBreaker();
+
+  const maxRetries = props.maxRetries ?? 3;
+  const retryDelay = props.retryDelay ?? 1000;
 
   const handleError = (err: Error, componentStack?: string) => {
-    const errorInfo = analyzeError(err, componentStack);
+    // Track error occurrences
+    const errorKey = `${err.message}:${err.stack?.split('\n')[0]}`;
+    const cached = errorCache.get(errorKey);
+    const occurrences = cached ? cached.count + 1 : 1;
+    errorCache.set(errorKey, { count: occurrences, lastSeen: Date.now() });
+
+    const errorInfo = analyzeError(err, componentStack, occurrences);
     error.set(errorInfo);
     props.onError?.(errorInfo);
 
     // Log to error tracking service
     logError(errorInfo, props.name);
+
+    // Record failure in circuit breaker
+    circuitBreaker.recordFailure();
+
+    // Auto-recover for certain error types
+    if (props.autoRecover && errorInfo.recoverable && retryCount() < maxRetries) {
+      scheduleAutoRetry();
+    }
   };
 
-  const retry = () => {
+  const scheduleAutoRetry = () => {
+    const delay = calculateRetryDelay(retryCount(), retryDelay);
+    setTimeout(() => {
+      if (retryCount() < maxRetries) {
+        retry();
+      }
+    }, delay);
+  };
+
+  const retry = async () => {
+    if (!circuitBreaker.canAttempt()) {
+      console.warn(`[ErrorBoundary${props.name ? ` ${props.name}` : ""}] Circuit breaker is open, skipping retry`);
+      return;
+    }
+
+    if (retryCount() >= maxRetries) {
+      console.warn(`[ErrorBoundary${props.name ? ` ${props.name}` : ""}] Max retries (${maxRetries}) reached`);
+      return;
+    }
+
+    isRetrying.set(true);
     retryCount.set(retryCount() + 1);
+
+    // Add delay before retry with exponential backoff
+    const delay = calculateRetryDelay(retryCount(), retryDelay);
+    await new Promise(resolve => setTimeout(resolve, delay));
+
     error.set(null);
+    isRetrying.set(false);
+    circuitBreaker.recordSuccess();
     props.onRecover?.();
   };
 
@@ -101,10 +215,19 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
       error: currentError,
       retry: retry,
       boundaryName: props.name,
+      pattern: props.fallbackPattern || "default",
+      isRetrying: isRetrying(),
+      retryCount: retryCount(),
+      maxRetries,
     });
   }
 
   try {
+    // Reset on successful render if configured
+    if (props.resetOnSuccess && retryCount() > 0) {
+      retryCount.set(0);
+      circuitBreaker.reset();
+    }
     return props.children;
   } catch (err) {
     handleError(err as Error);
@@ -113,12 +236,22 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
 }
 
 /**
+ * Calculate retry delay with exponential backoff
+ */
+function calculateRetryDelay(attempt: number, baseDelay: number): number {
+  const exponentialDelay = baseDelay * Math.pow(2, attempt - 1);
+  const jitter = Math.random() * 0.3 * exponentialDelay; // Add 0-30% jitter
+  return Math.min(exponentialDelay + jitter, 30000); // Cap at 30 seconds
+}
+
+/**
  * Analyze error and generate suggestions.
  */
-function analyzeError(error: Error, componentStack?: string): ErrorInfo {
+function analyzeError(error: Error, componentStack?: string, occurrences = 1): ErrorInfo {
   const category = categorizeError(error);
   const suggestions = generateSuggestions(error, category);
   const source = extractErrorSource(error);
+  const recoverable = isRecoverable(error, category);
 
   return {
     error,
@@ -126,7 +259,36 @@ function analyzeError(error: Error, componentStack?: string): ErrorInfo {
     source,
     category,
     suggestions,
+    timestamp: Date.now(),
+    occurrences,
+    recoverable,
   };
+}
+
+/**
+ * Determine if an error is recoverable
+ */
+function isRecoverable(error: Error, category: ErrorCategory): boolean {
+  // Network errors are usually recoverable
+  if (category === "network" || category === "data-fetch") {
+    return true;
+  }
+
+  // Permission errors might be recoverable after user action
+  if (category === "permission") {
+    return true;
+  }
+
+  // Some type errors can be recovered with fallback values
+  if (category === "type" && (
+    error.message.includes("undefined") ||
+    error.message.includes("null")
+  )) {
+    return true;
+  }
+
+  // Render errors are generally not recoverable automatically
+  return false;
 }
 
 /**
@@ -263,14 +425,151 @@ function extractErrorSource(error: Error): { file: string; line: number; column:
 }
 
 /**
+ * Skeleton fallback UI pattern
+ */
+function SkeletonFallback() {
+  return createElement(
+    "div",
+    {
+      style: {
+        padding: "1rem",
+        background: "#f5f5f5",
+        borderRadius: "8px",
+        animation: "pulse 2s infinite",
+      },
+    },
+    createElement("div", {
+      style: {
+        height: "20px",
+        background: "#ddd",
+        borderRadius: "4px",
+        marginBottom: "0.5rem",
+      },
+    }),
+    createElement("div", {
+      style: {
+        height: "20px",
+        background: "#ddd",
+        borderRadius: "4px",
+        width: "80%",
+        marginBottom: "0.5rem",
+      },
+    }),
+    createElement("div", {
+      style: {
+        height: "20px",
+        background: "#ddd",
+        borderRadius: "4px",
+        width: "60%",
+      },
+    })
+  );
+}
+
+/**
+ * Empty state fallback UI pattern
+ */
+function EmptyStateFallback(props: { retry: () => void; message: string }) {
+  return createElement(
+    "div",
+    {
+      style: {
+        textAlign: "center",
+        padding: "3rem 1rem",
+        color: "#666",
+      },
+    },
+    createElement(
+      "div",
+      { style: { fontSize: "3rem", marginBottom: "1rem" } },
+      "🔍"
+    ),
+    createElement(
+      "p",
+      { style: { fontSize: "1.2rem", marginBottom: "1rem" } },
+      props.message || "Something went wrong"
+    ),
+    createElement(
+      "button",
+      {
+        onClick: props.retry,
+        style: {
+          padding: "0.75rem 1.5rem",
+          background: "#667eea",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontSize: "1rem",
+        },
+      },
+      "Try Again"
+    )
+  );
+}
+
+/**
+ * Minimal fallback UI pattern
+ */
+function MinimalFallback(props: { retry: () => void }) {
+  return createElement(
+    "div",
+    {
+      style: {
+        padding: "1rem",
+        background: "#fff3cd",
+        border: "1px solid #ffc107",
+        borderRadius: "4px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      },
+    },
+    createElement("span", {}, "An error occurred"),
+    createElement(
+      "button",
+      {
+        onClick: props.retry,
+        style: {
+          padding: "0.5rem 1rem",
+          background: "#ffc107",
+          color: "#000",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+        },
+      },
+      "Retry"
+    )
+  );
+}
+
+/**
  * Default error fallback UI.
  */
 function DefaultErrorFallback(props: {
   error: ErrorInfo;
   retry: () => void;
   boundaryName?: string;
+  pattern?: FallbackUIPattern;
+  isRetrying?: boolean;
+  retryCount?: number;
+  maxRetries?: number;
 }) {
-  const { error, retry, boundaryName } = props;
+  const { error, retry, boundaryName, pattern = "default", isRetrying, retryCount = 0, maxRetries = 3 } = props;
+
+  // Return different patterns based on configuration
+  if (pattern === "skeleton") {
+    return SkeletonFallback();
+  }
+
+  if (pattern === "empty-state") {
+    return EmptyStateFallback({ retry, message: error.error.message });
+  }
+
+  if (pattern === "minimal") {
+    return MinimalFallback({ retry });
+  }
 
   return createElement(
     "div",

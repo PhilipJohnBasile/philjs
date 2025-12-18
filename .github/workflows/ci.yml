@@ -1,0 +1,392 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm lint
+
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm typecheck
+
+  test:
+    name: Test (Node ${{ matrix.node-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests with coverage
+        run: pnpm test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            packages/*/dist
+            examples/storefront/dist
+          retention-days: 7
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run benchmarks
+        run: pnpm bench
+
+      - name: Comment benchmark results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            const benchmarkResults = fs.existsSync('benchmark-results.json')
+              ? fs.readFileSync('benchmark-results.json', 'utf8')
+              : 'No benchmark results generated';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Benchmark Results\n\n\`\`\`json\n${benchmarkResults}\n\`\`\``
+            });
+
+  bundle-size:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
+      - name: Checkout base branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git checkout origin/${{ github.base_ref }} -- metrics/bundle-size-baseline.json || echo "No baseline found"
+
+      - name: Check bundle sizes
+        id: bundle-check
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            node scripts/check-budgets.mjs --compare --ci --json > bundle-size-results.json || true
+          else
+            node scripts/check-budgets.mjs --save-history --json > bundle-size-results.json
+          fi
+          cat bundle-size-results.json
+
+      - name: Comment PR with bundle size report
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+
+            let results;
+            try {
+              results = JSON.parse(fs.readFileSync('bundle-size-results.json', 'utf8'));
+            } catch (e) {
+              console.log('Failed to parse results:', e);
+              return;
+            }
+
+            // Format the report
+            let body = '## Bundle Size Report\n\n';
+
+            // Summary table
+            body += '### Summary\n\n';
+            body += '| Metric | Value |\n';
+            body += '|--------|-------|\n';
+            body += `| Total packages | ${results.summary.totalPackages} |\n`;
+            body += `| Total files | ${results.summary.totalFiles} |\n`;
+            body += `| Total size (gzip) | ${(results.summary.totalSizeGzip / 1024).toFixed(2)} KB |\n`;
+            body += `| Budgets passed | ${results.summary.budgetsPassed ? '✅ Yes' : '❌ No'} |\n\n`;
+
+            // Package details
+            for (const [pkgName, pkgData] of Object.entries(results.packages)) {
+              body += `### ${pkgName}\n\n`;
+
+              if (pkgData.error) {
+                body += `⚠️ ${pkgData.error}\n\n`;
+                continue;
+              }
+
+              body += '| File | Size (gzip) | Budget | Status |\n';
+              body += '|------|-------------|--------|--------|\n';
+
+              for (const file of pkgData.files || []) {
+                const fileName = file.name || file.file;
+                const size = (file.gzipSize / 1024).toFixed(2);
+                const budget = file.budget ? (file.budget / 1024).toFixed(2) : '-';
+                const status = file.budgetPassed !== false ? '✅' : '❌';
+                body += `| ${fileName} | ${size} KB | ${budget} KB | ${status} |\n`;
+              }
+              body += '\n';
+            }
+
+            // Regressions
+            if (results.regressions && results.regressions.length > 0) {
+              body += '### ⚠️ Size Regressions Detected\n\n';
+              body += '| Package/File | Old Size | New Size | Change |\n';
+              body += '|--------------|----------|----------|--------|\n';
+
+              for (const reg of results.regressions) {
+                const oldSize = (reg.oldSize / 1024).toFixed(2);
+                const newSize = (reg.newSize / 1024).toFixed(2);
+                const change = reg.change > 0 ? `+${reg.change.toFixed(1)}%` : `${reg.change.toFixed(1)}%`;
+                body += `| ${reg.package}/${reg.file} | ${oldSize} KB | ${newSize} KB | ${change} |\n`;
+              }
+              body += '\n';
+            }
+
+            body += '\n---\n';
+            body += '*Bundle size check powered by PhilJS size monitoring*';
+
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Upload bundle size results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bundle-size-results
+          path: bundle-size-results.json
+          retention-days: 30
+
+      - name: Fail if regressions detected
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! node scripts/check-budgets.mjs --compare --ci; then
+            echo "Bundle size check failed - see report above"
+            exit 1
+          fi
+
+      - name: Commit updated baseline
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add metrics/bundle-size-baseline.json metrics/bundle-size-history.json
+          git diff --staged --quiet || git commit -m "Update bundle size baseline [skip ci]"
+          git push

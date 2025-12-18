@@ -3,56 +3,39 @@
  * Inspired by SolidJS with automatic dependency tracking.
  */
 
-// ============================================================================
-// Types
-// ============================================================================
+import type {
+  Signal,
+  Memo,
+  LinkedSignal,
+  LinkedSignalOptions,
+  Resource,
+  EffectCleanup,
+  EffectFunction,
+  ResourceFetcher,
+  Computation,
+  Owner,
+  Setter
+} from './types.js';
 
-export type Signal<T> = {
-  (): T;
-  set: (next: T | ((prev: T) => T)) => void;
-  subscribe: (fn: (v: T) => void) => () => void;
-  peek: () => T;
+// Re-export types for backwards compatibility
+export type {
+  Signal,
+  Memo,
+  LinkedSignal,
+  LinkedSignalOptions,
+  Resource,
+  EffectCleanup,
+  EffectFunction,
+  ResourceFetcher
 };
-
-export type Memo<T> = {
-  (): T;
-};
-
-export type LinkedSignal<T> = {
-  (): T;
-  set: (next: T | ((prev: T) => T)) => void;
-  reset: () => void;
-  isOverridden: () => boolean;
-};
-
-export type Resource<T> = {
-  (): T;
-  refresh: () => void;
-  loading: () => boolean;
-  error: () => Error | null;
-};
-
-export type EffectCleanup = () => void;
 
 // ============================================================================
 // Reactive Context
 // ============================================================================
 
-interface Computation {
-  execute: () => void;
-  dependencies: Set<Set<Computation>>;
-}
-
 let activeComputation: Computation | null = null;
 let batchDepth = 0;
 let batchedUpdates = new Set<() => void>();
-
-// Owner tree for cleanup and disposal
-interface Owner {
-  cleanups: EffectCleanup[];
-  owned: Owner[];
-  context?: Map<symbol, unknown>;
-}
 
 let currentOwner: Owner | null = null;
 
@@ -86,6 +69,7 @@ export function signal<T>(initialValue: T): Signal<T> {
   }) as Signal<T>;
 
   read.set = (nextValue: T | ((prev: T) => T)) => {
+    // Handle updater function: if nextValue is a function, call it with current value
     const newValue = typeof nextValue === "function"
       ? (nextValue as (prev: T) => T)(value)
       : nextValue;
@@ -226,7 +210,7 @@ export function memo<T>(calc: () => T): Memo<T> {
  */
 export function linkedSignal<T>(
   computation: () => T,
-  options: { resetOnChange?: boolean } = {}
+  options: LinkedSignalOptions = {}
 ): LinkedSignal<T> {
   const { resetOnChange = true } = options;
 
@@ -348,7 +332,7 @@ export function linkedSignal<T>(
  * dispose(); // Stop the effect
  * ```
  */
-export function effect(fn: () => void | EffectCleanup): EffectCleanup {
+export function effect(fn: EffectFunction): EffectCleanup {
   let cleanup: void | EffectCleanup;
   let isDisposed = false;
 
@@ -586,7 +570,7 @@ function disposeOwner(owner: Owner): void {
  * return <div>User: {user().name}</div>;
  * ```
  */
-export function resource<T>(fetcher: () => T | Promise<T>): Resource<T> {
+export function resource<T>(fetcher: ResourceFetcher<T>): Resource<T> {
   const data = signal<T | undefined>(undefined);
   const loading = signal(true);
   const error = signal<Error | null>(null);

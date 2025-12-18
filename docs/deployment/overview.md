@@ -35,9 +35,9 @@ The build output will be in the `dist/` directory.
 
 These platforms handle infrastructure, scaling, and deployment automatically:
 
-- **[Vercel](/docs/deployment/vercel)** - Zero-config, instant deployments, edge network
-- **[Netlify](/docs/deployment/netlify)** - Continuous deployment, serverless functions
-- **[Cloudflare Pages](/docs/deployment/cloudflare)** - Global edge network, Workers integration
+- **[Vercel](/docs/deployment/vercel)** - Zero-config deployments, edge network, serverless functions
+- **[Netlify](/docs/deployment/netlify)** - Continuous deployment, edge functions, forms
+- **[Cloudflare Pages](/docs/deployment/cloudflare)** - Global edge network (275+ cities), Workers, KV, D1, R2
 
 ### Cloud Providers
 

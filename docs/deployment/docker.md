@@ -108,6 +108,8 @@ CMD ["node", "dist/server.js"]
 
 ## Docker Compose
 
+### Development Setup
+
 Create `docker-compose.yml` for local development:
 
 ```yaml
@@ -115,16 +117,27 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: runner
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
       - PUBLIC_API_URL=https://api.example.com
       - DATABASE_URL=postgresql://postgres:password@db:5432/myapp
+      - REDIS_URL=redis://redis:6379
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
+    volumes:
+      # Mount for hot-reload in development
+      - ./src:/app/src:ro
+    networks:
+      - app-network
 
   db:
     image: postgres:15-alpine
@@ -132,16 +145,176 @@ services:
       - POSTGRES_DB=myapp
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
+    networks:
+      - app-network
 
   redis:
     image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
+    networks:
+      - app-network
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+### Production Setup
+
+Create `docker-compose.prod.yml` for production:
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        - NODE_ENV=production
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    environment:
+      - NODE_ENV=production
+      - PUBLIC_API_URL=${PUBLIC_API_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - API_KEY=${API_KEY}
+    env_file:
+      - .env.production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
 ```
 
 Run with Docker Compose:
@@ -169,6 +342,7 @@ docker run -e PUBLIC_API_URL=https://api.example.com -p 3000:3000 philjs-app
 docker run \
   -e PUBLIC_API_URL=https://api.example.com \
   -e DATABASE_URL=postgresql://... \
+  -e API_KEY=secret123 \
   -p 3000:3000 \
   philjs-app
 ```
@@ -176,15 +350,29 @@ docker run \
 ### Using .env File
 
 ```bash
-# Create .env file
-cat > .env <<EOF
-PUBLIC_API_URL=https://api.example.com
-DATABASE_URL=postgresql://...
-SECRET_KEY=xxx
+# Create .env.production file
+cat > .env.production <<EOF
+# Public variables (exposed to client)
+PUBLIC_API_URL=https://api.production.com
+PUBLIC_APP_NAME=MyApp
+
+# Server-only variables (never exposed to client)
+DATABASE_URL=postgresql://user:pass@db:5432/myapp
+REDIS_URL=redis://redis:6379
+API_KEY=your-secret-api-key
+JWT_SECRET=your-jwt-secret
+SMTP_HOST=smtp.example.com
+SMTP_USER=noreply@example.com
+SMTP_PASS=smtp-password
+
+# App configuration
+NODE_ENV=production
+PORT=3000
+LOG_LEVEL=info
 EOF
 
 # Run with env file
-docker run --env-file .env -p 3000:3000 philjs-app
+docker run --env-file .env.production -p 3000:3000 philjs-app
 ```
 
 ### In docker-compose.yml
@@ -194,11 +382,191 @@ services:
   app:
     build: .
     env_file:
+      # Load from multiple env files
       - .env
-    # Or inline
+      - .env.production
     environment:
+      # Override or add specific variables
       NODE_ENV: production
       PUBLIC_API_URL: ${PUBLIC_API_URL}
+      DATABASE_URL: ${DATABASE_URL}
+      # Set from host environment
+      API_KEY: ${API_KEY}
+```
+
+### Build-Time vs Runtime Variables
+
+```dockerfile
+# Build-time variables
+ARG NODE_VERSION=18
+ARG BUILD_ENV=production
+
+FROM node:${NODE_VERSION}-alpine
+
+# Runtime environment variables
+ENV NODE_ENV=${BUILD_ENV}
+ENV PORT=3000
+
+# Public variables (exposed to client - use sparingly)
+ENV PUBLIC_API_URL=https://api.example.com
+
+WORKDIR /app
+COPY . .
+
+# Use build arg during build
+RUN if [ "$BUILD_ENV" = "production" ]; then \
+      npm ci --production; \
+    else \
+      npm ci; \
+    fi
+
+RUN npm run build
+
+EXPOSE ${PORT}
+
+CMD ["node", "dist/server.js"]
+```
+
+Build with custom args:
+
+```bash
+# Build with custom Node version and environment
+docker build \
+  --build-arg NODE_VERSION=20 \
+  --build-arg BUILD_ENV=production \
+  -t philjs-app:latest \
+  .
+
+# Run with runtime environment variables
+docker run \
+  -e DATABASE_URL=postgresql://... \
+  -e API_KEY=secret123 \
+  -p 3000:3000 \
+  philjs-app:latest
+```
+
+### Environment Variable Security
+
+```dockerfile
+# ❌ WRONG - hardcoded secrets in image
+ENV API_KEY=secret123
+ENV DATABASE_PASSWORD=password
+
+# ✅ CORRECT - pass at runtime
+# In Dockerfile: only set defaults
+ENV PORT=3000
+ENV NODE_ENV=production
+
+# Then pass secrets at runtime:
+# docker run -e API_KEY=secret123 -e DATABASE_URL=... philjs-app
+```
+
+### Using Docker Secrets (Swarm/Compose)
+
+```yaml
+# docker-compose.prod.yml
+version: '3.8'
+
+services:
+  app:
+    image: philjs-app
+    secrets:
+      - db_password
+      - api_key
+    environment:
+      DATABASE_URL: postgresql://user:$(cat /run/secrets/db_password)@db:5432/myapp
+
+secrets:
+  db_password:
+    external: true
+  api_key:
+    external: true
+```
+
+Create and use secrets:
+
+```bash
+# Create secrets
+echo "my-db-password" | docker secret create db_password -
+echo "my-api-key" | docker secret create api_key -
+
+# Deploy with secrets
+docker stack deploy -c docker-compose.prod.yml myapp
+```
+
+### Environment Variable Validation
+
+Add validation in your application:
+
+```typescript
+// src/config/env.ts
+interface Env {
+  NODE_ENV: 'development' | 'production' | 'test';
+  PORT: number;
+  DATABASE_URL: string;
+  REDIS_URL: string;
+  API_KEY: string;
+  PUBLIC_API_URL: string;
+}
+
+function validateEnv(): Env {
+  const requiredVars = [
+    'DATABASE_URL',
+    'REDIS_URL',
+    'API_KEY',
+    'PUBLIC_API_URL',
+  ];
+
+  const missing = requiredVars.filter((key) => !process.env[key]);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`
+    );
+  }
+
+  return {
+    NODE_ENV: (process.env.NODE_ENV as Env['NODE_ENV']) || 'production',
+    PORT: parseInt(process.env.PORT || '3000', 10),
+    DATABASE_URL: process.env.DATABASE_URL!,
+    REDIS_URL: process.env.REDIS_URL!,
+    API_KEY: process.env.API_KEY!,
+    PUBLIC_API_URL: process.env.PUBLIC_API_URL!,
+  };
+}
+
+export const env = validateEnv();
+```
+
+### Example .env Files
+
+```bash
+# .env.development
+NODE_ENV=development
+PORT=3000
+PUBLIC_API_URL=http://localhost:4000
+DATABASE_URL=postgresql://postgres:password@localhost:5432/myapp_dev
+REDIS_URL=redis://localhost:6379
+API_KEY=dev-api-key
+LOG_LEVEL=debug
+
+# .env.production
+NODE_ENV=production
+PORT=3000
+PUBLIC_API_URL=https://api.example.com
+DATABASE_URL=postgresql://user:${DB_PASSWORD}@db.example.com:5432/myapp_prod
+REDIS_URL=redis://:${REDIS_PASSWORD}@redis.example.com:6379
+API_KEY=${PRODUCTION_API_KEY}
+LOG_LEVEL=info
+
+# .env.test
+NODE_ENV=test
+PORT=3001
+PUBLIC_API_URL=http://localhost:4001
+DATABASE_URL=postgresql://postgres:password@localhost:5432/myapp_test
+REDIS_URL=redis://localhost:6380
+API_KEY=test-api-key
+LOG_LEVEL=error
 ```
 
 ## Static vs SSR

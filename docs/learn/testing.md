@@ -2,15 +2,31 @@
 
 Testing is crucial for building reliable applications. PhilJS provides excellent testing utilities and integrates seamlessly with popular testing frameworks.
 
+## Table of Contents
+
+- [Testing Setup](#testing-setup)
+- [Unit Testing Components](#unit-testing-components)
+- [Testing Signals and Effects](#testing-signals-and-effects)
+- [Mocking Patterns](#mocking-patterns)
+- [Integration Testing](#integration-testing)
+- [E2E Testing Setup](#e2e-testing-setup)
+- [Best Practices](#best-practices)
+
 ## Testing Setup
 
 ### Install Dependencies
 
 ```bash
+# For unit and integration tests
 npm install --save-dev vitest @testing-library/philjs @testing-library/user-event jsdom
+
+# For E2E tests
+npm install --save-dev @playwright/test
 ```
 
-### Configure Vitest
+### Vitest Configuration Examples
+
+#### Basic Configuration
 
 ```ts
 // vitest.config.ts
@@ -25,6 +41,63 @@ export default defineConfig({
 });
 ```
 
+#### Advanced Configuration with Coverage
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'src/**/*.spec.ts',
+        'src/**/*.spec.tsx',
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
+    },
+    testTimeout: 10000,
+    hookTimeout: 10000,
+  },
+});
+```
+
+#### Configuration with TypeScript Path Mapping
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import path from 'path';
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+    },
+  },
+});
+```
+
 ### Setup File
 
 ```ts
@@ -33,12 +106,25 @@ import { expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/philjs';
 import '@testing-library/jest-dom';
 
+// Cleanup after each test
 afterEach(() => {
   cleanup();
 });
+
+// Mock global APIs if needed
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+// Mock fetch if not using a fetch library
+global.fetch = vi.fn();
 ```
 
-## Component Testing
+## Unit Testing Components
+
+Unit testing focuses on testing individual components in isolation. PhilJS components can be tested using standard testing libraries like Vitest and Testing Library.
 
 ### Basic Component Test
 
@@ -106,9 +192,81 @@ describe('UserProfile', () => {
 });
 ```
 
-## Testing Signals
+## Testing Signals and Effects
 
-### Signal Behavior
+PhilJS's reactive system is built on signals and effects. Understanding how to test these primitives is essential for building reliable applications.
+
+### Testing Signal Behavior
+
+```tsx
+// signal.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { signal, effect } from 'philjs-core';
+
+describe('Signal basics', () => {
+  it('creates signal with initial value', () => {
+    const count = signal(0);
+    expect(count()).toBe(0);
+  });
+
+  it('updates signal value', () => {
+    const count = signal(0);
+    count.set(5);
+    expect(count()).toBe(5);
+  });
+
+  it('supports updater function', () => {
+    const count = signal(0);
+    count.set(c => c + 1);
+    expect(count()).toBe(1);
+  });
+
+  it('does not trigger effects for same value (Object.is)', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    effect(() => {
+      count();
+      spy();
+    });
+
+    spy.mockClear();
+    count.set(0); // Same value
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('peek() reads without tracking dependencies', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    effect(() => {
+      count.peek(); // Untracked
+      spy();
+    });
+
+    spy.mockClear();
+    count.set(5);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('subscribe() allows manual subscription', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    const unsubscribe = count.subscribe(spy);
+
+    count.set(1);
+    expect(spy).toHaveBeenCalledWith(1);
+
+    spy.mockClear();
+    unsubscribe();
+    count.set(2);
+    expect(spy).not.toHaveBeenCalled();
+  });
+});
+```
+
+### Testing Custom Hooks with Signals
 
 ```tsx
 // useCounter.test.ts
@@ -161,62 +319,239 @@ describe('useCounter', () => {
 });
 ```
 
-### Testing Memos
+### Testing Memos (Computed Values)
 
 ```tsx
-// useDerivedValue.test.ts
-import { describe, it, expect } from 'vitest';
-import { renderHook, act } from '@testing-library/philjs';
+// memo.test.ts
+import { describe, it, expect, vi } from 'vitest';
 import { signal, memo } from 'philjs-core';
 
 describe('Memo behavior', () => {
   it('recalculates when dependency changes', () => {
     let calculations = 0;
 
-    const { result } = renderHook(() => {
-      const count = signal(0);
-      const doubled = memo(() => {
-        calculations++;
-        return count() * 2;
-      });
-
-      return { count, doubled };
+    const count = signal(0);
+    const doubled = memo(() => {
+      calculations++;
+      return count() * 2;
     });
 
-    expect(result.current.doubled()).toBe(0);
+    expect(doubled()).toBe(0);
     expect(calculations).toBe(1);
 
-    act(() => {
-      result.current.count.set(5);
-    });
-
-    expect(result.current.doubled()).toBe(10);
+    count.set(5);
+    expect(doubled()).toBe(10);
     expect(calculations).toBe(2);
   });
 
   it('does not recalculate when dependency is unchanged', () => {
     let calculations = 0;
 
-    const { result } = renderHook(() => {
-      const count = signal(0);
-      const doubled = memo(() => {
-        calculations++;
-        return count() * 2;
-      });
-
-      return { count, doubled };
+    const count = signal(0);
+    const doubled = memo(() => {
+      calculations++;
+      return count() * 2;
     });
 
-    const value1 = result.current.doubled();
-    const value2 = result.current.doubled();
+    const value1 = doubled();
+    const value2 = doubled();
 
     expect(value1).toBe(value2);
     expect(calculations).toBe(1);
   });
+
+  it('tracks multiple dependencies', () => {
+    const a = signal(1);
+    const b = signal(2);
+    const sum = memo(() => a() + b());
+
+    expect(sum()).toBe(3);
+    a.set(10);
+    expect(sum()).toBe(12);
+    b.set(20);
+    expect(sum()).toBe(30);
+  });
+
+  it('supports chained memos', () => {
+    const a = signal(2);
+    const b = memo(() => a() * 2);
+    const c = memo(() => b() * 2);
+
+    expect(c()).toBe(8);
+    a.set(3);
+    expect(c()).toBe(12);
+  });
+
+  it('handles diamond dependency graph', () => {
+    const source = signal(1);
+    const left = memo(() => source() * 2);
+    const right = memo(() => source() + 10);
+    const combined = memo(() => left() + right());
+
+    expect(combined()).toBe(13); // (1*2) + (1+10) = 13
+
+    source.set(2);
+    expect(combined()).toBe(16); // (2*2) + (2+10) = 16
+  });
 });
 ```
 
-## Testing Effects
+### Testing Effects
+
+```tsx
+// effect.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { signal, effect, onCleanup, batch } from 'philjs-core';
+
+describe('Effect behavior', () => {
+  it('runs immediately', () => {
+    const spy = vi.fn();
+    const dispose = effect(spy);
+    expect(spy).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+
+  it('re-runs when dependencies change', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    const dispose = effect(() => {
+      count();
+      spy();
+    });
+
+    spy.mockClear();
+    count.set(1);
+    expect(spy).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+
+  it('tracks multiple dependencies', () => {
+    const a = signal(1);
+    const b = signal(2);
+    const spy = vi.fn();
+
+    const dispose = effect(() => {
+      a();
+      b();
+      spy();
+    });
+
+    spy.mockClear();
+
+    a.set(10);
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    spy.mockClear();
+    b.set(20);
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    dispose();
+  });
+
+  it('supports cleanup function', () => {
+    const cleanup = vi.fn();
+    const dispose = effect(() => cleanup);
+
+    expect(cleanup).not.toHaveBeenCalled();
+    dispose();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs cleanup before re-execution', () => {
+    const count = signal(0);
+    const cleanup = vi.fn();
+
+    const dispose = effect(() => {
+      count();
+      return cleanup;
+    });
+
+    cleanup.mockClear();
+    count.set(1);
+
+    expect(cleanup).toHaveBeenCalled();
+    dispose();
+  });
+
+  it('can be disposed', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    const dispose = effect(() => {
+      count();
+      spy();
+    });
+
+    spy.mockClear();
+    dispose();
+
+    count.set(1);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('uses onCleanup helper', () => {
+    const cleanup = vi.fn();
+
+    const dispose = effect(() => {
+      onCleanup(cleanup);
+    });
+
+    expect(cleanup).not.toHaveBeenCalled();
+    dispose();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Batching updates', () => {
+  it('batches multiple signal updates', () => {
+    const a = signal(1);
+    const b = signal(2);
+    const spy = vi.fn();
+
+    const dispose = effect(() => {
+      a();
+      b();
+      spy();
+    });
+
+    spy.mockClear();
+
+    batch(() => {
+      a.set(10);
+      b.set(20);
+    });
+
+    // Should only trigger one update
+    expect(spy).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+
+  it('handles nested batching', () => {
+    const count = signal(0);
+    const spy = vi.fn();
+
+    const dispose = effect(() => {
+      count();
+      spy();
+    });
+
+    spy.mockClear();
+
+    batch(() => {
+      count.set(1);
+      batch(() => {
+        count.set(2);
+      });
+      count.set(3);
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+});
+
+### Testing Effects with Side Effects
 
 ```tsx
 // useDocumentTitle.test.ts
@@ -262,6 +597,71 @@ describe('Document title effect', () => {
   });
 });
 ```
+
+### Testing Resources (Async Data)
+
+```tsx
+// resource.test.ts
+import { describe, it, expect } from 'vitest';
+import { resource } from 'philjs-core';
+
+describe('Resource behavior', () => {
+  it('creates resource with initial value', () => {
+    const user = resource(() => ({ name: 'Alice' }));
+
+    expect(user.loading()).toBe(false);
+    expect(user.error()).toBe(null);
+    expect(user()).toEqual({ name: 'Alice' });
+  });
+
+  it('handles async fetching', async () => {
+    const fetchUser = async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
+      return { name: 'Bob' };
+    };
+
+    const user = resource(fetchUser);
+
+    expect(user.loading()).toBe(true);
+
+    await new Promise(resolve => setTimeout(resolve, 20));
+
+    expect(user.loading()).toBe(false);
+    expect(user()).toEqual({ name: 'Bob' });
+  });
+
+  it('handles errors', async () => {
+    const fetchUser = async () => {
+      throw new Error('Failed to fetch');
+    };
+
+    const user = resource(fetchUser);
+
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(user.loading()).toBe(false);
+    expect(user.error()).toBeInstanceOf(Error);
+    expect(user.error()?.message).toBe('Failed to fetch');
+  });
+
+  it('can be refreshed', async () => {
+    let callCount = 0;
+    const fetchUser = async () => {
+      callCount++;
+      return { name: 'User' + callCount };
+    };
+
+    const user = resource(fetchUser);
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(user()).toEqual({ name: 'User1' });
+
+    user.refresh();
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(user()).toEqual({ name: 'User2' });
+  });
+});
 
 ## Testing User Interactions
 
@@ -518,7 +918,475 @@ describe('ErrorBoundary', () => {
 });
 ```
 
+## Mocking Patterns
+
+Effective mocking is essential for isolating units of code and testing them in controlled environments. Here are comprehensive mocking patterns for PhilJS applications.
+
+### Mocking Modules
+
+```tsx
+// api.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fetchUsers } from './api';
+
+// Mock entire module
+vi.mock('./api', () => ({
+  fetchUsers: vi.fn(() => Promise.resolve([
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' }
+  ]))
+}));
+
+describe('API', () => {
+  it('returns mocked users', async () => {
+    const users = await fetchUsers();
+    expect(users).toHaveLength(2);
+    expect(users[0].name).toBe('Alice');
+  });
+});
+```
+
+### Mocking Fetch API
+
+```tsx
+// userService.test.ts
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { getUserById } from './userService';
+
+describe('UserService', () => {
+  beforeEach(() => {
+    // Mock fetch globally
+    global.fetch = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('fetches user successfully', async () => {
+    const mockUser = { id: 1, name: 'Alice', email: 'alice@example.com' };
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockUser,
+    });
+
+    const user = await getUserById(1);
+
+    expect(fetch).toHaveBeenCalledWith('/api/users/1');
+    expect(user).toEqual(mockUser);
+  });
+
+  it('handles fetch errors', async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+    });
+
+    await expect(getUserById(999)).rejects.toThrow('User not found');
+  });
+
+  it('handles network errors', async () => {
+    (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+
+    await expect(getUserById(1)).rejects.toThrow('Network error');
+  });
+});
+```
+
+### Mocking Server Functions
+
+```tsx
+// serverFunctions.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { createUser, updateUser, deleteUser } from './server';
+
+vi.mock('./server', () => ({
+  createUser: vi.fn(async (data) => ({
+    id: 123,
+    ...data,
+    createdAt: new Date('2024-01-01'),
+  })),
+  updateUser: vi.fn(async (id, data) => ({
+    id,
+    ...data,
+    updatedAt: new Date('2024-01-01'),
+  })),
+  deleteUser: vi.fn(async (id) => ({ success: true })),
+}));
+
+describe('Server Functions', () => {
+  it('creates user with mocked server function', async () => {
+    const user = await createUser({
+      name: 'Alice',
+      email: 'alice@example.com'
+    });
+
+    expect(user.id).toBe(123);
+    expect(user.name).toBe('Alice');
+    expect(createUser).toHaveBeenCalledWith({
+      name: 'Alice',
+      email: 'alice@example.com'
+    });
+  });
+
+  it('updates user', async () => {
+    const updated = await updateUser(1, { name: 'Bob' });
+
+    expect(updated.id).toBe(1);
+    expect(updated.name).toBe('Bob');
+    expect(updateUser).toHaveBeenCalledWith(1, { name: 'Bob' });
+  });
+
+  it('deletes user', async () => {
+    const result = await deleteUser(1);
+
+    expect(result.success).toBe(true);
+    expect(deleteUser).toHaveBeenCalledWith(1);
+  });
+});
+```
+
+### Mocking Context Providers
+
+```tsx
+// useAuth.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { renderHook } from '@testing-library/philjs';
+import { AuthContext, useAuth } from './AuthContext';
+import { signal } from 'philjs-core';
+
+describe('useAuth', () => {
+  it('uses auth context', () => {
+    const mockUser = signal({ id: 1, name: 'Alice' });
+    const mockLogout = vi.fn();
+
+    // Create mock context value
+    const mockAuthValue = {
+      user: mockUser,
+      logout: mockLogout,
+      isAuthenticated: () => !!mockUser(),
+    };
+
+    // Mock the provider
+    AuthContext.Provider({
+      value: mockAuthValue,
+      children: null as any,
+    });
+
+    const { result } = renderHook(() => useAuth());
+
+    expect(result.current.user()).toEqual({ id: 1, name: 'Alice' });
+    expect(result.current.isAuthenticated()).toBe(true);
+
+    result.current.logout();
+    expect(mockLogout).toHaveBeenCalled();
+  });
+});
+```
+
+### Mocking Timers
+
+```tsx
+// timer.test.ts
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { signal, effect } from 'philjs-core';
+
+describe('Timer functionality', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('updates after delay', () => {
+    const count = signal(0);
+
+    setTimeout(() => {
+      count.set(5);
+    }, 1000);
+
+    expect(count()).toBe(0);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(count()).toBe(5);
+  });
+
+  it('handles setInterval', () => {
+    const count = signal(0);
+
+    const interval = setInterval(() => {
+      count.set(c => c() + 1);
+    }, 100);
+
+    expect(count()).toBe(0);
+
+    vi.advanceTimersByTime(250);
+    expect(count()).toBe(2);
+
+    vi.advanceTimersByTime(250);
+    expect(count()).toBe(4);
+
+    clearInterval(interval);
+  });
+
+  it('can fast-forward to next timer', () => {
+    const spy = vi.fn();
+
+    setTimeout(() => spy('first'), 100);
+    setTimeout(() => spy('second'), 200);
+
+    vi.runOnlyPendingTimers();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith('first');
+
+    vi.runOnlyPendingTimers();
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith('second');
+  });
+});
+```
+
+### Mocking LocalStorage
+
+```tsx
+// storage.test.ts
+import { describe, it, expect, beforeEach } from 'vitest';
+import { saveToStorage, loadFromStorage } from './storage';
+
+describe('Storage utilities', () => {
+  beforeEach(() => {
+    // Clear localStorage before each test
+    localStorage.clear();
+  });
+
+  it('saves and loads data', () => {
+    const data = { user: 'Alice', theme: 'dark' };
+
+    saveToStorage('settings', data);
+    const loaded = loadFromStorage('settings');
+
+    expect(loaded).toEqual(data);
+  });
+
+  it('handles missing keys', () => {
+    const result = loadFromStorage('nonexistent');
+    expect(result).toBeNull();
+  });
+
+  it('handles invalid JSON', () => {
+    localStorage.setItem('corrupt', 'not-valid-json');
+    const result = loadFromStorage('corrupt');
+    expect(result).toBeNull();
+  });
+});
+```
+
+### Mocking Router
+
+```tsx
+// navigation.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/philjs';
+import userEvent from '@testing-library/user-event';
+import { Router, useRouter } from 'philjs-router';
+
+vi.mock('philjs-router', () => ({
+  useRouter: vi.fn(),
+  Router: ({ children }: any) => children,
+}));
+
+describe('Navigation', () => {
+  it('navigates on button click', async () => {
+    const mockNavigate = vi.fn();
+    const mockRouter = {
+      navigate: mockNavigate,
+      location: () => ({ pathname: '/' }),
+    };
+
+    (useRouter as any).mockReturnValue(mockRouter);
+
+    const user = userEvent.setup();
+
+    render(() => (
+      <button onClick={() => mockRouter.navigate('/about')}>
+        Go to About
+      </button>
+    ));
+
+    await user.click(screen.getByRole('button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/about');
+  });
+});
+```
+
+### Mocking WebSocket
+
+```tsx
+// websocket.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { signal, effect } from 'philjs-core';
+
+// Mock WebSocket
+class MockWebSocket {
+  onopen: ((event: Event) => void) | null = null;
+  onmessage: ((event: MessageEvent) => void) | null = null;
+  onerror: ((event: Event) => void) | null = null;
+  onclose: ((event: CloseEvent) => void) | null = null;
+
+  send = vi.fn();
+  close = vi.fn();
+
+  // Helper to simulate events
+  simulateOpen() {
+    this.onopen?.(new Event('open'));
+  }
+
+  simulateMessage(data: any) {
+    this.onmessage?.(new MessageEvent('message', { data }));
+  }
+
+  simulateError() {
+    this.onerror?.(new Event('error'));
+  }
+
+  simulateClose() {
+    this.onclose?.(new CloseEvent('close'));
+  }
+}
+
+describe('WebSocket connection', () => {
+  let mockWs: MockWebSocket;
+
+  beforeEach(() => {
+    mockWs = new MockWebSocket();
+    (global as any).WebSocket = vi.fn(() => mockWs);
+  });
+
+  it('connects and receives messages', () => {
+    const messages = signal<string[]>([]);
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onmessage = (event) => {
+      messages.set([...messages(), event.data]);
+    };
+
+    mockWs.simulateOpen();
+    mockWs.simulateMessage('Hello');
+    mockWs.simulateMessage('World');
+
+    expect(messages()).toEqual(['Hello', 'World']);
+  });
+
+  it('sends messages', () => {
+    const ws = new WebSocket('ws://localhost:8080');
+    mockWs.simulateOpen();
+
+    ws.send('test message');
+
+    expect(mockWs.send).toHaveBeenCalledWith('test message');
+  });
+});
+```
+
 ## Integration Testing
+
+Integration tests verify that different parts of your application work together correctly.
+
+### Testing Multiple Components Together
+
+```tsx
+// TodoApp.integration.test.tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/philjs';
+import userEvent from '@testing-library/user-event';
+import { TodoApp } from './TodoApp';
+
+describe('TodoApp Integration', () => {
+  it('adds and removes todos', async () => {
+    const user = userEvent.setup();
+    render(() => <TodoApp />);
+
+    // Add first todo
+    await user.type(screen.getByPlaceholderText(/add todo/i), 'Buy milk');
+    await user.click(screen.getByRole('button', { name: /add/i }));
+
+    expect(screen.getByText('Buy milk')).toBeInTheDocument();
+
+    // Add second todo
+    await user.type(screen.getByPlaceholderText(/add todo/i), 'Walk dog');
+    await user.click(screen.getByRole('button', { name: /add/i }));
+
+    expect(screen.getByText('Walk dog')).toBeInTheDocument();
+
+    // Remove first todo
+    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    await user.click(deleteButtons[0]);
+
+    expect(screen.queryByText('Buy milk')).not.toBeInTheDocument();
+    expect(screen.getByText('Walk dog')).toBeInTheDocument();
+  });
+
+  it('marks todos as complete', async () => {
+    const user = userEvent.setup();
+    render(() => <TodoApp />);
+
+    await user.type(screen.getByPlaceholderText(/add todo/i), 'Test todo');
+    await user.click(screen.getByRole('button', { name: /add/i }));
+
+    const checkbox = screen.getByRole('checkbox');
+    await user.click(checkbox);
+
+    expect(checkbox).toBeChecked();
+    expect(screen.getByText('Test todo')).toHaveClass('completed');
+  });
+});
+```
+
+### Testing Signal + Context Integration
+
+```tsx
+// themeIntegration.test.tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/philjs';
+import userEvent from '@testing-library/user-event';
+import { signal } from 'philjs-core';
+import { ThemeProvider, useTheme } from './ThemeContext';
+
+function ThemeConsumer() {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <div>
+      <p>Current theme: {theme()}</p>
+      <button onClick={toggleTheme}>Toggle</button>
+    </div>
+  );
+}
+
+describe('Theme Integration', () => {
+  it('provides and updates theme across components', async () => {
+    const user = userEvent.setup();
+
+    render(() => (
+      <ThemeProvider>
+        <ThemeConsumer />
+      </ThemeProvider>
+    ));
+
+    expect(screen.getByText('Current theme: light')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button'));
+
+    expect(screen.getByText('Current theme: dark')).toBeInTheDocument();
+  });
+});
+```
 
 ### Full User Flow
 

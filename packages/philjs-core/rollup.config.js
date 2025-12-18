@@ -1,31 +1,54 @@
 import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
+import { defineConfig } from 'rollup';
 
-// Helper to create entry point config
+// Helper to create optimized entry point config
 const createEntry = (input, output, external = []) => ({
   input: `src/${input}`,
   output: {
     file: `dist/${output}`,
     format: 'es',
-    sourcemap: true
+    sourcemap: true,
+    // Optimize for tree-shaking
+    exports: 'named',
+    // Reduce bundle size
+    compact: true,
+    // Better interop
+    interop: 'auto'
   },
   plugins: [
-    resolve(),
+    resolve({
+      preferBuiltins: true,
+      // Don't resolve external modules
+      resolveOnly: []
+    }),
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
       declarationMap: true,
-      declarationDir: 'dist'
+      declarationDir: 'dist',
+      sourceMap: true,
+      // Faster incremental builds
+      composite: false
     })
   ],
   external: [
     /^node:/,
     /^philjs-/,
     ...external
-  ]
+  ],
+  // Aggressive tree-shaking for smaller bundles
+  treeshake: {
+    moduleSideEffects: false,
+    propertyReadSideEffects: false,
+    tryCatchDeoptimization: false,
+    unknownGlobalSideEffects: false
+  },
+  // Enable caching for faster rebuilds
+  cache: true
 });
 
-export default [
+export default defineConfig([
   // Main entry point (full bundle for convenience)
   createEntry('index.ts', 'index.js'),
 
@@ -61,4 +84,4 @@ export default [
   createEntry('cost-tracking.ts', 'cost-tracking.js', ['./signals.js']),
   createEntry('usage-analytics.ts', 'usage-analytics.js', ['./signals.js']),
   createEntry('testing.ts', 'testing.js', ['./signals.js', './jsx-runtime.js']),
-];
+]);

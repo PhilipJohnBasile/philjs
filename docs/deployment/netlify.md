@@ -46,6 +46,10 @@ Create `netlify.toml` in your project root:
   publish = "dist"
   functions = "netlify/functions"
 
+# Node.js version
+[build.environment]
+  NODE_VERSION = "18"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -57,11 +61,55 @@ Create `netlify.toml` in your project root:
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+```
+
+### Vite Configuration for SSR
+
+For server-side rendering on Netlify:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import philjs from 'philjs-compiler/vite';
+
+export default defineConfig({
+  plugins: [
+    philjs({
+      output: 'server', // Enable SSR
+      ssr: {
+        target: 'netlify',
+        streaming: true,
+      },
+      adapter: 'netlify',
+    }),
+  ],
+  build: {
+    ssr: true,
+    rollupOptions: {
+      output: {
+        // Optimize for Netlify Functions
+        manualChunks: undefined,
+      },
+    },
+  },
+});
 ```
 
 ### Environment Variables
@@ -205,21 +253,224 @@ export const handler = schedule('0 0 * * *', async () => {
 
 ## Edge Functions
 
-Deploy to Netlify Edge (Deno runtime):
+Deploy to Netlify Edge for global low-latency compute (powered by Deno):
+
+### Basic Edge Function
 
 ```typescript
 // netlify/edge-functions/hello.ts
-export default async (request: Request) => {
+export default async (request: Request, context: Context) => {
+  const geo = context.geo;
+
   return new Response(JSON.stringify({
     message: 'Hello from the edge!',
-    location: request.headers.get('x-nf-geo'),
+    location: {
+      city: geo.city,
+      country: geo.country.name,
+      latitude: geo.latitude,
+      longitude: geo.longitude,
+    },
+    timestamp: new Date().toISOString(),
   }), {
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=60',
+    },
+  });
+};
+
+export const config = {
+  path: '/edge-hello',
+};
+```
+
+### Edge Middleware
+
+Create middleware that runs on all requests:
+
+```typescript
+// netlify/edge-functions/auth.ts
+import type { Context } from '@netlify/edge-functions';
+
+export default async (request: Request, context: Context) => {
+  const authHeader = request.headers.get('Authorization');
+
+  // Check authentication
+  if (!authHeader && request.url.includes('/protected/')) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Bearer',
+      },
+    });
+  }
+
+  // Continue to next handler
+  return context.next();
+};
+
+export const config = {
+  path: '/protected/*',
+};
+```
+
+### Edge Function with KV Storage
+
+```typescript
+// netlify/edge-functions/cached-data.ts
+import type { Context } from '@netlify/edge-functions';
+
+export default async (request: Request, context: Context) => {
+  const url = new URL(request.url);
+  const key = url.searchParams.get('key');
+
+  if (!key) {
+    return new Response('Key required', { status: 400 });
+  }
+
+  // Try cache first
+  const cached = await context.cookies.get(`cache_${key}`);
+  if (cached) {
+    return new Response(JSON.stringify({ data: cached, cached: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Fetch fresh data
+  const data = await fetchData(key);
+
+  // Cache for 1 hour
+  context.cookies.set({
+    name: `cache_${key}`,
+    value: JSON.stringify(data),
+    maxAge: 3600,
+  });
+
+  return new Response(JSON.stringify({ data, cached: false }), {
     headers: { 'Content-Type': 'application/json' },
   });
 };
 
-export const config = { path: '/edge-hello' };
+async function fetchData(key: string) {
+  // Fetch from API or database
+  return { key, value: 'some data' };
+}
+
+export const config = {
+  path: '/api/cached-data',
+};
 ```
+
+### A/B Testing with Edge Functions
+
+```typescript
+// netlify/edge-functions/ab-test.ts
+import type { Context } from '@netlify/edge-functions';
+
+export default async (request: Request, context: Context) => {
+  // Get or set A/B test variant
+  let variant = context.cookies.get('ab_variant');
+
+  if (!variant) {
+    // Randomly assign variant (50/50 split)
+    variant = Math.random() < 0.5 ? 'A' : 'B';
+    context.cookies.set({
+      name: 'ab_variant',
+      value: variant,
+      maxAge: 2592000, // 30 days
+    });
+  }
+
+  // Get the response
+  const response = await context.next();
+
+  // Modify response based on variant
+  const html = await response.text();
+  const modifiedHtml = html.replace(
+    '</head>',
+    `<script>window.AB_VARIANT = '${variant}';</script></head>`
+  );
+
+  return new Response(modifiedHtml, {
+    headers: response.headers,
+  });
+};
+
+export const config = {
+  path: '/',
+};
+```
+
+### Edge Function Context API
+
+```typescript
+// netlify/edge-functions/context-demo.ts
+import type { Context } from '@netlify/edge-functions';
+
+export default async (request: Request, context: Context) => {
+  return new Response(JSON.stringify({
+    // Geolocation data
+    geo: {
+      city: context.geo.city,
+      country: context.geo.country.name,
+      timezone: context.geo.timezone,
+    },
+    // Request info
+    request: {
+      method: request.method,
+      url: request.url,
+      headers: Object.fromEntries(request.headers),
+    },
+    // Site info
+    site: {
+      id: context.site.id,
+      name: context.site.name,
+      url: context.site.url,
+    },
+    // Deploy context
+    deploy: {
+      id: context.deploy.id,
+      context: context.deploy.context, // production, deploy-preview, branch-deploy
+    },
+  }, null, 2), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+};
+
+export const config = {
+  path: '/api/context',
+};
+```
+
+### Edge Functions vs Netlify Functions
+
+| Feature | Edge Functions | Netlify Functions |
+|---------|----------------|-------------------|
+| **Runtime** | Deno (V8 isolates) | Node.js (AWS Lambda) |
+| **Cold start** | ~0ms | 100-500ms |
+| **Execution time** | 50ms | 10s (background: 15min) |
+| **Bundle size** | 20MB | 50MB |
+| **Locations** | Global (Cloudflare) | Regional (AWS) |
+| **Use cases** | Auth, redirects, headers | Database, APIs, long tasks |
+
+### When to Use Edge Functions
+
+Use Edge Functions for:
+- Authentication and authorization
+- Request/response modification
+- A/B testing and feature flags
+- Geo-based redirects
+- Simple data transformations
+- Caching strategies
+- Rate limiting
+
+Use Netlify Functions for:
+- Database operations
+- Complex business logic
+- Third-party API integrations
+- Email sending
+- Image processing
+- Long-running tasks (background functions)
 
 ## Forms
 

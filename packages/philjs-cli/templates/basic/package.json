@@ -1,0 +1,23 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "philjs dev",
+    "build": "philjs build",
+    "preview": "philjs preview",
+    "test": "philjs test",
+    "test:watch": "philjs test --watch"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-router": "workspace:*"
+  },
+  "devDependencies": {
+    "philjs-cli": "workspace:*",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "@types/node": "^22.10.5"
+  }
+}
