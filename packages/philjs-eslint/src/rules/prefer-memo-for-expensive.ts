@@ -14,7 +14,6 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: 'Suggest using memo() for expensive computed values that depend on signals',
-      recommended: 'recommended',
     },
     messages: {
       preferMemo: 'This computed value depends on signals and contains {{reason}}. Consider wrapping it in memo() for better performance.',

@@ -140,7 +140,7 @@ export declare function invalidateIslandsByTag(tag: string): Promise<void>;
 /**
  * Invalidate a specific island
  */
-export declare function invalidateIsland(id: string, props?: Record<string, any>): Promise<void>;
+export declare function invalidateIsland(id: string, props?: Record<string, any>, cacheConfig?: ServerIslandCache): Promise<void>;
 /**
  * Clear all island caches
  */

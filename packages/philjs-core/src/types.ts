@@ -601,4 +601,4 @@ declare global {
 }
 
 // Re-export for convenience
-export type { JSXElement as Element, VNode, JSXChild };
+export type { JSXElement as Element, VNode };

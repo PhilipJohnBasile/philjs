@@ -5,7 +5,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "philjs-core/jsx-runtime";
  * Optimized image component with automatic format conversion,
  * responsive sizing, lazy loading, and blur placeholders.
  */
-import { signal, memo, onMount } from 'philjs-core';
+import { signal, memo, effect } from 'philjs-core';
 import { generateSrcSet, generateBlurDataURL, isExternalUrl } from './utils';
 export function Image(props) {
     const { src, alt, width, height, quality = 85, formats = ['webp', 'jpeg'], sizes, loading = 'lazy', priority = false, placeholder = 'blur', blurDataURL, placeholderColor, fit = 'cover', className = '', style = {}, onLoad, onError, unoptimized = false, crossOrigin, referrerPolicy, decoding = 'async', } = props;
@@ -56,14 +56,14 @@ export function Image(props) {
         console.error('[PhilJS Image]', error);
     };
     // Preload if priority
-    onMount(() => {
+    effect(() => {
         if (priority) {
             const link = document.createElement('link');
             link.rel = 'preload';
             link.as = 'image';
             link.href = src;
-            if (optimizedSources.get()?.srcSet) {
-                link.setAttribute('imagesrcset', optimizedSources.get().srcSet);
+            if (optimizedSources()?.srcSet) {
+                link.setAttribute('imagesrcset', optimizedSources().srcSet);
             }
             if (sizes) {
                 link.setAttribute('imagesizes', sizes);
@@ -75,14 +75,14 @@ export function Image(props) {
     const finalSrc = memo(() => {
         if (unoptimized)
             return src;
-        const optimized = optimizedSources.get();
+        const optimized = optimizedSources();
         return optimized?.src || src;
     });
     // Compute srcSet
     const finalSrcSet = memo(() => {
         if (unoptimized)
             return undefined;
-        return optimizedSources.get()?.srcSet;
+        return optimizedSources()?.srcSet;
     });
     // Styles for the container
     const containerStyle = {
@@ -97,7 +97,7 @@ export function Image(props) {
         width: width ? `${width}px` : '100%',
         height: height ? `${height}px` : 'auto',
         transition: 'opacity 0.3s ease-in-out',
-        opacity: isLoaded.get() ? '1' : '0',
+        opacity: isLoaded() ? '1' : '0',
     };
     // Styles for placeholder
     const placeholderStyle = {
@@ -107,11 +107,11 @@ export function Image(props) {
         width: '100%',
         height: '100%',
         objectFit: fit,
-        opacity: isLoaded.get() ? '0' : '1',
+        opacity: isLoaded() ? '0' : '1',
         transition: 'opacity 0.3s ease-in-out',
         pointerEvents: 'none',
     };
-    return (_jsxs("span", { style: containerStyle, className: className, children: [placeholder !== 'none' && placeholderDataURL.get() && (_jsx("img", { src: placeholderDataURL.get(), alt: "", "aria-hidden": "true", style: placeholderStyle, decoding: "async" })), _jsxs("picture", { children: [!unoptimized && formats.includes('avif') && (_jsx("source", { type: "image/avif", srcSet: finalSrcSet.get()?.replace(/\.(webp|jpg|jpeg|png)/g, '.avif'), sizes: sizes })), !unoptimized && formats.includes('webp') && (_jsx("source", { type: "image/webp", srcSet: finalSrcSet.get(), sizes: sizes })), _jsx("img", { src: finalSrc.get(), alt: alt, width: width, height: height, loading: priority ? 'eager' : loading, decoding: decoding, crossOrigin: crossOrigin, referrerPolicy: referrerPolicy, srcSet: finalSrcSet.get(), sizes: sizes, onLoad: handleLoad, onError: handleError, style: imageStyle })] }), hasError.get() && (_jsx("div", { style: {
+    return (_jsxs("span", { style: containerStyle, className: className, children: [placeholder !== 'none' && placeholderDataURL() && (_jsx("img", { src: placeholderDataURL(), alt: "", "aria-hidden": "true", style: placeholderStyle, decoding: "async" })), _jsxs("picture", { children: [!unoptimized && formats.includes('avif') && (_jsx("source", { type: "image/avif", srcSet: finalSrcSet()?.replace(/\.(webp|jpg|jpeg|png)/g, '.avif'), sizes: sizes })), !unoptimized && formats.includes('webp') && (_jsx("source", { type: "image/webp", srcSet: finalSrcSet(), sizes: sizes })), _jsx("img", { src: finalSrc(), alt: alt, width: width, height: height, loading: priority ? 'eager' : loading, decoding: decoding, crossOrigin: crossOrigin, referrerPolicy: referrerPolicy, srcSet: finalSrcSet(), sizes: sizes, onLoad: handleLoad, onError: handleError, style: imageStyle })] }), hasError() && (_jsx("div", { style: {
                     position: 'absolute',
                     top: 0,
                     left: 0,

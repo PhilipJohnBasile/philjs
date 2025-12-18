@@ -34,7 +34,7 @@ export declare function getCSSModuleConfig(options?: CSSModuleConfig): {
     vite: {
         css: {
             modules: {
-                scopeBehaviour: "global" | "local";
+                scopeBehaviour: "local" | "global";
                 localsConvention: "camelCase" | "camelCaseOnly" | "dashes" | "dashesOnly";
                 generateScopedName: string;
             };
@@ -42,14 +42,14 @@ export declare function getCSSModuleConfig(options?: CSSModuleConfig): {
     };
     postcss: {
         'postcss-modules': {
-            scopeBehaviour: "global" | "local";
+            scopeBehaviour: "local" | "global";
             localsConvention: "camelCase" | "camelCaseOnly" | "dashes" | "dashesOnly";
             generateScopedName: string;
         };
     };
     webpack: {
         modules: {
-            mode: "global" | "local";
+            mode: "local" | "global";
             localIdentName: string;
             exportLocalsConvention: "camelCase" | "camelCaseOnly" | "dashes" | "dashesOnly";
         };

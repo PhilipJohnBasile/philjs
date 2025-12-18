@@ -69,8 +69,13 @@ describe('Resource - Advanced Error Handling', () => {
 
 describe('Circular Dependencies Prevention', () => {
   it.skip('should handle circular signal dependencies gracefully', () => {
-    // Skipped: Circular dependencies between effects cause stack overflow
-    // This is expected behavior - circular dependencies should be avoided
+    // Skipped: While untrack() prevents dependency tracking, it doesn't prevent circular updates.
+    // When a.set() is called, effect #1 runs and calls b.set() (untracked), which triggers
+    // effect #2 to run, which calls a.set() (untracked), which triggers effect #1 again, etc.
+    // This creates an infinite loop even though dependencies aren't being tracked.
+    // To implement this safely would require:
+    // 1. Detecting update cycles and breaking them
+    // 2. Or implementing a batching/scheduling system that prevents re-entrance
     const a = signal(0);
     const b = signal(0);
 
@@ -108,8 +113,14 @@ describe('Circular Dependencies Prevention', () => {
   });
 
   it.skip('should handle self-referencing memo safely', () => {
-    // Skipped: Self-referencing memos cause stack overflow
-    // This is expected behavior - avoid self-references in memos
+    // Skipped: Self-referencing memos cause stack overflow during initialization.
+    // When memo() calls read() at line 181 to initialize, read() evaluates the calc function.
+    // The calc tries to call untrack(() => memoValue?.() ?? 0), but memoValue is still undefined
+    // during initialization (it hasn't been assigned yet). Even when using optional chaining,
+    // subsequent reads cause infinite recursion in the read() function.
+    // To implement this would require:
+    // 1. Lazy initialization of memos (don't call read() in memo())
+    // 2. Or a special sentinel value to detect self-reference during computation
     const base = signal(1);
     let memoValue: () => number;
 
@@ -174,8 +185,12 @@ describe('Nested Batching and Effects', () => {
   });
 
   it.skip('should cleanup nested effects properly', () => {
-    // Skipped: Nested effect cleanup timing is implementation-specific
-    // The current implementation may not cleanup inner effects when outer re-runs
+    // Skipped: Nested effects are not automatically disposed when the outer effect re-runs.
+    // To implement this, the effect function would need to:
+    // 1. Track all effects created during its execution in the owner
+    // 2. Dispose those owned effects before re-running
+    // 3. Currently, owner.owned tracks nested owners but they aren't disposed on effect re-run
+    // Workaround: Manually call onCleanup with the nested effect's dispose function
     const trigger = signal(0);
     const cleanupSpy = vi.fn();
 
@@ -462,8 +477,16 @@ describe('LinkedSignal Advanced Scenarios', () => {
 
 describe('CreateRoot Advanced Usage', () => {
   it.skip('should isolate effects in root', () => {
-    // Skipped: Root isolation behavior varies by implementation
-    // Effects may or may not be disposed when root is disposed
+    // Skipped: Effects do not automatically register their dispose function with the owner.
+    // To implement this, the effect function would need to:
+    // 1. Register its own dispose function in currentOwner.cleanups
+    // 2. Currently, effects only run owner.cleanups registered via onCleanup()
+    // Workaround: Manually register the effect's dispose function:
+    //   const dispose = createRoot(rootDispose => {
+    //     const effectDispose = effect(() => { ... });
+    //     onCleanup(effectDispose);
+    //     return rootDispose;
+    //   });
     const count = signal(0);
     const spy = vi.fn();
 
@@ -486,7 +509,11 @@ describe('CreateRoot Advanced Usage', () => {
   });
 
   it.skip('should handle nested roots', () => {
-    // Skipped: Nested root cleanup behavior is implementation-specific
+    // Skipped: Nested roots are tracked in owner.owned, but the inner root's dispose
+    // function is not automatically called when the outer root is disposed.
+    // To implement this, createRoot would need to register its dispose function:
+    //   onCleanup(dispose);
+    // Or the outer dispose should call dispose functions of owned roots, not just disposeOwner.
     const cleanup1 = vi.fn();
     const cleanup2 = vi.fn();
 
@@ -515,7 +542,8 @@ describe('CreateRoot Advanced Usage', () => {
   });
 
   it.skip('should handle multiple independent roots', () => {
-    // Skipped: Effect disposal on root dispose is implementation-specific
+    // Skipped: Effects do not automatically register their dispose function with the owner.
+    // See the "should isolate effects in root" test above for details and workaround.
     const sig = signal(0);
     const spy1 = vi.fn();
     const spy2 = vi.fn();

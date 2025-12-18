@@ -17,15 +17,15 @@ export function createSentryTracker() {
                 if (typeof window !== 'undefined') {
                     Sentry = await import('@sentry/browser');
                     const integrations = [];
-                    // Add tracing integration
+                    // Add tracing integration (Sentry v8+ uses function-based integrations)
                     if (options.tracing) {
-                        const { BrowserTracing } = await import('@sentry/browser');
-                        integrations.push(new BrowserTracing());
+                        const { browserTracingIntegration } = await import('@sentry/browser');
+                        integrations.push(browserTracingIntegration());
                     }
-                    // Add replay integration
+                    // Add replay integration (Sentry v8+ uses function-based integrations)
                     if (options.replays) {
-                        const { Replay } = await import('@sentry/browser');
-                        integrations.push(new Replay());
+                        const { replayIntegration } = await import('@sentry/browser');
+                        integrations.push(replayIntegration());
                     }
                     Sentry.init({
                         dsn: options.dsn,

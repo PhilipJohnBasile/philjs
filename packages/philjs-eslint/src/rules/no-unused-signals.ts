@@ -14,7 +14,6 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     docs: {
       description: 'Disallow creating signals that are never read',
-      recommended: 'recommended',
     },
     messages: {
       unusedSignal: 'Signal "{{name}}" is created but never read. Consider removing it or using it in your component.',

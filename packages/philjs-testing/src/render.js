@@ -42,6 +42,7 @@ export function render(ui, options = {}) {
     // Bind queries to container
     const boundQueries = bindQueries(container);
     return {
+        ...boundQueries,
         container,
         baseElement,
         debug: (el = baseElement) => debug(el),
@@ -63,7 +64,6 @@ export function render(ui, options = {}) {
             });
             return fragment;
         },
-        ...boundQueries,
     };
 }
 /**

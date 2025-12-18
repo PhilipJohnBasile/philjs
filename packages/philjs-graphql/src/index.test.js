@@ -202,7 +202,8 @@ describe('GraphQL Client', () => {
         });
         const client = createGraphQLClient({
             endpoint: 'https://api.example.com/graphql',
-            fetch: mockFetch
+            fetch: mockFetch,
+            retry: { maxRetries: 0 } // Disable retries for this test
         });
         await expect(async () => {
             await client.query({

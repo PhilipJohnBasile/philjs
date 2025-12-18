@@ -4,11 +4,11 @@
 /**
  * Pretty print a DOM element
  */
-export declare function prettyDOM(element?: Element | null, maxLength?: number, options?: prettyFormat.OptionsReceived): string;
+export declare function prettyDOM(element?: Element | null, maxLength?: number, options?: any): string;
 /**
  * Log DOM to console
  */
-export declare function logDOM(element?: Element | null, maxLength?: number, options?: prettyFormat.OptionsReceived): void;
+export declare function logDOM(element?: Element | null, maxLength?: number, options?: any): void;
 /**
  * Debug helper - logs container contents
  */

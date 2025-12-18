@@ -71,6 +71,10 @@ export declare class Analyzer {
      */
     private generateWarnings;
     /**
+     * Get the depth of a memo in the dependency chain
+     */
+    private getMemoDepth;
+    /**
      * Find shared dependencies (diamond pattern)
      */
     private findSharedDependencies;

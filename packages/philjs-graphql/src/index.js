@@ -3,11 +3,14 @@
  *
  * Provides GraphQL query and mutation support with:
  * - Type-safe queries and mutations
+ * - Signal-based reactive caching
  * - Integration with PhilJS loaders and actions
  * - Automatic caching and deduplication
- * - Subscriptions support (coming soon)
+ * - GraphQL subscriptions over WebSocket
+ * - Optimistic updates for mutations
+ * - Advanced error handling with retry logic
  */
-import { signal, resource } from 'philjs-core';
+import { signal, resource, batch } from 'philjs-core';
 import { defineLoader, defineAction } from 'philjs-ssr';
 /**
  * GraphQL Client for PhilJS
@@ -15,29 +18,74 @@ import { defineLoader, defineAction } from 'philjs-ssr';
 export class GraphQLClient {
     config;
     cache;
+    subscriptions;
     constructor(config) {
-        this.config = config;
+        this.config = {
+            reactiveCache: true,
+            defaultCacheTTL: 5 * 60 * 1000, // 5 minutes
+            retry: {
+                maxRetries: 3,
+                retryDelay: 1000,
+                backoffMultiplier: 2,
+            },
+            ...config,
+        };
         this.cache = new Map();
+        this.subscriptions = new Map();
     }
     /**
      * Execute a GraphQL query
      */
     async query(options) {
-        const { query, variables, cacheKey, noCache } = options;
+        const { query, variables, cacheKey, noCache, cacheTTL } = options;
         // Generate cache key
         const key = cacheKey || this.generateCacheKey(query, variables);
         // Check cache if caching is enabled
-        if (!noCache && this.cache.has(key)) {
-            return this.cache.get(key);
+        if (!noCache) {
+            const entry = this.cache.get(key);
+            if (entry) {
+                // Check if cache is still valid
+                const now = Date.now();
+                const ttl = cacheTTL || entry.ttl || this.config.defaultCacheTTL;
+                if (now - entry.timestamp < ttl) {
+                    // Return cached data if available
+                    const cached = entry.data();
+                    if (cached) {
+                        return cached;
+                    }
+                    // Return pending promise if still loading
+                    if (entry.promise) {
+                        return entry.promise;
+                    }
+                }
+                else {
+                    // Cache expired, remove it
+                    this.cache.delete(key);
+                }
+            }
         }
-        // Execute query
-        const promise = this.executeRequest({
+        // Execute query with retry logic
+        const promise = this.executeRequestWithRetry({
             query: this.documentToString(query),
             variables
         });
         // Store in cache if caching is enabled
-        if (!noCache) {
-            this.cache.set(key, promise);
+        if (!noCache && this.config.reactiveCache) {
+            const dataSignal = signal(null);
+            const entry = {
+                data: dataSignal,
+                promise,
+                timestamp: Date.now(),
+                ttl: cacheTTL || this.config.defaultCacheTTL,
+            };
+            this.cache.set(key, entry);
+            // Update signal when promise resolves
+            promise.then((response) => {
+                dataSignal.set(response);
+                entry.promise = null;
+            }).catch(() => {
+                entry.promise = null;
+            });
         }
         return promise;
     }
@@ -45,14 +93,118 @@ export class GraphQLClient {
      * Execute a GraphQL mutation
      */
     async mutate(options) {
-        const { mutation, variables } = options;
-        const response = await this.executeRequest({
-            query: this.documentToString(mutation),
-            variables
-        });
-        // Clear cache after mutation
-        this.clearCache();
-        return response;
+        const { mutation, variables, optimisticResponse, refetchQueries, update } = options;
+        // Apply optimistic update if provided
+        if (optimisticResponse && update) {
+            batch(() => {
+                update(this, { data: optimisticResponse });
+            });
+        }
+        try {
+            const response = await this.executeRequestWithRetry({
+                query: this.documentToString(mutation),
+                variables
+            });
+            // Apply cache updates
+            if (update && response.data) {
+                batch(() => {
+                    update(this, response);
+                });
+            }
+            // Refetch specified queries
+            if (refetchQueries && refetchQueries.length > 0) {
+                await Promise.all(refetchQueries.map((q) => {
+                    if (typeof q === 'string') {
+                        // Clear cache for this query pattern
+                        this.clearCache(q);
+                    }
+                    else {
+                        // Refetch specific query
+                        return this.query({ query: q.query, variables: q.variables, noCache: true });
+                    }
+                }));
+            }
+            else {
+                // Default behavior: clear all cache
+                this.clearCache();
+            }
+            return response;
+        }
+        catch (error) {
+            // Revert optimistic update on error
+            if (optimisticResponse && update) {
+                // In a real implementation, you'd store the previous state and restore it
+                this.clearCache();
+            }
+            throw error;
+        }
+    }
+    /**
+     * Subscribe to GraphQL subscription
+     */
+    subscribe(options) {
+        const { subscription, variables, onData, onError, onComplete } = options;
+        if (!this.config.subscriptionEndpoint) {
+            throw new Error('Subscription endpoint not configured');
+        }
+        const key = this.generateCacheKey(subscription, variables);
+        // Check if subscription already exists
+        if (this.subscriptions.has(key)) {
+            console.warn('Subscription already active for this key');
+            return () => this.unsubscribe(key);
+        }
+        // Create WebSocket connection
+        const ws = new WebSocket(this.config.subscriptionEndpoint);
+        ws.onopen = () => {
+            // Send subscription request
+            ws.send(JSON.stringify({
+                type: 'start',
+                payload: {
+                    query: this.documentToString(subscription),
+                    variables,
+                },
+            }));
+        };
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'data' && onData) {
+                onData(message.payload.data);
+            }
+            else if (message.type === 'error' && onError) {
+                onError(new Error(message.payload.message || 'Subscription error'));
+            }
+            else if (message.type === 'complete' && onComplete) {
+                onComplete();
+                this.unsubscribe(key);
+            }
+        };
+        ws.onerror = (error) => {
+            if (onError) {
+                onError(new Error('WebSocket error'));
+            }
+        };
+        ws.onclose = () => {
+            if (onComplete) {
+                onComplete();
+            }
+            this.unsubscribe(key);
+        };
+        this.subscriptions.set(key, ws);
+        // Return unsubscribe function
+        return () => this.unsubscribe(key);
+    }
+    /**
+     * Unsubscribe from a subscription
+     */
+    unsubscribe(key) {
+        const ws = this.subscriptions.get(key);
+        if (ws) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'stop' }));
+                ws.close();
+            }
+            this.subscriptions.delete(key);
+        }
     }
     /**
      * Clear the query cache
@@ -72,6 +224,49 @@ export class GraphQLClient {
         }
     }
     /**
+     * Get cache entry (implements CacheStore)
+     */
+    get(key) {
+        const entry = this.cache.get(key);
+        return entry?.data;
+    }
+    /**
+     * Set cache entry (implements CacheStore)
+     */
+    set(key, data, ttl) {
+        const dataSignal = signal(data);
+        const entry = {
+            data: dataSignal,
+            promise: null,
+            timestamp: Date.now(),
+            ttl: ttl || this.config.defaultCacheTTL,
+        };
+        this.cache.set(key, entry);
+    }
+    /**
+     * Delete cache entry (implements CacheStore)
+     */
+    delete(key) {
+        this.cache.delete(key);
+    }
+    /**
+     * Execute the GraphQL request with retry logic
+     */
+    async executeRequestWithRetry(body, retryCount = 0) {
+        try {
+            return await this.executeRequest(body);
+        }
+        catch (error) {
+            const { maxRetries = 3, retryDelay = 1000, backoffMultiplier = 2 } = this.config.retry || {};
+            if (retryCount < maxRetries) {
+                const delay = retryDelay * Math.pow(backoffMultiplier, retryCount);
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                return this.executeRequestWithRetry(body, retryCount + 1);
+            }
+            throw error;
+        }
+    }
+    /**
      * Execute the GraphQL request
      */
     async executeRequest(body) {
@@ -87,7 +282,13 @@ export class GraphQLClient {
         if (!response.ok) {
             throw new Error(`GraphQL request failed: ${response.statusText}`);
         }
-        return response.json();
+        const result = await response.json();
+        // Check for GraphQL errors
+        if (result.errors && result.errors.length > 0) {
+            // Still return the result, but consumers can check for errors
+            return result;
+        }
+        return result;
     }
     /**
      * Convert DocumentNode to string if needed
@@ -122,7 +323,9 @@ export function createQuery(client, options) {
     const data = signal(undefined);
     const error = signal(null);
     const loading = signal(true);
-    const query = resource(async () => {
+    const retryCount = signal(0);
+    let pollInterval = null;
+    const executeQuery = async () => {
         try {
             loading.set(true);
             const response = await client.query(options);
@@ -131,21 +334,45 @@ export function createQuery(client, options) {
             }
             data.set(response.data);
             error.set(null);
+            retryCount.set(0);
             return response.data;
         }
         catch (err) {
             error.set(err);
+            retryCount.set(retryCount() + 1);
             throw err;
         }
         finally {
             loading.set(false);
         }
-    });
+    };
+    const query = resource(executeQuery);
+    // Setup polling if specified
+    if (options.pollInterval) {
+        pollInterval = setInterval(() => {
+            query.refresh();
+        }, options.pollInterval);
+    }
+    const stopPolling = () => {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        }
+    };
+    const startPolling = (interval) => {
+        stopPolling();
+        pollInterval = setInterval(() => {
+            query.refresh();
+        }, interval);
+    };
     return {
         data,
         error,
         loading,
-        refetch: () => query.refresh()
+        retryCount,
+        refetch: () => query.refresh(),
+        startPolling,
+        stopPolling,
     };
 }
 /**

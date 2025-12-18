@@ -1,22 +1,10 @@
 /**
  * Tests for effect-cleanup-required ESLint rule
- *
- * SKIPPED: Requires @typescript-eslint/rule-tester dependency
- * TODO: Install dependencies and enable tests
  */
 
-import { describe, it, expect } from 'vitest';
-
-describe.skip('effect-cleanup-required', () => {
-  it('placeholder - requires @typescript-eslint/rule-tester', () => {
-    expect(true).toBe(true);
-  });
-});
-
-// Original tests below - will be enabled when dependencies are installed
-/*
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import { afterAll, describe, it } from 'vitest';
+import * as parser from '@typescript-eslint/parser';
 import rule from '../rules/effect-cleanup-required';
 
 RuleTester.afterAll = afterAll;
@@ -24,8 +12,8 @@ RuleTester.describe = describe;
 RuleTester.it = it;
 
 const ruleTester = new RuleTester({
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
+  languageOptions: {
+    parser,
     ecmaVersion: 2020,
     sourceType: 'module',
   },
@@ -42,7 +30,33 @@ ruleTester.run('effect-cleanup-required', rule, {
         });
       `,
     },
-    // ... more valid tests
+    {
+      name: 'effect with setInterval and cleanup return',
+      code: `
+        effect(() => {
+          const id = setInterval(() => {}, 1000);
+          return () => clearInterval(id);
+        });
+      `,
+    },
+    {
+      name: 'effect with addEventListener and cleanup return',
+      code: `
+        effect(() => {
+          const handler = () => {};
+          window.addEventListener('click', handler);
+          return () => window.removeEventListener('click', handler);
+        });
+      `,
+    },
+    {
+      name: 'effect without any resources that need cleanup',
+      code: `
+        effect(() => {
+          console.log('Running effect');
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -59,7 +73,33 @@ ruleTester.run('effect-cleanup-required', rule, {
         },
       ],
     },
-    // ... more invalid tests
+    {
+      name: 'effect with setInterval but no cleanup',
+      code: `
+        effect(() => {
+          setInterval(() => {}, 1000);
+        });
+      `,
+      errors: [
+        {
+          messageId: 'missingCleanup',
+          data: { resource: 'setInterval' },
+        },
+      ],
+    },
+    {
+      name: 'effect with addEventListener but no cleanup',
+      code: `
+        effect(() => {
+          window.addEventListener('click', () => {});
+        });
+      `,
+      errors: [
+        {
+          messageId: 'missingCleanup',
+          data: { resource: 'addEventListener' },
+        },
+      ],
+    },
   ],
 });
-*/

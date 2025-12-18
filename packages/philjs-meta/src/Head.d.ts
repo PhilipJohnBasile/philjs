@@ -3,7 +3,6 @@
  *
  * Manages document head tags (title, meta, link)
  */
-import { JSX } from 'philjs-core';
 import type { MetaTag, LinkTag } from './types';
 interface HeadContextValue {
     addMeta: (tag: MetaTag) => () => void;
@@ -14,13 +13,13 @@ interface HeadContextValue {
  * Head Provider - Should wrap the app root
  */
 export declare function HeadProvider(props: {
-    children: JSX.Element;
+    children: any;
 }): import("philjs-core").JSXElement;
 /**
  * Head Component - Declarative head management
  */
 export declare function Head(props: {
-    children: JSX.Element | JSX.Element[];
+    children: any;
 }): null;
 /**
  * Meta Component - Convenience component for meta tags

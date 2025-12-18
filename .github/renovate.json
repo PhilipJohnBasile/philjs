@@ -1,0 +1,115 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":preserveSemverRanges",
+    "group:allNonMajor",
+    "schedule:weeklyOn monday"
+  ],
+  "timezone": "UTC",
+  "labels": ["dependencies", "renovate"],
+  "rangeStrategy": "bump",
+  "commitMessagePrefix": "chore:",
+  "prHourlyLimit": 10,
+  "prConcurrentLimit": 10,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on Monday"]
+  },
+  "packageRules": [
+    {
+      "description": "Group all non-major updates together",
+      "groupName": "all non-major dependencies",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": ["*"]
+    },
+    {
+      "description": "Separate major updates for careful review",
+      "groupName": "major dependency updates",
+      "matchUpdateTypes": ["major"],
+      "matchPackagePatterns": ["*"],
+      "labels": ["dependencies", "renovate", "major-update"],
+      "schedule": ["before 6am on first day of month"]
+    },
+    {
+      "description": "Group GitHub Actions updates",
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "labels": ["dependencies", "renovate", "github-actions"],
+      "commitMessagePrefix": "ci:",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "TypeScript updates should be separate",
+      "matchPackageNames": ["typescript"],
+      "groupName": "TypeScript",
+      "labels": ["dependencies", "renovate", "typescript"],
+      "schedule": ["before 6am on first day of month"]
+    },
+    {
+      "description": "Vite and Vitest should update together",
+      "groupName": "Vite ecosystem",
+      "matchPackageNames": ["vite", "vitest"],
+      "labels": ["dependencies", "renovate", "vite"]
+    },
+    {
+      "description": "ESLint packages should update together",
+      "groupName": "ESLint packages",
+      "matchPackageNames": ["eslint"],
+      "matchPackagePatterns": ["^eslint-", "^@eslint/"],
+      "labels": ["dependencies", "renovate", "eslint"]
+    },
+    {
+      "description": "Playwright packages should update together",
+      "groupName": "Playwright",
+      "matchPackageNames": ["playwright", "@playwright/test"],
+      "labels": ["dependencies", "renovate", "playwright"]
+    },
+    {
+      "description": "Don't update pnpm (managed via packageManager field)",
+      "matchPackageNames": ["pnpm"],
+      "enabled": false
+    },
+    {
+      "description": "Internal workspace dependencies should not be updated by Renovate",
+      "matchPackagePatterns": ["^philjs-", "^@philjs/", "^eslint-config-philjs$", "^create-philjs$"],
+      "enabled": false
+    },
+    {
+      "description": "Automerge non-major dev dependency updates after CI passes",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "High-confidence updates can be automerged",
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security", "dependencies"],
+    "commitMessagePrefix": "fix(security):",
+    "schedule": ["at any time"]
+  },
+  "osvVulnerabilityAlerts": true,
+  "ignoreDeps": [],
+  "baseBranches": ["main"],
+  "enabledManagers": ["npm", "github-actions"],
+  "npm": {
+    "minimumReleaseAge": "3 days"
+  },
+  "postUpdateOptions": ["pnpmDedupe"],
+  "pnpm": {
+    "enabled": true
+  }
+}

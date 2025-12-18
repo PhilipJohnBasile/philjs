@@ -27,7 +27,7 @@
     "@types/node": "^20.0.0"
   },
   "peerDependencies": {
-    "@vercel/node": "^3.0.0",
+    "@vercel/node": "^5.5.15",
     "@netlify/functions": "^2.0.0",
     "@cloudflare/workers-types": "^4.0.0"
   },

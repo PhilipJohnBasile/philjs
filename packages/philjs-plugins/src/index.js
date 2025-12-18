@@ -52,7 +52,7 @@ export async function installPlugin(plugin, app, config = {}) {
             return providers.has(key) ? providers.get(key) : defaultValue;
         },
         addRoute(route) {
-            callHook('routes:extend', [route]);
+            callHook('routes:extend', [[route]]);
         },
         addMiddleware(middleware) {
             // Add to middleware stack

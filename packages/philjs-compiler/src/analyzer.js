@@ -406,24 +406,102 @@ export class Analyzer {
                 if (sharedDeps.length > 0) {
                     analysis.warnings.push({
                         type: 'performance',
-                        message: `Potential diamond dependency in ${binding.name}`,
+                        message: `Potential diamond dependency in "${binding.name}"`,
                         location: binding.loc,
-                        suggestion: 'PhilJS handles this automatically, but consider simplifying',
+                        suggestion: `PhilJS handles this automatically with glitch-free updates. Consider simplifying if the dependency chain is complex.`,
                     });
                 }
             }
         });
-        // Warn about effects without cleanup
+        // Warn about effects that might need cleanup
         analysis.bindings
             .filter(b => b.type === 'effect')
             .forEach(effect => {
+            // Only warn if dependencies suggest cleanup might be needed
+            if (effect.dependencies.length > 0) {
+                analysis.warnings.push({
+                    type: 'correctness',
+                    message: `Effect depends on ${effect.dependencies.length} signal(s)`,
+                    location: effect.loc,
+                    suggestion: `If this effect sets up subscriptions, event listeners, or timers, return a cleanup function: effect(() => { /* setup */ return () => { /* cleanup */ }; });`,
+                });
+            }
+        });
+        // Warn about unused signals (dead code)
+        analysis.bindings
+            .filter(b => b.type === 'signal' && !b.isUsed)
+            .forEach(binding => {
             analysis.warnings.push({
-                type: 'correctness',
-                message: `Effect "${effect.name}" - ensure cleanup is handled`,
-                location: effect.loc,
-                suggestion: 'Return a cleanup function from the effect',
+                type: 'performance',
+                message: `Signal "${binding.name}" is declared but never read`,
+                location: binding.loc,
+                suggestion: `Remove unused signal to reduce memory usage, or ensure you're reading it with ${binding.name}() in your JSX or effects.`,
             });
         });
+        // Warn about memos with no dependents
+        analysis.bindings
+            .filter(b => b.type === 'memo' && b.dependents.length === 0 && b.isUsed)
+            .forEach(binding => {
+            analysis.warnings.push({
+                type: 'performance',
+                message: `Memo "${binding.name}" has no reactive dependents`,
+                location: binding.loc,
+                suggestion: `This memo runs but nothing reacts to its changes. If you only need the computed value once, consider using a regular variable instead.`,
+            });
+        });
+        // Warn about deeply nested memo chains
+        analysis.bindings
+            .filter(b => b.type === 'memo')
+            .forEach(binding => {
+            const depth = this.getMemoDepth(binding, analysis, new Set());
+            if (depth > 4) {
+                analysis.warnings.push({
+                    type: 'performance',
+                    message: `Memo "${binding.name}" is ${depth} levels deep in the dependency chain`,
+                    location: binding.loc,
+                    suggestion: `Deep memo chains can impact performance. Consider flattening the computation or using batch() for updates.`,
+                });
+            }
+        });
+        // Warn about components with many signals
+        analysis.components.forEach(comp => {
+            if (comp.signals.length > 5) {
+                analysis.warnings.push({
+                    type: 'performance',
+                    message: `Component "${comp.name}" has ${comp.signals.length} signals`,
+                    location: comp.signals[0]?.loc,
+                    suggestion: `Consider extracting some state into a custom hook or splitting into smaller components for better maintainability.`,
+                });
+            }
+            // Warn about components with many reactive JSX expressions
+            if (comp.reactiveJSX.length > 10) {
+                analysis.warnings.push({
+                    type: 'performance',
+                    message: `Component "${comp.name}" has ${comp.reactiveJSX.length} reactive expressions in JSX`,
+                    location: null,
+                    suggestion: `Consider using memos to cache expensive computations or splitting into smaller components.`,
+                });
+            }
+        });
+    }
+    /**
+     * Get the depth of a memo in the dependency chain
+     */
+    getMemoDepth(binding, analysis, visited) {
+        if (visited.has(binding.name))
+            return 0;
+        visited.add(binding.name);
+        if (binding.dependencies.length === 0)
+            return 1;
+        let maxDepth = 0;
+        for (const dep of binding.dependencies) {
+            const depBinding = analysis.bindings.find(b => b.name === dep);
+            if (depBinding && depBinding.type === 'memo') {
+                const depth = this.getMemoDepth(depBinding, analysis, visited);
+                maxDepth = Math.max(maxDepth, depth);
+            }
+        }
+        return maxDepth + 1;
     }
     /**
      * Find shared dependencies (diamond pattern)

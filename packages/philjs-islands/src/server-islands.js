@@ -269,10 +269,8 @@ export async function invalidateIslandsByTag(tag) {
 /**
  * Invalidate a specific island
  */
-export async function invalidateIsland(id, props) {
-    const cacheKey = props
-        ? generateCacheKey(id, props)
-        : `island:${id}`;
+export async function invalidateIsland(id, props = {}, cacheConfig) {
+    const cacheKey = generateCacheKey(id, props, cacheConfig);
     await cacheStore.delete(cacheKey);
 }
 /**

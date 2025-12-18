@@ -20,6 +20,26 @@ export declare class Optimizer {
      */
     private applyAutoBatch;
     /**
+     * Count signal.set() calls inside a function
+     */
+    private countSignalSetsInFunction;
+    /**
+     * Count signal.set() calls inside a node
+     */
+    private countSignalSetsInNode;
+    /**
+     * Check if a call expression is signal.set()
+     */
+    private isSignalSetExpression;
+    /**
+     * Check if the function is in an event handler context
+     */
+    private isEventHandlerContext;
+    /**
+     * Check if a call is Promise.then()
+     */
+    private isPromiseThenCall;
+    /**
      * Apply dead code elimination
      */
     private applyDeadCodeElimination;

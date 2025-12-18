@@ -99,7 +99,7 @@ export class Optimizer {
     applyAutoBatch(ast, analysis) {
         const applied = [];
         traverse(ast, {
-            // Find consecutive signal.set() calls
+            // Find consecutive signal.set() calls in block statements
             BlockStatement: (path) => {
                 const statements = path.node.body;
                 const signalSets = [];
@@ -119,8 +119,87 @@ export class Optimizer {
                     });
                 }
             },
+            // Detect signal updates inside event handlers
+            ArrowFunctionExpression: (path) => {
+                const signalSets = this.countSignalSetsInFunction(path);
+                if (signalSets >= 2) {
+                    const isEventHandler = this.isEventHandlerContext(path);
+                    if (isEventHandler) {
+                        applied.push(`batch-candidate: event handler with ${signalSets} signal updates`);
+                    }
+                }
+            },
+            // Detect signal updates inside async callbacks (Promise.then, async/await)
+            CallExpression: (path) => {
+                if (this.isPromiseThenCall(path)) {
+                    const callback = path.node.arguments[0];
+                    if (t.isArrowFunctionExpression(callback) || t.isFunctionExpression(callback)) {
+                        const signalSets = this.countSignalSetsInNode(callback.body);
+                        if (signalSets >= 2) {
+                            applied.push(`batch-candidate: async callback with ${signalSets} signal updates at line ${path.node.loc?.start.line}`);
+                        }
+                    }
+                }
+            },
         });
         return applied;
+    }
+    /**
+     * Count signal.set() calls inside a function
+     */
+    countSignalSetsInFunction(path) {
+        return this.countSignalSetsInNode(path.node.body);
+    }
+    /**
+     * Count signal.set() calls inside a node
+     */
+    countSignalSetsInNode(node) {
+        let count = 0;
+        traverse(t.file(t.program([t.isStatement(node) ? node : t.expressionStatement(node)])), {
+            CallExpression: (innerPath) => {
+                if (this.isSignalSetExpression(innerPath.node)) {
+                    count++;
+                }
+            },
+        }, undefined, {});
+        return count;
+    }
+    /**
+     * Check if a call expression is signal.set()
+     */
+    isSignalSetExpression(node) {
+        const callee = node.callee;
+        if (t.isMemberExpression(callee) && t.isIdentifier(callee.property)) {
+            return callee.property.name === 'set' || callee.property.name === 'update';
+        }
+        return false;
+    }
+    /**
+     * Check if the function is in an event handler context
+     */
+    isEventHandlerContext(path) {
+        const parent = path.parentPath;
+        if (parent && t.isJSXExpressionContainer(parent.node)) {
+            const grandparent = parent.parentPath;
+            if (grandparent && t.isJSXAttribute(grandparent.node)) {
+                const attrName = grandparent.node.name;
+                if (t.isJSXIdentifier(attrName)) {
+                    // Common event handler patterns: onClick, onInput, onChange, etc.
+                    return /^on[A-Z]/.test(attrName.name);
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Check if a call is Promise.then()
+     */
+    isPromiseThenCall(path) {
+        const callee = path.node.callee;
+        if (t.isMemberExpression(callee) && t.isIdentifier(callee.property)) {
+            return callee.property.name === 'then' || callee.property.name === 'catch' || callee.property.name === 'finally';
+        }
+        return false;
     }
     /**
      * Apply dead code elimination
