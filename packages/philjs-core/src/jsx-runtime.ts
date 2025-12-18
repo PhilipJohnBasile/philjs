@@ -83,18 +83,3 @@ export function createElement(
 ): JSXElement {
   return jsx(type, { ...props, children }, props?.key);
 }
-
-declare global {
-  namespace JSX {
-    type Element = JSXElement;
-    interface IntrinsicAttributes {
-      key?: string | number;
-    }
-    interface ElementChildrenAttribute {
-      children?: unknown;
-    }
-    interface IntrinsicElements {
-      [elemName: string]: Record<string, any>;
-    }
-  }
-}

@@ -4,7 +4,7 @@
 
 import type { EditorConfig } from './types';
 import { EditorState } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers, highlightActiveLine, ViewUpdate } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -22,7 +22,7 @@ export function createEditor(container: HTMLElement, config: EditorConfig = {}) 
     javascript({ jsx: true, typescript: true }),
     syntaxHighlighting(defaultHighlightStyle),
     autocompletion(),
-    EditorView.updateListener.of((update) => {
+    EditorView.updateListener.of((update: ViewUpdate) => {
       if (update.docChanged && onChange) {
         onChange(update.state.doc.toString());
       }

@@ -356,6 +356,13 @@ export class GraphQLClient implements CacheStore {
   }
 
   /**
+   * Clear the query cache (CacheStore interface implementation)
+   */
+  clear(pattern?: string | RegExp): void {
+    this.clearCache(pattern);
+  }
+
+  /**
    * Get cache entry (implements CacheStore)
    */
   get<T>(key: string): Signal<GraphQLResponse<T> | null> | undefined {

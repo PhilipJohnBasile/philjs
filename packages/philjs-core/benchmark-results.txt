@@ -1,0 +1,50 @@
+
+> philjs-core@0.1.0 test C:\Users\Phili\Git\philjs\packages\philjs-core
+> vitest run "benchmarks.test.ts"
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mC:/Users/Phili/Git/philjs/packages/philjs-core[39m
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSignal Creation Performance[2m > [22m[2mshould create 1,000 signals quickly
+[22m[39mCreated 1,000 signals in 0.28ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSignal Creation Performance[2m > [22m[2mshould create 10,000 signals quickly
+[22m[39mCreated 10,000 signals in 1.54ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSignal Update Performance[2m > [22m[2mshould update signal 1,000 times quickly
+[22m[39mUpdated signal 1,000 times in 0.13ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSignal Update Performance[2m > [22m[2mshould update 100 signals once each quickly
+[22m[39mUpdated 100 signals in 0.01ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mComputed (Memo) Performance[2m > [22m[2mshould create 1,000 memos quickly
+[22m[39mCreated 1,000 memos in 0.51ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mComputed (Memo) Performance[2m > [22m[2mshould trigger 1,000 memo recomputations quickly
+[22m[39mTriggered 1,000 memo recomputations in 0.31ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mEffect Performance[2m > [22m[2mshould create and run 1,000 effects quickly
+[22m[39mCreated and ran 1,000 effects in 0.55ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mEffect Performance[2m > [22m[2mshould trigger 1,000 effect updates quickly
+[22m[39mTriggered 1,000 effect updates in 0.32ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSSR Rendering Performance[2m > [22m[2mshould render simple component 1,000 times quickly
+[22m[39mRendered simple component 1,000 times in 1.08ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mPerformance Benchmarks[2m > [22m[2mSSR Rendering Performance[2m > [22m[2mshould render nested components quickly
+[22m[39mRendered nested components 100 times in 0.63ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mBenchmark Comparison Targets[2m > [22m[2mPhilJS target: 100k signal updates in <100ms
+[22m[39mPhilJS: 100k signal updates in 6.56ms
+
+[90mstdout[2m | src/benchmarks.test.ts[2m > [22m[2mBenchmark Comparison Targets[2m > [22m[2mPhilJS target: SSR 10k elements in <100ms
+[22m[39mPhilJS SSR: 10k elements in 9.23ms
+
+ [32m✓[39m src/benchmarks.test.ts [2m([22m[2m23 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[32m 94[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m22 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (23)[39m
+[2m   Start at [22m 21:45:33
+[2m   Duration [22m 1.59s[2m (transform 57ms, setup 0ms, collect 121ms, tests 94ms, environment 792ms, prepare 262ms)[22m
+

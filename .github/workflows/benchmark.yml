@@ -1,0 +1,382 @@
+name: Performance Benchmarks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    name: Run Performance Benchmarks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Get baseline benchmarks (if PR)
+        if: github.event_name == 'pull_request'
+        id: baseline
+        run: |
+          # Checkout base branch to get baseline
+          git fetch origin ${{ github.base_ref }}
+
+          # Check if baseline exists
+          if git show origin/${{ github.base_ref }}:metrics/benchmark-baseline.json > /dev/null 2>&1; then
+            git show origin/${{ github.base_ref }}:metrics/benchmark-baseline.json > baseline.json
+            echo "has_baseline=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_baseline=false" >> $GITHUB_OUTPUT
+            echo "{}" > baseline.json
+          fi
+
+      - name: Run performance tests
+        id: perf-tests
+        run: |
+          # Run performance tests and capture output
+          echo "Running performance tests..."
+          pnpm --filter philjs-core vitest run src/performance.test.ts src/benchmarks.test.ts --reporter=verbose --reporter=json --outputFile=test-results.json 2>&1 | tee test-output.txt
+
+          # Check if tests passed
+          if [ ${PIPESTATUS[0]} -eq 0 ]; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Parse benchmark results
+        id: parse
+        run: |
+          # Create a simple results JSON from test output
+          node -e "
+          const fs = require('fs');
+          const output = fs.readFileSync('test-output.txt', 'utf-8');
+
+          // Extract timing information from test output
+          const results = {
+            timestamp: new Date().toISOString(),
+            node_version: process.version,
+            platform: process.platform,
+            tests: []
+          };
+
+          // Parse test results
+          const lines = output.split('\\n');
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // Match test completions with timing
+            const testMatch = line.match(/✓\s+(.+?)\s+\((\d+)\s*ms\)/);
+            if (testMatch) {
+              results.tests.push({
+                name: testMatch[1].trim(),
+                duration: parseInt(testMatch[2])
+              });
+            }
+
+            // Match console.log outputs with performance metrics
+            const perfMatch = line.match(/→\s+(.+?)\s+in\s+([\d.]+)ms/);
+            if (perfMatch) {
+              results.tests.push({
+                name: perfMatch[1].trim(),
+                duration: parseFloat(perfMatch[2])
+              });
+            }
+          }
+
+          // Calculate summary
+          if (results.tests.length > 0) {
+            const durations = results.tests.map(t => t.duration);
+            results.summary = {
+              totalTests: results.tests.length,
+              totalTime: durations.reduce((a, b) => a + b, 0),
+              avgTime: durations.reduce((a, b) => a + b, 0) / durations.length,
+              maxTime: Math.max(...durations),
+              minTime: Math.min(...durations)
+            };
+          } else {
+            results.summary = {
+              totalTests: 0,
+              totalTime: 0,
+              avgTime: 0,
+              maxTime: 0,
+              minTime: 0
+            };
+          }
+
+          fs.writeFileSync('benchmark-results.json', JSON.stringify(results, null, 2));
+          console.log('Parsed', results.tests.length, 'benchmark results');
+          "
+
+      - name: Compare against baseline (if PR)
+        if: github.event_name == 'pull_request' && steps.baseline.outputs.has_baseline == 'true'
+        id: compare
+        run: |
+          node -e "
+          const fs = require('fs');
+          const current = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf-8'));
+          const baseline = JSON.parse(fs.readFileSync('baseline.json', 'utf-8'));
+
+          const comparison = {
+            regressions: [],
+            improvements: [],
+            unchanged: [],
+            new_tests: []
+          };
+
+          // Compare each test
+          for (const test of current.tests) {
+            const baselineTest = baseline.tests?.find(t => t.name === test.name);
+
+            if (!baselineTest) {
+              comparison.new_tests.push(test);
+              continue;
+            }
+
+            const percentChange = ((test.duration - baselineTest.duration) / baselineTest.duration) * 100;
+            const item = {
+              name: test.name,
+              current: test.duration,
+              baseline: baselineTest.duration,
+              change: percentChange,
+              changeAbs: test.duration - baselineTest.duration
+            };
+
+            if (percentChange > 10) {
+              comparison.regressions.push(item);
+            } else if (percentChange < -10) {
+              comparison.improvements.push(item);
+            } else {
+              comparison.unchanged.push(item);
+            }
+          }
+
+          fs.writeFileSync('comparison.json', JSON.stringify(comparison, null, 2));
+
+          // Set outputs
+          console.log('Regressions:', comparison.regressions.length);
+          console.log('Improvements:', comparison.improvements.length);
+
+          // Fail if significant regressions
+          if (comparison.regressions.length > 0) {
+            const significantRegressions = comparison.regressions.filter(r => r.change > 10);
+            if (significantRegressions.length > 0) {
+              fs.writeFileSync(process.env.GITHUB_OUTPUT, 'has_regressions=true\\n', { flag: 'a' });
+            } else {
+              fs.writeFileSync(process.env.GITHUB_OUTPUT, 'has_regressions=false\\n', { flag: 'a' });
+            }
+          } else {
+            fs.writeFileSync(process.env.GITHUB_OUTPUT, 'has_regressions=false\\n', { flag: 'a' });
+          }
+          "
+
+      - name: Comment PR with benchmark results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let results, comparison;
+            try {
+              results = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf8'));
+            } catch (e) {
+              console.log('No benchmark results found');
+              return;
+            }
+
+            const hasBaseline = '${{ steps.baseline.outputs.has_baseline }}' === 'true';
+
+            if (hasBaseline) {
+              try {
+                comparison = JSON.parse(fs.readFileSync('comparison.json', 'utf8'));
+              } catch (e) {
+                comparison = null;
+              }
+            }
+
+            // Build comment body
+            let body = '## Performance Benchmark Results\n\n';
+
+            // Summary
+            body += '### Summary\n\n';
+            body += '| Metric | Value |\n';
+            body += '|--------|-------|\n';
+            body += `| Total Tests | ${results.summary.totalTests} |\n`;
+            body += `| Total Time | ${results.summary.totalTime.toFixed(2)}ms |\n`;
+            body += `| Average Time | ${results.summary.avgTime.toFixed(2)}ms |\n`;
+            body += `| Max Time | ${results.summary.maxTime.toFixed(2)}ms |\n`;
+            body += `| Min Time | ${results.summary.minTime.toFixed(2)}ms |\n`;
+            body += `| Node.js | ${results.node_version} |\n`;
+            body += `| Platform | ${results.platform} |\n\n`;
+
+            // Comparison results (if baseline exists)
+            if (comparison) {
+              if (comparison.regressions.length > 0) {
+                body += '### ⚠️ Performance Regressions (>10% slower)\n\n';
+                body += '| Test | Current | Baseline | Change |\n';
+                body += '|------|---------|----------|--------|\n';
+
+                for (const reg of comparison.regressions) {
+                  const changeStr = reg.change > 0 ? `+${reg.change.toFixed(1)}%` : `${reg.change.toFixed(1)}%`;
+                  body += `| ${reg.name} | ${reg.current.toFixed(2)}ms | ${reg.baseline.toFixed(2)}ms | ${changeStr} ⚠️ |\n`;
+                }
+                body += '\n';
+              }
+
+              if (comparison.improvements.length > 0) {
+                body += '### ✅ Performance Improvements (>10% faster)\n\n';
+                body += '| Test | Current | Baseline | Change |\n';
+                body += '|------|---------|----------|--------|\n';
+
+                for (const imp of comparison.improvements) {
+                  const changeStr = imp.change > 0 ? `+${imp.change.toFixed(1)}%` : `${imp.change.toFixed(1)}%`;
+                  body += `| ${imp.name} | ${imp.current.toFixed(2)}ms | ${imp.baseline.toFixed(2)}ms | ${changeStr} ✅ |\n`;
+                }
+                body += '\n';
+              }
+
+              if (comparison.new_tests.length > 0) {
+                body += '### 🆕 New Tests\n\n';
+                body += '| Test | Duration |\n';
+                body += '|------|----------|\n';
+
+                for (const test of comparison.new_tests) {
+                  body += `| ${test.name} | ${test.duration.toFixed(2)}ms |\n`;
+                }
+                body += '\n';
+              }
+
+              // Overall status
+              if (comparison.regressions.length > 0) {
+                body += '---\n\n';
+                body += '**⚠️ Warning**: This PR introduces performance regressions. Please review and optimize before merging.\n\n';
+              } else if (comparison.improvements.length > 0) {
+                body += '---\n\n';
+                body += '**✅ Great**: This PR includes performance improvements!\n\n';
+              } else {
+                body += '---\n\n';
+                body += '**✅ OK**: No significant performance changes detected.\n\n';
+              }
+            } else {
+              body += '> No baseline available for comparison. This will be the new baseline after merge.\n\n';
+
+              // Show top 10 slowest tests
+              const sorted = [...results.tests].sort((a, b) => b.duration - a.duration).slice(0, 10);
+              if (sorted.length > 0) {
+                body += '### Top 10 Slowest Tests\n\n';
+                body += '| Test | Duration |\n';
+                body += '|------|----------|\n';
+
+                for (const test of sorted) {
+                  body += `| ${test.name} | ${test.duration.toFixed(2)}ms |\n`;
+                }
+                body += '\n';
+              }
+            }
+
+            body += '\n---\n';
+            body += '*Performance benchmarks powered by PhilJS test suite*';
+
+            // Post comment
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Save benchmark results as artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: |
+            benchmark-results.json
+            test-results.json
+            test-output.txt
+            comparison.json
+          retention-days: 30
+
+      - name: Update baseline (on push to main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Create metrics directory if it doesn't exist
+          mkdir -p metrics
+
+          # Copy current results as new baseline
+          cp benchmark-results.json metrics/benchmark-baseline.json
+
+          # Update history
+          node -e "
+          const fs = require('fs');
+          const current = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf-8'));
+
+          let history = [];
+          const historyPath = 'metrics/benchmark-history.json';
+
+          if (fs.existsSync(historyPath)) {
+            try {
+              history = JSON.parse(fs.readFileSync(historyPath, 'utf-8'));
+            } catch (e) {
+              history = [];
+            }
+          }
+
+          // Add current to history
+          history.push({
+            timestamp: current.timestamp,
+            summary: current.summary,
+            commit: process.env.GITHUB_SHA,
+            ref: process.env.GITHUB_REF
+          });
+
+          // Keep last 50 entries
+          if (history.length > 50) {
+            history = history.slice(-50);
+          }
+
+          fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
+          console.log('Updated benchmark history with', history.length, 'entries');
+          "
+
+      - name: Commit updated baseline
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add metrics/benchmark-baseline.json metrics/benchmark-history.json
+          git diff --staged --quiet || git commit -m "Update performance benchmark baseline [skip ci]"
+          git push
+
+      - name: Fail if significant regressions
+        if: github.event_name == 'pull_request' && steps.compare.outputs.has_regressions == 'true'
+        run: |
+          echo "Performance regressions detected (>10% slower). See PR comment for details."
+          exit 1
