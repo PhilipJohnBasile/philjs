@@ -49,6 +49,14 @@
     "bin",
     "README.md"
   ],
-  "keywords": ["philjs", "migration", "codemod", "react", "vue", "svelte"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "migration",
+    "codemod",
+    "react",
+    "vue",
+    "svelte"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

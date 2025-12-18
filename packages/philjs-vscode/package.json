@@ -33,8 +33,13 @@
     "languages": [
       {
         "id": "philjs",
-        "aliases": ["PhilJS", "philjs"],
-        "extensions": [".philjs"],
+        "aliases": [
+          "PhilJS",
+          "philjs"
+        ],
+        "extensions": [
+          ".philjs"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -125,5 +130,6 @@
     "language-configuration.json",
     "README.md"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "sideEffects": false
 }

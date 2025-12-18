@@ -31,6 +31,15 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "tailwind", "tailwindcss", "css", "utility-first"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "tailwind",
+    "tailwindcss",
+    "css",
+    "utility-first"
+  ],
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ]
 }

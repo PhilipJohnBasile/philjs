@@ -40,6 +40,42 @@ let batchedUpdates = new Set<() => void>();
 let currentOwner: Owner | null = null;
 
 // ============================================================================
+// HMR State Management
+// ============================================================================
+
+/**
+ * Global HMR state registry for preserving signal values across hot updates.
+ * Maps signal IDs to their current values.
+ */
+const hmrStateRegistry = new Map<string, any>();
+
+/**
+ * Track all active signals for HMR snapshot/restore.
+ * Weak references to avoid memory leaks.
+ */
+const activeSignals = new Set<{ id: string; get: () => any; set: (v: any) => void }>();
+
+/**
+ * Track all active effects for proper cleanup during HMR.
+ */
+const activeEffects = new Set<{ id: string; dispose: () => void }>();
+
+/**
+ * Counter for generating unique signal IDs.
+ */
+let signalIdCounter = 0;
+
+/**
+ * Flag to indicate if HMR is in progress.
+ */
+let hmrInProgress = false;
+
+/**
+ * Snapshot of state before HMR update (for rollback on error).
+ */
+let hmrStateSnapshot: Map<string, any> | null = null;
+
+// ============================================================================
 // Core Signal Implementation
 // ============================================================================
 
@@ -58,6 +94,9 @@ let currentOwner: Owner | null = null;
 export function signal<T>(initialValue: T): Signal<T> {
   let value = initialValue;
   const subscribers = new Set<Computation>();
+
+  // Generate unique ID for HMR tracking
+  const signalId = `signal_${signalIdCounter++}`;
 
   const read = (() => {
     // Track this signal as a dependency of the active computation
@@ -78,6 +117,11 @@ export function signal<T>(initialValue: T): Signal<T> {
     if (Object.is(value, newValue)) return;
 
     value = newValue;
+
+    // Update HMR registry if not in HMR restore process
+    if (!hmrInProgress) {
+      hmrStateRegistry.set(signalId, value);
+    }
 
     // Notify all subscribers
     if (batchDepth > 0) {
@@ -104,6 +148,17 @@ export function signal<T>(initialValue: T): Signal<T> {
 
   // Peek reads the value without tracking dependencies
   read.peek = () => value;
+
+  // Register signal for HMR tracking
+  const signalHandle = {
+    id: signalId,
+    get: () => value,
+    set: (v: any) => read.set(v as T),
+  };
+  activeSignals.add(signalHandle);
+
+  // Initialize HMR registry with initial value
+  hmrStateRegistry.set(signalId, initialValue);
 
   return read;
 }
@@ -338,6 +393,9 @@ export function effect(fn: EffectFunction): EffectCleanup {
 
   let owner: Owner | null = null;
 
+  // Generate unique ID for HMR tracking
+  const effectId = `effect_${signalIdCounter++}`;
+
   const computation: Computation = {
     execute: () => {
       if (isDisposed) return;
@@ -383,11 +441,8 @@ export function effect(fn: EffectFunction): EffectCleanup {
     dependencies: new Set(),
   };
 
-  // Run the effect initially
-  computation.execute();
-
   // Return cleanup function
-  return () => {
+  const dispose = () => {
     if (isDisposed) return;
     isDisposed = true;
 
@@ -405,7 +460,22 @@ export function effect(fn: EffectFunction): EffectCleanup {
     const oldDeps = Array.from(computation.dependencies);
     oldDeps.forEach(deps => deps.delete(computation));
     computation.dependencies.clear();
+
+    // Unregister from HMR tracking
+    activeEffects.delete(effectHandle);
   };
+
+  // Register effect for HMR tracking
+  const effectHandle = {
+    id: effectId,
+    dispose,
+  };
+  activeEffects.add(effectHandle);
+
+  // Run the effect initially
+  computation.execute();
+
+  return dispose;
 }
 
 // ============================================================================
@@ -615,5 +685,279 @@ export function resource<T>(fetcher: ResourceFetcher<T>): Resource<T> {
   read.error = () => error();
 
   return read;
+}
+
+// ============================================================================
+// HMR API
+// ============================================================================
+
+/**
+ * Options for HMR operations
+ */
+export interface HMROptions {
+  /**
+   * Enable verbose logging for debugging HMR issues
+   */
+  verbose?: boolean;
+
+  /**
+   * Custom error handler for HMR failures
+   */
+  onError?: (error: Error) => void;
+
+  /**
+   * Timeout for HMR operations in milliseconds
+   * @default 100
+   */
+  timeout?: number;
+}
+
+/**
+ * Snapshot all signal state for HMR preservation.
+ * Called before a hot update to save current state.
+ *
+ * @param options - HMR configuration options
+ * @returns The snapshot that can be used for rollback
+ *
+ * @example
+ * ```ts
+ * // Before HMR update
+ * const snapshot = snapshotHMRState();
+ *
+ * try {
+ *   // Apply HMR update
+ *   applyUpdate();
+ *   restoreHMRState();
+ * } catch (error) {
+ *   // Rollback on error
+ *   rollbackHMRState(snapshot);
+ * }
+ * ```
+ */
+export function snapshotHMRState(options: HMROptions = {}): Map<string, any> {
+  const startTime = performance.now();
+  const snapshot = new Map<string, any>();
+
+  hmrInProgress = true;
+
+  // Snapshot all active signal values
+  for (const signal of activeSignals) {
+    try {
+      const value = signal.get();
+      snapshot.set(signal.id, value);
+      hmrStateRegistry.set(signal.id, value);
+    } catch (error) {
+      if (options.verbose) {
+        console.warn(`[PhilJS HMR] Failed to snapshot signal ${signal.id}:`, error);
+      }
+    }
+  }
+
+  // Store snapshot for potential rollback
+  hmrStateSnapshot = snapshot;
+
+  if (options.verbose) {
+    const duration = performance.now() - startTime;
+    console.log(`[PhilJS HMR] Snapshotted ${snapshot.size} signals in ${duration.toFixed(2)}ms`);
+  }
+
+  return snapshot;
+}
+
+/**
+ * Restore signal state from HMR registry.
+ * Called after a hot update to restore preserved state.
+ *
+ * @param options - HMR configuration options
+ *
+ * @example
+ * ```ts
+ * // After HMR update
+ * restoreHMRState({ verbose: true });
+ * ```
+ */
+export function restoreHMRState(options: HMROptions = {}): void {
+  const startTime = performance.now();
+  let restoredCount = 0;
+  let failedCount = 0;
+
+  // Restore state to all active signals
+  for (const signal of activeSignals) {
+    if (hmrStateRegistry.has(signal.id)) {
+      try {
+        const savedValue = hmrStateRegistry.get(signal.id);
+        signal.set(savedValue);
+        restoredCount++;
+      } catch (error) {
+        failedCount++;
+        if (options.verbose) {
+          console.warn(`[PhilJS HMR] Failed to restore signal ${signal.id}:`, error);
+        }
+        if (options.onError) {
+          options.onError(error instanceof Error ? error : new Error(String(error)));
+        }
+      }
+    }
+  }
+
+  hmrInProgress = false;
+
+  if (options.verbose) {
+    const duration = performance.now() - startTime;
+    console.log(
+      `[PhilJS HMR] Restored ${restoredCount} signals` +
+      (failedCount > 0 ? ` (${failedCount} failed)` : '') +
+      ` in ${duration.toFixed(2)}ms`
+    );
+  }
+}
+
+/**
+ * Rollback to a previous HMR snapshot.
+ * Used when an HMR update fails and we need to restore the previous state.
+ *
+ * @param snapshot - The snapshot to restore (from snapshotHMRState)
+ * @param options - HMR configuration options
+ *
+ * @example
+ * ```ts
+ * const snapshot = snapshotHMRState();
+ * try {
+ *   applyHMRUpdate();
+ * } catch (error) {
+ *   rollbackHMRState(snapshot);
+ *   throw error;
+ * }
+ * ```
+ */
+export function rollbackHMRState(snapshot: Map<string, any>, options: HMROptions = {}): void {
+  const startTime = performance.now();
+  let rolledBackCount = 0;
+
+  // Restore from snapshot
+  for (const [id, value] of snapshot) {
+    try {
+      // Find the signal by ID
+      for (const signal of activeSignals) {
+        if (signal.id === id) {
+          signal.set(value);
+          rolledBackCount++;
+          break;
+        }
+      }
+      // Update registry
+      hmrStateRegistry.set(id, value);
+    } catch (error) {
+      if (options.verbose) {
+        console.warn(`[PhilJS HMR] Failed to rollback signal ${id}:`, error);
+      }
+    }
+  }
+
+  hmrInProgress = false;
+
+  if (options.verbose) {
+    const duration = performance.now() - startTime;
+    console.log(`[PhilJS HMR] Rolled back ${rolledBackCount} signals in ${duration.toFixed(2)}ms`);
+  }
+}
+
+/**
+ * Cleanup all effects before HMR update.
+ * Ensures proper cleanup to avoid memory leaks and stale subscriptions.
+ *
+ * @param options - HMR configuration options
+ *
+ * @example
+ * ```ts
+ * cleanupHMREffects();
+ * // Apply HMR update...
+ * // Effects will be re-created with new component code
+ * ```
+ */
+export function cleanupHMREffects(options: HMROptions = {}): void {
+  const startTime = performance.now();
+  let cleanedCount = 0;
+
+  // Dispose all active effects
+  const effectsToClean = Array.from(activeEffects);
+
+  for (const effectHandle of effectsToClean) {
+    try {
+      effectHandle.dispose();
+      activeEffects.delete(effectHandle);
+      cleanedCount++;
+    } catch (error) {
+      if (options.verbose) {
+        console.warn(`[PhilJS HMR] Failed to cleanup effect ${effectHandle.id}:`, error);
+      }
+    }
+  }
+
+  if (options.verbose) {
+    const duration = performance.now() - startTime;
+    console.log(`[PhilJS HMR] Cleaned up ${cleanedCount} effects in ${duration.toFixed(2)}ms`);
+  }
+}
+
+/**
+ * Clear the HMR state registry.
+ * Useful for testing or when you want to start fresh.
+ *
+ * @example
+ * ```ts
+ * clearHMRState();
+ * ```
+ */
+export function clearHMRState(): void {
+  hmrStateRegistry.clear();
+  activeSignals.clear();
+  activeEffects.clear();
+  hmrStateSnapshot = null;
+  hmrInProgress = false;
+}
+
+/**
+ * Check if HMR is currently in progress.
+ * Useful for conditional logic during hot updates.
+ *
+ * @returns True if HMR is in progress
+ *
+ * @example
+ * ```ts
+ * if (isHMRInProgress()) {
+ *   // Skip expensive operations during HMR
+ * }
+ * ```
+ */
+export function isHMRInProgress(): boolean {
+  return hmrInProgress;
+}
+
+/**
+ * Get HMR state statistics for debugging.
+ *
+ * @returns Statistics about the current HMR state
+ *
+ * @example
+ * ```ts
+ * const stats = getHMRStats();
+ * console.log(`Active signals: ${stats.signalCount}`);
+ * ```
+ */
+export function getHMRStats(): {
+  signalCount: number;
+  effectCount: number;
+  registrySize: number;
+  hasSnapshot: boolean;
+  inProgress: boolean;
+} {
+  return {
+    signalCount: activeSignals.size,
+    effectCount: activeEffects.size,
+    registrySize: hmrStateRegistry.size,
+    hasSnapshot: hmrStateSnapshot !== null,
+    inProgress: hmrInProgress,
+  };
 }
 

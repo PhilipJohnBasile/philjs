@@ -17,14 +17,22 @@
     },
     "./styles.css": "./dist/styles.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && node scripts/build-css.js",
     "dev": "tsc --watch",
     "test": "vitest run --passWithNoTests",
     "storybook": "storybook dev -p 6006"
   },
-  "keywords": ["philjs", "ui", "components", "design-system", "accessibility"],
+  "keywords": [
+    "philjs",
+    "ui",
+    "components",
+    "design-system",
+    "accessibility"
+  ],
   "dependencies": {
     "philjs-core": "workspace:*"
   },
@@ -34,5 +42,8 @@
   },
   "peerDependencies": {
     "philjs-core": "workspace:*"
-  }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
 }

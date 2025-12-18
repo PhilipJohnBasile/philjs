@@ -465,6 +465,7 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
       }
 
       const startTime = performance.now();
+      let snapshot: Map<string, any> | null = null;
 
       try {
         // Read the updated file
@@ -479,6 +480,11 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           return;
         }
 
+        // Detect component boundaries for better HMR tracking
+        const hasComponents = /(?:export\s+(?:default\s+)?(?:function|const|class)|function\s+[A-Z])\s+\w+/.test(content);
+        const hasSignals = /signal\(|memo\(|linkedSignal\(/.test(content);
+        const hasEffects = /effect\(/.test(content);
+
         // Invalidate cache for this file
         if (cache) {
           transformCache.delete(file);
@@ -486,15 +492,24 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
         // Find all affected modules
         const affectedModules: Set<ModuleNode> = new Set();
+        const modulesByDepth = new Map<number, Set<ModuleNode>>();
 
-        for (const mod of modules) {
+        // Track module dependency depth for proper update ordering
+        function collectModules(mod: ModuleNode, depth: number) {
+          if (affectedModules.has(mod)) return;
+
           affectedModules.add(mod);
+
+          if (!modulesByDepth.has(depth)) {
+            modulesByDepth.set(depth, new Set());
+          }
+          modulesByDepth.get(depth)!.add(mod);
 
           // Also invalidate dependent modules if they're PhilJS files
           if (mod.importers) {
             for (const importer of mod.importers) {
               if (importer.file && filter(importer.file)) {
-                affectedModules.add(importer);
+                collectModules(importer, depth + 1);
 
                 // Invalidate cache for importers too
                 if (cache && importer.file) {
@@ -505,33 +520,114 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           }
         }
 
+        for (const mod of modules) {
+          collectModules(mod, 0);
+        }
+
+        // If preserveHmrState is enabled, inject state preservation code
+        if (preserveHmrState && isDevelopment && (hasSignals || hasEffects)) {
+          // Snapshot state before HMR update
+          try {
+            // Send command to client to snapshot state
+            server.ws.send({
+              type: 'custom',
+              event: 'philjs:hmr-snapshot',
+              data: {
+                file,
+                hasComponents,
+                hasSignals,
+                hasEffects,
+                moduleCount: affectedModules.size,
+              },
+            });
+
+            // Mark modules as HMR boundaries based on content
+            for (const mod of affectedModules) {
+              if (mod.file) {
+                const isComponent = mod.file.endsWith('.tsx') || mod.file.endsWith('.jsx');
+                const isModule = mod.file.endsWith('.ts') || mod.file.endsWith('.js');
+
+                // Components should be self-accepting to preserve local state
+                if (isComponent && hasComponents) {
+                  mod.isSelfAccepting = true;
+                }
+
+                // Modules with signals should preserve state across boundaries
+                if (isModule && hasSignals) {
+                  mod.isSelfAccepting = true;
+                }
+              }
+            }
+
+            if (verbose) {
+              console.log(
+                `[philjs-compiler] HMR boundary detection:`,
+                `components=${hasComponents}, signals=${hasSignals}, effects=${hasEffects}`
+              );
+            }
+          } catch (hmrError) {
+            if (verbose) {
+              console.warn(`[philjs-compiler] HMR snapshot failed:`, hmrError);
+            }
+          }
+        }
+
         const duration = performance.now() - startTime;
 
         if (verbose) {
           const fileName = file.split('/').pop() || file;
           console.log(
-            `[philjs-compiler] HMR: ${fileName} (${affectedModules.size} modules) - ${formatDuration(duration)}`
+            `[philjs-compiler] HMR: ${fileName} (${affectedModules.size} modules, ${modulesByDepth.size} levels) - ${formatDuration(duration)}`
           );
         }
 
-        // If preserveHmrState is enabled, inject state preservation code
-        if (preserveHmrState && isDevelopment) {
-          // Add HMR boundary to preserve signal state
-          for (const mod of affectedModules) {
-            if (mod.file && mod.file.endsWith('.tsx') || mod.file?.endsWith('.jsx')) {
-              // Mark as HMR boundary to preserve component state
-              mod.isSelfAccepting = true;
-            }
-          }
+        // Check for performance constraint (<100ms target)
+        if (duration > 100 && verbose) {
+          console.warn(
+            `[philjs-compiler] HMR update took ${formatDuration(duration)} (target: <100ms)`
+          );
         }
 
-        // Return affected modules for Vite to handle
-        return Array.from(affectedModules);
+        // Return affected modules sorted by dependency depth (deepest first)
+        // This ensures parent components update after children
+        const sortedDepths = Array.from(modulesByDepth.keys()).sort((a, b) => b - a);
+        const sortedModules: ModuleNode[] = [];
+        for (const depth of sortedDepths) {
+          sortedModules.push(...Array.from(modulesByDepth.get(depth)!));
+        }
+
+        return sortedModules;
       } catch (error) {
         const err = error as Error;
         console.error(`[philjs-compiler] HMR error for ${file}:`, err.message);
 
-        // Don't break HMR on errors
+        // Send HMR error to overlay
+        if (enhancedErrors && isDevelopment && server) {
+          server.ws.send({
+            type: 'error',
+            err: {
+              message: `[PhilJS HMR] Failed to update ${file}`,
+              stack: err.stack || err.message,
+              id: file,
+              plugin: 'philjs-compiler',
+              frame: `HMR Update Error\n\nThe hot module replacement failed for this file.\n\n${err.message}\n\nThe page will perform a full reload.`,
+            },
+          });
+
+          // Send custom event for HMR rollback
+          server.ws.send({
+            type: 'custom',
+            event: 'philjs:hmr-error',
+            data: {
+              file,
+              error: err.message,
+              stack: err.stack,
+              shouldReload: true,
+            },
+          });
+        }
+
+        // Don't break HMR on errors - let Vite handle the fallback
         return;
       }
     },

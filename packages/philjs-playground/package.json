@@ -29,6 +29,13 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "playground", "repl", "interactive", "browser"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "playground",
+    "repl",
+    "interactive",
+    "browser"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

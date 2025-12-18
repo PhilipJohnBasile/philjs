@@ -13,5 +13,6 @@
   "dependencies": {
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-security": "^3.0.1"
-  }
+  },
+  "sideEffects": false
 }

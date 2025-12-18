@@ -1,10 +1,11 @@
 /**
  * Shared Rollup configuration for all packages.
  * Optimized for:
- * - Smaller bundle sizes
- * - Better tree-shaking
- * - Faster builds
+ * - Smaller bundle sizes (target: 20% reduction)
+ * - Better tree-shaking with aggressive optimizations
+ * - Faster builds with caching
  * - Proper externals
+ * - Pure function annotations
  */
 
 import typescript from '@rollup/plugin-typescript';
@@ -24,14 +25,29 @@ export default defineConfig({
     // Reduce bundle size
     compact: true,
     // Better interop with CommonJS
-    interop: 'auto'
+    interop: 'auto',
+    // Hoist transitive imports for better tree-shaking
+    hoistTransitiveImports: true,
+    // Generate smaller output
+    generatedCode: {
+      arrowFunctions: true,
+      constBindings: true,
+      objectShorthand: true,
+      preset: 'es2015',
+      reservedNamesAsProps: false,
+      symbols: false,
+    },
+    // Minify identifiers
+    minifyInternalExports: true,
   },
   plugins: [
     resolve({
       // Only bundle project files, not node_modules
       preferBuiltins: true,
       // Skip resolving external dependencies
-      resolveOnly: []
+      resolveOnly: [],
+      // Dedupe packages for smaller bundles
+      dedupe: ['philjs-core'],
     }),
     typescript({
       tsconfig: './tsconfig.json',
@@ -43,7 +59,10 @@ export default defineConfig({
       // Use incremental compilation for faster rebuilds
       composite: false,
       // Emit declaration files only once
-      declarationMap: true
+      declarationMap: true,
+      // Enable tree-shaking for TypeScript
+      module: 'ESNext',
+      target: 'ES2020',
     })
   ],
   external: [
@@ -64,13 +83,42 @@ export default defineConfig({
     'picocolors',
     'prompts'
   ],
-  // Tree-shaking optimizations
+  // Aggressive tree-shaking optimizations
   treeshake: {
+    // Advanced preset for maximum tree-shaking
+    preset: 'smallest',
+    // Assume no module has side effects unless marked in package.json
     moduleSideEffects: false,
+    // Assume property reads have no side effects
     propertyReadSideEffects: false,
+    // Don't deoptimize try-catch blocks
     tryCatchDeoptimization: false,
-    unknownGlobalSideEffects: false
+    // Assume unknown globals have no side effects
+    unknownGlobalSideEffects: false,
+    // Additional aggressive optimizations
+    annotations: true,
+    correctVarValueBeforeDeclaration: false,
+    manualPureFunctions: [
+      // Mark PhilJS reactive primitives as pure
+      'signal',
+      'memo',
+      'effect',
+      'resource',
+      'linkedSignal',
+      'batch',
+      'untrack',
+      // Mark common utility functions as pure
+      'createSignal',
+      'createMemo',
+      'createEffect',
+      'createResource',
+      'createContext',
+      'useContext',
+    ],
   },
-  // Faster builds
-  cache: true
+  // Faster builds with persistent cache
+  cache: true,
+
+  // Performance optimizations
+  maxParallelFileOps: 20,
 });

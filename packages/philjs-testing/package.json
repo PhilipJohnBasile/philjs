@@ -37,6 +37,13 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "testing", "test", "vitest", "testing-library"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "testing",
+    "test",
+    "vitest",
+    "testing-library"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

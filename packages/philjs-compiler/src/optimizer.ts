@@ -15,14 +15,20 @@ import type {
   CompilerWarning,
 } from './types';
 import { Analyzer } from './analyzer';
+import { DeadCodeEliminator } from './dead-code-eliminator';
+import { CodeSplitter } from './code-splitter';
 
 export class Optimizer {
   private config: CompilerConfig;
   private analyzer: Analyzer;
+  private deadCodeEliminator: DeadCodeEliminator;
+  private codeSplitter: CodeSplitter;
 
   constructor(config: CompilerConfig = {}) {
     this.config = config;
     this.analyzer = new Analyzer(config);
+    this.deadCodeEliminator = new DeadCodeEliminator(config);
+    this.codeSplitter = new CodeSplitter(config);
   }
 
   /**
@@ -54,8 +60,21 @@ export class Optimizer {
     }
 
     if (this.config.deadCodeElimination !== false) {
-      const dceOpts = this.applyDeadCodeElimination(ast, analysis);
-      optimizationsApplied.push(...dceOpts);
+      const dceReport = this.deadCodeEliminator.eliminate(ast, analysis);
+      if (dceReport.totalRemoved > 0) {
+        optimizationsApplied.push(
+          `dead-code: removed ${dceReport.totalRemoved} unused items (${dceReport.sizeReduction} bytes saved)`
+        );
+        if (dceReport.unusedSignals.length > 0) {
+          optimizationsApplied.push(`  - signals: ${dceReport.unusedSignals.join(', ')}`);
+        }
+        if (dceReport.unusedMemos.length > 0) {
+          optimizationsApplied.push(`  - memos: ${dceReport.unusedMemos.join(', ')}`);
+        }
+        if (dceReport.unusedEffects.length > 0) {
+          optimizationsApplied.push(`  - effects: ${dceReport.unusedEffects.join(', ')}`);
+        }
+      }
     }
 
     if (this.config.optimizeEffects !== false) {
@@ -503,6 +522,6 @@ export class Optimizer {
 /**
  * Create a new optimizer instance
  */
-export function createOptimizer(config?: CompilerConfig): Optimizer {
+export const createOptimizer = /*#__PURE__*/ function createOptimizer(config?: CompilerConfig): Optimizer {
   return new Optimizer(config);
 }

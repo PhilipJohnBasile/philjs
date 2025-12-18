@@ -26,6 +26,13 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "api", "routes", "server", "full-stack"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "api",
+    "routes",
+    "server",
+    "full-stack"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

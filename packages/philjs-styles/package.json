@@ -28,6 +28,16 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "css", "styles", "scoped", "css-modules", "css-in-js"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "css",
+    "styles",
+    "scoped",
+    "css-modules",
+    "css-in-js"
+  ],
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ]
 }

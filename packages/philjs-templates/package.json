@@ -25,6 +25,13 @@
     "bin",
     "README.md"
   ],
-  "keywords": ["philjs", "templates", "starter", "create-philjs", "scaffolding"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "templates",
+    "starter",
+    "create-philjs",
+    "scaffolding"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

@@ -7,6 +7,8 @@
 
 import { Optimizer } from './optimizer';
 import { Analyzer } from './analyzer';
+import { DeadCodeEliminator } from './dead-code-eliminator';
+import { CodeSplitter } from './code-splitter';
 import type {
   CompilerConfig,
   TransformResult,
@@ -16,6 +18,8 @@ import type {
   CompilerPlugin,
   OptimizationOpportunity
 } from './types';
+import type { DeadCodeReport } from './dead-code-eliminator';
+import type { CodeSplitReport, CodeSplitBoundary } from './code-splitter';
 
 // Re-export types
 export type {
@@ -25,11 +29,14 @@ export type {
   ComponentAnalysis,
   ReactiveBinding,
   CompilerPlugin,
-  OptimizationOpportunity
+  OptimizationOpportunity,
+  DeadCodeReport,
+  CodeSplitReport,
+  CodeSplitBoundary,
 };
 
 // Re-export main classes
-export { Optimizer, Analyzer };
+export { Optimizer, Analyzer, DeadCodeEliminator, CodeSplitter };
 
 /**
  * Creates a new PhilJS compiler instance with the given configuration
@@ -233,3 +240,18 @@ export function validateConfig(config: CompilerConfig): string[] {
  * Version of the PhilJS compiler
  */
 export const version = '0.1.0';
+
+// Re-export HMR utilities for development
+export {
+  setupHMRClient,
+  getHMRClientStats,
+  resetHMRClientStats,
+} from './hmr-client';
+
+export {
+  showHMRErrorOverlay,
+  hideHMRErrorOverlay,
+  getHMRErrorHistory,
+  clearHMRErrorHistory,
+  type HMRErrorType,
+} from './hmr-overlay';

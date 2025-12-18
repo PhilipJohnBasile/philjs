@@ -32,5 +32,6 @@
     "rollup": "^4.28.1",
     "@types/node": "^22.10.5",
     "@types/prompts": "^2.4.9"
-  }
+  },
+  "sideEffects": false
 }

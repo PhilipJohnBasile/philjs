@@ -23,6 +23,12 @@
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "plugins", "extensions", "integrations"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "plugins",
+    "extensions",
+    "integrations"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

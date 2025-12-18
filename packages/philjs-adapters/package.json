@@ -32,14 +32,29 @@
     "@cloudflare/workers-types": "^4.0.0"
   },
   "peerDependenciesMeta": {
-    "@vercel/node": { "optional": true },
-    "@netlify/functions": { "optional": true },
-    "@cloudflare/workers-types": { "optional": true }
+    "@vercel/node": {
+      "optional": true
+    },
+    "@netlify/functions": {
+      "optional": true
+    },
+    "@cloudflare/workers-types": {
+      "optional": true
+    }
   },
   "files": [
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "adapter", "vercel", "netlify", "cloudflare", "aws", "deployment"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "adapter",
+    "vercel",
+    "netlify",
+    "cloudflare",
+    "aws",
+    "deployment"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }

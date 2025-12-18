@@ -13,6 +13,8 @@
     "bench": "pnpm --filter philjs-core vitest bench",
     "bench:save": "node scripts/benchmark.js --save",
     "check:budgets": "node --no-warnings scripts/check-budgets.mjs",
+    "verify:treeshake": "node --no-warnings scripts/verify-tree-shaking.mjs",
+    "fix:sideeffects": "node scripts/add-side-effects.mjs",
     "size": "size-limit",
     "size:why": "size-limit --why"
   },

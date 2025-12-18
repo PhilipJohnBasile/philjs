@@ -652,6 +652,6 @@ export class Analyzer {
 /**
  * Create a new analyzer instance
  */
-export function createAnalyzer(config?: CompilerConfig): Analyzer {
+export const createAnalyzer = /*#__PURE__*/ function createAnalyzer(config?: CompilerConfig): Analyzer {
   return new Analyzer(config);
 }

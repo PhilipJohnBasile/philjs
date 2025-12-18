@@ -50,5 +50,6 @@
     "sharp": {
       "optional": true
     }
-  }
+  },
+  "sideEffects": false
 }

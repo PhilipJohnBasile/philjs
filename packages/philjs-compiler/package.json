@@ -50,8 +50,12 @@
     "rollup": "^4.0.0"
   },
   "peerDependenciesMeta": {
-    "vite": { "optional": true },
-    "rollup": { "optional": true }
+    "vite": {
+      "optional": true
+    },
+    "rollup": {
+      "optional": true
+    }
   },
   "files": [
     "dist",
@@ -66,5 +70,6 @@
     "reactive"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "sideEffects": false
 }

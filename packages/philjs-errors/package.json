@@ -24,14 +24,28 @@
     "rollbar": "^2.0.0"
   },
   "peerDependenciesMeta": {
-    "@sentry/browser": { "optional": true },
-    "logrocket": { "optional": true },
-    "rollbar": { "optional": true }
+    "@sentry/browser": {
+      "optional": true
+    },
+    "logrocket": {
+      "optional": true
+    },
+    "rollbar": {
+      "optional": true
+    }
   },
   "files": [
     "dist",
     "README.md"
   ],
-  "keywords": ["philjs", "error-tracking", "sentry", "logrocket", "rollbar", "monitoring"],
-  "license": "MIT"
+  "keywords": [
+    "philjs",
+    "error-tracking",
+    "sentry",
+    "logrocket",
+    "rollbar",
+    "monitoring"
+  ],
+  "license": "MIT",
+  "sideEffects": false
 }
