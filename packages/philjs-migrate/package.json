@@ -1,6 +1,6 @@
 {
   "name": "philjs-migrate",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Migration codemods to convert React, Vue, and Svelte applications to PhilJS",
   "type": "module",
   "main": "./dist/index.js",
@@ -58,5 +58,15 @@
     "svelte"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-migrate"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

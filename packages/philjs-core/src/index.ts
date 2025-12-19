@@ -180,3 +180,19 @@ export type {
   VariantResults,
   ABTestConfig
 } from "./ab-testing.js";
+
+// Security Utilities
+export {
+  escapeHtml,
+  escapeAttr,
+  escapeJs,
+  escapeUrl,
+  sanitizeHtml,
+  sanitizeUrl,
+  safeJsonParse,
+  generateSecureToken,
+  isValidEmail,
+  createCspNonce,
+  constantTimeEqual
+} from "./security.js";
+export type { SanitizeOptions } from "./security.js";

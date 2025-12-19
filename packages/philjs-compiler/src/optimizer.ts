@@ -87,6 +87,12 @@ export class Optimizer {
       optimizationsApplied.push(...compOpts);
     }
 
+    // Production-only optimizations
+    if (!this.config.development) {
+      const prodOpts = this.applyProductionOptimizations(ast, analysis);
+      optimizationsApplied.push(...prodOpts);
+    }
+
     // Ensure PhilJS imports are added if needed
     this.ensureImports(ast, optimizationsApplied);
 
@@ -94,6 +100,9 @@ export class Optimizer {
     const output = generate(ast, {
       sourceMaps: this.config.sourceMaps !== false,
       sourceFileName: filePath,
+      compact: !this.config.development,
+      minified: false, // Don't minify here, let terser handle it
+      retainLines: this.config.development,
     });
 
     return {
@@ -103,6 +112,167 @@ export class Optimizer {
       optimizations: optimizationsApplied,
       warnings,
     };
+  }
+
+  /**
+   * Apply production-specific optimizations
+   */
+  private applyProductionOptimizations(ast: t.File, analysis: FileAnalysis): string[] {
+    const applied: string[] = [];
+
+    // Remove debug code
+    traverse(ast, {
+      // Remove console.log, console.debug, etc. (keep console.error, console.warn)
+      CallExpression: (path) => {
+        const callee = path.node.callee;
+        if (t.isMemberExpression(callee)) {
+          if (
+            t.isIdentifier(callee.object) &&
+            callee.object.name === 'console' &&
+            t.isIdentifier(callee.property)
+          ) {
+            const method = callee.property.name;
+            if (method === 'log' || method === 'debug' || method === 'trace') {
+              path.remove();
+              applied.push(`removed: console.${method}()`);
+            }
+          }
+        }
+      },
+
+      // Remove debugger statements
+      DebuggerStatement: (path) => {
+        path.remove();
+        applied.push('removed: debugger statement');
+      },
+
+      // Remove development-only code blocks
+      IfStatement: (path) => {
+        const test = path.node.test;
+
+        // Remove if (process.env.NODE_ENV === 'development')
+        if (this.isDevEnvCheck(test)) {
+          path.remove();
+          applied.push('removed: development-only code block');
+        }
+      },
+    });
+
+    // Inline constants
+    const constantsInlined = this.inlineConstants(ast);
+    if (constantsInlined > 0) {
+      applied.push(`inlined: ${constantsInlined} constants`);
+    }
+
+    // Optimize string concatenations
+    const stringsOptimized = this.optimizeStrings(ast);
+    if (stringsOptimized > 0) {
+      applied.push(`optimized: ${stringsOptimized} string operations`);
+    }
+
+    return applied;
+  }
+
+  /**
+   * Check if an expression is a development environment check
+   */
+  private isDevEnvCheck(node: t.Expression): boolean {
+    if (!t.isBinaryExpression(node)) return false;
+
+    const { left, operator, right } = node;
+
+    // Check for process.env.NODE_ENV === 'development'
+    if (
+      operator === '===' &&
+      t.isMemberExpression(left) &&
+      t.isMemberExpression(left.object) &&
+      t.isIdentifier(left.object.object) &&
+      left.object.object.name === 'process' &&
+      t.isIdentifier(left.object.property) &&
+      left.object.property.name === 'env' &&
+      t.isIdentifier(left.property) &&
+      left.property.name === 'NODE_ENV' &&
+      t.isStringLiteral(right) &&
+      right.value === 'development'
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Inline constant values
+   */
+  private inlineConstants(ast: t.File): number {
+    let count = 0;
+    const constants = new Map<string, t.Expression>();
+
+    // First pass: collect constants
+    traverse(ast, {
+      VariableDeclarator: (path) => {
+        if (
+          t.isIdentifier(path.node.id) &&
+          path.node.init &&
+          (t.isStringLiteral(path.node.init) ||
+            t.isNumericLiteral(path.node.init) ||
+            t.isBooleanLiteral(path.node.init))
+        ) {
+          const binding = path.scope.getBinding(path.node.id.name);
+          if (binding && binding.constant) {
+            constants.set(path.node.id.name, path.node.init);
+          }
+        }
+      },
+    });
+
+    // Second pass: inline constants
+    traverse(ast, {
+      Identifier: (path) => {
+        const name = path.node.name;
+        const constantValue = constants.get(name);
+
+        if (constantValue && !path.isBindingIdentifier()) {
+          path.replaceWith(constantValue);
+          count++;
+        }
+      },
+    });
+
+    return count;
+  }
+
+  /**
+   * Optimize string operations
+   */
+  private optimizeStrings(ast: t.File): number {
+    let count = 0;
+
+    traverse(ast, {
+      // Optimize string concatenation
+      BinaryExpression: (path) => {
+        if (path.node.operator === '+') {
+          const { left, right } = path.node;
+
+          // Concatenate string literals
+          if (t.isStringLiteral(left) && t.isStringLiteral(right)) {
+            path.replaceWith(t.stringLiteral(left.value + right.value));
+            count++;
+          }
+        }
+      },
+
+      // Optimize template literals with no expressions
+      TemplateLiteral: (path) => {
+        if (path.node.expressions.length === 0) {
+          const str = path.node.quasis[0].value.cooked || '';
+          path.replaceWith(t.stringLiteral(str));
+          count++;
+        }
+      },
+    });
+
+    return count;
   }
 
   /**

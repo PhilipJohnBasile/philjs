@@ -1,6 +1,6 @@
 {
   "name": "philjs-compiler",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Automatic optimization compiler for PhilJS - zero-overhead memoization and performance optimizations",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,6 +18,22 @@
     "./rollup": {
       "import": "./dist/plugins/rollup.js",
       "types": "./dist/plugins/rollup.d.ts"
+    },
+    "./presets": {
+      "import": "./dist/presets/index.js",
+      "types": "./dist/presets/index.d.ts"
+    },
+    "./presets/production": {
+      "import": "./dist/presets/production.js",
+      "types": "./dist/presets/production.d.ts"
+    },
+    "./presets/development": {
+      "import": "./dist/presets/development.js",
+      "types": "./dist/presets/development.d.ts"
+    },
+    "./presets/library": {
+      "import": "./dist/presets/library.js",
+      "types": "./dist/presets/library.d.ts"
     }
   },
   "scripts": {
@@ -32,7 +48,8 @@
     "@babel/traverse": "^7.23.0",
     "@babel/generator": "^7.23.0",
     "@babel/types": "^7.23.0",
-    "@rollup/pluginutils": "^5.0.0"
+    "@rollup/pluginutils": "^5.0.0",
+    "terser": "^5.24.0"
   },
   "devDependencies": {
     "@types/babel__core": "^7.20.0",
@@ -69,7 +86,16 @@
     "signals",
     "reactive"
   ],
-  "author": "",
+  "author": "PhilJS Team",
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-compiler"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

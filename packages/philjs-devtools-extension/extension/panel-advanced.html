@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhilJS DevTools - Advanced</title>
+  <link rel="stylesheet" href="panel.css">
+  <style>
+    /* Additional styles for advanced features */
+    .memory-profiler, .state-exporter, .signal-diff, .breakpoints, .search-filter {
+      padding: 16px;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .memory-header, .exporter-header, .diff-header, .breakpoints-header, .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .memory-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-item label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .stat-item span {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .memory-chart, .diff-viewer, .breakpoints-list, .breakpoint-hits, .filter-sections {
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .memory-chart h3, .breakpoints-list h3, .breakpoint-hits h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .memory-leaks, .memory-snapshots, .saved-states, .correlation-list {
+      margin-top: 16px;
+    }
+
+    .leak-list, .snapshot-list, .saved-states-list, .correlation-items {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .leak-item, .snapshot-item, .saved-state-item, .correlation-item {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: var(--bg-primary);
+    }
+
+    .leak-item.error {
+      border-left: 3px solid var(--error);
+    }
+
+    .leak-item.warning {
+      border-left: 3px solid var(--warning);
+    }
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .modal-body {
+      padding: 16px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* Diff styles */
+    .diff-unified, .diff-split {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+
+    .diff-line {
+      display: flex;
+      padding: 2px 8px;
+      white-space: pre;
+    }
+
+    .diff-line-added {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .diff-line-removed {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    .diff-line-modified {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .line-number {
+      display: inline-block;
+      width: 40px;
+      color: var(--text-tertiary);
+      text-align: right;
+      margin-right: 12px;
+    }
+
+    .line-prefix {
+      width: 20px;
+      font-weight: 700;
+    }
+
+    /* Breakpoint styles */
+    .breakpoint-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: var(--bg-primary);
+    }
+
+    .breakpoint-item.enabled {
+      border-left: 3px solid var(--primary);
+    }
+
+    .breakpoint-item.disabled {
+      opacity: 0.6;
+    }
+
+    .hit-item {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: var(--bg-primary);
+    }
+
+    .hit-item.active {
+      border-left: 3px solid var(--error);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    /* Filter styles */
+    .filter-section {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .filter-section h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .filter-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: var(--primary);
+      color: white;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .custom-expression {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+
+    .help-text {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* Network timeline styles */
+    .network-timeline {
+      padding: 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-view {
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .timeline-legend {
+      display: flex;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .state-preview {
+      margin-top: 16px;
+    }
+
+    .state-preview h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .version-selectors {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .version-selector label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .version-select, .signal-select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .diff-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+    }
+
+    .diff-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .stat-value.added {
+      color: var(--success);
+    }
+
+    .stat-value.removed {
+      color: var(--error);
+    }
+
+    .stat-value.modified {
+      color: var(--warning);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#3b82f6"/>
+          <path d="M2 17L12 22L22 17V12L12 17L2 12V17Z" fill="#60a5fa"/>
+        </svg>
+        <h1>PhilJS DevTools</h1>
+      </div>
+      <div class="connection-status">
+        <span id="connection-indicator" class="status-indicator disconnected"></span>
+        <span id="connection-text">Disconnected</span>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="signals">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <circle cx="8" cy="8" r="6"/>
+        </svg>
+        Signals
+      </button>
+      <button class="tab" data-tab="graph">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <circle cx="3" cy="8" r="2"/><circle cx="13" cy="8" r="2"/><circle cx="8" cy="3" r="2"/><circle cx="8" cy="13" r="2"/>
+        </svg>
+        Graph
+      </button>
+      <button class="tab" data-tab="components">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/>
+        </svg>
+        Components
+      </button>
+      <button class="tab" data-tab="performance">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 14L8 2L14 14H2Z"/>
+        </svg>
+        Performance
+      </button>
+      <button class="tab" data-tab="flamegraph">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 2L4 6h3v6h2V6h3z"/>
+        </svg>
+        Flamegraph
+      </button>
+      <button class="tab" data-tab="memory">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 4h12v8H2z"/>
+        </svg>
+        Memory
+      </button>
+      <button class="tab" data-tab="network-timeline">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 8h12M8 2v12"/>
+        </svg>
+        Network
+      </button>
+      <button class="tab" data-tab="diff">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 2h6v6H2zM8 8h6v6H8z"/>
+        </svg>
+        Diff
+      </button>
+      <button class="tab" data-tab="breakpoints">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Breakpoints
+      </button>
+      <button class="tab" data-tab="filter">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 2l6 6v6l-2-2V8L2 2z"/>
+        </svg>
+        Filter
+      </button>
+      <button class="tab" data-tab="export">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 2v10M4 8l4 4 4-4"/>
+        </svg>
+        Export
+      </button>
+    </nav>
+
+    <!-- Tab Content -->
+    <main class="content">
+      <!-- Signals Panel (existing) -->
+      <div id="signals-panel" class="panel active">
+        <div class="panel-header">
+          <div class="search-box">
+            <input type="text" id="signal-search" placeholder="Search signals...">
+          </div>
+          <div class="toolbar">
+            <button id="signal-clear-btn" class="btn-icon" title="Clear all signals">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+            <button id="signal-refresh-btn" class="btn-icon" title="Refresh">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2v4M8 10v4M2 8h4M10 8h4M3 3l2 2M11 3l-2 2M3 13l2-2M11 13l-2-2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="signal-list">
+            <div class="list-header">
+              <span>Signal Name</span>
+              <span>Value</span>
+              <span>Updates</span>
+            </div>
+            <div id="signal-items" class="list-items">
+              <div class="empty-state">
+                <p>No signals detected</p>
+                <small>Signals will appear here when your app creates them</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="signal-details">
+            <div id="signal-detail-content" class="detail-content">
+              <div class="empty-state">
+                <p>Select a signal to view details</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dependency Graph Panel (new) -->
+      <div id="graph-panel" class="panel">
+        <div id="dependency-graph-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Components Panel (existing) -->
+      <div id="components-panel" class="panel">
+        <div class="panel-header">
+          <div class="search-box">
+            <input type="text" id="component-search" placeholder="Search components...">
+          </div>
+          <div class="toolbar">
+            <button id="component-expand-btn" class="btn-icon" title="Expand all">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 4h12M2 8h8M2 12h12"/>
+              </svg>
+            </button>
+            <button id="component-collapse-btn" class="btn-icon" title="Collapse all">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 8h12"/>
+              </svg>
+            </button>
+            <button id="component-refresh-btn" class="btn-icon" title="Refresh">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2v4M8 10v4M2 8h4M10 8h4M3 3l2 2M11 3l-2 2M3 13l2-2M11 13l-2-2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="component-tree">
+            <div id="component-tree-items" class="tree-items">
+              <div class="empty-state">
+                <p>No components detected</p>
+                <small>The component tree will appear here</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="component-details">
+            <div id="component-detail-content" class="detail-content">
+              <div class="empty-state">
+                <p>Select a component to view details</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Panel (existing) -->
+      <div id="performance-panel" class="panel">
+        <div class="panel-header">
+          <div class="metrics-summary">
+            <div class="metric">
+              <label>FPS</label>
+              <span id="fps-value">0</span>
+            </div>
+            <div class="metric">
+              <label>Memory</label>
+              <span id="memory-value">0 MB</span>
+            </div>
+            <div class="metric">
+              <label>Renders</label>
+              <span id="render-count">0</span>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button id="perf-record-btn" class="btn-icon" title="Start recording">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="8" cy="8" r="6"/>
+              </svg>
+            </button>
+            <button id="perf-clear-btn" class="btn-icon" title="Clear">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2L14 14M2 14L14 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="perf-charts">
+          <div class="chart-container">
+            <h3>FPS Over Time</h3>
+            <canvas id="fps-chart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Memory Usage</h3>
+            <canvas id="memory-chart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Render Timeline</h3>
+            <div id="render-timeline" class="timeline"></div>
+          </div>
+        </div>
+
+        <div class="render-list">
+          <h3>Component Renders</h3>
+          <div id="render-items" class="list-items">
+            <div class="empty-state">
+              <p>No renders recorded</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flamegraph Panel (new) -->
+      <div id="flamegraph-panel" class="panel">
+        <div id="flamegraph-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Memory Panel (new) -->
+      <div id="memory-panel" class="panel">
+        <div id="memory-profiler-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Network Timeline Panel (new) -->
+      <div id="network-timeline-panel" class="panel">
+        <div id="network-timeline-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Diff Panel (new) -->
+      <div id="diff-panel" class="panel">
+        <div id="signal-diff-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Breakpoints Panel (new) -->
+      <div id="breakpoints-panel" class="panel">
+        <div id="breakpoints-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Filter Panel (new) -->
+      <div id="filter-panel" class="panel">
+        <div id="search-filter-container" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Export Panel (new) -->
+      <div id="export-panel" class="panel">
+        <div id="state-exporter-container" style="width: 100%; height: 100%;"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="panel-advanced.js"></script>
+</body>
+</html>

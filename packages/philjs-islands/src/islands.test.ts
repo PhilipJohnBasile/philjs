@@ -571,8 +571,7 @@ describe('Islands Architecture', () => {
       expect(island.hasAttribute('data-hydrated')).toBe(true);
     });
 
-    // TODO: Fix race condition - queueHydration is called after processHydrationQueue completes
-    it.skip('should initialize islands with idle trigger', async () => {
+    it('should initialize islands with idle trigger', async () => {
       const TestComponent = () => ({ type: 'div', props: {} });
       const loader = vi.fn(async () => ({ default: TestComponent }));
       registerIsland('Idle', loader);
@@ -598,8 +597,7 @@ describe('Islands Architecture', () => {
       expect(loader).toHaveBeenCalled();
     });
 
-    // TODO: Fix race condition - queueHydration is called after processHydrationQueue completes
-    it.skip('should fallback to setTimeout when requestIdleCallback unavailable', async () => {
+    it('should fallback to setTimeout when requestIdleCallback unavailable', async () => {
       const originalRIC = (window as any).requestIdleCallback;
       delete (window as any).requestIdleCallback;
 

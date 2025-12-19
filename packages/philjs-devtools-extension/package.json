@@ -1,6 +1,6 @@
 {
   "name": "philjs-devtools-extension",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Browser DevTools extension for PhilJS",
   "type": "module",
   "main": "./dist/index.js",
@@ -25,5 +25,21 @@
     "typescript": "^5.7.2",
     "vitest": "^3.2.4"
   },
-  "sideEffects": true
+  "sideEffects": true,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-devtools-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "developer-tools",
+    "debugging"
+  ]
 }

@@ -288,20 +288,35 @@ function queueHydration(
   callback: () => void
 ): void {
   hydrationQueue.push({ element, manifest, priority, callback });
+  // Trigger processing if not already running
+  if (!isProcessingQueue) {
+    processHydrationQueue();
+  }
 }
+
+/**
+ * Track if queue processing is active
+ */
+let isProcessingQueue = false;
 
 /**
  * Process the hydration queue in priority order
  */
 function processHydrationQueue(): void {
+  if (isProcessingQueue) return; // Already processing
   if (hydrationQueue.length === 0) return;
+
+  isProcessingQueue = true;
 
   // Sort by priority (higher first)
   hydrationQueue.sort((a, b) => b.priority - a.priority);
 
   // Process queue with requestIdleCallback or setTimeout
   const processNext = () => {
-    if (hydrationQueue.length === 0) return;
+    if (hydrationQueue.length === 0) {
+      isProcessingQueue = false;
+      return;
+    }
 
     const item = hydrationQueue.shift();
     if (item) {
@@ -314,7 +329,11 @@ function processHydrationQueue(): void {
         } else {
           setTimeout(processNext, 0);
         }
+      } else {
+        isProcessingQueue = false;
       }
+    } else {
+      isProcessingQueue = false;
     }
   };
 

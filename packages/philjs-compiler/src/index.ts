@@ -35,8 +35,18 @@ export type {
   CodeSplitBoundary,
 };
 
+// Re-export analyzer types
+export type {
+  BundleMetrics,
+  DependencyGraph,
+  ChunkCandidate,
+} from './analyzer';
+
 // Re-export main classes
 export { Optimizer, Analyzer, DeadCodeEliminator, CodeSplitter };
+
+// Re-export presets
+export * from './presets';
 
 /**
  * Creates a new PhilJS compiler instance with the given configuration

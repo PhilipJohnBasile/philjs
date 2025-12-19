@@ -5,6 +5,9 @@ Developer tools overlay for PhilJS with time-travel debugging, signal inspection
 ## Features
 
 - **Time-Travel Debugging** - Rewind and replay state changes
+- **Redux DevTools Integration** - Connect to Redux DevTools Extension
+- **Action Replay** - Record and replay user actions
+- **State Persistence** - Save/restore state across sessions
 - **Signal Inspector** - Track signal values and dependencies
 - **Component Tree Viewer** - Visualize component hierarchy
 - **Performance Monitoring** - Track render times and performance budgets
@@ -226,6 +229,122 @@ logger.setCategory('router', true);
 logger.log('router', 'Now logging router events');
 ```
 
+### Redux DevTools Integration
+
+Connect your PhilJS app to the Redux DevTools Extension:
+
+```typescript
+import { initReduxDevTools } from 'philjs-devtools';
+import { signal } from 'philjs-core';
+
+// Initialize Redux DevTools
+const devTools = initReduxDevTools(
+  { count: 0, user: null }, // Initial state
+  {
+    name: 'MyApp',
+    maxAge: 50, // Keep last 50 actions
+    trace: true, // Include stack traces
+    actionsBlacklist: ['PING'], // Ignore certain actions
+  }
+);
+
+// Create signals
+const count = signal(0);
+const user = signal(null);
+
+// Track state changes
+count.subscribe((value) => {
+  const state = { count: value, user: user() };
+  devTools.send({ type: 'INCREMENT' }, state);
+});
+
+user.subscribe((value) => {
+  const state = { count: count(), user: value };
+  devTools.send({ type: 'SET_USER', payload: value }, state);
+});
+
+// Handle time travel from DevTools
+devTools.onStateChange = (state) => {
+  count.set(state.count);
+  user.set(state.user);
+};
+```
+
+Features:
+- Time travel debugging
+- Action history
+- State inspection
+- Action replay
+- State import/export
+- Pause/resume tracking
+
+### Action Replay
+
+Record and replay user actions:
+
+```typescript
+import { ActionReplayer } from 'philjs-devtools';
+
+const replayer = new ActionReplayer();
+
+// Record actions
+function handleIncrement() {
+  const action = { type: 'INCREMENT' };
+  const state = { count: count() + 1 };
+
+  replayer.record(action, state);
+  count.set(state.count);
+}
+
+// Replay all actions
+await replayer.replay((action, state) => {
+  console.log('Replaying:', action.type);
+  count.set(state.count);
+}, 1000); // 1 second between actions
+
+// Get recorded actions
+const actions = replayer.getActions();
+console.log(`Recorded ${actions.length} actions`);
+
+// Clear recording
+replayer.clear();
+```
+
+### State Persistence
+
+Save and restore state across sessions:
+
+```typescript
+import { StatePersistence } from 'philjs-devtools';
+
+const persistence = new StatePersistence({
+  key: 'my-app-state',
+  storage: localStorage,
+  version: 1,
+  migrate: (state, version) => {
+    // Handle version upgrades
+    if (version === 0) {
+      return { ...state, newField: 'default' };
+    }
+    return state;
+  },
+});
+
+// Save state
+const currentState = { count: 42, user: { name: 'John' } };
+persistence.save(currentState);
+
+// Load state (on app startup)
+const loadedState = persistence.load();
+if (loadedState) {
+  count.set(loadedState.count);
+  user.set(loadedState.user);
+}
+
+// Clear persisted state
+persistence.clear();
+```
+
 ### State Diffing
 
 Compare state snapshots:
@@ -272,6 +391,50 @@ console.log(diff);
 - `getTimeline()` - Get full history timeline
 - `getSnapshot(index)` - Get state snapshot at index
 - `reset()` - Clear all history
+
+### Redux DevTools Integration
+
+- `initReduxDevTools(initialState, config?)` - Initialize Redux DevTools
+- `getReduxDevTools()` - Get the global Redux DevTools instance
+- `disconnectReduxDevTools()` - Disconnect and cleanup
+
+**ReduxDevTools methods:**
+- `send(action, state)` - Send action and state to DevTools
+- `disconnect()` - Disconnect from DevTools Extension
+- `getSnapshot()` - Get current state snapshot
+- `getHistory()` - Get action history
+- `getDiff(fromIndex, toIndex)` - Get state diff between indices
+- `exportState()` - Export state as JSON
+- `importState(json)` - Import state from JSON
+
+**ReduxDevTools properties:**
+- `currentState` - Signal with current state
+- `isConnected` - Signal indicating connection status
+- `isLocked` - Signal indicating if DevTools is locked
+- `isPaused` - Signal indicating if tracking is paused
+- `onStateChange` - Callback for time travel events
+- `onCustomAction` - Callback for custom actions from DevTools
+
+### Action Replay
+
+- `ActionReplayer` - Class for recording and replaying actions
+
+**ActionReplayer methods:**
+- `record(action, state)` - Record an action
+- `replay(onAction, speed?)` - Replay recorded actions
+- `stop()` - Stop replay
+- `clear()` - Clear recorded actions
+- `getActions()` - Get all recorded actions
+- `isPlaying()` - Check if replay is in progress
+
+### State Persistence
+
+- `StatePersistence` - Class for persisting state
+
+**StatePersistence methods:**
+- `save(state)` - Save state to storage
+- `load()` - Load state from storage
+- `clear()` - Clear persisted state
 
 ### Signal Inspector
 

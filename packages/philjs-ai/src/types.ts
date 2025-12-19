@@ -15,3 +15,153 @@ export type Provider = {
   name: string;
   generate: (prompt: string, opts?: Record<string, any>) => Promise<string>;
 };
+
+/**
+ * Extended types for code generation
+ */
+
+export interface AIProvider {
+  name: string;
+  generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+  generateStreamCompletion?(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
+}
+
+export interface CompletionOptions {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  stopSequences?: string[];
+  systemPrompt?: string;
+}
+
+export interface AIConfig {
+  provider: 'openai' | 'anthropic' | 'local';
+  apiKey?: string;
+  baseURL?: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
+
+export interface ComponentGenerationOptions {
+  description: string;
+  includeTests?: boolean;
+  includeStyles?: boolean;
+  useSignals?: boolean;
+  framework?: 'philjs';
+}
+
+export interface RouteGenerationOptions {
+  description: string;
+  path: string;
+  includeLoader?: boolean;
+  includeAction?: boolean;
+  includeMetadata?: boolean;
+}
+
+export interface TestGenerationOptions {
+  code: string;
+  componentName?: string;
+  testFramework?: 'vitest' | 'jest';
+  includeE2E?: boolean;
+}
+
+export interface RefactorOptions {
+  code: string;
+  focusAreas?: ('signals' | 'performance' | 'accessibility' | 'patterns')[];
+  includeExplanations?: boolean;
+}
+
+export interface CodeReviewOptions {
+  code: string;
+  filePath?: string;
+  reviewAspects?: ('bugs' | 'performance' | 'security' | 'style' | 'patterns')[];
+  severity?: 'info' | 'warning' | 'error';
+}
+
+export interface GeneratedComponent {
+  code: string;
+  tests?: string;
+  styles?: string;
+  explanation: string;
+}
+
+export interface GeneratedRoute {
+  code: string;
+  path: string;
+  imports: string[];
+  explanation: string;
+}
+
+export interface GeneratedTests {
+  code: string;
+  framework: string;
+  coverage: string[];
+}
+
+export interface RefactorSuggestion {
+  type: 'signals' | 'performance' | 'accessibility' | 'patterns';
+  description: string;
+  before: string;
+  after: string;
+  explanation: string;
+  impact: 'high' | 'medium' | 'low';
+}
+
+export interface CodeReviewResult {
+  issues: CodeIssue[];
+  suggestions: string[];
+  overallScore: number;
+  summary: string;
+}
+
+export interface CodeIssue {
+  type: 'bug' | 'performance' | 'security' | 'style' | 'pattern';
+  severity: 'info' | 'warning' | 'error';
+  message: string;
+  line?: number;
+  column?: number;
+  suggestion?: string;
+}
+
+export interface MigrationOptions {
+  code: string;
+  sourceFramework: 'react' | 'vue' | 'svelte';
+  preserveComments?: boolean;
+  convertHooks?: boolean;
+}
+
+export interface MigrationResult {
+  code: string;
+  changes: MigrationChange[];
+  warnings: string[];
+  manualSteps: string[];
+}
+
+export interface MigrationChange {
+  type: 'hook' | 'component' | 'import' | 'prop';
+  from: string;
+  to: string;
+  explanation: string;
+}
+
+export interface ErrorExplanation {
+  error: string;
+  explanation: string;
+  possibleCauses: string[];
+  solutions: string[];
+  relatedDocs: string[];
+}
+
+export interface DocumentationOptions {
+  code: string;
+  includeExamples?: boolean;
+  includeTypes?: boolean;
+  style?: 'jsdoc' | 'tsdoc';
+}
+
+export interface GeneratedDocumentation {
+  code: string;
+  summary: string;
+  examples?: string[];
+}

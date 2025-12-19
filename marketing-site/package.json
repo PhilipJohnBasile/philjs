@@ -1,0 +1,29 @@
+{
+  "name": "marketing-site",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "PhilJS Marketing Website - Built with PhilJS",
+  "scripts": {
+    "dev": "node server/dev.js",
+    "build": "vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server",
+    "preview": "node server/prod.js",
+    "serve": "node server/prod.js",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-router": "workspace:*",
+    "philjs-ssr": "workspace:*",
+    "philjs-islands": "workspace:*",
+    "philjs-devtools": "workspace:*",
+    "philjs-compiler": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.10.5",
+    "vite": "^6.4.1",
+    "vitest": "^3.2.4",
+    "playwright": "^1.48.0"
+  }
+}

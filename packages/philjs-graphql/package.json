@@ -1,6 +1,6 @@
 {
   "name": "philjs-graphql",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "GraphQL integration for PhilJS with typed queries and mutations",
   "type": "module",
   "main": "./dist/index.js",
@@ -35,5 +35,16 @@
   "peerDependencies": {
     "graphql": "^16.0.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-graphql"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

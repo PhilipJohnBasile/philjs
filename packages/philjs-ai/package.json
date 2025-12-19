@@ -1,14 +1,27 @@
 {
   "name": "philjs-ai",
-  "version": "0.1.0",
-  "description": "AI adapter with typed prompts and safety hooks for PhilJS",
+  "version": "2.0.0",
+  "description": "AI-powered code generation and analysis tools for PhilJS",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers.d.ts",
+      "import": "./dist/providers.js"
+    },
+    "./generators": {
+      "types": "./dist/generators.d.ts",
+      "import": "./dist/generators.js"
+    },
+    "./analyzers": {
+      "types": "./dist/analyzers.d.ts",
+      "import": "./dist/analyzers.js"
     }
   },
   "files": [
@@ -20,10 +33,28 @@
     "lint": "echo 'Lint philjs-ai'",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.35.0",
+    "openai": "^4.75.0"
+  },
   "devDependencies": {
-    "rollup": "^4.28.1",
-    "typescript": "^5.7.2",
+    "@types/node": "^20.11.0",
+    "rollup": "^4.53.3",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
-  "sideEffects": false
+  "peerDependencies": {
+    "philjs-core": "^2.0.0"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-ai"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

@@ -19,6 +19,22 @@ export type {
   StateDiff,
 } from "./time-travel.js";
 
+// Redux DevTools Integration
+export {
+  ReduxDevTools,
+  initReduxDevTools,
+  getReduxDevTools,
+  disconnectReduxDevTools,
+  ActionReplayer,
+  StatePersistence,
+} from "./redux-devtools.js";
+export type {
+  ReduxAction,
+  ReduxDevToolsConfig,
+  DevToolsState,
+  PersistenceConfig,
+} from "./redux-devtools.js";
+
 /**
  * Show the developer overlay.
  */

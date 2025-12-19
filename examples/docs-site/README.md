@@ -1,149 +1,491 @@
 # PhilJS Documentation Site
 
-Official documentation website for PhilJS - built with PhilJS itself (dogfooding!).
+The official documentation website for PhilJS, built with PhilJS itself to showcase the framework's capabilities.
 
-## 🚀 Quick Start
+## Features
+
+### Core Functionality
+
+- **📚 Comprehensive Documentation**: Complete guides, tutorials, API references, and examples
+- **🔍 Advanced Search**: Full-text search with fuzzy matching and result highlighting
+- **🎨 Syntax Highlighting**: Beautiful code examples with copy-to-clipboard functionality
+- **🎮 Interactive Playground**: Live code editor to experiment with PhilJS
+- **🌙 Dark/Light Mode**: Seamless theme switching with system preference detection
+- **♿ Accessibility**: WCAG 2.1 AA compliant with keyboard navigation
+- **📱 Responsive Design**: Mobile-first design that works on all devices
+
+### Documentation Structure
+
+#### 1. Getting Started
+- Introduction to PhilJS
+- Installation guide
+- Quick start tutorial
+- Your first component
+- Thinking in PhilJS
+- Interactive tutorials (Tic-Tac-Toe, Todo App, etc.)
+
+#### 2. Learn
+- Core concepts (Components, Signals, Effects, Context)
+- JSX and templates
+- Event handling
+- Conditional rendering
+- Forms and validation
+- Styling and animations
+- Performance optimization
+- TypeScript integration
+
+#### 3. Routing
+- File-based routing
+- Dynamic routes
+- Layouts and nested routing
+- Data loading
+- Route guards and middleware
+- View transitions
+
+#### 4. Data Fetching
+- Queries and mutations
+- Caching strategies
+- Loading states
+- Error handling
+- Server functions
+- Real-time data
+
+#### 5. Advanced Topics
+- Server-side rendering (SSR)
+- Static site generation (SSG)
+- Islands architecture
+- Resumability
+- State management
+- Authentication
+- Testing strategies
+
+#### 6. API Reference
+- Core API documentation
+- Router API
+- SSR API
+- Auto-generated from TSDoc comments
+
+#### 7. Examples
+- Real-world examples
+- Code snippets
+- Best practices
+- Common patterns
+
+### Key Components
+
+#### Layout Components
+
+**Layout.tsx**
+- `Layout`: Base layout with header, footer, and optional sidebar
+- `DocLayout`: Specialized layout for documentation pages with TOC
+- `CenteredLayout`: For landing pages and centered content
+
+**Header.tsx**
+- Navigation menu
+- Search trigger
+- Theme switcher
+- Version selector
+- Mobile menu
+
+**Footer.tsx**
+- Links to resources
+- Social media links
+- License information
+
+**Sidebar.tsx**
+- Hierarchical navigation
+- Active page highlighting
+- Collapsible sections
+- Smooth scrolling to active item
+
+**TableOfContents.tsx**
+- Automatic heading extraction
+- Scroll spy for active section
+- Smooth scroll to headings
+
+#### Interactive Components
+
+**CodeBlock.tsx**
+- Syntax highlighting with highlight.js
+- Copy to clipboard
+- Language detection
+- Line numbers (optional)
+
+**CodePlayground.tsx**
+- Live code editor
+- Real-time execution
+- Error handling
+- Multiple templates
+- Share functionality
+
+**SearchModal.tsx**
+- Keyboard shortcut (Cmd/Ctrl + K)
+- Fuzzy search
+- Result highlighting
+- Recent searches
+- Keyboard navigation
+
+**VersionSwitcher.tsx**
+- Version dropdown
+- Stable/Beta/Legacy indicators
+- Link to changelog
+
+#### Utility Components
+
+**Breadcrumbs.tsx**
+- Auto-generated from route path
+- Clickable navigation
+- Mobile-responsive
+
+**DocNavigation.tsx**
+- Previous/Next page links
+- Smart navigation within sections
+
+**LoadingSkeleton.tsx**
+- Content placeholders during loading
+- Smooth transitions
+
+**ErrorBoundary.tsx**
+- Graceful error handling
+- Error reporting
+- Fallback UI
+
+### Documentation Markdown Features
+
+The markdown renderer supports enhanced features:
+
+#### Code Blocks
+
+```typescript
+// Regular code block
+const count = signal(0);
+```
+
+```typescript live
+// Interactive playground (add 'live' to language)
+const count = signal(0);
+effect(() => console.log('Count:', count()));
+```
+
+#### Callouts
+
+> 💡 **Tip:** This is a tip callout
+
+> ⚠️ **Warning:** This is a warning callout
+
+> ℹ️ **Note:** This is a note callout
+
+> ❗ **Important:** This is an important callout
+
+#### Features
+- Automatic heading IDs for anchor links
+- External link indicators
+- Syntax highlighting
+- Copy code buttons
+- Responsive tables
+- Image optimization
+
+### Search Index
+
+The search system uses a custom inverted index for fast, client-side searching:
+
+**Features:**
+- Tokenization and stemming
+- Weighted scoring (titles > headings > content)
+- Prefix matching
+- Excerpt generation with context
+- Debounced input
+- Result ranking
+
+**Implementation:**
+- `SearchIndex` class for indexing
+- Async initialization on page load
+- Incremental updates
+- Efficient memory usage
+
+### API Documentation Generator
+
+The site includes an API documentation generator that:
+
+1. Parses TypeScript source files
+2. Extracts TSDoc comments
+3. Generates formatted API reference pages
+4. Supports:
+   - Function signatures
+   - Parameter documentation
+   - Return types
+   - Examples
+   - Since/Deprecated tags
+   - Interface definitions
+   - Type aliases
+
+### Performance Optimizations
+
+1. **Code Splitting**: Dynamic imports for routes and components
+2. **Lazy Loading**: Images and heavy components loaded on demand
+3. **Memoization**: Expensive computations cached
+4. **Virtual Scrolling**: For long lists (search results, TOC)
+5. **Bundle Size**: Tree-shaking and minification
+6. **Preloading**: Smart preloading of likely-next pages
+7. **Caching**: Service worker for offline support (PWA)
+
+### Accessibility
+
+- Semantic HTML structure
+- ARIA labels and roles
+- Keyboard navigation
+- Focus management
+- Skip to content links
+- Screen reader friendly
+- Color contrast (WCAG AA)
+- Reduced motion support
+
+## Development
+
+### Getting Started
 
 ```bash
 # Install dependencies
-pnpm install
+npm install
 
-# Run development server
-pnpm dev
+# Start development server
+npm run dev
 
 # Build for production
-pnpm build
+npm run build
 
 # Preview production build
-pnpm preview
+npm run preview
+
+# Run tests
+npm run test
+
+# Run E2E tests
+npm run test:e2e
+
+# Type checking
+npm run typecheck
 ```
 
-## 📁 Project Structure
+### Project Structure
 
 ```
 docs-site/
+├── public/
+│   └── md-files/          # Markdown documentation files
+│       ├── getting-started/
+│       ├── learn/
+│       ├── api-reference/
+│       └── ...
 ├── src/
-│   ├── components/       # Reusable UI components
-│   │   ├── Button.tsx
+│   ├── components/        # React components
+│   │   ├── Layout.tsx
+│   │   ├── Sidebar.tsx
 │   │   ├── CodeBlock.tsx
-│   │   └── Callout.tsx
-│   ├── pages/           # Page components
-│   │   └── HomePage.tsx
-│   ├── styles/          # Global styles and design tokens
-│   │   ├── global.css
-│   │   └── design-tokens.ts
-│   ├── lib/             # Utilities
+│   │   ├── SearchModal.tsx
+│   │   └── ...
+│   ├── lib/              # Utilities and libraries
+│   │   ├── docs-structure.ts
+│   │   ├── markdown-renderer.ts
+│   │   ├── search-index.ts
+│   │   ├── api-doc-generator.ts
 │   │   └── theme.ts
-│   ├── data/            # Documentation content
-│   │   └── docs.ts
-│   ├── App.tsx          # Main app component
-│   └── main.tsx         # Entry point
-├── public/              # Static assets
-├── index.html           # HTML template
-└── vite.config.ts       # Vite configuration
+│   ├── pages/            # Page components
+│   │   ├── HomePage.tsx
+│   │   ├── DocsPage.tsx
+│   │   ├── ExamplesPage.tsx
+│   │   └── PlaygroundPage.tsx
+│   ├── styles/           # Global styles
+│   │   ├── global.css
+│   │   ├── design-tokens.ts
+│   │   └── code-playground.css
+│   ├── App.tsx           # Main app component
+│   ├── Router.tsx        # Client-side router
+│   └── main.tsx          # Entry point
+├── tests/                # Playwright E2E tests
+├── index.html
+├── vite.config.ts
+├── package.json
+└── README.md
 ```
 
-## ✨ Features Implemented
+### Adding New Documentation
 
-### Core Features
-- ✅ Beautiful, modern homepage with hero section
-- ✅ Feature showcase grid with 8 key features
-- ✅ Responsive design (mobile-first)
-- ✅ Dark mode with smooth transitions
-- ✅ Syntax-highlighted code blocks with copy button
-- ✅ Callout components (info, warning, success, error)
+1. Create a markdown file in `public/md-files/{section}/{file}.md`
+2. Add the entry to `src/lib/docs-structure.ts`
+3. The search index will automatically include it
 
-### Design System
-- ✅ Design tokens (colors, typography, spacing)
-- ✅ Reusable components (Button, CodeBlock, Callout)
-- ✅ Theme context for light/dark mode
-- ✅ Accessible focus styles
-- ✅ Smooth animations and transitions
+### Creating New Components
 
-### Documentation Content
-- ✅ Getting Started (Installation, Quick Start)
-- ✅ Learn section (Signals, Components, Routing)
-- ✅ Real, working code examples
-- ✅ Best practices and tips
+1. Add component to `src/components/`
+2. Export from component file
+3. Import and use in pages
+4. Add tests in `tests/`
 
-### Performance
-- ⚡ Sub-second page loads
-- ⚡ Optimized CSS (design tokens)
-- ⚡ Code splitting ready
-- ⚡ Minimal bundle size
+### Customizing Theme
 
-## 🎨 Design Principles
+Edit `src/styles/design-tokens.ts` and `src/lib/theme.ts`:
 
-- **Beautiful**: Modern, minimal design with attention to detail
-- **Fast**: Sub-second page loads, optimized performance
-- **Accessible**: WCAG AA compliant, keyboard navigable
-- **Responsive**: Mobile-first, works on all devices
-- **Interactive**: Live code examples, smooth transitions
-
-## 🔧 Tech Stack
-
-- **Framework**: PhilJS (dogfooding!)
-- **Build Tool**: Vite
-- **Language**: TypeScript
-- **Styling**: CSS with design tokens
-- **Syntax Highlighting**: Ready for Shiki integration
-
-## 📝 Adding Documentation
-
-Documentation is stored in `src/data/docs.ts`. To add a new page:
-
-```ts
-{
-  title: 'Your Page Title',
-  slug: 'category/page-slug',
-  category: 'Category Name',
-  content: `
-# Your Page Title
-
-Your markdown content here...
-  `,
-}
+```typescript
+export const designTokens = {
+  colors: {
+    brand: '#7c3aed',     // Primary brand color
+    success: '#10b981',   // Success state
+    warning: '#f59e0b',   // Warning state
+    error: '#ef4444',     // Error state
+    // ...
+  },
+  spacing: {
+    // ...
+  },
+  typography: {
+    // ...
+  },
+};
 ```
 
-## 🚢 Deployment
+### Search Configuration
 
-### Vercel
+Adjust search behavior in `src/lib/search-index.ts`:
+
+```typescript
+// Customize weights
+this.indexText(entry.title, index, 3);    // Title weight
+this.indexText(heading, index, 2);        // Heading weight
+this.indexText(entry.content, index, 1);  // Content weight
+
+// Adjust excerpt length
+const maxLength = 150;  // Characters in excerpt
+```
+
+## Deployment
+
+### Build
 
 ```bash
-# Install Vercel CLI
-pnpm add -g vercel
+npm run build
+```
 
-# Deploy
+Outputs to `dist/` directory.
+
+### Deploy to Vercel
+
+```bash
 vercel
 ```
 
-### Netlify
+Or use the `vercel.json` configuration:
 
-```bash
-# Build command
-pnpm build
-
-# Publish directory
-dist
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev"
+}
 ```
 
-## 📊 Performance Targets
+### Deploy to Netlify
 
-- First Contentful Paint: < 1s
-- Time to Interactive: < 3s
-- Lighthouse Score: 100
-- Bundle Size: < 200KB (homepage)
+Use the `netlify.toml` configuration:
 
-## 🎯 Future Enhancements
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
 
-- [ ] Full documentation site with routing
-- [ ] Interactive code playground
-- [ ] Search functionality (Cmd+K)
-- [ ] API reference pages
-- [ ] Blog section
-- [ ] Examples gallery
-- [ ] Community showcase
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
 
-## 📄 License
+### Deploy to GitHub Pages
 
-MIT - Same as PhilJS core framework
+```bash
+# Build
+npm run build
+
+# Deploy
+npm run deploy
+```
+
+### Docker
+
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+FROM nginx:alpine
+COPY --from=0 /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+## Testing
+
+### Unit Tests
+
+```bash
+npm run test
+```
+
+### E2E Tests
+
+```bash
+npm run test:e2e
+```
+
+Tests include:
+- Homepage navigation
+- Documentation page loading
+- Search functionality
+- Theme switching
+- Responsive behavior
+- Accessibility checks
+
+### Manual Testing
+
+1. Theme switching works correctly
+2. Search returns relevant results
+3. Code playground executes code
+4. Mobile menu functions
+5. All links work
+6. Breadcrumbs update correctly
+7. TOC highlights active section
+8. Copy buttons work
+
+## Browser Support
+
+- Chrome/Edge (last 2 versions)
+- Firefox (last 2 versions)
+- Safari (last 2 versions)
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License - see [LICENSE](../../LICENSE) file.
+
+## Credits
+
+Built with:
+- PhilJS - The framework itself
+- Vite - Build tool
+- TypeScript - Type safety
+- Highlight.js - Syntax highlighting
+- Marked - Markdown parsing
+- Playwright - E2E testing
+
+---
+
+**Live Site**: [https://philjs.dev](https://philjs.dev)
+
+**Documentation**: [https://philjs.dev/docs](https://philjs.dev/docs)
+
+**GitHub**: [https://github.com/philjs/philjs](https://github.com/philjs/philjs)

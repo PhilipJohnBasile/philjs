@@ -1,6 +1,6 @@
 {
   "name": "philjs-api",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "API routes and full-stack utilities for PhilJS",
   "type": "module",
   "main": "dist/index.js",
@@ -34,5 +34,15 @@
     "full-stack"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-api"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

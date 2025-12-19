@@ -57,6 +57,67 @@ export interface PhilJSCompilerPluginOptions extends CompilerConfig {
    * @default true
    */
   enhancedErrors?: boolean;
+
+  /**
+   * Production optimizations
+   */
+  production?: {
+    /**
+     * Enable aggressive minification
+     * @default true
+     */
+    minify?: boolean;
+
+    /**
+     * Enable chunk splitting strategies
+     * @default true
+     */
+    chunkSplitting?: boolean;
+
+    /**
+     * Generate preload/prefetch hints
+     * @default true
+     */
+    resourceHints?: boolean;
+
+    /**
+     * Enable bundle analysis
+     * @default false
+     */
+    analyze?: boolean;
+
+    /**
+     * Performance budgets (in bytes)
+     */
+    budgets?: {
+      maxInitial?: number;
+      maxChunk?: number;
+      maxTotal?: number;
+    };
+  };
+
+  /**
+   * Asset optimization settings
+   */
+  assets?: {
+    /**
+     * Inline assets smaller than this (bytes)
+     * @default 4096
+     */
+    inlineLimit?: number;
+
+    /**
+     * Enable image optimization
+     * @default true
+     */
+    optimizeImages?: boolean;
+
+    /**
+     * Enable SVG optimization
+     * @default true
+     */
+    optimizeSvg?: boolean;
+  };
 }
 
 /**
@@ -163,6 +224,10 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
     cacheMisses: 0,
     optimizationsApplied: 0,
   };
+
+  // Bundle analysis data
+  const bundleStats: Array<{ name: string; size: number; gzipSize: number }> = [];
+  const chunkMap = new Map<string, string[]>();
 
   return {
     name: 'philjs-compiler',
@@ -633,11 +698,91 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
     },
 
     /**
+     * Generate bundle hook - Analyze and optimize production bundles
+     */
+    generateBundle(outputOptions, bundle) {
+      if (!enabled || isDevelopment) return;
+
+      const productionConfig = options.production || {};
+      const {
+        analyze = false,
+        resourceHints = true,
+        budgets,
+      } = productionConfig;
+
+      // Collect bundle statistics
+      bundleStats.length = 0;
+      chunkMap.clear();
+
+      Object.entries(bundle).forEach(([fileName, chunk]) => {
+        if (chunk.type === 'chunk') {
+          const code = chunk.code;
+          const size = Buffer.byteLength(code, 'utf8');
+
+          // Track chunk dependencies
+          chunkMap.set(fileName, chunk.imports || []);
+
+          bundleStats.push({
+            name: fileName,
+            size,
+            gzipSize: 0, // Would calculate actual gzip size
+          });
+
+          if (verbose) {
+            console.log(`[philjs-compiler] Chunk: ${fileName} (${formatBytes(size)})`);
+          }
+        }
+      });
+
+      // Check performance budgets
+      if (budgets) {
+        const violations = checkBudgets(bundleStats, budgets);
+        if (violations.length > 0) {
+          console.warn('\n[philjs-compiler] ⚠️  Performance Budget Violations:');
+          violations.forEach(v => {
+            console.warn(`  ${v.type}: ${formatBytes(v.actual)} exceeds ${formatBytes(v.limit)}`);
+          });
+        }
+      }
+
+      // Generate resource hints
+      if (resourceHints) {
+        const criticalChunks = bundleStats
+          .filter(s => s.name.includes('index') || s.name.includes('main'))
+          .map(s => s.name);
+
+        const lazyChunks = bundleStats
+          .filter(s => !criticalChunks.includes(s.name))
+          .map(s => s.name);
+
+        if (verbose) {
+          console.log('\n[philjs-compiler] Resource Hints:');
+          console.log(`  Preload (${criticalChunks.length}): ${criticalChunks.join(', ')}`);
+          console.log(`  Prefetch (${lazyChunks.length}): ${lazyChunks.join(', ')}`);
+        }
+      }
+
+      // Generate bundle analysis report
+      if (analyze) {
+        generateBundleReport(bundleStats, chunkMap);
+      }
+    },
+
+    /**
      * Close hook - Clean up resources and show final stats
      */
     closeBundle() {
       if (verbose && cache) {
         console.log(`\n[philjs-compiler] Cache: ${transformCache.size} entries`);
+      }
+
+      // Show production build summary
+      if (!isDevelopment && bundleStats.length > 0 && verbose) {
+        const totalSize = bundleStats.reduce((sum, s) => sum + s.size, 0);
+        console.log('\n[philjs-compiler] Production Build Summary:');
+        console.log(`  Total bundles: ${bundleStats.length}`);
+        console.log(`  Total size: ${formatBytes(totalSize)}`);
+        console.log(`  Optimizations applied: ${stats.optimizationsApplied}`);
       }
 
       // Clear cache on close in production builds to free memory
@@ -646,6 +791,104 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
       }
     },
   };
+}
+
+/**
+ * Check performance budgets
+ */
+function checkBudgets(
+  stats: Array<{ name: string; size: number; gzipSize: number }>,
+  budgets: { maxInitial?: number; maxChunk?: number; maxTotal?: number }
+): Array<{ type: string; limit: number; actual: number }> {
+  const violations: Array<{ type: string; limit: number; actual: number }> = [];
+
+  // Check initial bundle
+  if (budgets.maxInitial) {
+    const initialBundles = stats.filter(s => s.name.includes('index') || s.name.includes('main'));
+    const initialSize = initialBundles.reduce((sum, s) => sum + s.size, 0);
+
+    if (initialSize > budgets.maxInitial) {
+      violations.push({
+        type: 'initial',
+        limit: budgets.maxInitial,
+        actual: initialSize,
+      });
+    }
+  }
+
+  // Check individual chunks
+  if (budgets.maxChunk) {
+    stats.forEach(stat => {
+      if (stat.size > budgets.maxChunk!) {
+        violations.push({
+          type: `chunk:${stat.name}`,
+          limit: budgets.maxChunk!,
+          actual: stat.size,
+        });
+      }
+    });
+  }
+
+  // Check total size
+  if (budgets.maxTotal) {
+    const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
+    if (totalSize > budgets.maxTotal) {
+      violations.push({
+        type: 'total',
+        limit: budgets.maxTotal,
+        actual: totalSize,
+      });
+    }
+  }
+
+  return violations;
+}
+
+/**
+ * Generate bundle analysis report
+ */
+function generateBundleReport(
+  stats: Array<{ name: string; size: number; gzipSize: number }>,
+  chunkMap: Map<string, string[]>
+): void {
+  console.log('\n╔════════════════════════════════════════════════════════════╗');
+  console.log('║             PhilJS Bundle Analysis Report                 ║');
+  console.log('╚════════════════════════════════════════════════════════════╝\n');
+
+  // Sort by size (largest first)
+  const sorted = [...stats].sort((a, b) => b.size - a.size);
+
+  console.log('Bundle Breakdown:');
+  console.log('─────────────────────────────────────────────────────────────');
+
+  sorted.forEach((stat, idx) => {
+    const dependencies = chunkMap.get(stat.name) || [];
+    const sizeBar = createSizeBar(stat.size, sorted[0].size);
+
+    console.log(`${(idx + 1).toString().padStart(2)}. ${stat.name}`);
+    console.log(`    ${sizeBar} ${formatBytes(stat.size)}`);
+
+    if (dependencies.length > 0) {
+      console.log(`    Dependencies: ${dependencies.slice(0, 3).join(', ')}${dependencies.length > 3 ? '...' : ''}`);
+    }
+    console.log('');
+  });
+
+  const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
+  console.log('─────────────────────────────────────────────────────────────');
+  console.log(`Total Size: ${formatBytes(totalSize)}`);
+  console.log(`Chunks: ${stats.length}\n`);
+}
+
+/**
+ * Create a visual size bar
+ */
+function createSizeBar(size: number, maxSize: number): string {
+  const barLength = 30;
+  const filled = Math.round((size / maxSize) * barLength);
+  const empty = barLength - filled;
+
+  return `[${'█'.repeat(filled)}${' '.repeat(empty)}]`;
 }
 
 /**

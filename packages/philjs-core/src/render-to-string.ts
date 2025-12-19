@@ -82,41 +82,46 @@ function renderElement(tag: string, props: Record<string, any>): string {
  * Render element attributes to a string.
  */
 function renderAttrs(attrs: Record<string, any>): string {
-  return Object.entries(attrs)
-    .filter(([key, value]) => {
-      // Skip null, undefined, false
-      if (value == null || value === false) return false;
-      // Skip functions (event handlers - will be handled by resumability)
-      if (typeof value === "function") return false;
-      // Skip internal props
-      if (key.startsWith("__")) return false;
-      return true;
-    })
-    .map(([key, value]) => {
-      // Convert React-style names to HTML
-      const attrName = key === "className" ? "class" : key === "htmlFor" ? "for" : key;
+  let result = "";
 
-      // Boolean attributes
-      if (BOOLEAN_ATTRS.has(attrName)) {
-        return value ? attrName : "";
+  for (const key in attrs) {
+    const value = attrs[key];
+
+    // Skip null, undefined, false
+    if (value == null || value === false) continue;
+    // Skip functions (event handlers - will be handled by resumability)
+    if (typeof value === "function") continue;
+    // Skip internal props
+    if (key.startsWith("__")) continue;
+
+    // Convert React-style names to HTML
+    const attrName = key === "className" ? "class" : key === "htmlFor" ? "for" : key;
+
+    // Boolean attributes
+    if (BOOLEAN_ATTRS.has(attrName)) {
+      if (value) {
+        result += result ? ` ${attrName}` : attrName;
       }
+      continue;
+    }
 
-      // Style object to CSS string
-      if (attrName === "style" && typeof value === "object") {
-        const styleString = Object.entries(value)
-          .map(([prop, val]) => {
-            const cssProp = prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
-            return `${cssProp}:${val}`;
-          })
-          .join(";");
-        return `style="${escapeAttr(styleString)}"`;
+    // Style object to CSS string
+    if (attrName === "style" && typeof value === "object") {
+      let styleString = "";
+      for (const prop in value) {
+        const cssProp = prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
+        styleString += styleString ? `;${cssProp}:${value[prop]}` : `${cssProp}:${value[prop]}`;
       }
+      result += result ? ` style="${escapeAttr(styleString)}"` : `style="${escapeAttr(styleString)}"`;
+      continue;
+    }
 
-      // Regular attributes
-      return `${attrName}="${escapeAttr(String(value))}"`;
-    })
-    .filter(Boolean)
-    .join(" ");
+    // Regular attributes
+    const attrStr = `${attrName}="${escapeAttr(String(value))}"`;
+    result += result ? ` ${attrStr}` : attrStr;
+  }
+
+  return result;
 }
 
 /**

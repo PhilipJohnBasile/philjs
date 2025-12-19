@@ -40,25 +40,28 @@ let batchedUpdates = new Set<() => void>();
 let currentOwner: Owner | null = null;
 
 // ============================================================================
-// HMR State Management
+// HMR State Management (Development Only)
 // ============================================================================
+
+// HMR state is only tracked in development mode to reduce production bundle size
+const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
 
 /**
  * Global HMR state registry for preserving signal values across hot updates.
  * Maps signal IDs to their current values.
  */
-const hmrStateRegistry = new Map<string, any>();
+const hmrStateRegistry = isDev ? new Map<string, any>() : null;
 
 /**
  * Track all active signals for HMR snapshot/restore.
  * Weak references to avoid memory leaks.
  */
-const activeSignals = new Set<{ id: string; get: () => any; set: (v: any) => void }>();
+const activeSignals = isDev ? new Set<{ id: string; get: () => any; set: (v: any) => void }>() : null;
 
 /**
  * Track all active effects for proper cleanup during HMR.
  */
-const activeEffects = new Set<{ id: string; dispose: () => void }>();
+const activeEffects = isDev ? new Set<{ id: string; dispose: () => void }>() : null;
 
 /**
  * Counter for generating unique signal IDs.
@@ -95,9 +98,6 @@ export function signal<T>(initialValue: T): Signal<T> {
   let value = initialValue;
   const subscribers = new Set<Computation>();
 
-  // Generate unique ID for HMR tracking
-  const signalId = `signal_${signalIdCounter++}`;
-
   const read = (() => {
     // Track this signal as a dependency of the active computation
     if (activeComputation) {
@@ -118,22 +118,17 @@ export function signal<T>(initialValue: T): Signal<T> {
 
     value = newValue;
 
-    // Update HMR registry if not in HMR restore process
-    if (!hmrInProgress) {
-      hmrStateRegistry.set(signalId, value);
-    }
-
     // Notify all subscribers
     if (batchDepth > 0) {
-      // Queue updates for batching - convert to array to avoid iteration issues
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(computation => {
+      // Queue updates for batching
+      for (const computation of subscribers) {
         batchedUpdates.add(computation.execute);
-      });
+      }
     } else {
-      // Execute immediately - convert to array to avoid modification during iteration
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(computation => computation.execute());
+      // Execute immediately
+      for (const computation of subscribers) {
+        computation.execute();
+      }
     }
   };
 
@@ -149,16 +144,17 @@ export function signal<T>(initialValue: T): Signal<T> {
   // Peek reads the value without tracking dependencies
   read.peek = () => value;
 
-  // Register signal for HMR tracking
-  const signalHandle = {
-    id: signalId,
-    get: () => value,
-    set: (v: any) => read.set(v as T),
-  };
-  activeSignals.add(signalHandle);
-
-  // Initialize HMR registry with initial value
-  hmrStateRegistry.set(signalId, initialValue);
+  // Register signal for HMR tracking (development only)
+  if (isDev && activeSignals && hmrStateRegistry) {
+    const signalId = `signal_${signalIdCounter++}`;
+    const signalHandle = {
+      id: signalId,
+      get: () => value,
+      set: (v: any) => read.set(v as T),
+    };
+    activeSignals.add(signalHandle);
+    hmrStateRegistry.set(signalId, initialValue);
+  }
 
   return read;
 }
@@ -187,18 +183,20 @@ export function memo<T>(calc: () => T): Memo<T> {
   const computation: Computation = {
     execute: () => {
       isStale = true;
-      // Notify subscribers that we're stale - convert to array to avoid iteration issues
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(sub => sub.execute());
+      // Notify subscribers that we're stale
+      for (const sub of subscribers) {
+        sub.execute();
+      }
     },
     dependencies: new Set(),
   };
 
   const read = (() => {
     if (isStale) {
-      // Clear old dependencies - convert to array first to avoid iteration issues
-      const oldDeps = Array.from(computation.dependencies);
-      oldDeps.forEach(deps => deps.delete(computation));
+      // Clear old dependencies
+      for (const deps of computation.dependencies) {
+        deps.delete(computation);
+      }
       computation.dependencies.clear();
 
       // Track new dependencies
@@ -283,8 +281,9 @@ export function linkedSignal<T>(
       }
 
       // Notify subscribers
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(sub => sub.execute());
+      for (const sub of subscribers) {
+        sub.execute();
+      }
     },
     dependencies: new Set(),
   };
@@ -292,8 +291,9 @@ export function linkedSignal<T>(
   const read = (() => {
     if (isStale && !isOverridden) {
       // Clear old dependencies
-      const oldDeps = Array.from(comp.dependencies);
-      oldDeps.forEach(deps => deps.delete(comp));
+      for (const deps of comp.dependencies) {
+        deps.delete(comp);
+      }
       comp.dependencies.clear();
 
       // Track new dependencies
@@ -330,13 +330,13 @@ export function linkedSignal<T>(
 
     // Notify all subscribers
     if (batchDepth > 0) {
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(subscriber => {
+      for (const subscriber of subscribers) {
         batchedUpdates.add(subscriber.execute);
-      });
+      }
     } else {
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(subscriber => subscriber.execute());
+      for (const subscriber of subscribers) {
+        subscriber.execute();
+      }
     }
   };
 
@@ -349,13 +349,13 @@ export function linkedSignal<T>(
 
     // Notify subscribers about the reset
     if (batchDepth > 0) {
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(subscriber => {
+      for (const subscriber of subscribers) {
         batchedUpdates.add(subscriber.execute);
-      });
+      }
     } else {
-      const subscribersList = Array.from(subscribers);
-      subscribersList.forEach(subscriber => subscriber.execute());
+      for (const subscriber of subscribers) {
+        subscriber.execute();
+      }
     }
   };
 
@@ -393,9 +393,6 @@ export function effect(fn: EffectFunction): EffectCleanup {
 
   let owner: Owner | null = null;
 
-  // Generate unique ID for HMR tracking
-  const effectId = `effect_${signalIdCounter++}`;
-
   const computation: Computation = {
     execute: () => {
       if (isDisposed) return;
@@ -411,9 +408,10 @@ export function effect(fn: EffectFunction): EffectCleanup {
         owner.cleanups = [];
       }
 
-      // Clear old dependencies - convert to array first to avoid iteration issues
-      const oldDeps = Array.from(computation.dependencies);
-      oldDeps.forEach(deps => deps.delete(computation));
+      // Clear old dependencies
+      for (const deps of computation.dependencies) {
+        deps.delete(computation);
+      }
       computation.dependencies.clear();
 
       // Create owner for this effect
@@ -456,21 +454,28 @@ export function effect(fn: EffectFunction): EffectCleanup {
       owner.cleanups = [];
     }
 
-    // Convert to array first to avoid iteration issues during deletion
-    const oldDeps = Array.from(computation.dependencies);
-    oldDeps.forEach(deps => deps.delete(computation));
+    // Clear dependencies
+    for (const deps of computation.dependencies) {
+      deps.delete(computation);
+    }
     computation.dependencies.clear();
 
-    // Unregister from HMR tracking
-    activeEffects.delete(effectHandle);
+    // Unregister from HMR tracking (development only)
+    if (isDev && activeEffects && effectHandle) {
+      activeEffects.delete(effectHandle);
+    }
   };
 
-  // Register effect for HMR tracking
-  const effectHandle = {
-    id: effectId,
-    dispose,
-  };
-  activeEffects.add(effectHandle);
+  // Register effect for HMR tracking (development only)
+  let effectHandle: { id: string; dispose: () => void } | null = null;
+  if (isDev && activeEffects) {
+    const effectId = `effect_${signalIdCounter++}`;
+    effectHandle = {
+      id: effectId,
+      dispose,
+    };
+    activeEffects.add(effectHandle);
+  }
 
   // Run the effect initially
   computation.execute();
@@ -503,11 +508,13 @@ export function batch<T>(fn: () => T): T {
     return fn();
   } finally {
     batchDepth--;
-    if (batchDepth === 0) {
+    if (batchDepth === 0 && batchedUpdates.size > 0) {
       // Execute all batched updates
-      const updates = Array.from(batchedUpdates);
-      batchedUpdates.clear();
-      updates.forEach(update => update());
+      const updates = batchedUpdates;
+      batchedUpdates = new Set();
+      for (const update of updates) {
+        update();
+      }
     }
   }
 }
@@ -735,8 +742,13 @@ export interface HMROptions {
  * ```
  */
 export function snapshotHMRState(options: HMROptions = {}): Map<string, any> {
-  const startTime = performance.now();
   const snapshot = new Map<string, any>();
+
+  if (!isDev || !activeSignals || !hmrStateRegistry) {
+    return snapshot;
+  }
+
+  const startTime = performance.now();
 
   hmrInProgress = true;
 

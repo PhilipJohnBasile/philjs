@@ -1,0 +1,23 @@
+
+> philjs-monorepo@0.1.0 typecheck C:\Users\Phili\Git\philjs
+> pnpm -r typecheck
+
+Scope: 44 of 45 workspace projects
+packages/philjs-css typecheck$ tsc --noEmit
+packages/philjs-core typecheck$ tsc --noEmit
+packages/philjs-devtools-extension typecheck$ tsc --noEmit
+packages/philjs-ai typecheck$ tsc --noEmit
+packages/philjs-ai typecheck: Done
+packages/philjs-eslint typecheck$ tsc --noEmit
+packages/philjs-devtools-extension typecheck: Done
+packages/philjs-islands typecheck$ tsc --noEmit
+packages/philjs-core typecheck: Done
+packages/philjs-eslint typecheck: Done
+packages/philjs-islands typecheck: Done
+packages/philjs-css typecheck: ../create-philjs/dist/index.js(2,1): error TS18026: '#!' can only be used at the start of a file.
+packages/philjs-css typecheck: ../create-philjs/dist/index.js(2,16): error TS1005: ';' expected.
+packages/philjs-css typecheck: Failed
+C:\Users\Phili\Git\philjs\packages\philjs-css:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  philjs-css@2.0.0 typecheck: `tsc --noEmit`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.

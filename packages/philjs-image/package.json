@@ -1,6 +1,6 @@
 {
   "name": "philjs-image",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Image optimization for PhilJS with automatic format conversion, responsive sizing, and lazy loading",
   "type": "module",
   "main": "./dist/index.js",
@@ -51,5 +51,16 @@
       "optional": true
     }
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-image"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

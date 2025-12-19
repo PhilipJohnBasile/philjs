@@ -657,3 +657,83 @@ export const gql = (strings: TemplateStringsArray, ...values: any[]) => {
 };
 
 export type { DocumentNode };
+
+// Export subscription utilities
+export {
+  SubscriptionClient,
+  SubscriptionHandle,
+  createSubscriptionClient,
+  useSubscription,
+  type SubscriptionConfig,
+  type SubscriptionOptions,
+  type SubscriptionState,
+} from './subscription';
+
+// Export persisted query utilities
+export {
+  PersistedQueryManager,
+  PersistedQueryRegistry,
+  createPersistedQueryManager,
+  createPersistedQueryRegistry,
+  shouldRetryWithFullQuery,
+  buildPersistedQueryRequest,
+  extractQueryHash,
+  generatePersistedQueryManifest,
+  type PersistedQueryConfig,
+  type PersistedQueryLink,
+} from './persisted';
+
+// Export fragment utilities
+export {
+  FragmentRegistry,
+  defineFragment,
+  maskFragment,
+  unmaskFragment,
+  isMaskedFragment,
+  spreadFragment,
+  composeFragments,
+  buildQueryWithFragments,
+  useFragment,
+  withFragment,
+  getComponentFragment,
+  mergeFragmentData,
+  selectFromFragment,
+  getFragmentRegistry,
+  createFragmentRegistry,
+  fragment,
+  inlineFragment,
+  FragmentUtils,
+  type FragmentDefinition,
+  type MaskedFragment,
+} from './fragments';
+
+// Export optimistic update utilities
+export {
+  OptimisticUpdateManager,
+  OptimisticResponseBuilder,
+  MutationQueue,
+  LastWriteWinsResolver,
+  FirstWriteWinsResolver,
+  CustomConflictResolver,
+  createOptimisticUpdateManager,
+  buildOptimisticResponse,
+  createMutationQueue,
+  type OptimisticUpdateConfig,
+  type OptimisticMutation,
+  type OptimisticUpdateSnapshot,
+  type ConflictResolver,
+} from './optimistic';
+
+// Export code generation utilities
+export {
+  GraphQLCodegen,
+  BatchCodegen,
+  createCodegen,
+  createBatchCodegen,
+  runCodegen,
+  extractOperationInfo,
+  extractFragmentInfo,
+  type CodegenConfig,
+  type GeneratedOperation,
+  type GeneratedFragment,
+} from './codegen-enhanced';

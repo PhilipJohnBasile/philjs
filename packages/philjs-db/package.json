@@ -1,6 +1,6 @@
 {
   "name": "philjs-db",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Database integration utilities for PhilJS - Prisma, Drizzle, Supabase",
   "type": "module",
   "main": "dist/index.js",
@@ -50,5 +50,15 @@
     "orm"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-db"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

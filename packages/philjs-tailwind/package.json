@@ -1,6 +1,6 @@
 {
   "name": "philjs-tailwind",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Tailwind CSS integration for PhilJS with IntelliSense and optimizations",
   "type": "module",
   "main": "dist/index.js",
@@ -41,5 +41,15 @@
   "license": "MIT",
   "sideEffects": [
     "**/*.css"
-  ]
+  ],
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-tailwind"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

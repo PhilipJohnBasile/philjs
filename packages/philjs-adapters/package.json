@@ -1,6 +1,6 @@
 {
   "name": "philjs-adapters",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS",
   "type": "module",
   "main": "dist/index.js",
@@ -16,7 +16,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'Lint philjs-adapters'"
   },
   "dependencies": {
     "philjs-core": "workspace:*",
@@ -24,7 +28,8 @@
   },
   "devDependencies": {
     "typescript": "^5.3.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@vercel/node": "^5.5.15",
@@ -56,5 +61,15 @@
     "deployment"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-adapters"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

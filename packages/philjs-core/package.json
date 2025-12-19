@@ -1,6 +1,6 @@
 {
   "name": "philjs-core",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Core signals, memos, and resources for PhilJS",
   "type": "module",
   "sideEffects": false,
@@ -111,5 +111,22 @@
     "rollup": "^4.53.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
-  }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-core"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "signals",
+    "reactivity",
+    "framework"
+  ]
 }

@@ -17,6 +17,7 @@ Comprehensive deployment guides for deploying PhilJS applications to all major p
 ### Overview
 
 - **[Deployment Overview](./overview.md)** - General deployment concepts and checklist
+- **[Deployment Adapters](./adapters.md)** - Official adapters for seamless deployment to all platforms
 
 ## What's Included
 

@@ -1,6 +1,6 @@
 {
   "name": "philjs-templates",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Starter templates for PhilJS applications",
   "type": "module",
   "main": "dist/index.js",
@@ -33,5 +33,15 @@
     "scaffolding"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-templates"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

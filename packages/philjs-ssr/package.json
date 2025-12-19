@@ -1,6 +1,6 @@
 {
   "name": "philjs-ssr",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "SSR streaming, loaders, actions, and resumability for PhilJS",
   "type": "module",
   "main": "./dist/index.js",
@@ -29,5 +29,21 @@
     "typescript": "^5.7.2",
     "vitest": "^3.2.4"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-ssr"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "server-side-rendering",
+    "streaming"
+  ]
 }

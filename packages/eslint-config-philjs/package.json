@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-philjs",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "ESLint config with a11y and security plugins for PhilJS",
   "type": "module",
   "main": "./index.js",
@@ -14,5 +14,16 @@
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-security": "^3.0.1"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/eslint-config-philjs"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }

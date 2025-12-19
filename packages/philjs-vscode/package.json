@@ -2,7 +2,7 @@
   "name": "philjs-vscode",
   "displayName": "PhilJS for VS Code",
   "description": "Official VS Code extension for PhilJS - snippets, IntelliSense, and tooling",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "publisher": "philjs",
   "engines": {
     "vscode": "^1.85.0"
@@ -131,5 +131,15 @@
     "README.md"
   ],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
 }
