@@ -173,6 +173,7 @@ export interface HTMLAttributes<T extends Element = Element> extends BaseProps {
   title?: string;
   role?: string;
   tabIndex?: number;
+  ref?: ((el: T) => void) | { current: T | null };
 
   // ARIA attributes
   'aria-label'?: string;
@@ -353,6 +354,37 @@ export interface ImgHTMLAttributes extends HTMLAttributes<HTMLImageElement> {
   loading?: 'lazy' | 'eager';
   decoding?: 'async' | 'sync' | 'auto';
   crossOrigin?: 'anonymous' | 'use-credentials';
+  referrerPolicy?: string;
+  sizes?: string;
+}
+
+/**
+ * Source element attributes (for picture/video/audio)
+ */
+export interface SourceHTMLAttributes extends HTMLAttributes<HTMLSourceElement> {
+  src?: string;
+  srcSet?: string;
+  sizes?: string;
+  media?: string;
+  type?: string;
+  width?: number | string;
+  height?: number | string;
+}
+
+/**
+ * Script element attributes
+ */
+export interface ScriptHTMLAttributes extends HTMLAttributes<HTMLScriptElement> {
+  src?: string;
+  type?: string;
+  async?: boolean;
+  defer?: boolean;
+  crossOrigin?: 'anonymous' | 'use-credentials';
+  integrity?: string;
+  noModule?: boolean;
+  nonce?: string;
+  referrerPolicy?: string;
+  dangerouslySetInnerHTML?: { __html: string };
 }
 
 /**
@@ -573,10 +605,11 @@ declare global {
 
       // Media
       img: ImgHTMLAttributes;
+      picture: HTMLAttributes<HTMLPictureElement>;
+      source: SourceHTMLAttributes;
       video: HTMLAttributes<HTMLVideoElement>;
       audio: HTMLAttributes<HTMLAudioElement>;
       canvas: HTMLAttributes<HTMLCanvasElement>;
-      svg: HTMLAttributes<SVGElement>;
 
       // Tables
       table: HTMLAttributes<HTMLTableElement>;
@@ -591,11 +624,61 @@ declare global {
       br: HTMLAttributes<HTMLBRElement>;
       hr: HTMLAttributes<HTMLHRElement>;
       iframe: HTMLAttributes<HTMLIFrameElement>;
-      script: HTMLAttributes<HTMLScriptElement>;
+      script: ScriptHTMLAttributes;
       style: HTMLAttributes<HTMLStyleElement>;
       meta: HTMLAttributes<HTMLMetaElement>;
       link: HTMLAttributes<HTMLLinkElement>;
       title: HTMLAttributes<HTMLTitleElement>;
+
+      // SVG elements
+      svg: SVGHTMLAttributes;
+      path: SVGHTMLAttributes;
+      circle: SVGHTMLAttributes;
+      rect: SVGHTMLAttributes;
+      line: SVGHTMLAttributes;
+      polyline: SVGHTMLAttributes;
+      polygon: SVGHTMLAttributes;
+      ellipse: SVGHTMLAttributes;
+      g: SVGHTMLAttributes;
+      defs: SVGHTMLAttributes;
+      use: SVGHTMLAttributes;
+      text: SVGHTMLAttributes;
+      tspan: SVGHTMLAttributes;
     }
   }
+}
+
+/**
+ * SVG element attributes
+ */
+export interface SVGHTMLAttributes extends HTMLAttributes<SVGElement> {
+  d?: string;
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: string | number;
+  viewBox?: string;
+  xmlns?: string;
+  preserveAspectRatio?: string;
+  cx?: string | number;
+  cy?: string | number;
+  r?: string | number;
+  rx?: string | number;
+  ry?: string | number;
+  x?: string | number;
+  y?: string | number;
+  x1?: string | number;
+  y1?: string | number;
+  x2?: string | number;
+  y2?: string | number;
+  width?: string | number;
+  height?: string | number;
+  points?: string;
+  transform?: string;
+  clipPath?: string;
+  fillRule?: 'nonzero' | 'evenodd';
+  strokeLinecap?: 'butt' | 'round' | 'square';
+  strokeLinejoin?: 'miter' | 'round' | 'bevel';
+  opacity?: string | number;
+  xlinkHref?: string;
+  clipRule?: string;
 }

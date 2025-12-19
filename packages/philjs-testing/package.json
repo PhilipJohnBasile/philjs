@@ -25,7 +25,7 @@
     "lint": "eslint src"
   },
   "peerDependencies": {
-    "philjs-core": "^2.0.0"
+    "philjs-core": "workspace:^2.0.0"
   },
   "dependencies": {
     "@testing-library/dom": "^10.0.0",

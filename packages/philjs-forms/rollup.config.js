@@ -44,5 +44,5 @@ const createEntry = (input, output, external = []) => ({
 export default defineConfig([
   createEntry('index.ts', 'index.js'),
   createEntry('validation.ts', 'validation.js'),
-  createEntry('fields.ts', 'fields.js')
+  createEntry('fields.tsx', 'fields.js')
 ]);

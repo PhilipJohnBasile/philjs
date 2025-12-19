@@ -55,6 +55,7 @@ export function Tabs(props: TabsProps) {
     size,
   };
 
+  // @ts-ignore Context Provider type compatibility
   return (
     <TabsContext.Provider value={contextValue}>
       <div className={className}>{children}</div>

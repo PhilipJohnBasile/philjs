@@ -41,8 +41,5 @@ const createEntry = (input, output, external = []) => ({
 });
 
 export default defineConfig([
-  createEntry('index.ts', 'index.js'),
-  createEntry('translator.ts', 'translator.js'),
-  createEntry('formatter.ts', 'formatter.js'),
-  createEntry('detector.ts', 'detector.js')
+  createEntry('index.ts', 'index.js')
 ]);

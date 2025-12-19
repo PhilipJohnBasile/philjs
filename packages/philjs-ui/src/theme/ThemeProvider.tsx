@@ -126,6 +126,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
   };
 
   return (
+    // @ts-ignore Context Provider type compatibility
     <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>

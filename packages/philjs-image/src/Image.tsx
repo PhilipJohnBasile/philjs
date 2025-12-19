@@ -153,7 +153,7 @@ export function Image(props: ImageProps) {
         <img
           src={placeholderDataURL()!}
           alt=""
-          aria-hidden="true"
+          aria-hidden={true}
           style={placeholderStyle}
           decoding="async"
         />
@@ -183,7 +183,7 @@ export function Image(props: ImageProps) {
           alt={alt}
           width={width}
           height={height}
-          loading={priority ? 'eager' : loading}
+          loading={priority ? 'eager' : loading === 'auto' ? 'lazy' : loading}
           decoding={decoding}
           crossOrigin={crossOrigin}
           referrerPolicy={referrerPolicy}
