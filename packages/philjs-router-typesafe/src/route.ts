@@ -92,13 +92,13 @@ export function createRoute<
 export function createRootRoute(options: RootRouteOptions = {}): RouteDefinition<"/", undefined, never> {
   const routeId = generateRouteId("root");
 
-  const route: RouteDefinition<"/", undefined, never> = {
+  const route = {
     id: routeId,
     path: "/" as const,
     fullPath: "/",
     validateSearch: undefined,
     loader: undefined,
-    component: options.component as RouteComponent<"/", undefined, never> | undefined,
+    component: options.component as any,
     errorComponent: options.errorComponent,
     pendingComponent: options.pendingComponent,
     meta: undefined,
@@ -106,9 +106,9 @@ export function createRootRoute(options: RootRouteOptions = {}): RouteDefinition
     children: [],
 
     useParams: () => ({}) as PathParams<"/">,
-    useSearch: () => ({}) as Record<string, never>,
+    useSearch: () => ({}) as Record<string, unknown>,
     useLoaderData: () => undefined as never,
-  };
+  } as RouteDefinition<"/", undefined, never>;
 
   return route;
 }
@@ -445,7 +445,7 @@ export function matchRoutes(
   for (const route of sortedRoutes) {
     const params = parsePathParams(route.fullPath, pathname);
     if (params !== null) {
-      return { route, params };
+      return { route, params: params as Record<string, string> };
     }
   }
 

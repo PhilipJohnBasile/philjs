@@ -240,7 +240,7 @@ export class TypeSafeRouter {
 
       // Create pending match
       const pendingMatch: MatchedRoute = {
-        route,
+        route: route as any,
         params,
         search,
         status: "pending",
@@ -290,7 +290,7 @@ export class TypeSafeRouter {
 
       // Create final match
       const finalMatch: MatchedRoute = {
-        route,
+        route: route as any,
         params,
         search,
         loaderData,
@@ -627,7 +627,7 @@ export function createSSRRouter(options: RouterOptions & { url: string }): {
     }
 
     currentMatch = {
-      route,
+      route: route as any,
       params,
       search,
       status: "pending",
@@ -697,7 +697,7 @@ export async function loadRouteData(
   }
 
   const match: MatchedRoute = {
-    route,
+    route: route as any,
     params,
     search,
     loaderData: data,

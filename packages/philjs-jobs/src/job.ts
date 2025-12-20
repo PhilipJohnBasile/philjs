@@ -144,7 +144,7 @@ export function createValidationMiddleware<TPayload>(
   validate: (payload: TPayload) => boolean | Promise<boolean>,
   errorMessage = 'Invalid job payload'
 ): JobMiddleware<TPayload> {
-  return async (payload, context, next) => {
+  return async (payload, _context, next) => {
     const isValid = await validate(payload);
     if (!isValid) {
       throw new Error(errorMessage);
@@ -157,7 +157,7 @@ export function createValidationMiddleware<TPayload>(
  * Create a middleware for job logging
  */
 export function createLoggingMiddleware<TPayload>(): JobMiddleware<TPayload> {
-  return async (payload, context, next) => {
+  return async (_payload, context, next) => {
     const startTime = Date.now();
     context.log(`[${context.jobId}] Starting job`);
 
@@ -182,7 +182,7 @@ export function createRateLimitMiddleware<TPayload>(
 ): JobMiddleware<TPayload> {
   const timestamps: number[] = [];
 
-  return async (payload, context, next) => {
+  return async (_payload, _context, next) => {
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
 
@@ -210,7 +210,7 @@ export function createRetryMiddleware<TPayload>(
   maxRetries = 3,
   delay = 1000
 ): JobMiddleware<TPayload> {
-  return async (payload, context, next) => {
+  return async (_payload, context, next) => {
     let lastError: Error | undefined;
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {

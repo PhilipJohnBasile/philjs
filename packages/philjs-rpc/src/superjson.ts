@@ -360,7 +360,7 @@ export function withoutSuperJSON<T extends ProcedureDefinition>(
  */
 export function hasSuperJSON(
   procedure: ProcedureDefinition
-): procedure is SuperJSONProcedure {
+): boolean {
   return SUPERJSON_ENABLED in procedure;
 }
 

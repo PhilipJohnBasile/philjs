@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "tsc",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-plugin-pwa'",
     "typecheck": "tsc --noEmit"

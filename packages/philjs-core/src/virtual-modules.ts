@@ -3,10 +3,15 @@
  * Provides virtual modules like virtual:philjs-routes, virtual:philjs-content, etc.
  */
 
-import type { Plugin } from 'vite';
-import { glob } from 'fast-glob';
 import { readFile } from 'fs/promises';
 import { resolve, relative } from 'path';
+
+// Vite Plugin interface (minimal for compatibility)
+interface Plugin {
+  name: string;
+  resolveId?: (source: string, importer?: string) => string | null | void;
+  load?: (id: string) => string | null | Promise<string | null>;
+}
 
 /**
  * Virtual module configuration
@@ -84,6 +89,7 @@ export function virtualModulesPlugin(config: VirtualModuleConfig = {}): Plugin {
       // virtual:philjs-routes
       if (id === resolvedVirtualModuleIds.get(VIRTUAL_ROUTES)) {
         const routesPath = resolve(root, routesDir);
+        const { glob } = await import('fast-glob');
         const files = await glob('**/*.{js,jsx,ts,tsx}', {
           cwd: routesPath,
           absolute: false,
@@ -114,6 +120,7 @@ export function virtualModulesPlugin(config: VirtualModuleConfig = {}): Plugin {
       // virtual:philjs-content
       if (id === resolvedVirtualModuleIds.get(VIRTUAL_CONTENT)) {
         const contentPath = resolve(root, contentDir);
+        const { glob } = await import('fast-glob');
         const files = await glob('**/*.{md,mdx,json}', {
           cwd: contentPath,
           absolute: false,
@@ -130,6 +137,7 @@ export function virtualModulesPlugin(config: VirtualModuleConfig = {}): Plugin {
       // virtual:philjs-plugins
       if (id === resolvedVirtualModuleIds.get(VIRTUAL_PLUGINS)) {
         const pluginsPath = resolve(root, pluginsDir);
+        const { glob } = await import('fast-glob');
         const files = await glob('**/*.{js,ts}', {
           cwd: pluginsPath,
           absolute: false,

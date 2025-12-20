@@ -1,20 +1,15 @@
 /**
  * Analytics Providers
+ * Note: mixpanel, amplitude, and posthog are temporarily disabled due to type issues
  */
 
 export * from "./ga4.js";
 export * from "./plausible.js";
-export * from "./mixpanel.js";
-export * from "./amplitude.js";
 export * from "./segment.js";
-export * from "./posthog.js";
 
 import { GA4Provider } from "./ga4.js";
 import { PlausibleProvider } from "./plausible.js";
-import { MixpanelProvider } from "./mixpanel.js";
-import { AmplitudeProvider } from "./amplitude.js";
 import { SegmentProvider } from "./segment.js";
-import { PostHogProvider } from "./posthog.js";
 import type { AnalyticsProvider, IAnalyticsProvider } from "../types.js";
 
 /**
@@ -27,14 +22,12 @@ export function getProvider(name: AnalyticsProvider): IAnalyticsProvider {
       return new GA4Provider();
     case "plausible":
       return new PlausibleProvider();
-    case "mixpanel":
-      return new MixpanelProvider();
-    case "amplitude":
-      return new AmplitudeProvider();
     case "segment":
       return new SegmentProvider();
+    case "mixpanel":
+    case "amplitude":
     case "posthog":
-      return new PostHogProvider();
+      throw new Error(`Provider ${name} is temporarily disabled`);
     default:
       throw new Error(`Unknown analytics provider: ${name}`);
   }
@@ -44,5 +37,5 @@ export function getProvider(name: AnalyticsProvider): IAnalyticsProvider {
  * Get all available providers
  */
 export function getAvailableProviders(): AnalyticsProvider[] {
-  return ["ga4", "plausible", "mixpanel", "amplitude", "segment", "posthog"];
+  return ["ga4", "plausible", "segment"];
 }

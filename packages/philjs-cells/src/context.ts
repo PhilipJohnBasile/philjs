@@ -11,7 +11,7 @@ import type {
   CellProviderConfig,
   CellContextValue,
   CellFetcher,
-  CellSSRContext,
+  CellSSRContext as CellSSRContextType,
 } from './types.js';
 import { cellCache } from './cache.js';
 
@@ -54,7 +54,7 @@ export const CellContext = createContext<CellContextValue>({
 /**
  * SSR Context for server-side rendering
  */
-export const CellSSRContext = createContext<CellSSRContext | null>(null);
+export const CellSSRContext = createContext<CellSSRContextType | null>(null);
 
 // ============================================================================
 // Cell Provider Component
@@ -176,7 +176,7 @@ export interface CellSSRProviderProps {
  * ```
  */
 export function CellSSRProvider(props: CellSSRProviderProps) {
-  const ssrContext: CellSSRContext = {
+  const ssrContext: CellSSRContextType = {
     cellData: new Map(),
     pendingCells: new Map(),
     markHydrated: (key: string) => {
@@ -224,7 +224,7 @@ export function useCellContext(): CellContextValue {
 /**
  * Hook to access SSR context (returns null on client)
  */
-export function useCellSSR(): CellSSRContext | null {
+export function useCellSSR(): CellSSRContextType | null {
   return useContext(CellSSRContext);
 }
 
@@ -337,7 +337,7 @@ function simpleHash(str: string): string {
 /**
  * Serialize cell data for SSR hydration
  */
-export function serializeCellData(ssrContext: CellSSRContext): string {
+export function serializeCellData(ssrContext: CellSSRContextType): string {
   return ssrContext.serialize();
 }
 
@@ -358,7 +358,7 @@ export function hydrateCells(data: string): void {
 /**
  * Script tag for injecting cell data into HTML
  */
-export function getCellHydrationScript(ssrContext: CellSSRContext): string {
+export function getCellHydrationScript(ssrContext: CellSSRContextType): string {
   const data = serializeCellData(ssrContext);
   return `<script>window.__PHILJS_CELL_DATA__=${data};</script>`;
 }

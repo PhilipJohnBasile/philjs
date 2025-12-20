@@ -102,6 +102,10 @@
     "./superjson-perf": {
       "types": "./dist/superjson-perf.d.ts",
       "import": "./dist/superjson-perf.js"
+    },
+    "./plugin-system": {
+      "types": "./dist/plugin-system.d.ts",
+      "import": "./dist/plugin-system.js"
     }
   },
   "files": [
@@ -112,6 +116,9 @@
     "test": "vitest run",
     "lint": "echo 'Lint philjs-core'",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.2"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.4",

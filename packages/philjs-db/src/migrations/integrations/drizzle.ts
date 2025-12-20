@@ -34,7 +34,7 @@ export class DrizzleMigrationIntegration {
       async up(context: MigrationContext) {
         context.schema.createTable(tableDef.name, (table) => {
           for (const [name, column] of Object.entries(tableDef.columns)) {
-            const col = this.columnToBuilder(table, name, column);
+            const col = DrizzleMigrationIntegration.columnToBuilder(table, name, column);
             if (column.notNull) col.notNullable();
             if (column.default) col.defaultTo(column.default);
             if (column.primaryKey) col.primary();

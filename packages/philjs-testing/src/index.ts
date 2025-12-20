@@ -129,7 +129,7 @@ export {
   benchmarkRoute,
   expectHTMLSnapshot,
   expectJSONSnapshot,
-  waitFor,
+  waitFor as integrationWaitFor,
   retry,
 } from './integration';
 

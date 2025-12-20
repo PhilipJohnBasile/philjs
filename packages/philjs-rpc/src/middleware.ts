@@ -38,7 +38,7 @@ export function createMiddleware<
   return {
     _input: undefined as TInput,
     _context: undefined as unknown as TNewContext,
-    fn: fn as MiddlewareFn<TInput, TNewContext>,
+    fn: fn as any,
   };
 }
 
@@ -78,7 +78,7 @@ export async function executeMiddlewareChain<TContext extends ProcedureContext>(
   let index = 0;
   let currentCtx = ctx;
 
-  const next = async <T extends TContext>(newCtx?: T): Promise<MiddlewareResult> => {
+  const next = async (newCtx?: any): Promise<MiddlewareResult> => {
     if (newCtx) {
       currentCtx = newCtx;
     }

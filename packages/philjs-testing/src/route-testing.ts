@@ -65,7 +65,7 @@ export interface MockLoader<T = any> {
   /**
    * Mock loader function
    */
-  mock: jest.Mock | ((args: LoaderArgs) => T | Promise<T>);
+  mock: ((...args: any[]) => any) | ((args: LoaderArgs) => T | Promise<T>);
 
   /**
    * Set loader response
@@ -97,7 +97,7 @@ export interface MockAction<T = any> {
   /**
    * Mock action function
    */
-  mock: jest.Mock | ((args: ActionArgs) => T | Promise<T>);
+  mock: ((...args: any[]) => any) | ((args: ActionArgs) => T | Promise<T>);
 
   /**
    * Set action response
@@ -627,7 +627,3 @@ export function assertNavigationState(
   expect(context.navigation().state).toBe(expectedState);
 }
 
-// Global expect function (assumes Jest/Vitest)
-declare global {
-  function expect(value: any): any;
-}

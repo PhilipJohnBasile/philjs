@@ -15,3 +15,5 @@ export { generateRoute, type RouteOptions } from './route.js';
 export { generateStore, type StoreOptions } from './store.js';
 export { generateAuth, type AuthGeneratorOptions, type AuthProvider } from './auth.js';
 export { renderTemplate, type TemplateContext } from './template-engine.js';
+export { generateRSS, type RSSGeneratorOptions } from './rss.js';
+export { generateSitemap, type SitemapGeneratorOptions } from './sitemap.js';

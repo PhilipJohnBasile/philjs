@@ -8,7 +8,7 @@
  * - Works without JavaScript
  */
 
-import { signal, computed, type Signal } from 'philjs-core/signals';
+import { signal, memo, type Signal } from 'philjs-core/signals';
 import type { FormValues } from './types.js';
 
 export interface FormActionOptions<TData = any, TError = Error> {
@@ -171,7 +171,7 @@ export function useFormAction<TData = any, TError = Error>(
   const isError = signal(false);
   const submitCount = signal(0);
 
-  const isIdle = computed(() => !isSubmitting());
+  const isIdle = memo(() => !isSubmitting());
 
   const state: FormActionState<TData, TError> = {
     data,

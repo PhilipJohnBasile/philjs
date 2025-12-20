@@ -4,7 +4,6 @@
  */
 
 import type { Plugin, PluginContext } from "philjs-core/plugin-system";
-import type { Plugin as VitePlugin } from "vite";
 import * as path from "path";
 import * as fs from "fs/promises";
 
@@ -192,7 +191,7 @@ export function createTailwindPlugin(userConfig: TailwindPluginConfig = {}): Plu
 
       if (!hasCss) {
         ctx.logger.info(`Creating ${cssPath}...`);
-        await ctx.fs.mkdir("src/styles", { recursive: true });
+        await ctx.fs.mkdir("src/styles");
         await ctx.fs.writeFile(cssPath, baseCssTemplate());
 
         ctx.logger.success("Created Tailwind base styles");
@@ -226,10 +225,10 @@ export function createTailwindPlugin(userConfig: TailwindPluginConfig = {}): Plu
       ctx.logger.info(`\nImport the base styles in your app:\nimport './styles/tailwind.css';`);
     },
 
-    vitePlugin(pluginConfig: TailwindPluginConfig) {
+    vitePlugin(pluginConfig: TailwindPluginConfig): any {
       const mergedConfig = { ...config, ...pluginConfig };
 
-      const plugin: VitePlugin = {
+      const plugin = {
         name: "philjs-tailwind",
 
         config(viteConfig) {
@@ -402,5 +401,20 @@ export const tailwindUtils = {
  */
 export * from './utils.js';
 export * from './content-detector.js';
-export * from './theme-generator.js';
+// theme-generator.js exports are excluded due to mergeThemes conflict with utils.js
+export {
+  generateColorPalette,
+  generateBrandTheme,
+  generateTypographyScale,
+  generateSpacingScale,
+  generateBorderRadiusScale,
+  generateShadowScale,
+  generateBreakpoints,
+  generateFontFamilies,
+  generateCompleteTheme,
+  cssVarsToTheme,
+  presetThemes,
+  type ColorPalette,
+  type ThemeConfig,
+} from './theme-generator.js';
 export * from './optimizer.js';

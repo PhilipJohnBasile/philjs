@@ -190,7 +190,7 @@ export function Link<
     // Prefetch strategies
     if (prefetch === true || prefetch === "intent") {
       // Prefetch on hover/focus
-      void prefetchRoute(to, params);
+      void prefetchRoute(to, params as Record<string, string>);
     }
   };
 

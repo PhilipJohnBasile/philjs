@@ -189,9 +189,7 @@ class MySQLTableBuilder implements TableBuilder {
   timestamps(useTimestamps: boolean = true): void {
     if (useTimestamps) {
       this.timestamp('created_at').defaultTo('CURRENT_TIMESTAMP');
-      this.timestamp('updated_at')
-        .defaultTo('CURRENT_TIMESTAMP')
-        .build();
+      this.timestamp('updated_at').defaultTo('CURRENT_TIMESTAMP');
     }
   }
 

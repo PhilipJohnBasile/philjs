@@ -723,7 +723,7 @@ export function createTreatyClient<TApi extends APIDefinition>(config: TreatyCon
           [K in keyof T]: () => Promise<T[K]>;
         }
       ): Promise<T> => {
-        return Promise.all(requests.map((fn) => fn())) as Promise<T>;
+        return Promise.all(requests.map((fn) => fn())) as unknown as Promise<T>;
       },
 
       /**

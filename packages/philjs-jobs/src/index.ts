@@ -54,6 +54,6 @@ export {
 } from './monitor.js';
 
 // Re-export for convenience
-export { createQueue as createJobQueue };
-export { Scheduler as JobScheduler };
-export { Monitor as JobMonitor };
+export { createQueue as createJobQueue } from './queue.js';
+export { Scheduler as JobScheduler } from './scheduler.js';
+export { Monitor as JobMonitor } from './monitor.js';

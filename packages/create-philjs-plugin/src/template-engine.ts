@@ -18,7 +18,7 @@ export interface TemplateContext {
   features: string[];
 
   // Template type
-  type: 'basic' | 'vite' | 'transform' | 'ui-addon';
+  type: 'basic' | 'vite' | 'transform' | 'ui-addon' | 'api' | 'database' | 'auth';
 }
 
 /**

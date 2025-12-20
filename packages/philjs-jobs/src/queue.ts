@@ -4,7 +4,7 @@
  * Redis-backed job queue with in-memory fallback for development.
  */
 
-import type { JobDefinition, JobContext, JobMiddleware } from './job.js';
+import type { JobDefinition, JobContext } from './job.js';
 
 export interface QueueOptions {
   /** Queue name */
@@ -126,7 +126,7 @@ export class InMemoryQueue implements IQueue {
   private concurrency: number;
   private activeJobs = new Set<string>();
 
-  constructor(private options: QueueOptions = {}) {
+  constructor(options: QueueOptions = {}) {
     this.concurrency = options.concurrency || 1;
   }
 

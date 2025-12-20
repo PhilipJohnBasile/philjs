@@ -3,16 +3,94 @@
  * Tools and utilities for building PhilJS plugins
  */
 
-import type { Plugin, PluginContext, PluginHooks } from "philjs-core/plugin-system";
+// Plugin types - defined locally to avoid circular dependency issues
+export interface PluginLogger {
+  info: (message: string, ...args: any[]) => void;
+  warn: (message: string, ...args: any[]) => void;
+  error: (message: string, ...args: any[]) => void;
+  debug: (message: string, ...args: any[]) => void;
+  success: (message: string, ...args: any[]) => void;
+}
+
+export interface PluginFileSystem {
+  readFile: (path: string) => Promise<string>;
+  writeFile: (path: string, content: string) => Promise<void>;
+  exists: (path: string) => Promise<boolean>;
+  mkdir: (path: string, options?: { recursive?: boolean }) => Promise<void>;
+  readdir: (path: string) => Promise<string[]>;
+  copy: (src: string, dest: string) => Promise<void>;
+  remove: (path: string) => Promise<void>;
+}
+
+export interface PluginUtils {
+  resolve: (...paths: string[]) => string;
+  exec: (command: string) => Promise<{ stdout: string; stderr: string }>;
+  getPackageManager: () => Promise<"npm" | "pnpm" | "yarn" | "bun">;
+  installPackages: (packages: string[], dev?: boolean) => Promise<void>;
+  readPackageJson: () => Promise<Record<string, any>>;
+  writePackageJson: (pkg: Record<string, any>) => Promise<void>;
+}
+
+export interface PluginContext {
+  version: string;
+  root: string;
+  mode: "development" | "production" | "test";
+  config: Record<string, any>;
+  logger: PluginLogger;
+  fs: PluginFileSystem;
+  utils: PluginUtils;
+}
+
+export interface PluginHooks {
+  init?: (ctx: PluginContext) => Promise<void> | void;
+  buildStart?: (ctx: PluginContext, config: any) => Promise<void> | void;
+  transform?: (ctx: PluginContext, code: string, id: string) => Promise<{ code: string; map?: any } | null> | { code: string; map?: any } | null;
+  buildEnd?: (ctx: PluginContext, result: any) => Promise<void> | void;
+  devServerStart?: (ctx: PluginContext, server: any) => Promise<void> | void;
+  fileChange?: (ctx: PluginContext, file: string) => Promise<void> | void;
+  serveStart?: (ctx: PluginContext) => Promise<void> | void;
+  testStart?: (ctx: PluginContext) => Promise<void> | void;
+  deployStart?: (ctx: PluginContext, target: string) => Promise<void> | void;
+  cleanup?: (ctx: PluginContext) => Promise<void> | void;
+}
+
+export interface PluginMetadata {
+  name: string;
+  version: string;
+  description?: string;
+  author?: string;
+  license?: string;
+  keywords?: string[];
+  repository?: string | { type: string; url: string };
+  homepage?: string;
+  philjs?: string;
+}
+
+export interface PluginConfigSchema {
+  type?: "object";
+  properties?: Record<string, {
+    type?: string;
+    description?: string;
+    default?: any;
+    enum?: any[];
+    required?: boolean;
+  }>;
+  required?: string[];
+}
+
+export interface Plugin {
+  meta: PluginMetadata;
+  configSchema?: PluginConfigSchema;
+  setup?: (config: any, ctx: PluginContext) => Promise<void> | void;
+  hooks?: PluginHooks;
+  vitePlugin?: (config: any) => any;
+}
 
 // Export generator
 export { createPlugin, type PluginOptions } from './generator.js';
 
 // Export template utilities
 export * from './template-engine.js';
-
-
-import type { Plugin, PluginContext, PluginHooks } from "philjs-core/plugin-system";
 
 /**
  * Plugin builder for easier plugin creation
@@ -459,11 +537,4 @@ export const pluginHelpers = {
   },
 };
 
-/**
- * Export all utilities
- */
-export {
-  Plugin,
-  PluginContext,
-  PluginHooks,
-} from "philjs-core/plugin-system";
+// Types are already exported at the top of this file

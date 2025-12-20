@@ -2,7 +2,7 @@
  * Form field components
  */
 
-import { computed } from 'philjs-core/signals';
+import { memo } from 'philjs-core/signals';
 import type { FieldValue } from './types.js';
 
 /**
@@ -21,7 +21,7 @@ export function TextField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -31,8 +31,8 @@ export function TextField(props: {
         value={props.value()}
         placeholder={props.placeholder}
         disabled={props.disabled}
-        oninput={(e: InputEvent) => props.onChange((e.target as HTMLInputElement).value)}
-        onblur={props.onBlur}
+        onInput={(e: InputEvent) => props.onChange((e.target as HTMLInputElement).value)}
+        onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
         aria-invalid={showError() ? 'true' : 'false'}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -63,7 +63,7 @@ export function TextAreaField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -74,8 +74,8 @@ export function TextAreaField(props: {
         disabled={props.disabled}
         rows={props.rows}
         cols={props.cols}
-        oninput={(e: InputEvent) => props.onChange((e.target as HTMLTextAreaElement).value)}
-        onblur={props.onBlur}
+        onInput={(e: InputEvent) => props.onChange((e.target as HTMLTextAreaElement).value)}
+        onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
         aria-invalid={showError() ? 'true' : 'false'}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -105,7 +105,7 @@ export function SelectField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -113,8 +113,8 @@ export function SelectField(props: {
         name={props.name}
         value={props.value()}
         disabled={props.disabled}
-        onchange={(e: Event) => props.onChange((e.target as HTMLSelectElement).value)}
-        onblur={props.onBlur}
+        onChange={(e: Event) => props.onChange((e.target as HTMLSelectElement).value)}
+        onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
         aria-invalid={showError() ? 'true' : 'false'}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -152,7 +152,7 @@ export function CheckboxField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -162,8 +162,8 @@ export function CheckboxField(props: {
           name={props.name}
           checked={props.value()}
           disabled={props.disabled}
-          onchange={(e: Event) => props.onChange((e.target as HTMLInputElement).checked)}
-          onblur={props.onBlur}
+          onChange={(e: Event) => props.onChange((e.target as HTMLInputElement).checked)}
+          onBlur={props.onBlur}
           class={showError() ? props.errorClass : ''}
           aria-invalid={showError() ? 'true' : 'false'}
           aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -194,7 +194,7 @@ export function RadioField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class} role="radiogroup">
@@ -206,8 +206,8 @@ export function RadioField(props: {
             value={option.value}
             checked={props.value() === option.value}
             disabled={props.disabled}
-            onchange={(e: Event) => props.onChange((e.target as HTMLInputElement).value)}
-            onblur={props.onBlur}
+            onChange={(e: Event) => props.onChange((e.target as HTMLInputElement).value)}
+            onBlur={props.onBlur}
             class={showError() ? props.errorClass : ''}
             aria-invalid={showError() ? 'true' : 'false'}
             aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -240,7 +240,7 @@ export function FileField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -250,7 +250,7 @@ export function FileField(props: {
         accept={props.accept}
         multiple={props.multiple}
         disabled={props.disabled}
-        onchange={(e: Event) => {
+        onChange={(e: Event) => {
           const files = (e.target as HTMLInputElement).files;
           if (!files || files.length === 0) {
             props.onChange(null);
@@ -260,7 +260,7 @@ export function FileField(props: {
             props.onChange(files[0]);
           }
         }}
-        onblur={props.onBlur}
+        onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
         aria-invalid={showError() ? 'true' : 'false'}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -292,7 +292,7 @@ export function NumberField(props: {
   class?: string;
   errorClass?: string;
 }) {
-  const showError = computed(() => props.touched && props.error);
+  const showError = memo(() => props.touched && props.error);
 
   return (
     <div class={props.class}>
@@ -305,11 +305,11 @@ export function NumberField(props: {
         min={props.min}
         max={props.max}
         step={props.step}
-        oninput={(e: InputEvent) => {
+        onInput={(e: InputEvent) => {
           const value = (e.target as HTMLInputElement).value;
           props.onChange(value ? parseFloat(value) : 0);
         }}
-        onblur={props.onBlur}
+        onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
         aria-invalid={showError() ? 'true' : 'false'}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
@@ -337,7 +337,7 @@ export function Field(props: {
   return (
     <div class={props.class || 'form-field'}>
       {props.label && (
-        <label for={props.name}>
+        <label htmlFor={props.name}>
           {props.label}
           {props.required && <span class="required" aria-label="required">*</span>}
         </label>

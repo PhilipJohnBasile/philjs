@@ -155,7 +155,7 @@ class ProcedureBuilder<
         type,
         inputSchema: this.inputSchema,
         handler: handler as ProcedureHandler<TInput, TOutput, TContext>,
-        middlewares: this.middlewares,
+        middlewares: this.middlewares as any,
       },
     };
   }

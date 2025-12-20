@@ -10,7 +10,7 @@
  * - Query batching
  */
 
-import { signal, computed, type Signal } from 'philjs-core/signals';
+import { signal, memo, type Signal } from 'philjs-core/signals';
 import type { SQL } from 'drizzle-orm';
 
 // ============================================================================

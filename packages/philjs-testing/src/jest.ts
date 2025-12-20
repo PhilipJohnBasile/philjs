@@ -22,8 +22,8 @@ if (typeof afterEach !== 'undefined') {
 /**
  * Extend Jest matchers with PhilJS-specific assertions
  */
-if (typeof expect !== 'undefined' && expect.extend) {
-  expect.extend({
+if (typeof expect !== 'undefined' && (expect as any).extend) {
+  (expect as any).extend({
     toBeInTheDocument: matchers.toBeInTheDocument,
     toHaveTextContent: matchers.toHaveTextContent,
     toBeVisible: matchers.toBeVisible,

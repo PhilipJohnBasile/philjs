@@ -109,7 +109,7 @@ export interface QueryOptions<T> {
   orderBy?: OrderByClause<T>[];
   limit?: number;
   offset?: number;
-  include?: Record<string, boolean>;
+  include?: Partial<Record<string, boolean>>;
 }
 
 export interface WhereClause<T> {
@@ -262,19 +262,19 @@ export class SchemaValidator<T extends Record<string, any>> {
 
     // Min/Max constraints
     if (this.constraints.min) {
-      for (const [field, min] of Object.entries(this.constraints.min)) {
+      for (const [field, minVal] of Object.entries(this.constraints.min)) {
         const value = data[field as keyof T];
-        if (value !== undefined && value !== null) {
-          if (typeof value === 'number' && value < min) {
+        if (value !== undefined && value !== null && minVal !== undefined) {
+          if (typeof value === 'number' && value < minVal) {
             errors.push({
               field,
-              message: `${field} must be at least ${min}`,
+              message: `${field} must be at least ${minVal}`,
               type: 'min',
             });
-          } else if (typeof value === 'string' && value.length < min) {
+          } else if (typeof value === 'string' && value.length < minVal) {
             errors.push({
               field,
-              message: `${field} must be at least ${min} characters`,
+              message: `${field} must be at least ${minVal} characters`,
               type: 'minLength',
             });
           }
@@ -283,19 +283,19 @@ export class SchemaValidator<T extends Record<string, any>> {
     }
 
     if (this.constraints.max) {
-      for (const [field, max] of Object.entries(this.constraints.max)) {
+      for (const [field, maxVal] of Object.entries(this.constraints.max)) {
         const value = data[field as keyof T];
-        if (value !== undefined && value !== null) {
-          if (typeof value === 'number' && value > max) {
+        if (value !== undefined && value !== null && maxVal !== undefined) {
+          if (typeof value === 'number' && value > maxVal) {
             errors.push({
               field,
-              message: `${field} must be at most ${max}`,
+              message: `${field} must be at most ${maxVal}`,
               type: 'max',
             });
-          } else if (typeof value === 'string' && value.length > max) {
+          } else if (typeof value === 'string' && value.length > maxVal) {
             errors.push({
               field,
-              message: `${field} must be at most ${max} characters`,
+              message: `${field} must be at most ${maxVal} characters`,
               type: 'maxLength',
             });
           }
@@ -305,10 +305,10 @@ export class SchemaValidator<T extends Record<string, any>> {
 
     // Pattern constraints
     if (this.constraints.pattern) {
-      for (const [field, pattern] of Object.entries(this.constraints.pattern)) {
+      for (const [field, patternVal] of Object.entries(this.constraints.pattern)) {
         const value = data[field as keyof T];
-        if (value !== undefined && value !== null && typeof value === 'string') {
-          if (!pattern.test(value)) {
+        if (value !== undefined && value !== null && typeof value === 'string' && patternVal) {
+          if (!patternVal.test(value)) {
             errors.push({
               field,
               message: `${field} does not match required pattern`,
@@ -321,10 +321,10 @@ export class SchemaValidator<T extends Record<string, any>> {
 
     // Custom validators
     if (this.constraints.custom) {
-      for (const [field, validator] of Object.entries(this.constraints.custom)) {
+      for (const [field, validatorFn] of Object.entries(this.constraints.custom)) {
         const value = data[field as keyof T];
-        if (value !== undefined && value !== null) {
-          const result = validator(value);
+        if (value !== undefined && value !== null && validatorFn) {
+          const result = validatorFn(value);
           if (result !== true) {
             errors.push({
               field,
@@ -401,11 +401,11 @@ export class RelationshipBuilder<From, To> {
     return {
       from: null as any,
       to: null as any,
-      type: this.config.type || 'one-to-many',
+      type: (this.config.type || 'one-to-many') as RelationshipType,
       foreignKey: this.config.foreignKey,
       references: this.config.references,
       through: this.config.through,
-    };
+    } as Relationship<From, To>;
   }
 }
 
@@ -575,7 +575,7 @@ export function migration(): MigrationBuilder {
 /**
  * Type guard for checking if value matches schema
  */
-export function is<T>(value: any, validator: SchemaValidator<T>): value is T {
+export function is<T extends Record<string, any>>(value: any, validator: SchemaValidator<T>): value is T {
   const result = validator.validate(value);
   return result.valid;
 }
@@ -583,7 +583,7 @@ export function is<T>(value: any, validator: SchemaValidator<T>): value is T {
 /**
  * Assert that value matches schema (throws on failure)
  */
-export function assert<T>(
+export function assert<T extends Record<string, any>>(
   value: any,
   validator: SchemaValidator<T>,
   message?: string
@@ -598,10 +598,10 @@ export function assert<T>(
 /**
  * Create type-safe pick
  */
-export function pick<T, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
   const result = {} as Pick<T, K>;
   for (const key of keys) {
-    if (key in obj) {
+    if (key in (obj as object)) {
       result[key] = obj[key];
     }
   }

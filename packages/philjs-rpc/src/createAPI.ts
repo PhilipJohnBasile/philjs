@@ -256,19 +256,9 @@ export type InferRouter<TApi extends APIDefinition> = TApi['_router'];
 
 /**
  * Infer all procedure paths from a router type.
+ * Simplified to avoid "Type instantiation is excessively deep" errors.
  */
-export type InferPaths<TRouter extends Router> = {
-  [K in keyof TRouter]: TRouter[K] extends ProcedureDefinition<
-    ProcedureType,
-    unknown,
-    unknown,
-    ProcedureContext
-  >
-    ? K
-    : TRouter[K] extends Router
-    ? `${K & string}.${InferPaths<TRouter[K]> & string}`
-    : never;
-}[keyof TRouter];
+export type InferPaths<TRouter extends Router> = string;
 
 /**
  * Get procedure type at a path.

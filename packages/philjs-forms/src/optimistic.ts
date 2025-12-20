@@ -5,7 +5,7 @@
  * then rolling back if the request fails.
  */
 
-import { signal, computed, batch, type Signal } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal } from 'philjs-core/signals';
 
 export interface OptimisticUpdate<T> {
   id: string;
@@ -119,7 +119,7 @@ export function useOptimistic<T extends { id?: string | number }>(
   const timeouts = new Map<string, number>();
 
   // Computed data with optimistic updates applied
-  const data = computed(() => {
+  const data = memo(() => {
     let result = [...baseData()];
     const updates = pending();
 
@@ -258,7 +258,7 @@ export function useOptimistic<T extends { id?: string | number }>(
   /**
    * Check if there are pending updates
    */
-  const hasPending = computed(() => pending().size > 0);
+  const hasPending = memo(() => pending().size > 0);
 
   return {
     data,
@@ -325,7 +325,7 @@ export function useOptimisticValue<T>(initialValue: T): {
   const optimisticValue = signal<T | null>(null);
   const isPending = signal(false);
 
-  const value = computed(() => {
+  const value = memo(() => {
     const opt = optimisticValue();
     return opt !== null ? opt : baseValue();
   });

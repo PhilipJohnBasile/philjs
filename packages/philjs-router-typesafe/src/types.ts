@@ -26,7 +26,7 @@ export type ExtractPathParams<Path extends string> =
  * e.g., 'userId' | 'postId' -> { userId: string; postId: string }
  */
 export type PathParams<Path extends string> = [ExtractPathParams<Path>] extends [never]
-  ? Record<string, never>
+  ? Record<string, unknown>
   : { [K in ExtractPathParams<Path>]: string };
 
 /**
@@ -43,12 +43,12 @@ export type HasParams<Path extends string> = [ExtractPathParams<Path>] extends [
 /**
  * Infer the output type from a Zod schema
  */
-export type InferSearchParams<T> = T extends z.ZodType<infer O> ? O : Record<string, never>;
+export type InferSearchParams<T> = T extends z.ZodType<infer O> ? O : Record<string, unknown>;
 
 /**
  * Search params can be undefined if no validation schema is provided
  */
-export type SearchParamsOrEmpty<T> = T extends z.ZodType ? InferSearchParams<T> : Record<string, never>;
+export type SearchParamsOrEmpty<T> = T extends z.ZodType ? InferSearchParams<T> : Record<string, unknown>;
 
 // =============================================================================
 // Loader Types
@@ -62,7 +62,7 @@ export type LoaderContext<
   TSearchSchema extends z.ZodType | undefined = undefined
 > = {
   params: PathParams<TPath>;
-  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>;
+  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, unknown>;
   request: Request;
   abortController: AbortController;
 };
@@ -117,7 +117,7 @@ export type BeforeLoadContext<
   TSearchSchema extends z.ZodType | undefined = undefined
 > = {
   params: PathParams<TPath>;
-  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>;
+  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, unknown>;
   location: Location;
   cause: "enter" | "stay";
   abortController: AbortController;
@@ -155,7 +155,7 @@ export type RouteDefinition<
 
   // Methods attached to route for use in components
   useParams: () => PathParams<TPath>;
-  useSearch: () => TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>;
+  useSearch: () => TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, unknown>;
   useLoaderData: () => TLoaderData;
 };
 
@@ -172,7 +172,7 @@ export type RouteComponentProps<
   TLoaderData = unknown
 > = {
   params: PathParams<TPath>;
-  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>;
+  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, unknown>;
   loaderData: TLoaderData;
   navigate: NavigateFn;
 };
@@ -328,7 +328,7 @@ export type MatchedRoute<
 > = {
   route: RouteDefinition<TPath, TSearchSchema, TLoaderData>;
   params: PathParams<TPath>;
-  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>;
+  search: TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, unknown>;
   loaderData?: TLoaderData;
   error?: Error;
   status: "pending" | "success" | "error";

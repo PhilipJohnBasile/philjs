@@ -35,6 +35,10 @@ const createEntry = (input, output, external = []) => ({
   external: [
     /^node:/,
     /^philjs-/,
+    'fast-glob',
+    'fs/promises',
+    'path',
+    'fs',
     ...external
   ],
   // Aggressive tree-shaking for smaller bundles

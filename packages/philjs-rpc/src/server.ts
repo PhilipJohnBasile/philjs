@@ -414,7 +414,7 @@ function adaptFetchRequest(request: Request): RequestAdapter {
   return {
     method: request.method,
     url: request.url,
-    headers: Object.fromEntries(request.headers.entries()),
+    headers: Object.fromEntries((request.headers as any).entries()),
     query: Object.fromEntries(url.searchParams.entries()),
     json: () => request.json(),
   };

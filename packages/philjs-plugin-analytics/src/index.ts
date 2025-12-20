@@ -148,7 +148,7 @@ for(h=0;h<l.length;h++)c(e,l[h]);var f="set set_once union unset remove delete".
 /**
  * Generate client-side analytics initialization
  */
-function generateClientInit(config: AnalyticsPluginConfig): string {
+function _generateClientInit(config: AnalyticsPluginConfig): string {
   const { provider, customEvents } = config;
 
   let trackingCode = "";
@@ -302,7 +302,7 @@ export { trackEvent, trackPageView, identifyUser, setUserProperties, trackTransa
 
       // Write analytics initialization file
       try {
-        await ctx.fs.mkdir("src/lib", { recursive: true });
+        await ctx.fs.mkdir("src/lib");
         await ctx.fs.writeFile("src/lib/analytics.ts", analyticsCode);
         ctx.logger.success("Created analytics initialization file");
       } catch (error) {
@@ -341,7 +341,7 @@ export { trackEvent, trackPageView, identifyUser, setUserProperties, trackTransa
         ctx.logger.info("Analytics plugin initialized");
       },
 
-      async buildStart(ctx, buildConfig) {
+      async buildStart(ctx, _buildConfig) {
         // Check privacy settings
         if (config.privacy?.respectDnt) {
           ctx.logger.debug("Do Not Track will be respected");
@@ -414,9 +414,6 @@ export const analyticsUtils = {
  * Export types
  */
 export type {
-  AnalyticsProvider,
-  AnalyticsEvent,
-  AnalyticsPluginConfig,
   UserIdentification,
   EcommerceItem,
   EcommerceTransaction,

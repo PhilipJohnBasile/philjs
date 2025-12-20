@@ -618,7 +618,3 @@ export async function retry<T>(
   throw lastError || new Error('Retry failed');
 }
 
-// Global expect function
-declare global {
-  function expect(value: any): any;
-}

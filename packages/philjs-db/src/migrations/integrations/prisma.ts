@@ -76,7 +76,7 @@ export class PrismaSchemaParser {
       async up(context: MigrationContext) {
         context.schema.createTable(model.name.toLowerCase(), (table) => {
           for (const field of model.fields) {
-            const column = this.fieldToColumn(table, field);
+            const column = PrismaSchemaParser.fieldToColumn(table, field);
             if (field.isId) column.primary();
             if (field.isUnique) column.unique();
             if (!field.isRequired) column.nullable();

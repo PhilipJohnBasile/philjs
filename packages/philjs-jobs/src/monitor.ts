@@ -267,7 +267,7 @@ export class Monitor {
    * Retry all failed jobs
    */
   async retryAllFailed(): Promise<number> {
-    const stats = await this.queue.getStats();
+    await this.queue.getStats(); // Check queue is accessible
     let retried = 0;
 
     // This is a simplified implementation
@@ -287,7 +287,7 @@ export class Monitor {
   /**
    * Record job completion
    */
-  recordJobCompletion(jobId: string, success: boolean): void {
+  recordJobCompletion(jobId: string, _success: boolean): void {
     const startTime = this.jobTimings.get(jobId);
     if (startTime) {
       const duration = Date.now() - startTime;

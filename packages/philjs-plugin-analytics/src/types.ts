@@ -137,7 +137,7 @@ export interface ProviderOptions {
   trackLocalhost?: boolean;
 
   // Mixpanel options
-  api_host?: string;
+  mixpanel_api_host?: string;
   app_host?: string;
   cdn?: string;
   cross_subdomain_cookie?: boolean;
@@ -146,7 +146,7 @@ export interface ProviderOptions {
   loaded?: (mixpanel: any) => void;
 
   // PostHog options
-  api_host?: string;
+  posthog_api_host?: string;
   ui_host?: string;
   autocapture?: boolean;
   capture_pageview?: boolean;

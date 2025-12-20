@@ -108,9 +108,11 @@ class MigrationCLI {
         const fullPath = path.resolve(process.cwd(), p);
         const config = await import(fullPath);
         this.config = config.default || config;
-        this.manager = new MigrationManager(this.config);
-        await this.manager.initialize();
-        return;
+        if (this.config) {
+          this.manager = new MigrationManager(this.config);
+          await this.manager.initialize();
+          return;
+        }
       } catch (error) {
         // Continue to next path
       }

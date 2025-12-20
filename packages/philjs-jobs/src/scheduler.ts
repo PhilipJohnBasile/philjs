@@ -4,8 +4,8 @@
  * Cron-based job scheduling with timezone support and job history tracking.
  */
 
-import { parseExpression, type CronExpression } from 'cron-parser';
-import type { JobDefinition, JobContext } from './job.js';
+import { parseExpression } from 'cron-parser';
+import type { JobDefinition } from './job.js';
 import type { IQueue, EnqueueOptions } from './queue.js';
 
 export interface ScheduleOptions {

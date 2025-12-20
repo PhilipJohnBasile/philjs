@@ -2,7 +2,7 @@
  * Form management with reactive signals
  */
 
-import { signal, computed, batch, type Signal } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal } from 'philjs-core/signals';
 import type {
   FormValues,
   FormErrors,
@@ -64,7 +64,7 @@ export class Form<T extends FormValues = FormValues> {
    * Computed: is form valid
    */
   get isValid() {
-    return computed(() => {
+    return memo(() => {
       const errors = this.errorsSignal();
       return Object.values(errors).every(error => !error);
     });
@@ -74,7 +74,7 @@ export class Form<T extends FormValues = FormValues> {
    * Computed: is form dirty (has changes)
    */
   get isDirty() {
-    return computed(() => {
+    return memo(() => {
       const current = this.valuesSignal();
       return JSON.stringify(current) !== JSON.stringify(this.initialValues);
     });
@@ -105,7 +105,7 @@ export class Form<T extends FormValues = FormValues> {
    * Get complete form state
    */
   get state(): Signal<FormState<T>> {
-    return computed(() => ({
+    return memo(() => ({
       values: this.valuesSignal(),
       errors: this.errorsSignal(),
       touched: this.touchedSignal(),
@@ -273,9 +273,9 @@ export class Form<T extends FormValues = FormValues> {
   getFieldProps<K extends keyof T>(name: K) {
     return {
       name: String(name),
-      value: computed(() => this.valuesSignal()[name]),
-      error: computed(() => this.errorsSignal()[name]),
-      touched: computed(() => this.touchedSignal()[name]),
+      value: memo(() => this.valuesSignal()[name]),
+      error: memo(() => this.errorsSignal()[name]),
+      touched: memo(() => this.touchedSignal()[name]),
       onChange: (value: T[K]) => this.setFieldValue(name, value),
       onBlur: () => this.setFieldTouched(name, true)
     };
