@@ -1,19 +1,24 @@
 {
   "name": "philjs-db",
   "version": "2.0.0",
-  "description": "Database integration utilities for PhilJS - Prisma, Drizzle, Supabase",
+  "description": "Database integration utilities for PhilJS - Prisma, Drizzle, Supabase, Migrations",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "philjs-db": "./dist/migrations/cli.js"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./prisma": "./dist/prisma.js",
     "./drizzle": "./dist/drizzle.js",
-    "./supabase": "./dist/supabase.js"
+    "./supabase": "./dist/supabase.js",
+    "./migrations": "./dist/migrations/index.js"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest"
   },
   "dependencies": {
     "philjs-core": "workspace:*"
@@ -35,11 +40,14 @@
     }
   },
   "devDependencies": {
-    "typescript": "^5.3.0"
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.0.0"
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "MIGRATIONS.md"
   ],
   "keywords": [
     "philjs",
@@ -47,7 +55,13 @@
     "prisma",
     "drizzle",
     "supabase",
-    "orm"
+    "orm",
+    "migrations",
+    "schema",
+    "postgres",
+    "mysql",
+    "sqlite",
+    "mongodb"
   ],
   "license": "MIT",
   "sideEffects": false,

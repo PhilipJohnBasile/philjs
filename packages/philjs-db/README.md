@@ -1,9 +1,10 @@
 # philjs-db
 
-Database integration utilities for PhilJS - Prisma, Drizzle, and Supabase support with reactive signals.
+Complete database solution for PhilJS applications with ORM integration, migrations, and reactive signals.
 
 ## Features
 
+### ORM Integration
 - **Prisma ORM** - Type-safe database client with auto-completion
 - **Drizzle ORM** - Lightweight TypeScript ORM
 - **Supabase** - Backend-as-a-Service with auth and storage
@@ -14,20 +15,65 @@ Database integration utilities for PhilJS - Prisma, Drizzle, and Supabase suppor
 - **Soft Delete** - Logical deletion support
 - **Repository Pattern** - Clean data access layer
 
+### Database Migrations
+- **Multi-Database Support** - PostgreSQL, MySQL, SQLite, MongoDB
+- **Migration Versioning** - Track and manage migration history
+- **Up/Down Migrations** - Full rollback support
+- **Transaction Support** - Automatic transaction wrapping
+- **Schema Diff** - Automatic schema comparison
+- **Auto-Migration** - Generate migrations from model changes
+- **CLI Tools** - Full-featured command-line interface
+- **ORM Integration** - Seamless Prisma and Drizzle support
+- **Backup & Restore** - Automatic database backups
+
+See [MIGRATIONS.md](./MIGRATIONS.md) for complete migration documentation.
+
 ## Installation
 
 ```bash
-# Prisma
-pnpm add philjs-db @prisma/client
+# Core package
+pnpm add philjs-db
+
+# With Prisma
+pnpm add @prisma/client
 pnpm add -D prisma
 
-# Drizzle
-pnpm add philjs-db drizzle-orm
+# With Drizzle
+pnpm add drizzle-orm
 pnpm add -D drizzle-kit
 
-# Supabase
-pnpm add philjs-db @supabase/supabase-js
+# With Supabase
+pnpm add @supabase/supabase-js
 ```
+
+## Quick Start - Migrations
+
+```bash
+# Create migration configuration
+cat > philjs-db.config.js << EOF
+export default {
+  type: 'postgres',
+  connection: process.env.DATABASE_URL,
+  migrationsDir: './migrations',
+  tableName: 'migrations',
+  transactional: true,
+};
+EOF
+
+# Create your first migration
+npx philjs-db migrate:create --name create_users_table --template table
+
+# Run migrations
+npx philjs-db migrate
+
+# Check status
+npx philjs-db migrate:status
+
+# Rollback if needed
+npx philjs-db migrate:rollback
+```
+
+See [MIGRATIONS.md](./MIGRATIONS.md) for complete migration documentation.
 
 ## Quick Start
 
