@@ -2,6 +2,8 @@
  * High-level router helpers built atop the low-level manifest system.
  * Provides declarative routes, navigation, and view helpers similar to
  * frameworks like Next.js or Remix, but backed by PhilJS signals and resumability.
+ *
+ * Enhanced with Remix-style nested routes with parallel data loading.
  */
 
 import { render, signal, isResult, isOk, isErr } from "philjs-core";
@@ -16,30 +18,67 @@ import {
   initViewTransitions,
   getViewTransitionManager,
 } from "./view-transitions.js";
+import {
+  setCurrentRouteData,
+  clearLoaderData,
+  type LoaderFunction,
+  type LoaderFunctionContext,
+} from "./loader.js";
+import {
+  setRouteError,
+  clearAllRouteErrors,
+  type RouteError,
+  type ErrorBoundaryComponent,
+} from "./error-boundary.js";
 
 export type RouteComponent<Props = any> = (props: Props) => VNode | JSXElement | string | null | undefined;
 
 export type RouteDefinition = {
+  /** Route path pattern (e.g., "/users/:id") */
   path: string;
+  /** Route component */
   component: RouteComponent<RouteComponentProps>;
+  /** Data loader function */
   loader?: (context: LoaderContext) => Promise<any>;
+  /** Action function for mutations */
   action?: (context: ActionContext) => Promise<Response | void>;
+  /** Child routes for nesting */
   children?: RouteDefinition[];
+  /** Layout component that wraps children */
   layout?: RouteComponent<LayoutComponentProps>;
+  /** Error boundary component */
+  errorBoundary?: ErrorBoundaryComponent;
+  /** Route transition configuration */
   transition?: RouteTransitionOptions;
+  /** Prefetch configuration */
   prefetch?: PrefetchOptions;
+  /** Route ID for loader data access */
+  id?: string;
+  /** Handle object for useMatches */
+  handle?: unknown;
+  /** Additional route configuration */
   config?: Record<string, unknown>;
 };
 
 export type RouteComponentProps = {
+  /** Route parameters extracted from the URL */
   params: Record<string, string>;
+  /** Loader data */
   data?: any;
+  /** Error from loader or action */
   error?: any;
+  /** Current URL */
   url: URL;
+  /** Navigation function */
   navigate: NavigateFunction;
+  /** URL search params */
+  searchParams?: URLSearchParams;
+  /** Child outlet content (for nested routes) */
+  outlet?: VNode | JSXElement | string | null;
 };
 
 export type LayoutComponentProps = RouteComponentProps & {
+  /** Child content to render inside layout */
   children: VNode | JSXElement | string | null | undefined;
 };
 
@@ -108,16 +147,41 @@ type InternalRouteEntry = {
   module: RouteModule;
   parent?: string | null;
   layouts: RouteComponent<LayoutComponentProps>[];
+  /** Route ID for loader data access */
+  id: string;
+  /** Error boundary component */
+  errorBoundary?: ErrorBoundaryComponent;
+  /** Handle object for useMatches */
+  handle?: unknown;
+};
+
+/**
+ * Matched route in a hierarchy for nested routing.
+ */
+export type NestedMatchedRoute = MatchedRoute & {
+  /** Route ID */
+  id: string;
+  /** Parent route ID */
+  parentId?: string;
+  /** Loader data */
+  loaderData?: any;
+  /** Action data */
+  actionData?: any;
+  /** Handle object */
+  handle?: unknown;
 };
 
 type RouterState = {
   route: MatchedRoute | null;
   navigate: NavigateFunction;
+  /** All matched routes in the hierarchy */
+  matches: NestedMatchedRoute[];
 };
 
 const routerStateSignal = signal<RouterState>({
   route: null,
   navigate: async () => {},
+  matches: [],
 });
 
 let activeRouter: HighLevelRouter | null = null;
@@ -127,10 +191,15 @@ export type HighLevelRouter = {
   navigate: NavigateFunction;
   dispose: () => void;
   getCurrentRoute: () => MatchedRoute | null;
+  /** Get all matched routes in the current hierarchy */
+  getMatches: () => NestedMatchedRoute[];
+  /** Revalidate all loader data */
+  revalidate: () => Promise<void>;
 };
 
 /**
  * Create a high-level router with declarative routes.
+ * Supports Remix-style nested routes with parallel data loading.
  */
 export function createAppRouter(options: RouterOptions): HighLevelRouter {
   const targetElement = resolveTarget(options.target ?? "#app");
@@ -157,27 +226,45 @@ export function createAppRouter(options: RouterOptions): HighLevelRouter {
   };
 
   const getCurrentRoute = () => routerStateSignal().route;
+  const getMatches = () => routerStateSignal().matches;
+
+  const revalidate = async () => {
+    const url = new URL(window.location.href);
+    // Clear cached data and re-run loaders
+    clearLoaderData();
+    await renderCurrentRoute(routeMap, transitionManager, preloader, targetElement, url, navigate, true);
+  };
 
   const router: HighLevelRouter = {
     manifest,
     navigate,
     getCurrentRoute,
+    getMatches,
+    revalidate,
     dispose: () => {
       window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("philjs:revalidate", handleRevalidate);
       historyListeners.clear();
       activeRouter = null;
       preloader?.clear();
+      clearLoaderData();
+      clearAllRouteErrors();
     },
   };
 
   activeRouter = router;
-  routerStateSignal.set({ route: null, navigate });
+  routerStateSignal.set({ route: null, navigate, matches: [] });
 
   function handlePopState() {
     void renderCurrentRoute(routeMap, transitionManager, preloader, targetElement, new URL(window.location.href), navigate);
   }
 
+  function handleRevalidate() {
+    void revalidate();
+  }
+
   window.addEventListener("popstate", handlePopState);
+  window.addEventListener("philjs:revalidate", handleRevalidate);
   void renderCurrentRoute(routeMap, transitionManager, preloader, targetElement, new URL(window.location.href), navigate);
 
   return router;
@@ -345,6 +432,9 @@ function addRoutes(
       layouts.push(route.layout);
     }
 
+    // Generate route ID (use explicit id or path)
+    const routeId = route.id || path;
+
     const module: RouteModule = {
       loader: route.loader,
       action: route.action,
@@ -358,6 +448,9 @@ function addRoutes(
       module,
       parent: parentPath,
       layouts,
+      id: routeId,
+      errorBoundary: route.errorBoundary,
+      handle: route.handle,
     });
 
     if (route.children?.length) {
@@ -452,14 +545,18 @@ async function renderCurrentRoute(
   preloader: SmartPreloader | null,
   target: HTMLElement,
   url: URL,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  forceRevalidate: boolean = false
 ) {
-  const match = matchCurrentRoute(routeMap, url.pathname);
-  if (!match) {
-    routerStateSignal.set({ route: null, navigate });
+  // Find all matching routes in the hierarchy
+  const matchResult = matchNestedRoutes(routeMap, url.pathname);
+  if (!matchResult) {
+    routerStateSignal.set({ route: null, navigate, matches: [] });
     target.innerHTML = "";
     return;
   }
+
+  const { leafMatch, matches } = matchResult;
 
   if (preloader) {
     preloader.recordNavigation?.(url.pathname);
@@ -469,60 +566,69 @@ async function renderCurrentRoute(
   const ssrDataCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_DATA__ ||= {}) : undefined;
   const ssrErrorCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_ERROR__ ||= {}) : undefined;
 
-  let data: any = undefined;
-  let error: any = undefined;
+  // Load all route data in parallel (no waterfall!)
+  const loadedMatches = await loadAllRouteData(
+    matches,
+    url,
+    ssrDataCache,
+    ssrErrorCache,
+    forceRevalidate
+  );
 
-  if (ssrDataCache && cacheKey in ssrDataCache) {
-    data = ssrDataCache[cacheKey];
-    delete ssrDataCache[cacheKey];
-    if (ssrErrorCache && cacheKey in ssrErrorCache) {
-      error = ssrErrorCache[cacheKey];
-      delete ssrErrorCache[cacheKey];
-    }
-  } else if (match.module.loader) {
-    try {
-      const result = await match.module.loader({
-        params: match.params,
-        request: new Request(url.toString()),
-      });
+  // Get leaf route data
+  const leafData = loadedMatches[loadedMatches.length - 1];
+  const data = leafData?.loaderData;
+  const error = leafData?.error;
 
-      if (isResult(result)) {
-        if (isOk(result)) {
-          data = result.value;
-        } else if (isErr(result)) {
-          error = result.error;
-        }
-      } else {
-        data = result;
-      }
-    } catch (err) {
-      error = err;
-    }
+  const routeInfo: MatchedRoute = { ...leafMatch, data, error };
+
+  // Create nested matched routes
+  const nestedMatches: NestedMatchedRoute[] = loadedMatches.map((m, i) => ({
+    ...m.match,
+    id: m.entry.id,
+    parentId: i > 0 ? loadedMatches[i - 1].entry.id : undefined,
+    loaderData: m.loaderData,
+    error: m.error,
+    handle: m.entry.handle,
+  }));
+
+  routerStateSignal.set({ route: routeInfo, navigate, matches: nestedMatches });
+
+  // Store data for useLoaderData hook
+  for (const loaded of loadedMatches) {
+    setCurrentRouteData(loaded.entry.id, loaded.loaderData, loaded.error);
   }
-
-  const routeInfo: MatchedRoute = { ...match, data, error };
-  routerStateSignal.set({ route: routeInfo, navigate });
 
   if (typeof window !== "undefined") {
     const routeInfoStore = ((window as any).__PHILJS_ROUTE_INFO__ ||= {});
     routeInfoStore.current = {
       path: url.pathname,
-      params: match.params,
+      params: leafMatch.params,
       error,
     };
     const dataStore = ((window as any).__PHILJS_ROUTE_DATA__ ||= {});
     dataStore[cacheKey] = data;
     const errorStore = ((window as any).__PHILJS_ROUTE_ERROR__ ||= {});
     errorStore[cacheKey] = error;
+
+    // Store matches for useMatches hook
+    (window as any).__PHILJS_ROUTE_MATCHES__ = nestedMatches.map((m) => ({
+      id: m.id,
+      pathname: m.path,
+      params: m.params,
+      data: m.loaderData,
+      handle: m.handle,
+    }));
   }
 
   const renderFn = () => {
-    const vnode = match.component({
-      params: match.params,
+    const vnode = leafMatch.component({
+      params: leafMatch.params,
       data,
       error,
       url,
       navigate,
+      searchParams: url.searchParams,
     });
 
     render(vnode as VNode, target);
@@ -533,6 +639,138 @@ async function renderCurrentRoute(
   } else {
     renderFn();
   }
+}
+
+/**
+ * Load data for all routes in parallel.
+ * This is the key to avoiding waterfalls - all loaders run simultaneously.
+ */
+async function loadAllRouteData(
+  matches: Array<{ match: MatchedRoute; entry: InternalRouteEntry }>,
+  url: URL,
+  ssrDataCache: Record<string, any> | undefined,
+  ssrErrorCache: Record<string, any> | undefined,
+  forceRevalidate: boolean
+): Promise<Array<{
+  match: MatchedRoute;
+  entry: InternalRouteEntry;
+  loaderData?: any;
+  error?: any;
+}>> {
+  const cacheKey = url.pathname;
+
+  // Check SSR cache first
+  if (!forceRevalidate && ssrDataCache && cacheKey in ssrDataCache) {
+    const ssrData = ssrDataCache[cacheKey];
+    delete ssrDataCache[cacheKey];
+    const ssrError = ssrErrorCache?.[cacheKey];
+    if (ssrErrorCache) delete ssrErrorCache[cacheKey];
+
+    // For SSR hydration, use cached data for all matches
+    return matches.map((m, i) => ({
+      match: m.match,
+      entry: m.entry,
+      loaderData: i === matches.length - 1 ? ssrData : undefined,
+      error: i === matches.length - 1 ? ssrError : undefined,
+    }));
+  }
+
+  // Execute all loaders in parallel
+  const loaderPromises = matches.map(async (m) => {
+    const { match, entry } = m;
+
+    if (!entry.module.loader) {
+      return { match, entry, loaderData: undefined, error: undefined };
+    }
+
+    try {
+      const result = await entry.module.loader({
+        params: match.params,
+        request: new Request(url.toString()),
+      });
+
+      let loaderData: any;
+      let error: any;
+
+      if (isResult(result)) {
+        if (isOk(result)) {
+          loaderData = result.value;
+        } else if (isErr(result)) {
+          error = result.error;
+        }
+      } else {
+        loaderData = result;
+      }
+
+      return { match, entry, loaderData, error };
+    } catch (err) {
+      // Handle error - check for error boundary
+      if (entry.errorBoundary) {
+        setRouteError(entry.id, err as Error);
+      }
+      return { match, entry, loaderData: undefined, error: err };
+    }
+  });
+
+  return Promise.all(loaderPromises);
+}
+
+/**
+ * Match nested routes and return the full hierarchy.
+ */
+function matchNestedRoutes(
+  routeMap: Map<string, InternalRouteEntry>,
+  pathname: string
+): {
+  leafMatch: MatchedRoute;
+  matches: Array<{ match: MatchedRoute; entry: InternalRouteEntry }>;
+} | null {
+  // Find the leaf match
+  let leafMatch: MatchedRoute | null = null;
+  let leafEntry: InternalRouteEntry | null = null;
+
+  for (const [path, entry] of routeMap.entries()) {
+    const params = matchPath(path, pathname);
+    if (params) {
+      leafMatch = {
+        path,
+        params,
+        component: entry.module.default,
+        module: entry.module,
+      };
+      leafEntry = entry;
+      break;
+    }
+  }
+
+  if (!leafMatch || !leafEntry) {
+    return null;
+  }
+
+  // Build the full match hierarchy (from root to leaf)
+  const matches: Array<{ match: MatchedRoute; entry: InternalRouteEntry }> = [];
+
+  // Walk up the tree to collect all parent routes
+  const collectParents = (entry: InternalRouteEntry, match: MatchedRoute) => {
+    if (entry.parent) {
+      const parentEntry = routeMap.get(entry.parent);
+      if (parentEntry) {
+        const parentMatch: MatchedRoute = {
+          path: entry.parent,
+          params: match.params,
+          component: parentEntry.module.default,
+          module: parentEntry.module,
+        };
+        collectParents(parentEntry, parentMatch);
+        matches.push({ match: parentMatch, entry: parentEntry });
+      }
+    }
+  };
+
+  collectParents(leafEntry, leafMatch);
+  matches.push({ match: leafMatch, entry: leafEntry });
+
+  return { leafMatch, matches };
 }
 
 function matchCurrentRoute(routeMap: Map<string, InternalRouteEntry>, pathname: string): MatchedRoute | null {
