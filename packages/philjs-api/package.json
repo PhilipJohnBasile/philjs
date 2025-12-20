@@ -10,7 +10,14 @@
     "./server": "./dist/server.js",
     "./client": "./dist/client.js",
     "./cookies": "./dist/cookies.js",
-    "./session": "./dist/session.js"
+    "./session": "./dist/session.js",
+    "./flash": "./dist/flash.js",
+    "./cookie-session": "./dist/cookie-session.js",
+    "./session-utils": "./dist/session-utils.js",
+    "./edge-middleware": "./dist/edge-middleware.js",
+    "./geolocation": "./dist/geolocation.js",
+    "./edge-ab-testing": "./dist/edge-ab-testing.js",
+    "./edge-cache": "./dist/edge-cache.js"
   },
   "scripts": {
     "build": "tsc",

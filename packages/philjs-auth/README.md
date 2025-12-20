@@ -1,16 +1,19 @@
-# philjs-auth
+# PhilJS Auth
 
-Authentication and authorization utilities for PhilJS applications, featuring OAuth providers, JWT handling, session management, and protected routes with reactive signals.
+🔐 Comprehensive authentication and authorization system for PhilJS applications.
 
 ## Features
 
-- OAuth 2.0 integration (Google, GitHub, Discord, Microsoft, Twitter)
-- JWT token creation, verification, and management
-- Reactive session management with signals
-- Protected route components
-- Type-safe authentication flows
-- Tree-shakeable exports
-- Zero external dependencies (except PhilJS core)
+- **🎯 Multiple Provider Support**: Clerk, Auth0, Supabase, NextAuth, or custom
+- **⚡ CLI Generators**: RedwoodJS-style generators for rapid setup
+- **🔄 Automatic Token Refresh**: Smart token refresh with configurable strategies
+- **🛡️ Protected Routes**: HOCs, components, and hooks for route protection
+- **👥 Role-Based Access**: Built-in permission and role checking
+- **📱 Session Management**: Reactive session state using signals
+- **🎨 UI Components**: Pre-built, customizable auth UI components
+- **🔑 JWT Support**: Full JWT token management
+- **🌐 OAuth Integration**: Support for multiple OAuth providers
+- **📦 Type-Safe**: Full TypeScript support with excellent DX
 
 ## Installation
 
@@ -20,433 +23,384 @@ npm install philjs-auth
 
 ## Quick Start
 
-### Session Management
+### 1. Generate Auth Setup (Recommended)
+
+Use the PhilJS CLI to generate a complete authentication setup:
+
+```bash
+# Generate Clerk authentication
+philjs generate auth clerk
+
+# Generate Auth0 authentication
+philjs generate auth auth0
+
+# Generate Supabase authentication
+philjs generate auth supabase
+
+# Generate NextAuth authentication
+philjs generate auth nextauth
+
+# Generate custom authentication
+philjs generate auth custom
+```
+
+This creates:
+- ✅ Authentication configuration
+- ✅ Provider integration
+- ✅ Login/Signup/Password Reset forms
+- ✅ Profile management
+- ✅ Protected route utilities
+- ✅ Example pages
+
+### 2. Manual Setup
 
 ```typescript
-import { createSessionManager, useAuth } from 'philjs-auth';
+import { CustomAuthProvider, setAuthProvider, startSessionRefresh } from 'philjs-auth';
 
-// Create a session manager
-const sessionManager = createSessionManager({
-  sessionExpiry: 7 * 24 * 60 * 60 * 1000, // 7 days
-  cookieSecure: true,
-  cookieSameSite: 'lax'
+// Create provider
+const authProvider = new CustomAuthProvider({
+  apiUrl: 'http://localhost:3000/api',
+  tokenKey: 'auth_token',
+  refreshTokenKey: 'refresh_token',
 });
 
-// Set a session after login
-sessionManager.setSession(
-  { id: '123', email: 'user@example.com', name: 'John Doe' },
-  'access-token',
-  3600000 // 1 hour
-);
+// Initialize
+await authProvider.initialize();
 
-// Access reactive auth state
-const { user, isAuthenticated, token } = useAuth();
+// Set as global provider
+setAuthProvider(authProvider);
 
-console.log(isAuthenticated()); // true
-console.log(user().name); // "John Doe"
+// Start automatic token refresh
+startSessionRefresh({
+  refreshBeforeExpiry: 5 * 60 * 1000, // 5 minutes
+  checkInterval: 60 * 1000, // 1 minute
+});
+```
 
-// Clear session on logout
-sessionManager.clearSession();
+### 3. Wrap Your App
+
+```tsx
+import { AuthProvider } from './auth/AuthProvider';
+
+export function App() {
+  return (
+    <AuthProvider>
+      <YourApp />
+    </AuthProvider>
+  );
+}
+```
+
+## Usage
+
+### Authentication Hooks
+
+```typescript
+import { useAuth, useUser, useHasPermission } from 'philjs-auth/hooks';
+
+function MyComponent() {
+  const { signIn, signOut, isAuthenticated, isLoading } = useAuth();
+  const user = useUser();
+  const isAdmin = useHasPermission('admin');
+
+  const handleLogin = async () => {
+    try {
+      await signIn('user@example.com', 'password');
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      {isAuthenticated ? (
+        <>
+          <p>Welcome, {user?.name}!</p>
+          <button onClick={signOut}>Logout</button>
+          {isAdmin && <a href="/admin">Admin Panel</a>}
+        </>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
+  );
+}
 ```
 
 ### Protected Routes
 
 ```typescript
-import { ProtectedRoute, useAuth } from 'philjs-auth';
+import { ProtectedRoute, withRole } from 'philjs-auth/protected-routes';
 
+// Component-based protection
 function Dashboard() {
-  const { user } = useAuth();
-
   return (
-    <ProtectedRoute
-      redirectTo="/login"
-      fallback={<div>Loading...</div>}
-    >
-      <h1>Welcome, {user().name}!</h1>
-      <DashboardContent />
+    <ProtectedRoute redirectTo="/login">
+      <div>Dashboard content</div>
     </ProtectedRoute>
   );
 }
 
-// Or use as HOC
-import { withAuth } from 'philjs-auth';
-
-const ProtectedDashboard = withAuth(Dashboard, {
-  redirectTo: '/login'
-});
-```
-
-### OAuth Authentication
-
-```typescript
-import { createOAuthManager, OAuthProviders, generateState } from 'philjs-auth';
-
-// Setup OAuth manager
-const oauthManager = createOAuthManager({
-  providers: {
-    google: OAuthProviders.google(
-      'your-client-id',
-      'your-client-secret',
-      'http://localhost:3000/auth/callback'
-    ),
-    github: OAuthProviders.github(
-      'your-client-id',
-      'your-client-secret',
-      'http://localhost:3000/auth/callback'
-    )
-  }
-});
-
-// Redirect to OAuth provider
-function handleGoogleLogin() {
-  const state = generateState();
-  sessionStorage.setItem('oauth_state', state);
-
-  const authUrl = oauthManager.getAuthUrl('google', state);
-  window.location.href = authUrl;
-}
-
-// Handle OAuth callback
-async function handleOAuthCallback(code: string, state: string) {
-  // Verify state
-  const savedState = sessionStorage.getItem('oauth_state');
-  if (state !== savedState) {
-    throw new Error('Invalid state parameter');
-  }
-
-  // Complete authentication
-  const { user, accessToken, expiresIn } = await oauthManager.completeAuth('google', code);
-
-  // Set session
-  const sessionManager = getDefaultSessionManager();
-  sessionManager.setSession(user, accessToken, expiresIn ? expiresIn * 1000 : undefined);
-
-  return user;
-}
-```
-
-### JWT Tokens
-
-```typescript
-import { createJWTManager, createToken, verifyToken } from 'philjs-auth';
-
-// Create JWT manager
-const jwtManager = createJWTManager({
-  secret: 'your-secret-key',
-  expiresIn: 3600, // 1 hour
-  issuer: 'your-app',
-  audience: 'your-api'
-});
-
-// Create a token
-const token = await jwtManager.create({
-  sub: 'user-123',
+// HOC-based protection
+const AdminPanel = withRole(AdminPanelComponent, {
   role: 'admin',
-  permissions: ['read', 'write']
+  redirectTo: '/unauthorized',
 });
 
-// Verify token
-try {
-  const payload = await jwtManager.verify(token);
-  console.log(payload.sub); // "user-123"
-  console.log(payload.role); // "admin"
-} catch (error) {
-  console.error('Invalid token:', error);
-}
+// Conditional rendering
+import { ShowForAuth, ShowForRole } from 'philjs-auth/protected-routes';
 
-// Check expiration
-if (jwtManager.isExpired(token)) {
-  // Refresh token
-  const newToken = await jwtManager.refresh(token);
+function Navigation() {
+  return (
+    <nav>
+      <ShowForAuth>
+        <a href="/dashboard">Dashboard</a>
+      </ShowForAuth>
+      <ShowForRole role="admin">
+        <a href="/admin">Admin</a>
+      </ShowForRole>
+    </nav>
+  );
 }
+```
 
-// Quick utilities
-const quickToken = await createToken({ sub: '123' }, 'secret');
-const payload = await verifyToken(quickToken, 'secret');
+### Session Management
+
+```typescript
+import {
+  startSessionRefresh,
+  SessionPersistence,
+  logoutEverywhere
+} from 'philjs-auth/session-refresh';
+
+// Automatic token refresh
+startSessionRefresh({
+  refreshBeforeExpiry: 5 * 60 * 1000,
+  checkInterval: 60 * 1000,
+  refreshOnFocus: true,
+  refreshOnReconnect: true,
+  onRefreshFailed: (error) => {
+    console.error('Token refresh failed:', error);
+  },
+});
+
+// Session persistence
+SessionPersistence.save(session, 'local');
+const session = SessionPersistence.load('local');
+
+// Logout everywhere
+await logoutEverywhere();
+```
+
+## Providers
+
+### Clerk
+
+```bash
+npm install @clerk/clerk-react
+philjs generate auth clerk
+```
+
+### Auth0
+
+```bash
+npm install @auth0/auth0-react
+philjs generate auth auth0
+```
+
+### Supabase
+
+```bash
+npm install @supabase/supabase-js
+philjs generate auth supabase
+```
+
+### NextAuth
+
+```bash
+npm install next-auth
+philjs generate auth nextauth
+```
+
+### Custom
+
+Create your own authentication provider:
+
+```typescript
+import { BaseAuthProvider } from 'philjs-auth';
+import { signal } from 'philjs-core/signals';
+
+class MyAuthProvider extends BaseAuthProvider {
+  readonly name = 'my-auth';
+  readonly user = signal<User | null>(null);
+  readonly session = signal<AuthSession | null>(null);
+  readonly loading = signal(false);
+
+  async initialize(): Promise<void> {
+    // Initialize your auth system
+  }
+
+  async signInWithEmail(email: string, password: string): Promise<User> {
+    // Implement sign in logic
+  }
+
+  // ... implement other required methods
+}
 ```
 
 ## API Reference
 
-### Session Management
+### Hooks
 
-#### `SessionManager`
-
-```typescript
-class SessionManager {
-  constructor(config?: AuthConfig);
-
-  // Reactive signals
-  get session(): Signal<AuthSession>;
-  get user(): ComputedSignal<User | null>;
-  get isAuthenticated(): ComputedSignal<boolean>;
-  get token(): ComputedSignal<string | undefined>;
-
-  // Methods
-  setSession(user: User, token?: string, expiresIn?: number): void;
-  updateUser(updates: Partial<User>): void;
-  clearSession(): void;
-  refreshSession(expiresIn?: number): void;
-  isExpired(): boolean;
-}
-```
-
-#### `useAuth()`
-
-Hook-like function for accessing auth state:
-
-```typescript
-const {
-  user,              // ComputedSignal<User | null>
-  isAuthenticated,   // ComputedSignal<boolean>
-  token,             // ComputedSignal<string | undefined>
-  session,           // Signal<AuthSession>
-  login,             // (user, token?, expiresIn?) => void
-  logout,            // () => void
-  updateUser,        // (updates) => void
-  refreshSession     // (expiresIn?) => void
-} = useAuth();
-```
-
-### OAuth
-
-#### `OAuthManager`
-
-```typescript
-class OAuthManager {
-  constructor(config: OAuthConfig);
-
-  getAuthUrl(providerName: string, state?: string): string;
-  exchangeCode(providerName: string, code: string): Promise<TokenResponse>;
-  getUserInfo(providerName: string, accessToken: string): Promise<User>;
-  completeAuth(providerName: string, code: string): Promise<AuthResult>;
-  refreshAccessToken(providerName: string, refreshToken: string): Promise<TokenResponse>;
-}
-```
-
-#### Built-in Providers
-
-```typescript
-OAuthProviders.google(clientId, clientSecret, redirectUri)
-OAuthProviders.github(clientId, clientSecret, redirectUri)
-OAuthProviders.discord(clientId, clientSecret, redirectUri)
-OAuthProviders.microsoft(clientId, clientSecret, redirectUri)
-OAuthProviders.twitter(clientId, clientSecret, redirectUri)
-```
-
-### JWT
-
-#### `JWTManager`
-
-```typescript
-class JWTManager {
-  constructor(config: JWTConfig);
-
-  create(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string>;
-  verify(token: string): Promise<JWTPayload>;
-  decode(token: string): JWTPayload | null;
-  isExpired(token: string): boolean;
-  getTimeToExpiry(token: string): number | null;
-  refresh(token: string): Promise<string>;
-}
-```
+- `useAuth()` - Main authentication hook
+- `useUser()` - Get current user
+- `useSession()` - Get current session
+- `useIsAuthenticated()` - Check if authenticated
+- `useAuthLoading()` - Check loading state
+- `useHasPermission(permission)` - Check permissions/roles
+- `useRequireAuth(redirectTo)` - Require authentication
+- `useAccessToken()` - Get access token
 
 ### Protected Routes
 
-#### `ProtectedRoute`
+- `<ProtectedRoute>` - Protect route component
+- `withAuth(Component)` - Protect with HOC
+- `withRole(Component, options)` - Role-based protection
+- `withAnyRole(Component, options)` - Multiple role protection
+- `<AuthGuard>` - Conditional rendering
+- `<ShowForAuth>` - Show for authenticated users
+- `<ShowForGuest>` - Show for guests
+- `<ShowForRole>` - Show for specific role
 
-```typescript
-function ProtectedRoute(props: {
-  children: any;
-  fallback?: any;
-  redirectTo?: string;
-  checkAuth?: () => boolean | Promise<boolean>;
-  onUnauthorized?: () => void;
-}): JSX.Element;
+### Session Management
+
+- `startSessionRefresh(config)` - Start auto refresh
+- `stopSessionRefresh()` - Stop auto refresh
+- `SessionPersistence` - Session storage utilities
+- `logoutEverywhere()` - Revoke all sessions
+
+### Providers
+
+- `ClerkAuthProvider` - Clerk integration
+- `Auth0AuthProvider` - Auth0 integration
+- `SupabaseAuthProvider` - Supabase integration
+- `NextAuthProvider` - NextAuth integration
+- `BaseAuthProvider` - Base class for custom providers
+
+### Legacy APIs
+
+The package also includes legacy session management and JWT utilities:
+
+- `SessionManager` - Original session manager
+- `JWTManager` - JWT token management
+- `OAuthManager` - OAuth provider management
+- Original `useAuth()` from `protected-route.js`
+
+See the full documentation for complete API reference.
+
+## Documentation
+
+- [Authentication Guide](./AUTH_GUIDE.md) - Complete guide
+- [Examples](./examples/) - Working examples
+
+## Generator Options
+
+```bash
+philjs generate auth <provider> [options]
+
+Options:
+  -d, --directory <dir>        Target directory (default: "src")
+  --no-ui                     Skip UI components
+  --no-middleware             Skip middleware
+  --no-protected-routes       Skip protected route utilities
+  --js                        Use JavaScript instead of TypeScript
 ```
 
-#### `withAuth`
+## Features
 
-Higher-order function for protecting components:
+### Complete Authentication Flow
+- Sign in / Sign up
+- Password reset
+- Email verification
+- Profile management
+- OAuth integration
+
+### Advanced Session Management
+- Automatic token refresh
+- Refresh on focus
+- Refresh on reconnect
+- Session persistence
+- Multi-device logout
+
+### Security Best Practices
+- Secure token storage
+- CSRF protection
+- XSS prevention
+- Rate limiting ready
+- Password validation
+
+### Developer Experience
+- TypeScript support
+- RedwoodJS-style generators
+- Pre-built UI components
+- Comprehensive hooks
+- Excellent documentation
+
+## Examples
+
+### Login Form
 
 ```typescript
-function withAuth<T>(
-  Component: (props: T) => any,
-  config?: ProtectedRouteConfig
-): (props: T) => any;
-```
+import { useAuth } from 'philjs-auth/hooks';
+import { signal } from 'philjs-core/signals';
 
-## Complete Example
+const email = signal('');
+const password = signal('');
 
-```typescript
-import {
-  createSessionManager,
-  createOAuthManager,
-  createJWTManager,
-  OAuthProviders,
-  useAuth,
-  ProtectedRoute
-} from 'philjs-auth';
+export function LoginForm() {
+  const { signIn, isLoading } = useAuth();
 
-// Setup managers
-const sessionManager = createSessionManager({
-  sessionExpiry: 7 * 24 * 60 * 60 * 1000
-});
-
-const oauthManager = createOAuthManager({
-  providers: {
-    google: OAuthProviders.google(
-      process.env.GOOGLE_CLIENT_ID!,
-      process.env.GOOGLE_CLIENT_SECRET!,
-      'http://localhost:3000/auth/callback'
-    )
-  }
-});
-
-const jwtManager = createJWTManager({
-  secret: process.env.JWT_SECRET!,
-  expiresIn: 3600
-});
-
-// Login page
-function LoginPage() {
-  const handleGoogleLogin = () => {
-    const authUrl = oauthManager.getAuthUrl('google');
-    window.location.href = authUrl;
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    try {
+      await signIn(email.get(), password.get());
+      window.location.href = '/dashboard';
+    } catch (error) {
+      alert('Login failed');
+    }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <button onclick={handleGoogleLogin}>
-        Sign in with Google
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        value={email.get()}
+        onInput={(e) => email.set(e.target.value)}
+        placeholder="Email"
+      />
+      <input
+        type="password"
+        value={password.get()}
+        onInput={(e) => password.set(e.target.value)}
+        placeholder="Password"
+      />
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Signing in...' : 'Sign In'}
       </button>
-    </div>
-  );
-}
-
-// OAuth callback handler
-async function handleCallback(code: string) {
-  const { user, accessToken, expiresIn } = await oauthManager.completeAuth('google', code);
-
-  // Create JWT for your app
-  const appToken = await jwtManager.create({
-    sub: user.id,
-    email: user.email,
-    role: 'user'
-  });
-
-  // Set session
-  sessionManager.setSession(user, appToken, expiresIn ? expiresIn * 1000 : undefined);
-}
-
-// Protected dashboard
-function Dashboard() {
-  const { user, logout } = useAuth();
-
-  return (
-    <ProtectedRoute redirectTo="/login">
-      <div>
-        <h1>Dashboard</h1>
-        <p>Welcome, {user().name}!</p>
-        <button onclick={logout}>Logout</button>
-      </div>
-    </ProtectedRoute>
+    </form>
   );
 }
 ```
 
-## Advanced Usage
+## Contributing
 
-### Custom OAuth Provider
-
-```typescript
-const customProvider: OAuthProvider = {
-  name: 'Custom',
-  authUrl: 'https://oauth.custom.com/authorize',
-  tokenUrl: 'https://oauth.custom.com/token',
-  userInfoUrl: 'https://api.custom.com/user',
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  redirectUri: 'http://localhost:3000/callback',
-  scope: ['profile', 'email']
-};
-
-const oauthManager = createOAuthManager({
-  providers: {
-    custom: customProvider
-  }
-});
-```
-
-### Server-Side Session Validation
-
-```typescript
-// API middleware
-async function validateSession(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  try {
-    const payload = await jwtManager.verify(token);
-    req.user = payload;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-}
-```
-
-### Automatic Token Refresh
-
-```typescript
-import { effect } from 'philjs-core/signals';
-
-const sessionManager = getDefaultSessionManager();
-
-// Auto-refresh 5 minutes before expiry
-effect(() => {
-  const session = sessionManager.session();
-  if (!session.expiresAt) return;
-
-  const timeToExpiry = session.expiresAt - Date.now();
-  const refreshTime = timeToExpiry - (5 * 60 * 1000); // 5 minutes before
-
-  if (refreshTime > 0) {
-    setTimeout(async () => {
-      if (session.refreshToken) {
-        const { accessToken, expiresIn } = await oauthManager.refreshAccessToken(
-          'google',
-          session.refreshToken
-        );
-        sessionManager.setSession(
-          session.user!,
-          accessToken,
-          expiresIn ? expiresIn * 1000 : undefined
-        );
-      }
-    }, refreshTime);
-  }
-});
-```
-
-## TypeScript
-
-Full TypeScript support with type definitions included:
-
-```typescript
-import type {
-  User,
-  AuthSession,
-  AuthConfig,
-  OAuthProvider,
-  JWTPayload,
-  ProtectedRouteConfig
-} from 'philjs-auth';
-```
+Contributions are welcome! Please read our [contributing guide](../../CONTRIBUTING.md).
 
 ## License
 
-MIT
+MIT © PhilJS Team

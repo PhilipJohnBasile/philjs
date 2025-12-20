@@ -23,9 +23,41 @@
       "types": "./dist/session.d.ts",
       "import": "./dist/session.js"
     },
+    "./session-refresh": {
+      "types": "./dist/session-refresh.d.ts",
+      "import": "./dist/session-refresh.js"
+    },
     "./protected-route": {
       "types": "./dist/protected-route.d.ts",
       "import": "./dist/protected-route.js"
+    },
+    "./protected-routes": {
+      "types": "./dist/protected-routes.d.ts",
+      "import": "./dist/protected-routes.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    },
+    "./auth-provider": {
+      "types": "./dist/auth-provider.d.ts",
+      "import": "./dist/auth-provider.js"
+    },
+    "./providers/clerk": {
+      "types": "./dist/providers/clerk.d.ts",
+      "import": "./dist/providers/clerk.js"
+    },
+    "./providers/auth0": {
+      "types": "./dist/providers/auth0.d.ts",
+      "import": "./dist/providers/auth0.js"
+    },
+    "./providers/supabase": {
+      "types": "./dist/providers/supabase.d.ts",
+      "import": "./dist/providers/supabase.js"
+    },
+    "./providers/next-auth": {
+      "types": "./dist/providers/next-auth.d.ts",
+      "import": "./dist/providers/next-auth.js"
     }
   },
   "files": [

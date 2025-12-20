@@ -9,6 +9,9 @@ API routes and full-stack utilities for PhilJS applications.
 - **Middleware support** - Request/response interceptors
 - **Request validation** - Schema validation with Zod
 - **Session management** - Built-in session and cookie utilities
+- **Flash messages** - Remix-style one-time messages with auto-cleanup
+- **Enhanced cookie sessions** - Encrypted, signed, CSRF-protected sessions
+- **Session utilities** - Timeout, validation, rotation middleware
 - **CORS handling** - Cross-origin resource sharing support
 - **Rate limiting** - Protect your API from abuse
 - **WebSocket support** - Real-time communication
@@ -98,6 +101,52 @@ export default defineAPIRoute({
   })
 });
 ```
+
+## Advanced Features
+
+### Flash Messages
+
+One-time messages that persist across redirects:
+
+```typescript
+import { setFlashSuccess, getFlashMessages } from 'philjs-api/flash';
+
+// Set flash message
+setFlashSuccess(session, 'Profile updated successfully!');
+
+// Get and auto-clear
+const messages = getFlashMessages(session);
+```
+
+### Enhanced Cookie Sessions
+
+Secure sessions with encryption and CSRF protection:
+
+```typescript
+import { createCookieSessionStorage } from 'philjs-api/cookie-session';
+
+const sessionStorage = createCookieSessionStorage({
+  secret: process.env.SESSION_SECRET!,
+  encryptionSecret: process.env.ENCRYPTION_SECRET!,
+  csrf: true,
+  rotate: true,
+});
+```
+
+### Session Utilities
+
+Helpers and middleware for session management:
+
+```typescript
+import { sessionMiddleware, sessionTimeoutMiddleware } from 'philjs-api/session-utils';
+
+const middleware = sessionMiddleware({
+  storage: sessionStorage,
+  autoCommit: true,
+});
+```
+
+See [FLASH_SESSIONS.md](./FLASH_SESSIONS.md) for complete documentation.
 
 ## Documentation
 
