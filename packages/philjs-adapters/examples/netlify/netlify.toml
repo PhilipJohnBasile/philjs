@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = ".netlify/publish"
+
+[functions]
+  node_bundler = "esbuild"
+  node_version = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

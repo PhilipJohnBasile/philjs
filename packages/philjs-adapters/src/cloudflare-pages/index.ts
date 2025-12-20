@@ -1,0 +1,743 @@
+/**
+ * PhilJS Cloudflare Pages Adapter
+ *
+ * Full-featured Cloudflare Pages deployment with:
+ * - KV bindings support
+ * - D1 database support
+ * - R2 storage support
+ * - Durable Objects support
+ * - Static asset handling
+ */
+
+import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
+import { join } from 'path';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
+
+export interface CloudflarePagesConfig extends AdapterConfig {
+  /** Output directory for build artifacts */
+  outDir?: string;
+
+  /** KV namespace bindings */
+  kv?: Array<{
+    binding: string;
+    id: string;
+    preview_id?: string;
+  }>;
+
+  /** D1 database bindings */
+  d1?: Array<{
+    binding: string;
+    database_id: string;
+    database_name: string;
+    preview_database_id?: string;
+  }>;
+
+  /** R2 bucket bindings */
+  r2?: Array<{
+    binding: string;
+    bucket_name: string;
+    preview_bucket_name?: string;
+  }>;
+
+  /** Durable Objects bindings */
+  durableObjects?: Array<{
+    binding: string;
+    class_name: string;
+    script_name?: string;
+    environment?: string;
+  }>;
+
+  /** Service bindings */
+  services?: Array<{
+    binding: string;
+    service: string;
+    environment?: string;
+  }>;
+
+  /** Queue bindings */
+  queues?: {
+    producers?: Array<{
+      binding: string;
+      queue: string;
+    }>;
+    consumers?: Array<{
+      queue: string;
+      max_batch_size?: number;
+      max_batch_timeout?: number;
+      max_retries?: number;
+      dead_letter_queue?: string;
+    }>;
+  };
+
+  /** Analytics Engine bindings */
+  analytics?: Array<{
+    binding: string;
+    dataset?: string;
+  }>;
+
+  /** Environment variables */
+  vars?: Record<string, string>;
+
+  /** Compatibility date */
+  compatibilityDate?: string;
+
+  /** Compatibility flags */
+  compatibilityFlags?: string[];
+
+  /** Static asset patterns to exclude from routing */
+  excludeAssets?: string[];
+
+  /** Custom _routes.json configuration */
+  routes?: {
+    include?: string[];
+    exclude?: string[];
+  };
+
+  /** Enable Wrangler configuration generation */
+  generateWranglerConfig?: boolean;
+}
+
+export function cloudflarePagesAdapter(config: CloudflarePagesConfig = {}): Adapter & EdgeAdapter {
+  const {
+    outDir = '.cloudflare',
+    kv = [],
+    d1 = [],
+    r2 = [],
+    durableObjects = [],
+    services = [],
+    queues,
+    analytics = [],
+    vars = {},
+    compatibilityDate = '2024-01-01',
+    compatibilityFlags = [],
+    excludeAssets = ['/static/*', '/assets/*', '/_philjs/*', '/favicon.ico', '/robots.txt'],
+    routes,
+    generateWranglerConfig = true,
+  } = config;
+
+  return {
+    name: 'cloudflare-pages',
+    edge: true,
+    edgeConfig: {
+      regions: ['global'], // Cloudflare deploys globally
+    },
+
+    async adapt() {
+      console.log('Building for Cloudflare Pages...');
+
+      // Create output directory structure
+      mkdirSync(outDir, { recursive: true });
+      mkdirSync(join(outDir, 'functions'), { recursive: true });
+
+      // Generate _worker.js (main handler)
+      writeFileSync(
+        join(outDir, '_worker.js'),
+        generateWorkerScript()
+      );
+
+      // Generate _routes.json for static asset handling
+      const routesConfig = {
+        version: 1,
+        include: routes?.include || ['/*'],
+        exclude: routes?.exclude || excludeAssets,
+      };
+
+      writeFileSync(
+        join(outDir, '_routes.json'),
+        JSON.stringify(routesConfig, null, 2)
+      );
+
+      // Generate wrangler.toml for local development
+      if (generateWranglerConfig) {
+        writeFileSync(
+          join(outDir, 'wrangler.toml'),
+          generateWranglerToml()
+        );
+      }
+
+      // Generate TypeScript bindings
+      writeFileSync(
+        join(outDir, 'env.d.ts'),
+        generateTypeScriptBindings()
+      );
+
+      // Copy static assets
+      const staticDir = config.static?.assets || 'public';
+      if (existsSync(staticDir)) {
+        cpSync(staticDir, outDir, { recursive: true });
+      }
+
+      // Copy prerendered pages
+      if (existsSync('.philjs/prerendered')) {
+        cpSync('.philjs/prerendered', outDir, { recursive: true });
+      }
+
+      console.log('Cloudflare Pages build complete');
+    },
+
+    getHandler() {
+      return async (request: Request, env?: any, ctx?: any): Promise<Response> => {
+        const url = new URL(request.url);
+
+        const requestContext: RequestContext = {
+          url,
+          method: request.method,
+          headers: request.headers,
+          body: request.body,
+          params: {},
+          platform: {
+            name: 'cloudflare-pages',
+            edge: true,
+            env, // All bindings (KV, R2, D1, etc.)
+            ctx, // ExecutionContext
+            kv: createKVHelpers(env, kv),
+            d1: createD1Helpers(env, d1),
+            r2: createR2Helpers(env, r2),
+          },
+        };
+
+        const { handleRequest } = await import('@philjs/ssr');
+        return handleRequest(requestContext);
+      };
+    },
+  };
+
+  function generateWorkerScript(): string {
+    return `// PhilJS Cloudflare Pages Worker
+// Generated by PhilJS Adapters
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // Create request context with all bindings
+    const context = {
+      url,
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+      params: {},
+      platform: {
+        name: 'cloudflare-pages',
+        edge: true,
+        env, // All bindings
+        ctx, // ExecutionContext for waitUntil, passThroughOnException
+      },
+    };
+
+    try {
+      const { handleRequest } = await import('@philjs/ssr');
+      return await handleRequest(context);
+    } catch (error) {
+      console.error('PhilJS request error:', error);
+
+      // Return error response
+      return new Response(
+        JSON.stringify({
+          error: 'Internal Server Error',
+          message: error.message,
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+  },
+
+  ${queues?.consumers?.length ? `async queue(batch, env, ctx) {
+    // Queue consumer handler
+    for (const message of batch.messages) {
+      try {
+        const { handleQueueMessage } = await import('@philjs/ssr');
+        await handleQueueMessage(message.body, { env, ctx });
+        message.ack();
+      } catch (error) {
+        console.error('Queue message processing error:', error);
+        message.retry();
+      }
+    }
+  },` : ''}
+
+  ${durableObjects?.length ? `// Durable Object handlers would go here` : ''}
+};
+`;
+  }
+
+  function generateWranglerToml(): string {
+    const lines: string[] = [
+      '# PhilJS Cloudflare Pages Configuration',
+      '# Generated by PhilJS Adapters',
+      '',
+      'name = "philjs-app"',
+      `compatibility_date = "${compatibilityDate}"`,
+      'pages_build_output_dir = "."',
+    ];
+
+    if (compatibilityFlags.length > 0) {
+      lines.push(`compatibility_flags = [${compatibilityFlags.map(f => `"${f}"`).join(', ')}]`);
+    }
+
+    // KV Namespaces
+    if (kv.length > 0) {
+      lines.push('');
+      lines.push('# KV Namespaces');
+      for (const binding of kv) {
+        lines.push('[[kv_namespaces]]');
+        lines.push(`binding = "${binding.binding}"`);
+        lines.push(`id = "${binding.id}"`);
+        if (binding.preview_id) {
+          lines.push(`preview_id = "${binding.preview_id}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // D1 Databases
+    if (d1.length > 0) {
+      lines.push('# D1 Databases');
+      for (const binding of d1) {
+        lines.push('[[d1_databases]]');
+        lines.push(`binding = "${binding.binding}"`);
+        lines.push(`database_id = "${binding.database_id}"`);
+        lines.push(`database_name = "${binding.database_name}"`);
+        if (binding.preview_database_id) {
+          lines.push(`preview_database_id = "${binding.preview_database_id}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // R2 Buckets
+    if (r2.length > 0) {
+      lines.push('# R2 Buckets');
+      for (const binding of r2) {
+        lines.push('[[r2_buckets]]');
+        lines.push(`binding = "${binding.binding}"`);
+        lines.push(`bucket_name = "${binding.bucket_name}"`);
+        if (binding.preview_bucket_name) {
+          lines.push(`preview_bucket_name = "${binding.preview_bucket_name}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Durable Objects
+    if (durableObjects.length > 0) {
+      lines.push('# Durable Objects');
+      lines.push('[[durable_objects.bindings]]');
+      for (const binding of durableObjects) {
+        lines.push(`name = "${binding.binding}"`);
+        lines.push(`class_name = "${binding.class_name}"`);
+        if (binding.script_name) {
+          lines.push(`script_name = "${binding.script_name}"`);
+        }
+        if (binding.environment) {
+          lines.push(`environment = "${binding.environment}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Service Bindings
+    if (services.length > 0) {
+      lines.push('# Service Bindings');
+      for (const binding of services) {
+        lines.push('[[services]]');
+        lines.push(`binding = "${binding.binding}"`);
+        lines.push(`service = "${binding.service}"`);
+        if (binding.environment) {
+          lines.push(`environment = "${binding.environment}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Queue Producers
+    if (queues?.producers?.length) {
+      lines.push('# Queue Producers');
+      for (const producer of queues.producers) {
+        lines.push('[[queues.producers]]');
+        lines.push(`binding = "${producer.binding}"`);
+        lines.push(`queue = "${producer.queue}"`);
+        lines.push('');
+      }
+    }
+
+    // Queue Consumers
+    if (queues?.consumers?.length) {
+      lines.push('# Queue Consumers');
+      for (const consumer of queues.consumers) {
+        lines.push('[[queues.consumers]]');
+        lines.push(`queue = "${consumer.queue}"`);
+        if (consumer.max_batch_size) {
+          lines.push(`max_batch_size = ${consumer.max_batch_size}`);
+        }
+        if (consumer.max_batch_timeout) {
+          lines.push(`max_batch_timeout = ${consumer.max_batch_timeout}`);
+        }
+        if (consumer.max_retries) {
+          lines.push(`max_retries = ${consumer.max_retries}`);
+        }
+        if (consumer.dead_letter_queue) {
+          lines.push(`dead_letter_queue = "${consumer.dead_letter_queue}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Analytics Engine
+    if (analytics.length > 0) {
+      lines.push('# Analytics Engine');
+      for (const binding of analytics) {
+        lines.push('[[analytics_engine_datasets]]');
+        lines.push(`binding = "${binding.binding}"`);
+        if (binding.dataset) {
+          lines.push(`dataset = "${binding.dataset}"`);
+        }
+        lines.push('');
+      }
+    }
+
+    // Environment Variables
+    if (Object.keys(vars).length > 0) {
+      lines.push('# Environment Variables');
+      lines.push('[vars]');
+      for (const [key, value] of Object.entries(vars)) {
+        lines.push(`${key} = "${value}"`);
+      }
+    }
+
+    return lines.join('\n');
+  }
+
+  function generateTypeScriptBindings(): string {
+    const bindings: string[] = [
+      '// PhilJS Cloudflare Pages Environment Bindings',
+      '// Generated by PhilJS Adapters',
+      '',
+      'interface Env {',
+    ];
+
+    // KV bindings
+    for (const binding of kv) {
+      bindings.push(`  ${binding.binding}: KVNamespace;`);
+    }
+
+    // D1 bindings
+    for (const binding of d1) {
+      bindings.push(`  ${binding.binding}: D1Database;`);
+    }
+
+    // R2 bindings
+    for (const binding of r2) {
+      bindings.push(`  ${binding.binding}: R2Bucket;`);
+    }
+
+    // Durable Objects bindings
+    for (const binding of durableObjects) {
+      bindings.push(`  ${binding.binding}: DurableObjectNamespace;`);
+    }
+
+    // Service bindings
+    for (const binding of services) {
+      bindings.push(`  ${binding.binding}: Fetcher;`);
+    }
+
+    // Queue bindings
+    if (queues?.producers) {
+      for (const producer of queues.producers) {
+        bindings.push(`  ${producer.binding}: Queue;`);
+      }
+    }
+
+    // Analytics bindings
+    for (const binding of analytics) {
+      bindings.push(`  ${binding.binding}: AnalyticsEngineDataset;`);
+    }
+
+    // Environment variables
+    for (const key of Object.keys(vars)) {
+      bindings.push(`  ${key}: string;`);
+    }
+
+    bindings.push('}');
+    bindings.push('');
+    bindings.push('export { Env };');
+
+    return bindings.join('\n');
+  }
+}
+
+// Helper functions to create typed accessors for bindings
+function createKVHelpers(env: any, bindings: CloudflarePagesConfig['kv'] = []) {
+  const helpers: Record<string, any> = {};
+
+  for (const binding of bindings) {
+    if (env?.[binding.binding]) {
+      helpers[binding.binding] = {
+        get: (key: string) => env[binding.binding].get(key),
+        getJSON: <T>(key: string) => env[binding.binding].get<T>(key, 'json'),
+        getText: (key: string) => env[binding.binding].get(key, 'text'),
+        getArrayBuffer: (key: string) => env[binding.binding].get(key, 'arrayBuffer'),
+        put: (key: string, value: string, options?: any) =>
+          env[binding.binding].put(key, value, options),
+        delete: (key: string) => env[binding.binding].delete(key),
+        list: (options?: any) => env[binding.binding].list(options),
+      };
+    }
+  }
+
+  return helpers;
+}
+
+function createD1Helpers(env: any, bindings: CloudflarePagesConfig['d1'] = []) {
+  const helpers: Record<string, any> = {};
+
+  for (const binding of bindings) {
+    if (env?.[binding.binding]) {
+      helpers[binding.binding] = {
+        prepare: (query: string) => env[binding.binding].prepare(query),
+        exec: (query: string) => env[binding.binding].exec(query),
+        batch: (statements: any[]) => env[binding.binding].batch(statements),
+        dump: () => env[binding.binding].dump(),
+      };
+    }
+  }
+
+  return helpers;
+}
+
+function createR2Helpers(env: any, bindings: CloudflarePagesConfig['r2'] = []) {
+  const helpers: Record<string, any> = {};
+
+  for (const binding of bindings) {
+    if (env?.[binding.binding]) {
+      helpers[binding.binding] = {
+        get: (key: string) => env[binding.binding].get(key),
+        put: (key: string, value: any, options?: any) =>
+          env[binding.binding].put(key, value, options),
+        delete: (key: string | string[]) => env[binding.binding].delete(key),
+        list: (options?: any) => env[binding.binding].list(options),
+        head: (key: string) => env[binding.binding].head(key),
+      };
+    }
+  }
+
+  return helpers;
+}
+
+// Cloudflare-specific utilities
+export function getCloudflareEnv<T = any>(): T {
+  return (globalThis as any).env as T;
+}
+
+export function getExecutionContext(): ExecutionContext | undefined {
+  return (globalThis as any).ctx;
+}
+
+export function waitUntil(promise: Promise<any>) {
+  const ctx = getExecutionContext();
+  if (ctx?.waitUntil) {
+    ctx.waitUntil(promise);
+  }
+}
+
+export function passThroughOnException() {
+  const ctx = getExecutionContext();
+  if (ctx?.passThroughOnException) {
+    ctx.passThroughOnException();
+  }
+}
+
+// KV helper
+export function createKVNamespace<T = any>(namespace: KVNamespace) {
+  return {
+    get: (key: string) => namespace.get(key),
+    getJSON: <V = T>(key: string) => namespace.get<V>(key, 'json'),
+    getText: (key: string) => namespace.get(key, 'text'),
+    getArrayBuffer: (key: string) => namespace.get(key, 'arrayBuffer'),
+    getStream: (key: string) => namespace.get(key, 'stream'),
+    put: (key: string, value: string | ArrayBuffer | ReadableStream, options?: KVNamespacePutOptions) =>
+      namespace.put(key, value, options),
+    delete: (key: string) => namespace.delete(key),
+    list: (options?: KVNamespaceListOptions) => namespace.list(options),
+  };
+}
+
+// D1 helper
+export function createD1Database(database: D1Database) {
+  return {
+    prepare: (query: string) => database.prepare(query),
+    exec: (query: string) => database.exec(query),
+    batch: <T = any>(statements: D1PreparedStatement[]) => database.batch<T>(statements),
+    dump: () => database.dump(),
+  };
+}
+
+// R2 helper
+export function createR2Bucket(bucket: R2Bucket) {
+  return {
+    get: (key: string, options?: R2GetOptions) => bucket.get(key, options),
+    put: (key: string, value: ReadableStream | ArrayBuffer | string, options?: R2PutOptions) =>
+      bucket.put(key, value, options),
+    delete: (keys: string | string[]) => bucket.delete(keys),
+    list: (options?: R2ListOptions) => bucket.list(options),
+    head: (key: string) => bucket.head(key),
+  };
+}
+
+// Type definitions for Cloudflare bindings
+export interface KVNamespace {
+  get(key: string, options?: { type: 'text' }): Promise<string | null>;
+  get(key: string, options: { type: 'json' }): Promise<any>;
+  get(key: string, options: { type: 'arrayBuffer' }): Promise<ArrayBuffer | null>;
+  get(key: string, options: { type: 'stream' }): Promise<ReadableStream | null>;
+  get<T>(key: string, type: 'json'): Promise<T | null>;
+  put(key: string, value: string | ArrayBuffer | ReadableStream, options?: KVNamespacePutOptions): Promise<void>;
+  delete(key: string): Promise<void>;
+  list(options?: KVNamespaceListOptions): Promise<KVNamespaceListResult>;
+}
+
+export interface KVNamespacePutOptions {
+  expiration?: number;
+  expirationTtl?: number;
+  metadata?: any;
+}
+
+export interface KVNamespaceListOptions {
+  prefix?: string;
+  limit?: number;
+  cursor?: string;
+}
+
+export interface KVNamespaceListResult {
+  keys: Array<{ name: string; expiration?: number; metadata?: any }>;
+  list_complete: boolean;
+  cursor?: string;
+}
+
+export interface D1Database {
+  prepare(query: string): D1PreparedStatement;
+  exec(query: string): Promise<D1ExecResult>;
+  batch<T = any>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]>;
+  dump(): Promise<ArrayBuffer>;
+}
+
+export interface D1PreparedStatement {
+  bind(...values: any[]): D1PreparedStatement;
+  first<T = any>(colName?: string): Promise<T | null>;
+  run<T = any>(): Promise<D1Result<T>>;
+  all<T = any>(): Promise<D1Result<T>>;
+  raw<T = any>(): Promise<T[]>;
+}
+
+export interface D1Result<T = any> {
+  results?: T[];
+  success: boolean;
+  meta: {
+    duration: number;
+    rows_read: number;
+    rows_written: number;
+  };
+}
+
+export interface D1ExecResult {
+  count: number;
+  duration: number;
+}
+
+export interface R2Bucket {
+  get(key: string, options?: R2GetOptions): Promise<R2ObjectBody | null>;
+  put(key: string, value: ReadableStream | ArrayBuffer | string, options?: R2PutOptions): Promise<R2Object>;
+  delete(keys: string | string[]): Promise<void>;
+  list(options?: R2ListOptions): Promise<R2Objects>;
+  head(key: string): Promise<R2Object | null>;
+}
+
+export interface R2GetOptions {
+  onlyIf?: R2Conditional;
+  range?: R2Range;
+}
+
+export interface R2PutOptions {
+  httpMetadata?: R2HTTPMetadata;
+  customMetadata?: Record<string, string>;
+  md5?: ArrayBuffer | string;
+  sha1?: ArrayBuffer | string;
+  sha256?: ArrayBuffer | string;
+  sha384?: ArrayBuffer | string;
+  sha512?: ArrayBuffer | string;
+}
+
+export interface R2ListOptions {
+  limit?: number;
+  prefix?: string;
+  cursor?: string;
+  delimiter?: string;
+  include?: ('httpMetadata' | 'customMetadata')[];
+}
+
+export interface R2Object {
+  key: string;
+  version: string;
+  size: number;
+  etag: string;
+  httpEtag: string;
+  uploaded: Date;
+  httpMetadata?: R2HTTPMetadata;
+  customMetadata?: Record<string, string>;
+  range?: R2Range;
+  checksums: {
+    md5?: ArrayBuffer;
+    sha1?: ArrayBuffer;
+    sha256?: ArrayBuffer;
+    sha384?: ArrayBuffer;
+    sha512?: ArrayBuffer;
+  };
+}
+
+export interface R2ObjectBody extends R2Object {
+  body: ReadableStream;
+  bodyUsed: boolean;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  text(): Promise<string>;
+  json<T = any>(): Promise<T>;
+  blob(): Promise<Blob>;
+}
+
+export interface R2Objects {
+  objects: R2Object[];
+  truncated: boolean;
+  cursor?: string;
+  delimitedPrefixes: string[];
+}
+
+export interface R2HTTPMetadata {
+  contentType?: string;
+  contentLanguage?: string;
+  contentDisposition?: string;
+  contentEncoding?: string;
+  cacheControl?: string;
+  cacheExpiry?: Date;
+}
+
+export interface R2Conditional {
+  etagMatches?: string;
+  etagDoesNotMatch?: string;
+  uploadedBefore?: Date;
+  uploadedAfter?: Date;
+}
+
+export interface R2Range {
+  offset?: number;
+  length?: number;
+  suffix?: number;
+}
+
+export interface ExecutionContext {
+  waitUntil(promise: Promise<any>): void;
+  passThroughOnException(): void;
+}
+
+export default cloudflarePagesAdapter;

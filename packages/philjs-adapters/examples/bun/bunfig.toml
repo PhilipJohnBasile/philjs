@@ -1,0 +1,11 @@
+[run]
+# Enable hot reload for development
+hot = true
+
+[install]
+# Use npm for compatibility
+registry = "https://registry.npmjs.org"
+
+[test]
+# Test configuration
+coverage = true

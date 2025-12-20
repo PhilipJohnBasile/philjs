@@ -1,0 +1,15 @@
+{
+  "name": "@philjs/bun-example",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot server.ts",
+    "start": "bun run server.ts",
+    "advanced": "bun run --hot server-advanced.ts"
+  },
+  "dependencies": {
+    "philjs-adapters": "workspace:*",
+    "philjs-core": "workspace:*",
+    "philjs-ssr": "workspace:*"
+  }
+}

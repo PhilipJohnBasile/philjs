@@ -1,0 +1,18 @@
+{
+  "name": "@philjs/deno-example",
+  "version": "1.0.0",
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch server.ts",
+    "start": "deno run --allow-net --allow-read server.ts",
+    "advanced": "deno run --allow-net --allow-read --allow-env --unstable-kv server-advanced.ts"
+  },
+  "imports": {
+    "philjs-adapters/": "npm:philjs-adapters@^2.0.0/",
+    "philjs-core": "npm:philjs-core@^2.0.0",
+    "philjs-ssr": "npm:philjs-ssr@^2.0.0"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true
+  }
+}

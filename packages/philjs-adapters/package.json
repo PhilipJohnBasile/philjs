@@ -1,18 +1,74 @@
 {
   "name": "philjs-adapters",
   "version": "2.0.0",
-  "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS",
+  "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS, Bun, Deno",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./vercel": "./dist/vercel/index.js",
-    "./netlify": "./dist/netlify/index.js",
-    "./cloudflare": "./dist/cloudflare/index.js",
-    "./aws": "./dist/aws/index.js",
-    "./node": "./dist/node/index.js",
-    "./static": "./dist/static/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./vercel": {
+      "types": "./dist/vercel/index.d.ts",
+      "import": "./dist/vercel/index.js"
+    },
+    "./netlify": {
+      "types": "./dist/netlify/index.d.ts",
+      "import": "./dist/netlify/index.js"
+    },
+    "./cloudflare": {
+      "types": "./dist/cloudflare/index.d.ts",
+      "import": "./dist/cloudflare/index.js"
+    },
+    "./aws": {
+      "types": "./dist/aws/index.d.ts",
+      "import": "./dist/aws/index.js"
+    },
+    "./node": {
+      "types": "./dist/node/index.d.ts",
+      "import": "./dist/node/index.js"
+    },
+    "./static": {
+      "types": "./dist/static/index.d.ts",
+      "import": "./dist/static/index.js"
+    },
+    "./bun": {
+      "types": "./dist/bun/index.d.ts",
+      "bun": "./dist/bun/index.js",
+      "import": "./dist/bun/index.js"
+    },
+    "./deno": {
+      "types": "./dist/deno/index.d.ts",
+      "deno": "./dist/deno/index.js",
+      "import": "./dist/deno/index.js"
+    },
+    "./runtime-detect": {
+      "types": "./dist/runtime-detect.d.ts",
+      "import": "./dist/runtime-detect.js"
+    },
+    "./cloudflare-pages": {
+      "types": "./dist/cloudflare-pages/index.d.ts",
+      "import": "./dist/cloudflare-pages/index.js"
+    },
+    "./vercel/adapter": {
+      "types": "./dist/vercel/adapter.d.ts",
+      "import": "./dist/vercel/adapter.js"
+    },
+    "./netlify/adapter": {
+      "types": "./dist/netlify/adapter.d.ts",
+      "import": "./dist/netlify/adapter.js"
+    },
+    "./aws-lambda": {
+      "types": "./dist/aws-lambda/index.d.ts",
+      "import": "./dist/aws-lambda/index.js"
+    },
+    "./railway": {
+      "types": "./dist/railway/index.d.ts",
+      "import": "./dist/railway/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -58,7 +114,11 @@
     "netlify",
     "cloudflare",
     "aws",
-    "deployment"
+    "bun",
+    "deno",
+    "deployment",
+    "edge",
+    "serverless"
   ],
   "license": "MIT",
   "sideEffects": false,
