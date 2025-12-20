@@ -141,6 +141,194 @@ function CreatePost() {
 }
 ```
 
+### Partial Prerendering (PPR)
+
+PPR combines the best of static site generation (fast) and server-side rendering (fresh data). Inspired by Next.js 14's Partial Prerendering feature.
+
+```typescript
+import { dynamic, Suspense, renderToStaticShell, streamPPRResponse } from 'philjs-ssr';
+
+// Mark dynamic boundaries - these are streamed at request time
+function Page() {
+  return (
+    <div>
+      {/* Static - prerendered at build time */}
+      <Header />
+      <Sidebar />
+
+      {/* Dynamic - streamed at request time */}
+      <Suspense fallback={<ProfileSkeleton />}>
+        <UserProfile /> {/* Fetches fresh user data */}
+      </Suspense>
+
+      {/* Explicitly dynamic content */}
+      <dynamic fallback={<CommentsSkeleton />} priority={8}>
+        <RealtimeComments />
+      </dynamic>
+    </div>
+  );
+}
+
+// Route configuration for PPR
+export const config = {
+  ppr: true, // Enable PPR for this route
+};
+```
+
+#### Building Static Shells
+
+At build time, static content is prerendered and dynamic boundaries leave placeholder holes:
+
+```typescript
+import { buildPPR, pprVitePlugin } from 'philjs-ssr';
+
+// Build-time: Generate static shells
+await buildPPR({
+  outDir: './dist/ppr',
+  routes: [
+    {
+      path: '/',
+      component: HomePage,
+      config: { ppr: true },
+    },
+    {
+      path: '/blog/[slug]',
+      component: BlogPost,
+      config: { ppr: true },
+      getStaticPaths: async () => ['/blog/hello', '/blog/world'],
+    },
+  ],
+  renderFn: async (path) => renderComponent(path),
+});
+
+// Or use the Vite plugin
+export default defineConfig({
+  plugins: [pprVitePlugin({ routes })],
+});
+```
+
+#### Streaming Dynamic Content
+
+At request time, the static shell is served instantly while dynamic content streams in:
+
+```typescript
+import { streamPPRResponse, loadStaticShell } from 'philjs-ssr';
+
+export async function handleRequest(request: Request) {
+  const url = new URL(request.url);
+
+  // Load pre-built static shell
+  const shell = await loadStaticShell('./dist/ppr', url.pathname);
+
+  if (!shell) {
+    return new Response('Not Found', { status: 404 });
+  }
+
+  // Stream response with PPR
+  return streamPPRResponse(shell, <Page />, request, {
+    onShellSent: () => console.log('Static shell sent'),
+    onBoundaryResolved: (id) => console.log(`Dynamic boundary ${id} resolved`),
+    onComplete: () => console.log('All content streamed'),
+    timeout: 10000, // 10s timeout for dynamic content
+  });
+}
+```
+
+#### Dynamic Boundary Helpers
+
+Various helpers for common dynamic content patterns:
+
+```typescript
+import {
+  dynamic,
+  dynamicPriority,
+  dynamicDeferred,
+  dynamicWithDependencies,
+  dynamicForUser,
+  serverOnly,
+  makeDynamic,
+} from 'philjs-ssr';
+
+// High-priority dynamic content (rendered first)
+<dynamicPriority fallback={<Skeleton />}>
+  <CriticalUserData />
+</dynamicPriority>
+
+// Low-priority/deferred content (rendered last)
+<dynamicDeferred fallback={<Skeleton />}>
+  <Analytics />
+</dynamicDeferred>
+
+// Dynamic with cache dependencies
+const UserCart = dynamicWithDependencies(['user:session', 'cart:items'], {
+  children: <CartContents />,
+  fallback: <CartSkeleton />,
+});
+
+// User-specific dynamic content
+<dynamicForUser fallback={<Skeleton />}>
+  <PersonalizedRecommendations />
+</dynamicForUser>
+
+// Server-only content (never hydrated)
+<serverOnly fallback={<Skeleton />}>
+  <SensitiveData />
+</serverOnly>
+
+// Wrap existing component as dynamic
+const DynamicProfile = makeDynamic(UserProfile, { priority: 8 });
+```
+
+#### Edge Caching
+
+PPR integrates with edge caching for optimal performance:
+
+```typescript
+import {
+  LRUPPRCache,
+  RedisPPRCache,
+  EdgeCacheController,
+  CacheTagManager,
+  generateCacheHeaders,
+} from 'philjs-ssr';
+
+// LRU cache for development/single server
+const cache = new LRUPPRCache({
+  maxSize: 100,
+  maxAge: 3600000, // 1 hour
+});
+
+// Redis cache for production/distributed
+const redisCache = new RedisPPRCache(redisClient, {
+  keyPrefix: 'ppr:',
+  ttl: 3600,
+});
+
+// Edge cache controller with stale-while-revalidate
+const edgeCache = new EdgeCacheController({
+  strategy: 'stale-while-revalidate',
+  cache,
+  staleTTL: 60,
+});
+
+// Get with automatic revalidation
+const { shell, stale } = await edgeCache.get('/blog/post-1', async () => {
+  return await renderToStaticShell(<BlogPost slug="post-1" />, '/blog/post-1');
+});
+
+// Cache tags for invalidation
+const tagManager = new CacheTagManager();
+tagManager.tag('/blog/post-1', ['blog', 'author:john']);
+await tagManager.invalidateTag('author:john', cache); // Invalidates all John's posts
+
+// Generate CDN cache headers
+const headers = generateCacheHeaders(shell, {
+  strategy: 'stale-while-revalidate',
+  maxAge: 3600,
+  staleWhileRevalidate: 60,
+});
+```
+
 ### Static Site Generation (SSG)
 
 Pre-render pages at build time:
@@ -286,6 +474,36 @@ export default defineConfig({
 - `handleRevalidation(request, cache)` - Handle ISR revalidation requests
 - `createRenderingMiddleware(config)` - Create middleware for mixed rendering modes
 
+### Partial Prerendering (PPR)
+
+- `dynamic(props)` - Mark content for dynamic rendering
+- `dynamicPriority(props)` - High-priority dynamic content
+- `dynamicDeferred(props)` - Low-priority dynamic content
+- `dynamicWithDependencies(deps, props)` - Dynamic with cache dependencies
+- `dynamicForUser(props)` - User-specific dynamic content
+- `serverOnly(props)` - Server-only content (never hydrated)
+- `makeDynamic(component, options)` - Wrap component as dynamic
+- `isDynamic(value)` - Check if value is a dynamic component
+- `renderToStaticShell(vnode, path, config)` - Render static shell at build time
+- `generatePPRResponse(shell, vnode, request, options)` - Generate streaming PPR response
+- `streamPPRResponse(shell, vnode, request, options)` - Stream PPR response
+- `buildPPR(config)` - Build PPR static shells for all routes
+- `loadStaticShell(outDir, path)` - Load pre-built static shell
+- `pprVitePlugin(config)` - Vite plugin for PPR builds
+
+### PPR Caching
+
+- `LRUPPRCache` - LRU cache for static shells
+- `RedisPPRCache` - Redis-based distributed cache
+- `MemoryPPRCache` - Simple in-memory cache
+- `FileSystemPPRCache` - File-system based cache
+- `EdgeCacheController` - Controller for edge caching strategies
+- `CacheTagManager` - Manage cache invalidation with tags
+- `generateCacheHeaders(shell, options)` - Generate CDN cache headers
+- `parseConditionalRequest(request)` - Parse conditional request headers
+- `shouldReturn304(shell, conditional)` - Check if 304 should be returned
+- `create304Response(shell)` - Create 304 Not Modified response
+
 ### Security
 
 - `csrfProtection(request, formData)` - Validate CSRF tokens
@@ -340,10 +558,12 @@ pnpm typecheck
 
 ## Features
 
+- **Partial Prerendering (PPR)** - Static shells with dynamic streaming (Next.js 14-inspired)
 - **Streaming SSR** - Progressive HTML streaming with Suspense boundaries
 - **Data loaders** - Type-safe data fetching before rendering
 - **Form actions** - Server-side form handling with redirects
 - **Static generation** - SSG, ISR, and mixed rendering modes
+- **Edge caching** - LRU, Redis, and CDN integration for PPR shells
 - **Resumability** - Hydrate without re-executing server logic
 - **Rate limiting** - Built-in protection against abuse
 - **CSRF protection** - Secure form submissions
@@ -371,12 +591,23 @@ type RequestContext = {
 
 PhilJS SSR supports multiple rendering strategies:
 
+- **PPR** - Partial Prerendering (static shell + dynamic streaming) - **NEW!**
 - **SSG** - Static Site Generation (pre-render at build time)
 - **ISR** - Incremental Static Regeneration (refresh static pages periodically)
 - **SSR** - Server-Side Rendering (render on each request)
 - **CSR** - Client-Side Rendering (hydrate on the client)
 
 Mix and match modes per route for optimal performance.
+
+### PPR vs Other Modes
+
+| Mode | Initial Load | Data Freshness | Use Case |
+|------|-------------|----------------|----------|
+| PPR | Instant (static shell) | Fresh (streamed) | Best of both worlds |
+| SSG | Instant | Stale | Marketing pages, blogs |
+| ISR | Instant | Periodically fresh | E-commerce products |
+| SSR | Slower | Always fresh | Dashboards, admin |
+| CSR | Slower | Fresh | SPAs, highly interactive |
 
 ## License
 

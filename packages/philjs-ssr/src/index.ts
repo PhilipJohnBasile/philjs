@@ -103,3 +103,163 @@ export {
   createWorkerHandler,
 } from "./adapters.js";
 export type { PhilJSServerOptions } from "./adapters.js";
+
+// ============================================================================
+// Partial Prerendering (PPR)
+// ============================================================================
+
+// PPR Core
+export {
+  createPPRContext,
+  renderToStaticShell,
+  renderDynamicContent,
+  renderAllDynamicContent,
+  injectDynamicContent,
+  generatePPRResponse,
+} from "./ppr.js";
+
+// Dynamic Boundary Component
+export {
+  dynamic,
+  isDynamic,
+  createDynamic,
+  dynamicPriority,
+  dynamicDeferred,
+  dynamicWithDependencies,
+  dynamicIf,
+  makeDynamic,
+  getDynamicBoundaryId,
+  serverOnly,
+  dynamicWithRevalidation,
+  dynamicForUser,
+  registerDynamicBoundary,
+  DYNAMIC_SYMBOL,
+} from "./dynamic.js";
+
+// PPR Streaming
+export {
+  PPRStreamController,
+  createPPRStream,
+  streamPPRResponse,
+} from "./ppr-streaming.js";
+
+// PPR Build
+export {
+  PPRBuilder,
+  MemoryPPRCache,
+  FileSystemPPRCache,
+  buildPPR,
+  buildPPRRoute,
+  loadPPRManifest,
+  loadStaticShell,
+  pprVitePlugin,
+  createPPRDevServer,
+  PPR_VERSION,
+} from "./ppr-build.js";
+
+// PPR Caching
+export {
+  LRUPPRCache,
+  RedisPPRCache,
+  EdgeCacheController,
+  CacheTagManager,
+  generateCacheHeaders,
+  parseConditionalRequest,
+  shouldReturn304,
+  create304Response,
+} from "./ppr-cache.js";
+
+// PPR Types
+export type {
+  PPRConfig,
+  EdgeCachingStrategy,
+  DynamicBoundary,
+  StaticShell,
+  DynamicBoundaryMetadata,
+  ShellAssets,
+  PPRContext,
+  RequestTimeData,
+  PPRCache,
+  CacheStats,
+  PPRStreamOptions,
+  BoundaryResolution,
+  PPRBuildConfig,
+  PPRRouteEntry,
+  PPRBuildResult,
+  PPRBuildError,
+  PPRManifest,
+  DynamicProps,
+  PPRSuspenseProps,
+} from "./ppr-types.js";
+
+export {
+  PPR_PLACEHOLDER_START,
+  PPR_PLACEHOLDER_END,
+  PPR_FALLBACK_START,
+  PPR_FALLBACK_END,
+  extractBoundaryId,
+  hashContent,
+} from "./ppr-types.js";
+
+// ============================================================================
+// Resumability (Qwik-style State Serialization)
+// ============================================================================
+
+export {
+  resumable,
+  resumableComputed,
+  serializeState,
+  deserializeState,
+  clearSerializedState,
+  on,
+  serializeListeners,
+  resumeListeners,
+  boundary,
+  serializeBoundaries,
+  getBoundary,
+  createResumableContext,
+  serializeContext,
+  resumeContext,
+  injectResumableState,
+  extractResumableState,
+  getResumabilityStats,
+  logResumabilityInfo,
+  isResuming,
+  hasResumableState,
+  enableResumability,
+} from "./resumability.js";
+
+export type {
+  ResumableState,
+  ResumableListener,
+  ResumableContext,
+  ComponentBoundary,
+  ResumabilityOptions,
+} from "./resumability.js";
+
+// ============================================================================
+// SuperJSON Integration
+// ============================================================================
+
+export {
+  serializeLoaderData,
+  deserializeLoaderData,
+  wrapLoaderWithSuperJSON,
+  wrapActionWithSuperJSON,
+  generateHydrationScript,
+  generateHydrationRestoreScript,
+  extractHydrationData,
+  injectLoaderData,
+  createLoaderDataSerializer,
+  createStreamingLoaderSerializer,
+  createLoaderDataAccessor,
+  superJSONLoader,
+  superJSONAction,
+  hasSuperJSONLoader,
+  getSuperJSONLoaderOptions,
+  SUPERJSON_LOADER,
+} from "./superjson.js";
+
+export type {
+  SSRSuperJSONOptions,
+} from "./superjson.js";
