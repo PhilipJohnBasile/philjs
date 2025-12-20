@@ -1,0 +1,52 @@
+{
+  "name": "create-philjs-plugin",
+  "version": "1.0.0",
+  "description": "Plugin SDK and scaffolding tool for PhilJS plugins",
+  "type": "module",
+  "bin": {
+    "create-philjs-plugin": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "philjs",
+    "plugin",
+    "sdk",
+    "create",
+    "scaffold"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "prompts": "^2.4.2",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^20.11.0",
+    "@types/prompts": "^2.4.9",
+    "vitest": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/create-philjs-plugin"
+  }
+}
