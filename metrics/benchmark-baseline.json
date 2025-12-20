@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-20T21:49:50.457Z",
+  "node_version": "v20.19.6",
+  "platform": "linux",
+  "tests": [],
+  "summary": {
+    "totalTests": 0,
+    "totalTime": 0,
+    "avgTime": 0,
+    "maxTime": 0,
+    "minTime": 0
+  }
+}
