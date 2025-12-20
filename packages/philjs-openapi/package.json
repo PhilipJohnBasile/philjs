@@ -1,0 +1,64 @@
+{
+  "name": "philjs-openapi",
+  "version": "2.0.0",
+  "description": "Automatic OpenAPI spec generation for PhilJS APIs - inspired by Elysia",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "philjs-openapi": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./swagger-ui": "./dist/swagger-ui.js",
+    "./cli": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "philjs-api": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "zod": "^3.22.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "philjs",
+    "openapi",
+    "swagger",
+    "api",
+    "documentation",
+    "schema",
+    "zod",
+    "typescript"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-openapi"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
+}
