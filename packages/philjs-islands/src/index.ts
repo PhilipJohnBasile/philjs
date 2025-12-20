@@ -1,6 +1,10 @@
 /**
- * Islands architecture for selective hydration.
+ * Islands architecture for selective hydration with multi-framework support.
  */
+
+// ============================================================================
+// Legacy Island API (backwards compatible)
+// ============================================================================
 
 export { registerIsland, loadIsland, initIslands, Island } from "./island-loader.js";
 export type { IslandModule, IslandManifest } from "./island-loader.js";
@@ -63,3 +67,101 @@ export function hydrateIsland(element: HTMLElement): void {
     }
   }
 }
+
+// ============================================================================
+// Multi-Framework Islands (New API)
+// ============================================================================
+
+export {
+  Island as MultiFrameworkIsland,
+  hydrateMultiFrameworkIsland,
+  hydrateAllMultiFrameworkIslands,
+  unmountIsland,
+  getIsland,
+  getAllIslands,
+  registerIslandComponent,
+  initMultiFrameworkIslands
+} from "./multi-framework.js";
+
+// ============================================================================
+// Framework Adapters
+// ============================================================================
+
+export {
+  // Adapter registry
+  getAdapter,
+  detectFramework,
+  registerAdapter,
+  isFrameworkSupported,
+  getSupportedFrameworks,
+  FRAMEWORK_ADAPTERS,
+
+  // Individual adapters
+  reactAdapter,
+  vueAdapter,
+  svelteAdapter,
+  preactAdapter,
+  solidAdapter,
+
+  // Adapter utilities
+  createReactIsland,
+  createVueIsland,
+  updateSvelteProps,
+  getSvelteInstance,
+  createSvelteStoreBridge,
+  createPreactIsland,
+  createPreactSignal,
+  createSolidIsland,
+  createSolidStore,
+  createSolidResource,
+  createSolidContext
+} from "./adapters/index.js";
+
+export type {
+  FrameworkAdapter,
+  HydrationStrategy,
+  IslandProps,
+  IslandMetadata,
+  HydrationOptions,
+  IslandRegistration,
+  MultiFrameworkIslandConfig,
+  ReactComponent,
+  ReactModule,
+  VueComponent,
+  VueModule,
+  SvelteComponent,
+  SvelteModule,
+  PreactComponent,
+  PreactModule,
+  SolidComponent,
+  SolidModule
+} from "./adapters/index.js";
+
+// ============================================================================
+// Framework Bridge (Inter-Framework Communication)
+// ============================================================================
+
+export {
+  createSharedState,
+  getSharedState,
+  removeSharedState,
+  eventBus,
+  PropsNormalizer,
+  createIslandBridge,
+  frameworkHooks,
+  debug as bridgeDebug
+} from "./framework-bridge.js";
+
+// ============================================================================
+// Vite Plugin
+// ============================================================================
+
+export {
+  viteMultiFramework,
+  detectIslandComponents,
+  createFrameworkOptimizations
+} from "./vite-multi-framework.js";
+
+export type {
+  ViteMultiFrameworkOptions
+} from "./vite-multi-framework.js";

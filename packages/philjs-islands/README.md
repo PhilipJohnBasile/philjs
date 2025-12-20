@@ -1,11 +1,43 @@
 # philjs-islands
 
-Islands architecture with selective hydration and server-side component caching for PhilJS.
+Islands architecture with **multi-framework support**, selective hydration, and server-side component caching for PhilJS.
+
+## Features
+
+- **Multi-Framework Islands**: Use React, Vue, Svelte, Preact, and Solid components on the same page (Astro-style)
+- **Selective Hydration**: Only hydrate interactive components when needed
+- **Multiple Strategies**: Immediate, visible, idle, interaction, and media-based hydration
+- **Framework Auto-Detection**: Automatically detect component frameworks
+- **Shared State**: Cross-framework state management with event bus
+- **Code Splitting**: Automatic framework-specific code splitting via Vite plugin
+- **Server Islands**: Cache server-rendered components independently
+- **TypeScript**: Full type safety across all frameworks
 
 ## Installation
 
 ```bash
 pnpm add philjs-islands
+```
+
+### Framework Dependencies (Optional)
+
+Install only the frameworks you plan to use:
+
+```bash
+# React
+pnpm add react react-dom
+
+# Vue
+pnpm add vue
+
+# Svelte
+pnpm add svelte
+
+# Preact
+pnpm add preact
+
+# Solid
+pnpm add solid-js
 ```
 
 ## Usage
@@ -250,10 +282,77 @@ resetServerIslandMetrics();
 - `resetServerIslandMetrics()` - Reset metrics counters
 - `getIslandCacheHeaders(id)` - Get HTTP cache headers for island
 
+## Multi-Framework Islands
+
+For complete multi-framework documentation, see [MULTI-FRAMEWORK.md](./MULTI-FRAMEWORK.md).
+
+### Quick Example
+
+```tsx
+import { MultiFrameworkIsland, registerIslandComponent } from 'philjs-islands';
+
+// Register components from different frameworks
+registerIslandComponent('react', 'Counter', () => import('./islands/Counter.tsx'));
+registerIslandComponent('vue', 'TodoList', () => import('./islands/TodoList.vue'));
+registerIslandComponent('svelte', 'Timer', () => import('./islands/Timer.svelte'));
+
+function App() {
+  return (
+    <div>
+      {/* React Island */}
+      <MultiFrameworkIsland
+        framework="react"
+        component="Counter"
+        props={{ initial: 0 }}
+        hydration={{ strategy: 'visible' }}
+      />
+
+      {/* Vue Island */}
+      <MultiFrameworkIsland
+        framework="vue"
+        component="TodoList"
+        props={{ items: [] }}
+        hydration={{ strategy: 'idle' }}
+      />
+
+      {/* Svelte Island */}
+      <MultiFrameworkIsland
+        framework="svelte"
+        component="Timer"
+        props={{ autoStart: true }}
+        hydration={{ strategy: 'immediate' }}
+      />
+    </div>
+  );
+}
+```
+
+### Shared State Across Frameworks
+
+```typescript
+import { createSharedState, eventBus } from 'philjs-islands';
+
+// Create shared state accessible to all frameworks
+const globalState = createSharedState('app', {
+  user: { name: 'Guest' },
+  theme: 'light'
+});
+
+// Any island can update it
+globalState.updateState({ theme: 'dark' });
+
+// Cross-framework events
+eventBus.emit('user-logged-in', { userId: 123 });
+eventBus.on('user-logged-in', (data) => {
+  console.log('User:', data.userId);
+});
+```
+
 ## Examples
 
 See islands in action in these example apps:
 
+- [Multi-Framework Demo](./examples/multi-framework/) - React, Vue, and Svelte on one page
 - [Demo App](../../examples/demo-app) - Full-featured demo with islands, SSR, and routing
 
 ## Development
@@ -269,18 +368,48 @@ pnpm test
 pnpm typecheck
 ```
 
-## Features
+## Core Features
 
-- **Selective hydration** - Only hydrate interactive components
-- **Lazy loading** - Load island code on-demand
-- **Hydration strategies** - Control when islands hydrate (visible, idle, immediate)
-- **Server islands** - Cache server-rendered components independently
-- **Cache invalidation** - Tag-based and ID-based cache clearing
+### Multi-Framework Support
+- **React** - Full React 18+ support with concurrent features
+- **Vue** - Vue 3 Composition API and Vue 2 compatibility
+- **Svelte** - Svelte 4 and 5 support
+- **Preact** - Lightweight React alternative
+- **Solid** - Fine-grained reactivity
+- **Auto-detection** - Automatically detect component frameworks
+- **Custom adapters** - Add support for any framework
+
+### Selective Hydration
+- **Immediate** - Hydrate right away for critical components
+- **Visible** - Hydrate when scrolled into viewport (IntersectionObserver)
+- **Idle** - Hydrate when browser is idle (requestIdleCallback)
+- **Interaction** - Hydrate on user interaction (click, focus, etc.)
+- **Media** - Hydrate based on media queries
+- **Manual** - Full control over hydration timing
+
+### Cross-Framework Features
+- **Shared State** - State management across different frameworks
+- **Event Bus** - Publish/subscribe events between islands
+- **Props Normalization** - Automatic props conversion between frameworks
+- **Island Bridges** - Typed communication channels
+
+### Build Optimization
+- **Vite Plugin** - Automatic framework detection and code splitting
+- **Code Splitting** - Separate bundles per framework
+- **Tree Shaking** - Only bundle frameworks you use
+- **Manifest Generation** - Build-time optimization metadata
+
+### Server Islands
+- **Cache server-rendered components** - Independent caching per island
+- **Tag-based invalidation** - Invalidate related islands together
 - **Custom backends** - Redis, KV, or any cache store
-- **Prefetching** - Warm up caches before islands are needed
 - **Metrics** - Track cache hit rates and performance
+
+### Developer Experience
+- **TypeScript** - Full type safety across all frameworks
 - **Zero overhead** - Static content ships zero JavaScript
-- **Framework agnostic** - Works with any component model
+- **Hot Module Replacement** - Fast development with HMR
+- **Debug Tools** - Monitor islands and state in development
 
 ## Island Manifest
 
