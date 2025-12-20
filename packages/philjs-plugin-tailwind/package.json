@@ -1,0 +1,81 @@
+{
+  "name": "philjs-plugin-tailwind",
+  "version": "2.0.0",
+  "description": "Automatic Tailwind CSS setup and optimization for PhilJS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
+    "./content-detector": {
+      "types": "./dist/content-detector.d.ts",
+      "import": "./dist/content-detector.js"
+    },
+    "./theme-generator": {
+      "types": "./dist/theme-generator.d.ts",
+      "import": "./dist/theme-generator.js"
+    }
+  },
+  "files": [
+    "dist",
+    "templates",
+    "examples",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "echo 'Lint philjs-plugin-tailwind'",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "philjs",
+    "plugin",
+    "tailwind",
+    "tailwindcss",
+    "css",
+    "styling",
+    "design-system",
+    "utility-first",
+    "jit",
+    "dark-mode"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "philjs-core": "workspace:*",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-plugin-tailwind"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://philjs.dev/plugins/tailwind",
+  "sideEffects": false
+}

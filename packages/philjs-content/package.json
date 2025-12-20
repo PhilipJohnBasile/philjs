@@ -80,7 +80,7 @@
     "vite": "^6.0.5"
   },
   "peerDependencies": {
-    "philjs-core": "^2.0.0",
+    "philjs-core": "workspace:*",
     "vite": "^5.0.0 || ^6.0.0"
   },
   "peerDependenciesMeta": {
