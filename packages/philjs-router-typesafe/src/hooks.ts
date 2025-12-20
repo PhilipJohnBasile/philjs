@@ -1,0 +1,464 @@
+/**
+ * Hooks for type-safe router access
+ */
+
+import type { z } from "zod";
+import type {
+  RouteDefinition,
+  PathParams,
+  NavigateFn,
+  RouterLocation,
+  MatchedRoute,
+  NavigateOptions,
+} from "./types.js";
+import { getRouterContext } from "./context.js";
+import { buildPath, serializeSearchParams, matchRoutes } from "./route.js";
+
+/**
+ * Hook to get the current router context.
+ * Provides access to navigation, location, and matched routes.
+ *
+ * @example
+ * ```typescript
+ * function MyComponent() {
+ *   const { navigate, location, isNavigating } = useRouter();
+ *
+ *   return (
+ *     <div>
+ *       <p>Current path: {location.pathname}</p>
+ *       <button onClick={() => navigate('/about')}>Go to About</button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function useRouter() {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useRouter must be used within a Router");
+  }
+
+  return {
+    navigate: context.navigate,
+    location: context.location,
+    matches: context.matches,
+    currentMatch: context.currentMatch,
+    isNavigating: context.isNavigating,
+  };
+}
+
+/**
+ * Hook to get typed route params.
+ * When used without a route argument, returns params from the current matched route.
+ *
+ * @example
+ * ```typescript
+ * // Get params from current route (untyped)
+ * const params = useParams();
+ *
+ * // Get typed params from a specific route
+ * const { userId } = useParams(userRoute);
+ * ```
+ */
+export function useParams<TPath extends string>(
+  route?: RouteDefinition<TPath, z.ZodType | undefined, unknown>
+): PathParams<TPath> {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useParams must be used within a Router");
+  }
+
+  if (!context.currentMatch) {
+    throw new Error("[philjs-router-typesafe] No route matched");
+  }
+
+  // If a specific route is provided, verify it matches
+  if (route && context.currentMatch.route.id !== route.id) {
+    // Find the matching route in the matches chain
+    const matchingRoute = context.matches.find((m) => m.route.id === route.id);
+    if (!matchingRoute) {
+      throw new Error(
+        `[philjs-router-typesafe] Route "${route.path}" is not in the current matches`
+      );
+    }
+    return matchingRoute.params as PathParams<TPath>;
+  }
+
+  return context.currentMatch.params as PathParams<TPath>;
+}
+
+/**
+ * Hook to get typed search params.
+ * When used with a route that has validateSearch, returns validated and typed params.
+ *
+ * @example
+ * ```typescript
+ * // Get search params from current route (untyped)
+ * const search = useSearch();
+ *
+ * // Get typed and validated search params from a specific route
+ * const { tab, page } = useSearch(userRoute);
+ * ```
+ */
+export function useSearch<
+  TPath extends string,
+  TSearchSchema extends z.ZodType | undefined = undefined
+>(
+  route?: RouteDefinition<TPath, TSearchSchema, unknown>
+): TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, string> {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useSearch must be used within a Router");
+  }
+
+  if (!context.currentMatch) {
+    throw new Error("[philjs-router-typesafe] No route matched");
+  }
+
+  // If a specific route is provided, verify it matches
+  if (route && context.currentMatch.route.id !== route.id) {
+    const matchingRoute = context.matches.find((m) => m.route.id === route.id);
+    if (!matchingRoute) {
+      throw new Error(
+        `[philjs-router-typesafe] Route "${route.path}" is not in the current matches`
+      );
+    }
+    return matchingRoute.search as TSearchSchema extends z.ZodType
+      ? z.infer<TSearchSchema>
+      : Record<string, string>;
+  }
+
+  return context.currentMatch.search as TSearchSchema extends z.ZodType
+    ? z.infer<TSearchSchema>
+    : Record<string, string>;
+}
+
+/**
+ * Hook to get loader data from a route.
+ *
+ * @example
+ * ```typescript
+ * // Get loader data from current route
+ * const data = useLoaderData();
+ *
+ * // Get typed loader data from a specific route
+ * const user = useLoaderData(userRoute);
+ * ```
+ */
+export function useLoaderData<
+  TPath extends string,
+  TSearchSchema extends z.ZodType | undefined,
+  TLoaderData
+>(
+  route?: RouteDefinition<TPath, TSearchSchema, TLoaderData>
+): TLoaderData {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useLoaderData must be used within a Router");
+  }
+
+  if (!context.currentMatch) {
+    throw new Error("[philjs-router-typesafe] No route matched");
+  }
+
+  // If a specific route is provided, verify it matches
+  if (route && context.currentMatch.route.id !== route.id) {
+    const matchingRoute = context.matches.find((m) => m.route.id === route.id);
+    if (!matchingRoute) {
+      throw new Error(
+        `[philjs-router-typesafe] Route "${route.path}" is not in the current matches`
+      );
+    }
+    return matchingRoute.loaderData as TLoaderData;
+  }
+
+  return context.currentMatch.loaderData as TLoaderData;
+}
+
+/**
+ * Hook to get the current location.
+ *
+ * @example
+ * ```typescript
+ * function BreadCrumb() {
+ *   const location = useLocation();
+ *   return <span>Current: {location.pathname}</span>;
+ * }
+ * ```
+ */
+export function useLocation(): RouterLocation {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useLocation must be used within a Router");
+  }
+  return context.location;
+}
+
+/**
+ * Hook to get the navigate function.
+ *
+ * @example
+ * ```typescript
+ * function NavigateButton() {
+ *   const navigate = useNavigate();
+ *   return <button onClick={() => navigate('/about')}>About</button>;
+ * }
+ * ```
+ */
+export function useNavigate(): NavigateFn {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useNavigate must be used within a Router");
+  }
+  return context.navigate;
+}
+
+/**
+ * Hook to create a type-safe navigate function for a specific route.
+ *
+ * @example
+ * ```typescript
+ * function UserButton({ userId }: { userId: string }) {
+ *   const navigateToUser = useNavigateTyped(userRoute);
+ *
+ *   return (
+ *     <button onClick={() => navigateToUser({ params: { userId }, search: { tab: 'posts' } })}>
+ *       View User
+ *     </button>
+ *   );
+ * }
+ * ```
+ */
+export function useNavigateTyped<
+  TPath extends string,
+  TSearchSchema extends z.ZodType | undefined
+>(
+  route: RouteDefinition<TPath, TSearchSchema, unknown>
+): (options: {
+  params: PathParams<TPath>;
+  search?: TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : never;
+  hash?: string;
+  replace?: boolean;
+  state?: unknown;
+}) => Promise<void> {
+  const navigate = useNavigate();
+
+  return async (options) => {
+    const path = buildPath(route.fullPath as TPath, options.params);
+    const search = options.search
+      ? serializeSearchParams(options.search, route.validateSearch as TSearchSchema)
+      : "";
+    const hash = options.hash ? `#${options.hash}` : "";
+    const fullPath = `${path}${search}${hash}`;
+
+    await navigate(fullPath, {
+      replace: options.replace,
+      state: options.state,
+    });
+  };
+}
+
+/**
+ * Hook to check if a route matches the current location.
+ *
+ * @example
+ * ```typescript
+ * function NavLink({ route, children }) {
+ *   const isActive = useMatchRoute(route);
+ *   return <a class={isActive ? 'active' : ''}>{children}</a>;
+ * }
+ * ```
+ */
+export function useMatchRoute<TPath extends string>(
+  route: RouteDefinition<TPath, z.ZodType | undefined, unknown>,
+  options?: { exact?: boolean }
+): boolean {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useMatchRoute must be used within a Router");
+  }
+
+  const { pathname } = context.location;
+  const exact = options?.exact ?? true;
+
+  if (exact) {
+    return context.matches.some((m) => m.route.id === route.id);
+  }
+
+  // For non-exact matching, check if the current path starts with the route path
+  const routePattern = route.fullPath.replace(/\$[^/]+/g, "[^/]+");
+  const regex = new RegExp(`^${routePattern}`);
+  return regex.test(pathname);
+}
+
+/**
+ * Hook to get all matched routes in the current route hierarchy.
+ *
+ * @example
+ * ```typescript
+ * function Breadcrumbs() {
+ *   const matches = useMatches();
+ *   return (
+ *     <nav>
+ *       {matches.map((match) => (
+ *         <span key={match.route.id}>{match.route.meta?.title}</span>
+ *       ))}
+ *     </nav>
+ *   );
+ * }
+ * ```
+ */
+export function useMatches(): MatchedRoute[] {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useMatches must be used within a Router");
+  }
+  return context.matches;
+}
+
+/**
+ * Hook to block navigation (for unsaved changes warnings, etc.)
+ *
+ * @example
+ * ```typescript
+ * function FormWithUnsavedChanges() {
+ *   const [isDirty, setIsDirty] = useState(false);
+ *
+ *   useBlocker(
+ *     isDirty,
+ *     'You have unsaved changes. Are you sure you want to leave?'
+ *   );
+ *
+ *   return <form>...</form>;
+ * }
+ * ```
+ */
+export function useBlocker(
+  shouldBlock: boolean,
+  message?: string
+): { isBlocked: boolean; proceed: () => void; reset: () => void } {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useBlocker must be used within a Router");
+  }
+
+  // This is a simplified implementation
+  // A full implementation would integrate with the router's navigation system
+  let isBlocked = false;
+
+  if (typeof window !== "undefined" && shouldBlock) {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (shouldBlock) {
+        event.preventDefault();
+        event.returnValue = message ?? "Are you sure you want to leave?";
+        isBlocked = true;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Cleanup would be handled by the component lifecycle
+  }
+
+  return {
+    isBlocked,
+    proceed: () => {
+      isBlocked = false;
+    },
+    reset: () => {
+      isBlocked = false;
+    },
+  };
+}
+
+/**
+ * Hook to preload a route's data.
+ *
+ * @example
+ * ```typescript
+ * function UserCard({ userId }) {
+ *   const preload = usePreloadRoute(userRoute);
+ *
+ *   return (
+ *     <div
+ *       onMouseEnter={() => preload({ params: { userId } })}
+ *     >
+ *       {userId}
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
+export function usePreloadRoute<
+  TPath extends string,
+  TSearchSchema extends z.ZodType | undefined,
+  TLoaderData
+>(
+  route: RouteDefinition<TPath, TSearchSchema, TLoaderData>
+): (options: {
+  params: PathParams<TPath>;
+  search?: TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : never;
+}) => Promise<TLoaderData | undefined> {
+  return async (options) => {
+    if (!route.loader) {
+      return undefined;
+    }
+
+    const abortController = new AbortController();
+    const search = options.search ?? ({} as TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>);
+
+    const path = buildPath(route.fullPath as TPath, options.params);
+
+    try {
+      const result = await route.loader({
+        params: options.params,
+        search: search as TSearchSchema extends z.ZodType ? z.infer<TSearchSchema> : Record<string, never>,
+        request: new Request(path),
+        abortController,
+      });
+      return result;
+    } catch (error) {
+      console.error("[philjs-router-typesafe] Preload failed:", error);
+      return undefined;
+    }
+  };
+}
+
+/**
+ * Hook to get loading/pending state of the router.
+ *
+ * @example
+ * ```typescript
+ * function LoadingIndicator() {
+ *   const isPending = useIsPending();
+ *   return isPending ? <Spinner /> : null;
+ * }
+ * ```
+ */
+export function useIsPending(): boolean {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useIsPending must be used within a Router");
+  }
+  return context.isNavigating;
+}
+
+/**
+ * Hook to get the route error if one occurred.
+ *
+ * @example
+ * ```typescript
+ * function RouteError() {
+ *   const error = useRouteError();
+ *   if (!error) return null;
+ *   return <div>Error: {error.message}</div>;
+ * }
+ * ```
+ */
+export function useRouteError(): Error | undefined {
+  const context = getRouterContext();
+  if (!context) {
+    throw new Error("[philjs-router-typesafe] useRouteError must be used within a Router");
+  }
+  return context.currentMatch?.error;
+}

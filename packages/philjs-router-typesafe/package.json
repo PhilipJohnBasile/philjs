@@ -1,0 +1,56 @@
+{
+  "name": "philjs-router-typesafe",
+  "version": "2.0.0",
+  "description": "Type-safe router for PhilJS inspired by TanStack Router with fully typed params and Zod validation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:types": "tsc --noEmit",
+    "lint": "echo 'Lint philjs-router-typesafe'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "zod": "^3.20.0"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-router-typesafe"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "routing",
+    "navigation",
+    "type-safe",
+    "typescript",
+    "tanstack",
+    "zod"
+  ]
+}
