@@ -1,0 +1,52 @@
+/**
+ * {{pascalName}}Page - Page component
+ */
+
+import { JSX } from 'philjs-core';
+import { Head, Title, Meta } from 'philjs-meta';
+{{#if hasLoader}}
+import { useLoaderData } from 'philjs-router';
+import type { loader } from './loader';
+{{/if}}
+{{#if isDynamic}}
+import { useParams } from 'philjs-router';
+{{/if}}
+
+{{#if typescript}}
+export interface {{pascalName}}PageProps {
+  // Page props
+}
+
+{{#if isDynamic}}
+interface PageParams {
+{{#each routeParams}}
+  {{this}}: string;
+{{/each}}
+}
+{{/if}}
+{{/if}}
+
+export function {{pascalName}}Page() {
+{{#if hasLoader}}
+  const data = useLoaderData<typeof loader>();
+{{/if}}
+{{#if isDynamic}}
+  const params = useParams{{#if typescript}}<PageParams>{{/if}}();
+{{/if}}
+
+  return (
+    <>
+      <Head>
+        <Title>{{pascalName}}</Title>
+        <Meta name="description" content="{{pascalName}} page" />
+      </Head>
+
+      <main className="{{kebabName}}-page">
+        <h1>{{pascalName}}</h1>
+        {/* Page content */}
+      </main>
+    </>
+  );
+}
+
+export default {{pascalName}}Page;

@@ -10,19 +10,18 @@ import { startDevServer } from "./dev-server.js";
 import { buildProduction } from "./build.js";
 import { analyze } from "./analyze.js";
 import { generateTypes } from "./generate-types.js";
-import { generateComponent, generateRoute, generatePage, generateHook, generateStore } from "./generators.js";
 import { createProject } from "./create.js";
 import { addFeature } from "./add.js";
 import { migrateProject } from "./migrate.js";
+import { registerGenerateCommand } from "./commands/generate.js";
+import { registerStorybookCommand } from "./commands/storybook.js";
 
 const program = new Command();
 
 program
   .name("philjs")
   .description("PhilJS - The framework that thinks ahead")
-  .version("0.1.0");
-
-// Dev server command
+  .version("2.0.0");
 
 // Create project command
 program
@@ -70,7 +69,7 @@ program
   .option("--host <host>", "Host to bind to", "localhost")
   .option("--open", "Open browser automatically", false)
   .action(async (options) => {
-    console.log(pc.cyan("\n⚡ PhilJS Dev Server\n"));
+    console.log(pc.cyan("\nPhilJS Dev Server\n"));
 
     try {
       await startDevServer({
@@ -92,7 +91,7 @@ program
   .option("--analyze", "Analyze bundle size", false)
   .option("--outDir <dir>", "Output directory", "dist")
   .action(async (options) => {
-    console.log(pc.cyan("\n🔨 Building PhilJS app...\n"));
+    console.log(pc.cyan("\nBuilding PhilJS app...\n"));
 
     try {
       await buildProduction({
@@ -101,7 +100,7 @@ program
         outDir: options.outDir,
       });
 
-      console.log(pc.green("\n✓ Build complete!\n"));
+      console.log(pc.green("\nBuild complete!\n"));
     } catch (error) {
       console.error(pc.red("Build failed:"), error);
       process.exit(1);
@@ -113,7 +112,7 @@ program
   .command("analyze")
   .description("Analyze bundle size and performance")
   .action(async () => {
-    console.log(pc.cyan("\n📊 Analyzing PhilJS app...\n"));
+    console.log(pc.cyan("\nAnalyzing PhilJS app...\n"));
 
     try {
       await analyze();
@@ -128,11 +127,11 @@ program
   .command("generate-types")
   .description("Generate TypeScript types for routes")
   .action(async () => {
-    console.log(pc.cyan("\n📝 Generating route types...\n"));
+    console.log(pc.cyan("\nGenerating route types...\n"));
 
     try {
       await generateTypes();
-      console.log(pc.green("\n✓ Types generated!\n"));
+      console.log(pc.green("\nTypes generated!\n"));
     } catch (error) {
       console.error(pc.red("Type generation failed:"), error);
       process.exit(1);
@@ -165,7 +164,7 @@ program
   .description("Preview production build locally")
   .option("-p, --port <port>", "Port to run preview server on", "4173")
   .action(async (options) => {
-    console.log(pc.cyan("\n👀 Starting preview server...\n"));
+    console.log(pc.cyan("\nStarting preview server...\n"));
 
     const { createServer } = await import("vite");
     const server = await createServer({
@@ -182,132 +181,13 @@ program
     server.printUrls();
   });
 
-// Generate command group
-const generate = program
-  .command("generate")
-  .alias("g")
-  .description("Generate components, routes, pages, hooks, and stores");
+// Register the enhanced generate command with all scaffolding features
+// This adds: generate component, page, api, model, scaffold, hook, context, route, store
+// Supports interactive mode, configuration, and Handlebars templates
+registerGenerateCommand(program);
 
-// Generate component
-generate
-  .command("component <name>")
-  .alias("c")
-  .description("Generate a new component")
-  .option("-d, --directory <dir>", "Target directory", "src/components")
-  .option("--no-test", "Skip test file generation")
-  .option("--with-styles", "Generate CSS module file")
-  .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
-    console.log(pc.cyan(`\n📦 Generating component: ${name}\n`));
-    try {
-      await generateComponent({
-        name,
-        directory: options.directory,
-        typescript: !options.js,
-        withTest: options.test !== false,
-        withStyles: options.withStyles,
-      });
-      console.log(pc.green(`\n✓ Component ${name} created!\n`));
-    } catch (error) {
-      console.error(pc.red("Failed to generate component:"), error);
-      process.exit(1);
-    }
-  });
-
-// Generate route
-generate
-  .command("route <name>")
-  .alias("r")
-  .description("Generate a new route with loader")
-  .option("-d, --directory <dir>", "Target directory", "src/routes")
-  .option("--no-test", "Skip test file generation")
-  .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
-    console.log(pc.cyan(`\n🛤️  Generating route: ${name}\n`));
-    try {
-      await generateRoute({
-        name,
-        directory: options.directory,
-        typescript: !options.js,
-        withTest: options.test !== false,
-      });
-      console.log(pc.green(`\n✓ Route ${name} created!\n`));
-    } catch (error) {
-      console.error(pc.red("Failed to generate route:"), error);
-      process.exit(1);
-    }
-  });
-
-// Generate page
-generate
-  .command("page <name>")
-  .alias("p")
-  .description("Generate a new page component with SEO")
-  .option("-d, --directory <dir>", "Target directory", "src/pages")
-  .option("--no-test", "Skip test file generation")
-  .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
-    console.log(pc.cyan(`\n📄 Generating page: ${name}\n`));
-    try {
-      await generatePage({
-        name,
-        directory: options.directory,
-        typescript: !options.js,
-        withTest: options.test !== false,
-      });
-      console.log(pc.green(`\n✓ Page ${name} created!\n`));
-    } catch (error) {
-      console.error(pc.red("Failed to generate page:"), error);
-      process.exit(1);
-    }
-  });
-
-// Generate hook
-generate
-  .command("hook <name>")
-  .alias("h")
-  .description("Generate a custom hook")
-  .option("-d, --directory <dir>", "Target directory", "src/hooks")
-  .option("--no-test", "Skip test file generation")
-  .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
-    console.log(pc.cyan(`\n🪝 Generating hook: ${name}\n`));
-    try {
-      await generateHook({
-        name,
-        directory: options.directory,
-        typescript: !options.js,
-        withTest: options.test !== false,
-      });
-      console.log(pc.green(`\n✓ Hook ${name} created!\n`));
-    } catch (error) {
-      console.error(pc.red("Failed to generate hook:"), error);
-      process.exit(1);
-    }
-  });
-
-// Generate store
-generate
-  .command("store <name>")
-  .alias("s")
-  .description("Generate a state store")
-  .option("-d, --directory <dir>", "Target directory", "src/stores")
-  .option("--no-test", "Skip test file generation")
-  .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
-    console.log(pc.cyan(`\n🗃️  Generating store: ${name}\n`));
-    try {
-      await generateStore({
-        name,
-        directory: options.directory,
-        typescript: !options.js,
-        withTest: options.test !== false,
-      });
-      console.log(pc.green(`\n✓ Store ${name} created!\n`));
-    } catch (error) {
-      console.error(pc.red("Failed to generate store:"), error);
-      process.exit(1);
-    }
-  });
+// Register Storybook commands
+// This adds: storybook init, dev, build, generate
+registerStorybookCommand(program);
 
 program.parse();

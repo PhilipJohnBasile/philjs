@@ -21,6 +21,21 @@ export type LoadingStrategy = 'lazy' | 'eager' | 'auto';
 
 export type PlaceholderType = 'blur' | 'color' | 'none';
 
+/**
+ * Art direction source for different breakpoints
+ */
+export interface ArtDirectionSource {
+  media: string;
+  src: string;
+  width?: number;
+  height?: number;
+}
+
+/**
+ * Loading animation types
+ */
+export type LoadingAnimation = 'fade' | 'blur' | 'scale' | 'none';
+
 export interface ImageProps {
   // Required
   src: string;
@@ -29,6 +44,10 @@ export interface ImageProps {
   // Dimensions
   width?: number;
   height?: number;
+
+  // Aspect ratio locking
+  aspectRatio?: number | string; // e.g., 16/9 or "16:9"
+  maintainAspectRatio?: boolean;
 
   // Quality
   quality?: number; // 1-100
@@ -40,14 +59,23 @@ export interface ImageProps {
   sizes?: string;
   srcSet?: string;
 
+  // Art direction - different images for different breakpoints
+  artDirection?: ArtDirectionSource[];
+
   // Loading
   loading?: LoadingStrategy;
   priority?: boolean;
+  fetchPriority?: 'high' | 'low' | 'auto'; // Priority hints for LCP
 
   // Placeholder
   placeholder?: PlaceholderType;
   blurDataURL?: string;
   placeholderColor?: string;
+  blurHash?: string;
+
+  // Loading animation
+  loadingAnimation?: LoadingAnimation;
+  animationDuration?: number;
 
   // Fit and position
   fit?: ImageFit;
@@ -66,6 +94,9 @@ export interface ImageProps {
   crossOrigin?: 'anonymous' | 'use-credentials';
   referrerPolicy?: string;
   decoding?: 'async' | 'auto' | 'sync';
+
+  // Service
+  service?: string; // Image service to use
 }
 
 export interface ImageOptimizationConfig {

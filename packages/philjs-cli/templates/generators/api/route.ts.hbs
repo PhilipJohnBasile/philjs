@@ -1,0 +1,127 @@
+/**
+ * API Route: /{{kebabName}}
+ */
+
+{{#if typescript}}
+import type { {{resourcePascal}}Data, Create{{resourcePascal}}Input, Update{{resourcePascal}}Input } from './types';
+{{/if}}
+
+{{#if hasGet}}
+/**
+ * GET /{{kebabName}}{{#if isDynamic}}/:{{routeParams.[0]}}{{/if}}
+ * {{#if isDynamic}}Fetch a single {{resourceName}} by ID{{else}}Fetch all {{resourceName}}s{{/if}}
+ */
+export async function GET(request{{#if typescript}}: Request{{/if}}{{#if isDynamic}}, params{{#if typescript}}: { {{#each routeParams}}{{this}}: string{{#unless @last}}; {{/unless}}{{/each}} }{{/if}}{{/if}}) {
+  try {
+{{#if isDynamic}}
+    const { {{routeParams.[0]}} } = params;
+{{/if}}
+    // TODO: Implement {{#if isDynamic}}fetch single{{else}}fetch all{{/if}} logic
+{{#if isDynamic}}
+    const data{{#if typescript}}: {{resourcePascal}}Data{{/if}} = { id: {{routeParams.[0]}}, /* ... */ };
+{{else}}
+    const data{{#if typescript}}: {{resourcePascal}}Data[]{{/if}} = [];
+{{/if}}
+
+    return new Response(JSON.stringify({{#if isDynamic}}data{{else}}{ data }{{/if}}), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: '{{#if isDynamic}}{{resourcePascal}} not found{{else}}Failed to fetch {{resourceName}}s{{/if}}' }), {
+      status: {{#if isDynamic}}404{{else}}500{{/if}},
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+{{/if}}
+
+{{#if hasPost}}
+{{#unless isDynamic}}
+/**
+ * POST /{{kebabName}}
+ * Create a new {{resourceName}}
+ */
+export async function POST(request{{#if typescript}}: Request{{/if}}) {
+  try {
+    const body{{#if typescript}} = await request.json() as Create{{resourcePascal}}Input{{else}} = await request.json(){{/if}};
+
+    // TODO: Validate input
+    // TODO: Create {{resourceName}} in database
+
+    const created{{#if typescript}}: {{resourcePascal}}Data{{/if}} = {
+      id: crypto.randomUUID(),
+      ...body,
+      createdAt: new Date().toISOString(),
+    };
+
+    return new Response(JSON.stringify(created), {
+      status: 201,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to create {{resourceName}}' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+{{/unless}}
+{{/if}}
+
+{{#if hasPut}}
+{{#if isDynamic}}
+/**
+ * PUT /{{kebabName}}/:{{routeParams.[0]}}
+ * Update an existing {{resourceName}}
+ */
+export async function PUT(request{{#if typescript}}: Request{{/if}}, params{{#if typescript}}: { {{#each routeParams}}{{this}}: string{{#unless @last}}; {{/unless}}{{/each}} }{{/if}}) {
+  try {
+    const { {{routeParams.[0]}} } = params;
+    const body{{#if typescript}} = await request.json() as Update{{resourcePascal}}Input{{else}} = await request.json(){{/if}};
+
+    // TODO: Validate input
+    // TODO: Update {{resourceName}} in database
+
+    const updated{{#if typescript}}: {{resourcePascal}}Data{{/if}} = {
+      id: {{routeParams.[0]}},
+      ...body,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return new Response(JSON.stringify(updated), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to update {{resourceName}}' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+{{/if}}
+{{/if}}
+
+{{#if hasDelete}}
+{{#if isDynamic}}
+/**
+ * DELETE /{{kebabName}}/:{{routeParams.[0]}}
+ * Delete a {{resourceName}}
+ */
+export async function DELETE(request{{#if typescript}}: Request{{/if}}, params{{#if typescript}}: { {{#each routeParams}}{{this}}: string{{#unless @last}}; {{/unless}}{{/each}} }{{/if}}) {
+  try {
+    const { {{routeParams.[0]}} } = params;
+
+    // TODO: Delete {{resourceName}} from database
+
+    return new Response(null, { status: 204 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to delete {{resourceName}}' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+{{/if}}
+{{/if}}

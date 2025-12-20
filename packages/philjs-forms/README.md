@@ -1,17 +1,17 @@
 # philjs-forms
 
-Form handling with reactive signals and validation for PhilJS applications. Features built-in validators, Zod integration, field components, and comprehensive error handling.
+Advanced form handling for PhilJS with Remix-style primitives, progressive enhancement, and optimistic UI.
 
 ## Features
 
-- Reactive form state with signals
-- Built-in validation rules
-- Zod schema validation support
-- Pre-built field components
-- TypeScript support
-- Tree-shakeable exports
-- Accessible form components
-- Zero dependencies (except PhilJS core)
+- ✅ **Form Management** - Reactive form state with signals
+- ✅ **Validation** - Built-in validators + Zod integration
+- ✅ **useFormAction** - Remix-style form actions with progressive enhancement
+- ✅ **useFetcher** - Non-navigational form submissions
+- ✅ **Optimistic UI** - Instant updates with automatic rollback
+- ✅ **Progressive Enhancement** - Works without JavaScript
+- ✅ **Field Components** - Pre-built accessible form fields
+- ✅ **TypeScript** - Full type safety
 
 ## Installation
 

@@ -194,6 +194,53 @@ export async function generateHook(options: GeneratorOptions): Promise<void> {
 }
 
 /**
+ * Cell Generator Options
+ */
+export interface CellGeneratorOptions extends GeneratorOptions {
+  /** Use GraphQL QUERY instead of fetch */
+  graphql?: boolean;
+}
+
+/**
+ * Cell Generator - Creates RedwoodJS-style Cell components
+ */
+export async function generateCell(options: CellGeneratorOptions): Promise<void> {
+  const {
+    name,
+    directory = 'src/cells',
+    typescript = true,
+    withTest = true,
+    graphql = true,
+  } = options;
+
+  const cellName = toPascalCase(name) + 'Cell';
+  const entityName = toPascalCase(name);
+  const ext = typescript ? 'tsx' : 'jsx';
+  const cellDir = path.join(process.cwd(), directory);
+
+  // Create directory if needed
+  await fs.mkdir(cellDir, { recursive: true });
+
+  // Generate cell file
+  const cellContent = generateCellTemplate(cellName, entityName, typescript, graphql);
+  await fs.writeFile(
+    path.join(cellDir, `${cellName}.${ext}`),
+    cellContent
+  );
+  console.log(pc.green(`  ✓ Created ${cellName}.${ext}`));
+
+  // Generate test file
+  if (withTest) {
+    const testContent = generateCellTestTemplate(cellName, entityName, typescript);
+    await fs.writeFile(
+      path.join(cellDir, `${cellName}.test.${ext}`),
+      testContent
+    );
+    console.log(pc.green(`  ✓ Created ${cellName}.test.${ext}`));
+  }
+}
+
+/**
  * Store Generator
  */
 export async function generateStore(options: GeneratorOptions): Promise<void> {
@@ -533,4 +580,296 @@ function toKebabCase(str: string): string {
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
+}
+
+// Cell template generators
+function generateCellTemplate(cellName: string, entityName: string, ts: boolean, graphql: boolean): string {
+  const entityLower = entityName.toLowerCase();
+  const entityPlural = entityLower + 's';
+
+  if (graphql) {
+    return `/**
+ * ${cellName} - Declarative data loading component
+ *
+ * This Cell fetches ${entityPlural} using GraphQL and handles loading, error, and empty states.
+ */
+
+import { createCell } from 'philjs-cells';
+${ts ? `import type { LoadingProps, EmptyProps, FailureProps, SuccessProps } from 'philjs-cells';\n` : ''}
+// GraphQL Query
+export const QUERY = \`
+  query ${entityName}s {
+    ${entityPlural} {
+      id
+      name
+      createdAt
+    }
+  }
+\`;
+${ts ? `
+// TypeScript types
+export interface ${entityName} {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface ${entityName}sData {
+  ${entityPlural}: ${entityName}[];
+}
+` : ''}
+/**
+ * Loading state component
+ */
+export const Loading = (${ts ? 'props: LoadingProps' : 'props'}) => (
+  <div className="${entityLower}-cell-loading" aria-busy="true" aria-live="polite">
+    <div className="spinner" />
+    <p>Loading ${entityPlural}...</p>
+  </div>
+);
+
+/**
+ * Empty state component
+ */
+export const Empty = (${ts ? 'props: EmptyProps' : 'props'}) => (
+  <div className="${entityLower}-cell-empty">
+    <p>No ${entityPlural} found.</p>
+  </div>
+);
+
+/**
+ * Error/Failure state component
+ */
+export const Failure = (${ts ? 'props: FailureProps' : 'props'}) => (
+  <div className="${entityLower}-cell-error" role="alert">
+    <p>Error loading ${entityPlural}: {props.error.message}</p>
+    <button onClick={props.retry} disabled={props.isRetrying}>
+      {props.isRetrying ? 'Retrying...' : 'Try Again'}
+    </button>
+  </div>
+);
+
+/**
+ * Success state component - receives the fetched data
+ */
+export const Success = (${ts ? `props: SuccessProps<${entityName}sData>` : 'props'}) => {
+  const { ${entityPlural}, refetch, isRefetching } = props;
+
+  return (
+    <div className="${entityLower}-cell-success">
+      {isRefetching && <div className="refetching-indicator">Updating...</div>}
+      <ul>
+        {${entityPlural}.map((${entityLower}${ts ? `: ${entityName}` : ''}) => (
+          <li key={${entityLower}.id}>
+            <span>{${entityLower}.name}</span>
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => refetch()}>Refresh</button>
+    </div>
+  );
+};
+
+/**
+ * Export the Cell component
+ */
+export default createCell${ts ? `<${entityName}sData>` : ''}({
+  QUERY,
+  Loading,
+  Empty,
+  Failure,
+  Success,
+  displayName: '${cellName}',
+});
+`;
+  } else {
+    // Fetch-based cell template
+    return `/**
+ * ${cellName} - Declarative data loading component
+ *
+ * This Cell fetches ${entityPlural} using fetch and handles loading, error, and empty states.
+ */
+
+import { createCell } from 'philjs-cells';
+${ts ? `import type { LoadingProps, EmptyProps, FailureProps, SuccessProps } from 'philjs-cells';\n` : ''}
+${ts ? `
+// TypeScript types
+export interface ${entityName} {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface ${entityName}sData {
+  ${entityPlural}: ${entityName}[];
+}
+
+interface FetchVariables {
+  // Add your fetch variables here
+}
+` : ''}
+/**
+ * Fetch function - fetches data from your API
+ */
+export const fetch = async (${ts ? 'variables: FetchVariables' : 'variables'})${ts ? `: Promise<${entityName}sData>` : ''} => {
+  const response = await globalThis.fetch('/api/${entityPlural}');
+  if (!response.ok) {
+    throw new Error(\`Failed to fetch ${entityPlural}: \${response.statusText}\`);
+  }
+  return response.json();
+};
+
+/**
+ * Loading state component
+ */
+export const Loading = (${ts ? 'props: LoadingProps' : 'props'}) => (
+  <div className="${entityLower}-cell-loading" aria-busy="true" aria-live="polite">
+    <div className="spinner" />
+    <p>Loading ${entityPlural}...</p>
+  </div>
+);
+
+/**
+ * Empty state component
+ */
+export const Empty = (${ts ? 'props: EmptyProps' : 'props'}) => (
+  <div className="${entityLower}-cell-empty">
+    <p>No ${entityPlural} found.</p>
+  </div>
+);
+
+/**
+ * Error/Failure state component
+ */
+export const Failure = (${ts ? 'props: FailureProps' : 'props'}) => (
+  <div className="${entityLower}-cell-error" role="alert">
+    <p>Error loading ${entityPlural}: {props.error.message}</p>
+    <button onClick={props.retry} disabled={props.isRetrying}>
+      {props.isRetrying ? 'Retrying...' : 'Try Again'}
+    </button>
+  </div>
+);
+
+/**
+ * Success state component - receives the fetched data
+ */
+export const Success = (${ts ? `props: SuccessProps<${entityName}sData>` : 'props'}) => {
+  const { ${entityPlural}, refetch, isRefetching } = props;
+
+  return (
+    <div className="${entityLower}-cell-success">
+      {isRefetching && <div className="refetching-indicator">Updating...</div>}
+      <ul>
+        {${entityPlural}.map((${entityLower}${ts ? `: ${entityName}` : ''}) => (
+          <li key={${entityLower}.id}>
+            <span>{${entityLower}.name}</span>
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => refetch()}>Refresh</button>
+    </div>
+  );
+};
+
+/**
+ * Export the Cell component
+ */
+export default createCell${ts ? `<${entityName}sData>` : ''}({
+  fetch,
+  Loading,
+  Empty,
+  Failure,
+  Success,
+  displayName: '${cellName}',
+});
+`;
+  }
+}
+
+function generateCellTestTemplate(cellName: string, entityName: string, ts: boolean): string {
+  const entityLower = entityName.toLowerCase();
+  const entityPlural = entityLower + 's';
+
+  return `import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from 'philjs-testing';
+import ${cellName}, { Loading, Empty, Failure, Success } from './${cellName}';
+${ts ? `import type { ${entityName} } from './${cellName}';\n` : ''}
+// Mock data
+const mock${entityName}s${ts ? `: ${entityName}[]` : ''} = [
+  { id: '1', name: 'Test ${entityName} 1', createdAt: '2024-01-01' },
+  { id: '2', name: 'Test ${entityName} 2', createdAt: '2024-01-02' },
+];
+
+describe('${cellName}', () => {
+  describe('Loading component', () => {
+    it('renders loading state', () => {
+      render(<Loading attempts={0} />);
+      expect(screen.getByText(/loading ${entityPlural}/i)).toBeTruthy();
+    });
+  });
+
+  describe('Empty component', () => {
+    it('renders empty state', () => {
+      render(<Empty variables={{}} />);
+      expect(screen.getByText(/no ${entityPlural} found/i)).toBeTruthy();
+    });
+  });
+
+  describe('Failure component', () => {
+    it('renders error state', () => {
+      const retry = vi.fn();
+      render(
+        <Failure
+          error={new Error('Test error')}
+          retryCount={0}
+          retry={retry}
+          isRetrying={false}
+        />
+      );
+      expect(screen.getByText(/test error/i)).toBeTruthy();
+    });
+
+    it('calls retry on button click', () => {
+      const retry = vi.fn();
+      render(
+        <Failure
+          error={new Error('Test error')}
+          retryCount={0}
+          retry={retry}
+          isRetrying={false}
+        />
+      );
+      screen.getByRole('button').click();
+      expect(retry).toHaveBeenCalled();
+    });
+  });
+
+  describe('Success component', () => {
+    it('renders ${entityPlural} list', () => {
+      const refetch = vi.fn();
+      render(
+        <Success
+          ${entityPlural}={mock${entityName}s}
+          refetch={refetch}
+          isRefetching={false}
+        />
+      );
+      expect(screen.getByText('Test ${entityName} 1')).toBeTruthy();
+      expect(screen.getByText('Test ${entityName} 2')).toBeTruthy();
+    });
+
+    it('shows refetching indicator', () => {
+      const refetch = vi.fn();
+      render(
+        <Success
+          ${entityPlural}={mock${entityName}s}
+          refetch={refetch}
+          isRefetching={true}
+        />
+      );
+      expect(screen.getByText(/updating/i)).toBeTruthy();
+    });
+  });
+});
+`;
 }

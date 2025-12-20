@@ -1,0 +1,39 @@
+/**
+ * {{hookName}} - Custom hook
+ */
+
+import { signal, computed } from 'philjs-core';
+
+{{#if typescript}}
+export interface {{hookName}}Options {
+  initialValue?: string;
+}
+
+export interface {{hookName}}Return {
+  value: string;
+  setValue: (value: string) => void;
+  reset: () => void;
+}
+{{/if}}
+
+export function {{hookName}}({{#if typescript}}options: {{hookName}}Options = {}{{else}}options = {}{{/if}}){{#if typescript}}: {{hookName}}Return{{/if}} {
+  const { initialValue = '' } = options;
+
+  const state = signal(initialValue);
+
+  const setValue = (newValue{{#if typescript}}: string{{/if}}) => {
+    state.set(newValue);
+  };
+
+  const reset = () => {
+    state.set(initialValue);
+  };
+
+  return {
+    get value() {
+      return state.get();
+    },
+    setValue,
+    reset,
+  };
+}

@@ -148,12 +148,58 @@ export async function getMetadata(input: Buffer | string): Promise<ImageMetadata
 }
 
 /**
- * Generate blur placeholder
+ * Blur placeholder generation options
+ */
+export interface BlurPlaceholderOptions {
+  type?: 'base64' | 'blurhash' | 'dominant-color' | 'lqip';
+  width?: number;
+  height?: number;
+  quality?: number;
+  blurAmount?: number;
+}
+
+/**
+ * Generate blur placeholder (LQIP - Low Quality Image Placeholder)
  */
 export async function generateBlurPlaceholder(
   input: Buffer | string,
-  width = 10,
-  height = 10
+  options: BlurPlaceholderOptions = {}
+): Promise<string> {
+  if (!sharp) {
+    throw new Error('Sharp is not available');
+  }
+
+  const {
+    type = 'base64',
+    width = 10,
+    height = 10,
+    quality = 50,
+    blurAmount = 10,
+  } = options;
+
+  switch (type) {
+    case 'base64':
+      return generateBase64Placeholder(input, width, height, quality, blurAmount);
+    case 'blurhash':
+      return generateBlurHash(input);
+    case 'dominant-color':
+      return extractDominantColor(input);
+    case 'lqip':
+      return generateLQIP(input, width, height);
+    default:
+      return generateBase64Placeholder(input, width, height, quality, blurAmount);
+  }
+}
+
+/**
+ * Generate base64 inline placeholder
+ */
+async function generateBase64Placeholder(
+  input: Buffer | string,
+  width: number,
+  height: number,
+  quality: number,
+  blurAmount: number
 ): Promise<string> {
   if (!sharp) {
     throw new Error('Sharp is not available');
@@ -161,11 +207,68 @@ export async function generateBlurPlaceholder(
 
   const buffer = await sharp(input)
     .resize(width, height, { fit: 'inside' })
-    .blur(10)
-    .jpeg({ quality: 50 })
+    .blur(blurAmount)
+    .jpeg({ quality })
     .toBuffer();
 
   return `data:image/jpeg;base64,${buffer.toString('base64')}`;
+}
+
+/**
+ * Generate Low Quality Image Placeholder
+ * Higher resolution than blur placeholder but still small
+ */
+async function generateLQIP(
+  input: Buffer | string,
+  width: number,
+  height: number
+): Promise<string> {
+  if (!sharp) {
+    throw new Error('Sharp is not available');
+  }
+
+  const buffer = await sharp(input)
+    .resize(width * 2, height * 2, { fit: 'inside' })
+    .jpeg({ quality: 20 })
+    .toBuffer();
+
+  return `data:image/jpeg;base64,${buffer.toString('base64')}`;
+}
+
+/**
+ * Generate BlurHash
+ * Compact representation of an image for placeholder
+ */
+async function generateBlurHash(input: Buffer | string): Promise<string> {
+  if (!sharp) {
+    throw new Error('Sharp is not available');
+  }
+
+  try {
+    // Try to use blurhash library if available
+    const { encode } = require('blurhash');
+
+    const image = sharp(input);
+    const { data, info } = await image
+      .resize(32, 32, { fit: 'inside' })
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const blurhash = encode(
+      new Uint8ClampedArray(data),
+      info.width,
+      info.height,
+      4,
+      3
+    );
+
+    return blurhash;
+  } catch {
+    // Fallback to dominant color if blurhash not available
+    console.warn('BlurHash library not found, falling back to dominant color');
+    return extractDominantColor(input);
+  }
 }
 
 /**

@@ -21,6 +21,8 @@ export type {
   ImageMetadata,
   ImageTransformOptions,
   ImageCache,
+  ArtDirectionSource,
+  LoadingAnimation,
 } from './types';
 
 // Utilities
@@ -47,4 +49,21 @@ export {
   generateResponsiveSet,
   extractDominantColor,
   isSharpAvailable,
+  type BlurPlaceholderOptions,
 } from './optimizer';
+
+// Image Services
+export {
+  type ImageService,
+  type ImageServiceTransformOptions,
+  type ImageServiceMetadata,
+  SharpImageService,
+  CloudinaryImageService,
+  ImgixImageService,
+  ImageServiceRegistry,
+  imageServiceRegistry,
+  configureImageService,
+  getImageService,
+  selectOptimalFormat,
+  getFormatPriority,
+} from './image-service';

@@ -81,3 +81,60 @@ export {
   SnapshotResult,
   SnapshotMatcher,
 } from './snapshot';
+
+// Route testing utilities
+export {
+  createMockRoute,
+  createMockLoader,
+  createMockAction,
+  createMockRequest,
+  createMockFormData,
+  testLoader,
+  testLoaderWithParams,
+  expectLoaderToReturn,
+  expectLoaderToThrow,
+  testAction,
+  testPostAction,
+  expectActionToReturn,
+  expectActionToThrow,
+  testNavigation,
+  waitForNavigation,
+  waitForLoaderData,
+  assertRouteParams,
+  assertSearchParams,
+  assertNavigationState,
+} from './route-testing';
+
+export type {
+  MockRouteOptions,
+  NavigationState,
+  MockLoader,
+  MockAction,
+  LoaderArgs,
+  ActionArgs,
+  RouteTestContext,
+  NavigateOptions,
+  SubmitOptions,
+} from './route-testing';
+
+// Integration testing utilities
+export {
+  IntegrationTestContext,
+  createIntegrationTest,
+  createAPITestHelper,
+  createDatabaseTestHelper,
+  createAuthTestHelper,
+  testRouteFlow,
+  measureResponseTime,
+  benchmarkRoute,
+  expectHTMLSnapshot,
+  expectJSONSnapshot,
+  waitFor,
+  retry,
+} from './integration';
+
+export type {
+  IntegrationTestOptions,
+  TestContext,
+  APITestHelper,
+} from './integration';

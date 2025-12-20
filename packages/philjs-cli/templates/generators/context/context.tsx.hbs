@@ -1,0 +1,71 @@
+/**
+ * {{pascalName}} Context
+ *
+ * Provides {{camelName}} state and actions to child components.
+ */
+
+import { JSX, createContext, signal } from 'philjs-core';
+
+{{#if typescript}}
+export interface {{pascalName}}State {
+  // Add your state properties here
+  value: string;
+  isLoading: boolean;
+}
+
+export interface {{pascalName}}Actions {
+  // Add your action methods here
+  setValue: (value: string) => void;
+  setLoading: (loading: boolean) => void;
+  reset: () => void;
+}
+
+export interface {{pascalName}}ContextValue extends {{pascalName}}State, {{pascalName}}Actions {}
+
+export interface {{pascalName}}ProviderProps {
+  children: JSX.Element;
+  initialValue?: Partial<{{pascalName}}State>;
+}
+{{/if}}
+
+const defaultState{{#if typescript}}: {{pascalName}}State{{/if}} = {
+  value: '',
+  isLoading: false,
+};
+
+export const {{pascalName}}Context = createContext{{#if typescript}}<{{pascalName}}ContextValue | null>{{/if}}(null);
+
+export function {{pascalName}}Provider({{#if typescript}}props: {{pascalName}}ProviderProps{{else}}props{{/if}}) {
+  const { children, initialValue = {} } = props;
+
+  const state = signal{{#if typescript}}<{{pascalName}}State>{{/if}}({
+    ...defaultState,
+    ...initialValue,
+  });
+
+  const setValue = (value{{#if typescript}}: string{{/if}}) => {
+    state.set({ ...state.get(), value });
+  };
+
+  const setLoading = (isLoading{{#if typescript}}: boolean{{/if}}) => {
+    state.set({ ...state.get(), isLoading });
+  };
+
+  const reset = () => {
+    state.set(defaultState);
+  };
+
+  const contextValue{{#if typescript}}: {{pascalName}}ContextValue{{/if}} = {
+    get value() { return state.get().value; },
+    get isLoading() { return state.get().isLoading; },
+    setValue,
+    setLoading,
+    reset,
+  };
+
+  return (
+    <{{pascalName}}Context.Provider value={contextValue}>
+      {children}
+    </{{pascalName}}Context.Provider>
+  );
+}

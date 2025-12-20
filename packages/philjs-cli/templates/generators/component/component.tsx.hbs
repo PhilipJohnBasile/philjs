@@ -1,0 +1,25 @@
+/**
+ * {{pascalName}} Component
+ */
+
+import { JSX } from 'philjs-core';
+{{#if withStyles}}
+import styles from './{{pascalName}}.module.css';
+{{/if}}
+
+{{#if typescript}}
+export interface {{pascalName}}Props {
+  children?: JSX.Element;
+  className?: string;
+}
+
+{{/if}}
+export function {{pascalName}}({{#if typescript}}props: {{pascalName}}Props{{else}}props{{/if}}) {
+  const { children, className = '' } = props;
+
+  return (
+    <div className={{#if withStyles}}{styles.container}{{else}}{`{{kebabName}} ${className}`}{{/if}}>
+      {children}
+    </div>
+  );
+}

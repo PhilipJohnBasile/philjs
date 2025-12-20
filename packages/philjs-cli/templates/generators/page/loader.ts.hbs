@@ -1,0 +1,26 @@
+/**
+ * Loader for {{pascalName}}Page
+ */
+
+{{#if isDynamic}}
+{{#if typescript}}
+interface LoaderParams {
+  params: {
+{{#each routeParams}}
+    {{this}}: string;
+{{/each}}
+  };
+}
+{{/if}}
+{{/if}}
+
+export async function loader({{#if isDynamic}}{ params }{{#if typescript}}: LoaderParams{{/if}}{{/if}}){{#if typescript}}: Promise<{ title: string }>{{/if}} {
+  // Fetch data for the page
+{{#if isDynamic}}
+  // Access params: {{#each routeParams}}params.{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+{{/if}}
+
+  return {
+    title: '{{pascalName}}',
+  };
+}
