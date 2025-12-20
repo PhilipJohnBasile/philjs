@@ -1,0 +1,62 @@
+{
+  "name": "philjs-plugin-i18n",
+  "version": "2.0.0",
+  "description": "Internationalization plugin for PhilJS with Vite integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "echo 'Lint philjs-plugin-i18n'",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "philjs",
+    "plugin",
+    "i18n",
+    "internationalization",
+    "localization",
+    "l10n",
+    "translations",
+    "locale",
+    "language"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "fast-glob": "^3.3.2",
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-plugin-i18n"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
+}

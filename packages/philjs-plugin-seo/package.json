@@ -1,0 +1,62 @@
+{
+  "name": "philjs-plugin-seo",
+  "version": "2.0.0",
+  "description": "SEO plugin for PhilJS with meta tags, OpenGraph, JSON-LD, and sitemap generation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./head": {
+      "types": "./dist/head.d.ts",
+      "import": "./dist/head.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "echo 'Lint philjs-plugin-seo'",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "philjs",
+    "plugin",
+    "seo",
+    "meta-tags",
+    "opengraph",
+    "twitter-cards",
+    "json-ld",
+    "structured-data",
+    "sitemap",
+    "robots"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-plugin-seo"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
+}
