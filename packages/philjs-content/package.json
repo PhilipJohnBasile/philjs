@@ -1,0 +1,117 @@
+{
+  "name": "philjs-content",
+  "version": "2.0.0",
+  "description": "Astro-style Content Collections for PhilJS with type-safe schemas and MDX support",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./collection": {
+      "types": "./dist/collection.d.ts",
+      "import": "./dist/collection.js"
+    },
+    "./query": {
+      "types": "./dist/query.d.ts",
+      "import": "./dist/query.js"
+    },
+    "./render": {
+      "types": "./dist/render.d.ts",
+      "import": "./dist/render.js"
+    },
+    "./vite": {
+      "types": "./dist/vite-plugin.d.ts",
+      "import": "./dist/vite-plugin.js"
+    },
+    "./rss": {
+      "types": "./dist/rss.d.ts",
+      "import": "./dist/rss.js"
+    },
+    "./sitemap": {
+      "types": "./dist/sitemap.d.ts",
+      "import": "./dist/sitemap.js"
+    },
+    "./seo": {
+      "types": "./dist/seo.d.ts",
+      "import": "./dist/seo.js"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    }
+  },
+  "files": [
+    "dist",
+    "examples"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-content'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "gray-matter": "^4.0.3",
+    "unified": "^11.0.5",
+    "remark": "^15.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-mdx": "^3.1.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-rehype": "^11.1.1",
+    "rehype-slug": "^6.0.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-prism-plus": "^2.0.0",
+    "estree-util-value-to-estree": "^3.2.1",
+    "vfile": "^6.0.3",
+    "globby": "^14.0.2",
+    "chokidar": "^4.0.3",
+    "image-size": "^2.0.0"
+  },
+  "devDependencies": {
+    "rollup": "^4.28.1",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "vite": "^6.0.5"
+  },
+  "peerDependencies": {
+    "philjs-core": "^2.0.0",
+    "vite": "^5.0.0 || ^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-content"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "content-collections",
+    "mdx",
+    "markdown",
+    "cms",
+    "static-content",
+    "type-safe",
+    "rss",
+    "atom",
+    "json-feed",
+    "sitemap",
+    "seo",
+    "content-utilities"
+  ]
+}

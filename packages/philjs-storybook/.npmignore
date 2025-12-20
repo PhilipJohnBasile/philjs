@@ -1,0 +1,25 @@
+# Source files
+src/
+*.test.ts
+*.test.tsx
+
+# Examples
+examples/
+
+# Configuration
+tsconfig.json
+vitest.config.ts
+rollup.config.js
+
+# Documentation
+USAGE.md
+CHANGELOG.md
+.gitignore
+.npmignore
+
+# CI/CD
+.github/
+
+# Testing
+coverage/
+.nyc_output/

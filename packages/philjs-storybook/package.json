@@ -1,0 +1,93 @@
+{
+  "name": "philjs-storybook",
+  "version": "2.0.0",
+  "description": "Storybook integration for PhilJS - component development and testing",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./preset": {
+      "types": "./dist/preset.d.ts",
+      "import": "./dist/preset.js"
+    },
+    "./addons/signal-inspector": {
+      "types": "./dist/addons/signal-inspector.d.ts",
+      "import": "./dist/addons/signal-inspector.js"
+    },
+    "./addons/route-tester": {
+      "types": "./dist/addons/route-tester.d.ts",
+      "import": "./dist/addons/route-tester.js"
+    },
+    "./addons/theme-switcher": {
+      "types": "./dist/addons/theme-switcher.d.ts",
+      "import": "./dist/addons/theme-switcher.js"
+    },
+    "./addons/viewport": {
+      "types": "./dist/addons/viewport.d.ts",
+      "import": "./dist/addons/viewport.js"
+    },
+    "./decorators": {
+      "types": "./dist/decorators/index.d.ts",
+      "import": "./dist/decorators/index.js"
+    },
+    "./mocks": {
+      "types": "./dist/mocks/index.d.ts",
+      "import": "./dist/mocks/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "preset.js"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-storybook'",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "philjs",
+    "storybook",
+    "component-development",
+    "testing",
+    "ui"
+  ],
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-router": "workspace:*",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "msw": "^2.6.8",
+    "msw-storybook-addon": "^2.0.4"
+  },
+  "devDependencies": {
+    "@storybook/core": "^8.4.7",
+    "@types/node": "^20.11.0",
+    "rollup": "^4.53.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "storybook": "^8.0.0"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-storybook"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme"
+}
