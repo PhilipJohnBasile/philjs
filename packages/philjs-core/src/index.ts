@@ -196,3 +196,215 @@ export {
   constantTimeEqual
 } from "./security.js";
 export type { SanitizeOptions } from "./security.js";
+
+// State Serialization
+export {
+  serialize,
+  deserialize,
+  toJSON,
+  fromJSON,
+  serializeForHydration,
+  hydrateFromSSR,
+  injectHydrationData,
+  extractHydrationData,
+  persistToLocalStorage,
+  restoreFromLocalStorage,
+  persistentSignal,
+  serializeToURL,
+  deserializeFromURL,
+  urlSignal,
+  clearSignalRegistry,
+  getSerializationStats,
+  deepClone,
+  deepEqual,
+} from "./serialization.js";
+export type {
+  SerializableValue,
+  SerializableArray,
+  SerializableObject,
+  SerializedState,
+  SerializationOptions,
+  HydrationMap,
+} from "./serialization.js";
+
+// Web Vitals Monitoring
+export {
+  WebVitalsMonitor,
+  initWebVitals,
+  getWebVitalsMonitor,
+  reportWebVitals,
+  getWebVitalsMetrics,
+} from "./web-vitals.js";
+export type {
+  WebVitalsMetric,
+  WebVitalsOptions,
+  PerformanceMetrics,
+} from "./web-vitals.js";
+
+// Performance Tracking
+export {
+  PerformanceTracker,
+  usePerformance,
+  useAPIPerformance,
+  useCustomPerformance,
+  usePerformanceBudget,
+  usePerformanceSnapshot,
+  measureAsync,
+  measureSync,
+  monitorResources,
+  exportPerformanceData,
+  importPerformanceData,
+  getPerformanceTracker,
+  createPerformanceReport,
+} from "./performance-tracking.js";
+export type {
+  PerformanceMark,
+  PerformanceBudget,
+  ComponentPerformance,
+  APIPerformance,
+  ResourcePerformance,
+  PerformanceSnapshot,
+} from "./performance-tracking.js";
+
+// Error Tracking
+export {
+  ErrorTracker,
+  initErrorTracking,
+  getErrorTracker,
+  captureError,
+  captureException,
+  captureMessage,
+  addBreadcrumb,
+  setUser,
+  setTag,
+  setContext,
+  getErrorStats,
+  withErrorTracking,
+  useErrorBoundary,
+} from "./error-tracking.js";
+export type {
+  ErrorTrackingOptions,
+  ErrorEvent,
+  UserContext,
+  Breadcrumb,
+  RequestContext,
+  ErrorStats,
+} from "./error-tracking.js";
+
+
+// Path Utilities (SvelteKit-style)
+export {
+  paths,
+  configurePaths,
+  base,
+  assets,
+  resolveRoute,
+  buildPath,
+  matchPath,
+  resolveAsset,
+  parseUrl,
+  joinPaths,
+  normalizePath,
+  isRelativePath,
+  makeRelative,
+  sanitizePath,
+  getExtension,
+  getFilename,
+  getDirectory,
+  pathsMatch,
+  buildBreadcrumbs,
+} from "./paths.js";
+export type { PathConfig, RouteParams } from "./paths.js";
+
+// Glob Utilities (Astro-style)
+export {
+  glob,
+  importGlob,
+  mapGlob,
+  filterGlob,
+  parseGlobPath,
+  loadContent,
+  sortContent,
+  groupContent,
+  autoRegister,
+  loadRoutes,
+  filePathToRoute,
+  loadContentWithFrontmatter,
+  filterByFrontmatter,
+  sortByFrontmatter,
+  loadPlugins,
+  initializePlugins,
+  createCollection,
+  globUtils,
+} from "./glob.js";
+export type {
+  GlobOptions,
+  GlobLazy,
+  GlobEager,
+  GlobResult,
+  GlobPathInfo,
+  ContentItem,
+  AutoRegisterOptions,
+  RouteModule,
+  ContentWithFrontmatter,
+  Plugin,
+  ContentCollection,
+} from "./glob.js";
+
+// Virtual Modules Plugin
+export {
+  virtualModulesPlugin,
+  generateVirtualModuleTypes,
+  writeVirtualModuleTypes,
+} from "./virtual-modules.js";
+export type { VirtualModuleConfig, RouteMetadata } from "./virtual-modules.js";
+
+// File Utilities
+export {
+  readFile,
+  writeFile,
+  copyFile,
+  getStats,
+  fileExists,
+  dirExists,
+  readDir,
+  matchFiles,
+  deleteFile,
+  deleteDir,
+  createDir,
+  moveFile,
+  watchFile,
+  watchDir,
+  readJSON,
+  writeJSON,
+  clearCaches,
+  getCacheStats,
+  fileUtils,
+} from "./file-utils.js";
+export type {
+  ReadFileOptions,
+  WriteFileOptions,
+  CopyFileOptions,
+  GetStatsOptions,
+  ReadDirOptions,
+  WatchOptions,
+} from "./file-utils.js";
+
+
+// Lazy Handlers (Optimizer Integration)
+export {
+  $,
+  $$,
+  loadHandler,
+  createLazyEventHandler,
+  prefetchHandler,
+  isLazyHandler,
+  resolveLazyHandlers,
+  serializeLazyHandlers,
+  hydrateLazyHandlers,
+  enhanceForm,
+  handlerRegistry,
+} from "./lazy-handlers.js";
+export type {
+  LazyHandler,
+} from "./lazy-handlers.js";

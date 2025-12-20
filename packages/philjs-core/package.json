@@ -94,6 +94,14 @@
     "./testing": {
       "types": "./dist/testing.d.ts",
       "import": "./dist/testing.js"
+    },
+    "./superjson": {
+      "types": "./dist/superjson.d.ts",
+      "import": "./dist/superjson.js"
+    },
+    "./superjson-perf": {
+      "types": "./dist/superjson-perf.d.ts",
+      "import": "./dist/superjson-perf.js"
     }
   },
   "files": [
