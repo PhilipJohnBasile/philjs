@@ -465,7 +465,7 @@ export function serialize(
 
     if (isDataView(value)) {
       addToMeta(meta, path, TYPE_DATAVIEW);
-      return arrayBufferToArray(value.buffer);
+      return arrayBufferToArray(value.buffer as ArrayBuffer);
     }
 
     // Handle Arrays
