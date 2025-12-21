@@ -3,7 +3,7 @@
  * Provides Suspense integration, dependent resources, and preloading.
  */
 
-import { signal, memo, batch, onCleanup, untrack } from './signals.js';
+import { signal, memo, effect, batch, onCleanup, untrack } from './signals.js';
 import type { Signal, Memo } from './types.js';
 
 // ============================================================================
@@ -44,20 +44,21 @@ export interface ResourceOptions<T, S = unknown> {
   onHydrated?: (key: string, info: any) => void;
 }
 
-export interface ResourceReturn<T> {
+export interface Resource<T> {
   (): T | undefined;
   loading: boolean;
   error: Error | undefined;
   latest: T | undefined;
   state: 'unresolved' | 'pending' | 'ready' | 'refreshing' | 'errored';
-  refetch: (info?: unknown) => T | Promise<T | undefined> | null | undefined;
-  mutate: (value: T | undefined) => T | undefined;
 }
 
 export interface ResourceActions<T, S = unknown> {
   mutate: (value: T | undefined) => T | undefined;
   refetch: (info?: unknown) => T | Promise<T | undefined> | null | undefined;
 }
+
+/** Tuple returned from createResource: [resource, { mutate, refetch }] */
+export type ResourceReturn<T> = [Resource<T>, ResourceActions<T>];
 
 // ============================================================================
 // Suspense Integration
@@ -289,12 +290,23 @@ export function createResource<T, S = true>(
   };
 
   // Set up auto-refetch when source changes
+  let lastSourceValue: S | null = null;
+  let firstRun = true;
   if (source) {
-    // Track source as dependency
-    const sourceMemo = memo(() => {
+    // Use effect to track source dependencies and re-run when they change
+    effect(() => {
       const val = source!();
-      // Trigger refetch when source changes
-      if (resolved && !scheduled) {
+
+      // Skip the first run - initial load handles that
+      if (firstRun) {
+        firstRun = false;
+        lastSourceValue = val;
+        return;
+      }
+
+      // Trigger refetch when source changes (from null to value, or value to different value)
+      const sourceChanged = val !== lastSourceValue && (val != null || lastSourceValue != null);
+      if (sourceChanged && !scheduled) {
         scheduled = true;
         Promise.resolve().then(() => {
           if (scheduled) {
@@ -302,11 +314,8 @@ export function createResource<T, S = true>(
           }
         });
       }
-      return val;
+      lastSourceValue = val;
     });
-
-    // Initial subscription
-    sourceMemo();
   }
 
   // Initial load (unless deferred)
@@ -331,7 +340,7 @@ export function createResource<T, S = true>(
     }
 
     return currentValue;
-  }) as ResourceReturn<T>;
+  }) as Resource<T>;
 
   // Attach properties
   Object.defineProperty(read, 'loading', {
@@ -354,10 +363,8 @@ export function createResource<T, S = true>(
     enumerable: true,
   });
 
-  read.refetch = refetch;
-  read.mutate = mutate;
-
-  return read;
+  // Return tuple: [resource, actions]
+  return [read, { mutate, refetch }];
 }
 
 // ============================================================================

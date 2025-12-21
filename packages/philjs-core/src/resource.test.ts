@@ -149,24 +149,24 @@ describe('createResource', () => {
         return `data-${counter}`;
       });
 
-      const [data] = createResource(fetcher);
+      const [data, { refetch }] = createResource(fetcher);
 
       await vi.runAllTimersAsync();
       expect(data()).toBe('data-1');
 
-      data.refetch();
+      refetch();
       await vi.runAllTimersAsync();
       expect(data()).toBe('data-2');
       expect(fetcher).toHaveBeenCalledTimes(2);
     });
 
     it('should set state to refreshing during refetch', async () => {
-      const [data] = createResource(async () => 'data');
+      const [data, { refetch }] = createResource(async () => 'data');
 
       await vi.runAllTimersAsync();
       expect(data.state).toBe('ready');
 
-      const refetchPromise = data.refetch();
+      const refetchPromise = refetch();
       expect(data.state).toBe('refreshing');
 
       await vi.runAllTimersAsync();
@@ -178,12 +178,12 @@ describe('createResource', () => {
         return info.refetching ? 'refreshed' : 'initial';
       });
 
-      const [data] = createResource(fetcher);
+      const [data, { refetch }] = createResource(fetcher);
 
       await vi.runAllTimersAsync();
       expect(data()).toBe('initial');
 
-      data.refetch(true);
+      refetch(true);
       await vi.runAllTimersAsync();
       expect(data()).toBe('refreshed');
     });
@@ -191,25 +191,25 @@ describe('createResource', () => {
 
   describe('mutate', () => {
     it('should mutate resource value directly', async () => {
-      const [data] = createResource(async () => 'original');
+      const [data, { mutate }] = createResource(async () => 'original');
 
       await vi.runAllTimersAsync();
       expect(data()).toBe('original');
 
-      data.mutate('mutated');
+      mutate('mutated');
       expect(data()).toBe('mutated');
       expect(data.state).toBe('ready');
     });
 
     it('should clear error when mutating', async () => {
-      const [data] = createResource(async () => {
+      const [data, { mutate }] = createResource(async () => {
         throw new Error('error');
       });
 
       await vi.runAllTimersAsync();
       expect(data.error).toBeTruthy();
 
-      data.mutate('new value');
+      mutate('new value');
       expect(data()).toBe('new value');
       expect(data.error).toBe(undefined);
       expect(data.state).toBe('ready');
@@ -231,12 +231,12 @@ describe('createResource', () => {
         return 'second';
       };
 
-      const [data] = createResource(fetcher);
+      const [data, { refetch }] = createResource(fetcher);
 
       expect(data.latest).toBe(undefined);
 
       // Start refetch before first completes
-      data.refetch();
+      refetch();
       await vi.runAllTimersAsync();
 
       expect(data.latest).toBe('second');
@@ -560,11 +560,11 @@ describe('createResource', () => {
     it('should load on first refetch when deferred', async () => {
       const fetcher = vi.fn(async () => 'data');
 
-      const [data] = createResource(fetcher, { deferStream: true });
+      const [data, { refetch }] = createResource(fetcher, { deferStream: true });
 
       expect(fetcher).not.toHaveBeenCalled();
 
-      data.refetch();
+      refetch();
       await vi.runAllTimersAsync();
 
       expect(data()).toBe('data');

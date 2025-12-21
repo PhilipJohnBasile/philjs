@@ -648,7 +648,8 @@ describe('Bevy Assets', () => {
       const handle = loadBevyAsset('/assets/test.png');
       expect(handle.path).toBe('/assets/test.png');
       expect(handle.type).toBe('texture');
-      expect(handle.state).toBe('pending');
+      // State transitions to 'loading' immediately when loadAsset is called
+      expect(handle.state).toBe('loading');
     });
 
     it('should detect asset type from extension', () => {

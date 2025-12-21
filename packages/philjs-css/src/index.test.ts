@@ -163,13 +163,13 @@ describe('PhilJS CSS', () => {
         compoundVariants: [
           {
             size: 'sm',
-            outline: true,
+            outline: 'true',
             css: { border: '1px solid' }
           }
         ]
       });
 
-      const className = button({ size: 'sm', outline: true });
+      const className = button({ size: 'sm', outline: 'true' });
       expect(className).toBeTruthy();
     });
   });

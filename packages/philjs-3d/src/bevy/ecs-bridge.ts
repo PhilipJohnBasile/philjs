@@ -750,6 +750,9 @@ export function trackEntity(
 
   const unsubscribe = bridge.subscribe(callback);
 
+  // Call callback immediately with current entity state
+  callback(bridge.entity);
+
   const unsubscribeDespawned = onBevyEvent('entity-despawned', (event) => {
     if (event.data?.entityId === entityId) {
       callback(null);
