@@ -10,7 +10,6 @@
   },
   "exports": {
     ".": "./dist/index.js",
-    "./drizzle": "./dist/drizzle.js",
     "./supabase": "./dist/supabase.js",
     "./migrations": "./dist/migrations/index.js"
   },

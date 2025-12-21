@@ -12,7 +12,9 @@
     "node_modules",
     "dist",
     "**/*.test.ts",
-    "src/prisma.ts",
-    "src/prisma-advanced.ts"
+    "**/prisma.ts",
+    "**/prisma-advanced.ts",
+    "**/drizzle.ts",
+    "**/drizzle-advanced.ts"
   ]
 }
