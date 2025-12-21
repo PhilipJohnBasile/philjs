@@ -98,17 +98,17 @@ export interface HeadingResult {
 /**
  * Current location signal
  */
-export const currentLocation: Signal<LocationResult | null> = signal(null);
+export const currentLocation: Signal<LocationResult | null> = signal<LocationResult | null>(null);
 
 /**
  * Location permission signal
  */
-export const locationPermission: Signal<LocationPermissionStatus> = signal('undetermined');
+export const locationPermission: Signal<LocationPermissionStatus> = signal<LocationPermissionStatus>('undetermined');
 
 /**
  * Location error signal
  */
-export const locationError: Signal<Error | null> = signal(null);
+export const locationError: Signal<Error | null> = signal<Error | null>(null);
 
 /**
  * Watching state

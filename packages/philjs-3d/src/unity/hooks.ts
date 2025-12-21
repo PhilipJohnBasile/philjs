@@ -345,10 +345,10 @@ export function registerUnityCallback(
   name: string,
   handler: (...args: unknown[]) => void
 ): () => void {
-  (window as Record<string, unknown>)[name] = handler;
+  (window as unknown as Record<string, unknown>)[name] = handler;
 
   return () => {
-    delete (window as Record<string, unknown>)[name];
+    delete (window as unknown as Record<string, unknown>)[name];
   };
 }
 

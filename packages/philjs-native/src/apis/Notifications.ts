@@ -145,12 +145,12 @@ export interface PushToken {
 /**
  * Notification permission state
  */
-export const notificationPermission: Signal<NotificationPermissionStatus> = signal('undetermined');
+export const notificationPermission: Signal<NotificationPermissionStatus> = signal<NotificationPermissionStatus>('undetermined');
 
 /**
  * Push token state
  */
-export const pushToken: Signal<PushToken | null> = signal(null);
+export const pushToken: Signal<PushToken | null> = signal<PushToken | null>(null);
 
 /**
  * Notification listeners

@@ -206,7 +206,7 @@ export async function createUnityEmbedElement(
 
   // Apply custom styles
   for (const [key, value] of Object.entries(style)) {
-    (canvas.style as Record<string, unknown>)[key] = value;
+    (canvas.style as unknown as Record<string, string>)[key] = String(value);
   }
 
   container.appendChild(canvas);

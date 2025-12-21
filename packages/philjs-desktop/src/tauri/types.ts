@@ -142,3 +142,30 @@ export interface TypedCommand<TArgs, TResult> {
   (args: TArgs): Promise<TResult>;
   commandName: string;
 }
+
+/**
+ * Tauri event types
+ */
+export type TauriEventType =
+  | 'tauri://update'
+  | 'tauri://update-available'
+  | 'tauri://update-install'
+  | 'tauri://update-download-progress'
+  | 'tauri://update-status'
+  | 'tauri://window-created'
+  | 'tauri://file-drop'
+  | 'tauri://file-drop-hover'
+  | 'tauri://file-drop-cancelled'
+  | 'tauri://focus'
+  | 'tauri://blur'
+  | 'tauri://scale-change'
+  | 'tauri://menu'
+  | 'tauri://close-requested'
+  | 'tauri://destroyed'
+  | 'tauri://resize'
+  | 'tauri://move'
+  | 'tauri://drag-enter'
+  | 'tauri://drag-over'
+  | 'tauri://drag-drop'
+  | 'tauri://drag-leave'
+  | string;

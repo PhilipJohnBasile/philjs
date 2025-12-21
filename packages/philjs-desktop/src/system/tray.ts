@@ -65,7 +65,8 @@ export const SystemTray = {
       return;
     }
 
-    const { TrayIcon, Menu, MenuItem, Submenu } = await import('@tauri-apps/api/tray');
+    const { TrayIcon } = await import('@tauri-apps/api/tray');
+    const { Menu, MenuItem, Submenu } = await import('@tauri-apps/api/menu');
 
     // Build menu
     const menu = options.menu ? await buildMenu(options.menu, Menu, MenuItem, Submenu) : undefined;
@@ -111,7 +112,7 @@ export const SystemTray = {
   async setMenu(items: TrayMenuItem[]): Promise<void> {
     if (!trayInstance) return;
 
-    const { Menu, MenuItem, Submenu } = await import('@tauri-apps/api/tray');
+    const { Menu, MenuItem, Submenu } = await import('@tauri-apps/api/menu');
     const menu = await buildMenu(items, Menu, MenuItem, Submenu);
     await trayInstance.setMenu(menu);
   },

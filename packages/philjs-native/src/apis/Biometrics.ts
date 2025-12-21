@@ -96,7 +96,7 @@ export interface SecureStoreOptions {
 /**
  * Biometric availability state
  */
-export const biometricSupport: Signal<BiometricSupport> = signal({
+export const biometricSupport: Signal<BiometricSupport> = signal<BiometricSupport>({
   available: false,
   biometryType: 'none',
 });

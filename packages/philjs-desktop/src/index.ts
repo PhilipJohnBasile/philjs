@@ -145,20 +145,20 @@ export {
   runScript,
   powershell,
   sidecar,
-  // Clipboard
-  Clipboard,
-  readClipboard,
-  writeClipboard,
-  readClipboardImage,
-  writeClipboardImage,
-  clearClipboard,
-  // Notification
-  Notification,
-  requestNotificationPermission,
-  showNotification,
-  notify,
-  scheduleNotification,
-  cancelNotification,
+  // Clipboard - TODO: Fix Tauri v2 API compatibility
+  // Clipboard,
+  // readClipboard,
+  // writeClipboard,
+  // readClipboardImage,
+  // writeClipboardImage,
+  // clearClipboard,
+  // Notification - TODO: Fix Tauri v2 API compatibility
+  // Notification,
+  // requestNotificationPermission,
+  // showNotification,
+  // notify,
+  // scheduleNotification,
+  // cancelNotification,
   // Global Shortcut
   GlobalShortcut,
   registerShortcut,
@@ -199,9 +199,9 @@ export type {
   CommandOptions,
   CommandOutput,
   SpawnedProcess,
-  NotificationOptions,
-  NotificationAction,
-  ScheduledNotificationOptions,
+  // NotificationOptions,
+  // NotificationAction,
+  // ScheduledNotificationOptions,
   ShortcutHandler,
   TrayOptions,
   TrayMenuItem,
@@ -256,18 +256,18 @@ export type {
   AppState,
 } from './lifecycle';
 
-// Electron Compatibility Layer
-export {
-  BrowserWindow,
-  ipcMain,
-  ipcRenderer,
-  contextBridge,
-  app,
-  createMigrationHelper,
-  ElectronToTauriMapper,
-} from './electron';
+// Electron Compatibility Layer - TODO: Fix TypeScript errors
+// export {
+//   BrowserWindow,
+//   ipcMain,
+//   ipcRenderer,
+//   contextBridge,
+//   app,
+//   createMigrationHelper,
+//   ElectronToTauriMapper,
+// } from './electron';
 
-export type {
-  BrowserWindowOptions,
-  IpcEvent,
-} from './electron';
+// export type {
+//   BrowserWindowOptions,
+//   IpcEvent,
+// } from './electron';

@@ -130,7 +130,7 @@ export interface Navigation {
 /**
  * Current navigation state
  */
-export const navigationState: Signal<NavigationState | null> = signal(null);
+export const navigationState: Signal<NavigationState | null> = signal<NavigationState | null>(null);
 
 /**
  * Navigation history for back navigation

@@ -168,7 +168,7 @@ export async function createUnrealEmbedElement(
 
   // Apply custom styles
   for (const [key, value] of Object.entries(style)) {
-    (video.style as Record<string, unknown>)[key] = value;
+    (video.style as unknown as Record<string, string>)[key] = String(value);
   }
 
   container.appendChild(video);

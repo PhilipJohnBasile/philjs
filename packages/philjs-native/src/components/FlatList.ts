@@ -485,24 +485,26 @@ export function FlatList<T>(props: FlatListProps<T>): any {
  * Create a FlatList reference
  */
 export function createFlatListRef<T>(): FlatListRef<T> {
-  let scrollElement: HTMLElement | null = null;
-  let data: T[] = [];
-  let getItemLayout: FlatListProps<T>['getItemLayout'];
+  const state: { scrollElement: HTMLElement | null; data: T[]; getItemLayout: FlatListProps<T>['getItemLayout'] } = {
+    scrollElement: null,
+    data: [],
+    getItemLayout: undefined,
+  };
 
   return {
     scrollToEnd(params) {
-      if (scrollElement) {
-        scrollElement.scrollTo({
-          top: scrollElement.scrollHeight,
+      if (state.scrollElement) {
+        state.scrollElement.scrollTo({
+          top: state.scrollElement.scrollHeight,
           behavior: params?.animated ? 'smooth' : 'auto',
         });
       }
     },
 
     scrollToIndex(params) {
-      if (scrollElement && getItemLayout && data) {
-        const layout = getItemLayout(data, params.index);
-        scrollElement.scrollTo({
+      if (state.scrollElement && state.getItemLayout && state.data) {
+        const layout = state.getItemLayout(state.data, params.index);
+        state.scrollElement.scrollTo({
           top: layout.offset,
           behavior: params.animated ? 'smooth' : 'auto',
         });
@@ -510,15 +512,15 @@ export function createFlatListRef<T>(): FlatListRef<T> {
     },
 
     scrollToItem(params) {
-      const index = data.indexOf(params.item);
+      const index = state.data.indexOf(params.item);
       if (index >= 0) {
         this.scrollToIndex({ index, animated: params.animated });
       }
     },
 
     scrollToOffset(params) {
-      if (scrollElement) {
-        scrollElement.scrollTo({
+      if (state.scrollElement) {
+        state.scrollElement.scrollTo({
           top: params.offset,
           behavior: params.animated ? 'smooth' : 'auto',
         });
@@ -530,15 +532,15 @@ export function createFlatListRef<T>(): FlatListRef<T> {
     },
 
     getNativeScrollRef() {
-      return scrollElement;
+      return state.scrollElement;
     },
 
     getScrollResponder() {
-      return scrollElement;
+      return state.scrollElement;
     },
 
     getScrollableNode() {
-      return scrollElement;
+      return state.scrollElement;
     },
   };
 }

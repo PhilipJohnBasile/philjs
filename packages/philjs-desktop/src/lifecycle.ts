@@ -230,12 +230,12 @@ export async function installUpdate(
     }
 
     // Download with progress
-    await update.downloadAndInstall((event) => {
+    await update.downloadAndInstall((event: any) => {
       if (event.event === 'Progress') {
-        const { chunkLength, contentLength } = event.data;
-        if (contentLength && onProgress) {
+        const data = event.data as { chunkLength: number; contentLength?: number };
+        if (data.contentLength && onProgress) {
           // Calculate progress percentage
-          onProgress(Math.round((chunkLength / contentLength) * 100));
+          onProgress(Math.round((data.chunkLength / data.contentLength) * 100));
         }
       }
     });

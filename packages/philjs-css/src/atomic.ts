@@ -1,5 +1,5 @@
-import type { AtomicConfig, CSSStyleObject } from './types';
-import { css, type CSSResult } from './css';
+import type { AtomicConfig, CSSStyleObject, CSSResult } from './types';
+import { css } from './css';
 
 /**
  * Atomic CSS class registry
@@ -84,7 +84,7 @@ export function generateAtomicClasses(config: AtomicConfig): Record<string, stri
 
       const result = atomicRegistry.register(atomicKey, {
         [property]: value
-      } as CSSStyleObject);
+      } as unknown as CSSStyleObject);
 
       utilities[key] = result.className;
     }
@@ -206,7 +206,7 @@ export function createColorUtilities(
 
       const result = atomicRegistry.register(atomicKey, {
         [prop]: colorValue
-      } as CSSStyleObject);
+      } as unknown as CSSStyleObject);
 
       utilities[utilityKey] = result.className;
     }

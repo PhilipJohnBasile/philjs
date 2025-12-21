@@ -72,7 +72,8 @@ export const FileSystem = {
     }
 
     const { readTextFile } = await import('@tauri-apps/plugin-fs');
-    return readTextFile(path, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    return readTextFile(path, baseDirValue ? { baseDir: baseDirValue } : undefined);
   },
 
   /**
@@ -84,7 +85,8 @@ export const FileSystem = {
     }
 
     const { readFile } = await import('@tauri-apps/plugin-fs');
-    return readFile(path, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    return readFile(path, baseDirValue ? { baseDir: baseDirValue } : undefined);
   },
 
   /**
@@ -106,8 +108,9 @@ export const FileSystem = {
       await mkdir(dir, { recursive: true }).catch(() => {});
     }
 
+    const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
     await writeTextFile(path, contents, {
-      baseDir: options?.baseDir ? getBaseDir(options.baseDir) : undefined,
+      baseDir: baseDirValue,
       append: options?.append,
     });
   },
@@ -131,8 +134,9 @@ export const FileSystem = {
       await mkdir(dir, { recursive: true }).catch(() => {});
     }
 
+    const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
     await writeFile(path, contents, {
-      baseDir: options?.baseDir ? getBaseDir(options.baseDir) : undefined,
+      baseDir: baseDirValue,
       append: options?.append,
     });
   },
@@ -146,7 +150,8 @@ export const FileSystem = {
     }
 
     const { exists } = await import('@tauri-apps/plugin-fs');
-    return exists(path, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    return exists(path, baseDirValue ? { baseDir: baseDirValue } : undefined);
   },
 
   /**
@@ -158,9 +163,10 @@ export const FileSystem = {
     }
 
     const { mkdir } = await import('@tauri-apps/plugin-fs');
+    const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
     await mkdir(path, {
       recursive: options?.recursive,
-      baseDir: options?.baseDir ? getBaseDir(options.baseDir) : undefined,
+      baseDir: baseDirValue,
     });
   },
 
@@ -173,7 +179,8 @@ export const FileSystem = {
     }
 
     const { remove } = await import('@tauri-apps/plugin-fs');
-    await remove(path, { baseDir: baseDir ? getBaseDir(baseDir) : undefined });
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    await remove(path, { baseDir: baseDirValue });
   },
 
   /**
@@ -185,9 +192,10 @@ export const FileSystem = {
     }
 
     const { remove } = await import('@tauri-apps/plugin-fs');
+    const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
     await remove(path, {
       recursive: options?.recursive,
-      baseDir: options?.baseDir ? getBaseDir(options.baseDir) : undefined,
+      baseDir: baseDirValue,
     });
   },
 
@@ -200,13 +208,14 @@ export const FileSystem = {
     }
 
     const { readDir, stat } = await import('@tauri-apps/plugin-fs');
-    const entries = await readDir(path, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    const entries = await readDir(path, baseDirValue ? { baseDir: baseDirValue } : undefined);
 
     const result: FileEntry[] = [];
     for (const entry of entries) {
       const fullPath = `${path}/${entry.name}`;
       try {
-        const info = await stat(fullPath, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+        const info = await stat(fullPath, baseDirValue ? { baseDir: baseDirValue } : undefined);
         result.push({
           name: entry.name,
           path: fullPath,
@@ -264,7 +273,8 @@ export const FileSystem = {
     }
 
     const { stat } = await import('@tauri-apps/plugin-fs');
-    const info = await stat(path, baseDir ? { baseDir: getBaseDir(baseDir) } : undefined);
+    const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
+    const info = await stat(path, baseDirValue ? { baseDir: baseDirValue } : undefined);
 
     const name = path.split('/').pop() || path;
 
@@ -293,6 +303,7 @@ export const FileSystem = {
     }
 
     const { watch } = await import('@tauri-apps/plugin-fs');
+    const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
     const unwatch = await watch(
       path,
       (event) => {
@@ -303,7 +314,7 @@ export const FileSystem = {
       },
       {
         recursive: options?.recursive,
-        baseDir: options?.baseDir ? getBaseDir(options.baseDir) : undefined,
+        baseDir: baseDirValue,
       }
     );
 
@@ -312,36 +323,37 @@ export const FileSystem = {
 };
 
 // Helper to get base directory enum
-async function getBaseDir(dir: BaseDirectory): Promise<any> {
-  const { BaseDirectory } = await import('@tauri-apps/plugin-fs');
-  const mapping: Record<string, any> = {
-    app: BaseDirectory.App,
-    appCache: BaseDirectory.AppCache,
-    appConfig: BaseDirectory.AppConfig,
-    appData: BaseDirectory.AppData,
-    appLocalData: BaseDirectory.AppLocalData,
-    appLog: BaseDirectory.AppLog,
-    audio: BaseDirectory.Audio,
-    cache: BaseDirectory.Cache,
-    config: BaseDirectory.Config,
-    data: BaseDirectory.Data,
-    desktop: BaseDirectory.Desktop,
-    document: BaseDirectory.Document,
-    download: BaseDirectory.Download,
-    executable: BaseDirectory.Executable,
-    font: BaseDirectory.Font,
-    home: BaseDirectory.Home,
-    localData: BaseDirectory.LocalData,
-    log: BaseDirectory.Log,
-    picture: BaseDirectory.Picture,
-    public: BaseDirectory.Public,
-    runtime: BaseDirectory.Runtime,
-    temp: BaseDirectory.Temp,
-    template: BaseDirectory.Template,
-    video: BaseDirectory.Video,
-    resource: BaseDirectory.Resource,
+// This is a simple async helper - caller must await
+async function getBaseDir(dir: BaseDirectory): Promise<number> {
+  const { BaseDirectory: BD } = await import('@tauri-apps/plugin-fs');
+  const mapping: Record<string, number> = {
+    app: BD.AppConfig,
+    appCache: BD.AppCache,
+    appConfig: BD.AppConfig,
+    appData: BD.AppData,
+    appLocalData: BD.AppLocalData,
+    appLog: BD.AppLog,
+    audio: BD.Audio,
+    cache: BD.Cache,
+    config: BD.Config,
+    data: BD.Data,
+    desktop: BD.Desktop,
+    document: BD.Document,
+    download: BD.Download,
+    executable: BD.Executable,
+    font: BD.Font,
+    home: BD.Home,
+    localData: BD.LocalData,
+    log: BD.AppLog,
+    picture: BD.Picture,
+    public: BD.Public,
+    runtime: BD.Runtime,
+    temp: BD.Temp,
+    template: BD.Template,
+    video: BD.Video,
+    resource: BD.Resource,
   };
-  return mapping[dir];
+  return mapping[dir] ?? BD.AppData;
 }
 
 // Convenience exports

@@ -3,7 +3,7 @@
  * Mocks Tauri APIs for testing in Node.js environment
  */
 
-import { vi } from 'vitest';
+import { vi, beforeEach } from 'vitest';
 
 // Mock window.__TAURI__ global
 const mockTauriInternals = {

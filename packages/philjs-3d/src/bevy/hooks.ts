@@ -119,8 +119,8 @@ export async function createBevyInstance(config: BevyConfig): Promise<BevyInstan
     // Create memory
     const memoryConfig = config.memory || { initial: 256, maximum: 16384 };
     instance.memory = new WebAssembly.Memory({
-      initial: memoryConfig.initial,
-      maximum: memoryConfig.maximum,
+      initial: memoryConfig.initial ?? 256,
+      maximum: memoryConfig.maximum ?? 16384,
       shared: true,
     });
 
@@ -548,14 +548,14 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
           }
           return results;
         },
-        filter: (fn) => {
+        filter: function(this: QueryResult<T>, fn: (entity: BevyEntity, ...components: T) => boolean): QueryResult<T> {
           const filtered = matchingEntities.filter((entity) => {
             const components = query.components.map((name) =>
               entity.getComponents().find((c) => c.componentName === name)
             ) as T;
             return fn(entity, ...components);
           });
-          return { ...this, entities: filtered } as any;
+          return { ...this, entities: filtered } as QueryResult<T>;
         },
         forEach: (fn) => {
           for (const entity of matchingEntities) {

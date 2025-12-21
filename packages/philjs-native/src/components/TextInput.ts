@@ -719,35 +719,35 @@ function convertValue(key: string, value: any): string {
  * Create a TextInput reference
  */
 export function createTextInputRef(): TextInputRef {
-  let inputElement: HTMLInputElement | HTMLTextAreaElement | null = null;
+  const state: { inputElement: HTMLInputElement | HTMLTextAreaElement | null } = { inputElement: null };
 
   return {
     focus() {
-      inputElement?.focus();
+      state.inputElement?.focus();
     },
 
     blur() {
-      inputElement?.blur();
+      state.inputElement?.blur();
     },
 
     clear() {
-      if (inputElement) {
-        inputElement.value = '';
+      if (state.inputElement) {
+        state.inputElement.value = '';
       }
     },
 
     isFocused() {
-      return document.activeElement === inputElement;
+      return document.activeElement === state.inputElement;
     },
 
     setNativeProps(props) {
-      if (inputElement && props.value !== undefined) {
-        inputElement.value = props.value;
+      if (state.inputElement && props.value !== undefined) {
+        state.inputElement.value = props.value;
       }
     },
 
     setSelection(start, end) {
-      inputElement?.setSelectionRange(start, end);
+      state.inputElement?.setSelectionRange(start, end);
     },
   };
 }

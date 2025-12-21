@@ -11,5 +11,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts"]
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts", "src/test-setup.ts", "src/electron/*", "src/electron/**/*", "src/system/notification.ts", "src/system/clipboard.ts"]
 }

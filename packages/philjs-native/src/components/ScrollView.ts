@@ -442,12 +442,12 @@ function convertValue(key: string, value: any): string {
  * Create a ScrollView reference
  */
 export function createScrollViewRef(): ScrollViewRef {
-  let scrollElement: HTMLElement | null = null;
+  const state: { scrollElement: HTMLElement | null } = { scrollElement: null };
 
   return {
     scrollTo(options) {
-      if (scrollElement) {
-        scrollElement.scrollTo({
+      if (state.scrollElement) {
+        state.scrollElement.scrollTo({
           left: options.x || 0,
           top: options.y || 0,
           behavior: options.animated ? 'smooth' : 'auto',
@@ -456,9 +456,9 @@ export function createScrollViewRef(): ScrollViewRef {
     },
 
     scrollToEnd(options) {
-      if (scrollElement) {
-        scrollElement.scrollTo({
-          top: scrollElement.scrollHeight,
+      if (state.scrollElement) {
+        state.scrollElement.scrollTo({
+          top: state.scrollElement.scrollHeight,
           behavior: options?.animated ? 'smooth' : 'auto',
         });
       }
@@ -470,10 +470,10 @@ export function createScrollViewRef(): ScrollViewRef {
     },
 
     getScrollOffset() {
-      if (scrollElement) {
+      if (state.scrollElement) {
         return {
-          x: scrollElement.scrollLeft,
-          y: scrollElement.scrollTop,
+          x: state.scrollElement.scrollLeft,
+          y: state.scrollElement.scrollTop,
         };
       }
       return { x: 0, y: 0 };

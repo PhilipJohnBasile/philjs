@@ -293,7 +293,7 @@ export async function createPixelStreamingInstance(
     sendKeyboardInput: (data: KeyboardInputData) => {
       if (dataChannel?.readyState === 'open') {
         const message = {
-          type: 'keyboard',
+          inputType: 'keyboard',
           ...data,
         };
         dataChannel.send(JSON.stringify(message));
@@ -303,7 +303,7 @@ export async function createPixelStreamingInstance(
     sendMouseInput: (data: MouseInputData) => {
       if (dataChannel?.readyState === 'open') {
         const message = {
-          type: 'mouse',
+          inputType: 'mouse',
           ...data,
         };
         dataChannel.send(JSON.stringify(message));
@@ -313,7 +313,7 @@ export async function createPixelStreamingInstance(
     sendTouchInput: (data: TouchInputData) => {
       if (dataChannel?.readyState === 'open') {
         const message = {
-          type: 'touch',
+          inputType: 'touch',
           ...data,
         };
         dataChannel.send(JSON.stringify(message));
