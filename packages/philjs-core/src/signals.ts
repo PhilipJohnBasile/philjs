@@ -789,6 +789,10 @@ export function snapshotHMRState(options: HMROptions = {}): Map<string, any> {
  * ```
  */
 export function restoreHMRState(options: HMROptions = {}): void {
+  if (!isDev || !activeSignals || !hmrStateRegistry) {
+    return;
+  }
+
   const startTime = performance.now();
   let restoredCount = 0;
   let failedCount = 0;
@@ -843,6 +847,10 @@ export function restoreHMRState(options: HMROptions = {}): void {
  * ```
  */
 export function rollbackHMRState(snapshot: Map<string, any>, options: HMROptions = {}): void {
+  if (!isDev || !activeSignals || !hmrStateRegistry) {
+    return;
+  }
+
   const startTime = performance.now();
   let rolledBackCount = 0;
 
@@ -888,6 +896,10 @@ export function rollbackHMRState(snapshot: Map<string, any>, options: HMROptions
  * ```
  */
 export function cleanupHMREffects(options: HMROptions = {}): void {
+  if (!isDev || !activeEffects) {
+    return;
+  }
+
   const startTime = performance.now();
   let cleanedCount = 0;
 
@@ -922,6 +934,10 @@ export function cleanupHMREffects(options: HMROptions = {}): void {
  * ```
  */
 export function clearHMRState(): void {
+  if (!isDev || !hmrStateRegistry || !activeSignals || !activeEffects) {
+    return;
+  }
+
   hmrStateRegistry.clear();
   activeSignals.clear();
   activeEffects.clear();
@@ -965,11 +981,16 @@ export function getHMRStats(): {
   inProgress: boolean;
 } {
   return {
-    signalCount: activeSignals.size,
-    effectCount: activeEffects.size,
-    registrySize: hmrStateRegistry.size,
+    signalCount: activeSignals?.size ?? 0,
+    effectCount: activeEffects?.size ?? 0,
+    registrySize: hmrStateRegistry?.size ?? 0,
     hasSnapshot: hmrStateSnapshot !== null,
     inProgress: hmrInProgress,
   };
 }
 
+/**
+ * Alias for memo - creates a computed/derived value.
+ * @alias memo
+ */
+export const computed = memo;

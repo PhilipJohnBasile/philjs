@@ -217,7 +217,7 @@ export function getIslandCacheStore(): IslandCacheStore {
  * </ServerIsland>
  * ```
  */
-export function ServerIsland(props: ServerIslandProps): RenderableContent {
+export function ServerIsland(props: ServerIslandProps): VNode {
   const {
     id = generateIslandId(),
     cache,

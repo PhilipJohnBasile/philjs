@@ -1,5 +1,5 @@
-import type { CSSStyleObject, VariantConfig, VariantProps } from './types';
-import { css, compose, type CSSResult } from './css';
+import type { CSSStyleObject, VariantConfig, VariantProps, CSSResult } from './types';
+import { css, compose } from './css';
 
 /**
  * Create a component with variants (similar to Stitches/CVA)

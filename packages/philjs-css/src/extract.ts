@@ -124,6 +124,7 @@ export interface BuildPlugin {
   name: string;
   setup?: (build: any) => void;
   transform?: (code: string, id: string) => { code: string; map?: any } | null;
+  generateBundle?: () => void | Promise<void>;
 }
 
 /**

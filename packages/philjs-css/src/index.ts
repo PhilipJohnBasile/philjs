@@ -83,9 +83,8 @@ export type {
   ExtractConfig,
   CSSRule,
   StyleSheet,
-  ResponsiveValue,
-  BundleStats
+  ResponsiveValue
 } from './types';
 
 // Re-export from extract for convenience
-export type { BuildPlugin } from './extract';
+export type { BuildPlugin, BundleStats } from './extract';

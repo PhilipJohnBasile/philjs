@@ -90,7 +90,7 @@ export interface Theme {
   getToken: <K extends keyof ThemeTokens>(
     category: K,
     key: string
-  ) => ThemeTokens[K] extends Record<string, infer V> ? V : never;
+  ) => string | number;
 }
 
 /**

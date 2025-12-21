@@ -259,7 +259,7 @@ export {
 } from "./performance-tracking.js";
 export type {
   PerformanceMark,
-  PerformanceBudget,
+  RuntimeBudget,
   ComponentPerformance,
   APIPerformance,
   ResourcePerformance,

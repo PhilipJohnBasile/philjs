@@ -5,5 +5,18 @@
     "rootDir": "./src"
   },
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts"]
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.bench.ts",
+    "src/superjson-examples.ts",
+    "src/superjson-perf.ts",
+    "src/file-utils.ts",
+    "src/glob.ts",
+    "src/virtual-modules.ts",
+    "src/web-vitals.ts",
+    "src/performance-tracking.ts",
+    "src/resource.ts",
+    "src/superjson.ts"
+  ]
 }

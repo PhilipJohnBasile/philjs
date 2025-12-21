@@ -23,7 +23,7 @@ export interface PerformanceMark {
   metadata?: Record<string, any>;
 }
 
-export interface PerformanceBudget {
+export interface RuntimeBudget {
   name: string;
   maxDuration: number;
   warn?: boolean;
@@ -74,7 +74,7 @@ export interface PerformanceSnapshot {
 
 export class PerformanceTracker {
   private marks = new Map<string, PerformanceMark>();
-  private budgets = new Map<string, PerformanceBudget>();
+  private budgets = new Map<string, RuntimeBudget>();
   private components = new Map<string, ComponentPerformance>();
   private apiCalls: APIPerformance[] = [];
   private resources: ResourcePerformance[] = [];
