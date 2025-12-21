@@ -2,7 +2,7 @@
  * Flash Messages Tests
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   setFlash,
   setFlashSuccess,

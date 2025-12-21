@@ -268,3 +268,65 @@ export type {
   CacheStore,
   CloudflareCacheOptions,
 } from './edge-cache';
+
+// Server Actions (React 19 / Next.js 14 style)
+export {
+  // Action creation
+  createServerAction,
+  serverAction,
+  registerAction,
+  getAction,
+  getAllActions,
+  isServerAction,
+
+  // Hooks
+  useServerAction,
+  useFormAction,
+  useOptimistic,
+
+  // CSRF Protection
+  setCSRFSecret,
+  generateCSRFToken,
+  verifyCSRFToken,
+  setClientCSRFToken,
+  getClientCSRFToken,
+
+  // Serialization
+  serialize,
+  deserialize,
+  serializeFormData,
+  deserializeFormData,
+
+  // Request handling
+  handleServerActionRequest,
+  serverActionsMiddleware,
+  serverActionsExpressMiddleware,
+
+  // Revalidation
+  revalidatePath,
+  revalidateTag,
+  setRevalidationCallback,
+
+  // Progressive enhancement
+  createCSRFInput,
+  withCSRF,
+
+  // Errors
+  ServerActionError,
+} from './server-actions';
+
+export type {
+  ServerAction,
+  ServerActionFn,
+  ServerActionState,
+  CreateServerActionOptions,
+  UseServerActionOptions,
+  UseServerActionReturn,
+  UseFormActionReturn,
+  UseOptimisticOptions,
+  UseOptimisticReturn,
+  ActionResult,
+  SerializableValue,
+  ServerActionReturnType,
+  ServerActionInputType,
+} from './server-actions';

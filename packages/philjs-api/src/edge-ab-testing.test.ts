@@ -2,7 +2,7 @@
  * Edge A/B Testing Tests
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 import {
   abTestingMiddleware,
   variantMiddleware,

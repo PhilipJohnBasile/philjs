@@ -2,7 +2,7 @@
  * Edge Middleware Tests
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   executeEdgeMiddleware,
   composeEdgeMiddleware,

@@ -2,7 +2,7 @@
  * Edge Cache Tests
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   edgeCacheMiddleware,
   cacheControlMiddleware,

@@ -16,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "philjs-core": resolve(repoRoot, "packages/philjs-core/src/index.ts"),
+      "./view-transitions": resolve(__dirname, "src/view-transitions.ts"),
     },
   },
 });

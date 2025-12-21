@@ -52,22 +52,54 @@ export {
 } from "./smart-preload.js";
 export type { PreloadStrategy, PreloadOptions, UserIntentData } from "./smart-preload.js";
 
-// View Transitions
+// View Transitions (Astro-inspired)
 export {
+  // Manager
   ViewTransitionManager,
   initViewTransitions,
   getViewTransitionManager,
+  resetViewTransitions,
+  // Navigation
   navigateWithTransition,
+  navigate,
+  startViewTransition,
+  // Shared Elements
   markSharedElement,
   transitionLink,
+  // Support Detection
   supportsViewTransitions,
+  prefersReducedMotion,
+  // Fallback
   animateFallback,
+  // Hooks
+  useViewTransition,
+  useViewTransitionEvent,
+  useTransitionPersist,
+  useTransitionName,
+  // Components
+  ViewTransitionLink,
+  createViewTransitionLink,
+  // Utilities
+  getNavigationDirection,
 } from "./view-transitions.js";
 export type {
+  // Core Types
   TransitionConfig,
   TransitionType,
+  TransitionDirection,
+  FallbackBehavior,
   ViewTransitionOptions,
+  ViewTransitionConfig,
+  // Event Types
+  ViewTransitionEvent,
+  ViewTransitionEventDetail,
+  ViewTransitionEventHandler,
+  // State Types
+  ViewTransitionState,
+  // Shared Element Types
   SharedElementOptions,
+  // Component Types
+  ViewTransitionLinkProps,
 } from "./view-transitions.js";
 
 // Qwik-style Speculative Prefetching

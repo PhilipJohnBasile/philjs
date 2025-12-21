@@ -2,7 +2,7 @@
  * Cookie Session Tests
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   createCookieSessionStorage,
   csrfMiddleware,
