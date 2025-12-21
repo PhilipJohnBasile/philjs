@@ -1015,6 +1015,41 @@ export function createBoolSignal(
 export { viteWasmPlugin, type ViteWasmPluginOptions } from './vite-plugin.js';
 
 // ============================================================================
+// Export Codegen Utilities
+// ============================================================================
+
+export {
+  // Type definitions
+  type RustType,
+  type RustFunction,
+  type RustParam,
+  type RustStruct,
+  type RustField,
+  type RustEnum,
+  type RustEnumVariant,
+  type WasmBindgenAttrs,
+  type RustModule,
+  type RustImpl,
+  type CodegenOptions,
+  type CodegenCLIOptions,
+  type CodegenResult,
+
+  // Type mapper
+  RustToJSMapper,
+
+  // Parser functions
+  parseRustType,
+  parseRustModule,
+
+  // Code generation functions
+  generateTypeScriptTypes,
+  generateJSWrapper,
+  generateComponentBinding,
+  generateSignalBinding,
+  generateBindings,
+} from './codegen.js';
+
+// ============================================================================
 // Utility Types for Rust Interop
 // ============================================================================
 

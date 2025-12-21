@@ -8,6 +8,7 @@
  * - Godot HTML5 export embedding
  * - Unreal Engine Pixel Streaming support
  * - Unity WebGL build embedding
+ * - Bevy WASM game engine integration (PhilJS exclusive!)
  *
  * @example
  * // WebGL
@@ -24,6 +25,9 @@
  *
  * // Unity
  * import { UnityEmbed, useUnity, sendMessage } from 'philjs-3d/unity';
+ *
+ * // Bevy (Rust game engine - PhilJS exclusive!)
+ * import { BevyEmbed, useBevy, spawnEntity, createTransformComponent } from 'philjs-3d/bevy';
  */
 
 // ============================================================================
@@ -310,3 +314,123 @@ export {
   UnityProgressBar,
   UnityFullscreenButton,
 } from './unity/index';
+
+// ============================================================================
+// Bevy Integration (PhilJS Exclusive!)
+// ============================================================================
+
+export {
+  // Types
+  type BevyConfig,
+  type BevyApp,
+  type BevyInstance,
+  type BevyState,
+  type EntityId,
+  type EntityGeneration,
+  type BevyEntity,
+  type ComponentType,
+  type BevyComponent,
+  type TransformComponent,
+  type GlobalTransformComponent,
+  type VisibilityComponent,
+  type NameComponent,
+  type ParentComponent,
+  type ChildrenComponent,
+  type Vec2,
+  type Vec3,
+  type Vec4,
+  type Quat,
+  type Mat3,
+  type Mat4,
+  type ResourceType,
+  type BevyResource,
+  type TimeResource,
+  type InputResource,
+  type GamepadState as BevyGamepadState,
+  type WindowResource,
+  type BevyEventType,
+  type BevyEvent,
+  type BevyEventData,
+  type BevyEventListener,
+  type QueryFilter,
+  type BevyQuery,
+  type QueryResult,
+  type BevyWorld,
+  type AssetState,
+  type AssetHandle,
+  type BevyAssetType,
+  type AssetMetadata,
+  type KeyCode,
+  type MouseButton as BevyMouseButton,
+  type GamepadButton,
+  type GamepadAxis,
+  type BevyEmbedProps,
+  type UseBevyResult,
+  type UseBevyEntityResult,
+  type UseBevyResourceResult,
+  type UseBevyQueryResult,
+  type EntityBridge,
+  type ComponentBridge,
+  type AssetBundle,
+
+  // Hooks
+  createBevyInstance,
+  getBevy,
+  useBevy,
+  useBevyEntity,
+  useBevyResource,
+  useBevyQuery,
+  onBevyEvent,
+  sendBevyEvent,
+  disposeBevy,
+  disposeAllBevy,
+  isBevySupported,
+  getAllBevyInstances,
+
+  // ECS Bridge
+  setSignalCreator,
+  createEntityBridge,
+  createComponentBridge,
+  spawnEntity,
+  despawnEntity,
+  insertComponent,
+  removeComponent,
+  queryEntities,
+  findEntitiesWith,
+  findEntityWith,
+  createTransformComponent,
+  createVisibilityComponent,
+  createNameComponent,
+  createCustomComponent,
+  trackEntities,
+  trackEntity,
+  disposeAllBridges,
+
+  // Assets
+  loadBevyAsset,
+  preloadAssets,
+  preloadAssetsWithPriority,
+  streamAsset,
+  getCachedAsset,
+  isAssetCached,
+  isAssetLoaded,
+  getAssetMetadata,
+  clearAsset,
+  clearAssetCache,
+  getCacheSize,
+  getCacheCount,
+  getCachedAssetPaths,
+  watchAsset,
+  defineAssetBundle,
+  loadAssetBundle,
+  unloadAssetBundle,
+  getAssetBundle,
+  isBundleLoaded,
+
+  // Components
+  BevyEmbed,
+  createBevyEmbedElement,
+  BevyFullscreenButton,
+  BevyPauseButton,
+  BevyFPSCounter,
+} from './bevy/index';

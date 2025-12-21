@@ -6,6 +6,9 @@
   "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "philjs-wasm": "./dist/cli.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -14,6 +17,14 @@
     "./vite": {
       "types": "./dist/vite-plugin.d.ts",
       "import": "./dist/vite-plugin.js"
+    },
+    "./codegen": {
+      "types": "./dist/codegen.d.ts",
+      "import": "./dist/codegen.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js"
     }
   },
   "files": [
@@ -67,6 +78,8 @@
     "wasm-bindgen",
     "signals",
     "reactivity",
-    "component"
+    "component",
+    "codegen",
+    "bindings"
   ]
 }
