@@ -68,6 +68,10 @@
     "./railway": {
       "types": "./dist/railway/index.d.ts",
       "import": "./dist/railway/index.js"
+    },
+    "./edge": {
+      "types": "./dist/edge/index.d.ts",
+      "import": "./dist/edge/index.js"
     }
   },
   "scripts": {

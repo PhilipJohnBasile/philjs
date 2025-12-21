@@ -94,6 +94,108 @@ export type { RailwayConfig } from './railway';
 export { detectRuntime, getRuntimeInfo, hasFeature, assertRuntime, isBun, isDeno, isNode, isEdge, isBrowser, isServer } from './runtime-detect';
 export type { Runtime, RuntimeInfo, RuntimeFeatures } from './runtime-detect';
 
+// Edge Runtime Optimizations
+export {
+  // Edge Runtime
+  detectEdgePlatform,
+  getPlatformInfo,
+  createEdgeEnv,
+  createExecutionContext,
+  getRegion,
+  createEdgeHandler,
+  coalesceRequest,
+  isColdStart,
+  markWarm,
+  getColdStartDuration,
+  resetColdStartTracking,
+  preloadModule,
+  getPreloadedModule,
+  initializeColdStart,
+
+  // Streaming
+  createWritableStream,
+  createStreamingResponse,
+  createSSEStream,
+  createSSEHandler,
+  createHTMLStream,
+  parseESITags,
+  processESI,
+  createESIMiddleware,
+  streamThrough,
+  mergeStreams,
+  createStreamTee,
+
+  // Caching
+  EdgeCache,
+  createCacheKey,
+  shouldCacheResponse,
+  createCachedResponse,
+  createCacheMiddleware,
+  createAssetCache,
+  getDefaultCache,
+  resetDefaultCache,
+
+  // Geolocation
+  getGeoLocation,
+  getClientIP,
+  applyGeoRouting,
+  createGeoRoutingMiddleware,
+  findBestRegion,
+  createLatencyRouter,
+  selectGeoVariant,
+  createVariantCookie,
+  calculateDistance,
+  findNearestLocation,
+  addGeoHeaders,
+
+  // Default exports
+  edgeRuntime,
+  streaming,
+  cache,
+  geo,
+} from './edge';
+
+export type {
+  // Edge Runtime Types
+  EdgePlatform,
+  EdgeContext,
+  EdgeEnv,
+  EdgeExecutionContext,
+  EdgeRegion,
+  EdgeTiming,
+  EdgeKVNamespace,
+  EdgeKVPutOptions,
+  EdgeKVListOptions,
+  EdgeKVListResult,
+  EdgeRuntimeConfig,
+  EdgeHandlerOptions,
+  ColdStartConfig,
+
+  // Streaming Types
+  StreamingConfig,
+  SSEMessage,
+  ESIFragment,
+  HTMLStreamOptions,
+  StreamingWriter,
+
+  // Cache Types
+  CacheEntry,
+  CacheOptions,
+  EdgeCacheConfig,
+  CacheStats,
+  EdgeKVStore,
+  ResponseCacheOptions,
+  AssetCacheOptions,
+
+  // Geo Types
+  GeoLocation,
+  GeoRoutingRule,
+  GeoRoutingConfig,
+  RegionConfig,
+  LatencyRoutingConfig,
+  GeoABTestConfig,
+} from './edge';
+
 // Auto-detect adapter based on environment
 export function autoAdapter(config: AdapterConfig = {}): Adapter {
   // Check for runtime first (Bun, Deno)

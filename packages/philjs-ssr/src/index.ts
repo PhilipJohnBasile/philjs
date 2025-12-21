@@ -206,35 +206,79 @@ export {
 // ============================================================================
 
 export {
+  // QRL (Qwik Resource Locator) - Lazy-loadable References
+  qrl,
+  qrlChunk,
+  isQRL,
+  resolveQRL,
+  qrlRegistry,
+
+  // $ Prefix Functions - Mark Functions as Lazy-loadable
+  $,
+  $$,
+  $closure,
+
+  // State Serialization
   resumable,
+  useResumable,
   resumableComputed,
   serializeState,
   deserializeState,
+  resumeFromState,
   clearSerializedState,
+
+  // Event Listener Serialization
   on,
   serializeListeners,
   resumeListeners,
+
+  // Component Boundaries
   boundary,
   serializeBoundaries,
   getBoundary,
+
+  // Resumable App Wrapper
+  createResumableApp,
+
+  // Full Resumability Context
   createResumableContext,
   serializeContext,
   resumeContext,
+
+  // SSR Integration
   injectResumableState,
   extractResumableState,
+
+  // Closure Serialization
+  serializeClosure,
+  deserializeClosureVars,
+
+  // Development Tools
   getResumabilityStats,
   logResumabilityInfo,
+
+  // Utilities
   isResuming,
+  hasResumed,
   hasResumableState,
   enableResumability,
+  onResume,
 } from "./resumability.js";
 
 export type {
+  // QRL Types
+  QRL,
+
+  // State Types
   ResumableState,
   ResumableListener,
   ResumableContext,
   ComponentBoundary,
   ResumabilityOptions,
+
+  // App Types
+  ResumableAppOptions,
+  ResumableApp,
 } from "./resumability.js";
 
 // ============================================================================

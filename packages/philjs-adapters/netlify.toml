@@ -1,0 +1,13 @@
+[build]
+  publish = "publish"
+  functions = ".netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/handler"
+  status = 200
+
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

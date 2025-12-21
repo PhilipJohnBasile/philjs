@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "include": [
+    "/*"
+  ],
+  "exclude": [
+    "/static/*",
+    "/assets/*",
+    "/_philjs/*"
+  ]
+}
