@@ -7,14 +7,17 @@
     "declarationMap": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/index.ts",
+    "src/types.ts",
+    "src/utils.ts",
+    "src/supabase.ts",
+    "src/type-safe-db.ts",
+    "src/migrations/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
-    "**/*.test.ts",
-    "**/prisma.ts",
-    "**/prisma-advanced.ts",
-    "**/drizzle.ts",
-    "**/drizzle-advanced.ts"
+    "**/*.test.ts"
   ]
 }
