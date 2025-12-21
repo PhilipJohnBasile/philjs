@@ -8,20 +8,18 @@ import type { DatabaseConfig, Repository, PaginationOptions, PaginatedResult } f
 
 /**
  * Create a database connection based on config
+ *
+ * Note: Currently only supports Supabase. Prisma and Drizzle support
+ * can be added by installing the respective packages and using their
+ * client creators directly.
  */
 export async function createDatabaseConnection(config: DatabaseConfig) {
   switch (config.type) {
     case 'prisma':
-      const { createPrismaClient } = await import('./prisma');
-      return createPrismaClient(config.options);
+      throw new Error('Prisma support requires @prisma/client. Use createPrismaClient from philjs-db/prisma directly.');
 
     case 'drizzle':
-      const { createDrizzleClient } = await import('./drizzle');
-      return createDrizzleClient({
-        type: config.options.dialect as 'postgres' | 'mysql' | 'sqlite',
-        connectionString: config.connectionString,
-        logger: config.options.logging as boolean | undefined,
-      });
+      throw new Error('Drizzle support requires drizzle-orm. Use createDrizzleClient from philjs-db/drizzle directly.');
 
     case 'supabase':
       const { createSupabaseClient } = await import('./supabase');
