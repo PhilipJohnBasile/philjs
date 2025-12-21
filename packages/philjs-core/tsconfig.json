@@ -16,7 +16,6 @@
     "src/virtual-modules.ts",
     "src/web-vitals.ts",
     "src/performance-tracking.ts",
-    "src/resource.ts",
-    "src/superjson.ts"
+    "src/resource.ts"
   ]
 }

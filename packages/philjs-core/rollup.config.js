@@ -88,4 +88,7 @@ export default defineConfig([
   createEntry('cost-tracking.ts', 'cost-tracking.js', ['./signals.js']),
   createEntry('usage-analytics.ts', 'usage-analytics.js', ['./signals.js']),
   createEntry('testing.ts', 'testing.js', ['./signals.js', './jsx-runtime.js']),
+
+  // Serialization
+  createEntry('superjson.ts', 'superjson.js'),
 ]);
