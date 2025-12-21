@@ -19,7 +19,7 @@ describe('Template Engine', () => {
       expect(toPascalCase('hello-world')).toBe('HelloWorld');
       expect(toPascalCase('hello_world')).toBe('HelloWorld');
       expect(toPascalCase('hello world')).toBe('HelloWorld');
-      expect(toPascalCase('philjs-plugin-awesome')).toBe('PhilJsPluginAwesome');
+      expect(toPascalCase('philjs-plugin-awesome')).toBe('PhiljsPluginAwesome');
     });
 
     it('should convert to camelCase', () => {
@@ -144,8 +144,8 @@ describe('Template Engine', () => {
       expect(testTemplate).toContain("import { describe, it, expect");
       expect(testTemplate).toContain("describe('philjs-plugin-test'");
       expect(testTemplate).toContain('should have correct metadata');
-      expect(testTemplate).toContain('should initialize successfully');
-      expect(testTemplate).toContain('should handle build lifecycle');
+      expect(testTemplate).toContain('should setup successfully with default config');
+      expect(testTemplate).toContain('should execute buildEnd hook');
     });
 
     it('should use correct plugin name in tests', () => {

@@ -175,9 +175,11 @@ export function createBuilder(): PluginBuilder {
 export class PluginTester {
   private plugin: Plugin;
   private mockContext: PluginContext;
+  private files: Map<string, string>;
 
   constructor(plugin: Plugin) {
     this.plugin = plugin;
+    this.files = new Map<string, string>();
     this.mockContext = this.createMockContext();
   }
 
@@ -186,7 +188,7 @@ export class PluginTester {
    */
   private createMockContext(): PluginContext {
     const logs: { level: string; message: string; args: any[] }[] = [];
-    const files = new Map<string, string>();
+    const files = this.files;
 
     return {
       version: "2.0.0",
@@ -256,7 +258,7 @@ export class PluginTester {
    * Set mock file
    */
   setFile(path: string, content: string): void {
-    (this.mockContext.fs as any).files?.set(path, content);
+    this.files.set(path, content);
   }
 
   /**
