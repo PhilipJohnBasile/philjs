@@ -2,83 +2,15 @@
  * PhilJS Database Integration
  *
  * Database utilities for PhilJS applications:
- * - Prisma ORM integration (basic & advanced)
- * - Drizzle ORM integration (basic & advanced)
  * - Supabase integration
  * - Type-safe database utilities
  * - Database migrations (multi-database support)
+ *
+ * Note: Prisma and Drizzle integrations are available via separate entry points
+ * once you have the required peer dependencies installed:
+ * - philjs-db/prisma - requires @prisma/client
+ * - philjs-db/drizzle - requires drizzle-orm
  */
-
-// Prisma - Basic
-export {
-  createPrismaClient,
-  usePrisma,
-  withPrisma,
-  PrismaProvider,
-  withPrismaTransaction,
-  paginatedQuery,
-} from './prisma';
-
-// Prisma - Advanced
-export {
-  PrismaManager,
-  usePrismaQuery,
-  usePrismaMutation,
-  loggingMiddleware,
-  performanceMiddleware,
-  errorTrackingMiddleware,
-  softDeleteMiddleware,
-  createQueryBuilder,
-  paginatedPrismaQuery,
-  batchCreate,
-  upsertMany,
-  safeTransaction,
-} from './prisma-advanced';
-
-export type {
-  PrismaQueryOptions,
-  PrismaMutationOptions,
-  PrismaQueryResult,
-  PrismaMutationResult,
-  PrismaCache,
-  PrismaMiddleware,
-} from './prisma-advanced';
-
-// Drizzle - Basic
-export {
-  createDrizzleClient,
-  useDrizzle,
-  withDrizzle,
-  DrizzleProvider,
-  withDrizzleTransaction,
-} from './drizzle';
-
-// Drizzle - Advanced
-export {
-  DrizzleManager,
-  useDrizzleQuery,
-  useDrizzleMutation,
-  paginatedDrizzleQuery,
-  batchInsert,
-  upsert,
-  softDelete as drizzleSoftDelete,
-  safeTransaction as drizzleSafeTransaction,
-  runMigrations,
-  generateMigration,
-  pushSchema,
-  selectHelper,
-  whereHelper,
-  orderByHelper,
-} from './drizzle-advanced';
-
-export type {
-  DrizzleQueryOptions,
-  DrizzleMutationOptions,
-  DrizzleQueryResult,
-  DrizzleMutationResult,
-  DrizzleCache,
-  DrizzleBatchOptions,
-} from './drizzle-advanced';
 
 // Supabase
 export {
