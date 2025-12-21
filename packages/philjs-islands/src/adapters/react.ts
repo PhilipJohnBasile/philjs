@@ -135,16 +135,13 @@ export const reactAdapter: FrameworkAdapter = {
    * Serialize props for SSR
    */
   serializeProps(props: Record<string, any>): string {
-    return JSON.stringify(props, (key, value) => {
+    // Pre-process to handle special types before JSON.stringify
+    // (JSON.stringify calls Date.toJSON() before the replacer sees it)
+    const processed = processSpecialTypes(props);
+    return JSON.stringify(processed, (key, value) => {
       // Handle special React types
       if (typeof value === 'function') {
         return undefined; // Functions can't be serialized
-      }
-      if (value instanceof Date) {
-        return { __type: 'Date', value: value.toISOString() };
-      }
-      if (value instanceof RegExp) {
-        return { __type: 'RegExp', value: value.toString() };
       }
       return value;
     });
@@ -175,6 +172,40 @@ export const reactAdapter: FrameworkAdapter = {
     return ['react', 'react-dom'];
   }
 };
+
+/**
+ * Pre-process object to convert special types before JSON.stringify
+ * (JSON.stringify calls Date.toJSON() before the replacer, so we need to handle dates first)
+ */
+function processSpecialTypes(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (obj instanceof Date) {
+    return { __type: 'Date', value: obj.toISOString() };
+  }
+
+  if (obj instanceof RegExp) {
+    return { __type: 'RegExp', value: obj.toString() };
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => processSpecialTypes(item));
+  }
+
+  if (typeof obj === 'object') {
+    const result: Record<string, any> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        result[key] = processSpecialTypes(obj[key]);
+      }
+    }
+    return result;
+  }
+
+  return obj;
+}
 
 /**
  * Parse props from element data attributes and merge with provided props

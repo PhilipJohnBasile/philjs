@@ -127,6 +127,14 @@ export function removeSharedState(name: string): void {
 }
 
 /**
+ * Clear all shared state stores (useful for testing)
+ */
+export function clearAllSharedState(): void {
+  stateRegistry.forEach(store => store.clear());
+  stateRegistry.clear();
+}
+
+/**
  * Event bus for cross-framework communication
  */
 class EventBus {

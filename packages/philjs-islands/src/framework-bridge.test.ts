@@ -7,6 +7,7 @@ import {
   createSharedState,
   getSharedState,
   removeSharedState,
+  clearAllSharedState,
   eventBus,
   PropsNormalizer,
   createIslandBridge,
@@ -16,8 +17,9 @@ import {
 
 describe('Framework Bridge', () => {
   beforeEach(() => {
-    // Clear event bus
+    // Clear event bus and shared state between tests
     eventBus.clear();
+    clearAllSharedState();
   });
 
   describe('Shared State Store', () => {
