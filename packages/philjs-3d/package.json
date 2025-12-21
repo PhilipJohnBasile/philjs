@@ -1,0 +1,85 @@
+{
+  "name": "philjs-3d",
+  "version": "2.0.0",
+  "description": "WebGL and game engine integrations for PhilJS - Three.js, Godot, Unreal, Unity",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./webgl": {
+      "types": "./dist/webgl/index.d.ts",
+      "import": "./dist/webgl/index.js"
+    },
+    "./three": {
+      "types": "./dist/three/index.d.ts",
+      "import": "./dist/three/index.js"
+    },
+    "./godot": {
+      "types": "./dist/godot/index.d.ts",
+      "import": "./dist/godot/index.js"
+    },
+    "./unreal": {
+      "types": "./dist/unreal/index.d.ts",
+      "import": "./dist/unreal/index.js"
+    },
+    "./unity": {
+      "types": "./dist/unity/index.d.ts",
+      "import": "./dist/unity/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "echo 'Lint philjs-3d'",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "three": ">=0.150.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/three": "^0.169.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^27.0.0",
+    "three": "^0.170.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-3d"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "webgl",
+    "three",
+    "threejs",
+    "godot",
+    "unreal",
+    "unity",
+    "game-engine",
+    "3d",
+    "graphics",
+    "pixel-streaming"
+  ]
+}
