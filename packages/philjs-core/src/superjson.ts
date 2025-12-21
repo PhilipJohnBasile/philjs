@@ -514,6 +514,9 @@ export function deserialize<T = unknown>(
     return json as T;
   }
 
+  // Store meta in a const for use in nested function (TypeScript narrowing doesn't work in nested functions)
+  const metaData = meta;
+
   const customHandlers = new Map(
     customTypes.map(handler => [handler.name, handler])
   );
@@ -525,8 +528,8 @@ export function deserialize<T = unknown>(
     const pathStr = pathToString(path);
 
     // Check for reference
-    if (meta.referenceMap?.[pathStr]) {
-      const [refPathStr] = meta.referenceMap[pathStr];
+    if (metaData.referenceMap?.[pathStr]) {
+      const [refPathStr] = metaData.referenceMap[pathStr];
       const cached = referenceCache.get(refPathStr);
       if (cached !== undefined) {
         return cached;
@@ -534,7 +537,7 @@ export function deserialize<T = unknown>(
     }
 
     // Check for type transformation
-    const types = meta.values?.[pathStr];
+    const types = metaData.values?.[pathStr];
 
     if (types) {
       const typeList = Array.isArray(types) ? types : [types];
