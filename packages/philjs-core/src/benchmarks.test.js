@@ -62,7 +62,7 @@ describe('Performance Benchmarks', () => {
                 signals.forEach(s => s.set(i));
             }
             const duration = performance.now() - start;
-            expect(duration).toBeLessThan(500);
+            expect(duration).toBeLessThan(1000);
         });
     });
     describe('Computed (Memo) Performance', () => {

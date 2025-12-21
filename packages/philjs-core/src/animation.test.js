@@ -210,26 +210,23 @@ describe("Gesture Handlers", () => {
         expect(onDragEnd).toHaveBeenCalled();
         cleanup();
     });
-    it("should detect tap", (done) => {
+    it("should detect tap", async () => {
         const onTap = vi.fn();
         const cleanup = attachGestures(element, { onTap });
         element.dispatchEvent(new PointerEvent("pointerdown", { clientX: 0, clientY: 0 }));
         element.dispatchEvent(new PointerEvent("pointerup", { clientX: 0, clientY: 0 }));
-        setTimeout(() => {
-            expect(onTap).toHaveBeenCalled();
-            cleanup();
-            done();
-        }, 50);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        expect(onTap).toHaveBeenCalled();
+        cleanup();
     });
-    it("should detect swipe", () => {
+    it("should detect swipe", async () => {
         const onSwipe = vi.fn();
         const cleanup = attachGestures(element, { onSwipe });
         element.dispatchEvent(new PointerEvent("pointerdown", { clientX: 0, clientY: 0 }));
         element.dispatchEvent(new PointerEvent("pointerup", { clientX: 100, clientY: 0 }));
-        setTimeout(() => {
-            expect(onSwipe).toHaveBeenCalledWith("right");
-            cleanup();
-        }, 50);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        expect(onSwipe).toHaveBeenCalledWith("right");
+        cleanup();
     });
     it("should cleanup gesture listeners", () => {
         const cleanup = attachGestures(element, {});

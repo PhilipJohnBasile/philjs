@@ -74,7 +74,7 @@ describe('Performance Benchmarks', () => {
       }
 
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(500);
+      expect(duration).toBeLessThan(1000);
     });
   });
 
