@@ -23,7 +23,9 @@
   "scripts": {
     "build": "(tsc --skipLibCheck --noEmitOnError false || true) && node scripts/build-css.js",
     "dev": "tsc --watch",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006"
   },
   "keywords": [
@@ -37,6 +39,10 @@
     "philjs-core": "workspace:*"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/node": "^20.10.0",
+    "jsdom": "^25.0.1",
     "typescript": "^5.3.0",
     "vitest": "^3.2.4"
   },
