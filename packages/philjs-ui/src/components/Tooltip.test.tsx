@@ -4,6 +4,10 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { Tooltip, Popover } from './Tooltip';
+import type { JSXElement } from 'philjs-core';
+
+// Helper to safely access props on JSX children
+const asElement = (child: unknown): JSXElement => child as JSXElement;
 
 describe('Tooltip', () => {
   describe('rendering', () => {
@@ -206,7 +210,7 @@ describe('Popover', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const triggerWrapper = children[0];
+      const triggerWrapper = asElement(children[0]);
       // Children may be wrapped in array
       const triggerChild = Array.isArray(triggerWrapper.props.children)
         ? triggerWrapper.props.children[0]

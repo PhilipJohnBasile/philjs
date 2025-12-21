@@ -3,6 +3,10 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import type { JSXElement } from 'philjs-core';
+
+// Helper to safely access props on JSX children
+const asElement = (child: unknown): JSXElement => child as JSXElement;
 import {
   Breadcrumb,
   BreadcrumbItem,

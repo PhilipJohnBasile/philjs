@@ -124,7 +124,6 @@ export function HeadProvider(props: { children: any }) {
   });
 
   return (
-    // @ts-expect-error Context Provider type compatibility
     <HeadContext.Provider value={{ addMeta, addLink, setTitle }}>
       {props.children}
     </HeadContext.Provider>

@@ -128,7 +128,7 @@ export function StatusIndicator(props: StatusIndicatorProps) {
     <span className={`inline-flex items-center ${className}`}>
       <span
         className={`${statusSizes[size]} ${statusColors[status]} rounded-full`}
-        aria-hidden="true"
+        aria-hidden={true}
       />
       {label && <span className="ml-2 text-sm text-gray-600">{label}</span>}
     </span>

@@ -117,7 +117,7 @@ export type ResourceFetcher<T> = () => T | Promise<T>;
  * Core JSX element representation
  */
 export interface JSXElement<P = unknown> {
-  type: string | ComponentFunction<P>;
+  type: string | Function;
   props: P extends Props ? P : Props;
   key?: string | number;
 }
@@ -395,6 +395,24 @@ export interface LabelHTMLAttributes extends HTMLAttributes<HTMLLabelElement> {
   form?: string;
 }
 
+/**
+ * Table cell (th/td) element attributes
+ */
+export interface TableCellHTMLAttributes extends HTMLAttributes<HTMLTableCellElement> {
+  colSpan?: number;
+  rowSpan?: number;
+  scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
+  headers?: string;
+  abbr?: string;
+}
+
+/**
+ * Table caption element attributes
+ */
+export interface TableCaptionHTMLAttributes extends HTMLAttributes<HTMLTableCaptionElement> {
+  align?: 'top' | 'bottom' | 'left' | 'right';
+}
+
 // ============================================================================
 // Component Types
 // ============================================================================
@@ -613,12 +631,15 @@ declare global {
 
       // Tables
       table: HTMLAttributes<HTMLTableElement>;
+      caption: TableCaptionHTMLAttributes;
       thead: HTMLAttributes<HTMLTableSectionElement>;
       tbody: HTMLAttributes<HTMLTableSectionElement>;
       tfoot: HTMLAttributes<HTMLTableSectionElement>;
       tr: HTMLAttributes<HTMLTableRowElement>;
-      th: HTMLAttributes<HTMLTableCellElement>;
-      td: HTMLAttributes<HTMLTableCellElement>;
+      th: TableCellHTMLAttributes;
+      td: TableCellHTMLAttributes;
+      colgroup: HTMLAttributes<HTMLTableColElement>;
+      col: HTMLAttributes<HTMLTableColElement>;
 
       // Other
       br: HTMLAttributes<HTMLBRElement>;

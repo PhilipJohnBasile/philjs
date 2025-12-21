@@ -4,6 +4,10 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { Avatar, AvatarGroup, AvatarBadge } from './Avatar';
+import type { JSXElement } from 'philjs-core';
+
+// Helper to safely access props on JSX children
+const asElement = (child: unknown): JSXElement => child as JSXElement;
 
 describe('Avatar', () => {
   describe('rendering', () => {
@@ -23,10 +27,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const containerChildren = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const containerChildren = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       expect(containerChildren.type).toBe('img');
       expect(containerChildren.props.src).toBe('/avatar.jpg');
@@ -39,10 +43,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const containerChildren = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const containerChildren = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       expect(containerChildren.props.alt).toBe('John Doe');
     });
@@ -55,10 +59,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const initials = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const initials = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       expect(initials.type).toBe('span');
       // Children may be wrapped in array
@@ -74,10 +78,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const initials = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const initials = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       // Children may be wrapped in array
       const initialsText = Array.isArray(initials.props.children)
@@ -92,10 +96,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const initials = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const initials = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       // Children may be wrapped in array
       const initialsText = Array.isArray(initials.props.children)
@@ -110,10 +114,10 @@ describe('Avatar', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const container = children[0];
-      const initials = Array.isArray(container.props.children)
+      const container = asElement(children[0]);
+      const initials = asElement(Array.isArray(container.props.children)
         ? container.props.children[0]
-        : container.props.children;
+        : container.props.children);
 
       // Children may be wrapped in array
       const initialsText = Array.isArray(initials.props.children)

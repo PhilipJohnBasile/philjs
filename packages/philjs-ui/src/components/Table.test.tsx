@@ -4,6 +4,10 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableEmpty } from './Table';
+import type { JSXElement } from 'philjs-core';
+
+// Helper to safely access props on JSX children
+const asElement = (child: unknown): JSXElement => child as JSXElement;
 
 // Helper to get table element from Table vnode
 function getTableElement(vnode: any): any {
@@ -395,7 +399,7 @@ describe('TableEmpty', () => {
     const children = Array.isArray(vnode.props.children)
       ? vnode.props.children
       : [vnode.props.children];
-    const td = children[0];
+    const td = asElement(children[0]);
     expect(td.props.colSpan).toBe(5);
   });
 
@@ -406,7 +410,7 @@ describe('TableEmpty', () => {
     const children = Array.isArray(vnode.props.children)
       ? vnode.props.children
       : [vnode.props.children];
-    const td = children[0];
+    const td = asElement(children[0]);
     const tdChildren = Array.isArray(td.props.children)
       ? td.props.children
       : [td.props.children];
@@ -428,7 +432,7 @@ describe('TableEmpty', () => {
     const children = Array.isArray(vnode.props.children)
       ? vnode.props.children
       : [vnode.props.children];
-    const td = children[0];
+    const td = asElement(children[0]);
     const tdChildren = Array.isArray(td.props.children)
       ? td.props.children
       : [td.props.children];
@@ -450,7 +454,7 @@ describe('TableEmpty', () => {
     const children = Array.isArray(vnode.props.children)
       ? vnode.props.children
       : [vnode.props.children];
-    const td = children[0];
+    const td = asElement(children[0]);
     const tdChildren = Array.isArray(td.props.children)
       ? td.props.children
       : [td.props.children];
@@ -468,7 +472,7 @@ describe('TableEmpty', () => {
     const children = Array.isArray(vnode.props.children)
       ? vnode.props.children
       : [vnode.props.children];
-    const td = children[0];
+    const td = asElement(children[0]);
     expect(td.props.className).toContain('text-center');
   });
 });
