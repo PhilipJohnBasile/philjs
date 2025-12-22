@@ -114,7 +114,7 @@ export function BreadcrumbSeparator(props: BreadcrumbSeparatorProps) {
   const { children = '/', className = '' } = props;
 
   return (
-    <span className={`mx-2 text-gray-400 ${className}`} aria-hidden="true">
+    <span className={`mx-2 text-gray-400 ${className}`} aria-hidden={true}>
       {children}
     </span>
   );

@@ -336,7 +336,8 @@ describe('AvatarGroup', () => {
         : [vnode.props.children];
       // Avatars may be at vnodeChildren[0] or vnodeChildren could be the avatars directly
       const avatars = Array.isArray(vnodeChildren[0]) ? vnodeChildren[0] : vnodeChildren.slice(0, -1);
-      const remaining = Array.isArray(vnodeChildren[0]) ? vnodeChildren[1] : vnodeChildren[vnodeChildren.length - 1];
+      const remainingChild = Array.isArray(vnodeChildren[0]) ? vnodeChildren[1] : vnodeChildren[vnodeChildren.length - 1];
+      const remaining = asElement(remainingChild);
 
       expect(avatars.length).toBe(2);
       expect(remaining).toBeDefined();
@@ -398,7 +399,7 @@ describe('AvatarBadge', () => {
       const vnodeChildren = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const badgeWrapper = vnodeChildren[1];
+      const badgeWrapper = asElement(vnodeChildren[1]);
       expect(badgeWrapper).toBeDefined();
       // Children may be wrapped in array
       const badgeContent = Array.isArray(badgeWrapper.props.children)
@@ -417,7 +418,7 @@ describe('AvatarBadge', () => {
         position: 'bottom-right',
       });
 
-      const badgeWrapper = vnode.props.children[1];
+      const badgeWrapper = asElement(vnode.props.children[1]);
       expect(badgeWrapper.props.className).toContain('bottom-0');
       expect(badgeWrapper.props.className).toContain('right-0');
     });

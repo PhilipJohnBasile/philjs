@@ -219,7 +219,7 @@ describe('StatusIndicator', () => {
       const children = Array.isArray(vnode.props.children)
         ? vnode.props.children
         : [vnode.props.children];
-      const label = children[1];
+      const label = asElement(children[1]);
 
       expect(label.type).toBe('span');
       expect(label.props.className).toContain('ml-2');
@@ -234,9 +234,9 @@ describe('StatusIndicator', () => {
   describe('accessibility', () => {
     it('should hide dot from screen readers', () => {
       const vnode = StatusIndicator({ status: 'online' });
-      const dot = vnode.props.children[0];
+      const dot = asElement(vnode.props.children[0]);
 
-      expect(dot.props['aria-hidden']).toBe('true');
+      expect(dot.props['aria-hidden']).toBe(true);
     });
   });
 

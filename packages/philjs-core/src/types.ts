@@ -254,7 +254,7 @@ export interface CSSProperties {
  * Input element attributes
  */
 export interface InputHTMLAttributes extends HTMLAttributes<HTMLInputElement> {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'checkbox' | 'radio' | 'file' | 'submit' | 'reset' | 'button' | 'hidden' | 'range' | 'color';
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'checkbox' | 'radio' | 'file' | 'submit' | 'reset' | 'button' | 'hidden' | 'range' | 'color';
   value?: string | number | readonly string[];
   defaultValue?: string | number | readonly string[];
   checked?: boolean;
@@ -266,12 +266,25 @@ export interface InputHTMLAttributes extends HTMLAttributes<HTMLInputElement> {
   autoComplete?: string;
   placeholder?: string;
   name?: string;
+  id?: string;
   min?: number | string;
   max?: number | string;
   step?: number | string;
   pattern?: string;
   accept?: string;
   multiple?: boolean;
+  maxLength?: number;
+  minLength?: number;
+  size?: number;
+  list?: string;
+  form?: string;
+  formAction?: string;
+  formEncType?: string;
+  formMethod?: string;
+  formNoValidate?: boolean;
+  formTarget?: string;
+  inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+  enterKeyHint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send';
 }
 
 /**
@@ -411,6 +424,71 @@ export interface TableCellHTMLAttributes extends HTMLAttributes<HTMLTableCellEle
  */
 export interface TableCaptionHTMLAttributes extends HTMLAttributes<HTMLTableCaptionElement> {
   align?: 'top' | 'bottom' | 'left' | 'right';
+}
+
+/**
+ * Option element attributes
+ */
+export interface OptionHTMLAttributes extends HTMLAttributes<HTMLOptionElement> {
+  value?: string | number;
+  disabled?: boolean;
+  selected?: boolean;
+  label?: string;
+}
+
+/**
+ * OptGroup element attributes
+ */
+export interface OptGroupHTMLAttributes extends HTMLAttributes<HTMLOptGroupElement> {
+  disabled?: boolean;
+  label?: string;
+}
+
+/**
+ * SVG element attributes
+ */
+export interface SVGHTMLAttributes extends HTMLAttributes<SVGElement> {
+  // Core attributes
+  xmlns?: string;
+  viewBox?: string;
+  preserveAspectRatio?: string;
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: number | string;
+  strokeLinecap?: 'butt' | 'round' | 'square';
+  strokeLinejoin?: 'miter' | 'round' | 'bevel';
+  strokeDasharray?: string | number;
+  strokeDashoffset?: string | number;
+  width?: number | string;
+  height?: number | string;
+  x?: number | string;
+  y?: number | string;
+  // Circle/Ellipse
+  cx?: number | string;
+  cy?: number | string;
+  r?: number | string;
+  rx?: number | string;
+  ry?: number | string;
+  // Path
+  d?: string;
+  // Transform
+  transform?: string;
+  // Presentation
+  opacity?: number | string;
+  clipPath?: string;
+  clipRule?: 'nonzero' | 'evenodd' | string;
+  fillRule?: 'nonzero' | 'evenodd';
+  fillOpacity?: number | string;
+  strokeOpacity?: number | string;
+  // Points (for polygon/polyline)
+  points?: string;
+  // Line
+  x1?: number | string;
+  y1?: number | string;
+  x2?: number | string;
+  y2?: number | string;
+  // Links
+  xlinkHref?: string;
 }
 
 // ============================================================================
@@ -612,8 +690,8 @@ declare global {
       label: LabelHTMLAttributes;
       fieldset: HTMLAttributes<HTMLFieldSetElement>;
       legend: HTMLAttributes<HTMLLegendElement>;
-      option: HTMLAttributes<HTMLOptionElement>;
-      optgroup: HTMLAttributes<HTMLOptGroupElement>;
+      option: OptionHTMLAttributes;
+      optgroup: OptGroupHTMLAttributes;
 
       // Interactive
       a: AnchorHTMLAttributes;
@@ -667,39 +745,4 @@ declare global {
       tspan: SVGHTMLAttributes;
     }
   }
-}
-
-/**
- * SVG element attributes
- */
-export interface SVGHTMLAttributes extends HTMLAttributes<SVGElement> {
-  d?: string;
-  fill?: string;
-  stroke?: string;
-  strokeWidth?: string | number;
-  viewBox?: string;
-  xmlns?: string;
-  preserveAspectRatio?: string;
-  cx?: string | number;
-  cy?: string | number;
-  r?: string | number;
-  rx?: string | number;
-  ry?: string | number;
-  x?: string | number;
-  y?: string | number;
-  x1?: string | number;
-  y1?: string | number;
-  x2?: string | number;
-  y2?: string | number;
-  width?: string | number;
-  height?: string | number;
-  points?: string;
-  transform?: string;
-  clipPath?: string;
-  fillRule?: 'nonzero' | 'evenodd';
-  strokeLinecap?: 'butt' | 'round' | 'square';
-  strokeLinejoin?: 'miter' | 'round' | 'bevel';
-  opacity?: string | number;
-  xlinkHref?: string;
-  clipRule?: string;
 }

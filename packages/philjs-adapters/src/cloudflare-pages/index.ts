@@ -477,7 +477,7 @@ function createKVHelpers(env: any, bindings: CloudflarePagesConfig['kv'] = []) {
     if (env?.[binding.binding]) {
       helpers[binding.binding] = {
         get: (key: string) => env[binding.binding].get(key),
-        getJSON: <T>(key: string) => env[binding.binding].get<T>(key, 'json'),
+        getJSON: (key: string) => env[binding.binding].get(key, 'json'),
         getText: (key: string) => env[binding.binding].get(key, 'text'),
         getArrayBuffer: (key: string) => env[binding.binding].get(key, 'arrayBuffer'),
         put: (key: string, value: string, options?: any) =>
@@ -589,7 +589,12 @@ export function createR2Bucket(bucket: R2Bucket) {
 
 // Type definitions for Cloudflare bindings
 export interface KVNamespace {
-  get(key: string, options?: { type: 'text' }): Promise<string | null>;
+  get(key: string): Promise<string | null>;
+  get(key: string, type: 'text'): Promise<string | null>;
+  get(key: string, type: 'json'): Promise<any>;
+  get(key: string, type: 'arrayBuffer'): Promise<ArrayBuffer | null>;
+  get(key: string, type: 'stream'): Promise<ReadableStream | null>;
+  get(key: string, options: { type: 'text' }): Promise<string | null>;
   get(key: string, options: { type: 'json' }): Promise<any>;
   get(key: string, options: { type: 'arrayBuffer' }): Promise<ArrayBuffer | null>;
   get(key: string, options: { type: 'stream' }): Promise<ReadableStream | null>;

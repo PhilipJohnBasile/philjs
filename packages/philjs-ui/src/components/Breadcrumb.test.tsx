@@ -32,9 +32,9 @@ describe('Breadcrumb', () => {
       });
 
       // Children may be wrapped in array
-      const ol = Array.isArray(vnode.props.children)
+      const ol = asElement(Array.isArray(vnode.props.children)
         ? vnode.props.children[0]
-        : vnode.props.children;
+        : vnode.props.children);
       expect(ol.type).toBe('ol');
       expect(ol.props.className).toContain('flex');
       expect(ol.props.className).toContain('items-center');
@@ -49,9 +49,9 @@ describe('Breadcrumb', () => {
       });
 
       // Children may be wrapped in array
-      const ol = Array.isArray(vnode.props.children)
+      const ol = asElement(Array.isArray(vnode.props.children)
         ? vnode.props.children[0]
-        : vnode.props.children;
+        : vnode.props.children);
       const items = Array.isArray(ol.props.children)
         ? ol.props.children
         : [ol.props.children];
@@ -73,17 +73,17 @@ describe('Breadcrumb', () => {
       });
 
       // Children may be wrapped in array
-      const ol = Array.isArray(vnode.props.children)
+      const ol = asElement(Array.isArray(vnode.props.children)
         ? vnode.props.children[0]
-        : vnode.props.children;
+        : vnode.props.children);
       const olChildren = Array.isArray(ol.props.children)
         ? ol.props.children
         : [ol.props.children];
-      const firstItem = olChildren[0];
+      const firstItem = asElement(olChildren[0]);
       const firstItemChildren = Array.isArray(firstItem.props.children)
         ? firstItem.props.children
         : [firstItem.props.children];
-      const separator = firstItemChildren[1];
+      const separator = asElement(firstItemChildren[1]);
       // Separator children may also be wrapped
       const separatorContent = Array.isArray(separator.props.children)
         ? separator.props.children[0]
@@ -102,17 +102,17 @@ describe('Breadcrumb', () => {
       });
 
       // Children may be wrapped in array
-      const ol = Array.isArray(vnode.props.children)
+      const ol = asElement(Array.isArray(vnode.props.children)
         ? vnode.props.children[0]
-        : vnode.props.children;
+        : vnode.props.children);
       const olChildren = Array.isArray(ol.props.children)
         ? ol.props.children
         : [ol.props.children];
-      const firstItem = olChildren[0];
+      const firstItem = asElement(olChildren[0]);
       const firstItemChildren = Array.isArray(firstItem.props.children)
         ? firstItem.props.children
         : [firstItem.props.children];
-      const separator = firstItemChildren[1];
+      const separator = asElement(firstItemChildren[1]);
       // Separator children may also be wrapped
       const separatorContent = Array.isArray(separator.props.children)
         ? separator.props.children[0]

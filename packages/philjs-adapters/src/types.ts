@@ -85,7 +85,7 @@ export interface Adapter {
   /** Build the application for this platform */
   adapt(config: AdapterConfig): Promise<void>;
   /** Get platform-specific request handler */
-  getHandler(): (request: Request, context?: unknown) => Promise<Response>;
+  getHandler(): (request: Request, context?: unknown) => Response | Promise<Response>;
 }
 
 export interface EdgeAdapter extends Adapter {

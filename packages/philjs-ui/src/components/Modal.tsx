@@ -135,7 +135,7 @@ export function Modal(props: ModalProps) {
       <div
         className="absolute inset-0 bg-black/50 transition-opacity"
         onClick={handleOverlayClick}
-        aria-hidden="true"
+        aria-hidden={true}
       />
 
       {/* Modal */}
