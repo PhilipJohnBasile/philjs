@@ -10,6 +10,7 @@ import {
   atomWithStorage,
   selectAtom,
   batchAtoms,
+  type Getter,
 } from './index';
 
 describe('philjs-atoms', () => {
@@ -52,7 +53,7 @@ describe('philjs-atoms', () => {
   describe('derived atoms', () => {
     it('should create computed atom', () => {
       const countAtom = atom(0);
-      const doubledAtom = atom((get) => get(countAtom) * 2);
+      const doubledAtom = atom((get: Getter) => get(countAtom) * 2);
 
       expect(useAtomValue(doubledAtom)).toBe(0);
 
@@ -64,7 +65,7 @@ describe('philjs-atoms', () => {
       const firstNameAtom = atom('John');
       const lastNameAtom = atom('Doe');
       const fullNameAtom = atom(
-        (get) => `${get(firstNameAtom)} ${get(lastNameAtom)}`
+        (get: Getter) => `${get(firstNameAtom)} ${get(lastNameAtom)}`
       );
 
       expect(useAtomValue(fullNameAtom)).toBe('John Doe');
@@ -190,7 +191,7 @@ describe('philjs-atoms', () => {
       const nameAtom = atom('');
 
       let renderCount = 0;
-      const derivedAtom = atom((get) => {
+      const derivedAtom = atom((get: Getter) => {
         renderCount++;
         return `${get(nameAtom)}: ${get(countAtom)}`;
       });
@@ -215,7 +216,7 @@ describe('philjs-atoms', () => {
     it('should handle circular dependencies gracefully', () => {
       // This is a simplified test - real implementation would need cycle detection
       const atomA = atom(1);
-      const atomB = atom((get) => get(atomA) + 1);
+      const atomB = atom((get: Getter) => get(atomA) + 1);
 
       expect(useAtomValue(atomB)).toBe(2);
     });

@@ -213,7 +213,7 @@ function parseProps(element: HTMLElement, additionalProps: IslandProps): Record<
 export function createSolidIsland(Component: SolidComponent) {
   return function SolidIsland(props: any) {
     const solid = require('solid-js');
-    const [error, setError] = solid.createSignal<Error | null>(null);
+    const [error, setError] = (solid.createSignal as (initial: Error | null) => [() => Error | null, (value: Error | null) => void])(null);
 
     // Create error boundary
     const SafeComponent = () => {

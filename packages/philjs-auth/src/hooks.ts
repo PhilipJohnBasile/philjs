@@ -52,7 +52,7 @@ export function getAuthProvider(): AuthProvider {
  */
 export function useUser(): User | null {
   const provider = getAuthProvider();
-  return provider.user.get();
+  return provider.user();
 }
 
 /**
@@ -62,7 +62,7 @@ export function useUser(): User | null {
  */
 export function useSession(): AuthSession | null {
   const provider = getAuthProvider();
-  return provider.session.get();
+  return provider.session();
 }
 
 /**
@@ -82,7 +82,7 @@ export function useIsAuthenticated(): boolean {
  */
 export function useAuthLoading(): boolean {
   const provider = getAuthProvider();
-  return provider.loading.get();
+  return provider.loading();
 }
 
 /**
@@ -119,7 +119,7 @@ export function useAuth() {
     // State
     user,
     session,
-    isAuthenticated: isAuthenticated.get(),
+    isAuthenticated: isAuthenticated(),
     isLoading,
     provider,
 

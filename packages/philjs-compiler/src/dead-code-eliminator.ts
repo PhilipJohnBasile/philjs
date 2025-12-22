@@ -46,6 +46,9 @@ export class DeadCodeEliminator {
     let initialSize = 0;
     let finalSize = 0;
 
+    // Store reference to this for use in traverse callbacks
+    const self = this;
+
     traverse(ast, {
       Program(path) {
         // Estimate initial size
@@ -58,7 +61,7 @@ export class DeadCodeEliminator {
         const name = path.node.id.name;
         const binding = analysis.bindings.find(b => b.name === name);
 
-        if (binding && !binding.isUsed && this.isSafeToRemove(binding)) {
+        if (binding && !binding.isUsed && self.isSafeToRemove(binding)) {
           // Track what we're removing
           switch (binding.type) {
             case 'signal':
@@ -144,7 +147,7 @@ export class DeadCodeEliminator {
         if (t.isIdentifier(callee)) {
           const pureFunctions = ['signal', 'memo', 'resource', 'linkedSignal'];
           if (pureFunctions.includes(callee.name)) {
-            this.markAsPure(path);
+            self.markAsPure(path);
           }
         }
       },

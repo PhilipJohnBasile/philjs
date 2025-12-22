@@ -105,7 +105,7 @@ export function createMockLoaderWithData<T = any>(data: T): MockLoader<T> {
 export function createMockLoaderWithError(
   errorMessage: string
 ): MockLoader<any> {
-  return createMockLoader(async () => {
+  return createMockLoader<any>(async () => {
     throw new Error(errorMessage);
   });
 }

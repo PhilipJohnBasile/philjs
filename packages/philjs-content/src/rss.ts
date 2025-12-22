@@ -589,9 +589,10 @@ function createFeedItems(options: FeedFromCollectionOptions): Array<{
     const data = entry.data as Record<string, unknown>;
 
     // Extract values using mapping or defaults
-    const title = extractValue(mapping.title, entry, data, 'title', data.title as string || entry.slug);
+    const slug = 'slug' in entry ? entry.slug : entry.id;
+    const title = extractValue(mapping.title, entry, data, 'title', data.title as string || slug);
     const description = extractValue(mapping.description, entry, data, 'description', data.description as string || '');
-    const link = extractValue(mapping.link, entry, data, 'slug', `${site}/${entry.slug}`);
+    const link = extractValue(mapping.link, entry, data, 'slug', `${site}/${slug}`);
     const pubDate = extractValue(mapping.pubDate, entry, data, 'date', data.date as Date || entry.modifiedTime);
     const author = extractValue(mapping.author, entry, data, 'author', data.author as string | undefined);
     const categories = extractValue(mapping.categories, entry, data, 'tags', data.tags as string[] | undefined);

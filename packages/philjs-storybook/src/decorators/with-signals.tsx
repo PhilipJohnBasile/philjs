@@ -5,7 +5,7 @@
  */
 
 import { signal } from 'philjs-core';
-import { createContext } from 'philjs-core/context';
+import { createContext, useContext } from 'philjs-core/context';
 import type { StoryContext } from '../renderer.js';
 import { registerSignal } from '../addons/signal-inspector.js';
 
@@ -15,7 +15,11 @@ export interface SignalStore {
   get: (name: string) => any;
 }
 
-const SignalContext = createContext<SignalStore>();
+const SignalContext = createContext<SignalStore>({
+  signals: new Map(),
+  register: () => {},
+  get: () => undefined,
+});
 
 /**
  * Signals decorator
@@ -54,5 +58,5 @@ export function withSignals(
  * Hook to access signal store in stories
  */
 export function useSignalStore(): SignalStore {
-  return SignalContext.use();
+  return useContext(SignalContext);
 }

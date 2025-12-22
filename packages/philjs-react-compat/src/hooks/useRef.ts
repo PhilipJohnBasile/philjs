@@ -44,16 +44,18 @@ export interface RefObject<T> {
  * Note: Unlike signals, refs don't trigger reactivity when changed.
  * This matches React's behavior.
  */
-export function useRef<T>(initialValue: T): RefObject<T> {
-  const sig = signal<T>(initialValue);
+export function useRef<T>(): RefObject<T | undefined>;
+export function useRef<T>(initialValue: T): RefObject<T>;
+export function useRef<T>(initialValue?: T): RefObject<T | undefined> {
+  const sig = signal<T | undefined>(initialValue);
 
   // Create a ref object with getter/setter for .current
-  const ref: RefObject<T> = {
+  const ref: RefObject<T | undefined> = {
     get current() {
       // Use peek() to avoid tracking this as a dependency
       return sig.peek();
     },
-    set current(value: T) {
+    set current(value: T | undefined) {
       // Update without triggering reactivity
       sig.set(value);
     }
@@ -142,14 +144,14 @@ export function useCallbackRef<T>(
  * ```
  */
 export function useMergedRef<T>(
-  ...refs: (RefObject<T> | ((instance: T | null) => void) | null | undefined)[]
+  ...refs: (RefObject<T | null> | ((instance: T | null) => void) | null | undefined)[]
 ): (instance: T | null) => void {
   return (instance: T | null) => {
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
         ref(instance);
       } else if (ref != null) {
-        (ref as RefObject<T>).current = instance;
+        (ref as RefObject<T | null>).current = instance;
       }
     });
   };

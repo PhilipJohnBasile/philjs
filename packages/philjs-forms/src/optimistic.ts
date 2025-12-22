@@ -5,7 +5,7 @@
  * then rolling back if the request fails.
  */
 
-import { signal, memo, batch, type Signal } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal, type Memo } from 'philjs-core/signals';
 
 export interface OptimisticUpdate<T> {
   id: string;
@@ -73,7 +73,7 @@ export function useOptimistic<T extends { id?: string | number }>(
   /**
    * Current data including optimistic updates
    */
-  data: Signal<T[]>;
+  data: Memo<T[]>;
 
   /**
    * Pending optimistic updates
@@ -103,7 +103,7 @@ export function useOptimistic<T extends { id?: string | number }>(
   /**
    * Check if there are any pending updates
    */
-  hasPending: Signal<boolean>;
+  hasPending: Memo<boolean>;
 } {
   const { timeout = 30000, onTimeout, onRollback } = options;
 
@@ -294,7 +294,7 @@ export function useOptimisticValue<T>(initialValue: T): {
   /**
    * Current value (optimistic or confirmed)
    */
-  value: Signal<T>;
+  value: Memo<T>;
 
   /**
    * Is there a pending update?

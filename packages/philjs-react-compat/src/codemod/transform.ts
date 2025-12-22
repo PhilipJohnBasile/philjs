@@ -30,15 +30,15 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 1. Transform imports from 'react' to 'philjs-react-compat' or 'philjs-core'
   root
     .find(j.ImportDeclaration)
-    .filter((path) => path.node.source.value === 'react')
-    .forEach((path) => {
+    .filter((path: any) => path.node.source.value === 'react')
+    .forEach((path: any) => {
       hasChanges = true;
 
       const specifiers = path.node.specifiers || [];
       const philjsSpecifiers: any[] = [];
       const reactCompatSpecifiers: any[] = [];
 
-      specifiers.forEach((spec) => {
+      specifiers.forEach((spec: any) => {
         if (spec.type === 'ImportSpecifier') {
           const name = spec.imported.name;
 
@@ -82,13 +82,13 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 2. Transform useState to signal pattern
   root
     .find(j.CallExpression)
-    .filter((path) => {
+    .filter((path: any) => {
       return (
         path.node.callee.type === 'Identifier' &&
         path.node.callee.name === 'useState'
       );
     })
-    .forEach((path) => {
+    .forEach((path: any) => {
       hasChanges = true;
 
       // Find the variable declaration
@@ -121,13 +121,13 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 3. Remove dependency arrays from useEffect and useMemo
   root
     .find(j.CallExpression)
-    .filter((path) => {
+    .filter((path: any) => {
       return (
         path.node.callee.type === 'Identifier' &&
         (path.node.callee.name === 'useEffect' || path.node.callee.name === 'useMemo')
       );
     })
-    .forEach((path) => {
+    .forEach((path: any) => {
       if (path.node.arguments.length > 1) {
         hasChanges = true;
 
@@ -147,13 +147,13 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 4. Transform useCallback to regular functions (with warning comment)
   root
     .find(j.CallExpression)
-    .filter((path) => {
+    .filter((path: any) => {
       return (
         path.node.callee.type === 'Identifier' &&
         path.node.callee.name === 'useCallback'
       );
     })
-    .forEach((path) => {
+    .forEach((path: any) => {
       hasChanges = true;
 
       // Find the variable declaration
@@ -179,7 +179,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 5. Transform React.memo to regular components (with comment)
   root
     .find(j.CallExpression)
-    .filter((path) => {
+    .filter((path: any) => {
       return (
         path.node.callee.type === 'MemberExpression' &&
         path.node.callee.object.type === 'Identifier' &&
@@ -188,7 +188,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
         path.node.callee.property.name === 'memo'
       );
     })
-    .forEach((path) => {
+    .forEach((path: any) => {
       hasChanges = true;
 
       // Add comment about React.memo
@@ -203,7 +203,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
   // 6. Transform class components to functional components (add TODO comment)
   root
     .find(j.ClassDeclaration)
-    .filter((path) => {
+    .filter((path: any) => {
       const superClass = path.node.superClass;
       return (
         superClass &&
@@ -213,7 +213,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, options: Options) =>
             superClass.object.name === 'React'))
       );
     })
-    .forEach((path) => {
+    .forEach((path: any) => {
       hasChanges = true;
 
       // Add comment about converting to functional component

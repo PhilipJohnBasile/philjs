@@ -190,7 +190,7 @@ export function createPreactIsland(Component: PreactComponent) {
     const preact = require('preact');
     const { useState, useEffect } = require('preact/hooks');
 
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = (useState as (initial: Error | null) => [Error | null, (value: Error | null) => void])(null);
 
     // Error boundary effect
     useEffect(() => {

@@ -4,7 +4,18 @@
 
 import type { LazyHandler } from '../types.js';
 import { executeHandler } from '../runtime.js';
-import { $ } from 'philjs-core/lazy-handlers';
+
+/**
+ * Create a lazy handler wrapper (Qwik-style $() function)
+ */
+function $<T extends (...args: any[]) => any>(handler: T): { symbolId: string; handler: T; loaded: boolean } {
+  const symbolId = `lazy_handler_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  return {
+    symbolId,
+    handler,
+    loaded: false,
+  };
+}
 
 /**
  * Lazy form handler
@@ -173,7 +184,7 @@ export class LazyForm {
     const formData = new FormData(this.form);
     const values: Record<string, any> = {};
 
-    for (const [key, value] of formData.entries()) {
+    for (const [key, value] of Array.from(formData as unknown as Iterable<[string, FormDataEntryValue]>)) {
       values[key] = value;
     }
 

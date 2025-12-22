@@ -4,8 +4,10 @@
  * Utilities for creating and configuring stories
  */
 
-import type { ComponentType } from 'philjs-core';
 import type { StoryContext } from './renderer.js';
+
+// Component type - generic function component type
+type ComponentType<P = any> = (props: P) => any;
 
 export interface StoryConfig<T = any> {
   component: ComponentType<T>;
@@ -48,7 +50,7 @@ export function createStory<T = any>(config: StoryConfig<T>) {
     story: (storyConfig: Partial<Story<T>> = {}) => {
       const story: Story<T> = (args: T) => {
         const Component = config.component;
-        return <Component {...args} />;
+        return <Component {...(args as any)} />;
       };
 
       if (storyConfig.args) story.args = storyConfig.args;

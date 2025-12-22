@@ -3,6 +3,13 @@
  * Provides type-safe glob imports and content loading
  */
 
+// Vite's import.meta.glob extension
+declare global {
+  interface ImportMeta {
+    glob?: <T = unknown>(pattern: string | string[], options?: { eager?: boolean; as?: string }) => Record<string, T | (() => Promise<T>)>;
+  }
+}
+
 /**
  * Glob import options
  */

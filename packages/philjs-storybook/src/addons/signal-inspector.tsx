@@ -4,8 +4,7 @@
  * Inspect and manipulate PhilJS signals in real-time
  */
 
-import { signal, computed, effect } from 'philjs-core';
-import { useEffect } from 'philjs-core';
+import { signal, memo, effect } from 'philjs-core';
 
 const ADDON_ID = 'philjs/signal-inspector';
 const PANEL_ID = `${ADDON_ID}/panel`;
@@ -67,11 +66,11 @@ export function SignalInspectorPanel() {
     signals$.set(getSignals());
   };
 
-  useEffect(() => {
+  effect(() => {
     updateSignals();
     const interval = setInterval(updateSignals, 1000);
     return () => clearInterval(interval);
-  }, []);
+  });
 
   const handleSelectSignal = (name: string) => {
     selectedSignal$.set(name);

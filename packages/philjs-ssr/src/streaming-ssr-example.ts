@@ -125,13 +125,13 @@ function Counter({ initialCount = 0 }: { initialCount?: number }) {
   return jsx("div", {
     className: "counter",
     children: [
-      jsx("p", { children: () => `Count: ${count.value}` }),
+      jsx("p", { children: () => `Count: ${count()}` }),
       jsx("button", {
-        onClick: () => count.value++,
+        onClick: () => count.set(count() + 1),
         children: "Increment",
       }),
       jsx("button", {
-        onClick: () => count.value--,
+        onClick: () => count.set(count() - 1),
         children: "Decrement",
       }),
     ],
@@ -367,10 +367,10 @@ function SearchBox() {
       jsx("input", {
         type: "text",
         placeholder: "Search...",
-        value: () => query.value,
-        onInput: (e: any) => (query.value = e.target.value),
+        value: () => query(),
+        onInput: (e: any) => query.set(e.target.value),
       }),
-      jsx("p", { children: () => `Searching for: ${query.value}` }),
+      jsx("p", { children: () => `Searching for: ${query()}` }),
     ],
   });
 }
@@ -418,7 +418,7 @@ export function clientIslandSetup() {
   registerIsland("Counter", Counter);
 
   // Hydrate specific islands with different strategies
-  hydrateIslandOnVisible("i0"); // Search - visible
+  hydrateIsland("i0"); // Search
   hydrateIsland("i1"); // Counter - eager
 }
 

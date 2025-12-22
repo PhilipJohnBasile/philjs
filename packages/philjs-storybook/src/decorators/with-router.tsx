@@ -4,10 +4,10 @@
  * Wrap stories with a mock router context
  */
 
-import { createContext } from 'philjs-core/context';
+import { createContext, useContext } from 'philjs-core/context';
 import type { StoryContext } from '../renderer.js';
 
-export interface RouterContext {
+export interface RouterContextValue {
   pathname: string;
   params: Record<string, string>;
   searchParams: URLSearchParams;
@@ -16,7 +16,14 @@ export interface RouterContext {
   forward: () => void;
 }
 
-const RouterContext = createContext<RouterContext>();
+const RouterContext = createContext<RouterContextValue>({
+  pathname: '/',
+  params: {},
+  searchParams: new URLSearchParams(),
+  navigate: () => {},
+  back: () => {},
+  forward: () => {},
+});
 
 /**
  * Router decorator
@@ -27,7 +34,7 @@ export function withRouter(
 ): any {
   const routerParams = context.parameters?.router || {};
 
-  const routerContext: RouterContext = {
+  const routerContext: RouterContextValue = {
     pathname: routerParams.pathname || '/',
     params: routerParams.params || {},
     searchParams: new URLSearchParams(routerParams.searchParams || ''),
@@ -52,6 +59,6 @@ export function withRouter(
 /**
  * Hook to access router context in stories
  */
-export function useRouter(): RouterContext {
-  return RouterContext.use();
+export function useRouter(): RouterContextValue {
+  return useContext(RouterContext);
 }

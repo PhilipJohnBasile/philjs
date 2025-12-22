@@ -128,7 +128,7 @@ export function createDevelopmentViteConfig(
     // Development server configuration
     server: {
       port: config.port,
-      https: config.https,
+      https: config.https ? {} : undefined,
       open: config.open,
 
       // HMR configuration

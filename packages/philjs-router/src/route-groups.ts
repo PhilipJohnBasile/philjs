@@ -270,8 +270,8 @@ function processGroupRoute(
             : undefined;
 
           return {
-            ...groupData,
-            ...routeData,
+            ...(groupData || {}),
+            ...(routeData || {}),
           };
         }
       : undefined;
@@ -300,7 +300,7 @@ function processGroupRoute(
     group: group.name,
     middleware: group.middleware || [],
     id: route.id || `${group.name}:${cleanPath}`,
-    errorBoundary: route.component ? undefined : group.errorBoundary,
+    errorBoundary: group.errorBoundary,
   };
 
   const results: ProcessedGroupRoute[] = [processed];

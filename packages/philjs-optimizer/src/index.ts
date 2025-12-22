@@ -17,6 +17,8 @@ export type {
   RuntimeConfig,
 } from './types.js';
 
+import type { OptimizerOptions, Symbol as OptimizerSymbol } from './types.js';
+
 // Symbol extraction
 export {
   extractSymbols,
@@ -131,15 +133,15 @@ export function createOptimizer(options: OptimizerOptions) {
      */
     getStats() {
       const symbols = registry.getAll();
-      const lazySymbols = symbols.filter((s) => s.isLazy);
+      const lazySymbols = symbols.filter((s: OptimizerSymbol) => s.isLazy);
       const graph = this.buildGraph();
 
       return {
         totalSymbols: symbols.length,
         lazySymbols: lazySymbols.length,
-        files: new Set(symbols.map((s) => s.filePath)).size,
+        files: new Set(symbols.map((s: OptimizerSymbol) => s.filePath)).size,
         avgDependencies:
-          symbols.reduce((sum, s) => sum + s.dependencies.length, 0) /
+          symbols.reduce((sum: number, s: OptimizerSymbol) => sum + s.dependencies.length, 0) /
           symbols.length,
       };
     },

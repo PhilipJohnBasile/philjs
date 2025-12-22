@@ -328,7 +328,7 @@ export function createStreamingLoaderSerializer(options?: SSRSuperJSONOptions) {
     serializeChunk<T>(id: string, data: T): string {
       const serialized = serializeLoaderData(data, options);
       return generateHydrationScript(id, serialized, {
-        globalName: options?.deserializeOptions?.['globalName' as any] || '__LOADER_DATA__',
+        globalName: (options?.deserializeOptions as any)?.['globalName'] || '__LOADER_DATA__',
       });
     },
 

@@ -53,7 +53,7 @@ export interface PerformanceData {
 // Performance Monitoring
 // ============================================================================
 
-const webVitals: Signal<WebVitals> = signal({
+const webVitals = signal<WebVitals>({
   lcp: null,
   fid: null,
   cls: null,
@@ -62,9 +62,9 @@ const webVitals: Signal<WebVitals> = signal({
   inp: null,
 });
 
-const componentMetrics: Signal<Map<string, ComponentMetrics>> = signal(new Map());
-const apiMetrics: Signal<APIMetrics[]> = signal([]);
-const bundleMetrics: Signal<BundleMetrics | null> = signal(null);
+const componentMetrics = signal<Map<string, ComponentMetrics>>(new Map());
+const apiMetrics = signal<APIMetrics[]>([]);
+const bundleMetrics = signal<BundleMetrics | null>(null);
 
 /**
  * Initialize Web Vitals monitoring
@@ -276,7 +276,7 @@ export function PerformanceDashboard(props: {
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           cursor: pointer;
         "
-        onclick={() => isMinimized.set(!isMinimized())}
+        onClick={() => isMinimized.set(!isMinimized())}
       >
         <h3 style="margin: 0; font-size: 0.875rem; font-weight: 600;">
           Performance Monitor
@@ -310,7 +310,7 @@ export function PerformanceDashboard(props: {
             {(['vitals', 'components', 'api', 'bundle'] as const).map((tab) => (
               <button
                 key={tab}
-                onclick={() => selectedTab.set(tab)}
+                onClick={() => selectedTab.set(tab)}
                 style={`
                   background: ${selectedTab() === tab ? 'rgba(102, 126, 234, 0.5)' : 'transparent'};
                   border: none;

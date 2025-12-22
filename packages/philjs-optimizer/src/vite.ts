@@ -108,7 +108,7 @@ export function philjsOptimizer(options: ViteOptimizerOptions = {}): Plugin {
 
         return {
           code: result.code,
-          map: result.map,
+          map: result.map as import('rollup').SourceMapInput,
         };
       } catch (error) {
         console.error(`Error transforming ${id}:`, error);

@@ -33,7 +33,12 @@ describe('philjs-zustand', () => {
     });
 
     it('should support actions in state', () => {
-      const useStore = createStore((set) => ({
+      interface CounterStore {
+        count: number;
+        increment: () => void;
+        decrement: () => void;
+      }
+      const useStore = createStore<CounterStore>((set) => ({
         count: 0,
         increment: () => set((state) => ({ count: state.count + 1 })),
         decrement: () => set((state) => ({ count: state.count - 1 })),
@@ -225,11 +230,14 @@ describe('philjs-zustand', () => {
 
     describe('combine', () => {
       it('should combine multiple stores', () => {
-        const useUserStore = createStore(() => ({
+        interface UserState { name: string; }
+        interface CartState { items: string[]; }
+
+        const useUserStore = createStore<UserState>(() => ({
           name: 'John',
         }));
 
-        const useCartStore = createStore(() => ({
+        const useCartStore = createStore<CartState>(() => ({
           items: ['item1'],
         }));
 
@@ -238,17 +246,20 @@ describe('philjs-zustand', () => {
           cart: useCartStore,
         });
 
-        const state = useCombinedStore.getState();
+        const state = useCombinedStore.getState() as { user: UserState; cart: CartState };
         expect(state.user.name).toBe('John');
         expect(state.cart.items).toEqual(['item1']);
       });
 
       it('should sync when individual stores update', () => {
-        const useUserStore = createStore(() => ({
+        interface UserState { name: string; }
+        interface CartState { items: string[]; }
+
+        const useUserStore = createStore<UserState>(() => ({
           name: 'John',
         }));
 
-        const useCartStore = createStore(() => ({
+        const useCartStore = createStore<CartState>(() => ({
           items: ['item1'],
         }));
 
@@ -259,7 +270,7 @@ describe('philjs-zustand', () => {
 
         useUserStore.setState({ name: 'Jane' });
 
-        const state = useCombinedStore.getState();
+        const state = useCombinedStore.getState() as { user: UserState; cart: CartState };
         expect(state.user.name).toBe('Jane');
       });
     });

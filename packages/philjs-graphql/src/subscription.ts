@@ -9,7 +9,7 @@
  * - Heartbeat/keepalive support
  */
 
-import { signal, batch, type Signal } from 'philjs-core';
+import { signal, memo, batch, type Signal, type Memo } from 'philjs-core';
 import type { DocumentNode } from 'graphql';
 
 export interface SubscriptionConfig {
@@ -110,6 +110,7 @@ export class SubscriptionClient {
       backoffMultiplier: 2,
       keepalive: true,
       keepaliveInterval: 30000,
+      connectionParams: () => ({}),
       lazy: false,
       ...config,
     };
@@ -587,29 +588,29 @@ export class SubscriptionHandle<TData = any> {
   /**
    * Get current subscription data
    */
-  get data(): Signal<TData | null> {
-    return signal(() => this.state().data);
+  get data(): Memo<TData | null> {
+    return memo(() => this.state().data);
   }
 
   /**
    * Get current subscription error
    */
-  get error(): Signal<Error | null> {
-    return signal(() => this.state().error);
+  get error(): Memo<Error | null> {
+    return memo(() => this.state().error);
   }
 
   /**
    * Check if subscription is active
    */
-  get active(): Signal<boolean> {
-    return signal(() => this.state().active);
+  get active(): Memo<boolean> {
+    return memo(() => this.state().active);
   }
 
   /**
    * Get connection state
    */
-  get connectionState(): Signal<'disconnected' | 'connecting' | 'connected' | 'reconnecting'> {
-    return signal(() => this.state().connectionState);
+  get connectionState(): Memo<'disconnected' | 'connecting' | 'connected' | 'reconnecting'> {
+    return memo(() => this.state().connectionState);
   }
 
   /**
@@ -634,10 +635,10 @@ export function useSubscription<TData = any, TVariables = any>(
   client: SubscriptionClient,
   options: SubscriptionOptions<TData, TVariables>
 ): {
-  data: Signal<TData | null>;
-  error: Signal<Error | null>;
-  active: Signal<boolean>;
-  connectionState: Signal<'disconnected' | 'connecting' | 'connected' | 'reconnecting'>;
+  data: Memo<TData | null>;
+  error: Memo<Error | null>;
+  active: Memo<boolean>;
+  connectionState: Memo<'disconnected' | 'connecting' | 'connected' | 'reconnecting'>;
   unsubscribe: () => void;
 } {
   const handle = client.subscribe(options);

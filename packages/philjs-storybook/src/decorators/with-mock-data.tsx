@@ -4,7 +4,7 @@
  * Wrap stories with mock API data using MSW
  */
 
-import { createContext } from 'philjs-core/context';
+import { createContext, useContext } from 'philjs-core/context';
 import type { StoryContext } from '../renderer.js';
 
 export interface MockDataContext {
@@ -13,7 +13,11 @@ export interface MockDataContext {
   clearData: () => void;
 }
 
-const MockDataContextInstance = createContext<MockDataContext>();
+const MockDataContextInstance = createContext<MockDataContext>({
+  data: {},
+  setData: () => {},
+  clearData: () => {},
+});
 
 /**
  * Mock Data decorator
@@ -46,5 +50,5 @@ export function withMockData(
  * Hook to access mock data in stories
  */
 export function useMockData(): MockDataContext {
-  return MockDataContextInstance.use();
+  return useContext(MockDataContextInstance);
 }

@@ -9,8 +9,10 @@ import { resolve, relative } from 'path';
 // Vite Plugin interface (minimal for compatibility)
 interface Plugin {
   name: string;
-  resolveId?: (source: string, importer?: string) => string | null | void;
-  load?: (id: string) => string | null | Promise<string | null>;
+  configResolved?: (config: { root: string }) => void;
+  resolveId?: (source: string, importer?: string) => string | null | undefined | void;
+  load?: (id: string) => string | null | undefined | Promise<string | null | undefined>;
+  handleHotUpdate?: (context: { file: string; server: { moduleGraph: { getModuleById: (id: string) => any } } }) => any[] | void | Promise<any[] | void>;
 }
 
 /**
@@ -75,17 +77,17 @@ export function virtualModulesPlugin(config: VirtualModuleConfig = {}): Plugin {
   return {
     name: 'philjs:virtual-modules',
 
-    configResolved(resolvedConfig) {
+    configResolved(resolvedConfig: { root: string }) {
       root = resolvedConfig.root;
     },
 
-    resolveId(id) {
+    resolveId(id: string) {
       if (resolvedVirtualModuleIds.has(id)) {
         return resolvedVirtualModuleIds.get(id);
       }
     },
 
-    async load(id) {
+    async load(id: string): Promise<string | null | undefined> {
       // virtual:philjs-routes
       if (id === resolvedVirtualModuleIds.get(VIRTUAL_ROUTES)) {
         const routesPath = resolve(root, routesDir);
@@ -147,7 +149,7 @@ export function virtualModulesPlugin(config: VirtualModuleConfig = {}): Plugin {
       }
     },
 
-    async handleHotUpdate({ file, server }) {
+    async handleHotUpdate({ file, server }: { file: string; server: { moduleGraph: { getModuleById: (id: string) => any } } }) {
       const routesPath = resolve(root, routesDir);
       const contentPath = resolve(root, contentDir);
       const pluginsPath = resolve(root, pluginsDir);

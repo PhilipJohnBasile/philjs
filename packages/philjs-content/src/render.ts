@@ -137,8 +137,8 @@ function buildTableOfContents(headings: ContentHeading[]): TOCEntry[] {
 /**
  * Create a markdown processor with plugins
  */
-function createProcessor(options: MDXCompileOptions = {}) {
-  let processor = unified().use(remarkParse);
+function createProcessor(options: MDXCompileOptions = {}): any {
+  let processor: any = unified().use(remarkParse);
 
   // Add GFM support (tables, strikethrough, etc.)
   if (options.gfm !== false) {

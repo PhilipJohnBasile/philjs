@@ -4,8 +4,7 @@
  * Test PhilJS routes in isolation with mock loaders and actions
  */
 
-import { signal } from 'philjs-core';
-import { useEffect } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 const ADDON_ID = 'philjs/route-tester';
 const PANEL_ID = `${ADDON_ID}/panel`;

@@ -592,12 +592,13 @@ export function formatDate(
   format: 'short' | 'medium' | 'long' | 'full' = 'medium',
   locale: string = 'en-US'
 ): string {
-  const options: Intl.DateTimeFormatOptions = {
+  const formatOptions: Record<string, Intl.DateTimeFormatOptions> = {
     short: { year: 'numeric', month: 'numeric', day: 'numeric' },
     medium: { year: 'numeric', month: 'short', day: 'numeric' },
     long: { year: 'numeric', month: 'long', day: 'numeric' },
     full: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
-  }[format];
+  };
+  const options: Intl.DateTimeFormatOptions = formatOptions[format];
 
   return new Intl.DateTimeFormat(locale, options).format(date);
 }

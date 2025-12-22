@@ -85,11 +85,11 @@ export class JWTManager {
   async create(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
 
-    const fullPayload: JWTPayload = {
+    const fullPayload = {
       ...payload,
       iat: now,
       exp: now + this.config.expiresIn
-    };
+    } as JWTPayload;
 
     if (this.config.issuer) {
       fullPayload.iss = this.config.issuer;

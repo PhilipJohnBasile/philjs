@@ -4,8 +4,7 @@
  * Test responsive designs with preset viewport sizes
  */
 
-import { signal } from 'philjs-core';
-import { useEffect } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 const ADDON_ID = 'philjs/viewport';
 const TOOLBAR_ID = `${ADDON_ID}/toolbar`;

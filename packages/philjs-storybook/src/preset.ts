@@ -4,7 +4,8 @@
  * Configures Storybook to work seamlessly with PhilJS components
  */
 
-import type { StorybookConfig } from '@storybook/core';
+// StorybookConfig type from @storybook/types - using any for compatibility
+type StorybookConfig = any;
 
 export const viteFinal = async (config: any) => {
   return {

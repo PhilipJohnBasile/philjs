@@ -757,9 +757,10 @@ export function generateSEOFromEntry(
   }
 ): SEOConfig {
   const data = entry.data as Record<string, unknown>;
-  const title = data.title as string || entry.slug;
+  const slug = 'slug' in entry ? entry.slug : entry.id;
+  const title = data.title as string || slug;
   const description = data.description as string || '';
-  const url = `${site}/${entry.slug}`;
+  const url = `${site}/${slug}`;
 
   const config: SEOConfig = {
     title: options?.titleTemplate ? options.titleTemplate.replace('%s', title) : title,

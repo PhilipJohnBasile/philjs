@@ -104,7 +104,7 @@ export function memo<P = {}>(
  * }
  * ```
  */
-export function createRef<T>(): RefObject<T> {
+export function createRef<T>(): RefObject<T | null> {
   const sig = signal<T | null>(null);
 
   return {
@@ -252,8 +252,8 @@ export function createContextProvider<T>(defaultValue: T): [
   (props: { value: T; children: any }) => any,
   () => T
 ] {
-  const { createContext, useContext } = require('philjs-core');
-  const Context = createContext<T>(defaultValue);
+  const { createContext, useContext } = require('philjs-core') as { createContext: <U>(val: U) => any; useContext: (ctx: any) => any };
+  const Context = createContext(defaultValue);
 
   const Provider = (props: { value: T; children: any }) => {
     return <Context.Provider value={props.value}>{props.children}</Context.Provider>;

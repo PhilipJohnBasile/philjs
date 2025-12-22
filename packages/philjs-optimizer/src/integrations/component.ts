@@ -65,7 +65,7 @@ export function Suspense<P = any>(props: {
   }
 
   if (lazyComponent.loaded && lazyComponent.component) {
-    return lazyComponent.component(props);
+    return lazyComponent.component(props as unknown as P);
   }
 
   // Load the component

@@ -335,24 +335,24 @@ export function usePerformance(componentName: string): {
   performance: Signal<ComponentPerformance | null>;
 } {
   const tracker = getTracker();
-  const performance = signal<ComponentPerformance | null>(null);
+  const perfSignal = signal<ComponentPerformance | null>(null);
 
   let startTime = 0;
 
   const startRender = () => {
-    startTime = performance.now();
+    startTime = globalThis.performance.now();
   };
 
   const endRender = () => {
-    const duration = performance.now() - startTime;
+    const duration = globalThis.performance.now() - startTime;
     tracker.trackComponent(componentName, duration);
-    performance.set(tracker.getComponentPerformance(componentName) || null);
+    perfSignal.set(tracker.getComponentPerformance(componentName) || null);
   };
 
   return {
     startRender,
     endRender,
-    performance,
+    performance: perfSignal,
   };
 }
 

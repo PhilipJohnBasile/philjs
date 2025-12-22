@@ -142,7 +142,7 @@ export class Machine<TContext = any, TEvent extends EventObject = EventObject> {
       return { ...currentState, changed: false };
     }
 
-    const transition =
+    const transition: TransitionConfig<TContext, TEvent> =
       typeof transitionConfig === 'string'
         ? { target: transitionConfig }
         : transitionConfig;
@@ -168,7 +168,7 @@ export class Machine<TContext = any, TEvent extends EventObject = EventObject> {
       const actions = Array.isArray(transition.actions)
         ? transition.actions
         : [transition.actions];
-      actions.forEach((action) => {
+      actions.forEach((action: Action<TContext, TEvent>) => {
         const result = action(currentState.context, event);
         if (result) {
           currentState.context = { ...currentState.context, ...result };
@@ -265,7 +265,7 @@ export class Machine<TContext = any, TEvent extends EventObject = EventObject> {
                           : invokeConfig.onDone;
 
                       if (config.target) {
-                        send({ type: 'done', data } as TEvent);
+                        send({ type: 'done', data } as unknown as TEvent);
                       }
                     }
                   })
@@ -277,7 +277,7 @@ export class Machine<TContext = any, TEvent extends EventObject = EventObject> {
                           : invokeConfig.onError;
 
                       if (config.target) {
-                        send({ type: 'error', error } as TEvent);
+                        send({ type: 'error', error } as unknown as TEvent);
                       }
                     }
                   });
@@ -434,8 +434,8 @@ export function visualize<TContext = any, TEvent extends EventObject = EventObje
 
     // Process transitions
     if (stateNode.on) {
-      Object.entries(stateNode.on).forEach(([event, transitionConfig]) => {
-        const transition =
+      (Object.entries(stateNode.on) as Array<[string, string | TransitionConfig<TContext, TEvent>]>).forEach(([event, transitionConfig]) => {
+        const transition: TransitionConfig<TContext, TEvent> =
           typeof transitionConfig === 'string'
             ? { target: transitionConfig }
             : transitionConfig;
@@ -485,8 +485,8 @@ export function toMermaid<TContext = any, TEvent extends EventObject = EventObje
   Object.entries(machine.config.states).forEach(([stateId, stateNode]) => {
     // Add transitions
     if (stateNode.on) {
-      Object.entries(stateNode.on).forEach(([event, transitionConfig]) => {
-        const transition =
+      (Object.entries(stateNode.on) as Array<[string, string | TransitionConfig<TContext, TEvent>]>).forEach(([event, transitionConfig]) => {
+        const transition: TransitionConfig<TContext, TEvent> =
           typeof transitionConfig === 'string'
             ? { target: transitionConfig }
             : transitionConfig;

@@ -106,13 +106,13 @@ export class SessionRefreshManager {
    * Check if token needs refresh and refresh if needed
    */
   async checkAndRefresh(): Promise<void> {
-    if (this.isRefreshing.get()) {
+    if (this.isRefreshing()) {
       return; // Already refreshing
     }
 
     try {
       const provider = getAuthProvider();
-      const session = provider.session.get();
+      const session = provider.session();
 
       if (!session || !session.expiresAt) {
         return; // No session or no expiry
@@ -136,7 +136,7 @@ export class SessionRefreshManager {
    * Force refresh the token
    */
   async refresh(): Promise<void> {
-    if (this.isRefreshing.get()) {
+    if (this.isRefreshing()) {
       return; // Already refreshing
     }
 
@@ -167,8 +167,8 @@ export class SessionRefreshManager {
    */
   getStatus() {
     return {
-      isRefreshing: computed(() => this.isRefreshing.get()),
-      lastRefresh: computed(() => this.lastRefresh.get()),
+      isRefreshing: computed(() => this.isRefreshing()),
+      lastRefresh: computed(() => this.lastRefresh()),
     };
   }
 }

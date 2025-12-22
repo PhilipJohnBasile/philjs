@@ -4,18 +4,22 @@
  * Wrap stories with theme support
  */
 
-import { createContext } from 'philjs-core/context';
+import { createContext, useContext } from 'philjs-core/context';
 import { signal } from 'philjs-core';
 import type { StoryContext } from '../renderer.js';
 import { setTheme, type Theme } from '../addons/theme-switcher.js';
 
-export interface ThemeContext {
+export interface ThemeContextValue {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   colors: Record<string, string>;
 }
 
-const ThemeContextInstance = createContext<ThemeContext>();
+const ThemeContext = createContext<ThemeContextValue>({
+  theme: 'light',
+  setTheme: () => {},
+  colors: {},
+});
 
 /**
  * Theme decorator
@@ -27,7 +31,7 @@ export function withTheme(
   const initialTheme = (context.parameters?.theme || 'light') as Theme;
   const theme$ = signal<Theme>(initialTheme);
 
-  const themeContext: ThemeContext = {
+  const themeContext: ThemeContextValue = {
     get theme() {
       return theme$();
     },
@@ -42,15 +46,15 @@ export function withTheme(
   setTheme(initialTheme);
 
   return (
-    <ThemeContextInstance.Provider value={themeContext}>
+    <ThemeContext.Provider value={themeContext}>
       {story()}
-    </ThemeContextInstance.Provider>
+    </ThemeContext.Provider>
   );
 }
 
 /**
  * Hook to access theme in stories
  */
-export function useTheme(): ThemeContext {
-  return ThemeContextInstance.use();
+export function useTheme(): ThemeContextValue {
+  return useContext(ThemeContext);
 }

@@ -2,7 +2,7 @@
  * Form management with reactive signals
  */
 
-import { signal, memo, batch, type Signal } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal, type Memo } from 'philjs-core/signals';
 import type {
   FormValues,
   FormErrors,
@@ -104,15 +104,15 @@ export class Form<T extends FormValues = FormValues> {
   /**
    * Get complete form state
    */
-  get state(): Signal<FormState<T>> {
+  get state(): Memo<FormState<T>> {
     return memo(() => ({
       values: this.valuesSignal(),
       errors: this.errorsSignal(),
       touched: this.touchedSignal(),
-      isValid: this.isValid()(),
+      isValid: this.isValid(),
       isSubmitting: this.isSubmittingSignal(),
       isValidating: this.isValidatingSignal(),
-      isDirty: this.isDirty()(),
+      isDirty: this.isDirty(),
       submitCount: this.submitCountSignal()
     }));
   }

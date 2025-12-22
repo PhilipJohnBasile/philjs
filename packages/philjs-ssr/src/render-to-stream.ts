@@ -206,12 +206,12 @@ async function renderVNodeToString(
   }
 
   // Handle Suspense
-  if (type === Suspense) {
+  if (type === (Suspense as unknown)) {
     return renderSuspense(vnode, ctx, isShell);
   }
 
   // Handle Island (selective hydration boundary)
-  if (type === Island) {
+  if (type === (Island as unknown)) {
     return renderIsland(vnode, ctx, isShell);
   }
 

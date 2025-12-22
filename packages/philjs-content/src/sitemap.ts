@@ -357,7 +357,7 @@ export function generateSitemapFromCollection(options: SitemapFromCollectionOpti
       ? mapping.loc(entry)
       : typeof mapping.loc === 'string'
       ? data[mapping.loc] as string
-      : `/${entry.slug}`;
+      : `/${'slug' in entry ? entry.slug : entry.id}`;
 
     const lastmod = typeof mapping.lastmod === 'function'
       ? mapping.lastmod(entry)

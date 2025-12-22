@@ -4,7 +4,7 @@
  * Create mock signals for testing
  */
 
-import { signal, computed } from 'philjs-core';
+import { signal, memo } from 'philjs-core';
 
 /**
  * Create a mock signal with initial value
@@ -20,7 +20,7 @@ export function createMockSignal<T>(initialValue: T) {
   }) as typeof sig;
 
   // Track signal updates
-  mockSig.set = (value: T) => {
+  (mockSig as any).set = (value: T) => {
     calls.push({ type: 'set', value });
     sig.set(value);
   };
@@ -41,7 +41,7 @@ export function createMockSignal<T>(initialValue: T) {
  * Create a mock computed signal
  */
 export function createMockComputed<T>(fn: () => T) {
-  const comp = computed(fn);
+  const comp = memo(fn);
   const calls: Array<{ type: 'get' }> = [];
 
   // Track computed access
@@ -73,7 +73,7 @@ export function spyOnSignal<T>(sig: ReturnType<typeof signal<T>>) {
     return originalGet();
   }) as typeof sig;
 
-  spy.set = (value: T) => {
+  (spy as any).set = (value: T) => {
     calls.push({ type: 'set', value, timestamp: Date.now() });
     originalSet(value);
   };

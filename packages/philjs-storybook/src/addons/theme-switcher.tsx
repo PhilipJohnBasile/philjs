@@ -4,8 +4,7 @@
  * Switch between light/dark themes and custom themes
  */
 
-import { signal } from 'philjs-core';
-import { useEffect } from 'philjs-core';
+import { signal, effect } from 'philjs-core';
 
 const ADDON_ID = 'philjs/theme-switcher';
 const TOOLBAR_ID = `${ADDON_ID}/toolbar`;
@@ -87,9 +86,9 @@ function applyTheme(theme: Theme) {
 export function ThemeSwitcherToolbar() {
   const themes = ['light', 'dark', ...customThemes$().map((t) => t.name)];
 
-  useEffect(() => {
+  effect(() => {
     applyTheme(currentTheme$());
-  }, []);
+  });
 
   const handleThemeChange = (e: any) => {
     const theme = e.target.value as Theme;

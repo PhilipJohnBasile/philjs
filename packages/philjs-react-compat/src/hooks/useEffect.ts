@@ -3,7 +3,10 @@
  * Provides a familiar API for React developers while using PhilJS effects under the hood.
  */
 
-import { effect, type EffectCleanup, type EffectFunction } from 'philjs-core';
+import { effect } from 'philjs-core';
+
+type EffectCleanup = (() => void) | void;
+type EffectFunction = () => EffectCleanup;
 
 /**
  * React-compatible useEffect hook that wraps PhilJS effects.

@@ -233,7 +233,7 @@ export class Optimizer {
         const constantValue = constants.get(name);
 
         if (constantValue && !path.isBindingIdentifier()) {
-          path.replaceWith(constantValue);
+          (path as any).replaceWith(constantValue);
           count++;
         }
       },

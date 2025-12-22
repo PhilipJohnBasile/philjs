@@ -86,7 +86,7 @@ export function requireAuth(config?: ProtectedRouteConfig): boolean {
     }
   }
 
-  const isAuth = sessionManager.isAuthenticated()();
+  const isAuth = sessionManager.isAuthenticated();
   if (!isAuth) {
     handleUnauthorized(config);
   }

@@ -5,7 +5,9 @@
  */
 
 import { render as philJSRender } from 'philjs-core';
-import type { ComponentType } from 'philjs-core';
+
+// Component type - generic function component type
+type ComponentType<P = any> = (props: P) => any;
 
 export interface RenderContext {
   args: Record<string, any>;

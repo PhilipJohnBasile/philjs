@@ -392,9 +392,10 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
           // Send warnings to error overlay in dev mode
           if (enhancedErrors && server) {
+            const viteServer = server;
             result.warnings.forEach(warning => {
               if (warning.type === 'correctness') {
-                server.ws.send({
+                viteServer.ws.send({
                   type: 'error',
                   err: {
                     message: `[PhilJS] ${warning.message}`,
@@ -614,12 +615,12 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
                 // Components should be self-accepting to preserve local state
                 if (isComponent && hasComponents) {
-                  mod.isSelfAccepting = true;
+                  (mod as any).isSelfAccepting = true;
                 }
 
                 // Modules with signals should preserve state across boundaries
                 if (isModule && hasSignals) {
-                  mod.isSelfAccepting = true;
+                  (mod as any).isSelfAccepting = true;
                 }
               }
             }

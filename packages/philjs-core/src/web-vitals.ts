@@ -349,7 +349,7 @@ export class WebVitalsMonitor {
         }
       });
 
-      observer.observe({ type: 'event', buffered: true, durationThreshold: 16 });
+      observer.observe({ type: 'event', buffered: true, durationThreshold: 16 } as PerformanceObserverInit & { durationThreshold?: number });
       this.observers.set('INP', observer);
     } catch (error) {
       this.log('Error observing INP:', error);

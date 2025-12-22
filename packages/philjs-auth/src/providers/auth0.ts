@@ -257,7 +257,7 @@ export class Auth0AuthProvider extends BaseAuthProvider {
   }
 
   private getCurrentUser(): User {
-    const user = this.user.get();
+    const user = this.user();
     if (!user) {
       throw new Error('No user available');
     }

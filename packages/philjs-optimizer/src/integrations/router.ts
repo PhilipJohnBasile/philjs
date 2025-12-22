@@ -35,6 +35,7 @@ export function lazyRoute(config: {
   if (config.loader) {
     const symbolId = `loader_${config.path.replace(/\//g, '_')}`;
     route.loader = {
+      id: symbolId,
       symbolId,
       handler: config.loader,
       loaded: false,
@@ -44,6 +45,7 @@ export function lazyRoute(config: {
   if (config.action) {
     const symbolId = `action_${config.path.replace(/\//g, '_')}`;
     route.action = {
+      id: symbolId,
       symbolId,
       handler: config.action,
       loaded: false,
@@ -53,6 +55,7 @@ export function lazyRoute(config: {
   if (config.component) {
     const symbolId = `component_${config.path.replace(/\//g, '_')}`;
     route.component = {
+      id: symbolId,
       symbolId,
       handler: config.component,
       loaded: false,

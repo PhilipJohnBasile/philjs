@@ -22,10 +22,18 @@ interface CacheEntry<T> {
  */
 class FileCache<T> {
   private cache = new Map<string, CacheEntry<T>>();
-  private ttl: number;
+  private _ttl: number;
 
   constructor(ttl = 60000) {
-    this.ttl = ttl;
+    this._ttl = ttl;
+  }
+
+  setTTL(ttl: number): void {
+    this._ttl = ttl;
+  }
+
+  getTTL(): number {
+    return this._ttl;
   }
 
   get(path: string, mtime?: number): T | undefined {
@@ -33,7 +41,7 @@ class FileCache<T> {
     if (!entry) return undefined;
 
     // Check if expired
-    if (Date.now() - entry.timestamp > this.ttl) {
+    if (Date.now() - entry.timestamp > this._ttl) {
       this.cache.delete(path);
       return undefined;
     }
@@ -91,7 +99,7 @@ export async function readFile(
   const { encoding = 'utf-8', cache = true, cacheTTL } = options;
 
   if (cacheTTL) {
-    readCache.ttl = cacheTTL;
+    readCache.setTTL(cacheTTL);
   }
 
   if (cache) {
@@ -210,7 +218,7 @@ export async function getStats(
   const { cache = true, cacheTTL } = options;
 
   if (cacheTTL) {
-    statCache.ttl = cacheTTL;
+    statCache.setTTL(cacheTTL);
   }
 
   if (cache) {
@@ -523,15 +531,15 @@ export function getCacheStats() {
   return {
     readCache: {
       size: (readCache as any).cache.size,
-      ttl: readCache.ttl,
+      ttl: readCache.getTTL(),
     },
     statCache: {
       size: (statCache as any).cache.size,
-      ttl: statCache.ttl,
+      ttl: statCache.getTTL(),
     },
     patternCache: {
       size: (patternCache as any).cache.size,
-      ttl: patternCache.ttl,
+      ttl: patternCache.getTTL(),
     },
   };
 }

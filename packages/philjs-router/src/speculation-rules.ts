@@ -128,7 +128,7 @@ export function supportsSpeculationRules(): boolean {
  */
 export function supportsPrerendering(): boolean {
   if (typeof document === 'undefined') return false;
-  return 'prerendering' in document || document.visibilityState === 'prerender';
+  return 'prerendering' in document || (document.visibilityState as string) === 'prerender';
 }
 
 /**
@@ -136,7 +136,9 @@ export function supportsPrerendering(): boolean {
  */
 export function wasPrerendered(): boolean {
   if (typeof document === 'undefined') return false;
-  return document.prerendering === true || performance.getEntriesByType?.('navigation')[0]?.activationStart > 0;
+  const doc = document as Document & { prerendering?: boolean };
+  const navEntry = performance.getEntriesByType?.('navigation')[0] as (PerformanceEntry & { activationStart?: number }) | undefined;
+  return doc.prerendering === true || (navEntry?.activationStart ?? 0) > 0;
 }
 
 // ============================================================================
@@ -438,7 +440,8 @@ export function markForPrerender(element: HTMLAnchorElement, eagerness: Speculat
 export function onPrerenderComplete(callback: () => void): () => void {
   if (typeof document === 'undefined') return () => {};
 
-  if (!document.prerendering) {
+  const doc = document as Document & { prerendering?: boolean };
+  if (!doc.prerendering) {
     // Already completed
     callback();
     return () => {};

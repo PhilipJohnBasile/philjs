@@ -14,7 +14,7 @@ import { readFile, writeFile, mkdir, stat, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { globby } from 'globby';
 import matter from 'gray-matter';
-import chokidar from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 import imageSize from 'image-size';
 import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite';
 import type {
@@ -89,7 +89,7 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
   let config: ResolvedConfig;
   let server: ViteDevServer | undefined;
   let collectionsConfig: CollectionsConfig | null = null;
-  let watcher: chokidar.FSWatcher | undefined;
+  let watcher: FSWatcher | undefined;
   let contentCache = new Map<string, ProcessedContent>();
 
   /**
@@ -293,7 +293,7 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
       try {
         const imagePath = resolve(options.contentDir, match[2]);
         if (existsSync(imagePath)) {
-          const dimensions = imageSize(imagePath);
+          const dimensions = (imageSize as unknown as (path: string) => { width?: number; height?: number })(imagePath);
           image.width = dimensions.width;
           image.height = dimensions.height;
         }
@@ -388,17 +388,17 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
       persistent: true,
     });
 
-    watcher.on('add', async (path) => {
+    watcher.on('add', async (path: string) => {
       console.log(`[philjs-content] File added: ${path}`);
       await handleFileChange(path, 'add');
     });
 
-    watcher.on('change', async (path) => {
+    watcher.on('change', async (path: string) => {
       console.log(`[philjs-content] File changed: ${path}`);
       await handleFileChange(path, 'change');
     });
 
-    watcher.on('unlink', async (path) => {
+    watcher.on('unlink', async (path: string) => {
       console.log(`[philjs-content] File removed: ${path}`);
       contentCache.delete(path);
 

@@ -34,7 +34,7 @@ export function TextField(props: {
         onInput={(e: InputEvent) => props.onChange((e.target as HTMLInputElement).value)}
         onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
-        aria-invalid={showError() ? 'true' : 'false'}
+        aria-invalid={!!showError()}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
       />
       {showError() && (
@@ -77,7 +77,7 @@ export function TextAreaField(props: {
         onInput={(e: InputEvent) => props.onChange((e.target as HTMLTextAreaElement).value)}
         onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
-        aria-invalid={showError() ? 'true' : 'false'}
+        aria-invalid={!!showError()}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
       />
       {showError() && (
@@ -116,7 +116,7 @@ export function SelectField(props: {
         onChange={(e: Event) => props.onChange((e.target as HTMLSelectElement).value)}
         onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
-        aria-invalid={showError() ? 'true' : 'false'}
+        aria-invalid={!!showError()}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
       >
         {props.placeholder && (
@@ -165,7 +165,7 @@ export function CheckboxField(props: {
           onChange={(e: Event) => props.onChange((e.target as HTMLInputElement).checked)}
           onBlur={props.onBlur}
           class={showError() ? props.errorClass : ''}
-          aria-invalid={showError() ? 'true' : 'false'}
+          aria-invalid={!!showError()}
           aria-describedby={showError() ? `${props.name}-error` : undefined}
         />
         {props.label && <span>{props.label}</span>}
@@ -209,7 +209,7 @@ export function RadioField(props: {
             onChange={(e: Event) => props.onChange((e.target as HTMLInputElement).value)}
             onBlur={props.onBlur}
             class={showError() ? props.errorClass : ''}
-            aria-invalid={showError() ? 'true' : 'false'}
+            aria-invalid={!!showError()}
             aria-describedby={showError() ? `${props.name}-error` : undefined}
           />
           <span>{option.label}</span>
@@ -262,7 +262,7 @@ export function FileField(props: {
         }}
         onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
-        aria-invalid={showError() ? 'true' : 'false'}
+        aria-invalid={!!showError()}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
       />
       {showError() && (
@@ -311,7 +311,7 @@ export function NumberField(props: {
         }}
         onBlur={props.onBlur}
         class={showError() ? props.errorClass : ''}
-        aria-invalid={showError() ? 'true' : 'false'}
+        aria-invalid={!!showError()}
         aria-describedby={showError() ? `${props.name}-error` : undefined}
       />
       {showError() && (

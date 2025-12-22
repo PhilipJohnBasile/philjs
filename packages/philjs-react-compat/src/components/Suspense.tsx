@@ -203,9 +203,9 @@ export function preload<T>(LazyComponent: T): void {
   // Trigger the lazy load
   try {
     (LazyComponent as any)();
-  } catch (promise) {
+  } catch (promise: unknown) {
     // Promise thrown by lazy component
-    if (promise && typeof promise.then === 'function') {
+    if (promise && typeof (promise as any).then === 'function') {
       // Let it load in background
     }
   }

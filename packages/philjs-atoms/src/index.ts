@@ -478,7 +478,7 @@ export function atomWithReset<Value>(
  */
 export function useResetAtom(atomInstance: PrimitiveAtom<any>): () => void {
   if ('reset' in atomInstance && typeof atomInstance.reset === 'function') {
-    return atomInstance.reset;
+    return atomInstance.reset as () => void;
   }
   throw new Error('Atom does not support reset');
 }
