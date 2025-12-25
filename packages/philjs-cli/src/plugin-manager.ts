@@ -5,9 +5,29 @@
 
 import * as fs from "fs/promises";
 import * as path from "path";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import * as pc from "picocolors";
 import type { Plugin, PluginMetadata } from "philjs-core/plugin-system";
+
+/**
+ * Validate package name to prevent command injection.
+ * Follows npm package name rules with some restrictions.
+ */
+function validatePackageName(name: string): boolean {
+  // Allow scoped packages (@scope/name) and regular packages
+  // Only alphanumeric, hyphens, underscores, dots, and @ / for scopes
+  const validPattern = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/i;
+  return validPattern.test(name) && name.length <= 214;
+}
+
+/**
+ * Validate version string
+ */
+function validateVersion(version: string): boolean {
+  // Allow semver, ranges, and common specifiers
+  const validPattern = /^[a-z0-9.<>=~^*|-]+$/i;
+  return validPattern.test(version) && version.length <= 50;
+}
 
 /**
  * Plugin registry entry
@@ -74,25 +94,37 @@ export class CLIPluginManager {
    * Install a plugin
    */
   async install(pluginName: string, options: { dev?: boolean; version?: string } = {}): Promise<void> {
+    // Validate plugin name to prevent command injection
+    if (!validatePackageName(pluginName)) {
+      throw new Error(`Invalid plugin name: ${pluginName}`);
+    }
+
+    const version = options.version || "latest";
+    if (version !== "latest" && !validateVersion(version)) {
+      throw new Error(`Invalid version: ${version}`);
+    }
+
     console.log(pc.cyan(`\nInstalling plugin: ${pc.bold(pluginName)}...\n`));
 
     try {
       // Determine package manager
       const packageManager = await this.detectPackageManager();
 
-      // Build install command
-      const version = options.version || "latest";
+      // Build install command args (using array to avoid shell injection)
       const packageSpec = version === "latest" ? pluginName : `${pluginName}@${version}`;
-      const devFlag = options.dev ? "-D" : "";
 
-      // Install package
-      const installCmd = this.getInstallCommand(packageManager, packageSpec, devFlag);
-      console.log(pc.dim(`Running: ${installCmd}`));
+      // Install package using spawnSync with args array (no shell)
+      const { cmd, args } = this.getInstallArgs(packageManager, packageSpec, options.dev || false);
+      console.log(pc.dim(`Running: ${cmd} ${args.join(" ")}`));
 
-      execSync(installCmd, {
+      const result = spawnSync(cmd, args, {
         cwd: this.projectRoot,
         stdio: "inherit",
       });
+
+      if (result.status !== 0) {
+        throw new Error(`Installation failed with exit code ${result.status}`);
+      }
 
       // Load plugin metadata
       const plugin = await this.loadPlugin(pluginName);
@@ -127,6 +159,11 @@ export class CLIPluginManager {
    * Remove a plugin
    */
   async remove(pluginName: string): Promise<void> {
+    // Validate plugin name to prevent command injection
+    if (!validatePackageName(pluginName)) {
+      throw new Error(`Invalid plugin name: ${pluginName}`);
+    }
+
     console.log(pc.cyan(`\nRemoving plugin: ${pc.bold(pluginName)}...\n`));
 
     try {
@@ -140,14 +177,18 @@ export class CLIPluginManager {
       // Determine package manager
       const packageManager = await this.detectPackageManager();
 
-      // Uninstall package
-      const uninstallCmd = this.getUninstallCommand(packageManager, pluginName);
-      console.log(pc.dim(`Running: ${uninstallCmd}`));
+      // Uninstall package using spawnSync with args array (no shell)
+      const { cmd, args } = this.getUninstallArgs(packageManager, pluginName);
+      console.log(pc.dim(`Running: ${cmd} ${args.join(" ")}`));
 
-      execSync(uninstallCmd, {
+      const result = spawnSync(cmd, args, {
         cwd: this.projectRoot,
         stdio: "inherit",
       });
+
+      if (result.status !== 0) {
+        throw new Error(`Uninstall failed with exit code ${result.status}`);
+      }
 
       // Remove from config
       await this.removeFromConfig(pluginName);
@@ -274,14 +315,24 @@ export class CLIPluginManager {
     const packageManager = await this.detectPackageManager();
 
     for (const plugin of plugins) {
+      // Validate plugin name before updating
+      if (!validatePackageName(plugin.name)) {
+        console.error(pc.red(`Skipping invalid plugin name: ${plugin.name}`));
+        continue;
+      }
+
       try {
         console.log(pc.dim(`Updating ${plugin.name}...`));
 
-        const updateCmd = this.getUpdateCommand(packageManager, plugin.name);
-        execSync(updateCmd, {
+        const { cmd, args } = this.getUpdateArgs(packageManager, plugin.name);
+        const result = spawnSync(cmd, args, {
           cwd: this.projectRoot,
           stdio: "pipe",
         });
+
+        if (result.status !== 0) {
+          throw new Error(`Update failed`);
+        }
 
         // Update version in config
         const newPlugin = await this.loadPlugin(plugin.name);
@@ -390,42 +441,43 @@ export class CLIPluginManager {
   }
 
   /**
-   * Get install command for package manager
+   * Get install command args for package manager (array-based to prevent injection)
    */
-  private getInstallCommand(pm: string, packageSpec: string, devFlag: string): string {
-    const commands = {
-      npm: `npm install ${devFlag} ${packageSpec}`,
-      pnpm: `pnpm add ${devFlag} ${packageSpec}`,
-      yarn: `yarn add ${devFlag} ${packageSpec}`,
-      bun: `bun add ${devFlag} ${packageSpec}`,
+  private getInstallArgs(pm: string, packageSpec: string, dev: boolean): { cmd: string; args: string[] } {
+    const devFlag = dev ? "-D" : "";
+    const commands: Record<string, { cmd: string; args: string[] }> = {
+      npm: { cmd: "npm", args: ["install", ...(dev ? ["-D"] : []), packageSpec] },
+      pnpm: { cmd: "pnpm", args: ["add", ...(dev ? ["-D"] : []), packageSpec] },
+      yarn: { cmd: "yarn", args: ["add", ...(dev ? ["-D"] : []), packageSpec] },
+      bun: { cmd: "bun", args: ["add", ...(dev ? ["-d"] : []), packageSpec] },
     };
-    return commands[pm as keyof typeof commands] || commands.npm;
+    return commands[pm] || commands.npm;
   }
 
   /**
-   * Get uninstall command for package manager
+   * Get uninstall command args for package manager (array-based to prevent injection)
    */
-  private getUninstallCommand(pm: string, packageName: string): string {
-    const commands = {
-      npm: `npm uninstall ${packageName}`,
-      pnpm: `pnpm remove ${packageName}`,
-      yarn: `yarn remove ${packageName}`,
-      bun: `bun remove ${packageName}`,
+  private getUninstallArgs(pm: string, packageName: string): { cmd: string; args: string[] } {
+    const commands: Record<string, { cmd: string; args: string[] }> = {
+      npm: { cmd: "npm", args: ["uninstall", packageName] },
+      pnpm: { cmd: "pnpm", args: ["remove", packageName] },
+      yarn: { cmd: "yarn", args: ["remove", packageName] },
+      bun: { cmd: "bun", args: ["remove", packageName] },
     };
-    return commands[pm as keyof typeof commands] || commands.npm;
+    return commands[pm] || commands.npm;
   }
 
   /**
-   * Get update command for package manager
+   * Get update command args for package manager (array-based to prevent injection)
    */
-  private getUpdateCommand(pm: string, packageName: string): string {
-    const commands = {
-      npm: `npm update ${packageName}`,
-      pnpm: `pnpm update ${packageName}`,
-      yarn: `yarn upgrade ${packageName}`,
-      bun: `bun update ${packageName}`,
+  private getUpdateArgs(pm: string, packageName: string): { cmd: string; args: string[] } {
+    const commands: Record<string, { cmd: string; args: string[] }> = {
+      npm: { cmd: "npm", args: ["update", packageName] },
+      pnpm: { cmd: "pnpm", args: ["update", packageName] },
+      yarn: { cmd: "yarn", args: ["upgrade", packageName] },
+      bun: { cmd: "bun", args: ["update", packageName] },
     };
-    return commands[pm as keyof typeof commands] || commands.npm;
+    return commands[pm] || commands.npm;
   }
 
   /**
@@ -514,19 +566,27 @@ export class CLIPluginManager {
       },
       utils: {
         resolve: (...paths: string[]) => path.resolve(this.projectRoot, ...paths),
-        exec: async (cmd: string, opts?: { cwd?: string }) => {
-          const result = execSync(cmd, {
+        exec: async (cmd: string, args: string[], opts?: { cwd?: string }) => {
+          // Use spawnSync with args array to prevent shell injection
+          const result = spawnSync(cmd, args, {
             cwd: opts?.cwd || this.projectRoot,
             encoding: "utf-8",
           });
-          return { stdout: result, stderr: "" };
+          return { stdout: result.stdout || "", stderr: result.stderr || "" };
         },
         getPackageManager: () => this.detectPackageManager(),
         installPackages: async (packages: string[], dev?: boolean) => {
+          // Validate all package names before installing
+          for (const pkg of packages) {
+            if (!validatePackageName(pkg)) {
+              throw new Error(`Invalid package name: ${pkg}`);
+            }
+          }
           const pm = await this.detectPackageManager();
-          const devFlag = dev ? "-D" : "";
-          const cmd = this.getInstallCommand(pm, packages.join(" "), devFlag);
-          execSync(cmd, { cwd: this.projectRoot, stdio: "inherit" });
+          for (const pkg of packages) {
+            const { cmd, args } = this.getInstallArgs(pm, pkg, dev || false);
+            spawnSync(cmd, args, { cwd: this.projectRoot, stdio: "inherit" });
+          }
         },
         readPackageJson: () => this.readPackageJson(),
         writePackageJson: (pkg: Record<string, any>) => this.writePackageJson(pkg),

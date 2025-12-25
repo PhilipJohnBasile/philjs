@@ -200,11 +200,16 @@ export default preview;
   ];
 
   return new Promise((resolve, reject) => {
+    // Use spawn without shell: true for security
     const install = spawn(
       packageManager,
       [packageManager === 'npm' ? 'install' : 'add', '-D', ...deps],
-      { stdio: 'inherit', shell: true }
+      { stdio: 'inherit' }
     );
+
+    install.on('error', (err) => {
+      reject(new Error(`Failed to start installation: ${err.message}`));
+    });
 
     install.on('exit', (code) => {
       if (code === 0) {
@@ -222,12 +227,24 @@ export default preview;
 async function startStorybook(options: { port: number; open: boolean }) {
   const { spawn } = await import('child_process');
 
-  const args = ['storybook', 'dev', '-p', options.port.toString()];
+  // Validate port is a number to prevent injection
+  const port = Math.abs(Math.floor(options.port));
+  if (port < 1 || port > 65535) {
+    throw new Error('Invalid port number');
+  }
+
+  const args = ['storybook', 'dev', '-p', port.toString()];
   if (!options.open) {
     args.push('--no-open');
   }
 
-  const storybook = spawn('npx', args, { stdio: 'inherit', shell: true });
+  // Use spawn without shell: true for security
+  const storybook = spawn('npx', args, { stdio: 'inherit' });
+
+  storybook.on('error', (err) => {
+    console.error('Failed to start Storybook:', err.message);
+    process.exit(1);
+  });
 
   storybook.on('exit', (code) => {
     process.exit(code || 0);
@@ -240,10 +257,21 @@ async function startStorybook(options: { port: number; open: boolean }) {
 async function buildStorybook(options: { outputDir: string }) {
   const { spawn } = await import('child_process');
 
-  const args = ['storybook', 'build', '-o', options.outputDir];
+  // Validate output directory to prevent path traversal
+  const outputDir = options.outputDir.replace(/[^a-zA-Z0-9_\-./]/g, '');
+  if (outputDir.includes('..') || outputDir.startsWith('/')) {
+    throw new Error('Invalid output directory');
+  }
+
+  const args = ['storybook', 'build', '-o', outputDir];
 
   return new Promise<void>((resolve, reject) => {
-    const build = spawn('npx', args, { stdio: 'inherit', shell: true });
+    // Use spawn without shell: true for security
+    const build = spawn('npx', args, { stdio: 'inherit' });
+
+    build.on('error', (err) => {
+      reject(new Error(`Failed to start build: ${err.message}`));
+    });
 
     build.on('exit', (code) => {
       if (code === 0) {

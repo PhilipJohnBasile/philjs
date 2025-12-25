@@ -1,25 +1,37 @@
 /**
  * Session management with signals for reactive authentication state
+ *
+ * SECURITY NOTE: This module stores session data in localStorage/cookies for
+ * client-side convenience. For maximum security with sensitive tokens:
+ *
+ * 1. Use HttpOnly cookies set by your server for access/refresh tokens
+ * 2. Only store non-sensitive session metadata (user info) client-side
+ * 3. Set `storeTokenClientSide: false` in config to avoid storing tokens
+ * 4. Implement token refresh via HttpOnly cookie-based server endpoints
+ *
+ * The default configuration prioritizes usability. For high-security apps,
+ * configure your server to manage tokens via HttpOnly cookies.
  */
 
 import { signal, computed, type Signal } from 'philjs-core/signals';
 import type { AuthSession, AuthConfig, User } from './types.js';
 
-const DEFAULT_CONFIG: Required<AuthConfig> = {
+const DEFAULT_CONFIG: Required<AuthConfig> & { storeTokenClientSide: boolean } = {
   sessionKey: 'philjs_session',
   tokenKey: 'philjs_token',
   cookieName: 'philjs_auth',
   cookieDomain: '',
   cookieSecure: true,
   cookieSameSite: 'lax',
-  sessionExpiry: 7 * 24 * 60 * 60 * 1000 // 7 days
+  sessionExpiry: 7 * 24 * 60 * 60 * 1000, // 7 days
+  storeTokenClientSide: false // Secure default: don't store tokens in localStorage
 };
 
 export class SessionManager {
   private sessionSignal: Signal<AuthSession>;
-  private config: Required<AuthConfig>;
+  private config: Required<AuthConfig> & { storeTokenClientSide: boolean };
 
-  constructor(config: AuthConfig = {}) {
+  constructor(config: AuthConfig & { storeTokenClientSide?: boolean } = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
 
     // Initialize session from storage
@@ -176,18 +188,27 @@ export class SessionManager {
 
   /**
    * Save session to storage
+   *
+   * Note: For security, tokens are only stored client-side if storeTokenClientSide is true.
+   * By default, tokens are excluded from client-side storage to prevent XSS token theft.
    */
   private saveSession(session: AuthSession): void {
     if (typeof window === 'undefined') return;
 
     try {
-      const serialized = JSON.stringify(session);
+      // Create a session copy, optionally excluding the token for security
+      const sessionToStore: AuthSession = this.config.storeTokenClientSide
+        ? session
+        : { ...session, token: undefined };
+
+      const serialized = JSON.stringify(sessionToStore);
 
       // Save to localStorage
       localStorage.setItem(this.config.sessionKey, serialized);
 
-      // Save to cookie for SSR
-      this.setCookie(this.config.cookieName, serialized, session.expiresAt);
+      // Save to cookie for SSR (user info only, not tokens)
+      const cookieSession = { ...session, token: undefined };
+      this.setCookie(this.config.cookieName, JSON.stringify(cookieSession), session.expiresAt);
     } catch (error) {
       console.error('Failed to save session:', error);
     }

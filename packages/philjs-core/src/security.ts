@@ -161,22 +161,90 @@ export function sanitizeHtml(
   sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
   sanitized = sanitized.replace(/\s*on\w+\s*=\s*[^\s>]*/gi, '');
 
-  // Remove javascript: protocol
-  sanitized = sanitized.replace(/javascript:/gi, '');
+  // Remove dangerous protocols in href/src/action attributes
+  const dangerousSchemePattern = /(?:href|src|action|formaction|data|poster|background)\s*=\s*["']?\s*(?:javascript|vbscript|data(?!:image\/(?:png|jpeg|gif|webp|svg\+xml)))[^"'\s>]*/gi;
+  sanitized = sanitized.replace(dangerousSchemePattern, '');
 
-  // Remove data: URIs (except for allowed ones)
-  if (!allowedSchemes.includes('data')) {
-    sanitized = sanitized.replace(/\s*data:\s*/gi, '');
-  }
+  // Remove javascript: protocol anywhere
+  sanitized = sanitized.replace(/javascript\s*:/gi, '');
 
-  // Filter allowed tags
-  if (allowedTags.length > 0) {
-    const tagPattern = new RegExp(
-      `<(?!\\/?(${allowedTags.join('|')})\\b)[^>]*>`,
-      'gi'
-    );
-    sanitized = sanitized.replace(tagPattern, '');
-  }
+  // Validate URL schemes in href and src attributes
+  sanitized = sanitized.replace(
+    /(href|src)\s*=\s*["']([^"']+)["']/gi,
+    (match, attr, url) => {
+      const trimmedUrl = url.trim().toLowerCase();
+      // Allow relative URLs
+      if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('#') || trimmedUrl.startsWith('.')) {
+        return match;
+      }
+      // Check if scheme is allowed
+      const schemeMatch = trimmedUrl.match(/^([a-z][a-z0-9+.-]*):\/\//i);
+      if (schemeMatch) {
+        const scheme = schemeMatch[1].toLowerCase();
+        if (!allowedSchemes.includes(scheme)) {
+          return '';
+        }
+      }
+      return match;
+    }
+  );
+
+  // Filter allowed tags and their attributes
+  sanitized = sanitized.replace(
+    /<(\/?)?([a-z][a-z0-9]*)((?:\s+[^>]*)?)\s*\/?>/gi,
+    (match, closing, tagName, attrs) => {
+      const lowerTag = tagName.toLowerCase();
+
+      // Check if tag is allowed
+      if (!allowedTags.includes(lowerTag)) {
+        return '';
+      }
+
+      // For closing tags, just return them
+      if (closing) {
+        return `</${lowerTag}>`;
+      }
+
+      // Filter attributes for opening tags
+      const allowedAttrsForTag = [
+        ...(allowedAttributes[lowerTag] || []),
+        ...(allowedAttributes['*'] || []),
+      ];
+
+      if (!attrs || !attrs.trim()) {
+        return `<${lowerTag}>`;
+      }
+
+      // Parse and filter attributes
+      const filteredAttrs: string[] = [];
+      const attrPattern = /([a-z][a-z0-9-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
+      let attrMatch;
+
+      while ((attrMatch = attrPattern.exec(attrs)) !== null) {
+        const attrName = attrMatch[1].toLowerCase();
+        const attrValue = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4] ?? '';
+
+        // Skip event handlers
+        if (attrName.startsWith('on')) {
+          continue;
+        }
+
+        // Check if attribute is allowed
+        if (allowedAttrsForTag.includes(attrName)) {
+          // Escape the attribute value
+          const escapedValue = attrValue
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          filteredAttrs.push(`${attrName}="${escapedValue}"`);
+        }
+      }
+
+      const selfClosing = match.endsWith('/>') ? ' /' : '';
+      return `<${lowerTag}${filteredAttrs.length ? ' ' + filteredAttrs.join(' ') : ''}${selfClosing}>`;
+    }
+  );
 
   return sanitized;
 }

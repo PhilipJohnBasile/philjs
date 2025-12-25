@@ -21,9 +21,9 @@
   },
   "workspaces": [
     "packages/*",
-    "packages/philjs-devtools-extension",
     "examples/*",
-    "docs-site"
+    "marketing-site",
+    "benchmarks/*"
   ],
   "devDependencies": {
     "@changesets/cli": "^2.27.0",

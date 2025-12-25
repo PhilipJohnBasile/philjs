@@ -44,6 +44,30 @@ function base64UrlDecode(str: string): string {
 }
 
 /**
+ * Constant-time comparison to prevent timing attacks
+ */
+function constantTimeEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') {
+    return false;
+  }
+
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(a);
+  const bufB = encoder.encode(b);
+
+  if (bufA.length !== bufB.length) {
+    return false;
+  }
+
+  let diff = 0;
+  for (let i = 0; i < bufA.length; i++) {
+    diff |= bufA[i] ^ bufB[i];
+  }
+
+  return diff === 0;
+}
+
+/**
  * HMAC SHA-256 signing (browser-compatible)
  */
 async function sign(data: string, secret: string): Promise<string> {
@@ -124,11 +148,11 @@ export class JWTManager {
 
     const [encodedHeader, encodedPayload, signature] = parts;
 
-    // Verify signature
+    // Verify signature using constant-time comparison to prevent timing attacks
     const data = `${encodedHeader}.${encodedPayload}`;
     const expectedSignature = await sign(data, this.config.secret);
 
-    if (signature !== expectedSignature) {
+    if (!constantTimeEqual(signature, expectedSignature)) {
       throw new Error('Invalid token signature');
     }
 

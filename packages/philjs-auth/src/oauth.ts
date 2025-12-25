@@ -76,22 +76,36 @@ export class OAuthManager {
 
   /**
    * Get authorization URL for a provider
+   * @param providerName - The name of the OAuth provider
+   * @param state - Required state parameter for CSRF protection
+   * @param pkce - Optional PKCE parameters (recommended for public clients)
    */
-  getAuthUrl(providerName: string, state?: string): string {
+  getAuthUrl(
+    providerName: string,
+    state: string,
+    pkce?: { codeChallenge: string; codeChallengeMethod: 'S256' }
+  ): string {
     const provider = this.config.providers[providerName];
     if (!provider) {
       throw new Error(`Unknown OAuth provider: ${providerName}`);
+    }
+
+    if (!state) {
+      throw new Error('State parameter is required for CSRF protection');
     }
 
     const params = new URLSearchParams({
       client_id: provider.clientId,
       redirect_uri: provider.redirectUri,
       response_type: 'code',
-      scope: provider.scope.join(' ')
+      scope: provider.scope.join(' '),
+      state
     });
 
-    if (state) {
-      params.set('state', state);
+    // Add PKCE parameters if provided
+    if (pkce) {
+      params.set('code_challenge', pkce.codeChallenge);
+      params.set('code_challenge_method', pkce.codeChallengeMethod);
     }
 
     return `${provider.authUrl}?${params.toString()}`;
@@ -99,23 +113,34 @@ export class OAuthManager {
 
   /**
    * Exchange authorization code for access token
+   * @param providerName - The name of the OAuth provider
+   * @param code - The authorization code
+   * @param codeVerifier - The PKCE code verifier (if PKCE was used in auth request)
    */
   async exchangeCode(
     providerName: string,
-    code: string
+    code: string,
+    codeVerifier?: string
   ): Promise<{ accessToken: string; refreshToken?: string; expiresIn?: number }> {
     const provider = this.config.providers[providerName];
     if (!provider) {
       throw new Error(`Unknown OAuth provider: ${providerName}`);
     }
 
-    const body = new URLSearchParams({
+    const bodyParams: Record<string, string> = {
       client_id: provider.clientId,
       client_secret: provider.clientSecret,
       code,
       grant_type: 'authorization_code',
       redirect_uri: provider.redirectUri
-    });
+    };
+
+    // Add PKCE code_verifier if provided
+    if (codeVerifier) {
+      bodyParams.code_verifier = codeVerifier;
+    }
+
+    const body = new URLSearchParams(bodyParams);
 
     const response = await fetch(provider.tokenUrl, {
       method: 'POST',
@@ -327,8 +352,81 @@ export function generateState(): string {
 }
 
 /**
- * Helper to validate state parameter
+ * Helper to validate state parameter using constant-time comparison
  */
 export function validateState(received: string, expected: string): boolean {
-  return received === expected;
+  if (typeof received !== 'string' || typeof expected !== 'string') {
+    return false;
+  }
+
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(received);
+  const bufB = encoder.encode(expected);
+
+  if (bufA.length !== bufB.length) {
+    return false;
+  }
+
+  let diff = 0;
+  for (let i = 0; i < bufA.length; i++) {
+    diff |= bufA[i] ^ bufB[i];
+  }
+
+  return diff === 0;
+}
+
+// ============================================================================
+// PKCE Support
+// ============================================================================
+
+/**
+ * Generate a PKCE code verifier (43-128 character random string)
+ */
+export function generateCodeVerifier(length: number = 64): string {
+  if (length < 43 || length > 128) {
+    throw new Error('Code verifier must be between 43 and 128 characters');
+  }
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  // Use URL-safe base64 alphabet
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  return Array.from(array, byte => chars[byte % chars.length]).join('');
+}
+
+/**
+ * Generate a PKCE code challenge from a code verifier
+ */
+export async function generateCodeChallenge(verifier: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  const digestArray = new Uint8Array(digest);
+  // Base64 URL encode the digest
+  const base64 = btoa(String.fromCharCode(...digestArray))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+  return base64;
+}
+
+/**
+ * PKCE pair for OAuth flow
+ */
+export interface PKCEPair {
+  codeVerifier: string;
+  codeChallenge: string;
+  codeChallengeMethod: 'S256';
+}
+
+/**
+ * Generate a PKCE pair for use in OAuth flows
+ */
+export async function generatePKCE(): Promise<PKCEPair> {
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+  return {
+    codeVerifier,
+    codeChallenge,
+    codeChallengeMethod: 'S256'
+  };
 }

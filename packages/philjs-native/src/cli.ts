@@ -7,7 +7,38 @@
 
 import { existsSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync } from 'fs';
 import { join, resolve, dirname } from 'path';
-import { execSync, spawn, type SpawnOptions } from 'child_process';
+import { execSync, spawn, spawnSync, type SpawnOptions } from 'child_process';
+
+// ============================================================================
+// Security Utilities
+// ============================================================================
+
+/**
+ * Validate simulator name to prevent command injection
+ */
+function validateSimulatorName(name: string): boolean {
+  // Only allow alphanumeric, spaces, and common punctuation for device names
+  return /^[a-zA-Z0-9\s\-_.()]+$/.test(name) && name.length <= 100;
+}
+
+/**
+ * Validate path to prevent path traversal and injection
+ */
+function validatePath(path: string): boolean {
+  // Disallow shell metacharacters and path traversal
+  return !/[;&|`$<>]/.test(path) && !path.includes('..') && path.length <= 500;
+}
+
+/**
+ * Validate port number
+ */
+function validatePort(port: string | number): number {
+  const portNum = typeof port === 'string' ? parseInt(port, 10) : port;
+  if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+    throw new Error('Invalid port number');
+  }
+  return portNum;
+}
 
 // ============================================================================
 // Types
@@ -426,31 +457,39 @@ async function runIOS(
 
   // Install CocoaPods dependencies
   console.log('  Installing CocoaPods dependencies...');
-  execSync('pod install', { cwd: iosDir, stdio: 'inherit' });
+  spawnSync('pod', ['install'], { cwd: iosDir, stdio: 'inherit' });
 
-  // Build and run
+  // Build and run - validate simulator name
   const simulator = options.simulator as string || 'iPhone 15';
+  if (!validateSimulatorName(simulator)) {
+    console.error('  Error: Invalid simulator name');
+    process.exit(1);
+  }
   console.log(`  Building for ${simulator}...`);
 
-  const buildCmd = [
-    'xcodebuild',
+  // Use spawnSync with args array to prevent command injection
+  const buildArgs = [
     '-workspace', `${config.name}.xcworkspace`,
     '-scheme', config.name,
     '-configuration', 'Debug',
     '-destination', `platform=iOS Simulator,name=${simulator}`,
     '-derivedDataPath', 'build',
-  ].join(' ');
+  ];
 
-  execSync(buildCmd, { cwd: iosDir, stdio: 'inherit' });
+  const buildResult = spawnSync('xcodebuild', buildArgs, { cwd: iosDir, stdio: 'inherit' });
+  if (buildResult.status !== 0) {
+    console.error('  Build failed');
+    process.exit(1);
+  }
 
-  // Launch simulator and app
+  // Launch simulator and app using args arrays
   console.log('  Launching app...');
-  execSync(`xcrun simctl boot "${simulator}" || true`, { stdio: 'pipe' });
-  execSync('open -a Simulator', { stdio: 'pipe' });
+  spawnSync('xcrun', ['simctl', 'boot', simulator], { stdio: 'pipe' });
+  spawnSync('open', ['-a', 'Simulator'], { stdio: 'pipe' });
 
   const appPath = join(iosDir, 'build/Build/Products/Debug-iphonesimulator', `${config.name}.app`);
-  execSync(`xcrun simctl install booted "${appPath}"`, { stdio: 'inherit' });
-  execSync(`xcrun simctl launch booted ${config.bundleId}`, { stdio: 'inherit' });
+  spawnSync('xcrun', ['simctl', 'install', 'booted', appPath], { stdio: 'inherit' });
+  spawnSync('xcrun', ['simctl', 'launch', 'booted', config.bundleId], { stdio: 'inherit' });
 }
 
 /**
@@ -480,16 +519,25 @@ async function runAndroid(
   console.log('  Building Android app...');
   const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
 
-  execSync(`${gradleCmd} assembleDebug`, { cwd: androidDir, stdio: 'inherit' });
+  // Use spawnSync with args array
+  const gradleResult = spawnSync(gradleCmd, ['assembleDebug'], { cwd: androidDir, stdio: 'inherit' });
+  if (gradleResult.status !== 0) {
+    console.error('  Build failed');
+    process.exit(1);
+  }
 
   // Install on device/emulator
   console.log('  Installing on device...');
   const apkPath = join(androidDir, 'app/build/outputs/apk/debug/app-debug.apk');
-  execSync(`adb install -r "${apkPath}"`, { stdio: 'inherit' });
+  spawnSync('adb', ['install', '-r', apkPath], { stdio: 'inherit' });
 
-  // Launch app
+  // Launch app - validate bundleId format
+  if (!/^[a-zA-Z][a-zA-Z0-9_.]*$/.test(config.bundleId)) {
+    console.error('  Error: Invalid bundle ID');
+    process.exit(1);
+  }
   console.log('  Launching app...');
-  execSync(`adb shell am start -n ${config.bundleId}/.MainActivity`, { stdio: 'inherit' });
+  spawnSync('adb', ['shell', 'am', 'start', '-n', `${config.bundleId}/.MainActivity`], { stdio: 'inherit' });
 }
 
 /**
@@ -499,24 +547,16 @@ async function runWeb(
   config: ProjectConfig,
   options: Record<string, string | boolean>
 ): Promise<void> {
-  const port = options.port as string || '3000';
+  // Validate port
+  const port = validatePort(options.port as string || '3000');
 
   console.log(`  Starting development server on http://localhost:${port}`);
   console.log('  Press Ctrl+C to stop\n');
 
-  // Use a simple dev server (would use Vite in production)
-  const viteConfig = {
-    server: {
-      port: parseInt(port, 10),
-      open: true,
-    },
-  };
-
-  // Start Vite or similar dev server
+  // Start Vite dev server without shell: true
   try {
-    const vite = spawn('npx', ['vite', '--port', port, '--open'], {
+    const vite = spawn('npx', ['vite', '--port', port.toString(), '--open'], {
       stdio: 'inherit',
-      shell: true,
     });
 
     vite.on('error', (err) => {
@@ -562,25 +602,46 @@ async function buildIOS(config: ProjectConfig, outDir: string): Promise<void> {
     process.exit(1);
   }
 
+  // Validate output directory
+  if (!validatePath(outDir)) {
+    console.error('  Error: Invalid output directory');
+    process.exit(1);
+  }
+
   const iosDir = join(process.cwd(), 'ios');
 
-  const buildCmd = [
-    'xcodebuild',
+  // Use spawnSync with args array
+  const buildArgs = [
     '-workspace', `${config.name}.xcworkspace`,
     '-scheme', config.name,
     '-configuration', 'Release',
     '-archivePath', `${outDir}/${config.name}.xcarchive`,
     'archive',
-  ].join(' ');
+  ];
 
-  execSync(buildCmd, { cwd: iosDir, stdio: 'inherit' });
+  const result = spawnSync('xcodebuild', buildArgs, { cwd: iosDir, stdio: 'inherit' });
+  if (result.status !== 0) {
+    console.error('  Build failed');
+    process.exit(1);
+  }
 }
 
 async function buildAndroid(config: ProjectConfig, outDir: string): Promise<void> {
+  // Validate output directory
+  if (!validatePath(outDir)) {
+    console.error('  Error: Invalid output directory');
+    process.exit(1);
+  }
+
   const androidDir = join(process.cwd(), 'android');
   const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
 
-  execSync(`${gradleCmd} assembleRelease`, { cwd: androidDir, stdio: 'inherit' });
+  // Use spawnSync with args array
+  const result = spawnSync(gradleCmd, ['assembleRelease'], { cwd: androidDir, stdio: 'inherit' });
+  if (result.status !== 0) {
+    console.error('  Build failed');
+    process.exit(1);
+  }
 
   // Copy APK to output directory
   mkdirSync(outDir, { recursive: true });
@@ -589,23 +650,35 @@ async function buildAndroid(config: ProjectConfig, outDir: string): Promise<void
 }
 
 async function buildWeb(config: ProjectConfig, outDir: string): Promise<void> {
-  execSync(`npx vite build --outDir ${outDir}`, { stdio: 'inherit' });
+  // Validate output directory
+  if (!validatePath(outDir)) {
+    console.error('  Error: Invalid output directory');
+    process.exit(1);
+  }
+
+  // Use spawnSync with args array
+  const result = spawnSync('npx', ['vite', 'build', '--outDir', outDir], { stdio: 'inherit' });
+  if (result.status !== 0) {
+    console.error('  Build failed');
+    process.exit(1);
+  }
 }
 
 /**
  * Start the development server
  */
 async function startDevServer(options: Record<string, string | boolean>): Promise<void> {
-  const port = options.port as string || '3000';
+  // Validate port
+  const port = validatePort(options.port as string || '3000');
 
   console.log(`\n  Starting PhilJS Native development server...\n`);
   console.log(`  Local:   http://localhost:${port}`);
   console.log(`  Network: http://${getLocalIP()}:${port}`);
   console.log('\n  Press Ctrl+C to stop\n');
 
-  spawn('npx', ['vite', '--port', port, '--host'], {
+  // Use spawn without shell: true
+  spawn('npx', ['vite', '--port', port.toString(), '--host'], {
     stdio: 'inherit',
-    shell: true,
   });
 }
 
@@ -711,7 +784,8 @@ async function runDoctor(): Promise<void> {
 async function upgradeProject(): Promise<void> {
   console.log('\n  Upgrading PhilJS Native...\n');
 
-  execSync('npm update philjs-native philjs-core', { stdio: 'inherit' });
+  // Use spawnSync with args array
+  spawnSync('npm', ['update', 'philjs-native', 'philjs-core'], { stdio: 'inherit' });
 
   console.log('\n  Upgrade complete!\n');
 }
