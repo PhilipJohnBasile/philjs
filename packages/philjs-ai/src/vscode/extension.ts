@@ -20,6 +20,11 @@ import { DocGenerator } from '../docs/doc-generator.js';
 import { autoDetectProvider } from '../providers/index.js';
 
 /**
+ * Thenable type for VS Code compatibility
+ */
+type Thenable<T> = PromiseLike<T>;
+
+/**
  * VS Code API types (simplified for type checking without vscode module)
  */
 interface VSCodeExtensionContext {
@@ -207,7 +212,7 @@ export class PhilJSAIExtension {
   /**
    * Register inline completion provider (ghost text)
    */
-  private registerInlineCompletionProvider(context: VSCodeExtensionContext): void {
+  private registerInlineCompletionProvider(_context: VSCodeExtensionContext): void {
     const getInlineCompletion = async (
       document: VSCodeTextDocument,
       position: VSCodePosition
@@ -215,7 +220,8 @@ export class PhilJSAIExtension {
       if (!this.autocompleteEngine) return null;
 
       const autoContext = this.buildAutocompleteContext(document, position);
-      return this.autocompleteEngine.getInlineCompletion(autoContext);
+      const result = await this.autocompleteEngine.getInlineCompletionFromContext(autoContext);
+      return result;
     };
 
     (this as Record<string, unknown>).getInlineCompletion = getInlineCompletion;
@@ -224,16 +230,16 @@ export class PhilJSAIExtension {
   /**
    * Register extension commands
    */
-  private registerCommands(context: VSCodeExtensionContext): void {
+  private registerCommands(_context: VSCodeExtensionContext): void {
     const commands: Record<string, (...args: unknown[]) => Promise<void>> = {
-      'philjs-ai.generateComponent': this.generateComponentCommand.bind(this),
-      'philjs-ai.generateTests': this.generateTestsCommand.bind(this),
-      'philjs-ai.refactorCode': this.refactorCodeCommand.bind(this),
-      'philjs-ai.addDocumentation': this.addDocumentationCommand.bind(this),
-      'philjs-ai.explainCode': this.explainCodeCommand.bind(this),
-      'philjs-ai.reviewCode': this.reviewCodeCommand.bind(this),
-      'philjs-ai.optimizePerformance': this.optimizePerformanceCommand.bind(this),
-      'philjs-ai.fixAccessibility': this.fixAccessibilityCommand.bind(this),
+      'philjs-ai.generateComponent': (...args) => this.generateComponentCommand(args[0] as string | undefined),
+      'philjs-ai.generateTests': (...args) => this.generateTestsCommand(args[0] as VSCodeTextDocument | undefined),
+      'philjs-ai.refactorCode': (...args) => this.refactorCodeCommand(args[0] as VSCodeTextDocument | undefined),
+      'philjs-ai.addDocumentation': (...args) => this.addDocumentationCommand(args[0] as VSCodeTextDocument | undefined),
+      'philjs-ai.explainCode': (...args) => this.explainCodeCommand(args[0] as VSCodeTextDocument | undefined, args[1] as VSCodeRange | undefined),
+      'philjs-ai.reviewCode': (...args) => this.reviewCodeCommand(args[0] as VSCodeTextDocument | undefined),
+      'philjs-ai.optimizePerformance': (...args) => this.optimizePerformanceCommand(args[0] as VSCodeTextDocument | undefined),
+      'philjs-ai.fixAccessibility': (...args) => this.fixAccessibilityCommand(args[0] as VSCodeTextDocument | undefined),
     };
 
     (this as Record<string, unknown>).commands = commands;

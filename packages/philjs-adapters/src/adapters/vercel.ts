@@ -909,12 +909,12 @@ export function getVercelContext(): {
   ip?: string;
   isEdge: boolean;
 } {
-  const headers = typeof Headers !== 'undefined' ? new Headers() : null;
+  
 
   return {
     geo: (globalThis as any).__VERCEL_GEO__,
     ip: (globalThis as any).__VERCEL_IP__,
-    isEdge: typeof EdgeRuntime !== 'undefined',
+    isEdge: typeof (globalThis as any).EdgeRuntime !== 'undefined',
   };
 }
 

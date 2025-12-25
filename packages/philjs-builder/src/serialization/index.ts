@@ -22,3 +22,11 @@ export {
   type TemplateManager,
   type TemplateManagerOptions,
 } from './TemplateSystem.js';
+
+export {
+  additionalBuiltInTemplates,
+  dashboardSidebar,
+  landingPageSimple,
+  navigationHeader,
+  pricingTable,
+} from './BuiltInTemplates.js';

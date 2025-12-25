@@ -144,22 +144,22 @@ export type {
 // Node.js Enhanced Adapter
 export {
   nodeAdapter as nodeAdapterV2,
-  startServer,
+  startServer as startServerV2,
   createExpressMiddleware,
   createFastifyPlugin,
 } from './adapters/node';
 export type {
   NodeAdapterConfig,
   ClusterConfig,
-  StaticConfig,
+  StaticConfig as StaticConfigV2,
   LoggingConfig,
 } from './adapters/node';
 
 // Bun Enhanced Adapter
 export {
   bunAdapter as bunAdapterV2,
-  isBun,
-  createBunSQLite,
+  isBun as isBunV2,
+  createBunSQLite as createBunSQLiteV2,
   bunFile,
   bunHash,
   bunVerify,

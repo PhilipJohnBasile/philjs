@@ -5,7 +5,19 @@
  */
 
 import { signal, memo } from 'philjs-core';
-import type { AIProvider, Message } from './index';
+import type { AIProvider } from './types.js';
+
+// Message type for RAG conversations
+export interface Message {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+// Extended AIProvider interface with embedding support
+interface EmbeddingAIProvider extends AIProvider {
+  embed?(texts: string[]): Promise<number[][]>;
+  chat?(messages: Message[], options?: { systemPrompt?: string }): Promise<string>;
+}
 
 // ============================================================================
 // Types
@@ -177,14 +189,14 @@ export class QdrantVectorStore implements VectorStore {
 // ============================================================================
 
 export class RAGPipeline {
-  private provider: AIProvider;
+  private provider: EmbeddingAIProvider;
   private vectorStore: VectorStore;
   private topK: number;
   private minScore: number;
   private systemPrompt: string;
 
   constructor(options: RAGOptions) {
-    this.provider = options.provider;
+    this.provider = options.provider as EmbeddingAIProvider;
     this.vectorStore = options.vectorStore;
     this.topK = options.topK || 5;
     this.minScore = options.minScore || 0.7;
@@ -214,7 +226,7 @@ export class RAGPipeline {
     }
 
     // Get embedding for question
-    const [questionEmbedding] = await this.provider.embed(question);
+    const [questionEmbedding] = await this.provider.embed([question]);
 
     // Search for relevant documents
     const results = await this.vectorStore.search(questionEmbedding, this.topK);
@@ -225,26 +237,15 @@ export class RAGPipeline {
       .map((r, i) => `[${i + 1}] ${r.document.content}`)
       .join('\n\n');
 
-    // Generate answer
-    const messages: Message[] = [
-      {
-        id: 'system',
-        role: 'system',
-        content: `${this.systemPrompt}\n\nContext:\n${context}`,
-        createdAt: new Date(),
-      },
-      {
-        id: 'user',
-        role: 'user',
-        content: question,
-        createdAt: new Date(),
-      },
-    ];
+    // Generate answer using generateCompletion
+    const prompt = `${question}\n\nContext:\n${context}`;
 
-    const response = await this.provider.chat(messages, {});
+    const response = await this.provider.generateCompletion(prompt, {
+      systemPrompt: this.systemPrompt,
+    });
 
     return {
-      answer: response.content,
+      answer: response,
       sources: relevantResults,
     };
   }

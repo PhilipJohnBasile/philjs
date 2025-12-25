@@ -334,15 +334,10 @@ export function SparkArea(props: SparkAreaProps) {
   return (
     <div style={styles.container} class={className}>
       <svg width={width} height={height} style={styles.svg}>
-        <defs>
-          <linearGradient id={`spark-gradient-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color={color} stop-opacity="0.6" />
-            <stop offset="100%" stop-color={color} stop-opacity="0.1" />
-          </linearGradient>
-        </defs>
         <path
           d={areaPath}
-          fill={`url(#spark-gradient-${color.replace('#', '')})`}
+          fill={color}
+          opacity={0.3}
         />
       </svg>
     </div>

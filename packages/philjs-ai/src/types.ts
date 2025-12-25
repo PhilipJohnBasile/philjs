@@ -165,3 +165,29 @@ export interface GeneratedDocumentation {
   summary: string;
   examples?: string[];
 }
+
+/**
+ * Tool definition for function calling
+ */
+export interface ToolDefinition {
+  /** Tool name */
+  name: string;
+  /** Tool description */
+  description: string;
+  /** JSON Schema for parameters */
+  parameters: Record<string, unknown>;
+  /** Execute the tool */
+  execute: (args: Record<string, unknown>) => Promise<unknown>;
+}
+
+/**
+ * Tool call from AI
+ */
+export interface ToolCall {
+  /** Unique call ID */
+  id: string;
+  /** Tool name */
+  name: string;
+  /** Tool arguments */
+  arguments: Record<string, unknown>;
+}

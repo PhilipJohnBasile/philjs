@@ -587,8 +587,9 @@ export function NetworkWaterfallPanel(props: NetworkWaterfallPanelProps) {
 
   const renderWaterfallBar = (resource: ResourceTiming) => {
     const scale = timelineScale();
-    const left = ((resource.startTime - scale.min) / scale.range) * 100;
-    const width = (resource.duration / scale.range) * 100;
+    const range = scale.range || 1;
+    const left = ((resource.startTime - scale.min) / range) * 100;
+    const width = (resource.duration / range) * 100;
 
     // Calculate segment widths as percentages of total duration
     const totalTime = resource.duration || 1;

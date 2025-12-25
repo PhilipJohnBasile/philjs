@@ -515,6 +515,7 @@ const severityColors: Record<AlertSeverity, { bg: string; text: string; border: 
   info: { bg: '#3b82f622', text: '#60a5fa', border: '#3b82f6' },
   warning: { bg: '#f59e0b22', text: '#fbbf24', border: '#f59e0b' },
   critical: { bg: '#ef444422', text: '#f87171', border: '#ef4444' },
+  success: { bg: '#22c55e22', text: '#4ade80', border: '#22c55e' },
 };
 
 const metricLabels: Record<AlertMetricType, string> = {
@@ -710,7 +711,7 @@ export function AlertsConfigPanel(props: AlertsConfigPanelProps) {
                 </div>
                 <div style={styles.alertMessage}>{alert.message}</div>
                 <div style={styles.alertMeta}>
-                  <span>{formatTimeAgo(alert.timestamp)}</span>
+                  <span>{formatTimeAgo(alert.timestamp.getTime())}</span>
                   <span
                     style={styles.severityBadge + `background: ${colors.bg}; color: ${colors.text};`}
                   >

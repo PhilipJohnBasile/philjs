@@ -3,6 +3,8 @@
  *
  * Features:
  * - Main Dashboard with overview and navigation
+ * - Performance Dashboard with comprehensive monitoring
+ * - Web Vitals Dashboard (LCP, FID, CLS, etc.)
  * - Metrics display (counters, histograms, gauges)
  * - Real-time graphs with live streaming data
  * - Error tracking panel with filtering
@@ -15,6 +17,22 @@
 
 // Main Dashboard
 export { Dashboard, type DashboardProps, type DashboardTab } from './Dashboard';
+
+// Performance Dashboard (Comprehensive)
+export {
+  PerformanceDashboard,
+  type PerformanceDashboardProps,
+  type PerformanceMetrics,
+  type DashboardPanel,
+} from './PerformanceDashboard';
+
+// Web Vitals Dashboard
+export {
+  WebVitalsDashboard,
+  type WebVitalsDashboardProps,
+  type WebVitalsData,
+  type WebVitalThresholds,
+} from './WebVitalsDashboard';
 
 // Core Panels
 export { MetricsPanel, type MetricsPanelProps, type MetricGroup } from './MetricsPanel';

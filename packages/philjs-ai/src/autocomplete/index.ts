@@ -497,9 +497,9 @@ Return JSON array of fix suggestions.`;
   }
 
   /**
-   * Get inline completion (for ghost text)
+   * Get inline completion from context (for ghost text)
    */
-  async getInlineCompletion(context: AutocompleteContext): Promise<string | null> {
+  async getInlineCompletionFromContext(context: AutocompleteContext): Promise<string | null> {
     const beforeCursor = this.getTextBeforeCursor(context);
     const afterCursor = this.getTextAfterCursor(context);
 

@@ -36,6 +36,21 @@ import { SchemaToComponentGenerator } from "./schema/schema-to-component.js";
 
 // Core types
 export * from "./types.js";
+export type { ToolDefinition, ToolCall } from "./types.js";
+
+// AI Assistant
+export {
+  AIAssistant,
+  createAIAssistant,
+  createAutoAssistant,
+  type AssistantConfig,
+  type ProjectContext as AssistantProjectContext,
+  type CodeGenRequest,
+  type CodeGenResult,
+  type RefactorRequest,
+  type ConversationMessage as AssistantConversationMessage,
+  type ChatResponse,
+} from "./assistant/index.js";
 
 // Utility functions
 export * from "./utils/parser.js";
@@ -59,6 +74,24 @@ export {
   createLocalProvider,
   type LocalConfig,
 } from "./providers/local.js";
+
+export {
+  GeminiProvider,
+  createGeminiProvider,
+  type GeminiConfig,
+} from "./providers/gemini.js";
+
+export {
+  CohereProvider,
+  createCohereProvider,
+  type CohereConfig,
+} from "./providers/cohere.js";
+
+export {
+  LMStudioProvider,
+  createLMStudioProvider,
+  type LMStudioConfig,
+} from "./providers/lmstudio.js";
 
 export {
   createProvider,

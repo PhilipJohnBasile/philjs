@@ -4,6 +4,14 @@
  * A comprehensive visual component builder for creating PhilJS applications
  * with drag-and-drop UI, property editing, and code generation.
  *
+ * Features:
+ * - Complete drag-and-drop visual component builder
+ * - Component palette with all philjs-ui components
+ * - Property inspector panel with layout, typography, and effects editors
+ * - Live preview pane with responsive device frames
+ * - Code export to TSX, JSX, and PhilJS formats
+ * - Template system for common layouts
+ *
  * @packageDocumentation
  */
 
@@ -258,6 +266,28 @@ export {
 } from './preview/index.js';
 
 // ============================================================================
+// Visual Builder Application
+// ============================================================================
+
+export {
+  VisualBuilder,
+  type VisualBuilderProps,
+  type BuilderUIState,
+} from './builder/index.js';
+
+// ============================================================================
+// PhilJS UI Components Integration
+// ============================================================================
+
+export {
+  philjsUIComponents,
+  philjsUICategories,
+  getPhilJSUIComponent,
+  getPhilJSUIComponentsByCategory,
+  registerPhilJSUIComponents,
+} from './components/PhilJSUIComponents.js';
+
+// ============================================================================
 // Default Export
 // ============================================================================
 
@@ -269,14 +299,21 @@ import { ComponentTree } from './components/index.js';
 import { ResponsivePreview } from './preview/index.js';
 import { generateCode } from './serialization/index.js';
 import { createTemplateManager } from './serialization/index.js';
+import { VisualBuilder } from './builder/index.js';
 
 export default {
+  // Main application component
+  VisualBuilder,
+
+  // Core components
   createBuilderStore,
   Canvas,
   Palette,
   PropertyPanel,
   ComponentTree,
   ResponsivePreview,
+
+  // Utilities
   generateCode,
   createTemplateManager,
 };

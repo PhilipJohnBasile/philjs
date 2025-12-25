@@ -961,10 +961,10 @@ export class PhilJSStack extends cdk.Stack {
 
     // HTTP API
     const api = new apigatewayv2.HttpApi(this, 'PhilJSApi', {
-      ${corsConfig ? `corsPreflight: {
-        allowOrigins: ${JSON.stringify((corsConfig as CORSConfig).allowOrigins || ['*'])},
+      ${apiGateway?.cors ? `corsPreflight: {
+        allowOrigins: ${JSON.stringify((typeof apiGateway.cors === 'object' && apiGateway.cors.allowOrigins ? apiGateway.cors.allowOrigins : undefined) || ['*'])},
         allowMethods: [apigatewayv2.CorsHttpMethod.ANY],
-        allowHeaders: ${JSON.stringify((corsConfig as CORSConfig).allowHeaders || ['*'])},
+        allowHeaders: ${JSON.stringify((typeof apiGateway.cors === 'object' && apiGateway.cors.allowHeaders ? apiGateway.cors.allowHeaders : undefined) || ['*'])},
       },` : ''}
     });
 

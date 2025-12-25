@@ -566,9 +566,9 @@ ${config.auth ? `Implement ${config.auth.type} authentication.` : ''}`;
       }
     }
 
-    // If no routes found in blocks, try to parse from main code
-    if (routes.length === 0) {
-      const mainCode = extractCode(response => response);
+    // If no routes found in blocks, use first block's code as main code
+    if (routes.length === 0 && blocks.length > 0) {
+      const mainCode = blocks[0].code;
       if (mainCode) {
         for (const op of operations) {
           const details = this.getOperationDetails(op);

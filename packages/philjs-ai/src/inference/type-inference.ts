@@ -467,6 +467,7 @@ Return JSON:
       interface: {
         name: typeName,
         properties: [],
+        source: 'json',
         code: `interface ${typeName} {}`,
       },
       code: `interface ${typeName} {}`,

@@ -45,3 +45,11 @@ export {
   type TreeNodeProps,
   type TreeState,
 } from './ComponentTree.js';
+
+export {
+  philjsUIComponents,
+  philjsUICategories,
+  getPhilJSUIComponent,
+  getPhilJSUIComponentsByCategory,
+  registerPhilJSUIComponents,
+} from './PhilJSUIComponents.js';

@@ -7,11 +7,17 @@
 export * from './openai.js';
 export * from './anthropic.js';
 export * from './local.js';
+export * from './gemini.js';
+export * from './cohere.js';
+export * from './lmstudio.js';
 
 import type { AIProvider } from '../types.js';
 import { OpenAIProvider, type OpenAIConfig } from './openai.js';
 import { AnthropicProvider, type AnthropicConfig } from './anthropic.js';
 import { LocalProvider, type LocalConfig } from './local.js';
+import { GeminiProvider, type GeminiConfig } from './gemini.js';
+import { CohereProvider, type CohereConfig } from './cohere.js';
+import { LMStudioProvider, type LMStudioConfig } from './lmstudio.js';
 
 /**
  * Provider configuration type
@@ -19,7 +25,10 @@ import { LocalProvider, type LocalConfig } from './local.js';
 export type ProviderConfig =
   | { type: 'openai'; config: OpenAIConfig }
   | { type: 'anthropic'; config: AnthropicConfig }
-  | { type: 'local'; config?: LocalConfig };
+  | { type: 'local'; config?: LocalConfig }
+  | { type: 'gemini'; config: GeminiConfig }
+  | { type: 'cohere'; config: CohereConfig }
+  | { type: 'lmstudio'; config?: LMStudioConfig };
 
 /**
  * Create a provider from configuration
@@ -32,6 +41,12 @@ export function createProvider(providerConfig: ProviderConfig): AIProvider {
       return new AnthropicProvider(providerConfig.config);
     case 'local':
       return new LocalProvider(providerConfig.config);
+    case 'gemini':
+      return new GeminiProvider(providerConfig.config);
+    case 'cohere':
+      return new CohereProvider(providerConfig.config);
+    case 'lmstudio':
+      return new LMStudioProvider(providerConfig.config);
     default:
       throw new Error(`Unknown provider type: ${(providerConfig as ProviderConfig).type}`);
   }
@@ -53,7 +68,25 @@ export function autoDetectProvider(): AIProvider {
     return new AnthropicProvider({ apiKey: anthropicKey });
   }
 
-  // Fall back to local
+  // Check for Gemini
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
+  if (geminiKey) {
+    return new GeminiProvider({ apiKey: geminiKey });
+  }
+
+  // Check for Cohere
+  const cohereKey = process.env.COHERE_API_KEY;
+  if (cohereKey) {
+    return new CohereProvider({ apiKey: cohereKey });
+  }
+
+  // Check for LM Studio
+  const lmstudioUrl = process.env.LMSTUDIO_URL;
+  if (lmstudioUrl) {
+    return new LMStudioProvider({ baseURL: lmstudioUrl });
+  }
+
+  // Fall back to local (Ollama)
   const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
   return new LocalProvider({ baseURL: ollamaUrl });
 }

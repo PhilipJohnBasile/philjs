@@ -875,7 +875,6 @@ export function ComponentRenderPanel(props: ComponentRenderPanelProps) {
       id: 'root',
       name: 'Application',
       value: currentComponents().reduce((sum, c) => sum + c.totalRenderTime, 0),
-      selfValue: 0,
       children: currentComponents().map(componentToFlameNode),
     };
 

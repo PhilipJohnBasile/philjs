@@ -4,7 +4,7 @@
  * Define and execute tools that can be called by AI models.
  */
 
-import type { ToolDefinition, ToolCall } from './index';
+import type { ToolDefinition, ToolCall } from './types.js';
 
 // ============================================================================
 // Tool Builder

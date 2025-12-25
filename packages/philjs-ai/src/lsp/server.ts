@@ -261,26 +261,36 @@ export class PhilJSLanguageServer {
 
   private registerBuiltInHandlers(): void {
     // Lifecycle
-    this.onRequest('initialize', this.handleInitialize.bind(this));
+    this.onRequest('initialize', (params) => this.handleInitialize(params as { capabilities: ClientCapabilities }));
     this.onRequest('shutdown', this.handleShutdown.bind(this));
-    this.onNotification('initialized', this.handleInitialized.bind(this));
-    this.onNotification('exit', this.handleExit.bind(this));
+    this.onNotification('initialized', () => this.handleInitialized());
+    this.onNotification('exit', () => this.handleExit());
 
     // Text document synchronization
-    this.onNotification('textDocument/didOpen', this.handleTextDocumentDidOpen.bind(this));
-    this.onNotification('textDocument/didChange', this.handleTextDocumentDidChange.bind(this));
-    this.onNotification('textDocument/didClose', this.handleTextDocumentDidClose.bind(this));
-    this.onNotification('textDocument/didSave', this.handleTextDocumentDidSave.bind(this));
+    this.onNotification('textDocument/didOpen', (params) =>
+      this.handleTextDocumentDidOpen(params as { textDocument: { uri: string; languageId: string; version: number; text: string } }));
+    this.onNotification('textDocument/didChange', (params) =>
+      this.handleTextDocumentDidChange(params as { textDocument: { uri: string; version: number }; contentChanges: { text: string }[] }));
+    this.onNotification('textDocument/didClose', (params) =>
+      this.handleTextDocumentDidClose(params as { textDocument: { uri: string } }));
+    this.onNotification('textDocument/didSave', (params) =>
+      this.handleTextDocumentDidSave(params as { textDocument: { uri: string }; text?: string }));
 
     // Language features
-    this.onRequest('textDocument/completion', this.handleTextDocumentCompletion.bind(this));
-    this.onRequest('textDocument/hover', this.handleTextDocumentHover.bind(this));
-    this.onRequest('textDocument/signatureHelp', this.handleTextDocumentSignatureHelp.bind(this));
-    this.onRequest('textDocument/codeAction', this.handleTextDocumentCodeAction.bind(this));
-    this.onRequest('textDocument/inlineCompletion', this.handleTextDocumentInlineCompletion.bind(this));
+    this.onRequest('textDocument/completion', (params) =>
+      this.handleTextDocumentCompletion(params as CompletionParams));
+    this.onRequest('textDocument/hover', (params) =>
+      this.handleTextDocumentHover(params as TextDocumentPositionParams));
+    this.onRequest('textDocument/signatureHelp', (params) =>
+      this.handleTextDocumentSignatureHelp(params as SignatureHelpParams));
+    this.onRequest('textDocument/codeAction', (params) =>
+      this.handleTextDocumentCodeAction(params as CodeActionParams));
+    this.onRequest('textDocument/inlineCompletion', (params) =>
+      this.handleTextDocumentInlineCompletion(params as InlineCompletionParams));
 
     // Workspace
-    this.onRequest('workspace/executeCommand', this.handleExecuteCommand.bind(this));
+    this.onRequest('workspace/executeCommand', (params) =>
+      this.handleExecuteCommand(params as { command: string; arguments?: unknown[] }));
   }
 
   private async handleRequest(request: LSPRequest): Promise<void> {

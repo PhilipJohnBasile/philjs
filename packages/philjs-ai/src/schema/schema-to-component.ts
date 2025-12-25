@@ -663,9 +663,14 @@ export interface Update${schema.name}Input extends Partial<Create${schema.name}I
   onDelete?: () => void;
   isLoading?: boolean;
 }`;
+      case 'list':
+        return `interface ${name} {
+  data: ${schema.name}[];
+  isLoading?: boolean;
+}`;
       default:
         return `interface ${name} {
-  data: ${schema.name}${type === 'list' || type === 'table' ? '[]' : ''};
+  data: ${schema.name};
   isLoading?: boolean;
 }`;
     }
