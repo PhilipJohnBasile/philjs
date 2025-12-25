@@ -125,3 +125,29 @@ export type {
   AuthenticationResult,
   SecureStoreOptions,
 } from './Biometrics.js';
+
+// Permissions
+export {
+  Permissions,
+  check,
+  request,
+  checkMultiple,
+  requestMultiple,
+  openSettings,
+  isGranted,
+  isBlocked,
+  isUnavailable,
+  canRequest,
+  usePermission,
+  usePermissions,
+  PermissionGroups,
+  requestGroup,
+  checkGroup,
+} from './Permissions.js';
+export type {
+  PermissionType,
+  PermissionStatus,
+  PermissionResult,
+  PermissionsResult,
+  PermissionRationale,
+} from './Permissions.js';

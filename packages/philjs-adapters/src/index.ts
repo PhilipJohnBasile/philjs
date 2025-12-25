@@ -10,6 +10,8 @@
  * - Bun (native Bun.serve)
  * - Deno (Deno.serve & Deno Deploy)
  * - Static (SSG)
+ *
+ * @module philjs-adapters
  */
 
 // Types
@@ -25,6 +27,196 @@ export type {
   RouteEntry,
   BuildOutput,
 } from './types';
+
+// ============================================================================
+// Enhanced Adapters (New v2.1 API)
+// ============================================================================
+
+// Vercel Enhanced Adapter
+export {
+  vercelAdapter as vercelAdapterV2,
+  createVercelEdgeConfig as createVercelEdgeConfigV2,
+  revalidatePath as revalidatePathV2,
+  revalidateTag as revalidateTagV2,
+  getVercelContext,
+  vercelImageUrl,
+} from './adapters/vercel';
+export type {
+  VercelAdapterConfig,
+  VercelRegion,
+  ISRConfig,
+  ImageOptimizationConfig,
+  CronConfig,
+  MiddlewareConfig,
+  HeaderConfig,
+  RedirectConfig,
+  RewriteConfig,
+  FunctionRouteConfig,
+} from './adapters/vercel';
+
+// Cloudflare Enhanced Adapter
+export {
+  cloudflareAdapter as cloudflareAdapterV2,
+  getCloudflareEnv as getCloudflareEnvV2,
+  getExecutionContext as getExecutionContextV2,
+  waitUntil as waitUntilV2,
+  createKVHelper as createKVHelperV2,
+  createD1Helper,
+  createR2Helper,
+  getDurableObject,
+} from './adapters/cloudflare';
+export type {
+  CloudflareAdapterConfig,
+  KVNamespaceBinding,
+  D1DatabaseBinding,
+  DurableObjectBinding,
+  R2BucketBinding,
+  QueueBinding,
+  ServiceBinding,
+  RouteConfig as CloudflareRouteConfig,
+} from './adapters/cloudflare';
+
+// Deno Deploy Adapter
+export {
+  denoDeployAdapter,
+  getDenoKV,
+  DenoKVWrapper,
+  DenoKVAtomicWrapper,
+  isDenoDeply as isDenoDeployV2,
+  getDenoDeployRegion as getDenoDeployRegionV2,
+  checkDenoPermissions,
+  requestDenoPermission,
+} from './adapters/deno-deploy';
+export type {
+  DenoDeployAdapterConfig,
+  DenoDeployRegion,
+  DenoKVConfig,
+  FreshConfig,
+  ImportMapConfig,
+  DenoCompilerOptions,
+} from './adapters/deno-deploy';
+
+// Netlify Enhanced Adapter
+export {
+  netlifyAdapter as netlifyAdapterV2,
+  getNetlifyContext as getNetlifyContextV2,
+  netlifyImageCDN as netlifyImageCDNV2,
+  getNetlifyIdentityUser,
+  createFormsHandler,
+} from './adapters/netlify';
+export type {
+  NetlifyAdapterConfig,
+  NetlifyRegion,
+  NetlifyHeaderConfig,
+  NetlifyRedirectConfig,
+  NetlifyPluginConfig,
+  NetlifyBuildConfig,
+  NetlifyContextConfig,
+  NetlifyImageConfig,
+  BackgroundFunctionConfig,
+  ScheduledFunctionConfig,
+  NetlifyGeo,
+  NetlifySite,
+  NetlifyUser,
+} from './adapters/netlify';
+
+// AWS Lambda Enhanced Adapter
+export {
+  awsLambdaAdapter as awsLambdaAdapterV2,
+  getAWSLambdaContext,
+  getRemainingTimeMs as getRemainingTimeMsV2,
+  getAWSRequestId,
+  getS3AssetUrl as getS3AssetUrlV2,
+} from './adapters/aws-lambda';
+export type {
+  AWSLambdaAdapterConfig,
+  APIGatewayConfig,
+  CloudFrontConfig,
+  S3Config,
+  VPCConfig,
+  FunctionUrlConfig,
+  CORSConfig,
+  AuthorizationConfig,
+  CacheBehavior,
+  AWSLambdaContext,
+} from './adapters/aws-lambda';
+
+// Node.js Enhanced Adapter
+export {
+  nodeAdapter as nodeAdapterV2,
+  startServer,
+  createExpressMiddleware,
+  createFastifyPlugin,
+} from './adapters/node';
+export type {
+  NodeAdapterConfig,
+  ClusterConfig,
+  StaticConfig,
+  LoggingConfig,
+} from './adapters/node';
+
+// Bun Enhanced Adapter
+export {
+  bunAdapter as bunAdapterV2,
+  isBun,
+  createBunSQLite,
+  bunFile,
+  bunHash,
+  bunVerify,
+  createBunHandler,
+} from './adapters/bun';
+export type {
+  BunAdapterConfig,
+  SQLiteConfig,
+  WebSocketConfig,
+  BunOptimizations,
+} from './adapters/bun';
+
+// ============================================================================
+// Build Utilities
+// ============================================================================
+export {
+  MIME_TYPES,
+  createBuildManifest,
+  copyStaticAssets,
+  optimizeAssets,
+  generateHashedFilename,
+  createOutputStructure,
+  getFileHash,
+  isImmutableAsset,
+  getCacheControl,
+} from './utils/build';
+export type {
+  BuildManifest,
+  RouteManifestEntry,
+  AssetManifestEntry,
+  BuildManifestOptions,
+  OptimizeAssetsOptions,
+} from './utils/build';
+
+// ============================================================================
+// Environment Utilities
+// ============================================================================
+export {
+  loadEnvFile,
+  loadEnvironment,
+  validateEnv,
+  injectEnvVariables,
+  generateEnvTypes,
+  createMemorySecretsManager,
+  createEnvSecretsManager,
+  getEnv,
+  isProduction,
+  isDevelopment,
+  getMode,
+  platformEnv,
+} from './utils/env';
+export type {
+  EnvDefinition,
+  EnvConfig,
+  LoadedEnv,
+  SecretsManager,
+} from './utils/env';
 
 // Vercel
 export { vercelAdapter, revalidatePath, revalidateTag, createVercelEdgeConfig } from './vercel';
@@ -319,4 +511,181 @@ export function createAdapter(preset: AdapterPreset, config: AdapterConfig = {})
     throw new Error(`Unknown adapter preset: ${preset}`);
   }
   return factory(config as any);
+}
+
+// ============================================================================
+// Enhanced Adapter Factory (v2.1 API)
+// ============================================================================
+
+/**
+ * Enhanced adapter presets with the new v2.1 API
+ */
+export const enhancedPresets = {
+  /** Vercel with Edge Runtime (v2.1) */
+  'vercel-edge': (config: Partial<import('./adapters/vercel').VercelAdapterConfig> = {}) => {
+    const { vercelAdapter } = require('./adapters/vercel');
+    return vercelAdapter({ ...config, edge: true });
+  },
+
+  /** Vercel with Serverless (v2.1) */
+  'vercel-serverless': (config: Partial<import('./adapters/vercel').VercelAdapterConfig> = {}) => {
+    const { vercelAdapter } = require('./adapters/vercel');
+    return vercelAdapter({ ...config, edge: false });
+  },
+
+  /** Cloudflare Pages (v2.1) */
+  'cloudflare-pages': (config: Partial<import('./adapters/cloudflare').CloudflareAdapterConfig> = {}) => {
+    const { cloudflareAdapter } = require('./adapters/cloudflare');
+    return cloudflareAdapter({ ...config, mode: 'pages' });
+  },
+
+  /** Cloudflare Workers (v2.1) */
+  'cloudflare-workers': (config: Partial<import('./adapters/cloudflare').CloudflareAdapterConfig> = {}) => {
+    const { cloudflareAdapter } = require('./adapters/cloudflare');
+    return cloudflareAdapter({ ...config, mode: 'workers' });
+  },
+
+  /** Deno Deploy (v2.1) */
+  'deno-deploy': (config: Partial<import('./adapters/deno-deploy').DenoDeployAdapterConfig> = {}) => {
+    const { denoDeployAdapter } = require('./adapters/deno-deploy');
+    return denoDeployAdapter(config);
+  },
+
+  /** Deno Deploy with Fresh (v2.1) */
+  'deno-fresh': (config: Partial<import('./adapters/deno-deploy').DenoDeployAdapterConfig> = {}) => {
+    const { denoDeployAdapter } = require('./adapters/deno-deploy');
+    return denoDeployAdapter({ ...config, fresh: true });
+  },
+
+  /** Netlify Edge (v2.1) */
+  'netlify-edge': (config: Partial<import('./adapters/netlify').NetlifyAdapterConfig> = {}) => {
+    const { netlifyAdapter } = require('./adapters/netlify');
+    return netlifyAdapter({ ...config, edge: true });
+  },
+
+  /** Netlify Functions (v2.1) */
+  'netlify-functions': (config: Partial<import('./adapters/netlify').NetlifyAdapterConfig> = {}) => {
+    const { netlifyAdapter } = require('./adapters/netlify');
+    return netlifyAdapter({ ...config, edge: false });
+  },
+
+  /** AWS Lambda (v2.1) */
+  'aws-lambda': (config: Partial<import('./adapters/aws-lambda').AWSLambdaAdapterConfig> = {}) => {
+    const { awsLambdaAdapter } = require('./adapters/aws-lambda');
+    return awsLambdaAdapter({ ...config, integration: 'http-api' });
+  },
+
+  /** AWS Lambda@Edge (v2.1) */
+  'aws-edge': (config: Partial<import('./adapters/aws-lambda').AWSLambdaAdapterConfig> = {}) => {
+    const { awsLambdaAdapter } = require('./adapters/aws-lambda');
+    return awsLambdaAdapter({ ...config, integration: 'lambda-edge' });
+  },
+
+  /** AWS Lambda with Streaming (v2.1) */
+  'aws-streaming': (config: Partial<import('./adapters/aws-lambda').AWSLambdaAdapterConfig> = {}) => {
+    const { awsLambdaAdapter } = require('./adapters/aws-lambda');
+    return awsLambdaAdapter({ ...config, streaming: true });
+  },
+
+  /** Node.js standalone (v2.1) */
+  'node': (config: Partial<import('./adapters/node').NodeAdapterConfig> = {}) => {
+    const { nodeAdapter } = require('./adapters/node');
+    return nodeAdapter(config);
+  },
+
+  /** Node.js with Express (v2.1) */
+  'node-express': (config: Partial<import('./adapters/node').NodeAdapterConfig> = {}) => {
+    const { nodeAdapter } = require('./adapters/node');
+    return nodeAdapter({ ...config, express: true });
+  },
+
+  /** Node.js with Fastify (v2.1) */
+  'node-fastify': (config: Partial<import('./adapters/node').NodeAdapterConfig> = {}) => {
+    const { nodeAdapter } = require('./adapters/node');
+    return nodeAdapter({ ...config, fastify: true });
+  },
+
+  /** Node.js with PM2 (v2.1) */
+  'node-pm2': (config: Partial<import('./adapters/node').NodeAdapterConfig> = {}) => {
+    const { nodeAdapter } = require('./adapters/node');
+    return nodeAdapter({ ...config, generatePM2: true, cluster: true });
+  },
+
+  /** Bun runtime (v2.1) */
+  'bun': (config: Partial<import('./adapters/bun').BunAdapterConfig> = {}) => {
+    const { bunAdapter } = require('./adapters/bun');
+    return bunAdapter(config);
+  },
+
+  /** Bun with WebSocket (v2.1) */
+  'bun-websocket': (config: Partial<import('./adapters/bun').BunAdapterConfig> = {}) => {
+    const { bunAdapter } = require('./adapters/bun');
+    return bunAdapter({ ...config, websocket: { enabled: true } });
+  },
+
+  /** Bun with SQLite (v2.1) */
+  'bun-sqlite': (config: Partial<import('./adapters/bun').BunAdapterConfig> = {}) => {
+    const { bunAdapter } = require('./adapters/bun');
+    return bunAdapter({ ...config, sqlite: './data.db' });
+  },
+};
+
+export type EnhancedAdapterPreset = keyof typeof enhancedPresets;
+
+/**
+ * Create an adapter using the enhanced v2.1 API
+ *
+ * @example
+ * ```typescript
+ * import { createEnhancedAdapter } from 'philjs-adapters';
+ *
+ * const adapter = createEnhancedAdapter('vercel-edge', {
+ *   regions: ['iad1', 'sfo1'],
+ *   isr: { revalidate: 60 },
+ * });
+ * ```
+ */
+export function createEnhancedAdapter(
+  preset: EnhancedAdapterPreset,
+  config: AdapterConfig = {}
+): Adapter {
+  const factory = enhancedPresets[preset];
+  if (!factory) {
+    throw new Error(`Unknown enhanced adapter preset: ${preset}`);
+  }
+  return factory(config as any);
+}
+
+/**
+ * Define adapter configuration with type safety
+ *
+ * @example
+ * ```typescript
+ * import { defineAdapter } from 'philjs-adapters';
+ *
+ * export default defineAdapter('vercel-edge', {
+ *   regions: ['iad1'],
+ *   isr: { revalidate: 60 },
+ * });
+ * ```
+ */
+export function defineAdapter<T extends EnhancedAdapterPreset>(
+  preset: T,
+  config: T extends 'vercel-edge' | 'vercel-serverless'
+    ? Partial<import('./adapters/vercel').VercelAdapterConfig>
+    : T extends 'cloudflare-pages' | 'cloudflare-workers'
+    ? Partial<import('./adapters/cloudflare').CloudflareAdapterConfig>
+    : T extends 'deno-deploy' | 'deno-fresh'
+    ? Partial<import('./adapters/deno-deploy').DenoDeployAdapterConfig>
+    : T extends 'netlify-edge' | 'netlify-functions'
+    ? Partial<import('./adapters/netlify').NetlifyAdapterConfig>
+    : T extends 'aws-lambda' | 'aws-edge' | 'aws-streaming'
+    ? Partial<import('./adapters/aws-lambda').AWSLambdaAdapterConfig>
+    : T extends 'node' | 'node-express' | 'node-fastify' | 'node-pm2'
+    ? Partial<import('./adapters/node').NodeAdapterConfig>
+    : T extends 'bun' | 'bun-websocket' | 'bun-sqlite'
+    ? Partial<import('./adapters/bun').BunAdapterConfig>
+    : AdapterConfig = {} as any
+): Adapter {
+  return createEnhancedAdapter(preset, config);
 }

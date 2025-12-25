@@ -89,3 +89,59 @@ export type { BreadcrumbProps, BreadcrumbItemProps, BreadcrumbSeparatorProps } f
 // Toast Components
 export { toast, ToastContainer, useToast } from './components/Toast';
 export type { ToastOptions, ToastStatus, ToastPosition } from './components/Toast';
+
+// Combobox Components
+export { Combobox, MultiCombobox } from './components/Combobox';
+export type { ComboboxProps, ComboboxOption, ComboboxSize, MultiComboboxProps } from './components/Combobox';
+
+// Command Palette Components
+export { Command, CommandDialog, useCommand } from './components/Command';
+export type { CommandProps, CommandItem, CommandGroup, CommandDialogProps } from './components/Command';
+
+// DataTable Components
+export { DataTable, createColumnHelper } from './components/DataTable';
+export type { DataTableProps, ColumnDef, SortingState, PaginationState, RowSelectionState, SortDirection } from './components/DataTable';
+
+// Slider Components
+export { Slider, RangeSlider } from './components/Slider';
+export type { SliderProps, RangeSliderProps, SliderOrientation, SliderSize } from './components/Slider';
+
+// Calendar & DatePicker Components
+export { Calendar, DatePicker, DateRangePicker } from './components/Calendar';
+export type { CalendarProps, DatePickerProps, DateRangePickerProps } from './components/Calendar';
+
+// Context Menu & Dropdown Menu
+export { ContextMenu, DropdownMenu } from './components/ContextMenu';
+export type { ContextMenuProps, DropdownMenuProps, MenuItem, MenuItemAction, MenuItemSubmenu, MenuItemCheckbox, MenuItemSeparator, MenuItemRadioGroup } from './components/ContextMenu';
+
+// Tree Components
+export { Tree, FileTree } from './components/Tree';
+export type { TreeProps, TreeNode, TreeSelectionMode, FileTreeProps, FileTreeNode } from './components/Tree';
+
+// Virtual List Components
+export { VirtualList, VirtualGrid, WindowedList } from './components/VirtualList';
+export type { VirtualListProps, VirtualGridProps, WindowedListProps } from './components/VirtualList';
+
+// File Upload Components
+export { FileUpload, ImageUpload } from './components/FileUpload';
+export type { FileUploadProps, ImageUploadProps, UploadedFile } from './components/FileUpload';
+
+// Color Picker Components
+export { ColorPicker, SimpleColorPicker } from './components/ColorPicker';
+export type { ColorPickerProps, SimpleColorPickerProps } from './components/ColorPicker';
+
+// Scroll & Layout Utilities
+export { ScrollArea, ScrollAreaViewport, AspectRatio, Separator, VisuallyHidden } from './components/ScrollArea';
+export type { ScrollAreaProps, AspectRatioProps, SeparatorProps, VisuallyHiddenProps, ScrollbarVisibility } from './components/ScrollArea';
+
+// Collapsible Components
+export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './components/ScrollArea';
+export type { CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps } from './components/ScrollArea';
+
+// Resizable Components
+export { Resizable, ResizablePanelGroup, ResizablePanel, ResizableHandle } from './components/ScrollArea';
+export type { ResizableProps, ResizablePanelGroupProps, ResizablePanelProps, ResizableHandleProps } from './components/ScrollArea';
+
+// HoverCard Component
+export { HoverCard } from './components/ScrollArea';
+export type { HoverCardProps } from './components/ScrollArea';

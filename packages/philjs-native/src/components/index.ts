@@ -95,3 +95,38 @@ export type {
   StatusBarStyle,
   StatusBarAnimation,
 } from './StatusBar.js';
+
+// Additional Components
+export { Switch, useSwitchState } from './Switch.js';
+export type { SwitchProps } from './Switch.js';
+
+export {
+  RefreshControl,
+  usePullToRefresh,
+  RefreshIndicator,
+  useRefresh,
+} from './RefreshControl.js';
+export type {
+  RefreshControlProps,
+  RefreshState,
+  PullToRefreshConfig,
+  RefreshIndicatorProps,
+} from './RefreshControl.js';
+
+export {
+  KeyboardAvoidingView,
+  keyboardState,
+  useKeyboard,
+  useKeyboardEffect,
+  Keyboard,
+  DismissKeyboard,
+} from './KeyboardAvoidingView.js';
+export type {
+  KeyboardAvoidingViewProps,
+  KeyboardBehavior,
+  KeyboardInfo,
+  DismissKeyboardProps,
+} from './KeyboardAvoidingView.js';
+
+export { ActivityIndicator } from './ActivityIndicator.js';
+export type { ActivityIndicatorProps, ActivityIndicatorSize } from './ActivityIndicator.js';
