@@ -1,0 +1,97 @@
+{
+  "name": "philjs-storage",
+  "version": "2.0.0",
+  "description": "Cloud storage abstraction layer for PhilJS with S3, GCS, Azure, and local providers",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./s3": {
+      "types": "./dist/providers/s3.d.ts",
+      "import": "./dist/providers/s3.js"
+    },
+    "./gcs": {
+      "types": "./dist/providers/gcs.d.ts",
+      "import": "./dist/providers/gcs.js"
+    },
+    "./azure": {
+      "types": "./dist/providers/azure.d.ts",
+      "import": "./dist/providers/azure.js"
+    },
+    "./local": {
+      "types": "./dist/providers/local.d.ts",
+      "import": "./dist/providers/local.js"
+    },
+    "./memory": {
+      "types": "./dist/providers/memory.d.ts",
+      "import": "./dist/providers/memory.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-storage'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.700.0",
+    "@aws-sdk/s3-request-presigner": "^3.700.0",
+    "@aws-sdk/lib-storage": "^3.700.0",
+    "@google-cloud/storage": "^7.14.0",
+    "@azure/storage-blob": "^12.26.0",
+    "mime-types": "^2.1.35",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^2.1.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "rollup": "^4.53.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "philjs-core": {
+      "optional": true
+    }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-storage"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "storage",
+    "s3",
+    "gcs",
+    "azure",
+    "blob",
+    "file-upload",
+    "cloud-storage"
+  ]
+}

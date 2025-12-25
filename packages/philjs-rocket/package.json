@@ -1,0 +1,127 @@
+{
+  "name": "@philjs/rocket",
+  "version": "2.0.0",
+  "description": "Rocket web framework integration for PhilJS - SSR, fairings, guards, and WebSocket support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./app": {
+      "import": "./dist/app.mjs",
+      "require": "./dist/app.js",
+      "types": "./dist/app.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config.mjs",
+      "require": "./dist/config.js",
+      "types": "./dist/config.d.ts"
+    },
+    "./middleware": {
+      "import": "./dist/middleware.mjs",
+      "require": "./dist/middleware.js",
+      "types": "./dist/middleware.d.ts"
+    },
+    "./fairing": {
+      "import": "./dist/fairing.mjs",
+      "require": "./dist/fairing.js",
+      "types": "./dist/fairing.d.ts"
+    },
+    "./guards": {
+      "import": "./dist/guards.mjs",
+      "require": "./dist/guards.js",
+      "types": "./dist/guards.d.ts"
+    },
+    "./handlers": {
+      "import": "./dist/handlers.mjs",
+      "require": "./dist/handlers.js",
+      "types": "./dist/handlers.d.ts"
+    },
+    "./responders": {
+      "import": "./dist/responders.mjs",
+      "require": "./dist/responders.js",
+      "types": "./dist/responders.d.ts"
+    },
+    "./ssr": {
+      "import": "./dist/ssr.mjs",
+      "require": "./dist/ssr.js",
+      "types": "./dist/ssr.d.ts"
+    },
+    "./state": {
+      "import": "./dist/state.mjs",
+      "require": "./dist/state.js",
+      "types": "./dist/state.d.ts"
+    },
+    "./templates": {
+      "import": "./dist/templates.mjs",
+      "require": "./dist/templates.js",
+      "types": "./dist/templates.d.ts"
+    },
+    "./websocket": {
+      "import": "./dist/websocket.mjs",
+      "require": "./dist/websocket.js",
+      "types": "./dist/websocket.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    },
+    "./forms": {
+      "import": "./dist/forms.mjs",
+      "require": "./dist/forms.js",
+      "types": "./dist/forms.d.ts"
+    },
+    "./cookies": {
+      "import": "./dist/cookies.mjs",
+      "require": "./dist/cookies.js",
+      "types": "./dist/cookies.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "rust"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup src/index.ts src/server.ts src/handlers.ts src/middleware.ts src/fairing.ts src/guards.ts src/responders.ts src/templates.ts src/websocket.ts src/state.ts src/forms.ts src/cookies.ts src/ssr.ts --format cjs,esm --dts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build:rust": "cargo build --release"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-ssr": "workspace:*",
+    "philjs-liveview": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.1",
+    "vitest": "^1.1.0"
+  },
+  "peerDependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "keywords": [
+    "philjs",
+    "rocket",
+    "rust",
+    "ssr",
+    "websocket",
+    "fairing",
+    "guard"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/philjs",
+    "directory": "packages/philjs-rocket"
+  }
+}

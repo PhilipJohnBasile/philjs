@@ -1,0 +1,94 @@
+{
+  "name": "philjs-poem",
+  "version": "2.0.0",
+  "description": "Poem web framework integration for PhilJS - SSR, middleware, extractors, and WebSocket support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./middleware": {
+      "import": "./dist/middleware.mjs",
+      "require": "./dist/middleware.js",
+      "types": "./dist/middleware.d.ts"
+    },
+    "./extractors": {
+      "import": "./dist/extractors.mjs",
+      "require": "./dist/extractors.js",
+      "types": "./dist/extractors.d.ts"
+    },
+    "./endpoints": {
+      "import": "./dist/endpoints.mjs",
+      "require": "./dist/endpoints.js",
+      "types": "./dist/endpoints.d.ts"
+    },
+    "./responses": {
+      "import": "./dist/responses.mjs",
+      "require": "./dist/responses.js",
+      "types": "./dist/responses.d.ts"
+    },
+    "./websocket": {
+      "import": "./dist/websocket.mjs",
+      "require": "./dist/websocket.js",
+      "types": "./dist/websocket.d.ts"
+    },
+    "./openapi": {
+      "import": "./dist/openapi.mjs",
+      "require": "./dist/openapi.js",
+      "types": "./dist/openapi.d.ts"
+    },
+    "./ssr": {
+      "import": "./dist/ssr.mjs",
+      "require": "./dist/ssr.js",
+      "types": "./dist/ssr.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "rust"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build:rust": "cd rust && cargo build --release"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-ssr": "workspace:*",
+    "philjs-liveview": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.1",
+    "vitest": "^1.1.0"
+  },
+  "peerDependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "keywords": [
+    "philjs",
+    "poem",
+    "rust",
+    "ssr",
+    "websocket",
+    "middleware",
+    "extractor",
+    "openapi",
+    "swagger"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/philjs",
+    "directory": "packages/philjs-poem"
+  }
+}

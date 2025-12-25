@@ -1,0 +1,60 @@
+{
+  "name": "philjs-observability",
+  "version": "2.0.0",
+  "description": "Observability for PhilJS - distributed tracing, metrics, logging, and error tracking",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tracing": {
+      "types": "./dist/tracing.d.ts",
+      "import": "./dist/tracing.js"
+    },
+    "./metrics": {
+      "types": "./dist/metrics.d.ts",
+      "import": "./dist/metrics.js"
+    },
+    "./logging": {
+      "types": "./dist/logging.d.ts",
+      "import": "./dist/logging.js"
+    },
+    "./sentry": {
+      "types": "./dist/providers/sentry.d.ts",
+      "import": "./dist/providers/sentry.js"
+    },
+    "./datadog": {
+      "types": "./dist/providers/datadog.d.ts",
+      "import": "./dist/providers/datadog.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.0.0",
+    "@opentelemetry/sdk-node": "^0.50.0",
+    "@sentry/node": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@opentelemetry/api": { "optional": true },
+    "@opentelemetry/sdk-node": { "optional": true },
+    "@sentry/node": { "optional": true }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.1.1"
+  },
+  "keywords": ["philjs", "observability", "tracing", "metrics", "logging", "opentelemetry", "sentry"],
+  "license": "MIT"
+}

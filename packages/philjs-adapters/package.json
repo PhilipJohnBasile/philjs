@@ -1,7 +1,7 @@
 {
   "name": "philjs-adapters",
-  "version": "2.0.0",
-  "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS, Bun, Deno",
+  "version": "2.1.0",
+  "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS, Bun, Deno, and more",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -72,6 +72,42 @@
     "./edge": {
       "types": "./dist/edge/index.d.ts",
       "import": "./dist/edge/index.js"
+    },
+    "./adapters/vercel": {
+      "types": "./dist/adapters/vercel.d.ts",
+      "import": "./dist/adapters/vercel.js"
+    },
+    "./adapters/cloudflare": {
+      "types": "./dist/adapters/cloudflare.d.ts",
+      "import": "./dist/adapters/cloudflare.js"
+    },
+    "./adapters/deno-deploy": {
+      "types": "./dist/adapters/deno-deploy.d.ts",
+      "import": "./dist/adapters/deno-deploy.js"
+    },
+    "./adapters/netlify": {
+      "types": "./dist/adapters/netlify.d.ts",
+      "import": "./dist/adapters/netlify.js"
+    },
+    "./adapters/aws-lambda": {
+      "types": "./dist/adapters/aws-lambda.d.ts",
+      "import": "./dist/adapters/aws-lambda.js"
+    },
+    "./adapters/node": {
+      "types": "./dist/adapters/node.d.ts",
+      "import": "./dist/adapters/node.js"
+    },
+    "./adapters/bun": {
+      "types": "./dist/adapters/bun.d.ts",
+      "import": "./dist/adapters/bun.js"
+    },
+    "./utils/build": {
+      "types": "./dist/utils/build.d.ts",
+      "import": "./dist/utils/build.js"
+    },
+    "./utils/env": {
+      "types": "./dist/utils/env.d.ts",
+      "import": "./dist/utils/env.js"
     }
   },
   "scripts": {
@@ -89,12 +125,19 @@
   "devDependencies": {
     "typescript": "^5.3.0",
     "@types/node": "^20.0.0",
+    "@types/express": "^4.17.21",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@vercel/node": "^5.5.15",
     "@netlify/functions": "^2.0.0",
-    "@cloudflare/workers-types": "^4.0.0"
+    "@netlify/edge-functions": "^2.0.0",
+    "@cloudflare/workers-types": "^4.0.0",
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/client-lambda": "^3.0.0",
+    "@aws-sdk/client-cloudfront": "^3.0.0",
+    "express": "^4.18.0",
+    "fastify": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "@vercel/node": {
@@ -103,7 +146,25 @@
     "@netlify/functions": {
       "optional": true
     },
+    "@netlify/edge-functions": {
+      "optional": true
+    },
     "@cloudflare/workers-types": {
+      "optional": true
+    },
+    "@aws-sdk/client-s3": {
+      "optional": true
+    },
+    "@aws-sdk/client-lambda": {
+      "optional": true
+    },
+    "@aws-sdk/client-cloudfront": {
+      "optional": true
+    },
+    "express": {
+      "optional": true
+    },
+    "fastify": {
       "optional": true
     }
   },
@@ -118,11 +179,17 @@
     "netlify",
     "cloudflare",
     "aws",
+    "lambda",
     "bun",
     "deno",
     "deployment",
     "edge",
-    "serverless"
+    "serverless",
+    "workers",
+    "pages",
+    "kv",
+    "d1",
+    "durable-objects"
   ],
   "license": "MIT",
   "sideEffects": false,

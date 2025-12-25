@@ -1,0 +1,60 @@
+{
+  "name": "philjs-html",
+  "version": "2.0.0",
+  "description": "HTML-first reactive framework - HTMX and Alpine.js compatibility for PhilJS",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./htmx": {
+      "types": "./dist/htmx.d.ts",
+      "import": "./dist/htmx.js"
+    },
+    "./alpine": {
+      "types": "./dist/alpine.d.ts",
+      "import": "./dist/alpine.js"
+    },
+    "./minimal": {
+      "types": "./dist/minimal.d.ts",
+      "import": "./dist/minimal.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup src/index.ts src/htmx.ts src/alpine.ts src/minimal.ts --format esm --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "htmx",
+    "alpine",
+    "html-first",
+    "reactive",
+    "signals"
+  ],
+  "author": "PhilJS Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/philjs.git",
+    "directory": "packages/philjs-html"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "philjs-core": ">=2.0.0"
+  }
+}

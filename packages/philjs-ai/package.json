@@ -6,22 +6,45 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
+  "bin": {
+    "philjs-ai": "./dist/cli/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./providers": {
-      "types": "./dist/providers.d.ts",
-      "import": "./dist/providers.js"
+      "types": "./dist/providers/index.d.ts",
+      "import": "./dist/providers/index.js"
     },
-    "./generators": {
-      "types": "./dist/generators.d.ts",
-      "import": "./dist/generators.js"
+    "./codegen": {
+      "types": "./dist/codegen/index.d.ts",
+      "import": "./dist/codegen/index.js"
     },
-    "./analyzers": {
-      "types": "./dist/analyzers.d.ts",
-      "import": "./dist/analyzers.js"
+    "./autocomplete": {
+      "types": "./dist/autocomplete/index.d.ts",
+      "import": "./dist/autocomplete/index.js"
+    },
+    "./refactor": {
+      "types": "./dist/refactor/index.d.ts",
+      "import": "./dist/refactor/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "import": "./dist/testing/index.js"
+    },
+    "./docs": {
+      "types": "./dist/docs/index.d.ts",
+      "import": "./dist/docs/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
+    },
+    "./vscode": {
+      "types": "./dist/vscode/extension.d.ts",
+      "import": "./dist/vscode/extension.js"
     }
   },
   "files": [
@@ -35,7 +58,13 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
-    "openai": "^4.75.0"
+    "@types/vscode": "^1.95.0",
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.1.0",
+    "openai": "^4.75.0",
+    "tiktoken": "^1.0.17",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -45,6 +74,9 @@
   },
   "peerDependencies": {
     "philjs-core": "workspace:^2.0.0"
+  },
+  "optionalDependencies": {
+    "vscode": "^1.1.37"
   },
   "license": "MIT",
   "author": "PhilJS Team",

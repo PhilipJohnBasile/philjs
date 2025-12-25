@@ -34,13 +34,34 @@
     "./cli": {
       "types": "./dist/cli.d.ts",
       "import": "./dist/cli.js"
+    },
+    "./capacitor": {
+      "types": "./dist/capacitor/index.d.ts",
+      "import": "./dist/capacitor/index.js"
+    },
+    "./capacitor/plugins": {
+      "types": "./dist/capacitor/plugins/index.d.ts",
+      "import": "./dist/capacitor/plugins/index.js"
+    },
+    "./tauri": {
+      "types": "./dist/tauri/index.d.ts",
+      "import": "./dist/tauri/index.js"
+    },
+    "./gestures": {
+      "types": "./dist/gestures/index.d.ts",
+      "import": "./dist/gestures/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js"
     }
   },
   "bin": {
     "philjs-native": "./dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "scripts": {
     "build": "tsc",
@@ -59,7 +80,49 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "philjs-core": ">=2.0.0"
+    "philjs-core": ">=2.0.0",
+    "@capacitor/core": ">=5.0.0",
+    "@capacitor/camera": ">=5.0.0",
+    "@capacitor/geolocation": ">=5.0.0",
+    "@capacitor/filesystem": ">=5.0.0",
+    "@capacitor/haptics": ">=5.0.0",
+    "@capacitor/keyboard": ">=5.0.0",
+    "@capacitor/push-notifications": ">=5.0.0",
+    "@capacitor/preferences": ">=5.0.0",
+    "@tauri-apps/api": ">=1.5.0",
+    "react-native": ">=0.72.0"
+  },
+  "peerDependenciesMeta": {
+    "@capacitor/core": {
+      "optional": true
+    },
+    "@capacitor/camera": {
+      "optional": true
+    },
+    "@capacitor/geolocation": {
+      "optional": true
+    },
+    "@capacitor/filesystem": {
+      "optional": true
+    },
+    "@capacitor/haptics": {
+      "optional": true
+    },
+    "@capacitor/keyboard": {
+      "optional": true
+    },
+    "@capacitor/push-notifications": {
+      "optional": true
+    },
+    "@capacitor/preferences": {
+      "optional": true
+    },
+    "@tauri-apps/api": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
   },
   "license": "MIT",
   "author": "PhilJS Team",
@@ -80,6 +143,10 @@
     "android",
     "cross-platform",
     "react-native-alternative",
-    "capacitor-alternative"
+    "capacitor-alternative",
+    "tauri",
+    "capacitor",
+    "hybrid-app",
+    "pwa"
   ]
 }

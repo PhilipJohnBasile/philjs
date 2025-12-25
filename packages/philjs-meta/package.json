@@ -1,15 +1,38 @@
 {
   "name": "philjs-meta",
   "version": "2.0.0",
-  "description": "SEO and meta tag management for PhilJS",
+  "description": "Next.js/SvelteKit-style meta-framework for PhilJS with file-based routing, SSR, and data loading",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "philjs-meta": "./dist/cli/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./router": {
+      "types": "./dist/router/index.d.ts",
+      "import": "./dist/router/index.js"
+    },
+    "./data": {
+      "types": "./dist/data/index.d.ts",
+      "import": "./dist/data/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./config": {
+      "types": "./dist/config/index.d.ts",
+      "import": "./dist/config/index.js"
+    },
+    "./seo": {
+      "types": "./dist/seo/index.d.ts",
+      "import": "./dist/seo/index.js"
     }
   },
   "files": [
@@ -22,6 +45,10 @@
   },
   "keywords": [
     "philjs",
+    "meta-framework",
+    "ssr",
+    "ssg",
+    "file-based-routing",
     "seo",
     "meta",
     "og",
@@ -30,10 +57,18 @@
     "sitemap"
   ],
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "philjs-core": "workspace:*",
+    "chokidar": "^3.5.3",
+    "commander": "^11.1.0",
+    "esbuild": "^0.19.8",
+    "fast-glob": "^3.3.2",
+    "picocolors": "^1.0.0",
+    "sirv": "^2.0.4",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.10",
     "typescript": "^5.3.0",
     "vitest": "^3.2.4"
   },
@@ -48,5 +83,8 @@
   "bugs": {
     "url": "https://github.com/yourusername/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

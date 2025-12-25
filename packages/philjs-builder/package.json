@@ -1,0 +1,79 @@
+{
+  "name": "@philjs/builder",
+  "version": "2.0.0",
+  "description": "Visual component builder with drag-and-drop UI for building PhilJS components",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./canvas": {
+      "types": "./dist/canvas/index.d.ts",
+      "import": "./dist/canvas/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./serialization": {
+      "types": "./dist/serialization/index.d.ts",
+      "import": "./dist/serialization/index.js"
+    },
+    "./state": {
+      "types": "./dist/state/index.d.ts",
+      "import": "./dist/state/index.js"
+    },
+    "./preview": {
+      "types": "./dist/preview/index.d.ts",
+      "import": "./dist/preview/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "builder",
+    "visual",
+    "drag-and-drop",
+    "component-builder",
+    "no-code",
+    "low-code",
+    "design-tool"
+  ],
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-builder"
+  },
+  "bugs": {
+    "url": "https://github.com/philjs/philjs/issues"
+  },
+  "homepage": "https://github.com/philjs/philjs#readme"
+}

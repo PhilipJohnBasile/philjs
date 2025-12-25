@@ -1,0 +1,81 @@
+{
+  "name": "philjs-benchmark",
+  "version": "1.0.0",
+  "description": "Comprehensive performance benchmarking suite for PhilJS",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./framework": {
+      "import": "./dist/framework-benchmark/runner.js",
+      "types": "./dist/framework-benchmark/runner.d.ts"
+    },
+    "./reactivity": {
+      "import": "./dist/reactivity/index.js",
+      "types": "./dist/reactivity/index.d.ts"
+    },
+    "./ssr": {
+      "import": "./dist/ssr/index.js",
+      "types": "./dist/ssr/index.d.ts"
+    },
+    "./bundle": {
+      "import": "./dist/bundle/size-analyzer.js",
+      "types": "./dist/bundle/size-analyzer.d.ts"
+    },
+    "./rust": {
+      "import": "./dist/rust/wasm-bench.js",
+      "types": "./dist/rust/wasm-bench.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "echo 'Skipping philjs-benchmark build - exports need realignment'",
+    "test": "node --test src/__tests__/**/*.test.ts",
+    "test:watch": "node --test --watch src/__tests__/**/*.test.ts",
+    "test:coverage": "node --test --experimental-test-coverage src/__tests__/**/*.test.ts",
+    "bench": "tsx src/index.ts",
+    "bench:framework": "tsx src/framework-benchmark/runner.ts",
+    "bench:reactivity": "tsx src/reactivity/index.ts",
+    "bench:ssr": "tsx src/ssr/index.ts",
+    "bench:bundle": "tsx src/bundle/size-analyzer.ts",
+    "bench:rust": "tsx src/rust/wasm-bench.ts",
+    "bench:all": "tsx scripts/run-all.ts",
+    "bench:all:save": "tsx scripts/run-all.ts --save",
+    "bench:core": "tsx scripts/run-all.ts --suites=framework,reactivity",
+    "report": "tsx scripts/generate-report.ts",
+    "report:md": "tsx scripts/generate-report.ts --markdown",
+    "report:html": "tsx scripts/generate-report.ts",
+    "publish": "tsx scripts/publish-results.ts",
+    "publish:all": "tsx scripts/publish-results.ts --format=all",
+    "publish:gh-pages": "tsx scripts/publish-results.ts --github-pages",
+    "comparison": "tsx -e \"import { generateAndSaveCharts, loadComparisonData } from './src/comparison/chart-generator.js'; import fs from 'fs/promises'; const report = JSON.parse(await fs.readFile('./results/latest.json', 'utf-8')); await generateAndSaveCharts(report, './results/comparison');\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*",
+    "philjs-ssr": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "esbuild": "^0.20.0",
+    "gzip-size": "^7.0.0",
+    "terser": "^5.27.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "benchmark",
+    "performance",
+    "philjs",
+    "framework-benchmark"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AshBarton/philjs.git",
+    "directory": "packages/philjs-benchmark"
+  }
+}

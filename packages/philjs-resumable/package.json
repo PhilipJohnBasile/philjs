@@ -1,0 +1,90 @@
+{
+  "name": "philjs-resumable",
+  "version": "2.0.0",
+  "description": "Resumability and partial hydration system for PhilJS - Qwik-style zero-JS-until-interaction",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./qrl": {
+      "types": "./dist/qrl.d.ts",
+      "import": "./dist/qrl.js"
+    },
+    "./serializer": {
+      "types": "./dist/serializer.d.ts",
+      "import": "./dist/serializer.js"
+    },
+    "./loader": {
+      "types": "./dist/loader.d.ts",
+      "import": "./dist/loader.js"
+    },
+    "./hydration": {
+      "types": "./dist/hydration.d.ts",
+      "import": "./dist/hydration.js"
+    },
+    "./resumable": {
+      "types": "./dist/resumable.d.ts",
+      "import": "./dist/resumable.js"
+    },
+    "./container": {
+      "types": "./dist/container.d.ts",
+      "import": "./dist/container.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "echo 'Lint philjs-resumable'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "rollup": "^4.28.1",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0 || ^5.0.0 || ^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-resumable"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "resumability",
+    "partial-hydration",
+    "qwik-style",
+    "zero-javascript",
+    "lazy-loading",
+    "islands-architecture",
+    "progressive-hydration",
+    "qrl",
+    "server-side-rendering"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "name": "philjs-payments",
+  "version": "0.1.0",
+  "description": "Unified payment processing for PhilJS with Stripe, PayPal, Square, and Paddle support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./providers/stripe": {
+      "import": "./dist/providers/stripe.mjs",
+      "require": "./dist/providers/stripe.js",
+      "types": "./dist/providers/stripe.d.ts"
+    },
+    "./providers/paypal": {
+      "import": "./dist/providers/paypal.mjs",
+      "require": "./dist/providers/paypal.js",
+      "types": "./dist/providers/paypal.d.ts"
+    },
+    "./providers/square": {
+      "import": "./dist/providers/square.mjs",
+      "require": "./dist/providers/square.js",
+      "types": "./dist/providers/square.d.ts"
+    },
+    "./providers/paddle": {
+      "import": "./dist/providers/paddle.mjs",
+      "require": "./dist/providers/paddle.js",
+      "types": "./dist/providers/paddle.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components/index.mjs",
+      "require": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./webhooks": {
+      "import": "./dist/webhooks/index.mjs",
+      "require": "./dist/webhooks/index.js",
+      "types": "./dist/webhooks/index.d.ts"
+    },
+    "./hooks": {
+      "import": "./dist/hooks.mjs",
+      "require": "./dist/hooks.js",
+      "types": "./dist/hooks.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup src/index.ts --format cjs,esm --watch --tsconfig tsconfig.json",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "square": "^35.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "react": "^18.2.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "philjs",
+    "payments",
+    "stripe",
+    "paypal",
+    "square",
+    "paddle",
+    "subscriptions",
+    "checkout",
+    "invoices"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-payments"
+  }
+}
