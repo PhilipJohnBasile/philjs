@@ -626,6 +626,49 @@ export type {
   RouterContextConfig,
 } from "./router-context.js";
 
+// ============================================================================
+// Navigation Guards (Vue Router-style)
+// ============================================================================
+
+export {
+  // Registration
+  beforeEach,
+  afterEach,
+  beforeRoute,
+  // Execution
+  runNavigationGuards,
+  runAfterHooks,
+  // Built-in guards
+  createAuthGuard,
+  createRoleGuard,
+  createPermissionGuard,
+  createLoadingGuard,
+  createScrollGuard,
+  createTitleGuard,
+  createAnalyticsGuard,
+  createConfirmGuard,
+  createRateLimitGuard,
+  // Utilities
+  parseLocation,
+  createLocation,
+  isNavigationCancelled,
+  getNavigationStatus,
+  clearAllGuards,
+  getGuardsCount,
+} from "./guards.js";
+export type {
+  RouteLocation,
+  RouteMatch,
+  RouteMeta,
+  NavigationGuard,
+  NavigationGuardReturn,
+  AfterNavigationHook,
+  GuardContext,
+  NavigationFailure,
+  NavigationFailureType,
+  GuardConfig,
+} from "./guards.js";
+
 /**
  * Create a router from a route manifest.
  * @param {Record<string, RouteModule>} manifest - Route manifest

@@ -52,6 +52,28 @@ export {
   type ChatResponse,
 } from "./assistant/index.js";
 
+// Code Reviewer
+export {
+  CodeReviewer,
+  createCodeReviewer,
+  type ReviewConfig,
+  type ReviewFocus,
+  type ReviewSeverity,
+  type ReviewResult,
+  type ReviewSummary,
+  type ReviewIssue,
+  type ReviewSuggestion,
+  type CodeMetrics,
+  type SecurityFinding,
+  type SecurityCategory,
+  type PerformanceNote,
+  type PerformanceCategory,
+  type AccessibilityIssue as ReviewAccessibilityIssue,
+  type PRReviewResult,
+  type FileReview,
+  type LineComment,
+} from "./assistant/code-reviewer.js";
+
 // Utility functions
 export * from "./utils/parser.js";
 export * from "./utils/prompts.js";

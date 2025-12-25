@@ -176,5 +176,55 @@ export type {
   AnchorPositionConfig
 } from './advanced';
 
+// Animation System
+export {
+  // Spring physics
+  springPresets,
+  calculateSpring,
+  springAnimation,
+  springEasing,
+  // Keyframe generators
+  slide,
+  fade,
+  scale,
+  rotate,
+  bounce,
+  shake,
+  pulse,
+  flip,
+  swing,
+  wobble,
+  rubberBand,
+  // Orchestration
+  calculateStagger,
+  staggerAnimation,
+  sequence,
+  parallel,
+  // FLIP technique
+  captureState,
+  playFLIP,
+  batchFLIP,
+  // Presets
+  motionPresets,
+  easings,
+  // Reduced motion
+  reducedMotionStyles,
+  prefersReducedMotion,
+  motionSafe,
+  // Generators
+  generateAllKeyframes,
+  generateAnimationUtilities,
+} from './animations';
+
+export type {
+  SpringConfig,
+  AnimationTimeline,
+  Keyframe,
+  MotionConfig,
+  StaggerConfig,
+  OrchestrationConfig,
+  FLIPState,
+} from './animations';
+
 // Re-export from extract for convenience
 export type { BuildPlugin, BundleStats } from './extract';

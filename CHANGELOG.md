@@ -9,6 +9,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Core Reactivity Enhancements (philjs-core)
+- **Deep Reactive Store** - SolidJS-inspired store with proxy-based tracking
+  - `createStore()` for deep reactivity with path-based updates
+  - `createStoreWithActions()` for Zustand-like stores with actions
+  - `createUndoableStore()` with time-travel debugging
+  - `derive()`, `produce()`, `reconcile()` helpers
+  - Persistence and middleware support
+- **Advanced Async Primitives** - Enhanced async handling
+  - `createAsync()` for Suspense-like data loading with caching
+  - `createAsyncMutation()` for optimistic updates
+  - `debounceAsync()`, `throttleAsync()` utilities
+  - `createQueue()`, `createConcurrencyLimiter()` for request management
+  - `createSuspenseResource()` for Suspense integration
+
+#### Animation System (philjs-css)
+- **Spring Physics** - Natural spring animations
+  - `calculateSpring()` for physics-based animation values
+  - `springAnimation()` CSS generator
+  - `springPresets` (default, gentle, wobbly, stiff, snappy, bouncy)
+- **Keyframe Generators** - Built-in animation effects
+  - `slide()`, `fade()`, `scale()`, `rotate()` generators
+  - `bounce()`, `shake()`, `pulse()`, `swing()`, `wobble()` effects
+  - `flip()`, `rubberBand()` attention animations
+- **Animation Orchestration** - Sequence and stagger
+  - `calculateStagger()` with grid and direction support
+  - `staggerAnimation()` CSS generator
+  - `sequence()`, `parallel()` composition helpers
+- **FLIP Technique** - Layout animation
+  - `captureState()`, `playFLIP()`, `batchFLIP()`
+- **Motion Presets** - Ready-to-use animations
+  - Entrance, exit, and attention presets
+  - `reducedMotionStyles()`, `motionSafe()` accessibility
+  - `generateAllKeyframes()`, `generateAnimationUtilities()`
+
+#### Navigation Guards (philjs-router)
+- **Vue Router-style Guards** - Navigation control
+  - `beforeEach()`, `afterEach()`, `beforeRoute()` registration
+  - `runNavigationGuards()` execution with abort/redirect
+- **Built-in Guards** - Common patterns
+  - `createAuthGuard()` for authentication
+  - `createRoleGuard()`, `createPermissionGuard()` for authorization
+  - `createLoadingGuard()` for loading indicators
+  - `createScrollGuard()` for scroll position restoration
+  - `createTitleGuard()` for page title management
+  - `createAnalyticsGuard()` for page tracking
+  - `createConfirmGuard()` for unsaved changes
+  - `createRateLimitGuard()` for navigation throttling
+
+#### AI Code Review (philjs-ai)
+- **Code Reviewer** - Comprehensive code analysis
+  - `reviewCode()` with configurable focus areas
+  - `reviewPR()` for pull request review with file diffs
+  - `securityReview()` for security vulnerabilities
+  - `performanceReview()` for optimization opportunities
+  - `accessibilityReview()` for WCAG compliance
+  - `suggestRefactoring()` for code improvements
+  - `generateLineComment()` for inline feedback
+
+#### Advanced Form Validation (philjs-forms)
+- **Schema Validator** - Structured validation
+  - `createSchemaValidator()` with sync/async rules
+  - Conditional validation with `when()`, `dependsOn()`
+  - Cross-field validation with `crossField()`
+  - Validation groups for partial form validation
+- **Advanced Validators** - Extended validation rules
+  - `emailWithDomainCheck()` for domain allowlisting
+  - `usernameAvailable()` for async uniqueness checks
+  - `passwordStrength()` with configurable strength levels
+  - `file()` for file type, size, and count validation
+  - `date()` with range, weekend, and date exclusion
+  - `array()` with min/max, uniqueness, and item validation
+  - `creditCard()` with Luhn algorithm
+  - `iban()` for international bank accounts
+  - `json()`, `slug()`, `uuid()` format validators
+
 #### Advanced CSS Features (philjs-css)
 - **Container Queries** - `createContainer()`, `containerQuery()`, `cq()` for responsive component queries
 - **CSS Layers** - `defineLayers()`, `layer()`, `generateLayeredStylesheet()` for cascade control

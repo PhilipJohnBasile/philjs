@@ -408,3 +408,47 @@ export {
 export type {
   LazyHandler,
 } from "./lazy-handlers.js";
+
+// Deep Reactive Store
+export {
+  createStore,
+  createStoreWithActions,
+  createUndoableStore,
+  derive,
+  produce,
+  reconcile,
+  createSlice,
+  subscribeToStore,
+} from "./store.js";
+export type {
+  Store,
+  StoreNode,
+  SetStoreFunction,
+  StoreOptions,
+  StoreMiddleware,
+  PersistConfig,
+} from "./store.js";
+
+// Advanced Async Primitives
+export {
+  createAsync,
+  createMutation as createAsyncMutation,
+  debounceAsync,
+  throttleAsync,
+  createQueue,
+  createConcurrencyLimiter,
+  createSuspenseResource,
+  preload,
+  getCached,
+  setCache,
+  invalidateCache,
+  clearCache,
+} from "./async.js";
+export type {
+  AsyncState,
+  AsyncOptions,
+  RetryConfig,
+  CacheConfig,
+  MutationState,
+  MutationOptions,
+} from "./async.js";

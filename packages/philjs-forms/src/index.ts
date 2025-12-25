@@ -84,3 +84,30 @@ export {
   isHydrated,
   type ProgressiveFormOptions
 } from './progressive.js';
+
+// Advanced Validation
+export {
+  // Advanced validators
+  advancedValidators,
+  // Schema validator
+  SchemaValidator,
+  createSchemaValidator,
+  // Utilities
+  when,
+  crossField,
+  dependsOn,
+  messageWithField,
+  combineResults,
+  formatErrors,
+  hasErrors,
+  getFirstError,
+  // Types
+  type AsyncValidationRule,
+  type ConditionalRule,
+  type ValidationContext,
+  type ValidationGroup,
+  type CrossFieldRule,
+  type ValidationSchema,
+  type ValidationResult,
+  type FieldValidationResult,
+} from './advanced-validation.js';
