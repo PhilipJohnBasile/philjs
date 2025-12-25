@@ -1,0 +1,46 @@
+[package]
+name = "philjs-tui"
+version = "0.1.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Terminal UI rendering for PhilJS - build TUI apps with the same component model"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["tui", "terminal", "cli", "philjs", "ratatui"]
+categories = ["command-line-interface", "gui", "development-tools"]
+readme = "README.md"
+
+[lib]
+crate-type = ["rlib"]
+
+[features]
+default = ["crossterm"]
+crossterm = ["ratatui/crossterm"]
+termion = ["ratatui/termion"]
+termwiz = ["ratatui/termwiz"]
+
+[dependencies]
+# TUI Framework
+ratatui = { version = "0.26", default-features = false }
+crossterm = { version = "0.27", optional = true }
+
+# Core PhilJS
+philjs-macros = { path = "../philjs-macros", version = "0.1.0" }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+
+# Async
+tokio = { version = "1.35", features = ["rt", "sync", "macros", "time"] }
+futures = "0.3"
+
+# Unicode handling
+unicode-width = "0.1"
+textwrap = "0.16"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+[dev-dependencies]
+tokio = { version = "1.35", features = ["full"] }
