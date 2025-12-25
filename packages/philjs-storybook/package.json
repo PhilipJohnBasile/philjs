@@ -71,7 +71,7 @@
   "devDependencies": {
     "@storybook/core": "^8.4.7",
     "@types/node": "^20.11.0",
-    "rollup": "^4.53.3",
+    "rollup": "^4.54.0",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },

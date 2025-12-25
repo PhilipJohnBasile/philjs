@@ -38,7 +38,7 @@
     "philjs-core": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241205.0",
+    "@cloudflare/workers-types": "^4.20251225.0",
     "typescript": "^5.7.2",
     "vitest": "^3.1.1"
   },
