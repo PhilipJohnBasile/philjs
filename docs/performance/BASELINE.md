@@ -295,7 +295,7 @@ Based on `SPRINT_PLAN_90_DAYS.md`, these were the goals:
 | Full bundle | <25KB | ~25KB | ✅ **Met** |
 | 100K signal updates | <100ms | 2.5ms | ✅ **Exceeded** |
 | 10K SSR elements | <100ms | 13.12ms | ✅ **Exceeded** |
-| Test coverage | >80% | TBD | ⏳ In Progress |
+| Test coverage | >80% | ~75% | Below Target |
 
 ### Comparison with Competitors
 
@@ -618,3 +618,4 @@ If your benchmarks show significantly worse performance (>30% slower):
 ---
 
 *This baseline document serves as the official performance reference for PhilJS v2.0. All performance claims, comparisons, and optimizations should reference this document.*
+

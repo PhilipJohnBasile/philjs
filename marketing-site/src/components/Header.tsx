@@ -7,13 +7,14 @@ export function Header({ currentPath = "/" }: { currentPath?: string }) {
     <header class="header">
       <nav class="nav-container">
         <a href="/" class="logo" data-prefetch>
-          <span class="logo-icon">⚡</span>
+          <span class="logo-icon">PH</span>
           <span class="logo-text">PhilJS</span>
         </a>
         <div class="nav-links">
           <a href="/features" class="nav-link ${isActive("/features")}" data-prefetch>Features</a>
+          <a href="/#ecosystem" class="nav-link" data-prefetch>Ecosystem</a>
           <a href="/examples" class="nav-link ${isActive("/examples")}" data-prefetch>Examples</a>
-          <a href="https://docs.philjs.dev" class="nav-link" target="_blank">Docs</a>
+          <a href="https://docs.philjs.dev" class="nav-link" target="_blank" rel="noopener noreferrer">Docs</a>
           <a href="/blog" class="nav-link ${isActive("/blog")}" data-prefetch>Blog</a>
           <a href="/community" class="nav-link ${isActive("/community")}" data-prefetch>Community</a>
         </div>

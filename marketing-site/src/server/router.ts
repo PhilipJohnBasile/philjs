@@ -57,10 +57,12 @@ import * as indexRoute from "../routes/index.js";
 import * as featuresRoute from "../routes/features.js";
 import * as examplesRoute from "../routes/examples.js";
 import * as blogRoute from "../routes/blog.js";
+import * as blogPostRoute from "../routes/blog-post.js";
 import * as communityRoute from "../routes/community.js";
 
 registerRoute("index", "/", indexRoute);
 registerRoute("features", "/features", featuresRoute);
 registerRoute("examples", "/examples", examplesRoute);
 registerRoute("blog", "/blog", blogRoute);
+registerRoute("blog-post", "/blog/:slug", blogPostRoute);
 registerRoute("community", "/community", communityRoute);

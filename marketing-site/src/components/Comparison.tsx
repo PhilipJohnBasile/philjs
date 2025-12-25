@@ -3,95 +3,81 @@ import { html } from "../server/template";
 export function Comparison() {
   const metrics = [
     {
-      framework: "PhilJS",
-      bundleSize: "2.8 KB",
-      firstLoad: "0.3s",
-      ttInteractive: "0.5s",
-      lighthouse: "99"
+      value: "~3.3 KB",
+      label: "Core runtime",
+      detail: "Signals runtime with JSX rendering"
     },
     {
-      framework: "React",
-      bundleSize: "44 KB",
-      firstLoad: "1.2s",
-      ttInteractive: "2.1s",
-      lighthouse: "82"
+      value: "~25 KB",
+      label: "Full stack",
+      detail: "Router, SSR, islands, and data layer"
     },
     {
-      framework: "Vue",
-      bundleSize: "34 KB",
-      firstLoad: "0.9s",
-      ttInteractive: "1.6s",
-      lighthouse: "88"
+      value: "2.5 ms",
+      label: "100k updates",
+      detail: "Signal update baseline"
     },
     {
-      framework: "Svelte",
-      bundleSize: "8 KB",
-      firstLoad: "0.6s",
-      ttInteractive: "0.9s",
-      lighthouse: "95"
+      value: "13.12 ms",
+      label: "SSR 10k nodes",
+      detail: "Streaming render baseline"
+    }
+  ];
+
+  const layers = [
+    {
+      title: "Routing and navigation",
+      description: "Typed routes, loaders, and actions with file-based conventions.",
+      packages: ["philjs-router", "philjs-router-typesafe"]
+    },
+    {
+      title: "Rendering and islands",
+      description: "SSR streaming, resumability, and selective hydration.",
+      packages: ["philjs-ssr", "philjs-islands", "philjs-resumable"]
+    },
+    {
+      title: "Data and APIs",
+      description: "Typed API routes, GraphQL, and realtime messaging.",
+      packages: ["philjs-api", "philjs-graphql", "philjs-realtime"]
     }
   ];
 
   return html`
     <section class="comparison" id="performance">
       <div class="section-header" data-animate>
-        <h2>Built for Performance</h2>
-        <p>PhilJS delivers exceptional performance without compromise.</p>
+        <h2>Performance and architecture</h2>
+        <p>PhilJS stays fast by design, with a runtime built for minimal overhead.</p>
       </div>
-      <div class="comparison-table" data-animate>
-        <table>
-          <thead>
-            <tr>
-              <th>Framework</th>
-              <th>Bundle Size (gzip)</th>
-              <th>First Load</th>
-              <th>Time to Interactive</th>
-              <th>Lighthouse Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${metrics.map(
-              (metric) => html`
-                <tr class="${metric.framework === "PhilJS" ? "highlight" : ""}">
-                  <td class="framework-name">
-                    ${metric.framework === "PhilJS" ? html`<strong>${metric.framework}</strong>` : metric.framework}
-                  </td>
-                  <td>${metric.bundleSize}</td>
-                  <td>${metric.firstLoad}</td>
-                  <td>${metric.ttInteractive}</td>
-                  <td>
-                    <span class="score ${metric.framework === "PhilJS" ? "score-excellent" : "score-good"}">
-                      ${metric.lighthouse}
-                    </span>
-                  </td>
-                </tr>
-              `
-            )}
-          </tbody>
-        </table>
+      <div class="metrics-grid">
+        ${metrics.map(
+          (metric, index) => html`
+            <div class="metric-card" data-animate style="--delay: ${index * 0.05}s">
+              <div class="metric-value">${metric.value}</div>
+              <div class="metric-label">${metric.label}</div>
+              <p>${metric.detail}</p>
+            </div>
+          `
+        )}
+      </div>
+      <div class="architecture-grid">
+        ${layers.map(
+          (layer, index) => html`
+            <div class="architecture-card" data-animate style="--delay: ${index * 0.06}s">
+              <h3>${layer.title}</h3>
+              <p>${layer.description}</p>
+              <div class="architecture-packages">
+                ${layer.packages.map((pkg) => html`<span class="package-pill">${pkg}</span>`)}
+              </div>
+            </div>
+          `
+        )}
       </div>
       <div class="performance-notes" data-animate>
         <p>
-          <strong>Note:</strong> Benchmarks based on a TodoMVC implementation.
-          Your mileage may vary based on application complexity.
+          Benchmarks are drawn from PhilJS baseline tests in the repo.
+          <a href="https://docs.philjs.dev/performance" target="_blank" rel="noopener noreferrer">View the performance docs</a>
+          for methodology and updates.
         </p>
-      </div>
-      <div class="perf-highlights" data-animate>
-        <div class="perf-card">
-          <div class="perf-stat">2.8 KB</div>
-          <div class="perf-label">Runtime Size</div>
-          <p>Smallest signal-based framework runtime</p>
-        </div>
-        <div class="perf-card">
-          <div class="perf-stat">0 ms</div>
-          <div class="perf-label">Virtual DOM Overhead</div>
-          <p>Fine-grained updates without diffing</p>
-        </div>
-        <div class="perf-card">
-          <div class="perf-stat">99</div>
-          <div class="perf-label">Lighthouse Score</div>
-          <p>Optimized for Core Web Vitals</p>
-        </div>
       </div>
     </section>
   `;

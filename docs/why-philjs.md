@@ -586,7 +586,7 @@ export function Counter() {
 - **Office Hours**: Monthly video calls with core team
 
 ### Contributing
-- **27 packages** - Easy to find contribution areas
+- **88 packages** - Easy to find contribution areas
 - **500+ tests** - High-quality standards
 - **Comprehensive docs** - Contribution guidelines
 - **Welcoming community** - First-timers encouraged
@@ -598,7 +598,7 @@ export function Counter() {
 ### Is PhilJS production-ready?
 **Yes.** PhilJS v1.0.0-beta is production-ready with:
 - 500+ passing tests
-- 27 production-ready packages
+- 88 packages in the monorepo, with core packages production-ready
 - 110+ pages of documentation
 - 5 example applications
 - Zero competitive gaps
@@ -703,3 +703,4 @@ pnpm dev
 ---
 
 *Last Updated: December 2025 • v1.0.0-beta*
+

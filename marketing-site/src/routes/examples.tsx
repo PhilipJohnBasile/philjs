@@ -5,67 +5,96 @@ import { Footer } from "../components/Footer";
 
 export const loader = defineLoader(async () => {
   return {
-    title: "Examples - PhilJS"
+    title: "Examples - PhilJS",
+    description: "Explore PhilJS example applications across routing, SSR, realtime, and the broader ecosystem."
   };
 });
 
 export default function ExamplesPage() {
   const examples = [
     {
-      title: "Counter",
-      description: "Simple counter demonstrating basic signal usage and reactivity.",
-      complexity: "Beginner",
-      features: ["Signals", "Event Handlers"],
-      github: "https://github.com/philjs/philjs/tree/main/examples/counter"
-    },
-    {
       title: "Todo App",
-      description: "Classic todo list with add, complete, and delete functionality.",
+      description: "Signals, list rendering, and basic reactivity patterns.",
       complexity: "Beginner",
-      features: ["Signals", "Arrays", "Computed Values"],
+      features: ["Signals", "Lists", "Events"],
       github: "https://github.com/philjs/philjs/tree/main/examples/todo-app"
     },
     {
-      title: "E-Commerce Storefront",
-      description: "Full-featured online store with products, cart, and checkout.",
+      title: "Tic Tac Toe",
+      description: "Component composition and derived state with memos.",
+      complexity: "Beginner",
+      features: ["Signals", "Memos", "Game State"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/tic-tac-toe"
+    },
+    {
+      title: "Blog SSG",
+      description: "Static site generation with content pipelines.",
       complexity: "Intermediate",
-      features: ["SSR", "Router", "Islands", "Forms"],
+      features: ["SSG", "Content", "Routing"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/blog-ssg"
+    },
+    {
+      title: "Demo App",
+      description: "Full framework showcase with core APIs and patterns.",
+      complexity: "Intermediate",
+      features: ["Routing", "Data", "SSR"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/demo-app"
+    },
+    {
+      title: "Storefront",
+      description: "Commerce flows with SSR, islands, and forms.",
+      complexity: "Intermediate",
+      features: ["SSR", "Islands", "Forms"],
       github: "https://github.com/philjs/philjs/tree/main/examples/storefront"
     },
     {
-      title: "Real-Time Chat",
-      description: "WebSocket-powered chat application with typing indicators.",
+      title: "Docs Site",
+      description: "Documentation site with themes, search, and navigation.",
       complexity: "Intermediate",
-      features: ["WebSockets", "Real-time Updates", "Islands"],
+      features: ["Routing", "Theming", "Content"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/docs-site"
+    },
+    {
+      title: "Chat App",
+      description: "Realtime messaging with live updates.",
+      complexity: "Advanced",
+      features: ["Realtime", "Sockets", "Presence"],
       github: "https://github.com/philjs/philjs/tree/main/examples/chat-app"
     },
     {
-      title: "Analytics Dashboard",
-      description: "Data visualization dashboard with charts and real-time metrics.",
-      complexity: "Intermediate",
-      features: ["Charts", "Real-time Data", "Computed Signals"],
+      title: "Dashboard",
+      description: "Analytics dashboards with charts and live data.",
+      complexity: "Advanced",
+      features: ["Charts", "Realtime", "Signals"],
       github: "https://github.com/philjs/philjs/tree/main/examples/dashboard"
     },
     {
       title: "Collaborative Editor",
-      description: "Google Docs-style editor with real-time collaboration.",
+      description: "Real-time collaboration with CRDTs and sync.",
       complexity: "Advanced",
-      features: ["CRDTs", "WebSockets", "Operational Transform"],
+      features: ["CRDT", "Collaboration", "Presence"],
       github: "https://github.com/philjs/philjs/tree/main/examples/collab-editor"
     },
     {
-      title: "SaaS Starter",
-      description: "Production-ready SaaS template with auth, billing, and admin.",
+      title: "PWA App",
+      description: "Offline-first app with service workers and sync.",
       complexity: "Advanced",
-      features: ["Auth", "Database", "Stripe", "Admin Panel"],
+      features: ["PWA", "Offline", "Background Sync"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/pwa-app"
+    },
+    {
+      title: "SaaS Starter",
+      description: "Auth, billing, and admin flows wired together.",
+      complexity: "Advanced",
+      features: ["Auth", "Billing", "Admin"],
       github: "https://github.com/philjs/philjs/tree/main/examples/saas-starter"
     },
     {
-      title: "Progressive Web App",
-      description: "Offline-first PWA with service worker and background sync.",
+      title: "Kitchen Sink",
+      description: "Comprehensive feature coverage across the ecosystem.",
       complexity: "Advanced",
-      features: ["Service Worker", "Offline Mode", "Push Notifications"],
-      github: "https://github.com/philjs/philjs/tree/main/examples/pwa-app"
+      features: ["Everything", "Patterns", "DX"],
+      github: "https://github.com/philjs/philjs/tree/main/examples/kitchen-sink"
     }
   ];
 
@@ -74,17 +103,16 @@ export default function ExamplesPage() {
       ${Header({ currentPath: "/examples" })}
       <main class="main-content">
         <section class="page-hero" data-animate>
-          <h1>Learn by Example</h1>
+          <h1>Learn by example</h1>
           <p class="lead">
-            Explore our collection of example applications to learn PhilJS patterns
-            and best practices. From simple counters to production-ready apps.
+            Explore real PhilJS apps that showcase signals, routing, data, islands, and the broader ecosystem.
           </p>
         </section>
 
         <section class="examples-grid">
           ${examples.map(
-            (example) => html`
-              <div class="example-card" data-animate>
+            (example, index) => html`
+              <div class="example-card" data-animate style="--delay: ${index * 0.04}s">
                 <div class="example-header">
                   <h3>${example.title}</h3>
                   <span class="complexity-badge complexity-${example.complexity.toLowerCase()}">
@@ -114,11 +142,11 @@ export default function ExamplesPage() {
         </section>
 
         <section class="cta-section" data-animate>
-          <h2>Build Your Own</h2>
-          <p>Ready to start your own project? Get started with PhilJS in minutes.</p>
+          <h2>Build your own</h2>
+          <p>Start a new PhilJS project and pull in packages as you need them.</p>
           <div class="cta-actions">
             <a href="/#get-started" class="btn btn-primary" data-prefetch>Get Started</a>
-            <a href="https://docs.philjs.dev" class="btn btn-secondary" target="_blank">View Docs</a>
+            <a href="https://docs.philjs.dev" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">View Docs</a>
           </div>
         </section>
       </main>

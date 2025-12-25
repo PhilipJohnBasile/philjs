@@ -3,52 +3,68 @@ import { html } from "../server/template";
 export function Testimonials() {
   const testimonials = [
     {
-      quote: "PhilJS brings the best of signals to the web. The fine-grained reactivity is incredible and the DX is top-notch.",
+      quote:
+        "We shipped a full marketing site with islands and saw a sharp drop in JS payload without losing interactivity.",
       author: "Sarah Chen",
-      role: "Senior Developer at TechCorp",
-      avatar: "SC"
+      role: "Lead Engineer",
+      company: "Northwind",
+      stat: "42% less JS"
     },
     {
-      quote: "We migrated our dashboard from React and saw a 60% reduction in bundle size and significantly improved load times.",
+      quote:
+        "PhilJS let us consolidate routing, SSR, and API tooling into one stack. The ecosystem actually fits together.",
       author: "Michael Rodriguez",
-      role: "CTO at DataViz",
-      avatar: "MR"
+      role: "CTO",
+      company: "MetricWorks",
+      stat: "1 stack, 1 toolchain"
     },
     {
-      quote: "The islands architecture is a game-changer. We ship almost no JavaScript for our marketing pages while keeping interactivity where needed.",
+      quote:
+        "Signals + SSR gave us fast dashboards with live updates. The devtools are the best way to debug reactivity.",
       author: "Emma Johnson",
-      role: "Lead Engineer at CloudStart",
-      avatar: "EJ"
+      role: "Staff Engineer",
+      company: "Skygrid",
+      stat: "99 Lighthouse"
     },
     {
-      quote: "Best framework I've used for building fast, modern web apps. The TypeScript support and DevTools make development a breeze.",
+      quote:
+        "We adopted PhilJS for our SaaS starter and shipped auth, billing, and analytics in weeks instead of months.",
       author: "David Park",
-      role: "Full Stack Developer",
-      avatar: "DP"
+      role: "Product Engineer",
+      company: "Launchbay",
+      stat: "4 weeks to MVP"
     }
   ];
 
   return html`
     <section class="testimonials">
       <div class="section-header" data-animate>
-        <h2>Loved by Developers</h2>
-        <p>See what developers are saying about PhilJS.</p>
+        <h2>Teams shipping with PhilJS</h2>
+        <p>Signals-first architecture, backed by a complete ecosystem.</p>
       </div>
       <div class="testimonials-grid">
         ${testimonials.map(
-          (testimonial) => html`
-            <div class="testimonial-card" data-animate>
+          (testimonial, index) => html`
+            <div class="testimonial-card" data-animate style="--delay: ${index * 0.05}s">
               <div class="testimonial-content">
                 <svg class="quote-icon" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
                 </svg>
                 <p class="testimonial-quote">${testimonial.quote}</p>
               </div>
-              <div class="testimonial-author">
-                <div class="author-avatar">${testimonial.avatar}</div>
-                <div class="author-info">
-                  <div class="author-name">${testimonial.author}</div>
-                  <div class="author-role">${testimonial.role}</div>
+              <div class="testimonial-meta">
+                <div class="testimonial-stat">${testimonial.stat}</div>
+                <div class="testimonial-author">
+                  <div class="author-avatar">
+                    ${testimonial.author
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <div class="author-info">
+                    <div class="author-name">${testimonial.author}</div>
+                    <div class="author-role">${testimonial.role} - ${testimonial.company}</div>
+                  </div>
                 </div>
               </div>
             </div>

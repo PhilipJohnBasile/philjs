@@ -4,18 +4,18 @@ export function CodeDemo() {
   return html`
     <section class="code-demo" id="get-started">
       <div class="section-header" data-animate>
-        <h2>Get Started in Seconds</h2>
-        <p>Start building with PhilJS in just a few commands.</p>
+        <h2>Get started in minutes</h2>
+        <p>Scaffold a project, add your first route, and run it locally.</p>
       </div>
       <div class="demo-steps" data-animate>
         <div class="demo-step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3>Install PhilJS</h3>
+            <h3>Create a PhilJS app</h3>
             <div class="code-block">
-              <pre><code>npm create philjs@latest my-app
+              <pre><code>pnpm create philjs my-app
 cd my-app
-npm install</code></pre>
+pnpm install</code></pre>
               <button class="copy-btn" data-copy>Copy</button>
             </div>
           </div>
@@ -23,22 +23,17 @@ npm install</code></pre>
         <div class="demo-step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3>Create Your First Component</h3>
+            <h3>Add data and routing</h3>
             <div class="code-block">
-              <pre><code>import { signal } from "philjs-core";
+              <pre><code>import { defineLoader } from "philjs-ssr";
 
-export function App() {
-  const name = signal("World");
+export const loader = defineLoader(async () => {
+  const res = await fetch("/api/products");
+  return { products: await res.json() };
+});
 
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Hello, {name}!&lt;/h1&gt;
-      &lt;input
-        value={name}
-        onInput={(e) => name.set(e.target.value)}
-      /&gt;
-    &lt;/div&gt;
-  );
+export default function Home({ data }) {
+  return data.products.map((p) => <div>{p.name}</div>);
 }</code></pre>
               <button class="copy-btn" data-copy>Copy</button>
             </div>
@@ -47,12 +42,12 @@ export function App() {
         <div class="demo-step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3>Run Your App</h3>
+            <h3>Run the dev server</h3>
             <div class="code-block">
-              <pre><code>npm run dev</code></pre>
+              <pre><code>pnpm dev</code></pre>
               <button class="copy-btn" data-copy>Copy</button>
             </div>
-            <p class="step-note">Your app is now running at <code>http://localhost:3000</code></p>
+            <p class="step-note">Your app runs at <code>http://localhost:3000</code></p>
           </div>
         </div>
       </div>
@@ -62,12 +57,12 @@ export function App() {
           <p>Changes appear instantly without losing state</p>
         </div>
         <div class="demo-feature">
-          <span class="feature-badge">TypeScript</span>
-          <p>Full type safety out of the box</p>
+          <span class="feature-badge">SSR + Islands</span>
+          <p>Stream HTML and hydrate only where needed</p>
         </div>
         <div class="demo-feature">
-          <span class="feature-badge">Fast Builds</span>
-          <p>Powered by Vite for lightning-fast development</p>
+          <span class="feature-badge">Full Stack</span>
+          <p>API routes, auth, and data tooling in one repo</p>
         </div>
       </div>
     </section>

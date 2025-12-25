@@ -6,7 +6,7 @@ export function Footer() {
       <div class="footer-content">
         <div class="footer-section">
           <h3 class="footer-logo">PhilJS</h3>
-          <p class="footer-tagline">Signals-first Framework for the Modern Web</p>
+          <p class="footer-tagline">Signals-first framework with a full-stack ecosystem.</p>
           <div class="footer-social">
             <a
               href="https://github.com/philjs/philjs"
@@ -45,36 +45,36 @@ export function Footer() {
             <h4>Product</h4>
             <ul>
               <li><a href="/features" data-prefetch>Features</a></li>
+              <li><a href="/#ecosystem" data-prefetch>Ecosystem</a></li>
               <li><a href="/examples" data-prefetch>Examples</a></li>
-              <li><a href="https://docs.philjs.dev" target="_blank">Documentation</a></li>
-              <li><a href="/blog" data-prefetch>Blog</a></li>
+              <li><a href="https://docs.philjs.dev" target="_blank" rel="noopener noreferrer">Documentation</a></li>
             </ul>
           </div>
           <div class="footer-column">
             <h4>Community</h4>
             <ul>
-              <li><a href="https://github.com/philjs/philjs" target="_blank">GitHub</a></li>
-              <li><a href="https://discord.gg/philjs" target="_blank">Discord</a></li>
-              <li><a href="https://twitter.com/philjs" target="_blank">Twitter</a></li>
+              <li><a href="https://github.com/philjs/philjs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://discord.gg/philjs" target="_blank" rel="noopener noreferrer">Discord</a></li>
+              <li><a href="https://twitter.com/philjs" target="_blank" rel="noopener noreferrer">Twitter</a></li>
               <li><a href="/community" data-prefetch>Community</a></li>
             </ul>
           </div>
           <div class="footer-column">
             <h4>Resources</h4>
             <ul>
-              <li><a href="https://docs.philjs.dev/getting-started" target="_blank">Getting Started</a></li>
-              <li><a href="https://docs.philjs.dev/api" target="_blank">API Reference</a></li>
-              <li><a href="https://github.com/philjs/philjs/tree/main/examples" target="_blank">Example Projects</a></li>
-              <li><a href="https://docs.philjs.dev/migration" target="_blank">Migration Guide</a></li>
+              <li><a href="https://docs.philjs.dev/getting-started" target="_blank" rel="noopener noreferrer">Getting Started</a></li>
+              <li><a href="https://docs.philjs.dev/api" target="_blank" rel="noopener noreferrer">API Reference</a></li>
+              <li><a href="https://github.com/philjs/philjs/tree/main/examples" target="_blank" rel="noopener noreferrer">Example Projects</a></li>
+              <li><a href="https://docs.philjs.dev/migration" target="_blank" rel="noopener noreferrer">Migration Guide</a></li>
             </ul>
           </div>
           <div class="footer-column">
             <h4>About</h4>
             <ul>
-              <li><a href="https://github.com/philjs/philjs/blob/main/LICENSE" target="_blank">License</a></li>
-              <li><a href="https://github.com/philjs/philjs/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
-              <li><a href="https://github.com/philjs/philjs/releases" target="_blank">Releases</a></li>
-              <li><a href="https://github.com/philjs/philjs/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+              <li><a href="https://github.com/philjs/philjs/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a></li>
+              <li><a href="https://github.com/philjs/philjs/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a></li>
+              <li><a href="https://github.com/philjs/philjs/releases" target="_blank" rel="noopener noreferrer">Releases</a></li>
+              <li><a href="https://github.com/philjs/philjs/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a></li>
             </ul>
           </div>
         </div>

@@ -153,6 +153,43 @@ function initScrollAnimations() {
   });
 }
 
+function initCopyButtons() {
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-copy]");
+  buttons.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = button.closest(".code-block")?.querySelector("pre code");
+      const text = code?.textContent?.trim();
+      if (!text) return;
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
+        }
+      } catch (error) {
+        console.warn("Copy failed", error);
+        return;
+      }
+
+      const original = button.textContent;
+      button.textContent = "Copied";
+      button.classList.add("is-copied");
+      window.setTimeout(() => {
+        button.textContent = original ?? "Copy";
+        button.classList.remove("is-copied");
+      }, 1500);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const state = readState();
   void state;
@@ -163,6 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
   enableSmoothScroll();
   initThemeToggle();
   initScrollAnimations();
+  initCopyButtons();
 
   if (import.meta.env.DEV) {
     showOverlay();

@@ -69,6 +69,13 @@ export async function render(req: IncomingMessage) {
   };
 
   const data = await loader(loaderCtx);
+  const meta = (typeof data === "object" && data !== null
+    ? (data as { title?: string; description?: string })
+    : {}) as { title?: string; description?: string };
+  const pageTitle = meta.title ?? "PhilJS - Signals-first Framework for the Modern Web";
+  const pageDescription =
+    meta.description ??
+    "PhilJS is a signals-first framework with SSR, islands, and a full ecosystem of packages for data, auth, and deployment.";
 
   const bodyHtml = Component ? await Promise.resolve(Component({ data, params: match.params })) : "";
 
@@ -83,8 +90,8 @@ export async function render(req: IncomingMessage) {
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta name="view-transition" content="same-origin" />
-          <meta name="description" content="PhilJS - Signals-first Framework for the Modern Web. Build fast, reactive web applications with fine-grained reactivity." />
-          <title>PhilJS - Signals-first Framework for the Modern Web</title>
+          <meta name="description" content="${pageDescription}" />
+          <title>${pageTitle}</title>
           <link rel="manifest" href="/manifest.json" />
           <link rel="icon" href="/favicon.ico" />
           <style>
