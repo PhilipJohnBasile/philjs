@@ -1,0 +1,63 @@
+[package]
+name = "philjs-poem"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Poem web framework integration for PhilJS - SSR, middleware, extractors, and WebSocket support"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["poem", "philjs", "ssr", "websocket", "rust"]
+categories = ["web-programming", "web-programming::http-server"]
+readme = "README.md"
+
+[features]
+default = ["ssr", "websocket", "openapi"]
+ssr = []
+websocket = ["poem/websocket"]
+openapi = ["poem-openapi"]
+static-files = ["poem/static-files"]
+compression = ["poem/compression"]
+cookie = ["poem/cookie"]
+session = ["poem/session"]
+csrf = ["poem/csrf"]
+cors = ["poem/cors"]
+
+[dependencies]
+# PhilJS
+philjs = { path = "../philjs-rust", version = "2.0.0" }
+
+# Poem
+poem = { version = "3.0", features = ["server"] }
+poem-openapi = { version = "5.0", optional = true }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+futures-util = "0.3"
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# HTTP
+http = "1.0"
+http-body-util = "0.1"
+hyper = "1.0"
+
+# Utilities
+bytes = "1.5"
+mime = "0.3"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+parking_lot = "0.12"
+
+[dev-dependencies]
+tokio-test = "0.4"

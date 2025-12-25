@@ -86,9 +86,77 @@ export declare class Analyzer {
      * Get JSX path for an expression container
      */
     private getJSXPath;
+    /**
+     * Analyze bundle for production metrics
+     */
+    analyzeBundleMetrics(code: string): BundleMetrics;
+    /**
+     * Calculate cyclomatic complexity of a function
+     */
+    private calculateComplexity;
+    /**
+     * Generate dependency graph
+     */
+    generateDependencyGraph(analysis: FileAnalysis): DependencyGraph;
+    /**
+     * Analyze chunk candidates for code splitting
+     */
+    analyzeChunkCandidates(analysis: FileAnalysis): ChunkCandidate[];
+    /**
+     * Calculate component complexity
+     */
+    private calculateComponentComplexity;
+    /**
+     * Estimate component size in bytes
+     */
+    private estimateComponentSize;
+    /**
+     * Calculate splitting priority
+     */
+    private calculatePriority;
+}
+/**
+ * Bundle metrics for production analysis
+ */
+export interface BundleMetrics {
+    totalSize: number;
+    imports: number;
+    exports: number;
+    components: number;
+    signals: number;
+    effects: number;
+    dependencies: string[];
+    complexity: number;
+    treeshakeable: boolean;
+}
+/**
+ * Dependency graph structure
+ */
+export interface DependencyGraph {
+    nodes: Array<{
+        id: string;
+        type: string;
+        used: boolean;
+    }>;
+    edges: Array<{
+        from: string;
+        to: string;
+        type: string;
+    }>;
+}
+/**
+ * Chunk candidate for code splitting
+ */
+export interface ChunkCandidate {
+    name: string;
+    type: 'component' | 'route' | 'utilities';
+    size: number;
+    complexity: number;
+    priority: 'high' | 'medium' | 'low';
+    lazy: boolean;
 }
 /**
  * Create a new analyzer instance
  */
-export declare function createAnalyzer(config?: CompilerConfig): Analyzer;
+export declare const createAnalyzer: (config?: CompilerConfig) => Analyzer;
 //# sourceMappingURL=analyzer.d.ts.map

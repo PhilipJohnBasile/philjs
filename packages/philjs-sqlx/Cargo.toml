@@ -1,0 +1,56 @@
+[package]
+name = "philjs-sqlx"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "SQLx integration for PhilJS - type-safe SQL queries with compile-time verification"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["sqlx", "philjs", "database", "postgres", "mysql"]
+categories = ["database", "web-programming"]
+readme = "README.md"
+
+[features]
+default = ["runtime-tokio", "postgres"]
+runtime-tokio = ["sqlx/runtime-tokio"]
+runtime-actix = ["sqlx/runtime-tokio"]
+postgres = ["sqlx/postgres"]
+mysql = ["sqlx/mysql"]
+sqlite = ["sqlx/sqlite"]
+mssql = ["sqlx/mssql"]
+tls-rustls = ["sqlx/tls-rustls"]
+tls-native = ["sqlx/tls-native-tls"]
+uuid = ["sqlx/uuid", "dep:uuid"]
+chrono = ["sqlx/chrono", "dep:chrono"]
+json = ["sqlx/json"]
+migrate = ["sqlx/migrate"]
+
+[dependencies]
+# PhilJS
+philjs = { path = "../philjs-rust", version = "2.0.0" }
+
+# SQLx
+sqlx = { version = "0.7", default-features = false, features = ["macros"] }
+
+# Async
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Tracing
+tracing = "0.1"
+
+# Optional dependencies
+uuid = { version = "1.6", features = ["v4", "serde"], optional = true }
+chrono = { version = "0.4", features = ["serde"], optional = true }
+
+[dev-dependencies]
+tokio-test = "0.4"
+sqlx = { version = "0.7", default-features = false, features = ["runtime-tokio", "sqlite"] }

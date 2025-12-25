@@ -1,0 +1,48 @@
+# PhilJS Documentation - Netlify Configuration
+
+[build]
+  command = "pnpm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--version"
+
+# Next.js on Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Headers for static assets
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Redirects
+[[redirects]]
+  from = "/docs"
+  to = "/docs/getting-started/installation"
+  status = 301
+
+[[redirects]]
+  from = "/api"
+  to = "/docs/api/core"
+  status = 301
+
+# SPA fallback for playground
+[[redirects]]
+  from = "/playground/*"
+  to = "/playground"
+  status = 200

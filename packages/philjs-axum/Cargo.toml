@@ -1,0 +1,66 @@
+[package]
+name = "philjs-axum"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Axum web framework integration for PhilJS - SSR, middleware, and typed extractors"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["axum", "philjs", "ssr", "web", "rust"]
+categories = ["web-programming", "web-programming::http-server"]
+readme = "README.md"
+
+[features]
+default = ["ssr"]
+ssr = []
+websocket = []
+liveview = ["websocket"]
+compression = ["tower-http/compression-full"]
+cors = ["tower-http/cors"]
+tracing-support = ["tower-http/trace"]
+
+[dependencies]
+# PhilJS
+philjs = { path = "../philjs-rust", version = "2.0.0" }
+
+# Axum
+axum = { version = "0.7", features = ["macros", "ws"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+
+# Tower
+tower = "0.4"
+tower-http = { version = "0.5", features = ["fs", "set-header"] }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+futures-util = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# HTTP
+http = "1.0"
+http-body-util = "0.1"
+hyper = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+bytes = "1.5"
+mime = "0.3"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Concurrency
+parking_lot = "0.12"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tower = { version = "0.4", features = ["util"] }

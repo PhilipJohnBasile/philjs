@@ -544,11 +544,191 @@ export class Analyzer {
         }
         return parts.join(' > ') || 'unknown';
     }
+    /**
+     * Analyze bundle for production metrics
+     */
+    analyzeBundleMetrics(code) {
+        const ast = parse(code, {
+            sourceType: 'module',
+            plugins: ['typescript', 'jsx'],
+        });
+        const metrics = {
+            totalSize: Buffer.byteLength(code, 'utf8'),
+            imports: 0,
+            exports: 0,
+            components: 0,
+            signals: 0,
+            effects: 0,
+            dependencies: [],
+            complexity: 0,
+            treeshakeable: true,
+        };
+        traverse(ast, {
+            ImportDeclaration: (path) => {
+                metrics.imports++;
+                const source = path.node.source.value;
+                if (!metrics.dependencies.includes(source)) {
+                    metrics.dependencies.push(source);
+                }
+            },
+            ExportDeclaration: () => {
+                metrics.exports++;
+            },
+            FunctionDeclaration: (path) => {
+                const name = path.node.id?.name;
+                if (name && /^[A-Z]/.test(name)) {
+                    metrics.components++;
+                }
+                metrics.complexity += this.calculateComplexity(path);
+            },
+            CallExpression: (path) => {
+                if (t.isIdentifier(path.node.callee)) {
+                    const name = path.node.callee.name;
+                    if (name === 'signal' || name === 'linkedSignal') {
+                        metrics.signals++;
+                    }
+                    else if (name === 'effect') {
+                        metrics.effects++;
+                    }
+                }
+            },
+            // Check for side effects that prevent tree shaking
+            ExpressionStatement: (path) => {
+                const expr = path.node.expression;
+                // Top-level expressions indicate side effects
+                if (path.scope.parent === null) {
+                    if (!t.isLiteral(expr) && !t.isIdentifier(expr)) {
+                        metrics.treeshakeable = false;
+                    }
+                }
+            },
+        });
+        return metrics;
+    }
+    /**
+     * Calculate cyclomatic complexity of a function
+     */
+    calculateComplexity(path) {
+        let complexity = 1; // Base complexity
+        path.traverse({
+            IfStatement: () => complexity++,
+            ConditionalExpression: () => complexity++,
+            ForStatement: () => complexity++,
+            WhileStatement: () => complexity++,
+            DoWhileStatement: () => complexity++,
+            SwitchCase: (casePath) => {
+                if (casePath.node.test !== null)
+                    complexity++;
+            },
+            CatchClause: () => complexity++,
+            LogicalExpression: (logPath) => {
+                if (logPath.node.operator === '&&' || logPath.node.operator === '||') {
+                    complexity++;
+                }
+            },
+        });
+        return complexity;
+    }
+    /**
+     * Generate dependency graph
+     */
+    generateDependencyGraph(analysis) {
+        const graph = {
+            nodes: [],
+            edges: [],
+        };
+        // Add nodes for each binding
+        analysis.bindings.forEach(binding => {
+            graph.nodes.push({
+                id: binding.name,
+                type: binding.type,
+                used: binding.isUsed,
+            });
+        });
+        // Add edges for dependencies
+        analysis.bindings.forEach(binding => {
+            binding.dependencies.forEach(dep => {
+                graph.edges.push({
+                    from: dep,
+                    to: binding.name,
+                    type: 'depends',
+                });
+            });
+        });
+        return graph;
+    }
+    /**
+     * Analyze chunk candidates for code splitting
+     */
+    analyzeChunkCandidates(analysis) {
+        const candidates = [];
+        // Analyze each component for code splitting potential
+        analysis.components.forEach(comp => {
+            const complexity = this.calculateComponentComplexity(comp);
+            const size = this.estimateComponentSize(comp);
+            // Components with high complexity or size are good candidates
+            if (complexity > 10 || size > 5000) {
+                candidates.push({
+                    name: comp.name,
+                    type: 'component',
+                    size,
+                    complexity,
+                    priority: this.calculatePriority(complexity, size),
+                    lazy: true,
+                });
+            }
+        });
+        // Check for large utility modules
+        const utilitySize = analysis.bindings.filter(b => b.type === 'memo' || b.type === 'signal').length;
+        if (utilitySize > 10) {
+            candidates.push({
+                name: 'utilities',
+                type: 'utilities',
+                size: utilitySize * 100, // Rough estimate
+                complexity: utilitySize,
+                priority: 'medium',
+                lazy: false,
+            });
+        }
+        return candidates;
+    }
+    /**
+     * Calculate component complexity
+     */
+    calculateComponentComplexity(comp) {
+        return (comp.signals.length * 2 +
+            comp.memos.length * 3 +
+            comp.effects.length * 4 +
+            comp.reactiveJSX.length);
+    }
+    /**
+     * Estimate component size in bytes
+     */
+    estimateComponentSize(comp) {
+        // Rough estimation based on reactive elements
+        const baseSize = 500;
+        const signalSize = comp.signals.length * 50;
+        const memoSize = comp.memos.length * 100;
+        const effectSize = comp.effects.length * 150;
+        const jsxSize = comp.reactiveJSX.length * 80;
+        return baseSize + signalSize + memoSize + effectSize + jsxSize;
+    }
+    /**
+     * Calculate splitting priority
+     */
+    calculatePriority(complexity, size) {
+        const score = complexity * 0.6 + size / 1000 * 0.4;
+        if (score > 20)
+            return 'high';
+        if (score > 10)
+            return 'medium';
+        return 'low';
+    }
 }
 /**
  * Create a new analyzer instance
  */
-export function createAnalyzer(config) {
+export const createAnalyzer = /*#__PURE__*/ function createAnalyzer(config) {
     return new Analyzer(config);
-}
+};
 //# sourceMappingURL=analyzer.js.map

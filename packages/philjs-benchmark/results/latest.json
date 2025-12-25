@@ -1,0 +1,465 @@
+{
+  "framework": "philjs",
+  "version": "1.0.0",
+  "timestamp": "2025-01-15T10:30:45.123Z",
+  "environment": {
+    "runtime": "node",
+    "runtimeVersion": "v20.11.0",
+    "os": "Windows_NT 10.0.22621",
+    "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+    "memory": "32GB"
+  },
+  "suites": {
+    "framework": {
+      "name": "framework-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-15T10:30:45.123Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "startup-time",
+          "mean": 68.5,
+          "median": 67.2,
+          "min": 62.3,
+          "max": 82.4,
+          "stddev": 5.8,
+          "samples": 50,
+          "ops": 14.6,
+          "unit": "ms"
+        },
+        {
+          "name": "create-1000-rows",
+          "mean": 42.35,
+          "median": 41.8,
+          "min": 38.2,
+          "max": 52.1,
+          "stddev": 3.2,
+          "samples": 100,
+          "ops": 23.6,
+          "unit": "ms"
+        },
+        {
+          "name": "create-10000-rows",
+          "mean": 428.5,
+          "median": 425.3,
+          "min": 398.2,
+          "max": 485.6,
+          "stddev": 18.5,
+          "samples": 100,
+          "ops": 2.3,
+          "unit": "ms"
+        },
+        {
+          "name": "append-1000-rows",
+          "mean": 45.8,
+          "median": 45.2,
+          "min": 42.1,
+          "max": 54.3,
+          "stddev": 3.5,
+          "samples": 100,
+          "ops": 21.8,
+          "unit": "ms"
+        },
+        {
+          "name": "update-every-10th-row",
+          "mean": 8.52,
+          "median": 8.4,
+          "min": 7.8,
+          "max": 10.2,
+          "stddev": 0.65,
+          "samples": 100,
+          "ops": 117.4,
+          "unit": "ms"
+        },
+        {
+          "name": "select-row",
+          "mean": 2.18,
+          "median": 2.1,
+          "min": 1.95,
+          "max": 3.2,
+          "stddev": 0.28,
+          "samples": 100,
+          "ops": 458.7,
+          "unit": "ms"
+        },
+        {
+          "name": "swap-rows",
+          "mean": 3.25,
+          "median": 3.2,
+          "min": 2.9,
+          "max": 4.1,
+          "stddev": 0.32,
+          "samples": 100,
+          "ops": 307.7,
+          "unit": "ms"
+        },
+        {
+          "name": "remove-row",
+          "mean": 6.84,
+          "median": 6.75,
+          "min": 6.2,
+          "max": 8.5,
+          "stddev": 0.58,
+          "samples": 100,
+          "ops": 146.2,
+          "unit": "ms"
+        },
+        {
+          "name": "clear-rows",
+          "mean": 4.52,
+          "median": 4.45,
+          "min": 4.1,
+          "max": 5.8,
+          "stddev": 0.42,
+          "samples": 100,
+          "ops": 221.2,
+          "unit": "ms"
+        },
+        {
+          "name": "memory-1000-rows",
+          "mean": 3.85,
+          "median": 3.82,
+          "min": 3.65,
+          "max": 4.12,
+          "stddev": 0.12,
+          "samples": 1,
+          "ops": 0,
+          "unit": "MB"
+        }
+      ]
+    },
+    "reactivity": {
+      "name": "reactivity-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-15T10:31:15.456Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "create-10k-signals",
+          "mean": 2.35,
+          "median": 2.3,
+          "min": 2.1,
+          "max": 3.2,
+          "stddev": 0.25,
+          "samples": 50,
+          "ops": 4255,
+          "unit": "ms"
+        },
+        {
+          "name": "read-1m-signals",
+          "mean": 12.5,
+          "median": 12.3,
+          "min": 11.8,
+          "max": 14.2,
+          "stddev": 0.65,
+          "samples": 50,
+          "ops": 80000,
+          "unit": "ms"
+        },
+        {
+          "name": "write-100k-signals",
+          "mean": 18.75,
+          "median": 18.5,
+          "min": 17.2,
+          "max": 21.8,
+          "stddev": 1.2,
+          "samples": 50,
+          "ops": 5333,
+          "unit": "ms"
+        },
+        {
+          "name": "deep-signal-graph-1000",
+          "mean": 45.2,
+          "median": 44.8,
+          "min": 42.1,
+          "max": 52.3,
+          "stddev": 2.8,
+          "samples": 50,
+          "ops": 22.1,
+          "unit": "ms"
+        },
+        {
+          "name": "create-1k-effects",
+          "mean": 3.42,
+          "median": 3.35,
+          "min": 3.1,
+          "max": 4.5,
+          "stddev": 0.35,
+          "samples": 50,
+          "ops": 292,
+          "unit": "ms"
+        },
+        {
+          "name": "effect-single-dependency-10k-updates",
+          "mean": 24.8,
+          "median": 24.5,
+          "min": 23.2,
+          "max": 28.5,
+          "stddev": 1.5,
+          "samples": 50,
+          "ops": 40.3,
+          "unit": "ms"
+        },
+        {
+          "name": "memo-caching-1m-reads",
+          "mean": 8.25,
+          "median": 8.1,
+          "min": 7.8,
+          "max": 9.5,
+          "stddev": 0.45,
+          "samples": 50,
+          "ops": 121212,
+          "unit": "ms"
+        },
+        {
+          "name": "memo-recomputation-10k",
+          "mean": 32.5,
+          "median": 32.1,
+          "min": 30.2,
+          "max": 36.8,
+          "stddev": 1.8,
+          "samples": 50,
+          "ops": 30.8,
+          "unit": "ms"
+        },
+        {
+          "name": "batch-1000-updates",
+          "mean": 5.2,
+          "median": 5.1,
+          "min": 4.8,
+          "max": 6.2,
+          "stddev": 0.38,
+          "samples": 50,
+          "ops": 192.3,
+          "unit": "ms"
+        },
+        {
+          "name": "unbatched-1000-updates",
+          "mean": 15.8,
+          "median": 15.5,
+          "min": 14.2,
+          "max": 18.5,
+          "stddev": 1.2,
+          "samples": 50,
+          "ops": 63.3,
+          "unit": "ms"
+        }
+      ]
+    },
+    "ssr": {
+      "name": "ssr-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-15T10:31:45.789Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "ssr-render-1000-rows",
+          "mean": 28.5,
+          "median": 28.2,
+          "min": 26.5,
+          "max": 32.8,
+          "stddev": 1.8,
+          "samples": 50,
+          "ops": 35.1,
+          "unit": "ms"
+        },
+        {
+          "name": "ssr-throughput-10k-components",
+          "mean": 285.5,
+          "median": 282.3,
+          "min": 265.2,
+          "max": 325.8,
+          "stddev": 15.2,
+          "samples": 50,
+          "ops": 3.5,
+          "unit": "ms"
+        },
+        {
+          "name": "hydrate-1000-rows",
+          "mean": 38.5,
+          "median": 37.8,
+          "min": 35.2,
+          "max": 45.8,
+          "stddev": 2.8,
+          "samples": 50,
+          "ops": 26,
+          "unit": "ms"
+        },
+        {
+          "name": "streaming-ttfb",
+          "mean": 12.5,
+          "median": 12.2,
+          "min": 11.5,
+          "max": 15.2,
+          "stddev": 0.95,
+          "samples": 50,
+          "ops": 80,
+          "unit": "ms"
+        }
+      ]
+    },
+    "bundle": {
+      "name": "bundle-analysis",
+      "version": "1.0.0",
+      "timestamp": "2025-01-15T10:32:15.123Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "core-bundle-raw",
+          "mean": 15565,
+          "median": 15565,
+          "min": 15565,
+          "max": 15565,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        },
+        {
+          "name": "core-bundle-gzip",
+          "mean": 5938,
+          "median": 5938,
+          "min": 5938,
+          "max": 5938,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        },
+        {
+          "name": "core-bundle-brotli",
+          "mean": 5242,
+          "median": 5242,
+          "min": 5242,
+          "max": 5242,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "react": {
+      "framework": "react",
+      "benchmarks": {
+        "create-1000-rows": {
+          "philjs": 42.35,
+          "react": 65.3,
+          "difference": "+35.2% faster"
+        },
+        "update-every-10th-row": {
+          "philjs": 8.52,
+          "react": 25.8,
+          "difference": "+67.0% faster"
+        },
+        "swap-rows": {
+          "philjs": 3.25,
+          "react": 30.5,
+          "difference": "+89.3% faster"
+        },
+        "select-row": {
+          "philjs": 2.18,
+          "react": 15.2,
+          "difference": "+85.7% faster"
+        },
+        "remove-row": {
+          "philjs": 6.84,
+          "react": 20.3,
+          "difference": "+66.3% faster"
+        }
+      }
+    },
+    "vue": {
+      "framework": "vue",
+      "benchmarks": {
+        "create-1000-rows": {
+          "philjs": 42.35,
+          "vue": 55.2,
+          "difference": "+23.3% faster"
+        },
+        "update-every-10th-row": {
+          "philjs": 8.52,
+          "vue": 18.5,
+          "difference": "+54.0% faster"
+        },
+        "swap-rows": {
+          "philjs": 3.25,
+          "vue": 22.8,
+          "difference": "+85.7% faster"
+        },
+        "select-row": {
+          "philjs": 2.18,
+          "vue": 12.3,
+          "difference": "+82.3% faster"
+        },
+        "remove-row": {
+          "philjs": 6.84,
+          "vue": 15.7,
+          "difference": "+56.4% faster"
+        }
+      }
+    },
+    "solid": {
+      "framework": "solid",
+      "benchmarks": {
+        "create-1000-rows": {
+          "philjs": 42.35,
+          "solid": 38.5,
+          "difference": "9.1% slower"
+        },
+        "update-every-10th-row": {
+          "philjs": 8.52,
+          "solid": 7.5,
+          "difference": "12.0% slower"
+        },
+        "swap-rows": {
+          "philjs": 3.25,
+          "solid": 11.5,
+          "difference": "+71.7% faster"
+        },
+        "select-row": {
+          "philjs": 2.18,
+          "solid": 4.8,
+          "difference": "+54.6% faster"
+        },
+        "remove-row": {
+          "philjs": 6.84,
+          "solid": 8.2,
+          "difference": "+16.6% faster"
+        }
+      }
+    }
+  },
+  "summary": {
+    "totalBenchmarks": 27,
+    "passed": 27,
+    "failed": 0,
+    "warnings": []
+  }
+}

@@ -1,0 +1,17 @@
+[build]
+# Enable incremental compilation for faster builds
+incremental = true
+
+[profile.dev]
+# Optimize proc-macros even in dev mode for faster expansion
+opt-level = 0
+
+[profile.release]
+# Full optimization for production
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[profile.bench]
+# Benchmark optimizations
+inherits = "release"

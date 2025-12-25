@@ -1,0 +1,80 @@
+[package]
+name = "philjs"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Pure Rust UI framework with fine-grained reactivity - write components in Rust, render anywhere"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["ui", "framework", "wasm", "reactive", "signals"]
+categories = ["wasm", "web-programming", "gui"]
+readme = "README.md"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["wasm", "ssr"]
+wasm = ["wasm-bindgen", "web-sys", "js-sys"]
+ssr = []
+hydration = ["wasm"]
+debug = []
+
+[dependencies]
+# Core
+philjs-macros = { path = "./macros", version = "2.0.0" }
+
+# WASM bindings
+wasm-bindgen = { version = "0.2", optional = true }
+wasm-bindgen-futures = { version = "0.4", optional = true }
+js-sys = { version = "0.3", optional = true }
+web-sys = { version = "0.3", optional = true, features = [
+    "console",
+    "Document",
+    "Element",
+    "HtmlElement",
+    "Node",
+    "NodeList",
+    "Text",
+    "Window",
+    "Event",
+    "MouseEvent",
+    "KeyboardEvent",
+    "InputEvent",
+    "FocusEvent",
+    "HtmlInputElement",
+    "HtmlTextAreaElement",
+    "HtmlSelectElement",
+    "HtmlButtonElement",
+    "DomTokenList",
+    "CssStyleDeclaration",
+    "EventTarget",
+    "AddEventListenerOptions",
+    "History",
+    "Location",
+    "Url",
+    "Headers",
+    "Request",
+    "RequestInit",
+    "Response",
+    "AbortController",
+    "AbortSignal",
+] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async runtime
+futures = "0.3"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[profile.release]
+lto = true
+opt-level = "z"
+codegen-units = 1
+
+[workspace]
+members = ["macros"]

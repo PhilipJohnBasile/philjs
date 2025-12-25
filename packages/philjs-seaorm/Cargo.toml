@@ -1,0 +1,53 @@
+[package]
+name = "philjs-seaorm"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "SeaORM integration for PhilJS - entity-based database queries with active record pattern"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["seaorm", "philjs", "orm", "database", "entity"]
+categories = ["database", "web-programming"]
+readme = "README.md"
+
+[features]
+default = ["runtime-tokio-native-tls", "sqlx-postgres"]
+runtime-tokio-native-tls = ["sea-orm/runtime-tokio-native-tls"]
+runtime-tokio-rustls = ["sea-orm/runtime-tokio-rustls"]
+runtime-actix-native-tls = ["sea-orm/runtime-actix-native-tls"]
+runtime-actix-rustls = ["sea-orm/runtime-actix-rustls"]
+sqlx-postgres = ["sea-orm/sqlx-postgres"]
+sqlx-mysql = ["sea-orm/sqlx-mysql"]
+sqlx-sqlite = ["sea-orm/sqlx-sqlite"]
+with-json = ["sea-orm/with-json"]
+with-chrono = ["sea-orm/with-chrono"]
+with-uuid = ["sea-orm/with-uuid"]
+mock = ["sea-orm/mock"]
+debug-print = ["sea-orm/debug-print"]
+
+[dependencies]
+# PhilJS
+philjs = { path = "../philjs-rust", version = "2.0.0" }
+
+# SeaORM
+sea-orm = { version = "0.12", default-features = false, features = ["macros"] }
+sea-query = "0.30"
+
+# Async
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Tracing
+tracing = "0.1"
+
+[dev-dependencies]
+tokio-test = "0.4"

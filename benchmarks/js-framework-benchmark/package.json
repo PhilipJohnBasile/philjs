@@ -1,0 +1,17 @@
+{
+  "name": "philjs-benchmark",
+  "version": "2.0.0",
+  "description": "PhilJS benchmark for js-framework-benchmark",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "philjs-core": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^6.4.1"
+  }
+}

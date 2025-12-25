@@ -1,0 +1,373 @@
+{
+  "framework": "philjs",
+  "version": "1.0.0",
+  "timestamp": "2025-01-10T14:20:30.456Z",
+  "environment": {
+    "runtime": "node",
+    "runtimeVersion": "v20.11.0",
+    "os": "Windows_NT 10.0.22621",
+    "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+    "memory": "32GB"
+  },
+  "suites": {
+    "framework": {
+      "name": "framework-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-10T14:20:30.456Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "startup-time",
+          "mean": 70.2,
+          "median": 69.5,
+          "min": 64.8,
+          "max": 84.2,
+          "stddev": 6.2,
+          "samples": 50,
+          "ops": 14.2,
+          "unit": "ms"
+        },
+        {
+          "name": "create-1000-rows",
+          "mean": 43.8,
+          "median": 43.2,
+          "min": 39.5,
+          "max": 53.2,
+          "stddev": 3.5,
+          "samples": 100,
+          "ops": 22.8,
+          "unit": "ms"
+        },
+        {
+          "name": "create-10000-rows",
+          "mean": 435.2,
+          "median": 432.1,
+          "min": 405.8,
+          "max": 492.5,
+          "stddev": 19.2,
+          "samples": 100,
+          "ops": 2.3,
+          "unit": "ms"
+        },
+        {
+          "name": "append-1000-rows",
+          "mean": 47.2,
+          "median": 46.8,
+          "min": 43.5,
+          "max": 55.8,
+          "stddev": 3.8,
+          "samples": 100,
+          "ops": 21.2,
+          "unit": "ms"
+        },
+        {
+          "name": "update-every-10th-row",
+          "mean": 8.85,
+          "median": 8.7,
+          "min": 8.1,
+          "max": 10.5,
+          "stddev": 0.72,
+          "samples": 100,
+          "ops": 113,
+          "unit": "ms"
+        },
+        {
+          "name": "select-row",
+          "mean": 2.25,
+          "median": 2.2,
+          "min": 2.0,
+          "max": 3.3,
+          "stddev": 0.3,
+          "samples": 100,
+          "ops": 444.4,
+          "unit": "ms"
+        },
+        {
+          "name": "swap-rows",
+          "mean": 3.38,
+          "median": 3.3,
+          "min": 3.0,
+          "max": 4.3,
+          "stddev": 0.35,
+          "samples": 100,
+          "ops": 296,
+          "unit": "ms"
+        },
+        {
+          "name": "remove-row",
+          "mean": 7.12,
+          "median": 7.0,
+          "min": 6.5,
+          "max": 8.8,
+          "stddev": 0.62,
+          "samples": 100,
+          "ops": 140.4,
+          "unit": "ms"
+        },
+        {
+          "name": "clear-rows",
+          "mean": 4.68,
+          "median": 4.6,
+          "min": 4.2,
+          "max": 6.0,
+          "stddev": 0.45,
+          "samples": 100,
+          "ops": 213.7,
+          "unit": "ms"
+        },
+        {
+          "name": "memory-1000-rows",
+          "mean": 3.92,
+          "median": 3.88,
+          "min": 3.72,
+          "max": 4.18,
+          "stddev": 0.13,
+          "samples": 1,
+          "ops": 0,
+          "unit": "MB"
+        }
+      ]
+    },
+    "reactivity": {
+      "name": "reactivity-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-10T14:21:00.789Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "create-10k-signals",
+          "mean": 2.45,
+          "median": 2.4,
+          "min": 2.2,
+          "max": 3.3,
+          "stddev": 0.28,
+          "samples": 50,
+          "ops": 4082,
+          "unit": "ms"
+        },
+        {
+          "name": "read-1m-signals",
+          "mean": 13.2,
+          "median": 13.0,
+          "min": 12.5,
+          "max": 14.8,
+          "stddev": 0.72,
+          "samples": 50,
+          "ops": 75758,
+          "unit": "ms"
+        },
+        {
+          "name": "write-100k-signals",
+          "mean": 19.5,
+          "median": 19.2,
+          "min": 18.0,
+          "max": 22.5,
+          "stddev": 1.3,
+          "samples": 50,
+          "ops": 5128,
+          "unit": "ms"
+        },
+        {
+          "name": "deep-signal-graph-1000",
+          "mean": 46.8,
+          "median": 46.2,
+          "min": 43.5,
+          "max": 54.2,
+          "stddev": 3.0,
+          "samples": 50,
+          "ops": 21.4,
+          "unit": "ms"
+        },
+        {
+          "name": "create-1k-effects",
+          "mean": 3.58,
+          "median": 3.5,
+          "min": 3.2,
+          "max": 4.7,
+          "stddev": 0.38,
+          "samples": 50,
+          "ops": 279,
+          "unit": "ms"
+        },
+        {
+          "name": "effect-single-dependency-10k-updates",
+          "mean": 25.8,
+          "median": 25.5,
+          "min": 24.0,
+          "max": 29.5,
+          "stddev": 1.6,
+          "samples": 50,
+          "ops": 38.8,
+          "unit": "ms"
+        },
+        {
+          "name": "memo-caching-1m-reads",
+          "mean": 8.65,
+          "median": 8.5,
+          "min": 8.2,
+          "max": 9.8,
+          "stddev": 0.48,
+          "samples": 50,
+          "ops": 115607,
+          "unit": "ms"
+        },
+        {
+          "name": "memo-recomputation-10k",
+          "mean": 33.8,
+          "median": 33.5,
+          "min": 31.5,
+          "max": 38.2,
+          "stddev": 1.9,
+          "samples": 50,
+          "ops": 29.6,
+          "unit": "ms"
+        },
+        {
+          "name": "batch-1000-updates",
+          "mean": 5.45,
+          "median": 5.3,
+          "min": 5.0,
+          "max": 6.5,
+          "stddev": 0.42,
+          "samples": 50,
+          "ops": 183.5,
+          "unit": "ms"
+        },
+        {
+          "name": "unbatched-1000-updates",
+          "mean": 16.5,
+          "median": 16.2,
+          "min": 15.0,
+          "max": 19.2,
+          "stddev": 1.3,
+          "samples": 50,
+          "ops": 60.6,
+          "unit": "ms"
+        }
+      ]
+    },
+    "ssr": {
+      "name": "ssr-benchmark",
+      "version": "1.0.0",
+      "timestamp": "2025-01-10T14:21:30.123Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "ssr-render-1000-rows",
+          "mean": 29.8,
+          "median": 29.5,
+          "min": 27.8,
+          "max": 34.2,
+          "stddev": 1.9,
+          "samples": 50,
+          "ops": 33.6,
+          "unit": "ms"
+        },
+        {
+          "name": "ssr-throughput-10k-components",
+          "mean": 295.8,
+          "median": 292.5,
+          "min": 275.8,
+          "max": 335.2,
+          "stddev": 16.5,
+          "samples": 50,
+          "ops": 3.4,
+          "unit": "ms"
+        },
+        {
+          "name": "hydrate-1000-rows",
+          "mean": 40.2,
+          "median": 39.5,
+          "min": 37.0,
+          "max": 47.5,
+          "stddev": 3.0,
+          "samples": 50,
+          "ops": 24.9,
+          "unit": "ms"
+        },
+        {
+          "name": "streaming-ttfb",
+          "mean": 13.2,
+          "median": 13.0,
+          "min": 12.2,
+          "max": 15.8,
+          "stddev": 1.0,
+          "samples": 50,
+          "ops": 75.8,
+          "unit": "ms"
+        }
+      ]
+    },
+    "bundle": {
+      "name": "bundle-analysis",
+      "version": "1.0.0",
+      "timestamp": "2025-01-10T14:22:00.456Z",
+      "environment": {
+        "runtime": "node",
+        "runtimeVersion": "v20.11.0",
+        "os": "Windows_NT 10.0.22621",
+        "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz (12 cores)",
+        "memory": "32GB"
+      },
+      "results": [
+        {
+          "name": "core-bundle-raw",
+          "mean": 15840,
+          "median": 15840,
+          "min": 15840,
+          "max": 15840,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        },
+        {
+          "name": "core-bundle-gzip",
+          "mean": 6052,
+          "median": 6052,
+          "min": 6052,
+          "max": 6052,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        },
+        {
+          "name": "core-bundle-brotli",
+          "mean": 5358,
+          "median": 5358,
+          "min": 5358,
+          "max": 5358,
+          "stddev": 0,
+          "samples": 1,
+          "ops": 0,
+          "unit": "B"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalBenchmarks": 27,
+    "passed": 27,
+    "failed": 0,
+    "warnings": []
+  }
+}

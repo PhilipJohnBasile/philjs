@@ -1,0 +1,220 @@
+{
+  "metadata": {
+    "description": "Framework benchmark comparison data from js-framework-benchmark",
+    "source": "https://krausest.github.io/js-framework-benchmark/current.html",
+    "lastUpdated": "2025-01-15",
+    "note": "Values are approximate based on typical benchmark runs. Actual results vary by hardware."
+  },
+  "frameworks": {
+    "vanilla": {
+      "name": "Vanilla JS",
+      "version": "ES2015+",
+      "description": "Plain JavaScript without any framework",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 32.5, "unit": "ms" },
+        "replace-1000-rows": { "mean": 33.2, "unit": "ms" },
+        "append-1000-rows": { "mean": 34.8, "unit": "ms" },
+        "update-every-10th-row": { "mean": 8.5, "unit": "ms" },
+        "select-row": { "mean": 2.1, "unit": "ms" },
+        "swap-rows": { "mean": 3.8, "unit": "ms" },
+        "remove-row": { "mean": 6.2, "unit": "ms" },
+        "clear-rows": { "mean": 4.5, "unit": "ms" },
+        "startup-time": { "mean": 45.2, "unit": "ms" },
+        "memory-1000-rows": { "mean": 2.5, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 0.5,
+        "gzip": 0.2,
+        "unit": "KB"
+      }
+    },
+    "react": {
+      "name": "React",
+      "version": "18.2.0",
+      "description": "React with hooks",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 65.3, "unit": "ms" },
+        "replace-1000-rows": { "mean": 68.5, "unit": "ms" },
+        "append-1000-rows": { "mean": 70.2, "unit": "ms" },
+        "update-every-10th-row": { "mean": 25.8, "unit": "ms" },
+        "select-row": { "mean": 15.2, "unit": "ms" },
+        "swap-rows": { "mean": 30.5, "unit": "ms" },
+        "remove-row": { "mean": 20.3, "unit": "ms" },
+        "clear-rows": { "mean": 18.7, "unit": "ms" },
+        "startup-time": { "mean": 158.3, "unit": "ms" },
+        "memory-1000-rows": { "mean": 8.2, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 139.5,
+        "gzip": 44.2,
+        "unit": "KB"
+      }
+    },
+    "vue": {
+      "name": "Vue",
+      "version": "3.4.0",
+      "description": "Vue 3 with Composition API",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 55.2, "unit": "ms" },
+        "replace-1000-rows": { "mean": 58.3, "unit": "ms" },
+        "append-1000-rows": { "mean": 60.1, "unit": "ms" },
+        "update-every-10th-row": { "mean": 18.5, "unit": "ms" },
+        "select-row": { "mean": 12.3, "unit": "ms" },
+        "swap-rows": { "mean": 22.8, "unit": "ms" },
+        "remove-row": { "mean": 15.7, "unit": "ms" },
+        "clear-rows": { "mean": 14.2, "unit": "ms" },
+        "startup-time": { "mean": 132.5, "unit": "ms" },
+        "memory-1000-rows": { "mean": 6.8, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 125.3,
+        "gzip": 48.5,
+        "unit": "KB"
+      }
+    },
+    "svelte": {
+      "name": "Svelte",
+      "version": "4.2.0",
+      "description": "Svelte compiler-based framework",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 42.8, "unit": "ms" },
+        "replace-1000-rows": { "mean": 45.2, "unit": "ms" },
+        "append-1000-rows": { "mean": 46.5, "unit": "ms" },
+        "update-every-10th-row": { "mean": 12.3, "unit": "ms" },
+        "select-row": { "mean": 8.5, "unit": "ms" },
+        "swap-rows": { "mean": 15.2, "unit": "ms" },
+        "remove-row": { "mean": 10.8, "unit": "ms" },
+        "clear-rows": { "mean": 9.5, "unit": "ms" },
+        "startup-time": { "mean": 95.7, "unit": "ms" },
+        "memory-1000-rows": { "mean": 4.2, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 18.5,
+        "gzip": 7.2,
+        "unit": "KB"
+      }
+    },
+    "solid": {
+      "name": "SolidJS",
+      "version": "1.8.0",
+      "description": "Fine-grained reactive framework",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 38.5, "unit": "ms" },
+        "replace-1000-rows": { "mean": 40.2, "unit": "ms" },
+        "append-1000-rows": { "mean": 41.8, "unit": "ms" },
+        "update-every-10th-row": { "mean": 7.5, "unit": "ms" },
+        "select-row": { "mean": 4.8, "unit": "ms" },
+        "swap-rows": { "mean": 11.5, "unit": "ms" },
+        "remove-row": { "mean": 8.2, "unit": "ms" },
+        "clear-rows": { "mean": 7.3, "unit": "ms" },
+        "startup-time": { "mean": 72.3, "unit": "ms" },
+        "memory-1000-rows": { "mean": 3.5, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 22.8,
+        "gzip": 8.5,
+        "unit": "KB"
+      }
+    },
+    "qwik": {
+      "name": "Qwik",
+      "version": "1.4.0",
+      "description": "Resumable framework with lazy execution",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 52.3, "unit": "ms" },
+        "replace-1000-rows": { "mean": 55.8, "unit": "ms" },
+        "append-1000-rows": { "mean": 57.2, "unit": "ms" },
+        "update-every-10th-row": { "mean": 16.8, "unit": "ms" },
+        "select-row": { "mean": 10.5, "unit": "ms" },
+        "swap-rows": { "mean": 20.2, "unit": "ms" },
+        "remove-row": { "mean": 14.3, "unit": "ms" },
+        "clear-rows": { "mean": 12.8, "unit": "ms" },
+        "startup-time": { "mean": 48.5, "unit": "ms" },
+        "memory-1000-rows": { "mean": 5.8, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 35.2,
+        "gzip": 12.5,
+        "unit": "KB"
+      }
+    },
+    "preact": {
+      "name": "Preact",
+      "version": "10.19.0",
+      "description": "Fast 3KB alternative to React",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 58.2, "unit": "ms" },
+        "replace-1000-rows": { "mean": 61.5, "unit": "ms" },
+        "append-1000-rows": { "mean": 63.8, "unit": "ms" },
+        "update-every-10th-row": { "mean": 22.3, "unit": "ms" },
+        "select-row": { "mean": 13.8, "unit": "ms" },
+        "swap-rows": { "mean": 27.5, "unit": "ms" },
+        "remove-row": { "mean": 18.2, "unit": "ms" },
+        "clear-rows": { "mean": 16.5, "unit": "ms" },
+        "startup-time": { "mean": 112.5, "unit": "ms" },
+        "memory-1000-rows": { "mean": 7.2, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 12.5,
+        "gzip": 4.8,
+        "unit": "KB"
+      }
+    },
+    "angular": {
+      "name": "Angular",
+      "version": "17.1.0",
+      "description": "Angular with signals",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 72.5, "unit": "ms" },
+        "replace-1000-rows": { "mean": 75.8, "unit": "ms" },
+        "append-1000-rows": { "mean": 78.2, "unit": "ms" },
+        "update-every-10th-row": { "mean": 28.5, "unit": "ms" },
+        "select-row": { "mean": 16.8, "unit": "ms" },
+        "swap-rows": { "mean": 35.2, "unit": "ms" },
+        "remove-row": { "mean": 23.5, "unit": "ms" },
+        "clear-rows": { "mean": 21.8, "unit": "ms" },
+        "startup-time": { "mean": 185.2, "unit": "ms" },
+        "memory-1000-rows": { "mean": 9.5, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 168.5,
+        "gzip": 58.2,
+        "unit": "KB"
+      }
+    },
+    "lit": {
+      "name": "Lit",
+      "version": "3.1.0",
+      "description": "Simple library for building fast web components",
+      "benchmarks": {
+        "create-1000-rows": { "mean": 48.5, "unit": "ms" },
+        "replace-1000-rows": { "mean": 51.2, "unit": "ms" },
+        "append-1000-rows": { "mean": 53.5, "unit": "ms" },
+        "update-every-10th-row": { "mean": 14.8, "unit": "ms" },
+        "select-row": { "mean": 9.2, "unit": "ms" },
+        "swap-rows": { "mean": 18.5, "unit": "ms" },
+        "remove-row": { "mean": 12.3, "unit": "ms" },
+        "clear-rows": { "mean": 11.2, "unit": "ms" },
+        "startup-time": { "mean": 88.5, "unit": "ms" },
+        "memory-1000-rows": { "mean": 5.2, "unit": "MB" }
+      },
+      "bundle": {
+        "raw": 18.2,
+        "gzip": 6.8,
+        "unit": "KB"
+      }
+    }
+  },
+  "benchmarkDescriptions": {
+    "create-1000-rows": "Create 1,000 rows",
+    "replace-1000-rows": "Replace all 1,000 rows",
+    "append-1000-rows": "Append 1,000 rows to existing table",
+    "update-every-10th-row": "Update every 10th row",
+    "select-row": "Select a single row",
+    "swap-rows": "Swap two rows",
+    "remove-row": "Remove a single row",
+    "clear-rows": "Clear all rows",
+    "startup-time": "Time to initialize framework",
+    "memory-1000-rows": "Memory usage after creating 1,000 rows"
+  }
+}

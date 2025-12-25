@@ -1,0 +1,16 @@
+[package]
+name = "philjs-macros"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Procedural macros for PhilJS - view!, component, and signal macros"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "parsing", "extra-traits"] }

@@ -6,11 +6,29 @@ import type { CompilerConfig, TransformResult } from './types';
 export declare class Optimizer {
     private config;
     private analyzer;
+    private deadCodeEliminator;
+    private codeSplitter;
     constructor(config?: CompilerConfig);
     /**
      * Optimize source code
      */
     optimize(code: string, filePath: string): TransformResult;
+    /**
+     * Apply production-specific optimizations
+     */
+    private applyProductionOptimizations;
+    /**
+     * Check if an expression is a development environment check
+     */
+    private isDevEnvCheck;
+    /**
+     * Inline constant values
+     */
+    private inlineConstants;
+    /**
+     * Optimize string operations
+     */
+    private optimizeStrings;
     /**
      * Apply automatic memoization
      */
@@ -71,5 +89,5 @@ export declare class Optimizer {
 /**
  * Create a new optimizer instance
  */
-export declare function createOptimizer(config?: CompilerConfig): Optimizer;
+export declare const createOptimizer: (config?: CompilerConfig) => Optimizer;
 //# sourceMappingURL=optimizer.d.ts.map

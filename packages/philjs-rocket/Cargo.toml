@@ -1,0 +1,60 @@
+[package]
+name = "philjs-rocket"
+version = "2.0.0"
+edition = "2021"
+authors = ["PhilJS Contributors"]
+description = "Rocket web framework integration for PhilJS - SSR, fairings, guards, and WebSocket support"
+license = "MIT"
+repository = "https://github.com/anthropics/philjs"
+keywords = ["rocket", "philjs", "ssr", "websocket", "rust"]
+categories = ["web-programming", "web-programming::http-server"]
+readme = "README.md"
+
+[lib]
+path = "rust/src/lib.rs"
+
+[features]
+default = ["ssr", "websocket", "templates"]
+ssr = []
+websocket = ["dep:rocket_ws"]
+templates = ["dep:rocket_dyn_templates"]
+secrets = ["rocket/secrets"]
+tls = ["rocket/tls"]
+json = ["rocket/json"]
+msgpack = ["rocket/msgpack"]
+uuid = ["rocket/uuid"]
+
+[dependencies]
+# PhilJS
+philjs = { path = "../philjs-rust", version = "2.0.0" }
+
+# Rocket
+rocket = { version = "0.5", features = ["json"] }
+rocket_ws = { version = "0.1", optional = true }
+rocket_dyn_templates = { version = "0.1", features = ["tera", "handlebars"], optional = true }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+futures-util = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+bytes = "1.5"
+mime = "0.3"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+parking_lot = "0.12"
+
+[dev-dependencies]
+tokio-test = "0.4"
