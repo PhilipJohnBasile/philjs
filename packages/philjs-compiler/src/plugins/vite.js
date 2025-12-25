@@ -87,6 +87,9 @@ export default function philJSCompiler(options = {}) {
         cacheMisses: 0,
         optimizationsApplied: 0,
     };
+    // Bundle analysis data
+    const bundleStats = [];
+    const chunkMap = new Map();
     return {
         name: 'philjs-compiler',
         // Run before other plugins
@@ -220,9 +223,10 @@ export default function philJSCompiler(options = {}) {
                     });
                     // Send warnings to error overlay in dev mode
                     if (enhancedErrors && server) {
+                        const viteServer = server;
                         result.warnings.forEach(warning => {
                             if (warning.type === 'correctness') {
-                                server.ws.send({
+                                viteServer.ws.send({
                                     type: 'error',
                                     err: {
                                         message: `[PhilJS] ${warning.message}`,
@@ -341,6 +345,7 @@ export default function philJSCompiler(options = {}) {
                 return;
             }
             const startTime = performance.now();
+            let snapshot = null;
             try {
                 // Read the updated file
                 const content = await read();
@@ -351,19 +356,31 @@ export default function philJSCompiler(options = {}) {
                 if (!isPhilJSFile) {
                     return;
                 }
+                // Detect component boundaries for better HMR tracking
+                const hasComponents = /(?:export\s+(?:default\s+)?(?:function|const|class)|function\s+[A-Z])\s+\w+/.test(content);
+                const hasSignals = /signal\(|memo\(|linkedSignal\(/.test(content);
+                const hasEffects = /effect\(/.test(content);
                 // Invalidate cache for this file
                 if (cache) {
                     transformCache.delete(file);
                 }
                 // Find all affected modules
                 const affectedModules = new Set();
-                for (const mod of modules) {
+                const modulesByDepth = new Map();
+                // Track module dependency depth for proper update ordering
+                function collectModules(mod, depth) {
+                    if (affectedModules.has(mod))
+                        return;
                     affectedModules.add(mod);
+                    if (!modulesByDepth.has(depth)) {
+                        modulesByDepth.set(depth, new Set());
+                    }
+                    modulesByDepth.get(depth).add(mod);
                     // Also invalidate dependent modules if they're PhilJS files
                     if (mod.importers) {
                         for (const importer of mod.importers) {
                             if (importer.file && filter(importer.file)) {
-                                affectedModules.add(importer);
+                                collectModules(importer, depth + 1);
                                 // Invalidate cache for importers too
                                 if (cache && importer.file) {
                                     transformCache.delete(importer.file);
@@ -372,29 +389,153 @@ export default function philJSCompiler(options = {}) {
                         }
                     }
                 }
-                const duration = performance.now() - startTime;
-                if (verbose) {
-                    const fileName = file.split('/').pop() || file;
-                    console.log(`[philjs-compiler] HMR: ${fileName} (${affectedModules.size} modules) - ${formatDuration(duration)}`);
+                for (const mod of modules) {
+                    collectModules(mod, 0);
                 }
                 // If preserveHmrState is enabled, inject state preservation code
-                if (preserveHmrState && isDevelopment) {
-                    // Add HMR boundary to preserve signal state
-                    for (const mod of affectedModules) {
-                        if (mod.file && mod.file.endsWith('.tsx') || mod.file?.endsWith('.jsx')) {
-                            // Mark as HMR boundary to preserve component state
-                            mod.isSelfAccepting = true;
+                if (preserveHmrState && isDevelopment && (hasSignals || hasEffects)) {
+                    // Snapshot state before HMR update
+                    try {
+                        // Send command to client to snapshot state
+                        server.ws.send({
+                            type: 'custom',
+                            event: 'philjs:hmr-snapshot',
+                            data: {
+                                file,
+                                hasComponents,
+                                hasSignals,
+                                hasEffects,
+                                moduleCount: affectedModules.size,
+                            },
+                        });
+                        // Mark modules as HMR boundaries based on content
+                        for (const mod of affectedModules) {
+                            if (mod.file) {
+                                const isComponent = mod.file.endsWith('.tsx') || mod.file.endsWith('.jsx');
+                                const isModule = mod.file.endsWith('.ts') || mod.file.endsWith('.js');
+                                // Components should be self-accepting to preserve local state
+                                if (isComponent && hasComponents) {
+                                    mod.isSelfAccepting = true;
+                                }
+                                // Modules with signals should preserve state across boundaries
+                                if (isModule && hasSignals) {
+                                    mod.isSelfAccepting = true;
+                                }
+                            }
+                        }
+                        if (verbose) {
+                            console.log(`[philjs-compiler] HMR boundary detection:`, `components=${hasComponents}, signals=${hasSignals}, effects=${hasEffects}`);
+                        }
+                    }
+                    catch (hmrError) {
+                        if (verbose) {
+                            console.warn(`[philjs-compiler] HMR snapshot failed:`, hmrError);
                         }
                     }
                 }
-                // Return affected modules for Vite to handle
-                return Array.from(affectedModules);
+                const duration = performance.now() - startTime;
+                if (verbose) {
+                    const fileName = file.split('/').pop() || file;
+                    console.log(`[philjs-compiler] HMR: ${fileName} (${affectedModules.size} modules, ${modulesByDepth.size} levels) - ${formatDuration(duration)}`);
+                }
+                // Check for performance constraint (<100ms target)
+                if (duration > 100 && verbose) {
+                    console.warn(`[philjs-compiler] HMR update took ${formatDuration(duration)} (target: <100ms)`);
+                }
+                // Return affected modules sorted by dependency depth (deepest first)
+                // This ensures parent components update after children
+                const sortedDepths = Array.from(modulesByDepth.keys()).sort((a, b) => b - a);
+                const sortedModules = [];
+                for (const depth of sortedDepths) {
+                    sortedModules.push(...Array.from(modulesByDepth.get(depth)));
+                }
+                return sortedModules;
             }
             catch (error) {
                 const err = error;
                 console.error(`[philjs-compiler] HMR error for ${file}:`, err.message);
-                // Don't break HMR on errors
+                // Send HMR error to overlay
+                if (enhancedErrors && isDevelopment && server) {
+                    server.ws.send({
+                        type: 'error',
+                        err: {
+                            message: `[PhilJS HMR] Failed to update ${file}`,
+                            stack: err.stack || err.message,
+                            id: file,
+                            plugin: 'philjs-compiler',
+                            frame: `HMR Update Error\n\nThe hot module replacement failed for this file.\n\n${err.message}\n\nThe page will perform a full reload.`,
+                        },
+                    });
+                    // Send custom event for HMR rollback
+                    server.ws.send({
+                        type: 'custom',
+                        event: 'philjs:hmr-error',
+                        data: {
+                            file,
+                            error: err.message,
+                            stack: err.stack,
+                            shouldReload: true,
+                        },
+                    });
+                }
+                // Don't break HMR on errors - let Vite handle the fallback
                 return;
+            }
+        },
+        /**
+         * Generate bundle hook - Analyze and optimize production bundles
+         */
+        generateBundle(outputOptions, bundle) {
+            if (!enabled || isDevelopment)
+                return;
+            const productionConfig = options.production || {};
+            const { analyze = false, resourceHints = true, budgets, } = productionConfig;
+            // Collect bundle statistics
+            bundleStats.length = 0;
+            chunkMap.clear();
+            Object.entries(bundle).forEach(([fileName, chunk]) => {
+                if (chunk.type === 'chunk') {
+                    const code = chunk.code;
+                    const size = Buffer.byteLength(code, 'utf8');
+                    // Track chunk dependencies
+                    chunkMap.set(fileName, chunk.imports || []);
+                    bundleStats.push({
+                        name: fileName,
+                        size,
+                        gzipSize: 0, // Would calculate actual gzip size
+                    });
+                    if (verbose) {
+                        console.log(`[philjs-compiler] Chunk: ${fileName} (${formatBytes(size)})`);
+                    }
+                }
+            });
+            // Check performance budgets
+            if (budgets) {
+                const violations = checkBudgets(bundleStats, budgets);
+                if (violations.length > 0) {
+                    console.warn('\n[philjs-compiler] ⚠️  Performance Budget Violations:');
+                    violations.forEach(v => {
+                        console.warn(`  ${v.type}: ${formatBytes(v.actual)} exceeds ${formatBytes(v.limit)}`);
+                    });
+                }
+            }
+            // Generate resource hints
+            if (resourceHints) {
+                const criticalChunks = bundleStats
+                    .filter(s => s.name.includes('index') || s.name.includes('main'))
+                    .map(s => s.name);
+                const lazyChunks = bundleStats
+                    .filter(s => !criticalChunks.includes(s.name))
+                    .map(s => s.name);
+                if (verbose) {
+                    console.log('\n[philjs-compiler] Resource Hints:');
+                    console.log(`  Preload (${criticalChunks.length}): ${criticalChunks.join(', ')}`);
+                    console.log(`  Prefetch (${lazyChunks.length}): ${lazyChunks.join(', ')}`);
+                }
+            }
+            // Generate bundle analysis report
+            if (analyze) {
+                generateBundleReport(bundleStats, chunkMap);
             }
         },
         /**
@@ -404,12 +545,97 @@ export default function philJSCompiler(options = {}) {
             if (verbose && cache) {
                 console.log(`\n[philjs-compiler] Cache: ${transformCache.size} entries`);
             }
+            // Show production build summary
+            if (!isDevelopment && bundleStats.length > 0 && verbose) {
+                const totalSize = bundleStats.reduce((sum, s) => sum + s.size, 0);
+                console.log('\n[philjs-compiler] Production Build Summary:');
+                console.log(`  Total bundles: ${bundleStats.length}`);
+                console.log(`  Total size: ${formatBytes(totalSize)}`);
+                console.log(`  Optimizations applied: ${stats.optimizationsApplied}`);
+            }
             // Clear cache on close in production builds to free memory
             if (!isDevelopment && cache) {
                 transformCache.clear();
             }
         },
     };
+}
+/**
+ * Check performance budgets
+ */
+function checkBudgets(stats, budgets) {
+    const violations = [];
+    // Check initial bundle
+    if (budgets.maxInitial) {
+        const initialBundles = stats.filter(s => s.name.includes('index') || s.name.includes('main'));
+        const initialSize = initialBundles.reduce((sum, s) => sum + s.size, 0);
+        if (initialSize > budgets.maxInitial) {
+            violations.push({
+                type: 'initial',
+                limit: budgets.maxInitial,
+                actual: initialSize,
+            });
+        }
+    }
+    // Check individual chunks
+    if (budgets.maxChunk) {
+        stats.forEach(stat => {
+            if (stat.size > budgets.maxChunk) {
+                violations.push({
+                    type: `chunk:${stat.name}`,
+                    limit: budgets.maxChunk,
+                    actual: stat.size,
+                });
+            }
+        });
+    }
+    // Check total size
+    if (budgets.maxTotal) {
+        const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
+        if (totalSize > budgets.maxTotal) {
+            violations.push({
+                type: 'total',
+                limit: budgets.maxTotal,
+                actual: totalSize,
+            });
+        }
+    }
+    return violations;
+}
+/**
+ * Generate bundle analysis report
+ */
+function generateBundleReport(stats, chunkMap) {
+    console.log('\n╔════════════════════════════════════════════════════════════╗');
+    console.log('║             PhilJS Bundle Analysis Report                 ║');
+    console.log('╚════════════════════════════════════════════════════════════╝\n');
+    // Sort by size (largest first)
+    const sorted = [...stats].sort((a, b) => b.size - a.size);
+    console.log('Bundle Breakdown:');
+    console.log('─────────────────────────────────────────────────────────────');
+    sorted.forEach((stat, idx) => {
+        const dependencies = chunkMap.get(stat.name) || [];
+        const sizeBar = createSizeBar(stat.size, sorted[0].size);
+        console.log(`${(idx + 1).toString().padStart(2)}. ${stat.name}`);
+        console.log(`    ${sizeBar} ${formatBytes(stat.size)}`);
+        if (dependencies.length > 0) {
+            console.log(`    Dependencies: ${dependencies.slice(0, 3).join(', ')}${dependencies.length > 3 ? '...' : ''}`);
+        }
+        console.log('');
+    });
+    const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
+    console.log('─────────────────────────────────────────────────────────────');
+    console.log(`Total Size: ${formatBytes(totalSize)}`);
+    console.log(`Chunks: ${stats.length}\n`);
+}
+/**
+ * Create a visual size bar
+ */
+function createSizeBar(size, maxSize) {
+    const barLength = 30;
+    const filled = Math.round((size / maxSize) * barLength);
+    const empty = barLength - filled;
+    return `[${'█'.repeat(filled)}${' '.repeat(empty)}]`;
 }
 /**
  * Type-safe plugin factory with better TypeScript support

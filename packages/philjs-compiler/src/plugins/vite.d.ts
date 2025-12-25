@@ -47,6 +47,59 @@ export interface PhilJSCompilerPluginOptions extends CompilerConfig {
      * @default true
      */
     enhancedErrors?: boolean;
+    /**
+     * Production optimizations
+     */
+    production?: {
+        /**
+         * Enable aggressive minification
+         * @default true
+         */
+        minify?: boolean;
+        /**
+         * Enable chunk splitting strategies
+         * @default true
+         */
+        chunkSplitting?: boolean;
+        /**
+         * Generate preload/prefetch hints
+         * @default true
+         */
+        resourceHints?: boolean;
+        /**
+         * Enable bundle analysis
+         * @default false
+         */
+        analyze?: boolean;
+        /**
+         * Performance budgets (in bytes)
+         */
+        budgets?: {
+            maxInitial?: number;
+            maxChunk?: number;
+            maxTotal?: number;
+        };
+    };
+    /**
+     * Asset optimization settings
+     */
+    assets?: {
+        /**
+         * Inline assets smaller than this (bytes)
+         * @default 4096
+         */
+        inlineLimit?: number;
+        /**
+         * Enable image optimization
+         * @default true
+         */
+        optimizeImages?: boolean;
+        /**
+         * Enable SVG optimization
+         * @default true
+         */
+        optimizeSvg?: boolean;
+    };
 }
 /**
  * Creates a Vite plugin for PhilJS compiler
