@@ -228,3 +228,39 @@ export type {
 
 // Re-export from extract for convenience
 export type { BuildPlugin, BundleStats } from './extract';
+
+// Gesture System
+export {
+  attachGestures,
+  swipeableStyles,
+  draggableStyles,
+  zoomableStyles,
+  pullToRefreshStyles,
+  createGestureAnimation,
+  swipeToDismiss,
+  pullToRefresh,
+  createCarousel,
+  gesturePresets,
+  directionVectors,
+} from './gestures';
+
+export type {
+  Point,
+  GestureState,
+  Direction,
+  GestureType,
+  GestureEvent,
+  SwipeEvent,
+  PinchEvent,
+  RotateEvent,
+  PanEvent,
+  GestureConfig,
+  SwipeConfig,
+  PinchConfig,
+  PanConfig,
+  TapConfig,
+  LongPressConfig,
+  RotateConfig,
+  GestureHandler,
+  GestureHandlers,
+} from './gestures';

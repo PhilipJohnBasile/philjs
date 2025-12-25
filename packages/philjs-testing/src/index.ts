@@ -138,3 +138,62 @@ export type {
   TestContext,
   APITestHelper,
 } from './integration';
+
+// Component Testing
+export {
+  testComponent,
+  visualTest,
+  createVisualSnapshot,
+  updateVisualSnapshot,
+  expectNoA11yViolations,
+  measureRenderPerformance,
+  expectRenderWithinBudget,
+  interactionTest,
+  createFixture,
+  componentFixture,
+} from './component-testing';
+
+export type {
+  ComponentTestConfig,
+  ComponentTestResult,
+  A11yReport,
+  A11yViolation,
+  A11yPass,
+  A11yIncomplete,
+  PerformanceMetrics,
+  ComponentQueries,
+  QueryOptions,
+  VisualTestOptions,
+  VisualDiff,
+  TestFixture,
+} from './component-testing';
+
+// Network Mocking
+export {
+  createNetworkMock,
+  json,
+  error as networkError,
+  delayed,
+  flaky,
+  paginated,
+  withHeaders,
+  withBody,
+  withQuery,
+  expectRequest,
+  expectRequestCount,
+  expectNoRequests,
+  getNetworkStats,
+  createGraphQLMock,
+  createWebSocketMock,
+} from './network-mocking';
+
+export type {
+  MockRequest,
+  MockResponse,
+  MockHandler,
+  NetworkMock,
+  MockResponseConfig,
+  NetworkStats,
+  GraphQLMock,
+  WebSocketMock,
+} from './network-mocking';

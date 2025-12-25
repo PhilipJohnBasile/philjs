@@ -95,7 +95,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CSS Color Functions** - `colorMix()`, `relativeColor()`, `lightDark()`
 - **Feature Detection** - `supportsCSS()`, `cssFeatures`, `featureDetectionCSS()`
 
+#### Gesture System (philjs-css)
+- **Touch & Pointer Gestures** - Comprehensive gesture handling
+  - `attachGestures()` for gesture binding with cleanup
+  - Swipe detection (4 directions) with configurable thresholds
+  - Pinch/zoom gestures with scale limits
+  - Pan/drag gestures with bounds support
+  - Long press detection with customizable duration
+  - Tap and double-tap detection
+  - Rotation gestures for multi-touch
+- **Gesture-Driven Animations** - Seamless gesture-to-animation
+  - `createGestureAnimation()` for property binding
+  - `swipeToDismiss()` for dismissable elements
+  - `pullToRefresh()` for refreshable containers
+  - `createCarousel()` for swipeable galleries
+- **CSS Gesture Styles** - Ready-to-use gesture CSS
+  - `swipeableStyles()`, `draggableStyles()`, `zoomableStyles()`
+  - `pullToRefreshStyles()` with loading indicator
+  - `gesturePresets` (standard, sensitive, strict)
+
+#### Component Testing (philjs-testing)
+- **Component Test Utilities** - Comprehensive component testing
+  - `testComponent()` for full component testing with queries
+  - `visualTest()`, `createVisualSnapshot()` for visual regression
+  - `expectNoA11yViolations()` for accessibility testing
+  - `measureRenderPerformance()` for performance metrics
+  - `expectRenderWithinBudget()` for performance budgets
+  - `interactionTest()` for user interaction simulation
+- **Test Fixtures** - Reusable test setup
+  - `createFixture()` for parameterized test fixtures
+  - `componentFixture()` for component-specific fixtures
+
+#### Network Mocking (philjs-testing)
+- **HTTP Mocking** - Complete network mocking
+  - `createNetworkMock()` with method chaining
+  - `get()`, `post()`, `put()`, `patch()`, `delete()`, `any()` handlers
+  - `json()`, `error()`, `delayed()`, `flaky()`, `paginated()` response helpers
+  - `withHeaders()`, `withBody()`, `withQuery()` request matchers
+  - `expectRequest()`, `expectRequestCount()`, `expectNoRequests()` assertions
+- **GraphQL Mocking** - `createGraphQLMock()` with operation handlers
+- **WebSocket Mocking** - `createWebSocketMock()` with message simulation
+
 #### Enhanced DevTools (philjs-devtools)
+- **Performance Profiler** - Advanced profiling capabilities
+  - `startProfiling()`, `stopProfiling()` for render profiling
+  - `recordRenderStart()`, `recordRenderEnd()` for component timing
+  - `startMemoryProfiling()`, `captureMemorySnapshot()` for memory tracking
+  - `startNetworkProfiling()` for request analysis
+  - `generateFlameGraph()` for visual profiling
+  - `analyzeRenderPerformance()` with recommendations
+  - `analyzeMemoryUsage()` with leak detection
+  - `analyzeNetworkRequests()` with optimization tips
+  - `exportProfileData()`, `importProfileData()` for sharing
 - **Hooks Panel** - Visual hooks inspection similar to React DevTools
   - Support for useState, useEffect, useMemo, useRef, useCallback, useReducer, useContext
   - Live value editing for state hooks

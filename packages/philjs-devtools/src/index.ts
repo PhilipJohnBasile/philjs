@@ -128,3 +128,35 @@ function updateStats() {
   // Re-check every second
   setTimeout(updateStats, 1000);
 }
+
+// Performance Profiler
+export {
+  startProfiling,
+  stopProfiling,
+  recordRenderStart,
+  recordRenderEnd,
+  recordMemo,
+  startMemoryProfiling,
+  stopMemoryProfiling,
+  captureMemorySnapshot,
+  startNetworkProfiling,
+  stopNetworkProfiling,
+  generateFlameGraph,
+  analyzeRenderPerformance,
+  analyzeMemoryUsage,
+  analyzeNetworkRequests,
+  exportProfileData,
+  importProfileData,
+} from "./profiler.js";
+
+export type {
+  RenderProfile,
+  MemoryProfile,
+  NetworkProfile,
+  BundleProfile,
+  ModuleInfo,
+  ChunkInfo,
+  DuplicateInfo,
+  FlameNode,
+  ProfilerConfig,
+} from "./profiler.js";
