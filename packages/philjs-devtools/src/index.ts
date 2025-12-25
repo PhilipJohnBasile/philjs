@@ -1,6 +1,6 @@
 /**
  * Developer tools for PhilJS.
- * Shows hydration map, performance budgets, and AI cost panel.
+ * Shows hydration map, performance budgets, AI cost panel, and component inspector.
  */
 
 // Time-Travel Debugging
@@ -34,6 +34,28 @@ export type {
   DevToolsState,
   PersistenceConfig,
 } from "./redux-devtools.js";
+
+// Visual Component Inspector
+export {
+  ComponentInspector,
+  createInspector,
+  getInspector,
+  PropsPanel,
+  StatePanel,
+  StylePanel,
+  PerformancePanel,
+  ElementHighlighter,
+  SearchBar,
+} from "./inspector/index.js";
+export type {
+  InspectorConfig,
+  ComponentNode,
+  PropInfo,
+  StateInfo,
+  StyleInfo,
+  PerformanceInfo,
+  InspectorEvent,
+} from "./inspector/types.js";
 
 /**
  * Show the developer overlay.

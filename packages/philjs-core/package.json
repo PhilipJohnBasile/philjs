@@ -106,6 +106,10 @@
     "./plugin-system": {
       "types": "./dist/plugin-system.d.ts",
       "import": "./dist/plugin-system.js"
+    },
+    "./tiny": {
+      "types": "./dist/tiny.d.ts",
+      "import": "./dist/tiny.js"
     }
   },
   "files": [

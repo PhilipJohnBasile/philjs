@@ -7,6 +7,8 @@
  * - Atomic utility classes
  * - Variant system (like Stitches/CVA)
  * - Zero runtime overhead (all CSS extracted at build time)
+ * - SSR hydration and runtime style injection
+ * - Compile-time optimizations (purging, deduplication, atomic extraction)
  */
 
 // Core CSS functionality
@@ -70,6 +72,81 @@ export {
   analyzeCSSBundle
 } from './extract';
 
+// Runtime utilities (SSR hydration, dynamic styles)
+export {
+  hydrateStyles,
+  getSSRStyles,
+  getCriticalSSRStyles,
+  injectStyle,
+  removeStyle,
+  clearStyles,
+  createDynamicStyle,
+  createReactiveStyle,
+  applyTheme,
+  createThemeToggle,
+  syncWithSystemTheme,
+  setCSSVariable,
+  getCSSVariable,
+  removeCSSVariable,
+  setCSSVariables,
+  batchStyleUpdates,
+  prefetchStyles,
+  getStyleDebugInfo
+} from './runtime';
+
+// Compiler utilities (build-time optimization)
+export {
+  extractUsageFromFiles,
+  extractUsageFromHTML,
+  extractUsageFromJSX,
+  purgeUnusedCSS,
+  deduplicateCSS,
+  atomicDeduplication,
+  extractCriticalCSS as extractCriticalCSSFromFull,
+  splitCSSByRoute,
+  generateSourceMap,
+  generateOptimizationReport,
+  optimizeCSS
+} from './compiler';
+
+// Advanced CSS features (next-gen CSS)
+export {
+  // Container Queries
+  createContainer,
+  containerQuery,
+  cq,
+  // CSS Layers
+  defineLayers,
+  layer,
+  defaultLayerOrder,
+  generateLayeredStylesheet,
+  // Scoped Styles
+  scopedStyles,
+  componentScope,
+  // CSS Nesting
+  processNesting,
+  // View Transitions
+  viewTransition,
+  startViewTransition,
+  viewTransitionPresets,
+  // Scroll-driven Animations
+  scrollTimeline,
+  viewTimeline,
+  scrollAnimation,
+  // CSS Anchor Positioning
+  createAnchor,
+  anchorPosition,
+  positionFallback,
+  // CSS Color Functions
+  colorMix,
+  relativeColor,
+  lightDark,
+  // Feature Detection
+  supportsCSS,
+  cssFeatures,
+  featureDetectionCSS
+} from './advanced';
+
 // Types
 export type {
   CSSProperties,
@@ -85,6 +162,19 @@ export type {
   StyleSheet,
   ResponsiveValue
 } from './types';
+
+// Advanced types
+export type {
+  ContainerConfig,
+  ContainerQuery,
+  LayerName,
+  ScopeConfig,
+  ViewTransitionConfig,
+  ScrollTimelineConfig,
+  ViewTimelineConfig,
+  AnchorConfig,
+  AnchorPositionConfig
+} from './advanced';
 
 // Re-export from extract for convenience
 export type { BuildPlugin, BundleStats } from './extract';

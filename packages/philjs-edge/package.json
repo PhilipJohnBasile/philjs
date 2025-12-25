@@ -26,6 +26,26 @@
     "./d1": {
       "types": "./dist/d1.d.ts",
       "import": "./dist/d1.js"
+    },
+    "./geo-routing": {
+      "types": "./dist/geo-routing.d.ts",
+      "import": "./dist/geo-routing.js"
+    },
+    "./prefetch": {
+      "types": "./dist/prefetch.d.ts",
+      "import": "./dist/prefetch.js"
+    },
+    "./streaming": {
+      "types": "./dist/streaming.d.ts",
+      "import": "./dist/streaming.js"
+    },
+    "./state-replication": {
+      "types": "./dist/state-replication.d.ts",
+      "import": "./dist/state-replication.js"
+    },
+    "./smart-cache": {
+      "types": "./dist/smart-cache.d.ts",
+      "import": "./dist/smart-cache.js"
     }
   },
   "scripts": {

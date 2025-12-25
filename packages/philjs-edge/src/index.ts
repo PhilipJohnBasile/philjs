@@ -590,5 +590,17 @@ export function useEdgeKV<T = any>(store: KVStore, key: string) {
 }
 
 // ============================================================================
+// Re-exports from specialized modules
+// ============================================================================
+
+export * from './geo-routing';
+export * from './prefetch';
+export * from './streaming';
+export * from './state-replication';
+export * from './smart-cache';
+export * from './rate-limiter';
+export * from './edge-functions';
+
+// ============================================================================
 // Exports - All types and classes defined above are already exported inline
 // ============================================================================
