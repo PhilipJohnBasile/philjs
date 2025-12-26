@@ -84,6 +84,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `iban()` for international bank accounts
   - `json()`, `slug()`, `uuid()` format validators
 
+#### Multi-Step Form Wizard (philjs-forms)
+- **Wizard System** - Complete multi-step form management
+  - `createWizard()` for wizard state and step configuration
+  - `useWizard()` hook for reactive wizard control
+  - Step navigation with validation gating
+  - Conditional step visibility
+  - Progress tracking with `calculateProgress()`
+  - Step indicator data with `getStepIndicatorData()`
+  - Animated transitions with `getStepTransitionStyles()`
+- **Wizard Templates** - Pre-built wizard configurations
+  - `createCheckoutWizard()` for e-commerce flows
+  - `createSignupWizard()` for user registration
+  - `createSurveyWizard()` for multi-page surveys
+
+#### Input Masking (philjs-forms)
+- **Mask Engine** - Flexible input formatting
+  - `parseMaskPattern()`, `applyMask()`, `unmask()` core functions
+  - `createMaskInputHandler()` for input event handling
+  - Configurable mask characters and definitions
+- **Built-in Masks** - Common format presets
+  - `phoneMask()` for phone number formatting
+  - `creditCardMask()` with `detectCardType()` and `luhnCheck()` validation
+  - `currencyMask()` for monetary values
+  - `dateMask()`, `timeMask()` for date/time inputs
+  - `ssnMask()`, `zipCodeMask()` for identity fields
+  - `maskPresets` for quick configuration
+
+#### Auto-Save & Draft Recovery (philjs-forms)
+- **Auto-Save System** - Automatic form persistence
+  - `createAutoSave()` for configurable auto-save
+  - `useAutoSave()` hook for form integration
+  - Debounced saving with version history
+  - Checksum-based change detection
+  - Optional encryption for sensitive data
+- **Draft Recovery** - Form data restoration
+  - Automatic recovery detection on load
+  - `resolveConflict()` with merge strategies (local, remote, merge, manual)
+  - Version history with rollback support
+  - `formatDraftTimestamp()`, `getRecoveryMessage()` UI helpers
+- **Storage Adapters** - Flexible storage backends
+  - `createIndexedDBStorage()` for large data
+  - `createSessionStorage()` for session-scoped data
+
+#### Type-Safe URL Builder (philjs-router)
+- **URL Builder** - Type-safe route generation
+  - `createURLBuilder()` with parameter extraction
+  - `defineRoutes()` for route manifest with typed builders
+  - Parameter replacement with `:param` and `[param]` syntax
+  - Optional parameter support with `?` suffix
+  - Strict mode for required parameter validation
+- **Query String Utilities** - Query parameter management
+  - `buildQueryString()`, `parseQueryString()` for serialization
+  - `mergeQueryParams()` for combining query objects
+  - Array parameter support
+- **Breadcrumb Generation** - Navigation breadcrumbs
+  - `generateBreadcrumbs()` from path with custom labels
+  - Configurable transforms for segment labeling
+- **URL Utilities** - Path manipulation helpers
+  - `extractParamNames()`, `normalizePath()`, `joinPaths()`
+  - `parseURL()` for full URL decomposition
+  - `matchPattern()` for URL matching with catch-all support
+  - `isActivePath()` for active link detection
+  - `serializeRouteState()`, `deserializeRouteState()` for state persistence
+
+#### Alerting Engine (philjs-observability)
+- **Alert Manager** - Real-time threshold alerting
+  - `AlertManager` class with rule evaluation and notification
+  - `initAlertManager()`, `getAlertManager()` for singleton access
+  - `useAlerts()` hook for reactive alert state
+  - Configurable evaluation intervals
+- **Alert Rules** - Flexible rule definitions
+  - Metric-based conditions (>, <, >=, <=, ==, !=)
+  - Aggregation functions (avg, sum, min, max, count, last)
+  - Severity levels (critical, error, warning, info)
+  - Silencing periods and runbook links
+- **Notification Channels** - Multi-channel notifications
+  - Webhook, Slack, Email, PagerDuty, Console channels
+  - Configurable templates with alert variables
+  - Rate limiting for notification throttling
+- **Preset Rules** - Common monitoring rules
+  - `presetRules.highCpuUsage`, `presetRules.highMemoryUsage`
+  - `presetRules.highErrorRate`, `presetRules.slowResponseTime`
+  - `presetRules.lowDiskSpace`
+
+#### Visual Builder Templates (philjs-builder)
+- **Authentication Templates** - Auth UI layouts
+  - `loginForm` with email, password, social auth, remember me
+- **Content Templates** - Content section layouts
+  - `blogArticle` with header, sidebar, table of contents
+  - `testimonials` with customer review cards
+  - `faqSection` with accordion-style Q&A
+- **E-commerce Templates** - Shop UI layouts
+  - `productGrid` with category filters and product cards
+- **Marketing Templates** - Marketing section layouts
+  - Extended `pricingTable` with feature comparison
+  - Enhanced `landingPageSimple` with CTAs
+
 #### Advanced CSS Features (philjs-css)
 - **Container Queries** - `createContainer()`, `containerQuery()`, `cq()` for responsive component queries
 - **CSS Layers** - `defineLayers()`, `layer()`, `generateLayeredStylesheet()` for cascade control

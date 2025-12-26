@@ -669,6 +669,37 @@ export type {
   GuardConfig,
 } from "./guards.js";
 
+// Type-Safe URL Builder
+export {
+  createURLBuilder,
+  defineRoutes,
+  buildQueryString,
+  parseQueryString,
+  mergeQueryParams,
+  generateBreadcrumbs,
+  extractParamNames,
+  normalizePath,
+  joinPaths,
+  parseURL,
+  matchPattern,
+  resolveLinkTo,
+  isActivePath,
+  serializeRouteState,
+  deserializeRouteState,
+} from "./url-builder.js";
+export type {
+  ParamValue,
+  QueryValue,
+  RouteParams,
+  QueryParams,
+  URLBuilderOptions,
+  BuilderResult,
+  URLBuilder,
+  Breadcrumb,
+  BreadcrumbConfig,
+  LinkProps,
+} from "./url-builder.js";
+
 /**
  * Create a router from a route manifest.
  * @param {Record<string, RouteModule>} manifest - Route manifest

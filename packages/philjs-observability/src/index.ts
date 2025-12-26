@@ -592,3 +592,26 @@ export * from './widgets';
 // ============================================================================
 
 export * from './dashboard';
+
+// ============================================================================
+// Alerting Engine
+// ============================================================================
+
+export {
+  AlertManager,
+  initAlertManager,
+  getAlertManager,
+  useAlerts,
+  presetRules,
+} from './alerting';
+
+export type {
+  AlertSeverity,
+  AlertState,
+  ComparisonOperator,
+  AlertRule,
+  AlertCondition,
+  Alert,
+  NotificationChannel,
+  AlertManagerConfig,
+} from './alerting';

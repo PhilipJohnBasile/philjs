@@ -29,4 +29,9 @@ export {
   landingPageSimple,
   navigationHeader,
   pricingTable,
+  loginForm,
+  blogArticle,
+  productGrid,
+  testimonials,
+  faqSection,
 } from './BuiltInTemplates.js';

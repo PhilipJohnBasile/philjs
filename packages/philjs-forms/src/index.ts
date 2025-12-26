@@ -111,3 +111,63 @@ export {
   type ValidationResult,
   type FieldValidationResult,
 } from './advanced-validation.js';
+
+// Multi-Step Wizard
+export {
+  createWizard,
+  useWizard,
+  getStepIndicatorData,
+  calculateProgress,
+  getStepTransitionStyles,
+  createCheckoutWizard,
+  createSignupWizard,
+  createSurveyWizard,
+  type WizardStep,
+  type WizardConfig,
+  type WizardState,
+  type WizardController,
+  type StepIndicatorProps,
+  type TransitionDirection,
+  type StepTransitionConfig,
+} from './wizard.js';
+
+// Input Masking
+export {
+  parseMaskPattern,
+  applyMask,
+  unmask,
+  phoneMask,
+  creditCardMask,
+  detectCardType,
+  luhnCheck,
+  currencyMask,
+  dateMask,
+  timeMask,
+  ssnMask,
+  zipCodeMask,
+  createMaskInputHandler,
+  maskChars,
+  maskPresets,
+  type MaskConfig,
+  type MaskResult,
+  type MaskChar,
+  type MaskDefinition,
+  type MaskInputHandler,
+} from './input-mask.js';
+
+// Auto-Save & Draft Recovery
+export {
+  createAutoSave,
+  useAutoSave,
+  resolveConflict,
+  createIndexedDBStorage,
+  createSessionStorage,
+  formatDraftTimestamp,
+  getRecoveryMessage,
+  type AutoSaveConfig,
+  type FormDraft,
+  type AutoSaveState,
+  type AutoSaveController,
+  type ConflictStrategy,
+  type RecoveryDialogProps,
+} from './auto-save.js';
