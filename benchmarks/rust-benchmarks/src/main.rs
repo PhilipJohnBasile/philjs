@@ -111,7 +111,8 @@ fn benchmark_memo_computation() -> BenchmarkResult {
     const ITERATIONS: u64 = 1_000_000;
 
     let signal = create_signal(0i32);
-    let memo = create_memo(move || signal.get() * 2);
+    let signal_for_memo = signal.clone();
+    let memo = create_memo(move || signal_for_memo.get() * 2);
 
     let start = Instant::now();
     for i in 0..ITERATIONS {
@@ -134,11 +135,12 @@ fn benchmark_effect_execution() -> BenchmarkResult {
     const ITERATIONS: u64 = 100_000;
 
     let signal = create_signal(0i32);
+    let signal_for_effect = signal.clone();
     let counter = std::sync::Arc::new(std::sync::atomic::AtomicU64::new(0));
     let counter_clone = counter.clone();
 
     create_effect(move || {
-        let _ = signal.get();
+        let _ = signal_for_effect.get();
         counter_clone.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
     });
 
