@@ -1,6 +1,6 @@
 [package]
 name = "philjs-tokio"
-version = "2.0.0"
+version = "0.0.1"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Tokio integration for PhilJS - async runtime configuration, task spawning, and channel utilities"

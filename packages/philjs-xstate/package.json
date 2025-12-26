@@ -1,6 +1,6 @@
 {
   "name": "philjs-xstate",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "XState-inspired state machines for PhilJS with signals",
   "type": "module",
   "sideEffects": false,

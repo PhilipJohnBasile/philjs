@@ -1,6 +1,6 @@
 {
   "name": "philjs-plugin-tailwind",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Automatic Tailwind CSS setup and optimization for PhilJS",
   "type": "module",
   "main": "./dist/index.js",

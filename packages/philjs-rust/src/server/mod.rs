@@ -2,6 +2,8 @@
 //!
 //! Define server-side functions that can be called from the client.
 //! Similar to Leptos #[server] and Next.js Server Actions.
+
+pub mod functions;
 //!
 //! # Example
 //! ```rust

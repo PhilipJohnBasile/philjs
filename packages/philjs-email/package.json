@@ -1,6 +1,6 @@
 {
   "name": "@philjs/email",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Production-ready email client for PhilJS with multiple providers, templates, and queue integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

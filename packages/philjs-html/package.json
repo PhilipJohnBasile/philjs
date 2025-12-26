@@ -1,6 +1,6 @@
 {
   "name": "philjs-html",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "HTML-first reactive framework - HTMX and Alpine.js compatibility for PhilJS",
   "type": "module",
   "main": "dist/index.js",

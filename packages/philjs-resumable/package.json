@@ -1,6 +1,6 @@
 {
   "name": "philjs-resumable",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Resumability and partial hydration system for PhilJS - Qwik-style zero-JS-until-interaction",
   "type": "module",
   "sideEffects": false,

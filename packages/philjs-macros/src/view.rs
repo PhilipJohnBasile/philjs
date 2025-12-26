@@ -593,7 +593,7 @@ impl Parse for ForNode {
     }
 }
 
-// Stub implementations for other control flow nodes
+// Match node implementation with proper arm parsing
 impl Parse for MatchNode {
     fn parse(input: ParseStream) -> Result<Self> {
         // Parse <Match value={...}>
@@ -611,11 +611,74 @@ impl Parse for MatchNode {
         }
         input.parse::<Gt>()?;
 
-        // Skip children for now
+        // Parse match arms as <Arm pattern={...}>...</Arm> elements
+        let mut arms = Vec::new();
         while !input.peek(Lt) || !input.peek2(Slash) {
             if input.is_empty() {
                 return Err(input.error("Unclosed Match"));
             }
+
+            // Try to parse as Arm element
+            if input.peek(Lt) {
+                let fork = input.fork();
+                fork.parse::<Lt>()?;
+                if let Ok(name) = fork.parse::<Ident>() {
+                    if name == "Arm" {
+                        // Parse the Arm element
+                        input.parse::<Lt>()?;
+                        let _arm_name: Ident = input.parse()?;
+
+                        let mut pattern: Option<Pat> = None;
+                        let mut guard: Option<Expr> = None;
+
+                        while !input.peek(Gt) && !input.peek(Slash) {
+                            let attr_name: Ident = input.parse()?;
+                            input.parse::<Token![=]>()?;
+
+                            if attr_name == "pattern" {
+                                // Parse pattern as expression, then convert
+                                let content;
+                                syn::braced!(content in input);
+                                pattern = Some(content.parse()?);
+                            } else if attr_name == "when" || attr_name == "guard" {
+                                guard = Some(parse_attr_value(input)?);
+                            } else {
+                                // Skip unknown attributes
+                                let _: Expr = parse_attr_value(input)?;
+                            }
+                        }
+
+                        let self_closing = input.peek(Slash);
+                        if self_closing {
+                            input.parse::<Slash>()?;
+                        }
+                        input.parse::<Gt>()?;
+
+                        let mut body = Vec::new();
+                        if !self_closing {
+                            while !input.peek(Lt) || !input.peek2(Slash) {
+                                if input.is_empty() {
+                                    return Err(input.error("Unclosed Arm"));
+                                }
+                                body.push(input.parse()?);
+                            }
+                            input.parse::<Lt>()?;
+                            input.parse::<Slash>()?;
+                            let _: Ident = input.parse()?;
+                            input.parse::<Gt>()?;
+                        }
+
+                        arms.push(MatchArm {
+                            pattern: pattern.unwrap_or_else(|| syn::parse_quote!(_)),
+                            guard,
+                            body,
+                        });
+                        continue;
+                    }
+                }
+            }
+
+            // Not an Arm, skip this child
             let _: ViewNode = input.parse()?;
         }
 
@@ -626,7 +689,7 @@ impl Parse for MatchNode {
 
         Ok(MatchNode {
             value: value.unwrap_or_else(|| syn::parse_quote!(())),
-            arms: Vec::new(),
+            arms,
         })
     }
 }
@@ -875,6 +938,12 @@ fn codegen_element(element: &Element) -> TokenStream2 {
 
     if is_component {
         // Component invocation
+        let component_name = match &element.name {
+            ElementName::Component(name) => name,
+            _ => unreachable!(),
+        };
+        let props_struct = format_ident!("{}Props", component_name);
+
         let props: Vec<_> = element.attributes.iter().filter_map(|attr| {
             if let AttributeKind::Simple { name, value } = &attr.kind {
                 let value = value.as_ref().map(|v| quote!(#v)).unwrap_or(quote!(true));
@@ -884,17 +953,38 @@ fn codegen_element(element: &Element) -> TokenStream2 {
             }
         }).collect();
 
+        // Handle event handlers for components
+        let event_handlers: Vec<_> = element.attributes.iter().filter_map(|attr| {
+            if let AttributeKind::Event { event, handler, .. } = &attr.kind {
+                let handler_name = format_ident!("on_{}", event);
+                Some(quote! { #handler_name: Some(Box::new(#handler)) })
+            } else {
+                None
+            }
+        }).collect();
+
+        let all_props: Vec<_> = props.into_iter().chain(event_handlers.into_iter()).collect();
+
         if children.is_empty() {
-            quote! {
-                #tag(#tag Props {
-                    #(#props),*
-                })
+            if all_props.is_empty() {
+                // No props, use Default or empty struct
+                quote! {
+                    #component_name(#props_struct::default())
+                }
+            } else {
+                quote! {
+                    #component_name(#props_struct {
+                        #(#all_props),*
+                        ..Default::default()
+                    })
+                }
             }
         } else {
             quote! {
-                #tag(#tag Props {
-                    #(#props),*
-                    children: Some(|| philjs::view::fragment(vec![#(#children),*])),
+                #component_name(#props_struct {
+                    #(#all_props,)*
+                    children: Some(Box::new(|| philjs::view::fragment(vec![#(#children),*]))),
+                    ..Default::default()
                 })
             }
         }
@@ -1047,8 +1137,48 @@ fn codegen_for(for_node: &ForNode) -> TokenStream2 {
 
 fn codegen_match(match_node: &MatchNode) -> TokenStream2 {
     let value = &match_node.value;
-    quote! {
-        philjs::view::Match::new(move || #value)
+
+    if match_node.arms.is_empty() {
+        // Fallback for empty match - render empty view
+        quote! {
+            philjs::view::Dynamic::new(move || {
+                match #value {
+                    _ => philjs::view::empty()
+                }
+            })
+        }
+    } else {
+        // Generate proper match arms
+        let arms: Vec<_> = match_node.arms.iter().map(|arm| {
+            let pattern = &arm.pattern;
+            let body: Vec<_> = arm.body.iter().map(codegen_view_node).collect();
+
+            let view_body = if body.is_empty() {
+                quote! { philjs::view::empty() }
+            } else if body.len() == 1 {
+                quote! { #(#body)* }
+            } else {
+                quote! { philjs::view::fragment(vec![#(#body),*]) }
+            };
+
+            if let Some(guard) = &arm.guard {
+                quote! {
+                    #pattern if #guard => #view_body
+                }
+            } else {
+                quote! {
+                    #pattern => #view_body
+                }
+            }
+        }).collect();
+
+        quote! {
+            philjs::view::Dynamic::new(move || {
+                match #value {
+                    #(#arms,)*
+                }
+            })
+        }
     }
 }
 

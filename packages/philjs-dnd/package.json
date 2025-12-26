@@ -1,6 +1,6 @@
 {
   "name": "philjs-dnd",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Drag and drop toolkit for PhilJS with multi-container support, accessibility, and smooth animations",
   "type": "module",
   "main": "./dist/index.js",

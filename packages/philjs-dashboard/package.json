@@ -1,6 +1,6 @@
 {
   "name": "@philjs/dashboard",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Performance monitoring dashboard for PhilJS applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

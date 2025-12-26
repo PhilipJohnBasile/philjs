@@ -1,6 +1,6 @@
 {
   "name": "@philjs/export",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Data export utilities for PhilJS - CSV, Excel, JSON, XML, PDF, and more",
   "type": "module",
   "main": "./dist/index.js",

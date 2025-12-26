@@ -1,6 +1,6 @@
 {
   "name": "philjs-migrate",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Migration codemods to convert React, Vue, and Svelte applications to PhilJS",
   "type": "module",
   "main": "./dist/index.js",

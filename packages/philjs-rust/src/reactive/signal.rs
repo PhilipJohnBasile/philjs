@@ -213,6 +213,81 @@ pub fn create_signal<T>(value: T) -> (ReadSignal<T>, WriteSignal<T>) {
     (ReadSignal::new(signal.clone()), WriteSignal::new(signal))
 }
 
+// =============================================================================
+// Hydration Support
+// =============================================================================
+
+use std::collections::HashMap;
+use std::sync::RwLock;
+
+/// Global signal registry for hydration
+static SIGNAL_REGISTRY: std::sync::OnceLock<RwLock<HashMap<String, Box<dyn std::any::Any + Send + Sync>>>> = std::sync::OnceLock::new();
+
+fn get_registry() -> &'static RwLock<HashMap<String, Box<dyn std::any::Any + Send + Sync>>> {
+    SIGNAL_REGISTRY.get_or_init(|| RwLock::new(HashMap::new()))
+}
+
+/// Register a signal for hydration by ID
+pub fn register_signal<T: Clone + Send + Sync + 'static>(id: &str, signal: Signal<T>) {
+    if let Ok(mut registry) = get_registry().write() {
+        registry.insert(id.to_string(), Box::new(signal));
+    }
+}
+
+/// Restore a signal value from hydration data
+///
+/// This is called during hydration to restore signal values from the
+/// serialized state embedded in the HTML.
+pub fn restore_signal_value(id: &str, value: serde_json::Value) {
+    // In a full implementation, this would:
+    // 1. Look up the signal in the registry by ID
+    // 2. Deserialize the value to the appropriate type
+    // 3. Set the signal's value
+    //
+    // For now, we store it for later retrieval
+    if let Ok(mut registry) = get_registry().write() {
+        registry.insert(format!("__value_{}", id), Box::new(value));
+    }
+}
+
+/// Get a registered signal by ID
+pub fn get_registered_signal<T: Clone + 'static>(id: &str) -> Option<Signal<T>> {
+    if let Ok(registry) = get_registry().read() {
+        registry.get(id).and_then(|boxed| {
+            boxed.downcast_ref::<Signal<T>>().cloned()
+        })
+    } else {
+        None
+    }
+}
+
+/// Create a signal with hydration support
+///
+/// If there's a hydrated value for this ID, use it; otherwise use the default.
+pub fn create_hydrated_signal<T>(id: &str, default: T) -> Signal<T>
+where
+    T: Clone + serde::de::DeserializeOwned + Send + Sync + 'static,
+{
+    // Check if we have a hydrated value
+    if let Ok(registry) = get_registry().read() {
+        if let Some(boxed) = registry.get(&format!("__value_{}", id)) {
+            if let Some(json_value) = boxed.downcast_ref::<serde_json::Value>() {
+                if let Ok(value) = serde_json::from_value::<T>(json_value.clone()) {
+                    let signal = Signal::new(value);
+                    drop(registry);
+                    register_signal(id, signal.clone());
+                    return signal;
+                }
+            }
+        }
+    }
+
+    // No hydrated value, use default
+    let signal = Signal::new(default);
+    register_signal(id, signal.clone());
+    signal
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

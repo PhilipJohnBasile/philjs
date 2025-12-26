@@ -1,0 +1,44 @@
+//! Home Page
+
+use philjs::prelude::*;
+use crate::components::Counter;
+
+#[component]
+pub fn HomePage() -> impl IntoView {
+    view! {
+        <section class="hero">
+            <h1 class="hero-title">"Welcome to {{name}}"</h1>
+            <p class="hero-subtitle">
+                "A blazing-fast web application built with PhilJS and Rust"
+            </p>
+        </section>
+
+        <section class="features">
+            <h2>"Features"</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>"🦀 Pure Rust"</h3>
+                    <p>"Write your entire application in Rust with type safety"</p>
+                </div>
+                <div class="feature-card">
+                    <h3>"⚡ Fine-Grained Reactivity"</h3>
+                    <p>"Signals and memos for optimal performance"</p>
+                </div>
+                <div class="feature-card">
+                    <h3>"🌐 SSR Ready"</h3>
+                    <p>"Server-side rendering with hydration out of the box"</p>
+                </div>
+                <div class="feature-card">
+                    <h3>"📦 Small Bundle"</h3>
+                    <p>"Optimized WebAssembly for fast loading"</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="demo">
+            <h2>"Interactive Demo"</h2>
+            <p>"Try the reactive counter component:"</p>
+            <Counter initial=0 step=1 />
+        </section>
+    }
+}

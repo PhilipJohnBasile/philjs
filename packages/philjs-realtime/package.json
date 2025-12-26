@@ -1,6 +1,6 @@
 {
   "name": "philjs-realtime",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Real-time collaboration, WebSockets, presence, and multiplayer state for PhilJS",
   "type": "module",
   "main": "./dist/index.js",

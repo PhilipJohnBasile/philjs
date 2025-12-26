@@ -1,6 +1,6 @@
 {
   "name": "philjs-studio",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Visual component builder with drag-and-drop UI for philjs",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

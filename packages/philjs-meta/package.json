@@ -1,6 +1,6 @@
 {
   "name": "philjs-meta",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Next.js/SvelteKit-style meta-framework for PhilJS with file-based routing, SSR, and data loading",
   "type": "module",
   "main": "./dist/index.js",

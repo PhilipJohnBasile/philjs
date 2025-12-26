@@ -1,0 +1,130 @@
+//! {{name}} - PhilJS SSR Application
+//!
+//! A full-stack Rust web application with server-side rendering,
+//! hydration, and reactive components.
+
+use axum::{
+    Router,
+    routing::get,
+    response::IntoResponse,
+};
+use philjs::prelude::*;
+use philjs_axum::prelude::*;
+use tower_http::services::ServeDir;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+mod components;
+mod pages;
+
+use pages::{home::HomePage, about::AboutPage, not_found::NotFoundPage};
+
+#[tokio::main]
+async fn main() {
+    // Initialize logging
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| "{{name}}=debug,tower_http=debug".into()))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    // Build router
+    let app = Router::new()
+        // Pages
+        .route("/", get(home_page))
+        .route("/about", get(about_page))
+
+        // API routes
+        .nest("/api", api_routes())
+
+        // Server functions
+        .merge(philjs_axum::server_fn_router())
+
+        // Static files
+        .nest_service("/static", ServeDir::new("static"))
+
+        // Fallback for 404
+        .fallback(not_found);
+
+    // Start server
+    let addr = "0.0.0.0:3000";
+    tracing::info!("Starting server at http://{}", addr);
+
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .expect("Failed to bind to address");
+
+    axum::serve(listener, app)
+        .await
+        .expect("Server failed");
+}
+
+async fn home_page() -> impl IntoResponse {
+    render_to_response(|| view! {
+        <Layout title="Home">
+            <HomePage />
+        </Layout>
+    })
+}
+
+async fn about_page() -> impl IntoResponse {
+    render_to_response(|| view! {
+        <Layout title="About">
+            <AboutPage />
+        </Layout>
+    })
+}
+
+async fn not_found() -> impl IntoResponse {
+    (
+        axum::http::StatusCode::NOT_FOUND,
+        render_to_response(|| view! {
+            <Layout title="Not Found">
+                <NotFoundPage />
+            </Layout>
+        })
+    )
+}
+
+fn api_routes() -> Router {
+    Router::new()
+        .route("/health", get(|| async { "OK" }))
+}
+
+// Layout component
+#[component]
+fn Layout(title: String, children: Children) -> impl IntoView {
+    view! {
+        <!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>{title} " | {{name}}"</title>
+                <link rel="stylesheet" href="/static/styles.css" />
+                <link rel="icon" href="/static/favicon.ico" />
+            </head>
+            <body>
+                <header class="header">
+                    <nav class="nav">
+                        <a href="/" class="logo">"{{name}}"</a>
+                        <ul class="nav-links">
+                            <li><a href="/">"Home"</a></li>
+                            <li><a href="/about">"About"</a></li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <main class="main">
+                    {children}
+                </main>
+
+                <footer class="footer">
+                    <p>"Built with PhilJS"</p>
+                </footer>
+
+                {HydrationScript::new()}
+                <script type="module" src="/static/app.js"></script>
+            </body>
+        </html>
+    }
+}

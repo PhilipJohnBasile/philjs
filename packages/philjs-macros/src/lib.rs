@@ -543,3 +543,162 @@ pub fn navigate(input: TokenStream) -> TokenStream {
 pub fn redirect(input: TokenStream) -> TokenStream {
     routing::redirect_impl(input)
 }
+
+// ============================================================================
+// Reactivity Macros (Additional)
+// ============================================================================
+
+/// Create a memoized computation.
+///
+/// Memos cache their computed value and only recompute when their
+/// dependencies change.
+///
+/// # Example
+///
+/// ```rust,ignore
+/// let count = Signal::new(0);
+/// let doubled = memo!(count.get() * 2);
+///
+/// // doubled.get() will only recompute when count changes
+/// ```
+#[proc_macro]
+pub fn memo(input: TokenStream) -> TokenStream {
+    let expr: syn::Expr = syn::parse_macro_input!(input);
+    let output = quote::quote! {
+        philjs::Memo::new(move || #expr)
+    };
+    TokenStream::from(output)
+}
+
+/// Create a reactive effect.
+///
+/// Effects run automatically when their dependencies change.
+/// They are useful for side effects like DOM updates or logging.
+///
+/// # Example
+///
+/// ```rust,ignore
+/// let count = Signal::new(0);
+///
+/// effect!({
+///     println!("Count changed to: {}", count.get());
+/// });
+/// ```
+#[proc_macro]
+pub fn effect(input: TokenStream) -> TokenStream {
+    let expr: syn::Expr = syn::parse_macro_input!(input);
+    let output = quote::quote! {
+        philjs::Effect::new(move || { #expr })
+    };
+    TokenStream::from(output)
+}
+
+/// Create a resource for async data loading.
+///
+/// Resources handle async data fetching with loading states and
+/// automatic refetching when dependencies change.
+///
+/// # Example
+///
+/// ```rust,ignore
+/// let user_id = Signal::new(1);
+///
+/// let user = resource!(
+///     user_id.get(),
+///     |id| async move { fetch_user(id).await }
+/// );
+///
+/// // user.get() returns Option<Result<User, Error>>
+/// ```
+#[proc_macro]
+pub fn resource(input: TokenStream) -> TokenStream {
+    // Parse as two expressions separated by comma
+    let input2: proc_macro2::TokenStream = input.into();
+    let output = quote::quote! {
+        philjs::Resource::new(#input2)
+    };
+    TokenStream::from(output)
+}
+
+/// Derive a reactive store from a struct.
+///
+/// This creates a store with fine-grained reactivity for each field,
+/// similar to SolidJS stores.
+///
+/// # Example
+///
+/// ```rust,ignore
+/// #[derive(Store)]
+/// struct AppState {
+///     user: Option<User>,
+///     theme: Theme,
+///     notifications: Vec<Notification>,
+/// }
+///
+/// let store = AppState::store();
+/// store.user.set(Some(current_user));
+///
+/// // Only components using store.user will re-render
+/// ```
+#[proc_macro_derive(Store)]
+pub fn derive_store(input: TokenStream) -> TokenStream {
+    let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    let name = &input.ident;
+    let store_name = quote::format_ident!("{}Store", name);
+
+    let fields = match &input.data {
+        syn::Data::Struct(data) => match &data.fields {
+            syn::Fields::Named(fields) => &fields.named,
+            _ => {
+                return TokenStream::from(quote::quote! {
+                    compile_error!("Store can only be derived for structs with named fields");
+                });
+            }
+        },
+        _ => {
+            return TokenStream::from(quote::quote! {
+                compile_error!("Store can only be derived for structs");
+            });
+        }
+    };
+
+    let store_fields: Vec<_> = fields.iter().map(|f| {
+        let name = &f.ident;
+        let ty = &f.ty;
+        quote::quote! {
+            pub #name: philjs::Signal<#ty>
+        }
+    }).collect();
+
+    let field_inits: Vec<_> = fields.iter().map(|f| {
+        let name = &f.ident;
+        quote::quote! {
+            #name: philjs::Signal::new(value.#name)
+        }
+    }).collect();
+
+    let output = quote::quote! {
+        #[derive(Clone)]
+        pub struct #store_name {
+            #(#store_fields),*
+        }
+
+        impl #name {
+            pub fn store() -> #store_name
+            where
+                Self: Default,
+            {
+                Self::default().into_store()
+            }
+
+            pub fn into_store(self) -> #store_name {
+                let value = self;
+                #store_name {
+                    #(#field_inits),*
+                }
+            }
+        }
+    };
+
+    TokenStream::from(output)
+}

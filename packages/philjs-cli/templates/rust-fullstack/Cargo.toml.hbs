@@ -1,0 +1,67 @@
+[package]
+name = "{{name}}"
+version = "0.1.0"
+edition = "2021"
+authors = ["{{author}}"]
+description = "A PhilJS fullstack application with SSR, API routes, and database"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "{{name}}"
+path = "src/main.rs"
+
+[dependencies]
+philjs = "2.0"
+philjs-axum = "2.0"
+axum = { version = "0.7", features = ["macros"] }
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "compression-gzip", "fs", "trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio", "postgres", "sqlite", "migrate"] }
+
+# Authentication
+argon2 = "0.5"
+jsonwebtoken = "9"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# Environment
+dotenvy = "0.15"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = [
+    "Window",
+    "Document",
+    "Element",
+    "HtmlElement",
+    "Event",
+    "MouseEvent",
+    "console",
+    "Storage",
+]}
+
+[features]
+default = ["ssr", "sqlite"]
+ssr = ["philjs/ssr"]
+hydration = ["philjs/hydration"]
+postgres = ["sqlx/postgres"]
+sqlite = ["sqlx/sqlite"]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

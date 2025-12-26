@@ -1,0 +1,13 @@
+//! API Routes
+
+pub mod auth;
+pub mod users;
+
+use axum::Router;
+use crate::AppState;
+
+pub fn routes() -> Router<AppState> {
+    Router::new()
+        .nest("/auth", auth::routes())
+        .nest("/users", users::routes())
+}

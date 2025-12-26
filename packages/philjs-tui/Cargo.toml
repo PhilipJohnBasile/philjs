@@ -1,6 +1,6 @@
 [package]
 name = "philjs-tui"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Terminal UI rendering for PhilJS - build TUI apps with the same component model"

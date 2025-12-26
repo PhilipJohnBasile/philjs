@@ -1,6 +1,6 @@
 {
   "name": "philjs-wasm",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Rust/WebAssembly integration for PhilJS with reactive signals",
   "type": "module",
   "sideEffects": false,

@@ -54,7 +54,7 @@ pub fn signal_impl(_args: TokenStream, input: TokenStream) -> TokenStream {
 
         // Initialize signal in new()
         signal_inits.push(quote! {
-            #signal_field: philjs::create_signal(#field_name)
+            #signal_field: philjs::Signal::new(#field_name)
         });
 
         // Getter method

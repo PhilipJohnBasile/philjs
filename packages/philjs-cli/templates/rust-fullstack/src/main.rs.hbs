@@ -1,0 +1,189 @@
+//! {{name}} - PhilJS Fullstack Application
+//!
+//! A complete fullstack application with:
+//! - Server-side rendering
+//! - API routes with authentication
+//! - Database integration
+//! - Server functions
+
+use axum::{
+    Router,
+    routing::{get, post},
+    response::IntoResponse,
+    middleware,
+    extract::State,
+};
+use philjs::prelude::*;
+use philjs_axum::prelude::*;
+use sqlx::SqlitePool;
+use std::sync::Arc;
+use tower_http::services::ServeDir;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+mod api;
+mod components;
+mod db;
+mod middleware as app_middleware;
+mod pages;
+mod server_fns;
+
+use pages::{home::HomePage, login::LoginPage, dashboard::DashboardPage};
+
+// Application state
+#[derive(Clone)]
+pub struct AppState {
+    pub db: SqlitePool,
+    pub jwt_secret: String,
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load environment variables
+    dotenvy::dotenv().ok();
+
+    // Initialize logging
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| "{{name}}=debug,tower_http=debug,sqlx=warn".into()))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    // Connect to database
+    let database_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "sqlite:data.db?mode=rwc".to_string());
+
+    let db = SqlitePool::connect(&database_url).await?;
+
+    // Run migrations
+    sqlx::migrate!("./migrations").run(&db).await?;
+
+    // Create app state
+    let state = AppState {
+        db,
+        jwt_secret: std::env::var("JWT_SECRET")
+            .unwrap_or_else(|_| "change-me-in-production".to_string()),
+    };
+
+    // Build router
+    let app = Router::new()
+        // Public pages
+        .route("/", get(home_page))
+        .route("/login", get(login_page).post(api::auth::login))
+        .route("/register", get(register_page).post(api::auth::register))
+
+        // Protected pages
+        .route("/dashboard", get(dashboard_page))
+
+        // API routes
+        .nest("/api", api::routes())
+
+        // Server functions
+        .merge(philjs_axum::server_fn_router())
+
+        // Static files
+        .nest_service("/static", ServeDir::new("static"))
+
+        // Fallback
+        .fallback(not_found)
+
+        // State
+        .with_state(state);
+
+    // Start server
+    let addr = "0.0.0.0:3000";
+    tracing::info!("Starting server at http://{}", addr);
+
+    let listener = tokio::net::TcpListener::bind(addr).await?;
+    axum::serve(listener, app).await?;
+
+    Ok(())
+}
+
+// Page handlers
+async fn home_page() -> impl IntoResponse {
+    render_to_response(|| view! {
+        <Layout title="Home">
+            <HomePage />
+        </Layout>
+    })
+}
+
+async fn login_page() -> impl IntoResponse {
+    render_to_response(|| view! {
+        <Layout title="Login">
+            <LoginPage />
+        </Layout>
+    })
+}
+
+async fn register_page() -> impl IntoResponse {
+    render_to_response(|| view! {
+        <Layout title="Register">
+            <pages::register::RegisterPage />
+        </Layout>
+    })
+}
+
+async fn dashboard_page(
+    State(state): State<AppState>,
+    auth: Option<app_middleware::AuthUser>,
+) -> impl IntoResponse {
+    match auth {
+        Some(user) => render_to_response(|| view! {
+            <Layout title="Dashboard">
+                <DashboardPage user=user />
+            </Layout>
+        }),
+        None => axum::response::Redirect::to("/login").into_response(),
+    }
+}
+
+async fn not_found() -> impl IntoResponse {
+    (
+        axum::http::StatusCode::NOT_FOUND,
+        render_to_response(|| view! {
+            <Layout title="Not Found">
+                <pages::not_found::NotFoundPage />
+            </Layout>
+        })
+    )
+}
+
+// Layout component
+#[component]
+fn Layout(title: String, children: Children) -> impl IntoView {
+    view! {
+        <!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>{title} " | {{name}}"</title>
+                <link rel="stylesheet" href="/static/styles.css" />
+            </head>
+            <body>
+                <header class="header">
+                    <nav class="nav">
+                        <a href="/" class="logo">"{{name}}"</a>
+                        <ul class="nav-links">
+                            <li><a href="/">"Home"</a></li>
+                            <li><a href="/dashboard">"Dashboard"</a></li>
+                            <li><a href="/login">"Login"</a></li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <main class="main">
+                    {children}
+                </main>
+
+                <footer class="footer">
+                    <p>"Built with PhilJS"</p>
+                </footer>
+
+                {HydrationScript::new()}
+                <script type="module" src="/static/app.js"></script>
+            </body>
+        </html>
+    }
+}

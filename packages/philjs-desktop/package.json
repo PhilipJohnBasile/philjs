@@ -1,6 +1,6 @@
 {
   "name": "philjs-desktop",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Desktop application development for PhilJS using Tauri",
   "type": "module",
   "sideEffects": false,

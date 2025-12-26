@@ -1,6 +1,6 @@
 {
   "name": "@philjs/collab",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Real-time collaborative state sync for PhilJS - Presence, CRDTs, Cursors, Operational Transforms",
   "type": "module",
   "main": "./dist/index.js",

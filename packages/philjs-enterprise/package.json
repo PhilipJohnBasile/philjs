@@ -1,6 +1,6 @@
 {
   "name": "@philjs/enterprise",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Enterprise features for PhilJS - Multi-tenancy, SSO, RBAC, Audit Logging, Feature Flags",
   "type": "module",
   "main": "./dist/index.js",

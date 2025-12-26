@@ -87,17 +87,43 @@ where
 }
 
 /// Hydrate a server-rendered view.
+///
+/// This properly attaches to existing SSR HTML without clearing the DOM.
+/// Event handlers are attached to existing elements, and signals are restored
+/// from the embedded hydration state.
 #[cfg(feature = "hydration")]
 pub fn hydrate<F, V>(f: F)
 where
     F: FnOnce() -> V + 'static,
     V: IntoView,
 {
-    hydrate_body(f);
+    // Use the proper hydration module
+    super::hydration::hydrate(f);
 }
 
 #[cfg(feature = "hydration")]
 pub fn hydrate_body<F, V>(f: F)
+where
+    F: FnOnce() -> V + 'static,
+    V: IntoView,
+{
+    // Use the proper hydration module with full hydration mode
+    super::hydration::hydrate_to_body(f, super::hydration::HydrationMode::Full);
+}
+
+/// Hydrate with a specific mode (partial, progressive, or resume-only)
+#[cfg(feature = "hydration")]
+pub fn hydrate_with_mode<F, V>(f: F, mode: super::hydration::HydrationMode)
+where
+    F: FnOnce() -> V + 'static,
+    V: IntoView,
+{
+    super::hydration::hydrate_to_body(f, mode);
+}
+
+/// Hydrate to a specific element by ID
+#[cfg(feature = "hydration")]
+pub fn hydrate_to_id<F, V>(f: F, id: &str)
 where
     F: FnOnce() -> V + 'static,
     V: IntoView,
@@ -107,12 +133,11 @@ where
         .document()
         .expect("no document");
 
-    let body = document.body().expect("no body");
+    let element = document
+        .get_element_by_id(id)
+        .unwrap_or_else(|| panic!("element with id '{}' not found", id));
 
-    // TODO: Implement hydration logic
-    // For now, clear and render
-    body.set_inner_html("");
-    mount_to(f, &body);
+    super::hydration::hydrate_to(f, &element, super::hydration::HydrationMode::Full);
 }
 
 /// Render a view to a parent element.

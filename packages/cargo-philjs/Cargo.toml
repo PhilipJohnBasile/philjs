@@ -1,6 +1,6 @@
 [package]
 name = "cargo-philjs"
-version = "2.0.0"
+version = "0.0.1"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Cargo subcommand for PhilJS - create, build, and develop PhilJS applications with best-in-class DX"

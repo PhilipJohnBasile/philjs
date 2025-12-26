@@ -1,6 +1,6 @@
 {
   "name": "philjs-benchmark",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Comprehensive performance benchmarking suite for PhilJS",
   "type": "module",
   "main": "dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "philjs-react-compat",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "React compatibility layer for seamless migration to PhilJS",
   "type": "module",
   "sideEffects": false,

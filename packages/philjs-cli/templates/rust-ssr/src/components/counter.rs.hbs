@@ -1,0 +1,52 @@
+//! Counter Component
+//!
+//! A simple reactive counter demonstrating PhilJS signals.
+
+use philjs::prelude::*;
+
+#[component]
+pub fn Counter(
+    /// Initial counter value
+    #[prop(default = 0)]
+    initial: i32,
+    /// Step size for increment/decrement
+    #[prop(default = 1)]
+    step: i32,
+) -> impl IntoView {
+    let count = signal!(initial);
+
+    let increment = move |_| count.update(|n| *n += step);
+    let decrement = move |_| count.update(|n| *n -= step);
+    let reset = move |_| count.set(initial);
+
+    view! {
+        <div class="counter">
+            <div class="counter-display">
+                <span class="counter-value">{count}</span>
+            </div>
+            <div class="counter-controls">
+                <button
+                    class="btn btn-primary"
+                    on:click=decrement
+                    title="Decrement"
+                >
+                    "-"
+                </button>
+                <button
+                    class="btn btn-secondary"
+                    on:click=reset
+                    title="Reset"
+                >
+                    "Reset"
+                </button>
+                <button
+                    class="btn btn-primary"
+                    on:click=increment
+                    title="Increment"
+                >
+                    "+"
+                </button>
+            </div>
+        </div>
+    }
+}

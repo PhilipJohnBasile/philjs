@@ -1,6 +1,6 @@
 {
   "name": "philjs-maps",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Map components for PhilJS with support for Google Maps, Mapbox, and Leaflet",
   "type": "module",
   "sideEffects": false,

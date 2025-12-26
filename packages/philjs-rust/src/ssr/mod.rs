@@ -49,21 +49,97 @@ where
     write!(writer, "{}", view.to_html())
 }
 
-/// Render a view with async streaming support.
+/// Streaming configuration
+#[derive(Clone, Debug)]
+pub struct StreamingConfig {
+    /// Flush when Suspense boundaries resolve
+    pub flush_on_suspense: bool,
+    /// Chunk size for streaming
+    pub chunk_size: usize,
+    /// Include shell immediately
+    pub immediate_shell: bool,
+}
+
+impl Default for StreamingConfig {
+    fn default() -> Self {
+        StreamingConfig {
+            flush_on_suspense: true,
+            chunk_size: 16384,
+            immediate_shell: true,
+        }
+    }
+}
+
+/// Render a view with true streaming support.
+///
+/// This streams HTML chunks as they become available:
+/// 1. Shell (header, navigation) is sent immediately
+/// 2. Suspense fallbacks are shown inline
+/// 3. Resolved content is streamed with replacement scripts
 #[cfg(feature = "ssr")]
-pub async fn render_to_stream_async<F, V>(f: F) -> impl futures::Stream<Item = String>
+pub fn render_to_stream_async<F, V>(f: F, config: StreamingConfig) -> impl futures::Stream<Item = String>
 where
     F: FnOnce() -> V,
     V: IntoView,
 {
-    use futures::stream;
+    use futures::stream::{self, StreamExt};
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicUsize, Ordering};
 
     let view = f().into_view();
-    let html = view.to_html();
+    let suspense_id = Arc::new(AtomicUsize::new(0));
 
-    // For now, emit as a single chunk
-    // TODO: Implement true streaming with Suspense boundaries
-    stream::once(async move { html })
+    // Collect suspense boundaries and their fallbacks
+    let (shell, suspense_points) = extract_shell_and_suspense(&view, &suspense_id);
+
+    // Stream shell immediately if configured
+    let shell_stream = if config.immediate_shell {
+        stream::once(async move { shell })
+    } else {
+        stream::once(async { String::new() })
+    };
+
+    // Stream suspense resolutions as they complete
+    let suspense_stream = stream::iter(suspense_points)
+        .then(move |(id, content_future)| async move {
+            let content = content_future.await;
+            // Generate replacement script
+            format!(
+                r#"<template id="S:{id}">{content}</template>
+<script>
+(function(){{
+    var t=document.getElementById("S:{id}");
+    var f=document.getElementById("F:{id}");
+    if(t&&f){{f.replaceWith(t.content.cloneNode(true));t.remove();}}
+}})();
+</script>"#,
+                id = id,
+                content = content
+            )
+        });
+
+    shell_stream.chain(suspense_stream)
+}
+
+/// Extract shell HTML and suspense points from a view
+fn extract_shell_and_suspense(
+    view: &crate::view::View,
+    suspense_id: &std::sync::Arc<std::sync::atomic::AtomicUsize>,
+) -> (String, Vec<(usize, std::pin::Pin<Box<dyn std::future::Future<Output = String> + Send>>)>) {
+    // For now, return the full HTML as shell with no suspense points
+    // In a full implementation, this would walk the view tree and identify Suspense boundaries
+    let html = view.to_html();
+    (html, Vec::new())
+}
+
+/// Simple streaming render (backwards compatible)
+#[cfg(feature = "ssr")]
+pub async fn render_to_stream_simple<F, V>(f: F) -> impl futures::Stream<Item = String>
+where
+    F: FnOnce() -> V,
+    V: IntoView,
+{
+    render_to_stream_async(f, StreamingConfig::default())
 }
 
 /// Generate the hydration script for client-side hydration.

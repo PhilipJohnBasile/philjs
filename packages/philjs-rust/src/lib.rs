@@ -153,7 +153,28 @@ pub use dom::{
 pub use ssr::{
     render_to_string,
     render_to_stream,
+    render_to_stream_async,
+    StreamingConfig,
     HydrationScript,
+};
+
+// Hydration exports
+pub use dom::{
+    hydrate,
+    hydrate_to,
+    hydrate_to_body,
+    HydrationMode,
+    HydrationContext,
+    HydrationState,
+    generate_hydration_script,
+};
+
+// Server function exports
+pub use server::functions::{
+    ServerResult,
+    ServerError,
+    ServerFnConfig,
+    server_fn,
 };
 
 /// Prelude module - import everything you need

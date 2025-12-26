@@ -37,6 +37,13 @@ impl Element {
         }
     }
 
+    /// Create a namespaced element (e.g., SVG).
+    pub fn new_ns(_namespace: &str, tag: impl Into<String>) -> Self {
+        // For now, ignore namespace in SSR output
+        // Full implementation would track namespace for correct rendering
+        Self::new(tag)
+    }
+
     /// Get the tag name.
     pub fn tag(&self) -> &str {
         &self.tag
@@ -105,6 +112,108 @@ impl Element {
     /// Add a single child.
     pub fn child(mut self, child: impl Into<View>) -> Self {
         self.children.push(child.into());
+        self
+    }
+
+    /// Add a dynamic class based on a signal.
+    pub fn class_signal(mut self, class_name: impl Into<String>, condition: impl Fn() -> bool + 'static) -> Self {
+        let class_name = class_name.into();
+        let existing_class = self.class.take();
+        self.class = Some(Rc::new(move || {
+            let base = existing_class.as_ref().map(|f| f()).unwrap_or_default();
+            if condition() {
+                if base.is_empty() {
+                    class_name.clone()
+                } else {
+                    format!("{} {}", base, class_name)
+                }
+            } else {
+                base
+            }
+        }));
+        self
+    }
+
+    /// Add a dynamic style property.
+    pub fn style_signal(mut self, property: impl Into<String>, value: impl Fn() -> String + 'static) -> Self {
+        let property = property.into();
+        let existing_style = self.style.take();
+        self.style = Some(Rc::new(move || {
+            let base = existing_style.as_ref().map(|f| f()).unwrap_or_default();
+            let prop_style = format!("{}: {}", property, value());
+            if base.is_empty() {
+                prop_style
+            } else {
+                format!("{}; {}", base, prop_style)
+            }
+        }));
+        self
+    }
+
+    /// Two-way binding (simplified - actual impl would need signal integration).
+    pub fn bind(self, _property: impl Into<String>, _signal: impl std::any::Any) -> Self {
+        // Two-way binding is primarily a client-side feature
+        // For SSR, we just return self unchanged
+        self
+    }
+
+    /// Set a DOM property (not attribute).
+    pub fn prop(self, _name: impl Into<String>, _value: impl std::any::Any) -> Self {
+        // Properties are client-side only
+        self
+    }
+
+    /// Spread attributes from a props object.
+    pub fn spread(self, _props: impl std::any::Any) -> Self {
+        // Would need runtime reflection
+        self
+    }
+
+    /// Use a directive.
+    pub fn use_directive<P>(self, _directive: impl Fn(), _param: P) -> Self {
+        // Directives are client-side
+        self
+    }
+
+    /// Add a transition.
+    pub fn transition(self, _name: impl Into<String>, _params: impl std::any::Any) -> Self {
+        // Transitions are client-side
+        self
+    }
+
+    /// Add an animation.
+    pub fn animate(self, _name: impl Into<String>, _params: impl std::any::Any) -> Self {
+        // Animations are client-side
+        self
+    }
+
+    /// Add event modifier: prevent default.
+    pub fn prevent_default(self) -> Self {
+        // Client-side only
+        self
+    }
+
+    /// Add event modifier: stop propagation.
+    pub fn stop_propagation(self) -> Self {
+        // Client-side only
+        self
+    }
+
+    /// Add event modifier: capture phase.
+    pub fn capture(self) -> Self {
+        // Client-side only
+        self
+    }
+
+    /// Add event modifier: passive listener.
+    pub fn passive(self) -> Self {
+        // Client-side only
+        self
+    }
+
+    /// Add event modifier: once only.
+    pub fn once(self) -> Self {
+        // Client-side only
         self
     }
 

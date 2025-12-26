@@ -1,6 +1,6 @@
 {
   "name": "philjs-pdf",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "PDF generation and manipulation for PhilJS - supports HTML, React components, and templates",
   "type": "module",
   "sideEffects": false,

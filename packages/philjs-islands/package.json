@@ -1,6 +1,6 @@
 {
   "name": "philjs-islands",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Islands architecture with multi-framework support and selective hydration for PhilJS",
   "type": "module",
   "main": "./dist/index.js",

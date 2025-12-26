@@ -1,6 +1,6 @@
 {
   "name": "philjs-charts",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Signal-based chart components for PhilJS with real-time updates and responsive sizing",
   "type": "module",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 {
   "name": "philjs-edge",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Edge computing primitives for PhilJS - KV storage, Durable Objects, queues, cron",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "philjs-playground",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "Interactive browser playground for PhilJS - try code without installing",
   "type": "module",
   "main": "dist/index.js",
