@@ -22,7 +22,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "vecstore-wasm": "^0.0.1"
+    "vecstore-wasm": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
