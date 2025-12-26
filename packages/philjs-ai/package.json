@@ -59,7 +59,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.35.0",
     "@types/vscode": "^1.95.0",
-    "commander": "^12.1.0",
+    "commander": "^14.0.2",
     "chalk": "^5.3.0",
     "ora": "^8.1.0",
     "openai": "^4.75.0",
