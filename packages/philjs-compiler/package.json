@@ -57,7 +57,7 @@
     "@types/babel__generator": "^7.6.0",
     "philjs-core": "workspace:*",
     "rollup": "^4.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
     "typescript": "^5.7.2",
     "vitest": "^3.2.4",
     "vite": "^6.4.1"
