@@ -1,35 +1,20 @@
 ---
-name: Bug Report
-about: Report a bug in PhilJS
+name: Bug report
+about: Create a report to help us improve
 title: '[BUG] '
 labels: bug
-assignees: ''
 ---
 
-## Description
-A clear description of the bug.
+**Describe the bug**
+A clear description of what the bug is.
 
-## Steps to Reproduce
-1.
-2.
-3.
+**To Reproduce**
+Steps to reproduce the behavior.
 
-## Expected Behavior
-What should happen.
+**Expected behavior**
+What you expected to happen.
 
-## Actual Behavior
-What actually happens.
-
-## Code Sample
-```tsx
-// Minimal code to reproduce the issue
-```
-
-## Environment
-- PhilJS Version:
-- Node.js Version:
-- Browser/Runtime:
-- OS:
-
-## Additional Context
-Any other relevant information.
+**Environment:**
+ - PhilJS version:
+ - Browser:
+ - OS:

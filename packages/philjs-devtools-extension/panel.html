@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PhilJS DevTools</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, sans-serif; font-size: 12px; background: #1e1e1e; color: #d4d4d4; }
+    .devtools-container { display: flex; flex-direction: column; height: 100vh; }
+    .devtools-nav { display: flex; background: #252526; border-bottom: 1px solid #3c3c3c; }
+    .tab { padding: 8px 16px; background: none; border: none; color: #d4d4d4; cursor: pointer; }
+    .tab.active { background: #1e1e1e; border-bottom: 2px solid #0e639c; }
+    .devtools-content { flex: 1; overflow: auto; padding: 8px; }
+    .tab-panel { display: none; } .tab-panel.active { display: block; }
+    .signal-item { display: flex; padding: 4px 8px; border-bottom: 1px solid #3c3c3c; cursor: pointer; }
+    .signal-item:hover { background: #2a2d2e; }
+    .signal-name { flex: 1; color: #9cdcfe; }
+    .signal-value { color: #ce9178; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="src/panel/index.js"></script>
+</body>
+</html>

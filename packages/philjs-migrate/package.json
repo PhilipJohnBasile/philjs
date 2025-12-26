@@ -1,72 +1,30 @@
 {
-  "name": "philjs-migrate",
+  "name": "@philjs/migrate",
   "version": "0.0.1",
-  "description": "Migration codemods to convert React, Vue, and Svelte applications to PhilJS",
+  "description": "Migration CLI for PhilJS - migrate from React, Vue, Angular, Svelte",
   "type": "module",
+  "bin": {
+    "philjs-migrate": "./dist/cli.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "philjs-migrate": "./bin/cli.js"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./react": {
-      "types": "./dist/transforms/react.d.ts",
-      "import": "./dist/transforms/react.js"
-    },
-    "./vue": {
-      "types": "./dist/transforms/vue.d.ts",
-      "import": "./dist/transforms/vue.js"
-    },
-    "./svelte": {
-      "types": "./dist/transforms/svelte.d.ts",
-      "import": "./dist/transforms/svelte.js"
-    }
-  },
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "lint": "eslint src"
+    "build": "tsup src/index.ts src/cli.ts --format esm --dts"
   },
   "dependencies": {
-    "jscodeshift": "^0.15.0",
-    "recast": "^0.23.0",
-    "glob": "^10.0.0",
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "@babel/generator": "^7.23.0",
+    "commander": "^12.0.0",
+    "glob": "^10.3.0",
+    "ora": "^8.0.0",
     "picocolors": "^1.0.0",
-    "commander": "^12.0.0"
+    "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/jscodeshift": "^0.11.0",
-    "@types/node": "^20.0.0",
-    "typescript": "^5.3.0",
-    "vitest": "^3.2.4"
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.2"
   },
-  "files": [
-    "dist",
-    "bin",
-    "README.md"
-  ],
-  "keywords": [
-    "philjs",
-    "migration",
-    "codemod",
-    "react",
-    "vue",
-    "svelte"
-  ],
-  "license": "MIT",
-  "sideEffects": false,
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-migrate"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "license": "MIT"
 }

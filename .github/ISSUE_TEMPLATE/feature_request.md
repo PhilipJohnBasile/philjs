@@ -1,24 +1,18 @@
 ---
-name: Feature Request
-about: Suggest a new feature for PhilJS
+name: Feature request
+about: Suggest an idea for PhilJS
 title: '[FEATURE] '
 labels: enhancement
-assignees: ''
 ---
 
-## Problem Statement
-What problem does this feature solve?
+**Is your feature request related to a problem?**
+A clear description of the problem.
 
-## Proposed Solution
-Describe your proposed solution.
+**Describe the solution**
+What you want to happen.
 
-## Example API
-```tsx
-// How would users use this feature?
-```
+**Alternatives considered**
+Other solutions you have considered.
 
-## Alternatives Considered
-What other approaches have you considered?
-
-## Additional Context
-Any other relevant information or prior art.
+**Additional context**
+Any other context or screenshots.

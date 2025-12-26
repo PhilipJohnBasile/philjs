@@ -1,0 +1,19 @@
+[book]
+title = "The PhilJS Rust Book"
+authors = ["PhilJS Team"]
+description = "A comprehensive guide to building web applications with PhilJS and Rust"
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[output.html]
+theme = "rust"
+default-theme = "rust"
+git-repository-url = "https://github.com/PhilipJohnBasile/philjs"
+edit-url-template = "https://github.com/PhilipJohnBasile/philjs/edit/main/docs/rust-book/{path}"
+site-url = "/rust-book/"
+cname = "rust.philjs.dev"

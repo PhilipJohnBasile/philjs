@@ -1,45 +1,16 @@
 {
-  "name": "philjs-devtools-extension",
+  "name": "@philjs/devtools-extension",
   "version": "0.0.1",
-  "description": "Browser DevTools extension for PhilJS",
+  "description": "Chrome DevTools Extension for PhilJS - inspect signals, components, and performance",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "rollup -c",
-    "test": "vitest run",
-    "lint": "echo 'Lint philjs-devtools-extension'",
-    "typecheck": "tsc --noEmit"
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "zip": "node scripts/zip.js"
   },
   "devDependencies": {
-    "rollup": "^4.28.1",
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4"
-  },
-  "sideEffects": true,
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-devtools-extension"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme",
-  "keywords": [
-    "philjs",
-    "developer-tools",
-    "debugging"
-  ]
+    "@types/chrome": "^0.0.260",
+    "vite": "^5.0.0",
+    "typescript": "^5.3.0"
+  }
 }
