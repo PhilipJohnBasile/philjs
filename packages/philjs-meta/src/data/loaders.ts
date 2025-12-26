@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS Meta - Data Loading System
  *

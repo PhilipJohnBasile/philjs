@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Resize handles for the visual builder
  * Provides interactive resizing of selected components

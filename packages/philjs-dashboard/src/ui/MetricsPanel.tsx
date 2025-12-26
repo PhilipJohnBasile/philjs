@@ -526,4 +526,3 @@ export function MetricsPanel({
 // ============================================================================
 
 export { WebVitalCard, WebVitalsHistory, MemorySection, NetworkSection, CustomMetricsSection };
-export type { WebVitalStatus };

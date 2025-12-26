@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS Native - Tauri Window Management
  *

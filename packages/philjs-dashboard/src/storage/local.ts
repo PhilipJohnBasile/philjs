@@ -202,7 +202,7 @@ export class LocalStorageManager {
    * Store a metrics snapshot
    */
   async storeMetrics(snapshot: MetricsSnapshot): Promise<string> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const id = this.generateId();
     const storedMetrics: StoredMetrics = {
@@ -212,7 +212,7 @@ export class LocalStorageManager {
       data: snapshot,
     };
 
-    await this.db!.put('metrics', storedMetrics);
+    await db.put('metrics', storedMetrics);
     return id;
   }
 
@@ -220,9 +220,9 @@ export class LocalStorageManager {
    * Get metrics by time range
    */
   async getMetrics(startTime?: number, endTime?: number): Promise<StoredMetrics[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('metrics', 'readonly');
+    const tx = db.transaction('metrics', 'readonly');
     const index = tx.store.index('by-timestamp');
 
     const range = this.createTimeRange(startTime, endTime);
@@ -241,9 +241,9 @@ export class LocalStorageManager {
    * Get metrics by session
    */
   async getMetricsBySession(sessionId: string): Promise<StoredMetrics[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('metrics', 'readonly');
+    const tx = db.transaction('metrics', 'readonly');
     const index = tx.store.index('by-session');
 
     return index.getAll(sessionId);
@@ -253,8 +253,8 @@ export class LocalStorageManager {
    * Delete metrics by ID
    */
   async deleteMetrics(id: string): Promise<void> {
-    this.ensureInitialized();
-    await this.db!.delete('metrics', id);
+    const db = this.getDb();
+    await db.delete('metrics', id);
   }
 
   // ============================================================================
@@ -265,7 +265,7 @@ export class LocalStorageManager {
    * Store a span
    */
   async storeSpan(span: Span): Promise<string> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const id = span.spanId;
     const storedSpan: StoredSpan = {
@@ -275,7 +275,7 @@ export class LocalStorageManager {
       data: span,
     };
 
-    await this.db!.put('spans', storedSpan);
+    await db.put('spans', storedSpan);
     return id;
   }
 
@@ -283,9 +283,9 @@ export class LocalStorageManager {
    * Store multiple spans
    */
   async storeSpans(spans: Span[]): Promise<void> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('spans', 'readwrite');
+    const tx = db.transaction('spans', 'readwrite');
 
     await Promise.all(
       spans.map((span) => {
@@ -306,9 +306,9 @@ export class LocalStorageManager {
    * Get spans by time range
    */
   async getSpans(startTime?: number, endTime?: number): Promise<StoredSpan[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('spans', 'readonly');
+    const tx = db.transaction('spans', 'readonly');
     const index = tx.store.index('by-timestamp');
 
     const range = this.createTimeRange(startTime, endTime);
@@ -327,9 +327,9 @@ export class LocalStorageManager {
    * Get spans by trace ID
    */
   async getSpansByTrace(traceId: string): Promise<StoredSpan[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('spans', 'readonly');
+    const tx = db.transaction('spans', 'readonly');
     const index = tx.store.index('by-trace');
 
     return index.getAll(traceId);
@@ -339,8 +339,8 @@ export class LocalStorageManager {
    * Delete span by ID
    */
   async deleteSpan(id: string): Promise<void> {
-    this.ensureInitialized();
-    await this.db!.delete('spans', id);
+    const db = this.getDb();
+    await db.delete('spans', id);
   }
 
   // ============================================================================
@@ -351,7 +351,7 @@ export class LocalStorageManager {
    * Store an error
    */
   async storeError(error: CapturedError): Promise<string> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const storedError: StoredError = {
       id: error.id,
@@ -360,7 +360,7 @@ export class LocalStorageManager {
       data: error,
     };
 
-    await this.db!.put('errors', storedError);
+    await db.put('errors', storedError);
     return error.id;
   }
 
@@ -368,9 +368,9 @@ export class LocalStorageManager {
    * Get errors by time range
    */
   async getErrors(startTime?: number, endTime?: number): Promise<StoredError[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('errors', 'readonly');
+    const tx = db.transaction('errors', 'readonly');
     const index = tx.store.index('by-timestamp');
 
     const range = this.createTimeRange(startTime, endTime);
@@ -389,9 +389,9 @@ export class LocalStorageManager {
    * Get errors by fingerprint
    */
   async getErrorsByFingerprint(fingerprint: string): Promise<StoredError[]> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction('errors', 'readonly');
+    const tx = db.transaction('errors', 'readonly');
     const index = tx.store.index('by-fingerprint');
 
     return index.getAll(fingerprint);
@@ -401,8 +401,8 @@ export class LocalStorageManager {
    * Delete error by ID
    */
   async deleteError(id: string): Promise<void> {
-    this.ensureInitialized();
-    await this.db!.delete('errors', id);
+    const db = this.getDb();
+    await db.delete('errors', id);
   }
 
   // ============================================================================
@@ -413,9 +413,9 @@ export class LocalStorageManager {
    * Set metadata value
    */
   async setMetadata(key: string, value: unknown): Promise<void> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    await this.db!.put('metadata', {
+    await db.put('metadata', {
       key,
       value,
       updatedAt: Date.now(),
@@ -426,9 +426,9 @@ export class LocalStorageManager {
    * Get metadata value
    */
   async getMetadata<T = unknown>(key: string): Promise<T | undefined> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const result = await this.db!.get('metadata', key);
+    const result = await db.get('metadata', key);
     return result?.value as T | undefined;
   }
 
@@ -436,8 +436,8 @@ export class LocalStorageManager {
    * Delete metadata
    */
   async deleteMetadata(key: string): Promise<void> {
-    this.ensureInitialized();
-    await this.db!.delete('metadata', key);
+    const db = this.getDb();
+    await db.delete('metadata', key);
   }
 
   // ============================================================================
@@ -452,7 +452,7 @@ export class LocalStorageManager {
     spansDeleted: number;
     errorsDeleted: number;
   }> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const cutoffTime = Date.now() - this.retention.maxAge;
 
@@ -474,12 +474,12 @@ export class LocalStorageManager {
     oldestSpan: number | null;
     oldestError: number | null;
   }> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const [metricsCount, spansCount, errorsCount] = await Promise.all([
-      this.db!.count('metrics'),
-      this.db!.count('spans'),
-      this.db!.count('errors'),
+      db.count('metrics'),
+      db.count('spans'),
+      db.count('errors'),
     ]);
 
     const [oldestMetric, oldestSpan, oldestError] = await Promise.all([
@@ -506,7 +506,7 @@ export class LocalStorageManager {
    * Export data
    */
   async export(options: ExportOptions = {}): Promise<ExportedData | string> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
     const {
       startTime,
@@ -561,9 +561,9 @@ export class LocalStorageManager {
     spansImported: number;
     errorsImported: number;
   }> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction(['metrics', 'spans', 'errors'], 'readwrite');
+    const tx = db.transaction(['metrics', 'spans', 'errors'], 'readwrite');
 
     await Promise.all([
       ...data.metrics.map((m) => tx.objectStore('metrics').put(m)),
@@ -584,9 +584,9 @@ export class LocalStorageManager {
    * Clear all data
    */
   async clearAll(): Promise<void> {
-    this.ensureInitialized();
+    const db = this.getDb();
 
-    const tx = this.db!.transaction(['metrics', 'spans', 'errors', 'metadata'], 'readwrite');
+    const tx = db.transaction(['metrics', 'spans', 'errors', 'metadata'], 'readwrite');
 
     await Promise.all([
       tx.objectStore('metrics').clear(),
@@ -602,10 +602,17 @@ export class LocalStorageManager {
   // Private Methods
   // ============================================================================
 
-  private ensureInitialized(): asserts this is { db: IDBPDatabase<DashboardDBSchema> } {
+  private ensureInitialized(): void {
     if (!this.db) {
       throw new Error('LocalStorageManager not initialized. Call init() first.');
     }
+  }
+
+  private getDb(): IDBPDatabase<DashboardDBSchema> {
+    if (!this.db) {
+      throw new Error('LocalStorageManager not initialized. Call init() first.');
+    }
+    return this.db;
   }
 
   private generateId(): string {
@@ -629,7 +636,8 @@ export class LocalStorageManager {
     storeName: 'metrics' | 'spans' | 'errors',
     cutoffTime: number
   ): Promise<number> {
-    const tx = this.db!.transaction(storeName, 'readwrite');
+    const db = this.getDb();
+    const tx = db.transaction(storeName, 'readwrite');
     const index = tx.store.index('by-timestamp');
 
     let deletedCount = 0;
@@ -643,10 +651,10 @@ export class LocalStorageManager {
     }
 
     // Also enforce max records limit
-    const count = await this.db!.count(storeName);
+    const count = await db.count(storeName);
     if (count > this.retention.maxRecords) {
       const excess = count - this.retention.maxRecords;
-      const tx2 = this.db!.transaction(storeName, 'readwrite');
+      const tx2 = db.transaction(storeName, 'readwrite');
       const index2 = tx2.store.index('by-timestamp');
 
       let deleteCount = 0;
@@ -665,7 +673,8 @@ export class LocalStorageManager {
   private async getOldestTimestamp(
     storeName: 'metrics' | 'spans' | 'errors'
   ): Promise<number | null> {
-    const tx = this.db!.transaction(storeName, 'readonly');
+    const db = this.getDb();
+    const tx = db.transaction(storeName, 'readonly');
     const index = tx.store.index('by-timestamp');
 
     const cursor = await index.openCursor();

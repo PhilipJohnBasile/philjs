@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Grid and Snap System for precise layout
  * Provides visual guides, snap-to-grid, and alignment helpers

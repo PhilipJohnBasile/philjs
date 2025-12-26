@@ -126,10 +126,115 @@ fn extract_shell_and_suspense(
     view: &crate::view::View,
     suspense_id: &std::sync::Arc<std::sync::atomic::AtomicUsize>,
 ) -> (String, Vec<(usize, std::pin::Pin<Box<dyn std::future::Future<Output = String> + Send>>)>) {
-    // For now, return the full HTML as shell with no suspense points
-    // In a full implementation, this would walk the view tree and identify Suspense boundaries
-    let html = view.to_html();
-    (html, Vec::new())
+    use std::sync::atomic::Ordering;
+
+    let mut suspense_points = Vec::new();
+    let shell = extract_shell_recursive(view, suspense_id, &mut suspense_points);
+    (shell, suspense_points)
+}
+
+/// Recursively extract shell HTML, replacing Suspense with fallbacks
+fn extract_shell_recursive(
+    view: &crate::view::View,
+    suspense_id: &std::sync::Arc<std::sync::atomic::AtomicUsize>,
+    suspense_points: &mut Vec<(usize, std::pin::Pin<Box<dyn std::future::Future<Output = String> + Send>>)>,
+) -> String {
+    use std::sync::atomic::Ordering;
+
+    match view {
+        crate::view::View::Element(el) => {
+            let mut html = format!("<{}", el.tag());
+
+            // Add attributes
+            for (key, value) in el.get_attrs() {
+                html.push_str(&format!(" {}=\"{}\"", key, escape_attr(value)));
+            }
+
+            // Check if this is a suspense boundary
+            if el.get_attrs().get("data-philjs-suspense").is_some() {
+                let id = suspense_id.fetch_add(1, Ordering::SeqCst);
+
+                // Get fallback content from data attribute or use loading
+                let fallback = el.get_attrs()
+                    .get("data-philjs-fallback")
+                    .cloned()
+                    .unwrap_or_else(|| "Loading...".to_string());
+
+                // Wrap fallback with replaceable container
+                html.push_str(&format!(" id=\"F:{}\"", id));
+                html.push('>');
+                html.push_str(&fallback);
+                html.push_str(&format!("</{}>", el.tag()));
+
+                // Queue the actual content for async streaming
+                // In production this would be an actual async operation
+                let content_future: std::pin::Pin<Box<dyn std::future::Future<Output = String> + Send>> =
+                    Box::pin(async move {
+                        // Simulate async content loading
+                        // In production, this would await actual async operations
+                        String::new()
+                    });
+
+                suspense_points.push((id, content_future));
+                return html;
+            }
+
+            // Self-closing check
+            if is_void_element(el.tag()) {
+                html.push_str(" />");
+                return html;
+            }
+
+            html.push('>');
+
+            // Render children
+            for child in el.get_children() {
+                html.push_str(&extract_shell_recursive(child, suspense_id, suspense_points));
+            }
+
+            html.push_str(&format!("</{}>", el.tag()));
+            html
+        }
+        crate::view::View::Text(text) => {
+            escape_html_content(text.content())
+        }
+        crate::view::View::Fragment(frag) => {
+            let mut html = String::new();
+            for child in frag.children() {
+                html.push_str(&extract_shell_recursive(child, suspense_id, suspense_points));
+            }
+            html
+        }
+        crate::view::View::Dynamic(dyn_) => {
+            let rendered = dyn_.render();
+            extract_shell_recursive(&rendered, suspense_id, suspense_points)
+        }
+        crate::view::View::Empty => String::new(),
+    }
+}
+
+/// Check if a tag is a void element
+fn is_void_element(tag: &str) -> bool {
+    matches!(
+        tag.to_lowercase().as_str(),
+        "area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input"
+        | "link" | "meta" | "param" | "source" | "track" | "wbr"
+    )
+}
+
+/// Escape HTML attribute value
+fn escape_attr(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('"', "&quot;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+}
+
+/// Escape HTML content
+fn escape_html_content(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
 }
 
 /// Simple streaming render (backwards compatible)

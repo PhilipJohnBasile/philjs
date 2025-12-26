@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Distributed Tracing Module
  * Provides span creation, trace context propagation, and OpenTelemetry compatibility

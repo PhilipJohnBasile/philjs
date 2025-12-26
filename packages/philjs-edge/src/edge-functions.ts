@@ -33,7 +33,7 @@ export interface EdgeFunctionConfig {
   /** Timeout in milliseconds */
   timeout?: number;
   /** Cache configuration */
-  cache?: CacheConfig;
+  cache?: EdgeCacheConfig;
   /** Request validation schema */
   validate?: ValidationSchema;
 }
@@ -46,7 +46,7 @@ export interface CORSConfig {
   maxAge?: number;
 }
 
-export interface CacheConfig {
+export interface EdgeCacheConfig {
   /** Cache TTL in seconds */
   ttl?: number;
   /** Cache key function */
@@ -380,7 +380,7 @@ function addCORSHeaders(response: Response, request: Request, config: CORSConfig
   return newResponse;
 }
 
-function addCacheHeaders(response: Response, config: CacheConfig): Response {
+function addCacheHeaders(response: Response, config: EdgeCacheConfig): Response {
   const newResponse = new Response(response.body, response);
 
   if (config.ttl) {

@@ -227,6 +227,21 @@ impl Element {
         &self.children
     }
 
+    /// Get event handlers (for hydration).
+    pub fn get_handlers(&self) -> impl Iterator<Item = (&str, &Rc<EventHandler>)> {
+        self.events.iter().map(|(name, handler)| (name.as_str(), handler))
+    }
+
+    /// Get dynamic attributes (for hydration).
+    pub fn get_dynamic_attrs(&self) -> &[Rc<DynamicAttr>] {
+        &self.dynamic_attrs
+    }
+
+    /// Get node ref if any.
+    pub fn get_node_ref(&self) -> Option<&NodeRef> {
+        self.node_ref.as_ref()
+    }
+
     /// Render to HTML string.
     pub fn to_html(&self) -> String {
         let mut html = format!("<{}", self.tag);

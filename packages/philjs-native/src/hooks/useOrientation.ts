@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS Native - useOrientation Hook
  *

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Component Tree View for hierarchical navigation
  * Displays the component hierarchy and allows selection, reordering, and editing

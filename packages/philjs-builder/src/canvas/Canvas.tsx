@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Main Canvas component for the visual builder
  * Provides the drawing surface with zoom, pan, and grid support

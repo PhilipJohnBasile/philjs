@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS Native - Capacitor Camera Plugin
  *

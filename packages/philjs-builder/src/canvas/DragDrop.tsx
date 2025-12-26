@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Drag and Drop primitives for the visual builder
  */

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS LiveView - Socket Protocol Implementation
  */

@@ -20,7 +20,7 @@ export interface ComplianceConfig {
   /** Consent configuration */
   consent: ConsentConfig;
   /** Audit configuration */
-  audit: AuditConfig;
+  audit: ComplianceAuditConfig;
 }
 
 export type ComplianceFramework =
@@ -102,7 +102,7 @@ export interface ConsentCategory {
   default: boolean;
 }
 
-export interface AuditConfig {
+export interface ComplianceAuditConfig {
   /** Enable audit logging */
   enabled: boolean;
   /** Events to audit */

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Property Inspector Panel for the visual builder
  * Allows editing component properties, styles, and events

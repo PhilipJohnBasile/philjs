@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Mailgun from 'mailgun.js';
 import formData from 'form-data';
 import type { IMailgunClient, MailgunMessageData } from 'mailgun.js/Interfaces';

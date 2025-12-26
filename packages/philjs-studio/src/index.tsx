@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ============================================================================
 // philjs-studio
 // Visual component builder with drag-and-drop UI

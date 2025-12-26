@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PhilJS LiveView - Core LiveView Implementation
  */

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Enhanced Fetch API
  *

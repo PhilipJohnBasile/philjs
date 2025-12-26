@@ -173,20 +173,20 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
 
     let (serialize_fn, deserialize_fn) = match input_encoding {
         ServerFnEncoding::Json | ServerFnEncoding::GetJson => (
-            quote! { philjs::server::to_json },
-            quote! { philjs::server::from_json },
+            quote! { philjs_rust::server::to_json },
+            quote! { philjs_rust::server::from_json },
         ),
         ServerFnEncoding::Cbor | ServerFnEncoding::GetCbor => (
-            quote! { philjs::server::to_cbor },
-            quote! { philjs::server::from_cbor },
+            quote! { philjs_rust::server::to_cbor },
+            quote! { philjs_rust::server::from_cbor },
         ),
         ServerFnEncoding::Url => (
-            quote! { philjs::server::to_url_encoded },
-            quote! { philjs::server::from_url_encoded },
+            quote! { philjs_rust::server::to_url_encoded },
+            quote! { philjs_rust::server::from_url_encoded },
         ),
         ServerFnEncoding::Multipart => (
-            quote! { philjs::server::to_multipart },
-            quote! { philjs::server::from_multipart },
+            quote! { philjs_rust::server::to_multipart },
+            quote! { philjs_rust::server::from_multipart },
         ),
     };
 
@@ -196,13 +196,14 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
     };
 
     // Generate streaming support
+    let fn_name_stream = format_ident!("{}_stream", fn_name);
     let streaming_support = if args.streaming {
         quote! {
             /// Streaming version of this server function
             #fn_vis async fn #fn_name_stream #fn_generics(
                 #(#arg_names: #arg_types),*
-            ) -> impl futures::Stream<Item = Result<#return_type, philjs::ServerFnError>> #fn_where {
-                philjs::server::stream_fn(#endpoint_path, #input_struct_name {
+            ) -> impl futures::Stream<Item = Result<#return_type, philjs_rust::ServerFnError>> #fn_where {
+                philjs_rust::server::stream_fn(#endpoint_path, #input_struct_name {
                     #(#arg_names),*
                 })
             }
@@ -224,7 +225,7 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
     // Generate rate limiting
     let rate_limit_check = if let Some(limit) = args.rate_limit {
         quote! {
-            philjs::server::check_rate_limit(req, #limit)?;
+            philjs_rust::server::check_rate_limit(req, #limit)?;
         }
     } else {
         quote! {}
@@ -233,7 +234,7 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
     // Generate auth check
     let auth_check = if let Some(require) = &args.require {
         quote! {
-            philjs::server::require_permission(req, #require)?;
+            philjs_rust::server::require_permission(req, #require)?;
         }
     } else {
         quote! {}
@@ -253,13 +254,13 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
         let description = extract_doc_comment(fn_attrs);
         quote! {
             #[cfg(feature = "openapi")]
-            philjs::inventory::submit! {
-                philjs::openapi::ServerFnSpec {
+            inventory::submit! {
+                philjs_rust::openapi::ServerFnSpec {
                     path: #endpoint_path,
                     method: #http_method,
                     description: #description,
-                    input_schema: <#input_struct_name as philjs::openapi::JsonSchema>::schema(),
-                    output_schema: <#return_type as philjs::openapi::JsonSchema>::schema(),
+                    input_schema: <#input_struct_name as schemars::JsonSchema>::schema_name(),
+                    output_schema: <#return_type as schemars::JsonSchema>::schema_name(),
                 }
             }
         }
@@ -271,21 +272,23 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
     let output = quote! {
         // Input struct for serialization
         #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-        #[cfg_attr(feature = "openapi", derive(philjs::openapi::JsonSchema))]
+        #[cfg_attr(feature = "openapi", derive(philjs_rust::openapi::JsonSchema))]
         #fn_vis struct #input_struct_name #fn_generics #fn_where {
             #(#input_struct_fields),*
         }
 
         // Server function trait implementation
-        impl #fn_generics philjs::ServerFn for #input_struct_name #fn_generics #fn_where {
+        impl #fn_generics philjs_rust::server::ServerFn for #input_struct_name #fn_generics #fn_where {
+            type Input = Self;
+            type Output = #return_type;
+
             const PATH: &'static str = #endpoint_path;
             const METHOD: &'static str = #http_method;
 
-            type Output = #return_type;
-            type Error = philjs::ServerFnError;
-
-            fn encoding() -> philjs::server::Encoding {
-                philjs::server::Encoding::Json
+            fn run(input: Self::Input) -> std::pin::Pin<Box<dyn std::future::Future<Output = philjs_rust::server::ServerResult<Self::Output>> + Send>> {
+                Box::pin(async move {
+                    #fn_name(#(input.#arg_names),*).await
+                })
             }
         }
 
@@ -308,39 +311,19 @@ pub fn server_impl(args: TokenStream, input: TokenStream) -> TokenStream {
                 #(#arg_names),*
             };
 
-            let result = philjs::server::call_server_fn::<#input_struct_name>(input).await;
-
-            match result {
-                Ok(value) => value,
-                Err(e) => panic!("Server function call failed: {:?}", e),
-            }
+            philjs_rust::server::call_server::<#input_struct_name>(input).await
+                .expect("Server function call failed")
         }
 
         // Register server function handler
         #[cfg(feature = "ssr")]
-        philjs::inventory::submit! {
-            philjs::ServerFnRegistration {
-                path: #endpoint_path,
-                method: #http_method,
-                handler: |req: philjs::server::Request| -> std::pin::Pin<Box<dyn std::future::Future<Output = philjs::server::Response> + Send>> {
-                    Box::pin(async move {
-                        #rate_limit_check
-                        #auth_check
-
-                        let input: #input_struct_name = match #deserialize_fn(&req).await {
-                            Ok(v) => v,
-                            Err(e) => return philjs::server::error_response(400, e.to_string()),
-                        };
-
-                        let result = #fn_name(#(input.#arg_names),*).await;
-
-                        let mut response = philjs::server::json_response(&result);
-                        #cache_header
-                        response
-                    })
-                },
-            }
-        }
+        const _: () = {
+            #[used]
+            #[allow(non_upper_case_globals)]
+            static __PHILJS_SERVER_FN: () = {
+                philjs_rust::server::register_server_fn::<#input_struct_name>();
+            };
+        };
 
         #streaming_support
 

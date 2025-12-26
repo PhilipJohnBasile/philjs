@@ -300,10 +300,11 @@ export class RemoteStorageManager {
     headers['X-Batch-Id'] = batch.batchId;
     headers['X-Retry-Attempt'] = String(retryAttempt);
 
-    let body: string | Uint8Array = JSON.stringify(batch);
+    let body: BodyInit = JSON.stringify(batch);
 
     if (this.config.compression) {
-      body = pako.gzip(body);
+      const compressed = pako.gzip(body);
+      body = new Blob([compressed], { type: 'application/octet-stream' });
     }
 
     const controller = new AbortController();

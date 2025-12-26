@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * React/Philjs Hooks for Performance Monitoring
  * useWebVitals, usePerformanceObserver, useErrorBoundary

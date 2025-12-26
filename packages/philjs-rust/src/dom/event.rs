@@ -161,6 +161,13 @@ impl KeyboardEvent {
     }
 }
 
+#[cfg(feature = "wasm")]
+impl From<web_sys::Event> for Event {
+    fn from(event: web_sys::Event) -> Self {
+        Event::from_web_sys(event)
+    }
+}
+
 /// Input event wrapper.
 #[derive(Clone)]
 pub struct InputEvent {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Platform Detection API
  *

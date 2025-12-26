@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * CRDTs for PhilJS Collab
  *

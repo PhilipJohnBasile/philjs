@@ -73,7 +73,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:^2.0.0"
+    "philjs-core": "workspace:*"
   },
   "optionalDependencies": {
     "vscode": "^1.1.37"

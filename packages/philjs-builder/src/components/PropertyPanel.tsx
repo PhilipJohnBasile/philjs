@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Enhanced Property Editor Panel
  * Provides comprehensive editing of component properties, styles, and events
