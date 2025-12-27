@@ -592,9 +592,10 @@ export function mergeContexts(...contexts: RouterContext[]): RouterContext {
 
 /**
  * Deep clone context.
+ * Uses ES2024 structuredClone for better performance and type support.
  */
 export function cloneContext<T extends RouterContext>(context: T): T {
-  return JSON.parse(JSON.stringify(context));
+  return structuredClone(context);
 }
 
 /**

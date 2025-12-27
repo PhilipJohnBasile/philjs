@@ -391,7 +391,8 @@ export class TimeTravelDebugger<T = any> {
   // Private methods
 
   private cloneState(state: T): T {
-    return JSON.parse(JSON.stringify(state));
+    // ES2024: structuredClone() is faster and handles more types than JSON
+    return structuredClone(state);
   }
 
   private updateNavigation(): void {

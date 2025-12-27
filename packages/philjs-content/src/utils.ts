@@ -275,8 +275,9 @@ export function findRelatedPosts<T extends CollectionEntry>(
       const postWords = new Set(
         postTitle.toLowerCase().split(/\s+/).filter(w => w.length > 3)
       );
-      const sharedWords = [...currentWords].filter(w => postWords.has(w));
-      const titleSimilarity = sharedWords.length / Math.max(currentWords.size, postWords.size);
+      // ES2024: Use Set.intersection() for cleaner set operations
+      const sharedWords = currentWords.intersection(postWords);
+      const titleSimilarity = sharedWords.size / Math.max(currentWords.size, postWords.size);
       score += titleSimilarity * 0.3;
 
       return {
@@ -286,7 +287,7 @@ export function findRelatedPosts<T extends CollectionEntry>(
       };
     })
     .filter(post => post.sharedTags >= minSharedTags && post.score >= threshold)
-    .sort((a, b) => b.score - a.score)
+    .toSorted((a, b) => b.score - a.score)
     .slice(0, limit);
 
   return scored;

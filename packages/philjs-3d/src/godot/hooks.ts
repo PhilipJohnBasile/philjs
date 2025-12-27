@@ -46,36 +46,38 @@ function getGodotState(canvas: HTMLCanvasElement): GodotState {
 
 /**
  * Load Godot engine script
+ * Uses ES2024 Promise.withResolvers() for cleaner async handling
  */
 async function loadGodotScript(wasmPath: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    // Check if already loaded
+  // Check if already loaded
+  if (window.Engine) {
+    return;
+  }
+
+  // ES2024: Promise.withResolvers() for cleaner promise handling
+  const { promise, resolve, reject } = Promise.withResolvers<void>();
+
+  // Derive the JS path from the WASM path
+  const jsPath = wasmPath.replace('.wasm', '.js');
+
+  const script = document.createElement('script');
+  script.src = jsPath;
+  script.async = true;
+
+  script.onload = () => {
     if (window.Engine) {
       resolve();
-      return;
+    } else {
+      reject(new Error('Godot Engine not found after script load'));
     }
+  };
 
-    // Derive the JS path from the WASM path
-    const jsPath = wasmPath.replace('.wasm', '.js');
+  script.onerror = () => {
+    reject(new Error(`Failed to load Godot script: ${jsPath}`));
+  };
 
-    const script = document.createElement('script');
-    script.src = jsPath;
-    script.async = true;
-
-    script.onload = () => {
-      if (window.Engine) {
-        resolve();
-      } else {
-        reject(new Error('Godot Engine not found after script load'));
-      }
-    };
-
-    script.onerror = () => {
-      reject(new Error(`Failed to load Godot script: ${jsPath}`));
-    };
-
-    document.head.appendChild(script);
-  });
+  document.head.appendChild(script);
+  return promise;
 }
 
 /**
