@@ -26,5 +26,23 @@
     "path": "packages/philjs-core/dist/index.js",
     "limit": "25 KB",
     "gzip": true
+  },
+  {
+    "name": "Perf: memo only",
+    "path": "packages/philjs-perf/dist/memo.js",
+    "limit": "1 KB",
+    "gzip": true
+  },
+  {
+    "name": "Perf: all utilities",
+    "path": "packages/philjs-perf/dist/index.js",
+    "limit": "4 KB",
+    "gzip": true
+  },
+  {
+    "name": "Islands",
+    "path": "packages/philjs-islands/dist/index.js",
+    "limit": "3 KB",
+    "gzip": true
   }
 ]

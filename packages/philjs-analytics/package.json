@@ -1,0 +1,44 @@
+{
+  "name": "@philjs/analytics",
+  "version": "1.0.0",
+  "description": "Privacy-First Analytics - GDPR/CCPA compliant, no third-party scripts, client-side processing",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./privacy-first": {
+      "import": "./dist/privacy-first.mjs",
+      "require": "./dist/privacy-first.js",
+      "types": "./dist/privacy-first.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/privacy-first.ts --format cjs,esm --dts",
+    "dev": "tsup src/privacy-first.ts --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "analytics",
+    "privacy",
+    "gdpr",
+    "ccpa",
+    "no-cookies",
+    "first-party",
+    "web-vitals",
+    "differential-privacy"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

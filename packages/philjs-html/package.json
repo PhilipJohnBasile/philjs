@@ -1,60 +1,57 @@
 {
-  "name": "philjs-html",
-  "version": "0.0.1",
-  "description": "HTML-first reactive framework - HTMX and Alpine.js compatibility for PhilJS",
+  "name": "@philjs/html",
+  "version": "0.1.0",
+  "description": "HTML-first reactive framework for PhilJS - declarative attributes, progressive enhancement",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "./htmx": {
-      "types": "./dist/htmx.d.ts",
-      "import": "./dist/htmx.js"
-    },
-    "./alpine": {
-      "types": "./dist/alpine.d.ts",
-      "import": "./dist/alpine.js"
+    "./attributes": {
+      "types": "./dist/attributes.d.ts",
+      "import": "./dist/attributes.js",
+      "require": "./dist/attributes.cjs"
     },
     "./minimal": {
       "types": "./dist/minimal.d.ts",
-      "import": "./dist/minimal.js"
+      "import": "./dist/minimal.js",
+      "require": "./dist/minimal.cjs"
     }
   },
+  "files": ["dist", "src"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsup src/index.ts src/htmx.ts src/alpine.ts src/minimal.ts --format esm --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest",
+    "lint": "eslint src/"
   },
   "keywords": [
     "philjs",
-    "htmx",
-    "alpine",
     "html-first",
+    "progressive-enhancement",
+    "declarative",
     "reactive",
-    "signals"
+    "signals",
+    "web-components"
   ],
-  "author": "PhilJS Contributors",
+  "author": "PhilJS Team",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/anthropics/philjs.git",
-    "directory": "packages/philjs-html"
-  },
-  "dependencies": {
-    "philjs-core": "workspace:*"
-  },
   "devDependencies": {
     "tsup": "^8.0.0",
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4"
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "philjs-core": ">=2.0.0"
+    "@philjs/core": ">=0.1.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

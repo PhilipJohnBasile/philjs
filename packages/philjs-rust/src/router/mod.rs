@@ -432,3 +432,11 @@ macro_rules! nested_routes {
 
 pub use crate::routes;
 pub use crate::nested_routes;
+
+// =============================================================================
+// Form Components for Progressive Enhancement
+// =============================================================================
+
+pub mod form;
+
+pub use form::{Form, FormMethod, FormEnctype, FormData, FormValue, ActionForm, MultiActionForm, use_submit, use_form_data, use_action_form};

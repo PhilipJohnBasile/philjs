@@ -1,5 +1,5 @@
 {
-  "name": "philjs-compiler",
+  "name": "@philjs/compiler",
   "version": "0.0.1",
   "description": "Automatic optimization compiler for PhilJS - zero-overhead memoization and performance optimizations",
   "type": "module",
@@ -55,7 +55,7 @@
     "@types/babel__core": "^7.20.0",
     "@types/babel__traverse": "^7.20.0",
     "@types/babel__generator": "^7.6.0",
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "rollup": "^4.0.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "typescript": "^5.7.2",

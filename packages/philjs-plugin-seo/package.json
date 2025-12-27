@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugin-seo",
+  "name": "@philjs/plugin-seo",
   "version": "0.0.1",
   "description": "SEO plugin for PhilJS with meta tags, OpenGraph, JSON-LD, and sitemap generation",
   "type": "module",
@@ -42,7 +42,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

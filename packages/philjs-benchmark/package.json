@@ -1,5 +1,5 @@
 {
-  "name": "philjs-benchmark",
+  "name": "@philjs/benchmark",
   "version": "0.0.1",
   "description": "Comprehensive performance benchmarking suite for PhilJS",
   "type": "module",
@@ -55,8 +55,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-ssr": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

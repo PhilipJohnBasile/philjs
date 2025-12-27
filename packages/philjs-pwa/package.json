@@ -1,0 +1,32 @@
+{
+  "name": "@philjs/pwa",
+  "version": "0.1.0",
+  "description": "Zero-config PWA generation for PhilJS - service worker, manifest, push notifications",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "test": "vitest"
+  },
+  "keywords": ["philjs", "pwa", "service-worker", "manifest", "push-notifications", "offline"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

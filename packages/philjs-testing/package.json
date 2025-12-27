@@ -1,5 +1,5 @@
 {
-  "name": "philjs-testing",
+  "name": "@philjs/testing",
   "version": "0.0.1",
   "description": "Official testing library for PhilJS - render, queries, events, and utilities",
   "type": "module",
@@ -25,7 +25,7 @@
     "lint": "eslint src"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "dependencies": {
     "@testing-library/dom": "^10.0.0",
@@ -35,7 +35,7 @@
     "@types/node": "^20.0.0",
     "typescript": "^5.3.0",
     "vitest": "^3.2.4",
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "files": [
     "dist",

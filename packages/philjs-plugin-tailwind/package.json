@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugin-tailwind",
+  "name": "@philjs/plugin-tailwind",
   "version": "0.0.1",
   "description": "Automatic Tailwind CSS setup and optimization for PhilJS",
   "type": "module",
@@ -54,7 +54,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "vite": "^5.0.0"
   },
   "dependencies": {

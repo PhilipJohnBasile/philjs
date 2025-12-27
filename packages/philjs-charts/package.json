@@ -1,5 +1,5 @@
 {
-  "name": "philjs-charts",
+  "name": "@philjs/charts",
   "version": "0.0.1",
   "description": "Signal-based chart components for PhilJS with real-time updates and responsive sizing",
   "type": "module",
@@ -37,7 +37,7 @@
     "recharts": "^2.12.0",
     "d3": "^7.9.0",
     "chart.js": "^4.4.1",
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
@@ -48,7 +48,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "philjs-core": ">=2.0.0"
+    "@philjs/core": ">=0.1.0"
   },
   "license": "MIT",
   "author": "PhilJS Team",

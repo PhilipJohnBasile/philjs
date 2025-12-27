@@ -1,5 +1,5 @@
 {
-  "name": "philjs-wasm",
+  "name": "@philjs/wasm",
   "version": "0.0.1",
   "description": "Rust/WebAssembly integration for PhilJS with reactive signals",
   "type": "module",
@@ -40,11 +40,11 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "vite": "^4.0.0 || ^5.0.0 || ^6.0.0"
   },
   "peerDependenciesMeta": {
-    "philjs-core": {
+    "@philjs/core": {
       "optional": false
     },
     "vite": {
@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "rollup": "^4.28.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",

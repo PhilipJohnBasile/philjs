@@ -1,5 +1,5 @@
 {
-  "name": "philjs-content",
+  "name": "@philjs/content",
   "version": "0.0.1",
   "description": "Astro-style Content Collections for PhilJS with type-safe schemas and MDX support",
   "type": "module",
@@ -80,7 +80,7 @@
     "vite": "^6.0.5"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "vite": "^5.0.0 || ^6.0.0"
   },
   "peerDependenciesMeta": {

@@ -1,5 +1,5 @@
 {
-  "name": "philjs-tailwind",
+  "name": "@philjs/tailwind",
   "version": "0.0.1",
   "description": "Tailwind CSS integration for PhilJS with IntelliSense and optimizations",
   "type": "module",
@@ -16,7 +16,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.0",

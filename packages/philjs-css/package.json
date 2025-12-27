@@ -1,5 +1,5 @@
 {
-  "name": "philjs-css",
+  "name": "@philjs/css",
   "version": "0.0.1",
   "description": "Type-safe CSS-in-TS solution for PhilJS with zero runtime overhead",
   "main": "dist/index.js",

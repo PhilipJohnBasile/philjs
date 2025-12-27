@@ -1,5 +1,5 @@
 {
-  "name": "philjs-i18n",
+  "name": "@philjs/i18n",
   "version": "0.0.1",
   "description": "Internationalization utilities for PhilJS",
   "type": "module",
@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.3.0",

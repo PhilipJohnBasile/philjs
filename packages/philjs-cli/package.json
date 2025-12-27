@@ -1,5 +1,5 @@
 {
-  "name": "philjs-cli",
+  "name": "@philjs/cli",
   "version": "0.0.1",
   "description": "CLI tools for PhilJS - The framework that thinks ahead",
   "type": "module",
@@ -31,9 +31,9 @@
     "dev-server"
   ],
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*",
-    "philjs-ssr": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
+    "@philjs/ssr": "workspace:*",
     "vite": "^6.4.1",
     "rollup": "^4.28.1",
     "esbuild": "^0.24.2",

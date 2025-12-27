@@ -1,5 +1,5 @@
 {
-  "name": "philjs-graphql",
+  "name": "@philjs/graphql",
   "version": "0.0.1",
   "description": "GraphQL integration for PhilJS with typed queries and mutations",
   "type": "module",
@@ -21,8 +21,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-ssr": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
     "graphql": "^16.9.0",

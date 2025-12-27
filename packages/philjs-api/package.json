@@ -1,5 +1,5 @@
 {
-  "name": "philjs-api",
+  "name": "@philjs/api",
   "version": "0.0.1",
   "description": "API routes and full-stack utilities for PhilJS",
   "type": "module",
@@ -27,7 +27,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.0",

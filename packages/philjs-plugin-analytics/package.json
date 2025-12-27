@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugin-analytics",
+  "name": "@philjs/plugin-analytics",
   "version": "0.0.1",
   "description": "Analytics integration plugin for PhilJS (GA4, Plausible, Mixpanel, and more)",
   "type": "module",
@@ -48,7 +48,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

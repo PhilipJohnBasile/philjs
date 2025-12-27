@@ -1,5 +1,5 @@
 {
-  "name": "philjs-adapters",
+  "name": "@philjs/adapters",
   "version": "0.0.1",
   "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS, Bun, Deno, and more",
   "type": "module",
@@ -119,8 +119,8 @@
     "lint": "echo 'Lint philjs-adapters'"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-ssr": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.0",

@@ -1,5 +1,5 @@
 {
-  "name": "philjs-meta",
+  "name": "@philjs/meta",
   "version": "0.0.1",
   "description": "Next.js/SvelteKit-style meta-framework for PhilJS with file-based routing, SSR, and data loading",
   "type": "module",
@@ -57,7 +57,7 @@
     "sitemap"
   ],
   "dependencies": {
-    "philjs-core": "workspace:*",
+    "@philjs/core": "workspace:*",
     "chokidar": "^3.5.3",
     "commander": "^11.1.0",
     "esbuild": "^0.19.8",

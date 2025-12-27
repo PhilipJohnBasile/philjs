@@ -1,81 +1,51 @@
 {
   "name": "@philjs/dashboard",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Performance monitoring dashboard for PhilJS applications",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "./ui": {
-      "import": "./dist/ui/index.mjs",
-      "require": "./dist/ui/index.js",
-      "types": "./dist/ui/index.d.ts"
-    },
-    "./hooks": {
-      "import": "./dist/hooks/index.mjs",
-      "require": "./dist/hooks/index.js",
-      "types": "./dist/hooks/index.d.ts"
+    "./collectors": {
+      "types": "./dist/collectors/index.d.ts",
+      "import": "./dist/collectors/index.js",
+      "require": "./dist/collectors/index.cjs"
     }
   },
+  "files": ["dist", "src"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "eslint src --ext .ts,.tsx",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint src/"
   },
+  "keywords": ["philjs", "performance", "monitoring", "dashboard", "metrics", "web-vitals"],
+  "author": "PhilJS Team",
+  "license": "MIT",
   "dependencies": {
     "@opentelemetry/api": "^1.7.0",
     "@opentelemetry/sdk-trace-base": "^1.19.0",
     "@opentelemetry/sdk-trace-web": "^1.19.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.45.0",
     "idb": "^8.0.0",
-    "pako": "^2.1.0",
-    "source-map": "^0.7.4",
     "web-vitals": "^3.5.0"
   },
   "devDependencies": {
-    "@types/pako": "^2.0.3",
-    "@types/react": "^18.2.0",
-    "react": "^18.2.0",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "@philjs/core": ">=0.1.0"
   },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "keywords": [
-    "performance",
-    "monitoring",
-    "dashboard",
-    "metrics",
-    "tracing",
-    "web-vitals",
-    "observability",
-    "philjs"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/philjs/philjs.git",
-    "directory": "packages/philjs-dashboard"
-  },
-  "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18"
   }
 }

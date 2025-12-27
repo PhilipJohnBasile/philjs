@@ -1,32 +1,46 @@
 {
-  "name": "@philjs/htmx",
-  "version": "0.0.1",
-  "description": "HTMX compatibility layer for PhilJS - use hx-* attributes with PhilJS reactivity",
+  "name": "@philjs/hypermedia",
+  "version": "0.1.0",
+  "description": "HTML-over-the-wire for PhilJS - server-driven UI updates with declarative attributes",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": ["dist", "src"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "test": "vitest run"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
   },
-  "peerDependencies": {
-    "philjs-core": "workspace:*"
-  },
+  "keywords": [
+    "philjs",
+    "hypermedia",
+    "html-over-the-wire",
+    "progressive-enhancement",
+    "server-driven",
+    "partial-updates"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.2",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   },
-  "keywords": ["htmx", "html-over-the-wire", "progressive-enhancement", "hypermedia", "philjs"],
-  "license": "MIT",
-  "sideEffects": false
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "philjs-storage",
+  "name": "@philjs/storage",
   "version": "0.0.1",
   "description": "Cloud storage abstraction layer for PhilJS with S3, GCS, Azure, and local providers",
   "type": "module",
@@ -66,10 +66,10 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependenciesMeta": {
-    "philjs-core": {
+    "@philjs/core": {
       "optional": true
     }
   },

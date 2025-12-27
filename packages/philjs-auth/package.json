@@ -1,5 +1,5 @@
 {
-  "name": "philjs-auth",
+  "name": "@philjs/auth",
   "version": "0.0.1",
   "description": "Authentication and authorization utilities for PhilJS",
   "type": "module",
@@ -70,8 +70,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.3.0",

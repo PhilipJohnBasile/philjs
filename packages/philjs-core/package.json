@@ -1,5 +1,5 @@
 {
-  "name": "philjs-core",
+  "name": "@philjs/core",
   "version": "0.0.1",
   "description": "Core signals, memos, and resources for PhilJS",
   "type": "module",
@@ -110,6 +110,26 @@
     "./tiny": {
       "types": "./dist/tiny.d.ts",
       "import": "./dist/tiny.js"
+    },
+    "./html": {
+      "types": "./dist/html.d.ts",
+      "import": "./dist/html.js"
+    },
+    "./element": {
+      "types": "./dist/element.d.ts",
+      "import": "./dist/element.js"
+    },
+    "./tc39-signals": {
+      "types": "./dist/tc39-signals.d.ts",
+      "import": "./dist/tc39-signals.js"
+    },
+    "./view-transitions": {
+      "types": "./dist/view-transitions.d.ts",
+      "import": "./dist/view-transitions.js"
+    },
+    "./navigation": {
+      "types": "./dist/navigation.d.ts",
+      "import": "./dist/navigation.js"
     }
   },
   "files": [

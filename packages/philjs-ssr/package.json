@@ -1,5 +1,5 @@
 {
-  "name": "philjs-ssr",
+  "name": "@philjs/ssr",
   "version": "0.0.1",
   "description": "SSR streaming, loaders, actions, and resumability for PhilJS",
   "type": "module",
@@ -21,8 +21,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.28.1",

@@ -1,0 +1,41 @@
+{
+  "name": "@philjs/quantum",
+  "version": "1.0.0",
+  "description": "Quantum-Ready Primitives - Post-quantum cryptography, quantum RNG, quantum simulation, and quantum-inspired optimization",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "quantum",
+    "post-quantum",
+    "cryptography",
+    "kyber",
+    "dilithium",
+    "quantum-computing",
+    "quantum-simulation",
+    "quantum-annealing",
+    "qaoa",
+    "optimization"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

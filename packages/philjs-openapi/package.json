@@ -1,5 +1,5 @@
 {
-  "name": "philjs-openapi",
+  "name": "@philjs/openapi",
   "version": "0.0.1",
   "description": "Automatic OpenAPI spec generation for PhilJS APIs - inspired by Elysia",
   "type": "module",
@@ -20,7 +20,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "philjs-api": "workspace:*"
+    "@philjs/api": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.0",

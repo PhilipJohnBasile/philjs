@@ -1,48 +1,36 @@
 {
   "name": "create-philjs",
-  "version": "0.0.1",
-  "description": "Scaffolding tool for PhilJS apps - The framework that thinks ahead",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "Create PhilJS apps with one command",
   "bin": {
-    "create-philjs": "./dist/index.js"
+    "create-philjs": "./dist/cli.js"
   },
-  "files": [
-    "dist",
-    "templates"
-  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "templates"],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "test": "echo 'Test create-philjs'",
-    "lint": "echo 'Lint create-philjs'"
+    "build": "tsup src/cli.ts --format cjs,esm --dts",
+    "dev": "tsup src/cli.ts --watch"
   },
-  "keywords": [
-    "philjs",
-    "create",
-    "scaffold",
-    "starter"
-  ],
+  "keywords": ["philjs", "create", "cli", "scaffold", "rust", "wasm"],
+  "author": "PhilJS Team",
+  "license": "MIT",
   "dependencies": {
-    "philjs-router": "workspace:*",
-    "picocolors": "^1.1.1",
-    "prompts": "^2.4.2"
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "enquirer": "^2.4.1",
+    "execa": "^8.0.1",
+    "fs-extra": "^11.2.0",
+    "gradient-string": "^2.0.2",
+    "ora": "^8.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
-    "rollup": "^4.28.1",
-    "@types/node": "^22.10.5",
-    "@types/prompts": "^2.4.9"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
   },
-  "sideEffects": false,
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/create-philjs"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

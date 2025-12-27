@@ -1,0 +1,33 @@
+{
+  "name": "@philjs/video-chat",
+  "version": "0.1.0",
+  "description": "Full-featured video conferencing for PhilJS - virtual backgrounds, recording, transcription, breakout rooms",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "test": "vitest"
+  },
+  "keywords": ["philjs", "video-chat", "webrtc", "conferencing", "virtual-background", "transcription", "recording"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0",
+    "@philjs/webrtc": ">=0.1.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

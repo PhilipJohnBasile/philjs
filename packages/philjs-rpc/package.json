@@ -1,5 +1,5 @@
 {
-  "name": "philjs-rpc",
+  "name": "@philjs/rpc",
   "version": "0.0.1",
   "description": "tRPC-style end-to-end type-safe RPC system for PhilJS",
   "type": "module",
@@ -30,7 +30,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

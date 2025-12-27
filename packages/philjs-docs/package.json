@@ -1,16 +1,23 @@
 {
-  "name": "philjs-docs",
-  "version": "0.0.1",
+  "name": "@philjs/docs",
+  "version": "0.1.0",
   "private": true,
   "description": "PhilJS Documentation Site - philjs.dev",
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev src",
-    "build": "vitepress build src",
-    "preview": "vitepress preview src"
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js",
+    "preview": "node scripts/preview.js"
   },
   "devDependencies": {
-    "vitepress": "^1.0.0",
-    "vue": "^3.4.0"
+    "@philjs/core": "workspace:*",
+    "esbuild": "^0.20.0",
+    "marked": "^12.0.0",
+    "gray-matter": "^4.0.3",
+    "chokidar": "^3.5.3",
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

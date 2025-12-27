@@ -8,8 +8,8 @@
     "advanced": "bun run --hot server-advanced.ts"
   },
   "dependencies": {
-    "philjs-adapters": "workspace:*",
-    "philjs-core": "workspace:*",
-    "philjs-ssr": "workspace:*"
+    "@philjs/adapters": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   }
 }

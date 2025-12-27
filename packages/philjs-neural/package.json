@@ -1,0 +1,39 @@
+{
+  "name": "@philjs/neural",
+  "version": "1.0.0",
+  "description": "Neural Rendering Engine - AI-powered rendering optimization with predictive frames, adaptive quality, and neural layout",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "neural",
+    "rendering",
+    "ai",
+    "machine-learning",
+    "optimization",
+    "predictive",
+    "adaptive-quality",
+    "performance"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

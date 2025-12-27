@@ -1,0 +1,64 @@
+{
+  "name": "@philjs/perf",
+  "version": "0.1.0",
+  "description": "High-performance runtime utilities for PhilJS - memoization, batching, pooling, lazy evaluation",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./memo": {
+      "types": "./dist/memo.d.ts",
+      "import": "./dist/memo.js",
+      "require": "./dist/memo.cjs"
+    },
+    "./batch": {
+      "types": "./dist/batch.d.ts",
+      "import": "./dist/batch.js",
+      "require": "./dist/batch.cjs"
+    },
+    "./pool": {
+      "types": "./dist/pool.d.ts",
+      "import": "./dist/pool.js",
+      "require": "./dist/pool.cjs"
+    },
+    "./lazy": {
+      "types": "./dist/lazy.d.ts",
+      "import": "./dist/lazy.js",
+      "require": "./dist/lazy.cjs"
+    }
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "bench": "vitest bench"
+  },
+  "keywords": [
+    "philjs",
+    "performance",
+    "memoization",
+    "batching",
+    "object-pooling",
+    "lazy-evaluation",
+    "optimization"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

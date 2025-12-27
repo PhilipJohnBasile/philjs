@@ -1,5 +1,5 @@
 {
-  "name": "philjs-ai",
+  "name": "@philjs/ai",
   "version": "0.0.1",
   "description": "AI-powered code generation and analysis tools for PhilJS",
   "type": "module",
@@ -73,7 +73,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "optionalDependencies": {
     "vscode": "^1.1.37"

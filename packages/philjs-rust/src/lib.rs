@@ -117,6 +117,8 @@ pub mod router;
 pub mod server;
 pub mod query;
 pub mod liveview;
+pub mod meta;
+pub mod store;
 
 #[cfg(feature = "wasm")]
 pub mod wasm;
@@ -213,3 +215,36 @@ pub fn spread_attrs<T>(_attrs: T) -> Vec<(&'static str, Box<dyn Fn() -> String>)
     // TODO: Implement spread functionality
     Vec::new()
 }
+
+// =============================================================================
+// Additional Leptos-Parity Exports
+// =============================================================================
+
+// Meta/Head management (leptos_meta equivalent)
+pub use meta::{
+    Title, TitleTemplate, Meta, Link, Style, Script, Html, Body,
+    MetaContext, use_meta_context, with_meta_context,
+};
+
+// Store for deep reactive updates
+pub use store::{Store, StoreField, StoreVec, StoreMap, create_store, produce};
+
+// Action exports
+pub use reactive::{
+    Action, MultiAction, ActionError,
+    create_action, create_server_action, create_multi_action,
+    RwSignal, create_rw_signal,
+    StoredValue, create_stored_value,
+    Trigger, create_trigger,
+    on_cleanup,
+};
+
+// Transition and Animation
+pub use view::{
+    Transition, TransitionConfig, use_transition, use_deferred_value,
+    AnimatedShow, AnimatedShowConfig, AnimationState,
+    fade, slide, scale,
+};
+
+// Router Form components
+pub use router::form::{Form, FormMethod, FormData, ActionForm, MultiActionForm};

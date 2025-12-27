@@ -1,0 +1,82 @@
+{
+  "name": "@philjs/go",
+  "version": "0.0.1",
+  "description": "Go server adapter and CLI tools for PhilJS - High-performance SSR and edge functions",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "philjs-go": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js"
+    },
+    "./codegen": {
+      "types": "./dist/codegen.d.ts",
+      "import": "./dist/codegen.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
+  },
+  "files": [
+    "dist",
+    "go",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "go:test": "cd go && go test ./...",
+    "go:build": "cd go && go build ./..."
+  },
+  "dependencies": {
+    "execa": "^9.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsup": "^8.0.0",
+    "typescript": "next",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@philjs/core": {
+      "optional": false
+    },
+    "@philjs/ssr": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "philjs",
+    "go",
+    "golang",
+    "server",
+    "ssr",
+    "edge",
+    "cli",
+    "fast",
+    "performance"
+  ],
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PhilipJohnBasile/philjs.git",
+    "directory": "packages/philjs-go"
+  }
+}

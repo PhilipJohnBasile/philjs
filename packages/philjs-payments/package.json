@@ -1,60 +1,50 @@
 {
-  "name": "philjs-payments",
-  "version": "0.0.1",
-  "description": "Unified payment processing for PhilJS with Stripe, PayPal, Square, and Paddle support",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "name": "@philjs/payments",
+  "version": "0.1.0",
+  "description": "Payment processing for PhilJS - Stripe, PayPal, Square support",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./providers/stripe": {
-      "import": "./dist/providers/stripe.mjs",
-      "require": "./dist/providers/stripe.js",
-      "types": "./dist/providers/stripe.d.ts"
+      "types": "./dist/providers/stripe.d.ts",
+      "import": "./dist/providers/stripe.js",
+      "require": "./dist/providers/stripe.cjs"
     },
     "./providers/paypal": {
-      "import": "./dist/providers/paypal.mjs",
-      "require": "./dist/providers/paypal.js",
-      "types": "./dist/providers/paypal.d.ts"
+      "types": "./dist/providers/paypal.d.ts",
+      "import": "./dist/providers/paypal.js",
+      "require": "./dist/providers/paypal.cjs"
     },
     "./providers/square": {
-      "import": "./dist/providers/square.mjs",
-      "require": "./dist/providers/square.js",
-      "types": "./dist/providers/square.d.ts"
-    },
-    "./providers/paddle": {
-      "import": "./dist/providers/paddle.mjs",
-      "require": "./dist/providers/paddle.js",
-      "types": "./dist/providers/paddle.d.ts"
-    },
-    "./components": {
-      "import": "./dist/components/index.mjs",
-      "require": "./dist/components/index.js",
-      "types": "./dist/components/index.d.ts"
+      "types": "./dist/providers/square.d.ts",
+      "import": "./dist/providers/square.js",
+      "require": "./dist/providers/square.cjs"
     },
     "./webhooks": {
-      "import": "./dist/webhooks/index.mjs",
-      "require": "./dist/webhooks/index.js",
-      "types": "./dist/webhooks/index.d.ts"
-    },
-    "./hooks": {
-      "import": "./dist/hooks.mjs",
-      "require": "./dist/hooks.js",
-      "types": "./dist/hooks.d.ts"
+      "types": "./dist/webhooks/index.d.ts",
+      "import": "./dist/webhooks/index.js",
+      "require": "./dist/webhooks/index.cjs"
     }
   },
+  "files": ["dist", "src"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsup src/index.ts --format cjs,esm --watch --tsconfig tsconfig.json",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint src --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint src/"
   },
+  "keywords": ["philjs", "payments", "stripe", "paypal", "square", "subscriptions"],
+  "author": "PhilJS Team",
+  "license": "MIT",
   "dependencies": {
     "stripe": "^14.0.0",
     "@paypal/checkout-server-sdk": "^1.0.3",
@@ -62,35 +52,14 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
-    "@types/react": "^18.2.0",
-    "react": "^18.2.0",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "react": ">=18.0.0"
+    "@philjs/core": ">=0.1.0"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "keywords": [
-    "philjs",
-    "payments",
-    "stripe",
-    "paypal",
-    "square",
-    "paddle",
-    "subscriptions",
-    "checkout",
-    "invoices"
-  ],
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/philjs/philjs.git",
-    "directory": "packages/philjs-payments"
+  "engines": {
+    "node": ">=18"
   }
 }

@@ -249,3 +249,13 @@ impl IntoView for Slot {
         View::Empty
     }
 }
+
+// =============================================================================
+// New Modules for Leptos Parity
+// =============================================================================
+
+pub mod transition;
+pub mod animated;
+
+pub use transition::{Transition, TransitionConfig, TransitionState, use_transition, DeferredValue, use_deferred_value};
+pub use animated::{AnimatedShow, AnimatedShowConfig, AnimationState, Easing, fade, slide, scale, Presence, ANIMATION_CSS};

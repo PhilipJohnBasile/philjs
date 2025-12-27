@@ -1,56 +1,55 @@
 {
-  "name": "philjs-router-typesafe",
-  "version": "0.0.1",
-  "description": "Type-safe router for PhilJS inspired by TanStack Router with fully typed params and Zod validation",
+  "name": "@philjs/router-typesafe",
+  "version": "0.1.0",
+  "description": "Type-safe router for PhilJS with fully typed params and Zod validation",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "test:types": "tsc --noEmit",
-    "lint": "echo 'Lint philjs-router-typesafe'",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "philjs-core": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4",
-    "zod": "^3.23.8"
-  },
-  "peerDependencies": {
-    "zod": "^3.20.0"
-  },
+  "files": ["dist", "src"],
   "sideEffects": false,
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-router-typesafe"
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
   },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme",
   "keywords": [
     "philjs",
+    "router",
     "routing",
     "navigation",
     "type-safe",
     "typescript",
-    "tanstack",
-    "zod"
-  ]
+    "zod",
+    "validation"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0",
+    "zod": "^3.20.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

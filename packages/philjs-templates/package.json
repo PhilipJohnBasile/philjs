@@ -1,5 +1,5 @@
 {
-  "name": "philjs-templates",
+  "name": "@philjs/templates",
   "version": "0.0.1",
   "description": "Starter templates for PhilJS applications",
   "type": "module",

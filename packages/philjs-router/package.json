@@ -1,5 +1,5 @@
 {
-  "name": "philjs-router",
+  "name": "@philjs/router",
   "version": "0.0.1",
   "description": "File-based routing with nested layouts for PhilJS",
   "type": "module",
@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.28.1",

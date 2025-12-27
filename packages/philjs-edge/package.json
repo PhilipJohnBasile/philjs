@@ -1,5 +1,5 @@
 {
-  "name": "philjs-edge",
+  "name": "@philjs/edge",
   "version": "0.0.1",
   "description": "Edge computing primitives for PhilJS - KV storage, Durable Objects, queues, cron",
   "type": "module",
@@ -55,13 +55,21 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241205.0",
     "typescript": "^5.7.2",
     "vitest": "^3.1.1"
   },
-  "keywords": ["philjs", "edge", "cloudflare", "workers", "kv", "durable-objects", "d1"],
+  "keywords": [
+    "philjs",
+    "edge",
+    "cloudflare",
+    "workers",
+    "kv",
+    "durable-objects",
+    "d1"
+  ],
   "license": "MIT"
 }

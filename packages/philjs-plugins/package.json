@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugins",
+  "name": "@philjs/plugins",
   "version": "0.0.1",
   "description": "Plugin system for PhilJS - create and use framework plugins",
   "type": "module",
@@ -14,7 +14,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.0"

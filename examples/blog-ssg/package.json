@@ -8,15 +8,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
     "gray-matter": "^4.0.3",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"
   },
   "devDependencies": {
     "vite": "^6.4.1",
-    "typescript": "^5.7.2",
+    "typescript": "next",
     "@types/node": "^22.10.5"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "philjs-forms",
+  "name": "@philjs/forms",
   "version": "0.0.1",
   "description": "Form handling with validation for PhilJS",
   "type": "module",
@@ -30,7 +30,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
     "zod": "^3.22.0"

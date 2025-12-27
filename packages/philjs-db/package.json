@@ -1,5 +1,5 @@
 {
-  "name": "philjs-db",
+  "name": "@philjs/db",
   "version": "0.0.1",
   "description": "Database integration utilities for PhilJS - Prisma, Drizzle, Supabase, Migrations",
   "type": "module",
@@ -19,7 +19,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
     "@prisma/client": "^5.0.0",

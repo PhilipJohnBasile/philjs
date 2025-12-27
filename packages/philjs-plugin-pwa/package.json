@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugin-pwa",
+  "name": "@philjs/plugin-pwa",
   "version": "0.0.1",
   "description": "Progressive Web App (PWA) plugin for PhilJS with service workers and offline support",
   "type": "module",
@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.28.1",

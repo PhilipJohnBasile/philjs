@@ -1,5 +1,5 @@
 {
-  "name": "philjs-vscode",
+  "name": "@philjs/vscode",
   "displayName": "PhilJS for VS Code",
   "description": "Official VS Code extension for PhilJS - snippets, IntelliSense, and tooling",
   "version": "0.0.1",

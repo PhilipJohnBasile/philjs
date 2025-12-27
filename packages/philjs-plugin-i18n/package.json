@@ -1,5 +1,5 @@
 {
-  "name": "philjs-plugin-i18n",
+  "name": "@philjs/plugin-i18n",
   "version": "0.0.1",
   "description": "Internationalization plugin for PhilJS with Vite integration",
   "type": "module",
@@ -42,7 +42,7 @@
   "license": "MIT",
   "dependencies": {
     "fast-glob": "^3.3.2",
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

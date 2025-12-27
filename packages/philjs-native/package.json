@@ -1,152 +1,94 @@
 {
-  "name": "philjs-native",
-  "version": "0.0.1",
-  "description": "Cross-platform mobile development for PhilJS - React Native/Capacitor alternative",
+  "name": "@philjs/native",
+  "version": "0.1.0",
+  "description": "Cross-platform native development for PhilJS - iOS, Android, and Desktop",
   "type": "module",
-  "sideEffects": false,
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
-      "import": "./dist/runtime.js"
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs"
     },
     "./components": {
       "types": "./dist/components/index.d.ts",
-      "import": "./dist/components/index.js"
+      "import": "./dist/components/index.js",
+      "require": "./dist/components/index.cjs"
     },
     "./navigation": {
       "types": "./dist/navigation.d.ts",
-      "import": "./dist/navigation.js"
-    },
-    "./apis": {
-      "types": "./dist/apis/index.d.ts",
-      "import": "./dist/apis/index.js"
-    },
-    "./styles": {
-      "types": "./dist/styles.d.ts",
-      "import": "./dist/styles.js"
-    },
-    "./cli": {
-      "types": "./dist/cli.d.ts",
-      "import": "./dist/cli.js"
+      "import": "./dist/navigation.js",
+      "require": "./dist/navigation.cjs"
     },
     "./capacitor": {
       "types": "./dist/capacitor/index.d.ts",
-      "import": "./dist/capacitor/index.js"
-    },
-    "./capacitor/plugins": {
-      "types": "./dist/capacitor/plugins/index.d.ts",
-      "import": "./dist/capacitor/plugins/index.js"
+      "import": "./dist/capacitor/index.js",
+      "require": "./dist/capacitor/index.cjs"
     },
     "./tauri": {
       "types": "./dist/tauri/index.d.ts",
-      "import": "./dist/tauri/index.js"
+      "import": "./dist/tauri/index.js",
+      "require": "./dist/tauri/index.cjs"
     },
     "./gestures": {
       "types": "./dist/gestures/index.d.ts",
-      "import": "./dist/gestures/index.js"
-    },
-    "./hooks": {
-      "types": "./dist/hooks/index.d.ts",
-      "import": "./dist/hooks/index.js"
+      "import": "./dist/gestures/index.js",
+      "require": "./dist/gestures/index.cjs"
     }
   },
   "bin": {
     "philjs-native": "./dist/cli.js"
   },
-  "files": [
-    "dist",
-    "templates"
-  ],
+  "files": ["dist", "src", "templates"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "echo 'Lint philjs-native'",
-    "typecheck": "tsc --noEmit"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
   },
-  "dependencies": {
-    "philjs-core": "workspace:*"
-  },
-  "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.4",
-    "jsdom": "^27.0.0",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "peerDependencies": {
-    "philjs-core": ">=2.0.0",
-    "@capacitor/core": ">=5.0.0",
-    "@capacitor/camera": ">=5.0.0",
-    "@capacitor/geolocation": ">=5.0.0",
-    "@capacitor/filesystem": ">=5.0.0",
-    "@capacitor/haptics": ">=5.0.0",
-    "@capacitor/keyboard": ">=5.0.0",
-    "@capacitor/push-notifications": ">=5.0.0",
-    "@capacitor/preferences": ">=5.0.0",
-    "@tauri-apps/api": ">=1.5.0",
-    "react-native": ">=0.72.0"
-  },
-  "peerDependenciesMeta": {
-    "@capacitor/core": {
-      "optional": true
-    },
-    "@capacitor/camera": {
-      "optional": true
-    },
-    "@capacitor/geolocation": {
-      "optional": true
-    },
-    "@capacitor/filesystem": {
-      "optional": true
-    },
-    "@capacitor/haptics": {
-      "optional": true
-    },
-    "@capacitor/keyboard": {
-      "optional": true
-    },
-    "@capacitor/push-notifications": {
-      "optional": true
-    },
-    "@capacitor/preferences": {
-      "optional": true
-    },
-    "@tauri-apps/api": {
-      "optional": true
-    },
-    "react-native": {
-      "optional": true
-    }
-  },
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-native"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme",
   "keywords": [
     "philjs",
     "native",
     "mobile",
     "ios",
     "android",
+    "desktop",
     "cross-platform",
-    "react-native-alternative",
-    "capacitor-alternative",
-    "tauri",
     "capacitor",
+    "tauri",
     "hybrid-app",
     "pwa"
-  ]
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0",
+    "@capacitor/core": ">=5.0.0",
+    "@tauri-apps/api": ">=1.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@capacitor/core": {
+      "optional": true
+    },
+    "@tauri-apps/api": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

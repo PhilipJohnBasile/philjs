@@ -1,0 +1,43 @@
+{
+  "name": "@philjs/xr",
+  "version": "1.0.0",
+  "description": "WebXR Components - VR/AR/MR experiences with hand tracking, spatial UI, gestures, and 3D reactive primitives",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "webxr",
+    "vr",
+    "ar",
+    "mr",
+    "xr",
+    "virtual-reality",
+    "augmented-reality",
+    "hand-tracking",
+    "spatial-ui",
+    "gestures",
+    "immersive"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/webxr": "^0.5.10",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

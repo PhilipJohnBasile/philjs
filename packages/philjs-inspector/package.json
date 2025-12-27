@@ -1,5 +1,5 @@
 {
-  "name": "philjs-inspector",
+  "name": "@philjs/inspector",
   "version": "0.0.1",
   "description": "Visual component inspector for PhilJS - in-page DevTools overlay",
   "type": "module",
@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.28.1",

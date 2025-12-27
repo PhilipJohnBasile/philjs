@@ -96,9 +96,9 @@
     "build:rust": "cargo build --release"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-ssr": "workspace:*",
-    "philjs-liveview": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/ssr": "workspace:*",
+    "@philjs/liveview": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3",
@@ -106,7 +106,7 @@
     "vitest": "^1.1.0"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "keywords": [
     "philjs",

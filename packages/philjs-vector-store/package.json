@@ -31,10 +31,10 @@
     "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependenciesMeta": {
-    "philjs-core": {
+    "@philjs/core": {
       "optional": true
     }
   },

@@ -1,85 +1,55 @@
 {
-  "name": "philjs-pdf",
-  "version": "0.0.1",
-  "description": "PDF generation and manipulation for PhilJS - supports HTML, React components, and templates",
+  "name": "@philjs/pdf",
+  "version": "0.1.0",
+  "description": "PDF generation and manipulation for PhilJS - HTML to PDF, templates, utilities",
   "type": "module",
-  "sideEffects": false,
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./templates": {
       "types": "./dist/templates/index.d.ts",
-      "import": "./dist/templates/index.js"
+      "import": "./dist/templates/index.js",
+      "require": "./dist/templates/index.cjs"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
-      "import": "./dist/utils/index.js"
-    },
-    "./server": {
-      "types": "./dist/server.d.ts",
-      "import": "./dist/server.js"
-    },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "import": "./dist/client.js"
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist", "src"],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "lint": "echo 'Lint philjs-pdf'",
-    "typecheck": "tsc --noEmit"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
   },
+  "keywords": ["philjs", "pdf", "pdf-generation", "puppeteer", "pdfkit"],
+  "author": "PhilJS Team",
+  "license": "MIT",
   "dependencies": {
-    "@react-pdf/renderer": "^3.4.4",
     "pdf-lib": "^1.17.1",
     "pdfkit": "^0.15.0",
     "puppeteer": "^22.6.0"
   },
   "devDependencies": {
     "@types/pdfkit": "^0.13.4",
-    "@vitest/coverage-v8": "^3.2.4",
-    "rollup": "^4.53.3",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
   },
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "@philjs/core": ">=0.1.0"
   },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    }
-  },
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-pdf"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme",
-  "keywords": [
-    "philjs",
-    "pdf",
-    "pdf-generation",
-    "puppeteer",
-    "react-pdf",
-    "pdfkit",
-    "pdf-lib"
-  ]
+  "engines": {
+    "node": ">=18"
+  }
 }

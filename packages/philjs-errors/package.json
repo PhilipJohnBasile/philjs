@@ -1,5 +1,5 @@
 {
-  "name": "philjs-errors",
+  "name": "@philjs/errors",
   "version": "0.0.1",
   "description": "Error tracking and monitoring for PhilJS - Sentry, LogRocket, Rollbar integrations",
   "type": "module",
@@ -16,7 +16,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
     "@sentry/browser": "^8.0.0",

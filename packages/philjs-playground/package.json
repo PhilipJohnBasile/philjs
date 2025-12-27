@@ -1,5 +1,5 @@
 {
-  "name": "philjs-playground",
+  "name": "@philjs/playground",
   "version": "0.0.1",
   "description": "Interactive browser playground for PhilJS - try code without installing",
   "type": "module",
@@ -12,8 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-compiler": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/compiler": "workspace:*",
     "@codemirror/lang-javascript": "^6.2.0",
     "@codemirror/lang-html": "^6.4.0",
     "@codemirror/lang-css": "^6.2.0",

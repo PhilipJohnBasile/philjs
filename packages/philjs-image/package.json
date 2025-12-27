@@ -1,5 +1,5 @@
 {
-  "name": "philjs-image",
+  "name": "@philjs/image",
   "version": "0.0.1",
   "description": "Image optimization for PhilJS with automatic format conversion, responsive sizing, and lazy loading",
   "type": "module",
@@ -38,7 +38,7 @@
     "lazy-loading"
   ],
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "sharp": "^0.33.0",

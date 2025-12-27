@@ -1,5 +1,5 @@
 {
-  "name": "philjs-storybook",
+  "name": "@philjs/storybook",
   "version": "0.0.1",
   "description": "Storybook integration for PhilJS - component development and testing",
   "type": "module",
@@ -58,8 +58,8 @@
     "ui"
   ],
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
     "@storybook/addon-essentials": "^8.4.7",
     "@storybook/addon-interactions": "^8.4.7",
     "@storybook/addon-links": "^8.4.7",
@@ -78,7 +78,6 @@
   "peerDependencies": {
     "storybook": "^8.0.0"
   },
-  "sideEffects": false,
   "license": "MIT",
   "author": "PhilJS Team",
   "repository": {

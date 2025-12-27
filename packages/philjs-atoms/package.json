@@ -1,5 +1,5 @@
 {
-  "name": "philjs-atoms",
+  "name": "@philjs/atoms",
   "version": "0.0.1",
   "description": "Jotai-style atomic state management for PhilJS with signals",
   "type": "module",
@@ -22,7 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.3.0",

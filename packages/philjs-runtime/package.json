@@ -1,0 +1,43 @@
+{
+  "name": "@philjs/runtime",
+  "version": "1.0.0",
+  "description": "PhilJS Runtime with Self-Healing capabilities - automatic error recovery, circuit breakers, hot-patching",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./self-healing": {
+      "import": "./dist/self-healing/index.mjs",
+      "require": "./dist/self-healing/index.js",
+      "types": "./dist/self-healing/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/self-healing/index.ts --format cjs,esm --dts --out-dir dist/self-healing",
+    "dev": "tsup src/self-healing/index.ts --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "philjs",
+    "runtime",
+    "self-healing",
+    "error-recovery",
+    "circuit-breaker",
+    "hot-patching",
+    "resilience",
+    "fault-tolerance"
+  ],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

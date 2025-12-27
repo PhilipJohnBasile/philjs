@@ -1,5 +1,5 @@
 {
-  "name": "philjs-styles",
+  "name": "@philjs/styles",
   "version": "0.0.1",
   "description": "Scoped styles, CSS Modules, and CSS-in-JS for PhilJS",
   "type": "module",
@@ -20,7 +20,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.0",

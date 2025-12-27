@@ -1,5 +1,5 @@
 {
-  "name": "philjs-liveview",
+  "name": "@philjs/liveview",
   "version": "0.0.1",
   "description": "Server-driven UI for PhilJS - Phoenix LiveView-style real-time rendering",
   "main": "dist/index.js",
@@ -34,8 +34,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-realtime": "workspace:*",
+    "@philjs/core": "workspace:*",
+    "@philjs/realtime": "workspace:*",
     "morphdom": "^2.7.2"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "vitest": "^1.1.0"
   },
   "peerDependencies": {
-    "philjs-core": "workspace:*"
+    "@philjs/core": "workspace:*"
   },
   "keywords": [
     "philjs",
