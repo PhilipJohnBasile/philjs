@@ -1,18 +1,25 @@
 # Performance Best Practices
 
-Optimize your PhilJS applications for maximum performance.
+Optimize your PhilJS applications for maximum performance using Node.js 24+, TypeScript 6, and ES2024 features.
+
+## Requirements
+
+- **Node.js 24+** - Required for native ES2024 support
+- **TypeScript 6+** - Required for isolated declarations and optimal build performance
 
 ## Fine-Grained Reactivity Advantages
 
 PhilJS uses fine-grained reactivity, which means:
 
-- ✅ Only affected DOM nodes update
-- ✅ No virtual DOM diffing overhead
-- ✅ No full component re-renders
-- ✅ Automatic dependency tracking
-- ✅ Minimal re-computation
+- Only affected DOM nodes update
+- No virtual DOM diffing overhead
+- No full component re-renders
+- Automatic dependency tracking
+- Minimal re-computation
 
 ```tsx
+import { signal, memo } from 'philjs-core';
+
 function Counter() {
   const count = signal(0);
   const doubled = memo(() => count() * 2);
@@ -32,6 +39,71 @@ function Counter() {
 }
 ```
 
+## ES2024 Performance Patterns
+
+### Use Native Array Methods (ES2024)
+
+ES2024 provides immutable array methods that are optimized by V8:
+
+```tsx
+const items = signal<Item[]>([...largeArray]);
+
+// Use toSorted() instead of sort() for immutability
+const sorted = memo(() =>
+  items().toSorted((a, b) => b.score - a.score)
+);
+
+// Use toSpliced() for immutable splice operations
+const withoutFirst = memo(() =>
+  items().toSpliced(0, 1)
+);
+
+// Use toReversed() for immutable reversal
+const reversed = memo(() =>
+  items().toReversed()
+);
+
+// Combine with at() for safer indexing
+const lastItem = memo(() =>
+  items().at(-1)
+);
+```
+
+### Use Object.groupBy() and Map.groupBy()
+
+Native grouping is faster than manual reduce operations:
+
+```tsx
+const users = signal<User[]>([]);
+
+// Use Object.groupBy() for grouping by string keys
+const usersByRole = memo(() =>
+  Object.groupBy(users(), user => user.role)
+);
+
+// Use Map.groupBy() for complex keys
+const usersByDepartment = memo(() =>
+  Map.groupBy(users(), user => user.department)
+);
+```
+
+### Use Promise.withResolvers() for Async Patterns
+
+```tsx
+function createDeferredSignal<T>() {
+  const { promise, resolve, reject } = Promise.withResolvers<T>();
+  const data = signal<T | null>(null);
+  const error = signal<Error | null>(null);
+
+  promise.then(
+    value => data.set(value),
+    err => error.set(err)
+  );
+
+  return { data, error, resolve, reject };
+}
+```
+
 ## Memoization
 
 ### Use memo() for Expensive Computations
@@ -39,26 +111,26 @@ function Counter() {
 ```tsx
 const items = signal<Item[]>([...largeArray]);
 
-// ✅ Memoize expensive operations
+// Memoize expensive operations using ES2024 immutable methods
 const filtered = memo(() =>
   items().filter(item => item.active && item.score > 50)
 );
 
 const sorted = memo(() =>
-  filtered().sort((a, b) => b.score - a.score)
+  filtered().toSorted((a, b) => b.score - a.score)
 );
 
 const top10 = memo(() =>
   sorted().slice(0, 10)
 );
 
-// ❌ Don't compute inline
+// Avoid: computing inline without memoization
 function BadComponent() {
   return (
     <div>
       {items()
         .filter(item => item.active && item.score > 50)
-        .sort((a, b) => b.score - a.score)
+        .toSorted((a, b) => b.score - a.score)
         .slice(0, 10)
         .map(item => <ItemCard key={item.id} item={item} />)
       }
@@ -665,22 +737,67 @@ effect(async () => {
 });
 ```
 
+## TypeScript 6 Build Performance
+
+### Enable Isolated Declarations
+
+TypeScript 6's isolated declarations provide faster builds:
+
+```json
+{
+  "compilerOptions": {
+    "isolatedDeclarations": true,
+    "declaration": true,
+    "declarationMap": true
+  }
+}
+```
+
+### Use Strict Type Checking
+
+Strict checking catches performance issues at compile time:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
+```
+
 ## Summary
 
 **Performance Best Practices:**
 
-✅ Leverage fine-grained reactivity
-✅ Use memo() for expensive computations
-✅ Batch related signal updates
-✅ Implement code splitting with lazy()
-✅ Virtualize long lists
-✅ Debounce/throttle frequent operations
-✅ Lazy load images
-✅ Optimize bundle size
-✅ Use Web Workers for heavy computation
-✅ Profile and measure performance
-✅ Clean up effects properly
-✅ Cache API responses
-✅ Avoid unnecessary re-computation
+ES2024 Features:
+- Use `toSorted()`, `toReversed()`, `toSpliced()` for immutable array operations
+- Use `Object.groupBy()` and `Map.groupBy()` for efficient grouping
+- Use `Promise.withResolvers()` for cleaner async patterns
+- Use `Set` methods (`union`, `intersection`, `difference`) for set operations
 
-**Next:** [Testing →](./testing.md)
+Reactivity:
+- Leverage fine-grained reactivity
+- Use memo() for expensive computations
+- Batch related signal updates
+
+Code Organization:
+- Implement code splitting with lazy()
+- Virtualize long lists
+- Debounce/throttle frequent operations
+- Lazy load images
+- Optimize bundle size
+
+Runtime:
+- Use Web Workers for heavy computation
+- Profile and measure performance
+- Clean up effects properly
+- Cache API responses
+- Avoid unnecessary re-computation
+
+TypeScript 6:
+- Enable isolated declarations for faster builds
+- Use strict type checking
+
+**Next:** [Testing](./testing.md)

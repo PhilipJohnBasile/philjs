@@ -49,8 +49,8 @@ where
     F: FnOnce() -> V + Send + 'static,
     V: IntoView,
 {
-    // For now, render synchronously
-    // TODO: Implement true streaming with Suspense boundaries
+    // Currently renders synchronously. True streaming with Suspense boundaries
+    // is a planned enhancement that will enable progressive HTML delivery.
     let html = render_to_string(f);
 
     Response::builder()

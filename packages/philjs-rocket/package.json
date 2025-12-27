@@ -7,79 +7,64 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./app": {
-      "import": "./dist/app.mjs",
-      "require": "./dist/app.js",
-      "types": "./dist/app.d.ts"
+      "types": "./dist/app.d.ts",
+      "default": "./dist/app.js"
     },
     "./config": {
-      "import": "./dist/config.mjs",
-      "require": "./dist/config.js",
-      "types": "./dist/config.d.ts"
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
     },
     "./middleware": {
-      "import": "./dist/middleware.mjs",
-      "require": "./dist/middleware.js",
-      "types": "./dist/middleware.d.ts"
+      "types": "./dist/middleware.d.ts",
+      "default": "./dist/middleware.js"
     },
     "./fairing": {
-      "import": "./dist/fairing.mjs",
-      "require": "./dist/fairing.js",
-      "types": "./dist/fairing.d.ts"
+      "types": "./dist/fairing.d.ts",
+      "default": "./dist/fairing.js"
     },
     "./guards": {
-      "import": "./dist/guards.mjs",
-      "require": "./dist/guards.js",
-      "types": "./dist/guards.d.ts"
+      "types": "./dist/guards.d.ts",
+      "default": "./dist/guards.js"
     },
     "./handlers": {
-      "import": "./dist/handlers.mjs",
-      "require": "./dist/handlers.js",
-      "types": "./dist/handlers.d.ts"
+      "types": "./dist/handlers.d.ts",
+      "default": "./dist/handlers.js"
     },
     "./responders": {
-      "import": "./dist/responders.mjs",
-      "require": "./dist/responders.js",
-      "types": "./dist/responders.d.ts"
+      "types": "./dist/responders.d.ts",
+      "default": "./dist/responders.js"
     },
     "./ssr": {
-      "import": "./dist/ssr.mjs",
-      "require": "./dist/ssr.js",
-      "types": "./dist/ssr.d.ts"
+      "types": "./dist/ssr.d.ts",
+      "default": "./dist/ssr.js"
     },
     "./state": {
-      "import": "./dist/state.mjs",
-      "require": "./dist/state.js",
-      "types": "./dist/state.d.ts"
+      "types": "./dist/state.d.ts",
+      "default": "./dist/state.js"
     },
     "./templates": {
-      "import": "./dist/templates.mjs",
-      "require": "./dist/templates.js",
-      "types": "./dist/templates.d.ts"
+      "types": "./dist/templates.d.ts",
+      "default": "./dist/templates.js"
     },
     "./websocket": {
-      "import": "./dist/websocket.mjs",
-      "require": "./dist/websocket.js",
-      "types": "./dist/websocket.d.ts"
+      "types": "./dist/websocket.d.ts",
+      "default": "./dist/websocket.js"
     },
     "./server": {
-      "import": "./dist/server.mjs",
-      "require": "./dist/server.js",
-      "types": "./dist/server.d.ts"
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
     },
     "./forms": {
-      "import": "./dist/forms.mjs",
-      "require": "./dist/forms.js",
-      "types": "./dist/forms.d.ts"
+      "types": "./dist/forms.d.ts",
+      "default": "./dist/forms.js"
     },
     "./cookies": {
-      "import": "./dist/cookies.mjs",
-      "require": "./dist/cookies.js",
-      "types": "./dist/cookies.d.ts"
+      "types": "./dist/cookies.d.ts",
+      "default": "./dist/cookies.js"
     }
   },
   "files": [
@@ -123,5 +108,8 @@
     "type": "git",
     "url": "https://github.com/anthropics/philjs",
     "directory": "packages/philjs-rocket"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

@@ -58,5 +58,8 @@
   "bugs": {
     "url": "https://github.com/yourusername/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "engines": {
+    "node": ">=24"
+  }
 }

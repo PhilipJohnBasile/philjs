@@ -1,14 +1,20 @@
 # @philjs/observability
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Monitoring and observability tools for PhilJS applications. Track performance, errors, and user behavior with built-in dashboards and alerting.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Installation
 
 ```bash
-npm install @philjs/observability
-# or
-yarn add @philjs/observability
-# or
 pnpm add @philjs/observability
 ```
 

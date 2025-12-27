@@ -61,5 +61,8 @@
     "feature-flags",
     "white-label"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  }
 }

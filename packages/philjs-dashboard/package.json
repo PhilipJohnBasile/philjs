@@ -9,13 +9,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./collectors": {
       "types": "./dist/collectors/index.d.ts",
-      "import": "./dist/collectors/index.js",
-      "require": "./dist/collectors/index.cjs"
+      "default": "./dist/collectors/index.js"
     }
   },
   "files": ["dist", "src"],

@@ -28,5 +28,8 @@
   },
   "keywords": ["philjs", "cdn", "umd", "global", "no-build", "alpine-style"],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  }
 }

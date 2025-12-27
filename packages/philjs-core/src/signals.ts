@@ -38,6 +38,7 @@ let batchDepth = 0;
 let batchedUpdates = new Set<() => void>();
 
 let currentOwner: Owner | null = null;
+let currentNestedDisposers: Array<() => void> | null = null;
 
 // ============================================================================
 // HMR State Management (Development Only)
@@ -392,6 +393,7 @@ export function effect(fn: EffectFunction): EffectCleanup {
   let isDisposed = false;
 
   let owner: Owner | null = null;
+  let nestedDisposers: Array<() => void> = [];
 
   const computation: Computation = {
     execute: () => {
@@ -406,6 +408,13 @@ export function effect(fn: EffectFunction): EffectCleanup {
       if (owner) {
         owner.cleanups.forEach(fn => fn());
         owner.cleanups = [];
+      }
+
+      // Dispose nested effects from previous execution
+      const toDispose = [...nestedDisposers];
+      nestedDisposers = [];
+      for (const nestedDispose of toDispose) {
+        nestedDispose();
       }
 
       // Clear old dependencies
@@ -429,11 +438,16 @@ export function effect(fn: EffectFunction): EffectCleanup {
       const prevComputation = activeComputation;
       activeComputation = computation;
 
+      // Track nested effect disposers
+      const prevNestedDisposers = currentNestedDisposers;
+      currentNestedDisposers = nestedDisposers;
+
       try {
         cleanup = fn();
       } finally {
         activeComputation = prevComputation;
         currentOwner = prevOwner;
+        currentNestedDisposers = prevNestedDisposers;
       }
     },
     dependencies: new Set(),
@@ -453,6 +467,12 @@ export function effect(fn: EffectFunction): EffectCleanup {
       owner.cleanups.forEach(fn => fn());
       owner.cleanups = [];
     }
+
+    // Dispose nested effects
+    for (const nestedDispose of nestedDisposers) {
+      nestedDispose();
+    }
+    nestedDisposers = [];
 
     // Clear dependencies
     for (const deps of computation.dependencies) {
@@ -475,6 +495,16 @@ export function effect(fn: EffectFunction): EffectCleanup {
       dispose,
     };
     activeEffects.add(effectHandle);
+  }
+
+  // Register this effect's dispose with parent if we're inside another effect
+  if (currentNestedDisposers) {
+    currentNestedDisposers.push(dispose);
+  }
+
+  // Register dispose with current owner for root disposal
+  if (currentOwner) {
+    currentOwner.cleanups.push(dispose);
   }
 
   // Run the effect initially

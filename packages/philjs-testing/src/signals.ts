@@ -79,51 +79,53 @@ export async function waitForSignal<T>(
   const { timeout = 5000, interval = 50 } = options;
   const startTime = Date.now();
 
-  return new Promise((resolve, reject) => {
-    // Check immediately
-    const currentValue = signal.get();
-    if (predicate(currentValue)) {
-      resolve(currentValue);
-      return;
-    }
+  const { promise, resolve, reject } = Promise.withResolvers<T>();
 
-    // If signal has subscribe, use it
-    if (signal.subscribe) {
-      const unsubscribe = signal.subscribe((value) => {
-        if (predicate(value)) {
-          unsubscribe();
-          resolve(value);
-        }
-      });
+  // Check immediately
+  const currentValue = signal.get();
+  if (predicate(currentValue)) {
+    resolve(currentValue);
+    return promise;
+  }
 
-      // Timeout
-      setTimeout(() => {
-        unsubscribe();
-        reject(new Error(`Timed out waiting for signal to match predicate after ${timeout}ms`));
-      }, timeout);
-
-      return;
-    }
-
-    // Polling fallback
-    const checkValue = () => {
-      const value = signal.get();
-
+  // If signal has subscribe, use it
+  if (signal.subscribe) {
+    const unsubscribe = signal.subscribe((value) => {
       if (predicate(value)) {
+        unsubscribe();
         resolve(value);
-        return;
       }
+    });
 
-      if (Date.now() - startTime >= timeout) {
-        reject(new Error(`Timed out waiting for signal to match predicate after ${timeout}ms`));
-        return;
-      }
+    // Timeout
+    setTimeout(() => {
+      unsubscribe();
+      reject(new Error(`Timed out waiting for signal to match predicate after ${timeout}ms`));
+    }, timeout);
 
-      setTimeout(checkValue, interval);
-    };
+    return promise;
+  }
+
+  // Polling fallback
+  const checkValue = () => {
+    const value = signal.get();
+
+    if (predicate(value)) {
+      resolve(value);
+      return;
+    }
+
+    if (Date.now() - startTime >= timeout) {
+      reject(new Error(`Timed out waiting for signal to match predicate after ${timeout}ms`));
+      return;
+    }
 
     setTimeout(checkValue, interval);
-  });
+  };
+
+  setTimeout(checkValue, interval);
+
+  return promise;
 }
 
 /**

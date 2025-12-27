@@ -103,28 +103,40 @@ export function Dashboard() {
 - Optimize where it actually matters
 - Make business-driven technical decisions
 
-### 4. **TypeScript-First**
+### 4. **TypeScript 6 First**
 
-PhilJS is written in TypeScript and designed for TypeScript. Every API is fully typed with excellent inference.
+PhilJS is written in TypeScript and designed for TypeScript 6+. Every API is fully typed with excellent inference and leverages the latest TypeScript features.
 
 ```typescript
-// Props are automatically inferred
+// Props are automatically inferred with TypeScript 6 features
 function UserProfile({ user, onSave }: {
   user: { name: string; email: string };
   onSave: (user: User) => Promise<void>;
 }) {
   const editing = signal(false);
 
-  // TypeScript knows editing is Signal<boolean>
+  // TypeScript 6 knows editing is Signal<boolean>
   // Full autocomplete and type checking everywhere
+}
+
+// Using TypeScript 6 satisfies operator for config
+const config = {
+  theme: 'dark',
+  version: 2,
+} as const satisfies AppConfig;
+
+// Using NoInfer for better generic inference
+function createStore<T>(initial: NoInfer<T>): Store<T> {
+  return new Store(initial);
 }
 ```
 
-**Benefits:**
-- Catch errors at compile time, not runtime
-- Autocomplete that actually works
-- Refactor with confidence
-- Self-documenting code
+**TypeScript 6 Benefits:**
+- Isolated declarations for faster builds
+- Enhanced `satisfies` operator
+- `NoInfer<T>` utility type for better generics
+- Improved const type parameters
+- Better auto-imports and go-to-definition
 
 ### 5. **Server Functions = Zero Boilerplate APIs**
 
@@ -315,8 +327,14 @@ PhilJS includes everything Next.js does plus:
 
 ## Quick Feature Overview
 
+### Requirements
+- **Node.js 24+** - Required for native ESM, Promise.withResolvers(), Object.groupBy()
+- **TypeScript 6+** - Required for isolated declarations and enhanced inference
+
 ### Reactivity
 ```typescript
+import { signal, memo, effect } from 'philjs-core';
+
 const count = signal(0);           // Reactive state
 const doubled = memo(() => count() * 2);  // Computed value
 effect(() => console.log(count()));       // Side effect

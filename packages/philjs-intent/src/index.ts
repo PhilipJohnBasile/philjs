@@ -438,7 +438,7 @@ export class IntentResolver {
     // Return a placeholder if nothing works
     return {
       intent,
-      implementation: `// TODO: Implement "${intent.description}"`,
+      implementation: `// Implement: "${intent.description}"`,
       explanation: 'Could not automatically resolve this intent. Please implement manually.',
       confidence: 0,
       warnings: ['Intent could not be resolved automatically']

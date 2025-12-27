@@ -88,144 +88,151 @@ export class EventStore {
   private subscribers: Map<string, Array<(event: Event) => void>> = new Map();
 
   async initialize(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(EventStore.DB_NAME, 1);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const request = indexedDB.open(EventStore.DB_NAME, 1);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      this.db = request.result;
+      resolve();
+    };
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
 
-        if (!db.objectStoreNames.contains(EventStore.EVENTS_STORE)) {
-          const eventsStore = db.createObjectStore(EventStore.EVENTS_STORE, { keyPath: 'id' });
-          eventsStore.createIndex('aggregateId', 'aggregateId');
-          eventsStore.createIndex('aggregateId_version', ['aggregateId', 'version'], { unique: true });
-          eventsStore.createIndex('type', 'type');
-          eventsStore.createIndex('timestamp', 'timestamp');
-        }
+      if (!db.objectStoreNames.contains(EventStore.EVENTS_STORE)) {
+        const eventsStore = db.createObjectStore(EventStore.EVENTS_STORE, { keyPath: 'id' });
+        eventsStore.createIndex('aggregateId', 'aggregateId');
+        eventsStore.createIndex('aggregateId_version', ['aggregateId', 'version'], { unique: true });
+        eventsStore.createIndex('type', 'type');
+        eventsStore.createIndex('timestamp', 'timestamp');
+      }
 
-        if (!db.objectStoreNames.contains(EventStore.SNAPSHOTS_STORE)) {
-          const snapshotsStore = db.createObjectStore(EventStore.SNAPSHOTS_STORE, { keyPath: 'aggregateId' });
-          snapshotsStore.createIndex('aggregateType', 'aggregateType');
-        }
-      };
-    });
+      if (!db.objectStoreNames.contains(EventStore.SNAPSHOTS_STORE)) {
+        const snapshotsStore = db.createObjectStore(EventStore.SNAPSHOTS_STORE, { keyPath: 'aggregateId' });
+        snapshotsStore.createIndex('aggregateType', 'aggregateType');
+      }
+    };
+
+    return promise;
   }
 
   async append(events: Event[]): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readwrite');
-      const store = transaction.objectStore(EventStore.EVENTS_STORE);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readwrite');
+    const store = transaction.objectStore(EventStore.EVENTS_STORE);
 
-      transaction.oncomplete = () => {
-        // Notify subscribers
-        for (const event of events) {
-          this.notifySubscribers(event);
-        }
-        resolve();
-      };
-
-      transaction.onerror = () => reject(transaction.error);
-
+    transaction.oncomplete = () => {
+      // Notify subscribers
       for (const event of events) {
-        store.add(event);
+        this.notifySubscribers(event);
       }
-    });
+      resolve();
+    };
+
+    transaction.onerror = () => reject(transaction.error);
+
+    for (const event of events) {
+      store.add(event);
+    }
+
+    return promise;
   }
 
   async getEvents(aggregateId: string, fromVersion?: number): Promise<Event[]> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
-      const store = transaction.objectStore(EventStore.EVENTS_STORE);
-      const index = store.index('aggregateId');
+    const { promise, resolve, reject } = Promise.withResolvers<Event[]>();
+    const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
+    const store = transaction.objectStore(EventStore.EVENTS_STORE);
+    const index = store.index('aggregateId');
 
-      const request = index.getAll(aggregateId);
+    const request = index.getAll(aggregateId);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        let events = request.result as Event[];
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      let events = request.result as Event[];
 
-        if (fromVersion !== undefined) {
-          events = events.filter(e => e.version > fromVersion);
-        }
+      if (fromVersion !== undefined) {
+        events = events.filter(e => e.version > fromVersion);
+      }
 
-        events.sort((a, b) => a.version - b.version);
-        resolve(events);
-      };
-    });
+      events.sort((a, b) => a.version - b.version);
+      resolve(events);
+    };
+
+    return promise;
   }
 
   async getAllEvents(fromTimestamp?: number, toTimestamp?: number): Promise<Event[]> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
-      const store = transaction.objectStore(EventStore.EVENTS_STORE);
-      const index = store.index('timestamp');
+    const { promise, resolve, reject } = Promise.withResolvers<Event[]>();
+    const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
+    const store = transaction.objectStore(EventStore.EVENTS_STORE);
+    const index = store.index('timestamp');
 
-      let range: IDBKeyRange | undefined;
-      if (fromTimestamp && toTimestamp) {
-        range = IDBKeyRange.bound(fromTimestamp, toTimestamp);
-      } else if (fromTimestamp) {
-        range = IDBKeyRange.lowerBound(fromTimestamp);
-      } else if (toTimestamp) {
-        range = IDBKeyRange.upperBound(toTimestamp);
-      }
+    let range: IDBKeyRange | undefined;
+    if (fromTimestamp && toTimestamp) {
+      range = IDBKeyRange.bound(fromTimestamp, toTimestamp);
+    } else if (fromTimestamp) {
+      range = IDBKeyRange.lowerBound(fromTimestamp);
+    } else if (toTimestamp) {
+      range = IDBKeyRange.upperBound(toTimestamp);
+    }
 
-      const request = range ? index.getAll(range) : store.getAll();
+    const request = range ? index.getAll(range) : store.getAll();
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result as Event[]);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result as Event[]);
+
+    return promise;
   }
 
   async getEventsByType(eventType: string): Promise<Event[]> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
-      const store = transaction.objectStore(EventStore.EVENTS_STORE);
-      const index = store.index('type');
+    const { promise, resolve, reject } = Promise.withResolvers<Event[]>();
+    const transaction = this.db!.transaction(EventStore.EVENTS_STORE, 'readonly');
+    const store = transaction.objectStore(EventStore.EVENTS_STORE);
+    const index = store.index('type');
 
-      const request = index.getAll(eventType);
+    const request = index.getAll(eventType);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result as Event[]);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result as Event[]);
+
+    return promise;
   }
 
   async saveSnapshot(snapshot: Snapshot): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.SNAPSHOTS_STORE, 'readwrite');
-      const store = transaction.objectStore(EventStore.SNAPSHOTS_STORE);
-      const request = store.put(snapshot);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(EventStore.SNAPSHOTS_STORE, 'readwrite');
+    const store = transaction.objectStore(EventStore.SNAPSHOTS_STORE);
+    const request = store.put(snapshot);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async getSnapshot(aggregateId: string): Promise<Snapshot | null> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(EventStore.SNAPSHOTS_STORE, 'readonly');
-      const store = transaction.objectStore(EventStore.SNAPSHOTS_STORE);
-      const request = store.get(aggregateId);
+    const { promise, resolve, reject } = Promise.withResolvers<Snapshot | null>();
+    const transaction = this.db!.transaction(EventStore.SNAPSHOTS_STORE, 'readonly');
+    const store = transaction.objectStore(EventStore.SNAPSHOTS_STORE);
+    const request = store.get(aggregateId);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result ?? null);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result ?? null);
+
+    return promise;
   }
 
   subscribe(eventType: string, handler: (event: Event) => void): () => void {

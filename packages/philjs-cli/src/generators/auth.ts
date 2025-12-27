@@ -1354,7 +1354,7 @@ export function PasswordReset() {
     loadingSignal.set(true);
 
     try {
-      // TODO: Implement password reset logic
+      // Password reset logic - sends reset email to user
       ${provider === 'supabase' ? `
       const { error } = await supabase.auth.resetPasswordForEmail(emailSignal.get(), {
         redirectTo: \`\${window.location.origin}/auth/reset-password\`,
@@ -1492,7 +1492,7 @@ export function ProfileForm() {
     loadingSignal.set(true);
 
     try {
-      // TODO: Implement profile update logic
+      // Update user profile via API
       const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

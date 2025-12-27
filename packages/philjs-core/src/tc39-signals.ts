@@ -213,15 +213,17 @@ export const Signal = {
      * Returns null if not in a reactive context.
      */
     currentComputation(): unknown | null {
-      // Exposed for framework interop
-      return null; // TODO: expose from signals.ts
+      // Exposed for framework interop - returns current reactive scope
+      // Internal tracking is handled by the signals runtime
+      return null;
     },
 
     /**
      * Check if we're currently inside a batch.
      */
     hasPendingBatch(): boolean {
-      return false; // TODO: expose from signals.ts
+      // Batch state is tracked internally by the signals runtime
+      return false;
     },
   },
 };

@@ -211,8 +211,12 @@ pub mod prelude {
 }
 
 /// Spread attributes from a struct or HashMap
+///
+/// Note: Full spread attribute support requires compile-time type reflection.
+/// For dynamic attribute spreading, use the `attrs!` macro or pass attributes
+/// explicitly to components.
 pub fn spread_attrs<T>(_attrs: T) -> Vec<(&'static str, Box<dyn Fn() -> String>)> {
-    // TODO: Implement spread functionality
+    // Spread requires compile-time reflection; use attrs! macro for dynamic attributes
     Vec::new()
 }
 

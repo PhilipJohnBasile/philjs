@@ -31,16 +31,18 @@ export function philjsTailwindVite(options: PhilJSTailwindViteOptions = {}): Plu
     name: 'philjs-tailwind',
     enforce: 'pre',
 
-    config(config, { mode }) {
+    async config(config: any, { mode }: { mode: string }) {
+      const tailwindcss = (await import('tailwindcss')).default;
+      const autoprefixer = (await import('autoprefixer')).default;
       return {
         css: {
           postcss: {
             plugins: [
-              require('tailwindcss')({
+              tailwindcss({
                 content,
                 ...(jit && { mode: 'jit' }),
               }),
-              require('autoprefixer')(),
+              autoprefixer(),
             ],
           },
         },

@@ -375,23 +375,24 @@ class IndexedDBVectorStore implements VectorStore {
   }
 
   private async init(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, 1);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const request = indexedDB.open(this.dbName, 1);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      this.db = request.result;
+      resolve();
+    };
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'id' });
-          store.createIndex('metadata', 'metadata', { unique: false });
-        }
-      };
-    });
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(this.storeName)) {
+        const store = db.createObjectStore(this.storeName, { keyPath: 'id' });
+        store.createIndex('metadata', 'metadata', { unique: false });
+      }
+    };
+
+    return promise;
   }
 
   async add(documents: Document[]): Promise<void> {
@@ -405,10 +406,11 @@ class IndexedDBVectorStore implements VectorStore {
       store.put(doc);
     }
 
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+
+    return promise;
   }
 
   async search(query: number[], options?: { topK?: number; filter?: Record<string, any>; minScore?: number }): Promise<SearchResult[]> {
@@ -451,14 +453,15 @@ class IndexedDBVectorStore implements VectorStore {
   private async getAllDocuments(): Promise<Document[]> {
     if (!this.db) return [];
 
-    return new Promise((resolve, reject) => {
-      const tx = this.db!.transaction(this.storeName, 'readonly');
-      const store = tx.objectStore(this.storeName);
-      const request = store.getAll();
+    const { promise, resolve, reject } = Promise.withResolvers<Document[]>();
+    const tx = this.db!.transaction(this.storeName, 'readonly');
+    const store = tx.objectStore(this.storeName);
+    const request = store.getAll();
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+
+    return promise;
   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -486,10 +489,11 @@ class IndexedDBVectorStore implements VectorStore {
       store.delete(id);
     }
 
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+
+    return promise;
   }
 
   async update(id: string, updates: Partial<Document>): Promise<void> {
@@ -506,42 +510,45 @@ class IndexedDBVectorStore implements VectorStore {
     await this.ready;
     if (!this.db) return null;
 
-    return new Promise((resolve, reject) => {
-      const tx = this.db!.transaction(this.storeName, 'readonly');
-      const store = tx.objectStore(this.storeName);
-      const request = store.get(id);
+    const { promise, resolve, reject } = Promise.withResolvers<Document | null>();
+    const tx = this.db!.transaction(this.storeName, 'readonly');
+    const store = tx.objectStore(this.storeName);
+    const request = store.get(id);
 
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error);
-    });
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+
+    return promise;
   }
 
   async count(): Promise<number> {
     await this.ready;
     if (!this.db) return 0;
 
-    return new Promise((resolve, reject) => {
-      const tx = this.db!.transaction(this.storeName, 'readonly');
-      const store = tx.objectStore(this.storeName);
-      const request = store.count();
+    const { promise, resolve, reject } = Promise.withResolvers<number>();
+    const tx = this.db!.transaction(this.storeName, 'readonly');
+    const store = tx.objectStore(this.storeName);
+    const request = store.count();
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+
+    return promise;
   }
 
   async clear(): Promise<void> {
     await this.ready;
     if (!this.db) return;
 
-    return new Promise((resolve, reject) => {
-      const tx = this.db!.transaction(this.storeName, 'readwrite');
-      const store = tx.objectStore(this.storeName);
-      const request = store.clear();
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const tx = this.db!.transaction(this.storeName, 'readwrite');
+    const store = tx.objectStore(this.storeName);
+    const request = store.clear();
 
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
-    });
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+
+    return promise;
   }
 }
 

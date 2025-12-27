@@ -56,14 +56,14 @@ export async function handlePayPalWebhook(
 /**
  * Verify webhook signature
  */
-export function verifyWebhookSignature(
+export async function verifyWebhookSignature(
   payload: string | Buffer,
   signature: string,
   secret: string
-): boolean {
+): Promise<boolean> {
   // In production, implement proper signature verification
   // This is a placeholder implementation
-  const crypto = require('crypto');
+  const crypto = await import('crypto');
   const expectedSignature = crypto
     .createHmac('sha256', secret)
     .update(typeof payload === 'string' ? payload : payload.toString())

@@ -414,16 +414,16 @@ export interface WatchOptions {
 /**
  * Watch file for changes
  */
-export function watchFile(
+export async function watchFile(
   path: string,
   callback: (path: string) => void,
   options: WatchOptions = {}
-): () => void {
+): Promise<() => void> {
   const { debounce = 100 } = options;
   let timeout: NodeJS.Timeout | null = null;
 
-  const { watch } = require('fs');
-  const watcher = watch(path, (eventType: string) => {
+  const fs = await import('fs');
+  const watcher = fs.watch(path, (eventType: string) => {
     if (eventType === 'change') {
       // Invalidate cache
       readCache.delete(path);
@@ -451,20 +451,20 @@ export function watchFile(
 /**
  * Watch directory for changes
  */
-export function watchDir(
+export async function watchDir(
   path: string,
   callback: (path: string, event: string) => void,
   options: WatchOptions = {}
-): () => void {
+): Promise<() => void> {
   const { debounce = 100 } = options;
   const timeouts = new Map<string, NodeJS.Timeout>();
 
-  const { watch } = require('fs');
-  const watcher = watch(path, { recursive: true }, (eventType: string, filename: string) => {
+  const fs = await import('fs');
+  const pathModule = await import('path');
+  const watcher = fs.watch(path, { recursive: true }, (eventType: string, filename: string) => {
     if (!filename) return;
 
-    const { join } = require('path');
-    const fullPath = join(path, filename);
+    const fullPath = pathModule.join(path, filename);
 
     // Invalidate cache
     readCache.delete(fullPath);

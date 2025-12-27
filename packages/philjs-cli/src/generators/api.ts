@@ -124,7 +124,8 @@ function generateRouteTemplate(context: TemplateContext): string {
 export async function GET(request${requestType}${isDynamic ? `, params${paramsType}` : ''}) {
   try {
     ${isDynamic ? `const { ${(routeParams as string[])[0]} } = params;` : ''}
-    // TODO: Implement ${isDynamic ? 'fetch single' : 'fetch all'} logic
+    // Implement your ${isDynamic ? 'fetch single' : 'fetch all'} logic here
+    // Example: const data = await db.query(...)
     ${isDynamic
       ? `const data${typescript ? `: ${resourcePascal}Data` : ''} = { id: ${(routeParams as string[])[0]}, /* ... */ };`
       : `const data${typescript ? `: ${resourcePascal}Data[]` : ''} = [];`
@@ -154,8 +155,8 @@ export async function POST(request${requestType}) {
   try {
     const body${typescript ? ` = await request.json() as Create${resourcePascal}Input` : ' = await request.json()'};
 
-    // TODO: Validate input
-    // TODO: Create ${resourceName} in database
+    // Validate input (consider using zod or similar)
+    // Create ${resourceName} in database
 
     const created${typescript ? `: ${resourcePascal}Data` : ''} = {
       id: crypto.randomUUID(),
@@ -188,8 +189,8 @@ export async function ${hasPut ? 'PUT' : 'PATCH'}(request${requestType}, params$
     const { ${(routeParams as string[])[0]} } = params;
     const body${typescript ? ` = await request.json() as Update${resourcePascal}Input` : ' = await request.json()'};
 
-    // TODO: Validate input
-    // TODO: Update ${resourceName} in database
+    // Validate input (consider using zod or similar)
+    // Update ${resourceName} in database
 
     const updated${typescript ? `: ${resourcePascal}Data` : ''} = {
       id: ${(routeParams as string[])[0]},
@@ -221,7 +222,7 @@ export async function DELETE(request${requestType}, params${paramsType}) {
   try {
     const { ${(routeParams as string[])[0]} } = params;
 
-    // TODO: Delete ${resourceName} from database
+    // Delete ${resourceName} from database
 
     return new Response(null, { status: 204 });
   } catch (error) {
@@ -252,15 +253,15 @@ export interface ${resourcePascal}Data {
   id: string;
   createdAt: string;
   updatedAt?: string;
-  // TODO: Add ${resourcePascal} fields
+  // Add your ${resourcePascal} fields here
 }
 
 export interface Create${resourcePascal}Input {
-  // TODO: Add create input fields
+  // Add your create input fields here
 }
 
 export interface Update${resourcePascal}Input {
-  // TODO: Add update input fields
+  // Add your update input fields here (all optional for partial updates)
 }
 
 export interface ${resourcePascal}ListResponse {

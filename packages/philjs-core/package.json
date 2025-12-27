@@ -167,5 +167,8 @@
     "signals",
     "reactivity",
     "framework"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

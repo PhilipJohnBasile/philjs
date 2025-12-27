@@ -8,8 +8,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./vercel": {
       "types": "./dist/vercel/index.d.ts",
@@ -202,5 +201,8 @@
   "bugs": {
     "url": "https://github.com/yourusername/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "engines": {
+    "node": ">=24"
+  }
 }

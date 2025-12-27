@@ -671,9 +671,10 @@ async function startDevServer(options: Record<string, string | boolean>): Promis
   // Validate port
   const port = validatePort(options.port as string || '3000');
 
+  const localIP = await getLocalIP();
   console.log(`\n  Starting PhilJS Native development server...\n`);
   console.log(`  Local:   http://localhost:${port}`);
-  console.log(`  Network: http://${getLocalIP()}:${port}`);
+  console.log(`  Network: http://${localIP}:${port}`);
   console.log('\n  Press Ctrl+C to stop\n');
 
   // Use spawn without shell: true
@@ -813,13 +814,13 @@ function toDisplayName(name: string): string {
     .join(' ');
 }
 
-function getLocalIP(): string {
+async function getLocalIP(): Promise<string> {
   try {
-    const { networkInterfaces } = require('os');
-    const nets = networkInterfaces();
+    const os = await import('os');
+    const nets = os.networkInterfaces();
 
     for (const name of Object.keys(nets)) {
-      for (const net of nets[name]) {
+      for (const net of nets[name] || []) {
         if (net.family === 'IPv4' && !net.internal) {
           return net.address;
         }

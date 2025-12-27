@@ -465,12 +465,32 @@ export interface OpenAPISchema {
   type?: string;
   format?: string;
   description?: string;
-  required?: boolean;
+  required?: boolean | string[];
   properties?: Record<string, OpenAPISchema>;
   items?: OpenAPISchema;
   enum?: unknown[];
   default?: unknown;
   example?: unknown;
+  /** Minimum string length */
+  minLength?: number;
+  /** Maximum string length */
+  maxLength?: number;
+  /** String pattern (regex) */
+  pattern?: string;
+  /** Minimum value for numbers */
+  minimum?: number;
+  /** Maximum value for numbers */
+  maximum?: number;
+  /** Minimum array items */
+  minItems?: number;
+  /** Maximum array items */
+  maxItems?: number;
+  /** Whether items must be unique */
+  uniqueItems?: boolean;
+  /** Additional properties allowed */
+  additionalProperties?: boolean | OpenAPISchema;
+  /** Reference to another schema */
+  $ref?: string;
 }
 
 /**

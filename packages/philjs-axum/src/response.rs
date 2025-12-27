@@ -116,6 +116,10 @@ impl IntoResponse for Redirect {
 }
 
 /// Stream response for SSR streaming
+///
+/// Streaming SSR enables progressive HTML rendering with Suspense boundaries.
+/// This is a placeholder for the streaming implementation - see `render_stream`
+/// in handler.rs for the current synchronous approach.
 pub struct StreamResponse {
-    // TODO: Implement streaming body
+    // Streaming body implementation pending - using sync rendering for now
 }

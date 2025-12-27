@@ -1,6 +1,16 @@
 # philjs-adapters
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Deployment adapters for PhilJS - Deploy anywhere: Vercel, Netlify, Cloudflare, AWS, Bun, Deno, or any Node.js server.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Features
 

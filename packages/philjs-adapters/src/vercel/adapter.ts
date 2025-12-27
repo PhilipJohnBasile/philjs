@@ -334,7 +334,9 @@ export function vercelAdapter(config: VercelConfig = {}): Adapter & Partial<Edge
   }
 
   async function generateSplitFunctions() {
-    // TODO: Implement route splitting for better cold start performance
+    // Route splitting for better cold start performance is a planned enhancement.
+    // Currently using a single function which works well for most use cases.
+    // For large applications with many routes, consider manual route splitting.
     console.warn('Split routes not yet implemented, using single function');
     await generateMainFunction();
   }

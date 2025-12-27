@@ -257,8 +257,8 @@ export class InMemoryQueue implements IQueue {
     const waitingJobs = Array.from(this.jobs.values())
       .filter(j => j.status === 'waiting')
       .sort((a, b) => {
-        // Sort by priority (if available), then by creation time
-        return b.createdAt.getTime() - a.createdAt.getTime();
+        // Sort by creation time (FIFO - oldest first)
+        return a.createdAt.getTime() - b.createdAt.getTime();
       });
 
     return waitingJobs[0] || null;

@@ -163,19 +163,22 @@ describe('Scheduler', () => {
       handler: async () => 'done',
     });
 
-    scheduler.scheduleOnce(job, {}, new Date(Date.now() + 50), {
+    scheduler.schedule(job, {
+      cron: '*/1 * * * * *', // Every second
+      maxRuns: 1,
       onSchedule,
-    } as any);
+    });
 
     scheduler.start();
+    queue.process();
 
-    // Increased timeout for CI
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Wait for the job to be scheduled and executed
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // TODO: Fix - onSchedule callback timing is unreliable on CI
-    // expect(onSchedule).toHaveBeenCalled();
+    expect(onSchedule).toHaveBeenCalled();
 
     scheduler.stop();
+    await queue.stop();
   });
 
   it('should get all scheduled jobs', () => {

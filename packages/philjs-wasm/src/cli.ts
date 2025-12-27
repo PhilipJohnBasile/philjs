@@ -273,7 +273,7 @@ function generateCommand(args: ParsedArgs): CodegenResult {
 // Watch Command
 // ============================================================================
 
-function watchCommand(args: ParsedArgs): void {
+async function watchCommand(args: ParsedArgs): Promise<void> {
   if (!args.input) {
     console.error('Error: No directory specified');
     console.log('Usage: philjs-wasm watch <dir>');
@@ -342,9 +342,9 @@ function watchCommand(args: ParsedArgs): void {
     });
 
     // Initial generation for all .rs files
-    const { readdirSync } = require('fs');
+    const fs = await import('fs');
     function scanDir(dir: string): void {
-      const entries = readdirSync(dir, { withFileTypes: true });
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
       for (const entry of entries) {
         const fullPath = join(dir, entry.name);
         if (entry.isDirectory()) {

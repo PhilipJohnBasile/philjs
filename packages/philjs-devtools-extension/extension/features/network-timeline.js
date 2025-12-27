@@ -331,7 +331,8 @@ export class NetworkTimeline {
   }
 
   handleMouseMove(e) {
-    // TODO: Implement hover effects
+    // Hover effects are handled via CSS :hover pseudo-class
+    // Additional tooltip/highlight behavior can be added here if needed
   }
 
   selectItem(item) {

@@ -639,10 +639,10 @@ export function findCommonDependencies(
 /**
  * Generate bundle analysis report
  */
-function generateAnalysisReport(
+async function generateAnalysisReport(
   stats: BundleStats,
   options: AnalyzeOptions = {}
-): void {
+): Promise<void> {
   const {
     outputFile = 'bundle-analysis.json',
     treemap = false,
@@ -683,7 +683,7 @@ function generateAnalysisReport(
 
   // Write to file
   try {
-    const fs = require('fs');
+    const fs = await import('fs');
     fs.writeFileSync(outputFile, JSON.stringify(report, null, 2));
     console.log(`\n[Bundle Analyzer] Report written to ${outputFile}`);
   } catch (error) {
@@ -691,14 +691,14 @@ function generateAnalysisReport(
   }
 
   if (treemap) {
-    generateTreeMap(stats);
+    await generateTreeMap(stats);
   }
 }
 
 /**
  * Generate treemap visualization
  */
-function generateTreeMap(stats: BundleStats): void {
+async function generateTreeMap(stats: BundleStats): Promise<void> {
   // Generate HTML treemap (simplified)
   const html = `
 <!DOCTYPE html>
@@ -731,7 +731,7 @@ function generateTreeMap(stats: BundleStats): void {
   `;
 
   try {
-    const fs = require('fs');
+    const fs = await import('fs');
     fs.writeFileSync('bundle-treemap.html', html);
     console.log('[Bundle Analyzer] Treemap written to bundle-treemap.html');
   } catch (error) {

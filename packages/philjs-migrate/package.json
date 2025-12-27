@@ -26,5 +26,8 @@
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  }
 }

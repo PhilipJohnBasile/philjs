@@ -44,5 +44,8 @@
     "philjs",
     "routing",
     "navigation"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

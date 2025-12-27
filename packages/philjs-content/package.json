@@ -113,5 +113,8 @@
     "sitemap",
     "seo",
     "content-utilities"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

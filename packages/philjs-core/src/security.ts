@@ -391,25 +391,23 @@ export function sanitizeUrl(
  * // Use for CSRF protection
  * ```
  */
-export function generateSecureToken(length: number = 32): string {
+export async function generateSecureToken(length: number = 32): Promise<string> {
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     // Browser environment
     const buffer = new Uint8Array(length);
     crypto.getRandomValues(buffer);
     return Array.from(buffer, byte => byte.toString(16).padStart(2, '0')).join('');
-  } else if (typeof require !== 'undefined') {
-    // Node.js environment
-    try {
-      const crypto = require('crypto');
-      return crypto.randomBytes(length).toString('hex');
-    } catch {
-      // Fallback to less secure method
-      console.warn('Crypto module not available, using less secure random generation');
-      return fallbackSecureToken(length);
-    }
   }
 
-  return fallbackSecureToken(length);
+  // Node.js environment - use dynamic import
+  try {
+    const nodeCrypto = await import('crypto');
+    return nodeCrypto.randomBytes(length).toString('hex');
+  } catch {
+    // Fallback to less secure method
+    console.warn('Crypto module not available, using less secure random generation');
+    return fallbackSecureToken(length);
+  }
 }
 
 /**
@@ -471,7 +469,7 @@ export function isValidEmail(email: string): boolean {
  * // In HTML: <script nonce="${nonce}">...</script>
  * ```
  */
-export function createCspNonce(): string {
+export async function createCspNonce(): Promise<string> {
   return generateSecureToken(16);
 }
 

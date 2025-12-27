@@ -9,28 +9,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./google": {
       "types": "./dist/providers/google.d.ts",
-      "import": "./dist/providers/google.js",
-      "require": "./dist/providers/google.cjs"
+      "default": "./dist/providers/google.js"
     },
     "./mapbox": {
       "types": "./dist/providers/mapbox.d.ts",
-      "import": "./dist/providers/mapbox.js",
-      "require": "./dist/providers/mapbox.cjs"
+      "default": "./dist/providers/mapbox.js"
     },
     "./leaflet": {
       "types": "./dist/providers/leaflet.d.ts",
-      "import": "./dist/providers/leaflet.js",
-      "require": "./dist/providers/leaflet.cjs"
+      "default": "./dist/providers/leaflet.js"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
-      "import": "./dist/utils/index.js",
-      "require": "./dist/utils/index.cjs"
+      "default": "./dist/utils/index.js"
     }
   },
   "files": ["dist", "src"],

@@ -37,5 +37,8 @@
   },
   "keywords": ["philjs", "kotlin", "android", "compose", "jetpack", "native", "kmp", "multiplatform"],
   "license": "MIT",
-  "author": "PhilJS Team"
+  "author": "PhilJS Team",
+  "engines": {
+    "node": ">=24"
+  }
 }

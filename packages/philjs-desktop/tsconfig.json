@@ -3,12 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "moduleResolution": "Bundler"
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts", "src/test-setup.ts", "src/electron/*", "src/electron/**/*", "src/system/notification.ts", "src/system/clipboard.ts"]

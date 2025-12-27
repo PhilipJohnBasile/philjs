@@ -76,30 +76,27 @@ describe('Queue', () => {
     await queue.stop();
   });
 
-  // TODO: Fix flaky test - job ordering is inconsistent on CI
-  it.skip('should handle job priority', async () => {
+  it('should handle job priority', async () => {
     const processedOrder: string[] = [];
-    let jobsCompleted = 0;
 
     const job = defineJob({
       name: 'priority-job',
       handler: async (payload: { id: string }) => {
         processedOrder.push(payload.id);
-        jobsCompleted++;
       },
     });
 
     // Enqueue jobs with different creation times
     await queue.enqueue(job, { id: 'job-1' });
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 20));
     await queue.enqueue(job, { id: 'job-2' });
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 20));
     await queue.enqueue(job, { id: 'job-3' });
 
     queue.process();
 
-    // Wait for all jobs to complete (increased timeout for CI)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Wait for all jobs to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     // Jobs should be processed in FIFO order (oldest first)
     expect(processedOrder.length).toBe(3);

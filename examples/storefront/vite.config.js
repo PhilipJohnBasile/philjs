@@ -5,7 +5,7 @@ export default defineConfig({
     port: 3000
   },
   build: {
-    target: "es2022",
+    target: "esnext",
     outDir: "dist/client",
     emptyOutDir: false
   },

@@ -131,16 +131,16 @@ export class PoolWorker {
     const workerUrl = createWorkerBlob(WORKER_CODE);
     this.worker = new Worker(workerUrl);
 
-    this.ready = new Promise((resolve) => {
-      const handler = (event: MessageEvent) => {
-        if (event.data.type === 'ready') {
-          this._isReady = true;
-          this.worker.removeEventListener('message', handler);
-          resolve();
-        }
-      };
-      this.worker.addEventListener('message', handler);
-    });
+    const { promise, resolve } = Promise.withResolvers<void>();
+    this.ready = promise;
+    const handler = (event: MessageEvent) => {
+      if (event.data.type === 'ready') {
+        this._isReady = true;
+        this.worker.removeEventListener('message', handler);
+        resolve();
+      }
+    };
+    this.worker.addEventListener('message', handler);
 
     this.worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
       const { type, taskId, payload } = event.data;
@@ -312,16 +312,16 @@ export class WorkerPool {
 
     if (!worker) {
       // Queue the task
-      return new Promise((resolve, reject) => {
-        const queuedTask = {
-          ...task,
-          resolve,
-          reject
-        };
-        this.taskQueue.push(queuedTask as any);
-        this.taskQueue.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
-        this.updateStats();
-      });
+      const { promise, resolve, reject } = Promise.withResolvers<R>();
+      const queuedTask = {
+        ...task,
+        resolve,
+        reject
+      };
+      this.taskQueue.push(queuedTask as any);
+      this.taskQueue.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+      this.updateStats();
+      return promise;
     }
 
     const startTime = performance.now();
@@ -541,9 +541,9 @@ export class Channel<T> {
       throw new Error('Channel is closed');
     }
 
-    return new Promise((resolve) => {
-      this.waiters.push(resolve);
-    });
+    const { promise, resolve } = Promise.withResolvers<T>();
+    this.waiters.push(resolve);
+    return promise;
   }
 
   tryReceive(): T | undefined {

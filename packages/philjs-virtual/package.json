@@ -28,5 +28,8 @@
   },
   "keywords": ["virtualization", "virtual-list", "virtual-scroll", "windowing", "philjs"],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  }
 }

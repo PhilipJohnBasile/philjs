@@ -231,22 +231,24 @@ export function createTailwindPlugin(userConfig: TailwindPluginConfig = {}): Plu
       const plugin = {
         name: "philjs-tailwind",
 
-        config(viteConfig) {
+        async config(viteConfig: any) {
+          const tailwindcss = (await import("tailwindcss")).default;
+          const autoprefixer = (await import("autoprefixer")).default;
           return {
             css: {
               postcss: {
                 plugins: [
-                  require("tailwindcss")({
+                  tailwindcss({
                     config: mergedConfig.configPath || "./tailwind.config.js",
                   }),
-                  require("autoprefixer"),
+                  autoprefixer,
                 ],
               },
             },
           };
         },
 
-        configResolved(resolvedConfig) {
+        configResolved(resolvedConfig: { mode: string }) {
           const isProd = resolvedConfig.mode === "production";
 
           // Apply optimization in production

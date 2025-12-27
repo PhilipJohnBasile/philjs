@@ -61,30 +61,32 @@ export type {
   SpawnedProcess,
 } from './shell';
 
-// Clipboard - TODO: Fix Tauri v2 API compatibility
-// export {
-//   Clipboard,
-//   readClipboard,
-//   writeClipboard,
-//   readClipboardImage,
-//   writeClipboardImage,
-//   clearClipboard,
-// } from './clipboard';
+// Clipboard
+export {
+  Clipboard,
+  ClipboardError,
+  readClipboard,
+  writeClipboard,
+  readClipboardImage,
+  writeClipboardImage,
+  clearClipboard,
+} from './clipboard';
 
-// Notification - TODO: Fix Tauri v2 API compatibility
-// export {
-//   Notification,
-//   requestNotificationPermission,
-//   showNotification,
-//   notify,
-//   scheduleNotification,
-//   cancelNotification,
-// } from './notification';
-// export type {
-//   NotificationOptions,
-//   NotificationAction,
-//   ScheduledNotificationOptions,
-// } from './notification';
+// Notification
+export {
+  Notification,
+  NotificationError,
+  requestNotificationPermission,
+  showNotification,
+  notify,
+  scheduleNotification,
+  cancelNotification,
+} from './notification';
+export type {
+  NotificationOptions,
+  NotificationAction,
+  ScheduledNotificationOptions,
+} from './notification';
 
 // Global Shortcut
 export {

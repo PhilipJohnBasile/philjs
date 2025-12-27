@@ -228,16 +228,9 @@ export function calculateDepth(
 export function groupByDepth(
   graph: DependencyGraph
 ): Map<number, string[]> {
-  const groups = new Map<number, string[]>();
-
-  for (const symbolId of graph.symbols.keys()) {
-    const depth = calculateDepth(graph, symbolId);
-    const group = groups.get(depth) || [];
-    group.push(symbolId);
-    groups.set(depth, group);
-  }
-
-  return groups;
+  // ES2024: Use Map.groupBy() for cleaner grouping
+  const symbolIds = Array.from(graph.symbols.keys());
+  return Map.groupBy(symbolIds, (symbolId) => calculateDepth(graph, symbolId));
 }
 
 /**

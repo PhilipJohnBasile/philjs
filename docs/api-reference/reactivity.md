@@ -540,10 +540,37 @@ effect(() => {
 
 ## Best Practices
 
+### Use ES2024 Features for Cleaner Code
+
+```typescript
+// Using Promise.withResolvers() for async operations
+const { promise, resolve, reject } = Promise.withResolvers<User>();
+
+effect(async () => {
+  try {
+    const user = await fetchUser(userId());
+    resolve(user);
+  } catch (error) {
+    reject(error);
+  }
+});
+
+// Using Object.groupBy() for data organization
+const items = signal<Item[]>([]);
+const groupedByStatus = memo(() =>
+  Object.groupBy(items(), item => item.status)
+);
+
+// Using Array immutable methods
+const sortedItems = memo(() =>
+  items().toSorted((a, b) => a.name.localeCompare(b.name))
+);
+```
+
 ### Keep Effects Minimal
 
 ```typescript
-// ❌ Doing too much in one effect
+// Do not do too much in one effect
 effect(() => {
   updateDOM(count());
   logAnalytics(count());
@@ -551,7 +578,7 @@ effect(() => {
   syncWithServer(count());
 });
 
-// ✅ Separate concerns
+// Better: Separate concerns
 effect(() => updateDOM(count()));
 effect(() => logAnalytics(count()));
 effect(() => saveToLocalStorage(count()));

@@ -5,7 +5,8 @@
   "version": "0.1.0",
   "publisher": "philjs",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.85.0",
+    "node": ">=24"
   },
   "categories": [
     "Programming Languages",

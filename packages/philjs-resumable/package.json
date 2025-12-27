@@ -9,23 +9,19 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./serializer": {
       "types": "./dist/serializer.d.ts",
-      "import": "./dist/serializer.js",
-      "require": "./dist/serializer.cjs"
+      "default": "./dist/serializer.js"
     },
     "./loader": {
       "types": "./dist/loader.d.ts",
-      "import": "./dist/loader.js",
-      "require": "./dist/loader.cjs"
+      "default": "./dist/loader.js"
     },
     "./hydration": {
       "types": "./dist/hydration.d.ts",
-      "import": "./dist/hydration.js",
-      "require": "./dist/hydration.cjs"
+      "default": "./dist/hydration.js"
     }
   },
   "files": ["dist", "src"],

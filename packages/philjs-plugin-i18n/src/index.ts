@@ -113,8 +113,8 @@ export function getTranslation(locale) {
       }
     },
 
-    handleHotUpdate({ file, server }) {
-      const path = require('path');
+    async handleHotUpdate({ file, server }) {
+      const path = await import('path');
       const translationsPath = path.resolve(root, translationsDir);
 
       if (file.startsWith(translationsPath)) {

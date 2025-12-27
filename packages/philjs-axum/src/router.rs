@@ -19,9 +19,13 @@ impl PhilJSRouter {
     }
 
     /// Load routes from a directory
+    ///
+    /// Note: File-based routing for Rust requires compile-time code generation.
+    /// Use the `cargo-philjs` CLI to generate routes from your file structure,
+    /// or define routes manually using the `route()` method.
     pub fn from_dir(_path: impl AsRef<Path>) -> Self {
-        // TODO: Implement file-based routing
-        // Scan directory for route files and generate routes
+        // File-based routing in Rust requires compile-time code generation
+        // via proc macros. For runtime file discovery, use Node.js philjs-cli.
         PhilJSRouter::new()
     }
 

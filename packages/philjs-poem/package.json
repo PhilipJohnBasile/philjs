@@ -7,44 +7,36 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./middleware": {
-      "import": "./dist/middleware.mjs",
-      "require": "./dist/middleware.js",
-      "types": "./dist/middleware.d.ts"
+      "types": "./dist/middleware.d.ts",
+      "default": "./dist/middleware.js"
     },
     "./extractors": {
-      "import": "./dist/extractors.mjs",
-      "require": "./dist/extractors.js",
-      "types": "./dist/extractors.d.ts"
+      "types": "./dist/extractors.d.ts",
+      "default": "./dist/extractors.js"
     },
     "./endpoints": {
-      "import": "./dist/endpoints.mjs",
-      "require": "./dist/endpoints.js",
-      "types": "./dist/endpoints.d.ts"
+      "types": "./dist/endpoints.d.ts",
+      "default": "./dist/endpoints.js"
     },
     "./responses": {
-      "import": "./dist/responses.mjs",
-      "require": "./dist/responses.js",
-      "types": "./dist/responses.d.ts"
+      "types": "./dist/responses.d.ts",
+      "default": "./dist/responses.js"
     },
     "./websocket": {
-      "import": "./dist/websocket.mjs",
-      "require": "./dist/websocket.js",
-      "types": "./dist/websocket.d.ts"
+      "types": "./dist/websocket.d.ts",
+      "default": "./dist/websocket.js"
     },
     "./openapi": {
-      "import": "./dist/openapi.mjs",
-      "require": "./dist/openapi.js",
-      "types": "./dist/openapi.d.ts"
+      "types": "./dist/openapi.d.ts",
+      "default": "./dist/openapi.js"
     },
     "./ssr": {
-      "import": "./dist/ssr.mjs",
-      "require": "./dist/ssr.js",
-      "types": "./dist/ssr.d.ts"
+      "types": "./dist/ssr.d.ts",
+      "default": "./dist/ssr.js"
     }
   },
   "files": [
@@ -90,5 +82,8 @@
     "type": "git",
     "url": "https://github.com/anthropics/philjs",
     "directory": "packages/philjs-poem"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

@@ -28,5 +28,8 @@
   },
   "keywords": ["table", "datagrid", "headless", "sorting", "filtering", "pagination", "philjs"],
   "license": "MIT",
-  "sideEffects": false
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  }
 }

@@ -7,16 +7,24 @@ Get PhilJS up and running in less than a minute.
 
 Before installing PhilJS, make sure you have:
 
-- **Node.js 18.0 or higher** ([Download here](https://nodejs.org/))
+- **Node.js 24.0 or higher** ([Download here](https://nodejs.org/))
 - **npm**, **pnpm**, **yarn**, or **bun** package manager
+- **TypeScript 6.0 or higher** (if using TypeScript)
 
 Check your Node version:
 ```bash
 node --version
-# Should output v18.0.0 or higher
+# Should output v24.0.0 or higher
 ```
 
-💡 **Tip**: We recommend using **pnpm** for faster installs and better disk space usage.
+PhilJS requires Node.js 24+ to take advantage of:
+- Native ESM support with import attributes
+- Built-in `Promise.withResolvers()`
+- Native `Object.groupBy()` and `Map.groupBy()`
+- Improved performance with V8 optimizations
+- Native WebSocket client support
+
+**Tip**: We recommend using **pnpm** for faster installs and better disk space usage.
 
 ## Quick Start with create-philjs
 
@@ -119,15 +127,16 @@ npm install -D vite @vitejs/plugin-react typescript
 ```json
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2024",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "isolatedDeclarations": true,
     "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "philjs-core",
@@ -135,6 +144,8 @@ npm install -D vite @vitejs/plugin-react typescript
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -435,18 +446,25 @@ Now that PhilJS is installed, you're ready to start building:
 
 ## Version Information
 
-**Current Version**: 1.0.0
+**Current Version**: 2.0.0
 
 **Minimum Requirements**:
-- Node.js 18.0+
-- TypeScript 5.0+ (if using TypeScript)
-- Modern browser with ES2020 support
+- Node.js 24.0+
+- TypeScript 6.0+ (if using TypeScript)
+- Modern browser with ES2024 support
 
 **Supported Browsers**:
-- Chrome 90+
-- Firefox 88+
-- Safari 14.1+
-- Edge 90+
+- Chrome 120+
+- Firefox 121+
+- Safari 17.4+
+- Edge 120+
+
+**TypeScript 6 Features Used**:
+- Isolated declarations for faster builds
+- Enhanced type inference
+- Improved `satisfies` operator
+- Better const type parameters
+- `NoInfer<T>` utility type
 
 ## Upgrade Guide
 

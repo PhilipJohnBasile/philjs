@@ -2,6 +2,11 @@
 
 SuperJSON-style serialization for PhilJS with enhanced features for complex data types, performance optimizations, and seamless integration with RPC and SSR.
 
+## Requirements
+
+- **Node.js 24+** - Required for native ESM and ES2024 features
+- **TypeScript 6+** - Required for optimal type inference
+
 ## Features
 
 - **Complex Type Support**: Serialize Date, Map, Set, RegExp, BigInt, undefined, and binary data
@@ -9,7 +14,8 @@ SuperJSON-style serialization for PhilJS with enhanced features for complex data
 - **Performance Optimizations**: Lazy deserialization, streaming, and compression
 - **RPC Integration**: Automatic serialization in philjs-rpc procedures
 - **SSR Integration**: Seamless loader data serialization and hydration
-- **Type Safety**: Full TypeScript support with type inference
+- **Type Safety**: Full TypeScript 6 support with enhanced type inference
+- **ES2024 Support**: Native support for new Set methods and array operations
 
 ## Basic Usage
 
@@ -458,6 +464,41 @@ Deserialize streaming data progressively.
 6. **Monitor performance metrics** in production
 7. **Set appropriate maxDepth** to prevent circular reference issues
 
+## ES2024 Serialization Support
+
+PhilJS SuperJSON supports ES2024 features:
+
+```typescript
+import { serialize, deserialize } from 'philjs-core/superjson';
+
+// Set operations are preserved
+const setA = new Set([1, 2, 3]);
+const setB = new Set([2, 3, 4]);
+
+const data = {
+  union: setA.union(setB),           // Set {1, 2, 3, 4}
+  intersection: setA.intersection(setB),  // Set {2, 3}
+  difference: setA.difference(setB),      // Set {1}
+};
+
+const serialized = serialize(data);
+const restored = deserialize(serialized);
+// All Set operations are correctly restored
+```
+
+### Using with Object.groupBy()
+
+```typescript
+const users = [
+  { name: 'Alice', role: 'admin' },
+  { name: 'Bob', role: 'user' },
+];
+
+const grouped = Object.groupBy(users, user => user.role);
+const serialized = serialize(grouped);
+// Groups are preserved through serialization
+```
+
 ## Comparison with tRPC's SuperJSON
 
 PhilJS SuperJSON is inspired by tRPC's SuperJSON but includes additional features:
@@ -472,9 +513,12 @@ PhilJS SuperJSON is inspired by tRPC's SuperJSON but includes additional feature
 
 ## Browser Compatibility
 
-- **Modern browsers**: Full support including compression
-- **Older browsers**: Fallback to LZ compression or no compression
-- **Node.js**: Full support with native APIs
+- **Chrome 120+**: Full ES2024 support including compression
+- **Firefox 121+**: Full support
+- **Safari 17.4+**: Full support
+- **Node.js 24+**: Full support with native APIs
+
+PhilJS SuperJSON requires ES2024-compatible environments. No polyfills are needed for supported browsers.
 
 ## License
 

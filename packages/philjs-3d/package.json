@@ -81,5 +81,8 @@
     "3d",
     "graphics",
     "pixel-streaming"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

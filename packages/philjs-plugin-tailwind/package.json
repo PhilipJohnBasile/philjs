@@ -77,5 +77,8 @@
     "url": "https://github.com/yourusername/philjs/issues"
   },
   "homepage": "https://philjs.dev/plugins/tailwind",
-  "sideEffects": false
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24"
+  }
 }

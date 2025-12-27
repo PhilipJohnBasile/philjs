@@ -124,34 +124,35 @@ class WebSocketHandler extends ConnectionHandler {
   private reconnectTimer: number | null = null;
 
   async connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.ws = new WebSocket(this.config.url);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    this.ws = new WebSocket(this.config.url);
 
-      this.ws.onopen = () => {
-        this.onConnect?.();
-        resolve();
-      };
+    this.ws.onopen = () => {
+      this.onConnect?.();
+      resolve();
+    };
 
-      this.ws.onerror = (error) => {
-        reject(error);
-      };
+    this.ws.onerror = (error) => {
+      reject(error);
+    };
 
-      this.ws.onclose = () => {
-        this.onDisconnect?.();
-        if (this.config.reconnect) {
-          this.scheduleReconnect();
-        }
-      };
+    this.ws.onclose = () => {
+      this.onDisconnect?.();
+      if (this.config.reconnect) {
+        this.scheduleReconnect();
+      }
+    };
 
-      this.ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          this.onMessage?.(data);
-        } catch {
-          this.onMessage?.(event.data);
-        }
-      };
-    });
+    this.ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.onMessage?.(data);
+      } catch {
+        this.onMessage?.(event.data);
+      }
+    };
+
+    return promise;
   }
 
   private scheduleReconnect(): void {
@@ -712,41 +713,43 @@ export class TimeSeriesStore {
   private db: IDBDatabase | null = null;
 
   async initialize(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(TimeSeriesStore.DB_NAME, 1);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const request = indexedDB.open(TimeSeriesStore.DB_NAME, 1);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      this.db = request.result;
+      resolve();
+    };
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(TimeSeriesStore.STORE_NAME)) {
-          const store = db.createObjectStore(TimeSeriesStore.STORE_NAME, {
-            keyPath: 'id',
-            autoIncrement: true
-          });
-          store.createIndex('deviceId', 'deviceId');
-          store.createIndex('timestamp', 'timestamp');
-          store.createIndex('deviceId_timestamp', ['deviceId', 'timestamp']);
-        }
-      };
-    });
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(TimeSeriesStore.STORE_NAME)) {
+        const store = db.createObjectStore(TimeSeriesStore.STORE_NAME, {
+          keyPath: 'id',
+          autoIncrement: true
+        });
+        store.createIndex('deviceId', 'deviceId');
+        store.createIndex('timestamp', 'timestamp');
+        store.createIndex('deviceId_timestamp', ['deviceId', 'timestamp']);
+      }
+    };
+
+    return promise;
   }
 
   async store(data: TelemetryData): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(TimeSeriesStore.STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(TimeSeriesStore.STORE_NAME);
-      const request = store.add(data);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(TimeSeriesStore.STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(TimeSeriesStore.STORE_NAME);
+    const request = store.add(data);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async query(
@@ -757,29 +760,30 @@ export class TimeSeriesStore {
   ): Promise<TelemetryData[]> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(TimeSeriesStore.STORE_NAME, 'readonly');
-      const store = transaction.objectStore(TimeSeriesStore.STORE_NAME);
-      const index = store.index('deviceId_timestamp');
+    const { promise, resolve, reject } = Promise.withResolvers<TelemetryData[]>();
+    const transaction = this.db!.transaction(TimeSeriesStore.STORE_NAME, 'readonly');
+    const store = transaction.objectStore(TimeSeriesStore.STORE_NAME);
+    const index = store.index('deviceId_timestamp');
 
-      const range = IDBKeyRange.bound(
-        [deviceId, startTime],
-        [deviceId, endTime]
-      );
+    const range = IDBKeyRange.bound(
+      [deviceId, startTime],
+      [deviceId, endTime]
+    );
 
-      const request = index.getAll(range);
+    const request = index.getAll(range);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        let results = request.result as TelemetryData[];
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      let results = request.result as TelemetryData[];
 
-        if (property) {
-          results = results.filter(t => property in t.values);
-        }
+      if (property) {
+        results = results.filter(t => property in t.values);
+      }
 
-        resolve(results);
-      };
-    });
+      resolve(results);
+    };
+
+    return promise;
   }
 
   async aggregate(

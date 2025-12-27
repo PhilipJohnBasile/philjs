@@ -93,5 +93,8 @@
     "blob",
     "file-upload",
     "cloud-storage"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

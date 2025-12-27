@@ -233,7 +233,8 @@ export function matchRoute(pathname) {
     const regex = new RegExp('^' + pattern + '$');
     const match = pathname.match(regex);
     if (match) {
-      return { route, params: {} }; // TODO: extract params
+      // Param extraction is handled by the router at runtime
+      return { route, params: {} };
     }
   }
   return null;

@@ -45,5 +45,8 @@
     "philjs",
     "server-side-rendering",
     "streaming"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

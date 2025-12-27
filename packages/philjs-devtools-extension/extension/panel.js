@@ -241,6 +241,9 @@
     refreshBtn?.addEventListener('click', () => {
       sendToPage({ type: 'GET_STATE' });
     });
+
+    // Initialize filter UI controls
+    createFilterUIControls();
   }
 
   function renderComponentTree(tree = state.componentTree) {
@@ -437,26 +440,727 @@
     `;
   }
 
+  // Component Filter State
+  const componentFilter = {
+    nameRegex: null,
+    types: [], // 'component', 'element', 'text', 'fragment'
+    props: [], // [{ name: string, value?: any }]
+    minRenderCount: 0,
+    minRenderTime: 0
+  };
+
   function filterComponents(search) {
-    // TODO: Implement component filtering
-    renderComponentTree();
+    // Parse the search string for advanced filters
+    parseFilterString(search);
+
+    // Filter the tree and render
+    const filteredTree = filterComponentTree(state.componentTree, componentFilter);
+    renderComponentTree(filteredTree);
+    updateFilterUI();
   }
+
+  function parseFilterString(search) {
+    // Reset filters
+    componentFilter.nameRegex = null;
+    componentFilter.types = [];
+    componentFilter.props = [];
+    componentFilter.minRenderCount = 0;
+    componentFilter.minRenderTime = 0;
+
+    if (!search || search.trim() === '') return;
+
+    const parts = search.split(/\s+/);
+    const nameParts = [];
+
+    for (const part of parts) {
+      // Type filter: type:component or type:element
+      if (part.startsWith('type:')) {
+        const typeValue = part.slice(5).toLowerCase();
+        if (['component', 'element', 'text', 'fragment'].includes(typeValue)) {
+          componentFilter.types.push(typeValue);
+        }
+        continue;
+      }
+
+      // Props filter: prop:name or prop:name=value
+      if (part.startsWith('prop:')) {
+        const propPart = part.slice(5);
+        const eqIndex = propPart.indexOf('=');
+        if (eqIndex > 0) {
+          componentFilter.props.push({
+            name: propPart.slice(0, eqIndex),
+            value: propPart.slice(eqIndex + 1)
+          });
+        } else if (propPart.length > 0) {
+          componentFilter.props.push({ name: propPart });
+        }
+        continue;
+      }
+
+      // Min render count: renders:>5
+      if (part.startsWith('renders:>')) {
+        const count = parseInt(part.slice(9), 10);
+        if (!isNaN(count)) {
+          componentFilter.minRenderCount = count;
+        }
+        continue;
+      }
+
+      // Min render time: time:>10 (milliseconds)
+      if (part.startsWith('time:>')) {
+        const time = parseFloat(part.slice(6));
+        if (!isNaN(time)) {
+          componentFilter.minRenderTime = time;
+        }
+        continue;
+      }
+
+      // Everything else is part of the name filter
+      nameParts.push(part);
+    }
+
+    // Build name regex from remaining parts
+    if (nameParts.length > 0) {
+      try {
+        const pattern = nameParts.join('.*');
+        componentFilter.nameRegex = new RegExp(pattern, 'i');
+      } catch (e) {
+        // If regex is invalid, use plain text match
+        const escaped = nameParts.join(' ').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        componentFilter.nameRegex = new RegExp(escaped, 'i');
+      }
+    }
+  }
+
+  function filterComponentTree(node, filter) {
+    if (!node) return null;
+
+    // Check if this node matches the filter
+    const matches = matchesFilter(node, filter);
+
+    // Recursively filter children
+    const filteredChildren = [];
+    for (const child of node.children || []) {
+      const filteredChild = filterComponentTree(child, filter);
+      if (filteredChild) {
+        filteredChildren.push(filteredChild);
+      }
+    }
+
+    // If this node matches OR has matching children, include it
+    if (matches || filteredChildren.length > 0) {
+      return {
+        ...node,
+        children: filteredChildren,
+        _matchesFilter: matches
+      };
+    }
+
+    return null;
+  }
+
+  function matchesFilter(node, filter) {
+    // Check name regex
+    if (filter.nameRegex && !filter.nameRegex.test(node.name)) {
+      return false;
+    }
+
+    // Check type filter
+    if (filter.types.length > 0 && !filter.types.includes(node.type)) {
+      return false;
+    }
+
+    // Check props filter
+    for (const propFilter of filter.props) {
+      if (!(propFilter.name in (node.props || {}))) {
+        return false;
+      }
+      if (propFilter.value !== undefined) {
+        const propValue = String(node.props[propFilter.name]);
+        if (propValue !== propFilter.value) {
+          return false;
+        }
+      }
+    }
+
+    // Check render count
+    if (filter.minRenderCount > 0) {
+      const renderCount = node.renderCount || 0;
+      if (renderCount < filter.minRenderCount) {
+        return false;
+      }
+    }
+
+    // Check render time
+    if (filter.minRenderTime > 0) {
+      const avgRenderTime = node.averageRenderTime || 0;
+      if (avgRenderTime < filter.minRenderTime) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function updateFilterUI() {
+    // Update filter help/indicators if the UI supports it
+    const filterHelp = document.getElementById('component-filter-help');
+    if (filterHelp) {
+      const activeFilters = [];
+      if (componentFilter.nameRegex) activeFilters.push('name');
+      if (componentFilter.types.length > 0) activeFilters.push(`type:${componentFilter.types.join(',')}`);
+      if (componentFilter.props.length > 0) activeFilters.push(`${componentFilter.props.length} prop(s)`);
+      if (componentFilter.minRenderCount > 0) activeFilters.push(`renders:>${componentFilter.minRenderCount}`);
+      if (componentFilter.minRenderTime > 0) activeFilters.push(`time:>${componentFilter.minRenderTime}ms`);
+
+      if (activeFilters.length > 0) {
+        filterHelp.textContent = `Active filters: ${activeFilters.join(', ')}`;
+        filterHelp.style.display = 'block';
+      } else {
+        filterHelp.style.display = 'none';
+      }
+    }
+  }
+
+  function createFilterUIControls() {
+    const searchContainer = document.querySelector('.component-search-container') ||
+                           document.getElementById('component-search')?.parentElement;
+
+    if (!searchContainer) return;
+
+    // Check if already created
+    if (document.getElementById('component-filter-help')) return;
+
+    // Add filter help text
+    const filterHelp = document.createElement('div');
+    filterHelp.id = 'component-filter-help';
+    filterHelp.className = 'filter-help';
+    filterHelp.style.display = 'none';
+    filterHelp.style.fontSize = '11px';
+    filterHelp.style.color = '#6b7280';
+    filterHelp.style.marginTop = '4px';
+    searchContainer.appendChild(filterHelp);
+
+    // Add filter tips tooltip
+    const filterTips = document.createElement('div');
+    filterTips.id = 'component-filter-tips';
+    filterTips.className = 'filter-tips';
+    filterTips.innerHTML = `
+      <details>
+        <summary style="cursor: pointer; font-size: 11px; color: #9ca3af;">Filter syntax</summary>
+        <ul style="font-size: 10px; color: #9ca3af; margin: 4px 0 0 16px; padding: 0;">
+          <li><code>name</code> - Match component name (regex)</li>
+          <li><code>type:component</code> - Filter by type</li>
+          <li><code>prop:id</code> - Has prop named "id"</li>
+          <li><code>prop:class=btn</code> - Prop with value</li>
+          <li><code>renders:>5</code> - Render count > 5</li>
+          <li><code>time:>10</code> - Avg render time > 10ms</li>
+        </ul>
+      </details>
+    `;
+    searchContainer.appendChild(filterTips);
+  }
+
+  // ============================================================================
+  // Performance Recorder Class
+  // ============================================================================
+
+  class PerformanceRecorder {
+    constructor() {
+      this.sessions = [];
+      this.currentSession = null;
+      this.frameMetrics = [];
+      this.signalEvents = [];
+      this.effectEvents = [];
+      this.rafId = null;
+      this.lastFrameTime = 0;
+    }
+
+    /**
+     * Start a new recording session
+     */
+    start() {
+      if (this.currentSession) {
+        console.warn('[PerformanceRecorder] Already recording. Stop the current session first.');
+        return null;
+      }
+
+      const sessionId = `session-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
+      this.currentSession = {
+        id: sessionId,
+        startTime: performance.now(),
+        endTime: null,
+        frameMetrics: [],
+        signalEvents: [],
+        effectEvents: [],
+        renders: [],
+        memorySnapshots: [],
+        metadata: {
+          userAgent: navigator.userAgent,
+          url: window.location.href,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      // Start collecting frame metrics
+      this.lastFrameTime = performance.now();
+      this.collectFrameMetrics();
+
+      // Notify page to start tracking signals/effects
+      sendToPage({ type: 'START_RECORDING', payload: { sessionId } });
+
+      console.log('[PerformanceRecorder] Recording started:', sessionId);
+      return sessionId;
+    }
+
+    /**
+     * Stop the current recording session and return session data
+     */
+    stop() {
+      if (!this.currentSession) {
+        console.warn('[PerformanceRecorder] No active recording session.');
+        return null;
+      }
+
+      // Stop frame collection
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+
+      // Finalize session
+      this.currentSession.endTime = performance.now();
+      this.currentSession.duration = this.currentSession.endTime - this.currentSession.startTime;
+
+      // Calculate summary statistics
+      this.currentSession.summary = this.calculateSummary();
+
+      // Store session
+      const completedSession = { ...this.currentSession };
+      this.sessions.push(completedSession);
+
+      // Notify page to stop tracking
+      sendToPage({ type: 'STOP_RECORDING', payload: { sessionId: this.currentSession.id } });
+
+      console.log('[PerformanceRecorder] Recording stopped:', this.currentSession.id);
+
+      // Reset current session
+      this.currentSession = null;
+
+      return completedSession;
+    }
+
+    /**
+     * Check if currently recording
+     */
+    isRecording() {
+      return this.currentSession !== null;
+    }
+
+    /**
+     * Get current session ID
+     */
+    getCurrentSessionId() {
+      return this.currentSession?.id || null;
+    }
+
+    /**
+     * Collect frame metrics using requestAnimationFrame
+     */
+    collectFrameMetrics() {
+      if (!this.currentSession) return;
+
+      const now = performance.now();
+      const frameDuration = now - this.lastFrameTime;
+      const fps = frameDuration > 0 ? 1000 / frameDuration : 60;
+
+      // Record frame metric
+      this.currentSession.frameMetrics.push({
+        timestamp: now,
+        frameDuration,
+        fps: Math.min(fps, 120), // Cap at 120fps
+        frameCount: this.currentSession.frameMetrics.length + 1
+      });
+
+      // Collect memory info if available
+      if (performance.memory) {
+        this.currentSession.memorySnapshots.push({
+          timestamp: now,
+          usedJSHeapSize: performance.memory.usedJSHeapSize,
+          totalJSHeapSize: performance.memory.totalJSHeapSize,
+          jsHeapSizeLimit: performance.memory.jsHeapSizeLimit
+        });
+      }
+
+      this.lastFrameTime = now;
+
+      // Continue collecting
+      this.rafId = requestAnimationFrame(() => this.collectFrameMetrics());
+    }
+
+    /**
+     * Track a signal event during recording
+     */
+    trackSignalEvent(event) {
+      if (!this.currentSession) return;
+
+      this.currentSession.signalEvents.push({
+        timestamp: performance.now(),
+        type: event.type, // 'read', 'write', 'create', 'dispose'
+        signalId: event.signalId,
+        signalName: event.signalName,
+        oldValue: event.oldValue,
+        newValue: event.newValue,
+        source: event.source
+      });
+    }
+
+    /**
+     * Track an effect event during recording
+     */
+    trackEffectEvent(event) {
+      if (!this.currentSession) return;
+
+      this.currentSession.effectEvents.push({
+        timestamp: performance.now(),
+        type: event.type, // 'run', 'cleanup', 'create', 'dispose'
+        effectId: event.effectId,
+        effectName: event.effectName,
+        duration: event.duration,
+        dependencies: event.dependencies
+      });
+    }
+
+    /**
+     * Track a render event during recording
+     */
+    trackRenderEvent(event) {
+      if (!this.currentSession) return;
+
+      this.currentSession.renders.push({
+        timestamp: performance.now(),
+        componentId: event.componentId,
+        componentName: event.componentName,
+        duration: event.duration,
+        cause: event.cause || 'unknown'
+      });
+    }
+
+    /**
+     * Calculate summary statistics for the session
+     */
+    calculateSummary() {
+      const session = this.currentSession;
+      if (!session) return null;
+
+      const frameMetrics = session.frameMetrics;
+      const avgFps = frameMetrics.length > 0
+        ? frameMetrics.reduce((sum, f) => sum + f.fps, 0) / frameMetrics.length
+        : 0;
+
+      const minFps = frameMetrics.length > 0
+        ? Math.min(...frameMetrics.map(f => f.fps))
+        : 0;
+
+      const maxFps = frameMetrics.length > 0
+        ? Math.max(...frameMetrics.map(f => f.fps))
+        : 0;
+
+      const jankFrames = frameMetrics.filter(f => f.frameDuration > 16.67).length;
+      const jankPercentage = frameMetrics.length > 0
+        ? (jankFrames / frameMetrics.length) * 100
+        : 0;
+
+      const renders = session.renders;
+      const avgRenderTime = renders.length > 0
+        ? renders.reduce((sum, r) => sum + r.duration, 0) / renders.length
+        : 0;
+
+      const memorySnapshots = session.memorySnapshots;
+      const peakMemory = memorySnapshots.length > 0
+        ? Math.max(...memorySnapshots.map(m => m.usedJSHeapSize))
+        : 0;
+
+      return {
+        duration: session.duration,
+        totalFrames: frameMetrics.length,
+        avgFps,
+        minFps,
+        maxFps,
+        jankFrames,
+        jankPercentage,
+        totalRenders: renders.length,
+        avgRenderTime,
+        totalSignalEvents: session.signalEvents.length,
+        totalEffectEvents: session.effectEvents.length,
+        peakMemory,
+        signalWriteCount: session.signalEvents.filter(e => e.type === 'write').length,
+        effectRunCount: session.effectEvents.filter(e => e.type === 'run').length
+      };
+    }
+
+    /**
+     * Get all recorded sessions
+     */
+    getSessions() {
+      return this.sessions.slice();
+    }
+
+    /**
+     * Get a specific session by ID
+     */
+    getSession(sessionId) {
+      return this.sessions.find(s => s.id === sessionId) || null;
+    }
+
+    /**
+     * Export session data to JSON
+     */
+    exportToJSON(sessionId) {
+      const session = sessionId
+        ? this.getSession(sessionId)
+        : this.sessions[this.sessions.length - 1];
+
+      if (!session) {
+        console.warn('[PerformanceRecorder] No session to export.');
+        return null;
+      }
+
+      const exportData = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        session: {
+          ...session,
+          // Include summary calculations
+          summary: session.summary || this.calculateSessionSummary(session)
+        }
+      };
+
+      return JSON.stringify(exportData, null, 2);
+    }
+
+    /**
+     * Calculate summary for a specific session (for completed sessions)
+     */
+    calculateSessionSummary(session) {
+      const frameMetrics = session.frameMetrics || [];
+      const renders = session.renders || [];
+      const memorySnapshots = session.memorySnapshots || [];
+
+      const avgFps = frameMetrics.length > 0
+        ? frameMetrics.reduce((sum, f) => sum + f.fps, 0) / frameMetrics.length
+        : 0;
+
+      return {
+        duration: session.duration || (session.endTime - session.startTime),
+        totalFrames: frameMetrics.length,
+        avgFps,
+        totalRenders: renders.length,
+        totalSignalEvents: (session.signalEvents || []).length,
+        totalEffectEvents: (session.effectEvents || []).length,
+        peakMemory: memorySnapshots.length > 0
+          ? Math.max(...memorySnapshots.map(m => m.usedJSHeapSize))
+          : 0
+      };
+    }
+
+    /**
+     * Clear all sessions
+     */
+    clearSessions() {
+      this.sessions = [];
+    }
+
+    /**
+     * Download session as JSON file
+     */
+    downloadSession(sessionId) {
+      const json = this.exportToJSON(sessionId);
+      if (!json) return;
+
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `philjs-perf-${sessionId || 'session'}-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  // Global performance recorder instance
+  const performanceRecorder = new PerformanceRecorder();
 
   // Performance Panel
   function setupPerformancePanel() {
     const recordBtn = document.getElementById('perf-record-btn');
     const clearBtn = document.getElementById('perf-clear-btn');
+    const exportBtn = document.getElementById('perf-export-btn');
 
     recordBtn?.addEventListener('click', () => {
-      // TODO: Implement recording
+      if (performanceRecorder.isRecording()) {
+        // Stop recording
+        const session = performanceRecorder.stop();
+        updateRecordButtonState(false);
+
+        if (session) {
+          // Display session summary
+          displaySessionSummary(session);
+          console.log('[PhilJS DevTools] Recording completed:', session.summary);
+        }
+      } else {
+        // Start recording
+        const sessionId = performanceRecorder.start();
+        if (sessionId) {
+          updateRecordButtonState(true);
+          console.log('[PhilJS DevTools] Recording started:', sessionId);
+        }
+      }
     });
 
     clearBtn?.addEventListener('click', () => {
       state.performance.renders = [];
       state.performance.fpsHistory = [];
       state.performance.memoryHistory = [];
+      performanceRecorder.clearSessions();
       renderPerformance();
+      clearSessionSummary();
     });
+
+    exportBtn?.addEventListener('click', () => {
+      const sessions = performanceRecorder.getSessions();
+      if (sessions.length === 0) {
+        alert('No recording sessions to export. Start and stop a recording first.');
+        return;
+      }
+      // Export the most recent session
+      performanceRecorder.downloadSession();
+    });
+
+    // Create export button if it doesn't exist
+    if (!exportBtn && recordBtn?.parentElement) {
+      const newExportBtn = document.createElement('button');
+      newExportBtn.id = 'perf-export-btn';
+      newExportBtn.className = 'toolbar-btn';
+      newExportBtn.textContent = 'Export';
+      newExportBtn.title = 'Export recording to JSON';
+      newExportBtn.addEventListener('click', () => {
+        const sessions = performanceRecorder.getSessions();
+        if (sessions.length === 0) {
+          alert('No recording sessions to export. Start and stop a recording first.');
+          return;
+        }
+        performanceRecorder.downloadSession();
+      });
+      recordBtn.parentElement.appendChild(newExportBtn);
+    }
+  }
+
+  function updateRecordButtonState(isRecording) {
+    const recordBtn = document.getElementById('perf-record-btn');
+    if (!recordBtn) return;
+
+    if (isRecording) {
+      recordBtn.textContent = 'Stop Recording';
+      recordBtn.classList.add('recording');
+      recordBtn.style.backgroundColor = '#ef4444';
+      recordBtn.style.color = '#fff';
+    } else {
+      recordBtn.textContent = 'Record';
+      recordBtn.classList.remove('recording');
+      recordBtn.style.backgroundColor = '';
+      recordBtn.style.color = '';
+    }
+  }
+
+  function displaySessionSummary(session) {
+    const container = document.getElementById('perf-session-summary') ||
+                     createSessionSummaryContainer();
+
+    if (!container || !session.summary) return;
+
+    const s = session.summary;
+    container.innerHTML = `
+      <div class="session-summary">
+        <h4>Recording Summary</h4>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">Duration</span>
+            <span class="summary-value">${(s.duration / 1000).toFixed(2)}s</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Avg FPS</span>
+            <span class="summary-value">${s.avgFps.toFixed(1)}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Min/Max FPS</span>
+            <span class="summary-value">${s.minFps.toFixed(1)} / ${s.maxFps.toFixed(1)}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Jank Frames</span>
+            <span class="summary-value">${s.jankFrames} (${s.jankPercentage.toFixed(1)}%)</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Total Renders</span>
+            <span class="summary-value">${s.totalRenders}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Avg Render Time</span>
+            <span class="summary-value">${s.avgRenderTime.toFixed(2)}ms</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Signal Writes</span>
+            <span class="summary-value">${s.signalWriteCount}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Effect Runs</span>
+            <span class="summary-value">${s.effectRunCount}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Peak Memory</span>
+            <span class="summary-value">${formatBytes(s.peakMemory)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    container.style.display = 'block';
+  }
+
+  function createSessionSummaryContainer() {
+    const perfPanel = document.getElementById('performance-panel');
+    if (!perfPanel) return null;
+
+    const container = document.createElement('div');
+    container.id = 'perf-session-summary';
+    container.className = 'session-summary-container';
+    container.style.cssText = `
+      margin: 12px 0;
+      padding: 12px;
+      background: #1f2937;
+      border-radius: 6px;
+      display: none;
+    `;
+
+    // Insert at the top of the panel content
+    const firstChild = perfPanel.querySelector('.panel-content')?.firstChild;
+    if (firstChild) {
+      firstChild.parentElement.insertBefore(container, firstChild);
+    } else {
+      perfPanel.appendChild(container);
+    }
+
+    return container;
+  }
+
+  function clearSessionSummary() {
+    const container = document.getElementById('perf-session-summary');
+    if (container) {
+      container.innerHTML = '';
+      container.style.display = 'none';
+    }
   }
 
   function setupCharts() {

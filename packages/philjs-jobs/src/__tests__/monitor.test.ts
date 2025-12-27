@@ -39,8 +39,7 @@ describe('Monitor', () => {
     monitor.stop();
   });
 
-  // TODO: Fix flaky test - job processing timing inconsistent on CI
-  it.skip('should calculate success rate', async () => {
+  it('should calculate success rate', async () => {
     const successJob = defineJob({
       name: 'success-job',
       handler: async () => 'done',
@@ -52,6 +51,7 @@ describe('Monitor', () => {
       handler: async () => {
         throw new Error('Failed');
       },
+      attempts: 1, // Only 1 attempt so it fails immediately
       removeOnFail: false,
     });
 
@@ -61,8 +61,8 @@ describe('Monitor', () => {
 
     queue.process();
 
-    // Increased timeout for CI
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Wait for jobs to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     const metrics = await monitor.getMetrics();
 
@@ -128,24 +128,38 @@ describe('Monitor', () => {
     expect(details?.payload).toEqual({ value: 123 });
   });
 
-  // TODO: Fix flaky test - retryJob returns false when job isn't found in failed state
-  it.skip('should retry failed jobs', async () => {
+  it('should retry failed jobs', async () => {
+    let attempts = 0;
     const job = defineJob({
       name: 'retry-job',
       handler: async () => {
-        throw new Error('Failed');
+        attempts++;
+        if (attempts <= 3) {
+          throw new Error('Failed');
+        }
+        return 'success';
       },
+      attempts: 1, // Only 1 attempt so it fails immediately
       removeOnFail: false,
     });
 
     const queuedJob = await queue.enqueue(job, {});
 
     queue.process();
-    // Increased timeout for CI
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Wait for job to fail
+    await new Promise(resolve => setTimeout(resolve, 500));
 
+    // Verify job is in failed state
+    const failedJob = await queue.getJob(queuedJob.id);
+    expect(failedJob?.status).toBe('failed');
+
+    // Retry should succeed
     const result = await monitor.retryJob(queuedJob.id);
     expect(result).toBe(true);
+
+    // Verify job is back to waiting
+    const retriedJob = await queue.getJob(queuedJob.id);
+    expect(retriedJob?.status).toBe('waiting');
 
     await queue.stop();
   });

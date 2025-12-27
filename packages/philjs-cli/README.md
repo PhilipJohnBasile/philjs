@@ -1,6 +1,16 @@
 # philjs-cli
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 CLI tools for PhilJS - The framework that thinks ahead. Build, develop, and generate code for your PhilJS applications.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Features
 
@@ -258,6 +268,26 @@ export default defineConfig({
     routesDir: 'src/routes',
     pagesDir: 'src/pages'
   }
+});
+```
+
+### Advanced Configuration with ES2024 Features
+
+```typescript
+import { defineConfig, type PluginConfig } from 'philjs-cli';
+
+// Using Object.groupBy() to organize plugins by type
+const plugins: PluginConfig[] = [
+  { name: 'tailwind', type: 'style' },
+  { name: 'i18n', type: 'feature' },
+  { name: 'pwa', type: 'feature' },
+];
+
+const groupedPlugins = Object.groupBy(plugins, p => p.type);
+
+export default defineConfig({
+  plugins: groupedPlugins.feature ?? [],
+  styles: groupedPlugins.style ?? [],
 });
 ```
 

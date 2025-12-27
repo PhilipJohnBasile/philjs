@@ -676,27 +676,27 @@ export function greenCompute<T extends (...args: any[]) => Promise<any>>(
 
     const taskId = `greenCompute_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
-    return new Promise((resolve, reject) => {
-      scheduler!.scheduleTask(
-        taskId,
-        async () => {
-          try {
-            const result = await fn(...args);
-            resolve(result);
-            return result;
-          } catch (e) {
-            reject(e);
-            throw e;
-          }
-        },
-        {
-          estimatedEnergy: options.estimatedEnergy ?? 10,
-          maxDelay: options.maxDelay ?? 3600000, // 1 hour default
-          priority: options.priority ?? 'normal',
-          preferGreen: true
+    const { promise, resolve, reject } = Promise.withResolvers<ReturnType<T>>();
+    scheduler!.scheduleTask(
+      taskId,
+      async () => {
+        try {
+          const result = await fn(...args);
+          resolve(result);
+          return result;
+        } catch (e) {
+          reject(e);
+          throw e;
         }
-      );
-    });
+      },
+      {
+        estimatedEnergy: options.estimatedEnergy ?? 10,
+        maxDelay: options.maxDelay ?? 3600000, // 1 hour default
+        priority: options.priority ?? 'normal',
+        preferGreen: true
+      }
+    );
+    return promise;
   }) as T;
 }
 

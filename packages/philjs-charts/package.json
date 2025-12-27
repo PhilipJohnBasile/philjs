@@ -70,5 +70,8 @@
     "chart.js",
     "visualization",
     "real-time"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

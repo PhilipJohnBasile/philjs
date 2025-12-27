@@ -78,5 +78,8 @@
     "type": "git",
     "url": "https://github.com/PhilipJohnBasile/philjs.git",
     "directory": "packages/philjs-go"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

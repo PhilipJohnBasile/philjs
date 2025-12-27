@@ -47,7 +47,29 @@ export type {
   EndpointOptions,
   ResponseOptions,
   WebSocketOptions,
+  OpenAPISchema,
+  OpenAPIOperation,
+  OpenAPIResponse,
+  OpenAPISecurity,
 } from './types';
+
+// Re-export Rust code generation utilities
+export {
+  rustCodeGenerators,
+  generateRustHandler,
+  generateRustRequestStruct,
+  generateRustResponseEnum,
+  generateRustErrorTypes,
+  generateRustDbService,
+  generateRustValidationHelpers,
+  generateRustAPI,
+  generateFullRustAPI,
+  generateCrudAPI,
+  mapToRustType,
+  type RustHandlerOptions,
+  type RustTypeMapping,
+  type GeneratedRustCode,
+} from './openapi';
 
 /**
  * Create a PhilJS-enabled Poem application configuration

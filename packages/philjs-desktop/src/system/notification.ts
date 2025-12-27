@@ -1,8 +1,21 @@
 /**
  * System Notification APIs
+ *
+ * Uses @tauri-apps/plugin-notification for Tauri v2
+ * with browser fallbacks when running outside Tauri context.
  */
 
 import { isTauri } from '../tauri/context';
+
+/**
+ * Error thrown when notification operations fail
+ */
+export class NotificationError extends Error {
+  constructor(message: string, public readonly cause?: unknown) {
+    super(message);
+    this.name = 'NotificationError';
+  }
+}
 
 // Notification types
 export interface NotificationOptions {
@@ -43,19 +56,30 @@ export const Notification = {
    */
   async requestPermission(): Promise<'granted' | 'denied' | 'default'> {
     if (!isTauri()) {
-      const result = await window.Notification.requestPermission();
-      return result;
+      try {
+        const result = await window.Notification.requestPermission();
+        return result;
+      } catch (error) {
+        throw new NotificationError('Failed to request notification permission in browser context', error);
+      }
     }
 
-    const { isPermissionGranted, requestPermission } = await import('@tauri-apps/plugin-notification');
-    let permission = await isPermissionGranted();
+    try {
+      const { isPermissionGranted, requestPermission } = await import('@tauri-apps/plugin-notification');
+      let permission = await isPermissionGranted();
 
-    if (!permission) {
-      const result = await requestPermission();
-      permission = result === 'granted';
+      if (!permission) {
+        const result = await requestPermission();
+        permission = result === 'granted';
+      }
+
+      return permission ? 'granted' : 'denied';
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to request notification permission. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
     }
-
-    return permission ? 'granted' : 'denied';
   },
 
   /**
@@ -63,11 +87,22 @@ export const Notification = {
    */
   async isPermissionGranted(): Promise<boolean> {
     if (!isTauri()) {
-      return window.Notification.permission === 'granted';
+      try {
+        return window.Notification.permission === 'granted';
+      } catch {
+        return false;
+      }
     }
 
-    const { isPermissionGranted } = await import('@tauri-apps/plugin-notification');
-    return isPermissionGranted();
+    try {
+      const { isPermissionGranted } = await import('@tauri-apps/plugin-notification');
+      return await isPermissionGranted();
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to check notification permission. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
@@ -76,22 +111,33 @@ export const Notification = {
   async show(options: NotificationOptions): Promise<void> {
     if (!isTauri()) {
       // Browser fallback
-      const notification = new window.Notification(options.title, {
-        body: options.body,
-        icon: options.icon,
-        silent: options.silent,
-      });
-      return;
+      try {
+        new window.Notification(options.title, {
+          body: options.body,
+          icon: options.icon,
+          silent: options.silent,
+        });
+        return;
+      } catch (error) {
+        throw new NotificationError('Failed to show notification in browser context', error);
+      }
     }
 
-    const { sendNotification } = await import('@tauri-apps/plugin-notification');
-    await sendNotification({
-      title: options.title,
-      body: options.body,
-      icon: options.icon,
-      sound: options.sound,
-      largeBody: options.largeBody,
-    });
+    try {
+      const { sendNotification } = await import('@tauri-apps/plugin-notification');
+      await sendNotification({
+        title: options.title,
+        body: options.body,
+        icon: options.icon,
+        sound: options.sound,
+        largeBody: options.largeBody,
+      });
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to show notification. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
@@ -114,20 +160,29 @@ export const Notification = {
         }, delay);
         return id as unknown as number;
       }
-      throw new Error('Scheduled time must be in the future');
+      throw new NotificationError('Scheduled time must be in the future');
     }
 
-    const { schedule } = await import('@tauri-apps/plugin-notification');
-    const result = await schedule([{
-      title: options.title,
-      body: options.body,
-      schedule: {
-        at: options.at,
-        repeating: options.repeating,
-      },
-    }]);
+    try {
+      const { sendNotification, Schedule } = await import('@tauri-apps/plugin-notification');
+      // Generate a unique ID for the scheduled notification
+      const notificationId = Math.floor(Math.random() * 2147483647);
 
-    return result[0]?.id || 0;
+      // Tauri v2 uses Schedule.at() for scheduling
+      sendNotification({
+        id: notificationId,
+        title: options.title,
+        body: options.body,
+        schedule: Schedule.at(options.at, options.repeating ?? false),
+      });
+
+      return notificationId;
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to schedule notification. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
@@ -139,8 +194,15 @@ export const Notification = {
       return;
     }
 
-    const { cancel } = await import('@tauri-apps/plugin-notification');
-    await cancel([id]);
+    try {
+      const { cancel } = await import('@tauri-apps/plugin-notification');
+      await cancel([id]);
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to cancel notification. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
@@ -152,24 +214,57 @@ export const Notification = {
       return;
     }
 
-    const { removeAllDelivered } = await import('@tauri-apps/plugin-notification');
-    await removeAllDelivered();
+    try {
+      const { cancelAll } = await import('@tauri-apps/plugin-notification');
+      await cancelAll();
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to cancel all notifications. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
+  },
+
+  /**
+   * Remove all active/delivered notifications
+   */
+  async removeAllActive(): Promise<void> {
+    if (!isTauri()) {
+      return;
+    }
+
+    try {
+      const { removeAllActive } = await import('@tauri-apps/plugin-notification');
+      await removeAllActive();
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to remove all active notifications. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
    * Get pending notifications
    */
-  async getPending(): Promise<{ id: number; title: string }[]> {
+  async getPending(): Promise<{ id: number; title?: string }[]> {
     if (!isTauri()) {
       return [];
     }
 
-    const { pending } = await import('@tauri-apps/plugin-notification');
-    const notifications = await pending();
-    return notifications.map((n: any) => ({
-      id: n.id,
-      title: n.title,
-    }));
+    try {
+      const { pending } = await import('@tauri-apps/plugin-notification');
+      const notifications = await pending();
+      return notifications.map((n) => ({
+        id: n.id,
+        title: n.title,
+      }));
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to get pending notifications. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
@@ -180,23 +275,71 @@ export const Notification = {
       return;
     }
 
-    const { registerActionTypes } = await import('@tauri-apps/plugin-notification');
-    await registerActionTypes([{
-      id: 'default',
-      actions: types,
-    }]);
+    try {
+      const { registerActionTypes } = await import('@tauri-apps/plugin-notification');
+      await registerActionTypes([{
+        id: 'default',
+        actions: types,
+      }]);
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to register action types. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 
   /**
-   * Listen for notification events
+   * Listen for notification action events
    */
-  async onAction(callback: (action: { actionTypeId: string; id: number }) => void): Promise<() => void> {
+  async onAction(callback: (notification: { id?: number; actionTypeId?: string; title: string; body?: string }) => void): Promise<() => void> {
     if (!isTauri()) {
       return () => {};
     }
 
-    const { onAction } = await import('@tauri-apps/plugin-notification');
-    return onAction(callback);
+    try {
+      const { onAction } = await import('@tauri-apps/plugin-notification');
+      const listener = await onAction((notification) => {
+        callback({
+          id: notification.id,
+          actionTypeId: notification.actionTypeId,
+          title: notification.title,
+          body: notification.body,
+        });
+      });
+      return () => listener.unregister();
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to register action listener. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
+  },
+
+  /**
+   * Listen for notification received events
+   */
+  async onNotificationReceived(callback: (notification: { id?: number; title: string; body?: string }) => void): Promise<() => void> {
+    if (!isTauri()) {
+      return () => {};
+    }
+
+    try {
+      const { onNotificationReceived } = await import('@tauri-apps/plugin-notification');
+      const listener = await onNotificationReceived((notification) => {
+        callback({
+          id: notification.id,
+          title: notification.title,
+          body: notification.body,
+        });
+      });
+      return () => listener.unregister();
+    } catch (error) {
+      throw new NotificationError(
+        'Failed to register notification listener. Ensure @tauri-apps/plugin-notification is installed and configured.',
+        error
+      );
+    }
   },
 };
 

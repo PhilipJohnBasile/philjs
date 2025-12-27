@@ -71,5 +71,8 @@
     "durable-objects",
     "d1"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  }
 }

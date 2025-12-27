@@ -1,8 +1,50 @@
 /**
  * LLM Integration for PhilJS Python
+ *
+ * Full-featured TypeScript client for LLM operations via Python backend.
+ * Supports OpenAI and Anthropic models with streaming, tool calling,
+ * and automatic provider detection.
  */
 
-import type { LLMConfig, ChatRequest, ChatResponse, ChatMessage } from './types.js';
+import type { LLMConfig, ChatRequest, ChatResponse, ChatMessage, LLMTool } from './types.js';
+
+/**
+ * Stream chunk from SSE response
+ */
+export interface StreamChunk {
+  id: string;
+  model: string;
+  content: string | null;
+  finishReason: string | null;
+  toolCalls?: Array<{
+    id: string;
+    type: string;
+    function: {
+      name: string;
+      arguments: string;
+    };
+  }>;
+}
+
+/**
+ * Provider detection utility
+ */
+export function detectProvider(model: string): 'openai' | 'anthropic' {
+  const modelLower = model.toLowerCase();
+
+  if (modelLower.startsWith('gpt-') || modelLower.startsWith('o1') || modelLower.startsWith('o3')) {
+    return 'openai';
+  }
+  if (modelLower.startsWith('claude')) {
+    return 'anthropic';
+  }
+  if (modelLower.startsWith('text-')) {
+    return 'openai';
+  }
+
+  // Default to OpenAI
+  return 'openai';
+}
 
 /**
  * LLM client for interacting with language models via Python backend
@@ -22,9 +64,22 @@ export class LLM {
   }
 
   /**
+   * Get the detected or configured provider for a model
+   */
+  getProvider(model?: string): string {
+    if (this.config.provider && this.config.provider !== 'local') {
+      return this.config.provider;
+    }
+    return detectProvider(model || this.config.model);
+  }
+
+  /**
    * Send a chat completion request
    */
   async chat(request: ChatRequest): Promise<ChatResponse> {
+    const model = request.model || this.config.model;
+    const provider = this.getProvider(model);
+
     const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -32,13 +87,14 @@ export class LLM {
         ...(this.config.apiKey && { Authorization: `Bearer ${this.config.apiKey}` }),
       },
       body: JSON.stringify({
-        model: request.model || this.config.model,
+        model,
         messages: request.messages,
         temperature: request.temperature ?? this.config.temperature,
         max_tokens: request.maxTokens ?? this.config.maxTokens,
-        stream: request.stream ?? false,
+        stream: false,
         tools: request.tools,
         tool_choice: request.toolChoice,
+        provider,
       }),
       signal: AbortSignal.timeout(this.config.timeout!),
     });
@@ -48,13 +104,43 @@ export class LLM {
       throw new Error(`LLM request failed: ${error}`);
     }
 
-    return response.json();
+    const data = await response.json();
+
+    // Normalize response format
+    return {
+      id: data.id,
+      model: data.model,
+      choices: data.choices.map((c: Record<string, unknown>) => ({
+        index: c.index as number,
+        message: c.message as ChatMessage,
+        finishReason: (c.finish_reason || c.finishReason) as ChatResponse['choices'][0]['finishReason'],
+      })),
+      usage: {
+        promptTokens: data.usage?.prompt_tokens ?? data.usage?.promptTokens ?? 0,
+        completionTokens: data.usage?.completion_tokens ?? data.usage?.completionTokens ?? 0,
+        totalTokens: data.usage?.total_tokens ?? data.usage?.totalTokens ?? 0,
+      },
+    };
   }
 
   /**
-   * Stream a chat completion
+   * Stream a chat completion - yields content chunks
    */
   async *stream(request: ChatRequest): AsyncGenerator<string, void, unknown> {
+    for await (const chunk of this.streamChunks(request)) {
+      if (chunk.content) {
+        yield chunk.content;
+      }
+    }
+  }
+
+  /**
+   * Stream a chat completion - yields full chunk objects
+   */
+  async *streamChunks(request: ChatRequest): AsyncGenerator<StreamChunk, void, unknown> {
+    const model = request.model || this.config.model;
+    const provider = this.getProvider(model);
+
     const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -62,38 +148,100 @@ export class LLM {
         ...(this.config.apiKey && { Authorization: `Bearer ${this.config.apiKey}` }),
       },
       body: JSON.stringify({
-        ...request,
+        model,
+        messages: request.messages,
+        temperature: request.temperature ?? this.config.temperature,
+        max_tokens: request.maxTokens ?? this.config.maxTokens,
         stream: true,
+        tools: request.tools,
+        tool_choice: request.toolChoice,
+        provider,
       }),
+      signal: AbortSignal.timeout(this.config.timeout!),
     });
 
     if (!response.ok || !response.body) {
-      throw new Error('Stream request failed');
+      const error = response.ok ? 'No response body' : await response.text();
+      throw new Error(`Stream request failed: ${error}`);
     }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
+    let buffer = '';
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
 
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter(line => line.startsWith('data: '));
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
 
       for (const line of lines) {
-        const data = line.slice(6);
+        if (!line.startsWith('data: ')) continue;
+
+        const data = line.slice(6).trim();
         if (data === '[DONE]') return;
 
         try {
           const parsed = JSON.parse(data);
-          const content = parsed.choices?.[0]?.delta?.content;
-          if (content) yield content;
-        } catch {
-          // Ignore parse errors for incomplete chunks
+
+          // Check for error
+          if (parsed.error) {
+            throw new Error(parsed.error);
+          }
+
+          const choice = parsed.choices?.[0];
+          if (!choice) continue;
+
+          yield {
+            id: parsed.id || '',
+            model: parsed.model || model,
+            content: choice.delta?.content || null,
+            finishReason: choice.finish_reason || null,
+            toolCalls: choice.delta?.tool_calls,
+          };
+        } catch (e) {
+          // Only throw if it's an actual error, not a parse error from incomplete chunk
+          if (e instanceof Error && e.message !== 'Unexpected end of JSON input') {
+            throw e;
+          }
         }
       }
     }
+
+    // Process any remaining buffer
+    if (buffer.startsWith('data: ')) {
+      const data = buffer.slice(6).trim();
+      if (data && data !== '[DONE]') {
+        try {
+          const parsed = JSON.parse(data);
+          const choice = parsed.choices?.[0];
+          if (choice) {
+            yield {
+              id: parsed.id || '',
+              model: parsed.model || model,
+              content: choice.delta?.content || null,
+              finishReason: choice.finish_reason || null,
+              toolCalls: choice.delta?.tool_calls,
+            };
+          }
+        } catch {
+          // Ignore incomplete final chunk
+        }
+      }
+    }
+  }
+
+  /**
+   * Collect full streamed response
+   */
+  async streamToString(request: ChatRequest): Promise<string> {
+    const chunks: string[] = [];
+    for await (const chunk of this.stream(request)) {
+      chunks.push(chunk);
+    }
+    return chunks.join('');
   }
 
   /**
@@ -120,6 +268,122 @@ export class LLM {
     });
     return response.choices[0]?.message?.content || '';
   }
+
+  /**
+   * Multi-turn conversation helper
+   */
+  async converse(
+    messages: ChatMessage[],
+    options?: { temperature?: number; maxTokens?: number }
+  ): Promise<{ response: string; messages: ChatMessage[] }> {
+    const response = await this.chat({
+      model: this.config.model,
+      messages,
+      temperature: options?.temperature,
+      maxTokens: options?.maxTokens,
+    });
+
+    const assistantMessage = response.choices[0]?.message;
+    if (!assistantMessage) {
+      throw new Error('No response from model');
+    }
+
+    return {
+      response: assistantMessage.content || '',
+      messages: [...messages, assistantMessage],
+    };
+  }
+
+  /**
+   * Chat with tool/function calling
+   */
+  async chatWithTools(
+    messages: ChatMessage[],
+    tools: LLMTool[],
+    options?: {
+      temperature?: number;
+      maxTokens?: number;
+      toolChoice?: ChatRequest['toolChoice'];
+    }
+  ): Promise<ChatResponse> {
+    return this.chat({
+      model: this.config.model,
+      messages,
+      tools,
+      toolChoice: options?.toolChoice ?? 'auto',
+      temperature: options?.temperature,
+      maxTokens: options?.maxTokens,
+    });
+  }
+
+  /**
+   * Execute a tool call and continue conversation
+   */
+  async executeToolAndContinue(
+    messages: ChatMessage[],
+    tools: LLMTool[],
+    toolExecutor: (name: string, args: Record<string, unknown>) => Promise<unknown>
+  ): Promise<{ response: string; messages: ChatMessage[] }> {
+    const response = await this.chatWithTools(messages, tools);
+    const assistantMessage = response.choices[0]?.message;
+
+    if (!assistantMessage) {
+      throw new Error('No response from model');
+    }
+
+    const updatedMessages = [...messages, assistantMessage];
+
+    // Check for tool calls
+    if (assistantMessage.functionCall) {
+      const { name, arguments: argsStr } = assistantMessage.functionCall;
+      const args = JSON.parse(argsStr);
+      const result = await toolExecutor(name, args);
+
+      // Add tool result to messages
+      const toolResultMessage: ChatMessage = {
+        role: 'function',
+        name,
+        content: JSON.stringify(result),
+      };
+      updatedMessages.push(toolResultMessage);
+
+      // Get final response
+      const finalResponse = await this.chat({
+        model: this.config.model,
+        messages: updatedMessages,
+      });
+
+      const finalMessage = finalResponse.choices[0]?.message;
+      if (finalMessage) {
+        updatedMessages.push(finalMessage);
+      }
+
+      return {
+        response: finalMessage?.content || '',
+        messages: updatedMessages,
+      };
+    }
+
+    return {
+      response: assistantMessage.content || '',
+      messages: updatedMessages,
+    };
+  }
+
+  /**
+   * Check server health and available providers
+   */
+  async checkHealth(): Promise<{ status: string; providers: Record<string, boolean> }> {
+    const response = await fetch(`${this.baseUrl}/health`, {
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!response.ok) {
+      throw new Error('Health check failed');
+    }
+
+    return response.json();
+  }
 }
 
 /**
@@ -127,6 +391,46 @@ export class LLM {
  */
 export function createLLM(config: LLMConfig): LLM {
   return new LLM(config);
+}
+
+/**
+ * Create an OpenAI-configured LLM client
+ */
+export function createOpenAI(options?: {
+  model?: string;
+  apiKey?: string;
+  baseUrl?: string;
+  temperature?: number;
+  maxTokens?: number;
+}): LLM {
+  return new LLM({
+    provider: 'openai',
+    model: options?.model || 'gpt-4-turbo-preview',
+    apiKey: options?.apiKey || process.env.OPENAI_API_KEY,
+    baseUrl: options?.baseUrl || 'http://localhost:8000',
+    temperature: options?.temperature,
+    maxTokens: options?.maxTokens,
+  });
+}
+
+/**
+ * Create an Anthropic-configured LLM client
+ */
+export function createAnthropic(options?: {
+  model?: string;
+  apiKey?: string;
+  baseUrl?: string;
+  temperature?: number;
+  maxTokens?: number;
+}): LLM {
+  return new LLM({
+    provider: 'anthropic',
+    model: options?.model || 'claude-3-5-sonnet-20241022',
+    apiKey: options?.apiKey || process.env.ANTHROPIC_API_KEY,
+    baseUrl: options?.baseUrl || 'http://localhost:8000',
+    temperature: options?.temperature,
+    maxTokens: options?.maxTokens,
+  });
 }
 
 /**

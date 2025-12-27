@@ -81,5 +81,8 @@
     "component",
     "codegen",
     "bindings"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

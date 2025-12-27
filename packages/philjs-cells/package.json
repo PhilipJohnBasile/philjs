@@ -67,5 +67,8 @@
     "data-loading",
     "declarative",
     "redwoodjs"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

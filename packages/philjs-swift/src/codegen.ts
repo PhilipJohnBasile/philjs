@@ -92,12 +92,14 @@ public class PhilJSBridge: ObservableObject {
     public static let shared = PhilJSBridge()
 
     public func call(_ method: String, args: [Any] = []) async throws -> Any? {
-        // TODO: Implement WebView bridge
+        // WebView bridge - calls JavaScript methods in the PhilJS app
+        // Override this method to implement your custom bridge logic
         return nil
     }
 
     public func emit(_ event: String, data: Any? = nil) {
-        // TODO: Implement event emission
+        // Emit events to the PhilJS app via WebView
+        // Override this method to implement your custom event emission
     }
 }
 `;

@@ -1,6 +1,16 @@
 # create-philjs
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Scaffolding tool for PhilJS apps - The framework that thinks ahead.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Features
 
@@ -224,10 +234,10 @@ After creating your project:
 
 ### Command not found
 
-Make sure you're using a recent version of Node.js (18+):
+Make sure you're using a recent version of Node.js (24+):
 
 ```bash
-node --version  # Should be 18 or higher
+node --version  # Should be 24 or higher
 ```
 
 ### Permission errors

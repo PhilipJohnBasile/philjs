@@ -40,13 +40,8 @@ export const defaultStrategy: BundleStrategy = {
       chunks.set(symbol.id, [symbol]);
     }
 
-    // Group regular symbols by file
-    const byFile = new Map<string, Symbol[]>();
-    for (const symbol of regularSymbols) {
-      const group = byFile.get(symbol.filePath) || [];
-      group.push(symbol);
-      byFile.set(symbol.filePath, group);
-    }
+    // ES2024: Group regular symbols by file using Map.groupBy()
+    const byFile = Map.groupBy(regularSymbols, (symbol) => symbol.filePath);
 
     // Add file-based chunks
     for (const [filePath, symbols] of byFile) {
@@ -122,15 +117,9 @@ export const routeStrategy: BundleStrategy = {
   bundle: (graph) => {
     const chunks = new Map<string, Symbol[]>();
 
-    // Group by file path segments (assuming route-based file structure)
-    const byRoute = new Map<string, Symbol[]>();
-
-    for (const symbol of graph.symbols.values()) {
-      const route = extractRoute(symbol.filePath);
-      const group = byRoute.get(route) || [];
-      group.push(symbol);
-      byRoute.set(route, group);
-    }
+    // ES2024: Group by route using Map.groupBy()
+    const symbols = Array.from(graph.symbols.values());
+    const byRoute = Map.groupBy(symbols, (symbol) => extractRoute(symbol.filePath));
 
     for (const [route, symbols] of byRoute) {
       chunks.set(`route_${route}`, symbols);
@@ -221,18 +210,11 @@ export const hybridStrategy: BundleStrategy = {
       chunks.set(`lazy_${symbol.id}`, [symbol]);
     }
 
-    // 2. Group non-lazy symbols by route
+    // 2. ES2024: Group non-lazy symbols by route using Map.groupBy()
     const regularSymbols = Array.from(graph.symbols.values()).filter(
       (s) => !s.isLazy
     );
-    const byRoute = new Map<string, Symbol[]>();
-
-    for (const symbol of regularSymbols) {
-      const route = extractRoute(symbol.filePath);
-      const group = byRoute.get(route) || [];
-      group.push(symbol);
-      byRoute.set(route, group);
-    }
+    const byRoute = Map.groupBy(regularSymbols, (symbol) => extractRoute(symbol.filePath));
 
     // 3. Split large route chunks by size
     for (const [route, symbols] of byRoute) {

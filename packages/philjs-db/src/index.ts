@@ -66,6 +66,30 @@ export {
   createRepository,
   paginate,
   softDelete,
+  // CRUD operations with provider detection
+  create,
+  update,
+  deleteRecord,
+  detectProvider,
+  // Universal QueryBuilder
+  QueryBuilder,
+  queryBuilder,
+  // Transaction support with Symbol.asyncDispose
+  Transaction,
+  TransactionRollbackError,
+  createTransaction,
+  transaction,
+} from './utils';
+
+export type {
+  DatabaseProvider,
+  WhereClause as UtilsWhereClause,
+  JoinClause,
+  JoinCondition,
+  CreateOptions,
+  UpdateOptions,
+  DeleteOptions,
+  CascadeRelation,
 } from './utils';
 
 export type {

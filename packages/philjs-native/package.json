@@ -9,38 +9,31 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
-      "import": "./dist/runtime.js",
-      "require": "./dist/runtime.cjs"
+      "default": "./dist/runtime.js"
     },
     "./components": {
       "types": "./dist/components/index.d.ts",
-      "import": "./dist/components/index.js",
-      "require": "./dist/components/index.cjs"
+      "default": "./dist/components/index.js"
     },
     "./navigation": {
       "types": "./dist/navigation.d.ts",
-      "import": "./dist/navigation.js",
-      "require": "./dist/navigation.cjs"
+      "default": "./dist/navigation.js"
     },
     "./capacitor": {
       "types": "./dist/capacitor/index.d.ts",
-      "import": "./dist/capacitor/index.js",
-      "require": "./dist/capacitor/index.cjs"
+      "default": "./dist/capacitor/index.js"
     },
     "./tauri": {
       "types": "./dist/tauri/index.d.ts",
-      "import": "./dist/tauri/index.js",
-      "require": "./dist/tauri/index.cjs"
+      "default": "./dist/tauri/index.js"
     },
     "./gestures": {
       "types": "./dist/gestures/index.d.ts",
-      "import": "./dist/gestures/index.js",
-      "require": "./dist/gestures/index.cjs"
+      "default": "./dist/gestures/index.js"
     }
   },
   "bin": {

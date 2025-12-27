@@ -1,6 +1,16 @@
 # philjs-db
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Complete database solution for PhilJS applications with ORM integration, migrations, and reactive signals.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Features
 
@@ -351,6 +361,76 @@ export default function TransferFunds() {
       // If any operation fails, entire transaction rolls back
     });
   }
+}
+```
+
+### Using ES2024 Features
+
+#### Promise.withResolvers() for Async Control
+
+```typescript
+import { usePrisma } from 'philjs-db';
+
+export async function batchInsertWithProgress(items: Item[]) {
+  const prisma = usePrisma();
+  const { promise, resolve, reject } = Promise.withResolvers<void>();
+
+  let completed = 0;
+  const total = items.length;
+
+  for (const item of items) {
+    try {
+      await prisma.item.create({ data: item });
+      completed++;
+      console.log(`Progress: ${completed}/${total}`);
+    } catch (error) {
+      reject(error);
+      return promise;
+    }
+  }
+
+  resolve();
+  return promise;
+}
+```
+
+#### Object.groupBy() for Query Results
+
+```typescript
+import { usePrisma } from 'philjs-db';
+
+export async function getUsersByRole() {
+  const prisma = usePrisma();
+  const users = await prisma.user.findMany();
+
+  // Group users by role using ES2024 Object.groupBy()
+  const grouped = Object.groupBy(users, user => user.role);
+
+  return {
+    admins: grouped.admin ?? [],
+    users: grouped.user ?? [],
+    guests: grouped.guest ?? [],
+  };
+}
+```
+
+#### Resource Management with `using`
+
+```typescript
+import { createDatabaseConnection } from 'philjs-db';
+
+// Database connection with automatic cleanup using TypeScript 6 `using`
+async function performDatabaseOperation() {
+  await using connection = await createDatabaseConnection({
+    url: process.env.DATABASE_URL,
+    [Symbol.asyncDispose]: async () => {
+      await connection.disconnect();
+      console.log('Connection closed');
+    }
+  });
+
+  // Connection automatically closed when scope exits
+  return connection.query('SELECT * FROM users');
 }
 ```
 

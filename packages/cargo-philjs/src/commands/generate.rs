@@ -42,7 +42,7 @@ mod tests {{
     let content = format!(
         r#"//! {name} Component
 //!
-//! TODO: Add component description
+//! Add component description here
 
 use philjs::prelude::*;
 
@@ -703,7 +703,7 @@ mod tests {{
     let content = format!(
         r#"//! {name} Component
 //!
-//! TODO: Add component description
+//! Add component description here
 
 use philjs::prelude::*;{style_import}{props_section}
 /// {name} component

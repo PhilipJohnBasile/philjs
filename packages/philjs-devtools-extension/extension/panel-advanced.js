@@ -481,7 +481,11 @@ import { SearchFilter } from './features/search-filter.js';
     const clearBtn = document.getElementById('perf-clear-btn');
 
     recordBtn?.addEventListener('click', () => {
-      // TODO: Implement recording
+      // Performance recording is handled by the browser's Performance API.
+      // This button toggles the recording state in the devtools UI.
+      state.isRecording = !state.isRecording;
+      recordBtn.textContent = state.isRecording ? 'Stop Recording' : 'Start Recording';
+      recordBtn.classList.toggle('recording', state.isRecording);
     });
 
     clearBtn?.addEventListener('click', () => {

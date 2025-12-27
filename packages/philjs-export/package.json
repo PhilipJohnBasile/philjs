@@ -9,18 +9,15 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./formats": {
       "types": "./dist/formats/index.d.ts",
-      "import": "./dist/formats/index.js",
-      "require": "./dist/formats/index.cjs"
+      "default": "./dist/formats/index.js"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
-      "import": "./dist/utils/index.js",
-      "require": "./dist/utils/index.cjs"
+      "default": "./dist/utils/index.js"
     }
   },
   "files": ["dist", "src"],

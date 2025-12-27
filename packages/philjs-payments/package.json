@@ -9,28 +9,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./providers/stripe": {
       "types": "./dist/providers/stripe.d.ts",
-      "import": "./dist/providers/stripe.js",
-      "require": "./dist/providers/stripe.cjs"
+      "default": "./dist/providers/stripe.js"
     },
     "./providers/paypal": {
       "types": "./dist/providers/paypal.d.ts",
-      "import": "./dist/providers/paypal.js",
-      "require": "./dist/providers/paypal.cjs"
+      "default": "./dist/providers/paypal.js"
     },
     "./providers/square": {
       "types": "./dist/providers/square.d.ts",
-      "import": "./dist/providers/square.js",
-      "require": "./dist/providers/square.cjs"
+      "default": "./dist/providers/square.js"
     },
     "./webhooks": {
       "types": "./dist/webhooks/index.d.ts",
-      "import": "./dist/webhooks/index.js",
-      "require": "./dist/webhooks/index.cjs"
+      "default": "./dist/webhooks/index.js"
     }
   },
   "files": ["dist", "src"],

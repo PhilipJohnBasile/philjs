@@ -9,28 +9,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./memo": {
       "types": "./dist/memo.d.ts",
-      "import": "./dist/memo.js",
-      "require": "./dist/memo.cjs"
+      "default": "./dist/memo.js"
     },
     "./batch": {
       "types": "./dist/batch.d.ts",
-      "import": "./dist/batch.js",
-      "require": "./dist/batch.cjs"
+      "default": "./dist/batch.js"
     },
     "./pool": {
       "types": "./dist/pool.d.ts",
-      "import": "./dist/pool.js",
-      "require": "./dist/pool.cjs"
+      "default": "./dist/pool.js"
     },
     "./lazy": {
       "types": "./dist/lazy.d.ts",
-      "import": "./dist/lazy.js",
-      "require": "./dist/lazy.cjs"
+      "default": "./dist/lazy.js"
     }
   },
   "files": ["dist", "src"],

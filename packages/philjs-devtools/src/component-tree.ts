@@ -9,6 +9,7 @@
  */
 
 import type { JSXElement } from "philjs-core";
+import { getSignalInspector } from "./signal-inspector";
 
 // ============================================================================
 // Types
@@ -52,6 +53,265 @@ export type TreeDiff = {
   oldNode?: ComponentNode;
   newNode?: ComponentNode;
 };
+
+// ============================================================================
+// Effect Tracking Types
+// ============================================================================
+
+export type EffectMetadata = {
+  id: string;
+  name?: string;
+  componentId?: string;
+  createdAt: number;
+  lastRun: number;
+  runCount: number;
+  cleanupCount: number;
+  dependencies: string[];
+  status: "active" | "disposed" | "pending";
+  averageRunTime: number;
+  totalRunTime: number;
+};
+
+export type EffectEvent = {
+  id: string;
+  effectId: string;
+  type: "run" | "cleanup" | "create" | "dispose";
+  timestamp: number;
+  duration?: number;
+  error?: string;
+};
+
+// ============================================================================
+// Effect Tracker
+// ============================================================================
+
+export class EffectTracker {
+  private effects = new Map<string, EffectMetadata>();
+  private events: EffectEvent[] = [];
+  private idCounter = 0;
+  private maxEvents = 500;
+
+  /**
+   * Register a new effect for tracking
+   */
+  public register(
+    name?: string,
+    componentId?: string,
+    dependencies: string[] = []
+  ): string {
+    const id = `effect-${this.idCounter++}`;
+    const now = Date.now();
+
+    this.effects.set(id, {
+      id,
+      name,
+      componentId,
+      createdAt: now,
+      lastRun: 0,
+      runCount: 0,
+      cleanupCount: 0,
+      dependencies,
+      status: "pending",
+      averageRunTime: 0,
+      totalRunTime: 0,
+    });
+
+    this.recordEvent({
+      id: `event-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      effectId: id,
+      type: "create",
+      timestamp: now,
+    });
+
+    return id;
+  }
+
+  /**
+   * Record effect run
+   */
+  public recordRun(effectId: string, duration: number, error?: string): void {
+    const effect = this.effects.get(effectId);
+    if (!effect) return;
+
+    const now = Date.now();
+    effect.lastRun = now;
+    effect.runCount++;
+    effect.totalRunTime += duration;
+    effect.averageRunTime = effect.totalRunTime / effect.runCount;
+    effect.status = "active";
+
+    this.recordEvent({
+      id: `event-${now}-${Math.random().toString(36).slice(2, 7)}`,
+      effectId,
+      type: "run",
+      timestamp: now,
+      duration,
+      error,
+    });
+  }
+
+  /**
+   * Record effect cleanup
+   */
+  public recordCleanup(effectId: string, duration?: number): void {
+    const effect = this.effects.get(effectId);
+    if (!effect) return;
+
+    const now = Date.now();
+    effect.cleanupCount++;
+
+    this.recordEvent({
+      id: `event-${now}-${Math.random().toString(36).slice(2, 7)}`,
+      effectId,
+      type: "cleanup",
+      timestamp: now,
+      duration,
+    });
+  }
+
+  /**
+   * Dispose an effect
+   */
+  public dispose(effectId: string): void {
+    const effect = this.effects.get(effectId);
+    if (!effect) return;
+
+    effect.status = "disposed";
+
+    this.recordEvent({
+      id: `event-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      effectId,
+      type: "dispose",
+      timestamp: Date.now(),
+    });
+  }
+
+  /**
+   * Get effect metadata
+   */
+  public getEffect(effectId: string): EffectMetadata | undefined {
+    return this.effects.get(effectId);
+  }
+
+  /**
+   * Get all effects
+   */
+  public getAllEffects(): EffectMetadata[] {
+    return Array.from(this.effects.values());
+  }
+
+  /**
+   * Get effects by component ID
+   */
+  public getEffectsByComponent(componentId: string): EffectMetadata[] {
+    return Array.from(this.effects.values()).filter(
+      (e) => e.componentId === componentId
+    );
+  }
+
+  /**
+   * Get active effects
+   */
+  public getActiveEffects(): EffectMetadata[] {
+    return Array.from(this.effects.values()).filter(
+      (e) => e.status === "active"
+    );
+  }
+
+  /**
+   * Get effect events
+   */
+  public getEvents(effectId?: string): EffectEvent[] {
+    if (effectId) {
+      return this.events.filter((e) => e.effectId === effectId);
+    }
+    return this.events.slice();
+  }
+
+  /**
+   * Get recent events
+   */
+  public getRecentEvents(count = 50): EffectEvent[] {
+    return this.events.slice(-count);
+  }
+
+  /**
+   * Get effect statistics
+   */
+  public getStatistics(): {
+    totalEffects: number;
+    activeEffects: number;
+    totalRuns: number;
+    totalCleanups: number;
+    averageRunTime: number;
+    slowestEffects: EffectMetadata[];
+  } {
+    const effects = Array.from(this.effects.values());
+    const activeEffects = effects.filter((e) => e.status === "active");
+    const totalRuns = effects.reduce((sum, e) => sum + e.runCount, 0);
+    const totalCleanups = effects.reduce((sum, e) => sum + e.cleanupCount, 0);
+    const totalRunTime = effects.reduce((sum, e) => sum + e.totalRunTime, 0);
+    const averageRunTime = totalRuns > 0 ? totalRunTime / totalRuns : 0;
+
+    const slowestEffects = effects
+      .filter((e) => e.runCount > 0)
+      .sort((a, b) => b.averageRunTime - a.averageRunTime)
+      .slice(0, 10);
+
+    return {
+      totalEffects: effects.length,
+      activeEffects: activeEffects.length,
+      totalRuns,
+      totalCleanups,
+      averageRunTime,
+      slowestEffects,
+    };
+  }
+
+  /**
+   * Clear all tracking data
+   */
+  public clear(): void {
+    this.effects.clear();
+    this.events = [];
+    this.idCounter = 0;
+  }
+
+  /**
+   * Export data as JSON
+   */
+  public export(): string {
+    return JSON.stringify({
+      effects: Array.from(this.effects.entries()),
+      events: this.events,
+      exportedAt: new Date().toISOString(),
+    });
+  }
+
+  private recordEvent(event: EffectEvent): void {
+    this.events.push(event);
+    if (this.events.length > this.maxEvents) {
+      this.events.shift();
+    }
+  }
+}
+
+// ============================================================================
+// Global Effect Tracker Instance
+// ============================================================================
+
+let globalEffectTracker: EffectTracker | null = null;
+
+export function initEffectTracker(): EffectTracker {
+  if (!globalEffectTracker) {
+    globalEffectTracker = new EffectTracker();
+  }
+  return globalEffectTracker;
+}
+
+export function getEffectTracker(): EffectTracker | null {
+  return globalEffectTracker;
+}
 
 // ============================================================================
 // Component Tree Inspector
@@ -412,15 +672,145 @@ export class ComponentTreeInspector {
   }
 
   private extractSignals(node: ComponentNode): string[] {
-    // This would need integration with signal inspector
-    // For now, return placeholder
-    return [];
+    const signals: string[] = [];
+
+    // Get the global signal inspector if available
+    const signalInspector = getSignalInspector();
+    if (!signalInspector) {
+      return signals;
+    }
+
+    // Get all registered signals
+    const allSignals = signalInspector.getAllSignals();
+
+    // Check if the node has a DOM element we can use to find associated signals
+    if (node.domNode && node.domNode.nodeType === Node.ELEMENT_NODE) {
+      const element = node.domNode as Element;
+
+      // Look for signals that might be associated with this element
+      // by checking data attributes or component metadata
+      const componentId = element.getAttribute("data-component-id");
+      const signalIds = element.getAttribute("data-signal-ids");
+
+      if (signalIds) {
+        // Parse signal IDs from data attribute
+        signals.push(...signalIds.split(",").filter(Boolean));
+      }
+
+      // Also check if there's a __philjs__ property on the element
+      const philJsData = (element as any).__philjs__;
+      if (philJsData?.signals) {
+        for (const signalRef of philJsData.signals) {
+          if (typeof signalRef === "string") {
+            signals.push(signalRef);
+          } else if (signalRef?.id) {
+            signals.push(signalRef.id);
+          }
+        }
+      }
+
+      // Search through all signals for ones that might be scoped to this component
+      if (componentId) {
+        for (const signal of allSignals) {
+          // Check if signal name/id suggests it belongs to this component
+          if (
+            signal.name.includes(componentId) ||
+            signal.id.includes(componentId)
+          ) {
+            if (!signals.includes(signal.id)) {
+              signals.push(signal.id);
+            }
+          }
+        }
+      }
+    }
+
+    // Check props for signal-like values
+    if (node.props) {
+      for (const [propName, propValue] of Object.entries(node.props)) {
+        // Check if prop value looks like a signal reference
+        if (propValue && typeof propValue === "object") {
+          const signalData = (propValue as any).__signal__;
+          if (signalData?.id) {
+            if (!signals.includes(signalData.id)) {
+              signals.push(signalData.id);
+            }
+          }
+        }
+
+        // Check for prop names that suggest signal binding
+        if (
+          propName.startsWith("$") ||
+          propName.endsWith("Signal") ||
+          propName.endsWith("$")
+        ) {
+          // Look up in signal inspector by name
+          for (const signal of allSignals) {
+            if (signal.name === propName || signal.name === propValue) {
+              if (!signals.includes(signal.id)) {
+                signals.push(signal.id);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return signals;
   }
 
   private extractEffects(node: ComponentNode): string[] {
-    // This would need integration with effect tracking
-    // For now, return placeholder
-    return [];
+    const effects: string[] = [];
+
+    // Get the global effect tracker if available
+    const effectTracker = getEffectTracker();
+    if (!effectTracker) {
+      return effects;
+    }
+
+    // Check if the node has a DOM element we can use to find associated effects
+    if (node.domNode && node.domNode.nodeType === Node.ELEMENT_NODE) {
+      const element = node.domNode as Element;
+
+      // Look for effects that might be associated with this element
+      const componentId = element.getAttribute("data-component-id");
+      const effectIds = element.getAttribute("data-effect-ids");
+
+      if (effectIds) {
+        // Parse effect IDs from data attribute
+        effects.push(...effectIds.split(",").filter(Boolean));
+      }
+
+      // Check for __philjs__ metadata on the element
+      const philJsData = (element as any).__philjs__;
+      if (philJsData?.effects) {
+        for (const effectRef of philJsData.effects) {
+          if (typeof effectRef === "string") {
+            effects.push(effectRef);
+          } else if (effectRef?.id) {
+            effects.push(effectRef.id);
+          }
+        }
+      }
+
+      // Search through all tracked effects for ones scoped to this component
+      if (componentId) {
+        const allEffects = effectTracker.getAllEffects();
+        for (const effect of allEffects) {
+          if (
+            effect.componentId === componentId ||
+            effect.name?.includes(componentId) ||
+            effect.id?.includes(componentId)
+          ) {
+            if (!effects.includes(effect.id)) {
+              effects.push(effect.id);
+            }
+          }
+        }
+      }
+    }
+
+    return effects;
   }
 
   private cloneNode(node: ComponentNode): ComponentNode {

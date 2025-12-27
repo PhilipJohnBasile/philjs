@@ -1,6 +1,16 @@
 # @philjs/jobs
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 **Background job processing and scheduling for PhilJS** - RedwoodJS-style job queue system with Redis support, cron scheduling, and comprehensive monitoring.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Features
 
@@ -19,13 +29,13 @@
 ## Installation
 
 ```bash
-npm install @philjs/jobs
+pnpm add @philjs/jobs
 ```
 
 For Redis support (optional):
 
 ```bash
-npm install bullmq ioredis
+pnpm add bullmq ioredis
 ```
 
 ## Quick Start

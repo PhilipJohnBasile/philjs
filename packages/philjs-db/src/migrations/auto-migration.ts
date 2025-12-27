@@ -158,8 +158,8 @@ export class AutoMigrationGenerator {
 
     for (const table of diff.tables.dropped) {
       upStatements.push(this.generateDropTableCode(table));
-      // Note: Can't reverse drop without schema backup
-      downStatements.unshift(`// TODO: Recreate ${table} table`);
+      // Note: Can't reverse drop without schema backup - manual recreation required
+      downStatements.unshift(`// Recreate ${table} table (requires manual schema definition)`);
     }
 
     for (const modification of diff.tables.modified) {

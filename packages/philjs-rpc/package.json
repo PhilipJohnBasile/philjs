@@ -63,5 +63,8 @@
     "type-safe",
     "api",
     "typescript"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

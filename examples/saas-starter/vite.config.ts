@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
+import { resolve } from "node:path";
 import philjs from "../../packages/philjs-compiler/src/plugins/vite";
 
 export default defineConfig({

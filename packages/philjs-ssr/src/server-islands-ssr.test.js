@@ -7,7 +7,7 @@
  * These tests are placeholders for future implementation.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-// TODO: Enable when philjs-islands/server-islands is implemented
+// Tests skipped pending philjs-islands/server-islands implementation
 describe.skip('Server Islands SSR Integration', () => {
     beforeEach(() => {
         // Reset cache and metrics before each test

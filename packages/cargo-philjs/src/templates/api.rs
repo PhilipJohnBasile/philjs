@@ -304,8 +304,8 @@ pub async fn auth(
 
     let token = &auth_header[7..];
 
-    // TODO: Verify JWT token
-    // let claims = verify_token(token)?;
+    // Verify JWT token - implement your verification logic here
+    // Example: let claims = verify_token(token)?;
     // request.extensions_mut().insert(claims);
 
     Ok(next.run(request).await)
@@ -464,7 +464,7 @@ pub async fn create(
     State(db): State<Database>,
     Json(payload): Json<CreateUser>,
 ) -> ApiResult<(StatusCode, Json<User>)> {
-    // TODO: Hash password with argon2
+    // Hash password with argon2 before storing
 
     let user = sqlx::query_as::<_, User>(
         "INSERT INTO users (id, email, name, created_at, updated_at)

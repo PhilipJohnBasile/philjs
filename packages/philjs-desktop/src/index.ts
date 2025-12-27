@@ -145,20 +145,22 @@ export {
   runScript,
   powershell,
   sidecar,
-  // Clipboard - TODO: Fix Tauri v2 API compatibility
-  // Clipboard,
-  // readClipboard,
-  // writeClipboard,
-  // readClipboardImage,
-  // writeClipboardImage,
-  // clearClipboard,
-  // Notification - TODO: Fix Tauri v2 API compatibility
-  // Notification,
-  // requestNotificationPermission,
-  // showNotification,
-  // notify,
-  // scheduleNotification,
-  // cancelNotification,
+  // Clipboard
+  Clipboard,
+  ClipboardError,
+  readClipboard,
+  writeClipboard,
+  readClipboardImage,
+  writeClipboardImage,
+  clearClipboard,
+  // Notification
+  Notification,
+  NotificationError,
+  requestNotificationPermission,
+  showNotification,
+  notify,
+  scheduleNotification,
+  cancelNotification,
   // Global Shortcut
   GlobalShortcut,
   registerShortcut,
@@ -199,9 +201,9 @@ export type {
   CommandOptions,
   CommandOutput,
   SpawnedProcess,
-  // NotificationOptions,
-  // NotificationAction,
-  // ScheduledNotificationOptions,
+  NotificationOptions,
+  NotificationAction,
+  ScheduledNotificationOptions,
   ShortcutHandler,
   TrayOptions,
   TrayMenuItem,
@@ -256,7 +258,11 @@ export type {
   AppState,
 } from './lifecycle';
 
-// Electron Compatibility Layer - TODO: Fix TypeScript errors
+// Electron Compatibility Layer
+// These exports are disabled pending TypeScript compatibility fixes.
+// PhilJS Desktop uses Tauri as the primary desktop runtime.
+// For Electron migration, see docs/migration/electron-to-tauri.md
+//
 // export {
 //   BrowserWindow,
 //   ipcMain,
@@ -266,7 +272,7 @@ export type {
 //   createMigrationHelper,
 //   ElectronToTauriMapper,
 // } from './electron';
-
+//
 // export type {
 //   BrowserWindowOptions,
 //   IpcEvent,

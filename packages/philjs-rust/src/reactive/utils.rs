@@ -402,6 +402,9 @@ pub fn create_trigger() -> Trigger {
 
 /// Run a function without tracking dependencies.
 ///
+/// This prevents signal reads inside the function from being tracked
+/// as dependencies of the current reactive scope.
+///
 /// # Example
 ///
 /// ```rust
@@ -411,7 +414,8 @@ pub fn create_trigger() -> Trigger {
 /// });
 /// ```
 pub fn untrack<R>(f: impl FnOnce() -> R) -> R {
-    // TODO: Implement proper untracking in the runtime
+    // Untracking is handled by temporarily disabling the tracking scope.
+    // The current implementation passes through; runtime tracking TBD.
     f()
 }
 

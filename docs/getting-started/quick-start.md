@@ -490,12 +490,18 @@ count.set(5);
 
 **TypeScript errors**
 
-Make sure your `tsconfig.json` has:
+Make sure your `tsconfig.json` has (TypeScript 6+):
 ```json
 {
   "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "philjs-core",
+    "isolatedDeclarations": true,
+    "exactOptionalPropertyTypes": true
   }
 }
 ```

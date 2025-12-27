@@ -9,13 +9,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./providers/*": {
       "types": "./dist/providers/*.d.ts",
-      "import": "./dist/providers/*.js",
-      "require": "./dist/providers/*.cjs"
+      "default": "./dist/providers/*.js"
     }
   },
   "files": ["dist", "src"],

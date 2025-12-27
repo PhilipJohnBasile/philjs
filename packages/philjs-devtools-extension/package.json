@@ -12,5 +12,8 @@
     "@types/chrome": "^0.0.260",
     "vite": "^7.3.0",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

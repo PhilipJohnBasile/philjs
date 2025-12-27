@@ -83,7 +83,7 @@ export async function runAllBenchmarks(options: {
 
   const results: BenchmarkReport = {
     timestamp: new Date().toISOString(),
-    environment: getEnvironmentInfo(),
+    environment: await getEnvironmentInfo(),
     framework: [],
     reactivity: [],
     ssr: [],
@@ -153,13 +153,14 @@ interface RustBenchmark {
   operations: BenchmarkResult[];
 }
 
-function getEnvironmentInfo(): EnvironmentInfo {
+async function getEnvironmentInfo(): Promise<EnvironmentInfo> {
+  const os = await import('os');
   return {
     nodeVersion: process.version,
     platform: process.platform,
     arch: process.arch,
-    cpus: require('os').cpus().length,
-    memory: require('os').totalmem(),
+    cpus: os.cpus().length,
+    memory: os.totalmem(),
   };
 }
 

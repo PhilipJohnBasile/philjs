@@ -1,11 +1,21 @@
 # PhilJS Native
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Cross-platform mobile development for PhilJS. Build native iOS, Android, and Web apps with one codebase.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Installation
 
 ```bash
-npm install philjs-native philjs-core
+pnpm add philjs-native philjs-core
 ```
 
 ## Quick Start

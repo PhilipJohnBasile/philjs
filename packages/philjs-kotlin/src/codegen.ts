@@ -106,12 +106,14 @@ fun <T> Signal<T>.collectAsState(): State<T> {
  */
 object PhilJSBridge {
     suspend fun call(method: String, vararg args: Any?): Any? {
-        // TODO: Implement WebView bridge
+        // WebView bridge - calls JavaScript methods in the PhilJS app
+        // Override this method to implement your custom bridge logic
         return null
     }
 
     fun emit(event: String, data: Any? = null) {
-        // TODO: Implement event emission
+        // Emit events to the PhilJS app via WebView
+        // Override this method to implement your custom event emission
     }
 }
 `;

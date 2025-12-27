@@ -48,5 +48,8 @@
     "type": "git",
     "url": "https://github.com/yourusername/philjs.git",
     "directory": "packages/create-philjs-plugin"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

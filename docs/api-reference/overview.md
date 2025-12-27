@@ -169,30 +169,25 @@ import { Island } from 'philjs-islands';
 import { DevTools } from 'philjs-devtools';
 ```
 
-### CommonJS
+### Note on CommonJS
+
+PhilJS 2.0+ is **ESM-only**. CommonJS is not supported. If you need to use PhilJS in a CommonJS environment, use dynamic imports:
 
 ```javascript
-// Core
-const { signal, memo, effect } = require('philjs-core');
-
-// Router
-const {
-  createRouter,
-  discoverRoutes,
-  matchRoute,
-  findLayouts,
-  applyLayouts,
-  initSmartPreloader,
-  initViewTransitions,
-} = require('philjs-router');
-
-// SSR
-const { renderToString } = require('philjs-ssr');
+// Dynamic import in CommonJS
+const { signal, memo, effect } = await import('philjs-core');
 ```
+
+We recommend migrating to ESM for better tree-shaking, faster builds, and access to modern JavaScript features.
 
 ## Version Compatibility
 
-This documentation covers PhilJS version **1.0.0** and above.
+This documentation covers PhilJS version **2.0.0** and above.
+
+### Runtime Requirements
+
+- **Node.js 24.0+** - Required for native ESM and ES2024 features
+- **TypeScript 6.0+** - Required for isolated declarations
 
 ### Breaking Changes
 
@@ -204,23 +199,25 @@ APIs marked as deprecated will be removed in the next major version. Warnings ar
 
 ## Browser Support
 
-PhilJS supports all modern browsers:
+PhilJS supports all modern browsers with ES2024 support:
 
-- **Chrome/Edge**: Latest 2 versions
-- **Firefox**: Latest 2 versions
-- **Safari**: Latest 2 versions
-- **iOS Safari**: Latest 2 versions
-- **Chrome Android**: Latest version
+- **Chrome/Edge**: 120+
+- **Firefox**: 121+
+- **Safari**: 17.4+
+- **iOS Safari**: 17.4+
+- **Chrome Android**: 120+
 
-### Polyfills
+### ES2024 Features Used
 
-For older browsers, you may need polyfills for:
+PhilJS leverages modern JavaScript features:
 
-- `Promise`
-- `fetch`
-- `WeakMap`
-- `Set`
-- `Map`
+- `Promise.withResolvers()` for cleaner async patterns
+- `Object.groupBy()` and `Map.groupBy()` for data organization
+- `Array.prototype.toSorted()`, `toReversed()`, `toSpliced()` for immutable operations
+- `Set` methods: `union()`, `intersection()`, `difference()`
+- Well-formed Unicode strings
+
+No polyfills are required for supported browser versions.
 
 ## Quick Reference
 

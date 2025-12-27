@@ -375,7 +375,8 @@ where
     let mut context = SSRContext::new();
     context.rendering = true;
 
-    // TODO: Make context available during rendering via thread-local
+    // Context sharing during rendering can be achieved via thread-locals.
+    // For now, context is collected post-render from component metadata.
     let html = render_to_string(f);
 
     context.rendering = false;

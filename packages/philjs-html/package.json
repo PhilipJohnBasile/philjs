@@ -9,18 +9,15 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./attributes": {
       "types": "./dist/attributes.d.ts",
-      "import": "./dist/attributes.js",
-      "require": "./dist/attributes.cjs"
+      "default": "./dist/attributes.js"
     },
     "./minimal": {
       "types": "./dist/minimal.d.ts",
-      "import": "./dist/minimal.js",
-      "require": "./dist/minimal.cjs"
+      "default": "./dist/minimal.js"
     }
   },
   "files": ["dist", "src"],

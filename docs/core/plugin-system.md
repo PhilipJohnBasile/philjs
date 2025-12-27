@@ -2,6 +2,11 @@
 
 Comprehensive plugin architecture for extending PhilJS with powerful, composable functionality.
 
+## Requirements
+
+- **Node.js 24+** - Required for native ESM support
+- **TypeScript 6+** - Required for plugin type inference
+
 ## Overview
 
 The PhilJS plugin system provides a robust, type-safe way to extend the framework's capabilities. Plugins can hook into the build process, development server, and runtime behavior.
@@ -42,7 +47,8 @@ import { defineConfig } from 'philjs-core';
 import tailwind from 'philjs-plugin-tailwind';
 import analytics from 'philjs-plugin-analytics';
 
-export default defineConfig({
+// Using TypeScript 6 satisfies for type-safe config
+const config = defineConfig({
   plugins: [
     tailwind({
       darkMode: 'class',
@@ -59,7 +65,9 @@ export default defineConfig({
       trackingId: 'G-XXXXXXXXXX',
     }),
   ],
-});
+}) satisfies PhilJSConfig;
+
+export default config;
 ```
 
 ## Plugin Architecture
@@ -410,9 +418,20 @@ npm test
 {
   "name": "philjs-plugin-awesome",
   "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "keywords": ["philjs", "plugin", "awesome"],
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "peerDependencies": {
-    "philjs-core": "^2.0.0"
+    "philjs-core": "^2.0.0",
+    "typescript": "^6.0.0"
   }
 }
 ```
@@ -440,21 +459,30 @@ philjs plugin submit philjs-plugin-awesome
 ### 2. Configuration
 
 ```typescript
-// ✅ Good - Type-safe config with defaults
+// Good - Type-safe config with TypeScript 6 features
 export interface MyPluginConfig {
   enabled?: boolean;
   theme?: 'light' | 'dark';
 }
 
-export default (config: MyPluginConfig = {}) => {
-  const { enabled = true, theme = 'light' } = config;
-  // ...
+export default (config: MyPluginConfig = {}): Plugin => {
+  // Using satisfies for type-safe defaults
+  const resolved = {
+    enabled: true,
+    theme: 'light',
+    ...config,
+  } as const satisfies Required<MyPluginConfig>;
+
+  return createPlugin(resolved);
 };
 
-// ❌ Bad - No types or defaults
-export default (config: any) => {
-  // ...
-};
+// Using NoInfer for better generic inference
+export function createPluginWithDefaults<const T extends MyPluginConfig>(
+  config: T,
+  defaults: NoInfer<T>
+): Plugin {
+  return createPlugin({ ...defaults, ...config });
+}
 ```
 
 ### 3. Error Handling

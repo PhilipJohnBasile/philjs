@@ -384,25 +384,25 @@ pub fn Input(props: InputProps) -> impl IntoView {
     // src/components/modal.rs - placeholder
     files.insert(
         "src/components/modal.rs".to_string(),
-        "//! Modal Component\n\nuse philjs::prelude::*;\n\n// TODO: Implement Modal component\n".to_string(),
+        "//! Modal Component\n\nuse philjs::prelude::*;\n\n// Implement your Modal component here\n".to_string(),
     );
 
     // src/components/dropdown.rs - placeholder
     files.insert(
         "src/components/dropdown.rs".to_string(),
-        "//! Dropdown Component\n\nuse philjs::prelude::*;\n\n// TODO: Implement Dropdown component\n".to_string(),
+        "//! Dropdown Component\n\nuse philjs::prelude::*;\n\n// Implement your Dropdown component here\n".to_string(),
     );
 
     // src/components/tabs.rs - placeholder
     files.insert(
         "src/components/tabs.rs".to_string(),
-        "//! Tabs Component\n\nuse philjs::prelude::*;\n\n// TODO: Implement Tabs component\n".to_string(),
+        "//! Tabs Component\n\nuse philjs::prelude::*;\n\n// Implement your Tabs component here\n".to_string(),
     );
 
     // src/components/toast.rs - placeholder
     files.insert(
         "src/components/toast.rs".to_string(),
-        "//! Toast Component\n\nuse philjs::prelude::*;\n\n// TODO: Implement Toast component\n".to_string(),
+        "//! Toast Component\n\nuse philjs::prelude::*;\n\n// Implement your Toast component here\n".to_string(),
     );
 
     // src/hooks/mod.rs
@@ -457,13 +457,13 @@ pub fn use_toggle(initial: bool) -> UseToggleReturn {
     // src/hooks/use_debounce.rs - placeholder
     files.insert(
         "src/hooks/use_debounce.rs".to_string(),
-        "//! Debounce Hook\n\nuse philjs::prelude::*;\n\n// TODO: Implement use_debounce\n".to_string(),
+        "//! Debounce Hook\n\nuse philjs::prelude::*;\n\n// Implement your use_debounce hook here\n".to_string(),
     );
 
     // src/hooks/use_media_query.rs - placeholder
     files.insert(
         "src/hooks/use_media_query.rs".to_string(),
-        "//! Media Query Hook\n\nuse philjs::prelude::*;\n\n// TODO: Implement use_media_query\n".to_string(),
+        "//! Media Query Hook\n\nuse philjs::prelude::*;\n\n// Implement your use_media_query hook here\n".to_string(),
     );
 
     // src/theme.rs

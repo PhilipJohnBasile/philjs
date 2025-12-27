@@ -232,17 +232,9 @@ export class PPRStreamController {
    * Group boundaries by priority
    */
   private groupByPriority(): Map<number, DynamicBoundaryMetadata[]> {
-    const groups = new Map<number, DynamicBoundaryMetadata[]>();
-
-    for (const metadata of this.shell.boundaries.values()) {
-      const priority = metadata.priority;
-      if (!groups.has(priority)) {
-        groups.set(priority, []);
-      }
-      groups.get(priority)!.push(metadata);
-    }
-
-    return groups;
+    // ES2024: Use Map.groupBy() for cleaner grouping
+    const boundaries = Array.from(this.shell.boundaries.values());
+    return Map.groupBy(boundaries, (metadata) => metadata.priority);
   }
 
   /**

@@ -42,5 +42,8 @@
   },
   "keywords": ["philjs", "zig", "performance", "wasm", "simd", "fast", "low-level", "bun", "runtime"],
   "license": "MIT",
-  "author": "PhilJS Team"
+  "author": "PhilJS Team",
+  "engines": {
+    "node": ">=24"
+  }
 }

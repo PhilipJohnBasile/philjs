@@ -3,14 +3,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
     "jsx": "preserve",
     "noEmitOnError": false,
     "strict": false,
     "noImplicitAny": false,
-    "strictNullChecks": false,
-    "skipLibCheck": true
+    "strictNullChecks": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"]

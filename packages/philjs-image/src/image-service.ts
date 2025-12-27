@@ -73,12 +73,16 @@ export interface ImageServiceMetadata {
 export class SharpImageService implements ImageService {
   name = 'sharp';
   private sharp: any;
+  private initialized = false;
 
-  constructor() {
-    try {
-      this.sharp = require('sharp');
-    } catch {
-      throw new Error('Sharp is not installed. Install with: npm install sharp');
+  private async ensureSharp(): Promise<void> {
+    if (!this.initialized) {
+      try {
+        this.sharp = (await import('sharp')).default;
+        this.initialized = true;
+      } catch {
+        throw new Error('Sharp is not installed. Install with: npm install sharp');
+      }
     }
   }
 
@@ -95,6 +99,7 @@ export class SharpImageService implements ImageService {
   }
 
   async transform(input: Buffer | string, options: ImageServiceTransformOptions): Promise<Buffer> {
+    await this.ensureSharp();
     const { width, height, format = 'webp', quality = 85, fit = 'cover', position = 'center', blur, background } = options;
 
     let pipeline = this.sharp(input);
@@ -134,6 +139,7 @@ export class SharpImageService implements ImageService {
   }
 
   async getMetadata(input: Buffer | string): Promise<ImageServiceMetadata> {
+    await this.ensureSharp();
     const image = this.sharp(input);
     const metadata = await image.metadata();
     const stats = await image.stats();

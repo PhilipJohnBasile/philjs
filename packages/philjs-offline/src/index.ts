@@ -248,66 +248,70 @@ export class OfflineDB {
     // Get the data before deleting for sync queue
     const data = addToSyncQueue ? await this.get(storeName, key) : null;
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.delete(key);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = db.transaction(storeName, 'readwrite');
+    const store = transaction.objectStore(storeName);
+    const request = store.delete(key);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = async () => {
-        if (addToSyncQueue && data) {
-          await this.addToSyncQueue({
-            id: crypto.randomUUID(),
-            type: 'delete',
-            store: storeName,
-            data: { key, ...data },
-            timestamp: Date.now(),
-            retries: 0,
-            status: 'pending'
-          });
-        }
-        resolve();
-      };
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = async () => {
+      if (addToSyncQueue && data) {
+        await this.addToSyncQueue({
+          id: crypto.randomUUID(),
+          type: 'delete',
+          store: storeName,
+          data: { key, ...data },
+          timestamp: Date.now(),
+          retries: 0,
+          status: 'pending'
+        });
+      }
+      resolve();
+    };
+
+    return promise;
   }
 
   async clear(storeName: string): Promise<void> {
     const db = await this.open();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.clear();
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = db.transaction(storeName, 'readwrite');
+    const store = transaction.objectStore(storeName);
+    const request = store.clear();
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async count(storeName: string): Promise<number> {
     const db = await this.open();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      const request = store.count();
+    const { promise, resolve, reject } = Promise.withResolvers<number>();
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const request = store.count();
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    return promise;
   }
 
   private async addToSyncQueue(operation: SyncOperation): Promise<void> {
     const db = await this.open();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction('_sync_queue', 'readwrite');
-      const store = transaction.objectStore('_sync_queue');
-      const request = store.add(operation);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = db.transaction('_sync_queue', 'readwrite');
+    const store = transaction.objectStore('_sync_queue');
+    const request = store.add(operation);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async getSyncQueue(): Promise<SyncOperation[]> {

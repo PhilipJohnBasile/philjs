@@ -148,76 +148,81 @@ export class ModelCache {
   private db: IDBDatabase | null = null;
 
   async initialize(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(ModelCache.DB_NAME, 1);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const request = indexedDB.open(ModelCache.DB_NAME, 1);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      this.db = request.result;
+      resolve();
+    };
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(ModelCache.STORE_NAME)) {
-          db.createObjectStore(ModelCache.STORE_NAME, { keyPath: 'key' });
-        }
-      };
-    });
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(ModelCache.STORE_NAME)) {
+        db.createObjectStore(ModelCache.STORE_NAME, { keyPath: 'key' });
+      }
+    };
+
+    return promise;
   }
 
   async get(key: string): Promise<ArrayBuffer | null> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readonly');
-      const store = transaction.objectStore(ModelCache.STORE_NAME);
-      const request = store.get(key);
+    const { promise, resolve, reject } = Promise.withResolvers<ArrayBuffer | null>();
+    const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readonly');
+    const store = transaction.objectStore(ModelCache.STORE_NAME);
+    const request = store.get(key);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        resolve(request.result?.data ?? null);
-      };
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      resolve(request.result?.data ?? null);
+    };
+
+    return promise;
   }
 
   async set(key: string, data: ArrayBuffer): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(ModelCache.STORE_NAME);
-      const request = store.put({ key, data, timestamp: Date.now() });
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(ModelCache.STORE_NAME);
+    const request = store.put({ key, data, timestamp: Date.now() });
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async delete(key: string): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(ModelCache.STORE_NAME);
-      const request = store.delete(key);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(ModelCache.STORE_NAME);
+    const request = store.delete(key);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 
   async clear(): Promise<void> {
     if (!this.db) await this.initialize();
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(ModelCache.STORE_NAME);
-      const request = store.clear();
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const transaction = this.db!.transaction(ModelCache.STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(ModelCache.STORE_NAME);
+    const request = store.clear();
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+
+    return promise;
   }
 }
 

@@ -44,5 +44,8 @@
     "philjs",
     "developer-tools",
     "debugging"
-  ]
+  ],
+  "engines": {
+    "node": ">=24"
+  }
 }

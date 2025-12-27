@@ -1,5 +1,9 @@
 # philjs-desktop
 
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
 Desktop application development for PhilJS using Tauri. Build native, cross-platform desktop applications with the power of PhilJS and Rust.
 
 ## Features
@@ -14,7 +18,7 @@ Desktop application development for PhilJS using Tauri. Build native, cross-plat
 ## Installation
 
 ```bash
-npm install philjs-desktop @tauri-apps/api @tauri-apps/cli
+pnpm add philjs-desktop @tauri-apps/api @tauri-apps/cli
 ```
 
 ## Quick Start
@@ -24,8 +28,8 @@ npm install philjs-desktop @tauri-apps/api @tauri-apps/cli
 ```bash
 npx philjs-desktop init my-app
 cd my-app
-npm install
-npm run tauri:dev
+pnpm install
+pnpm run tauri:dev
 ```
 
 ### Create a Desktop App
@@ -417,10 +421,79 @@ philjs-desktop build --target macos
 philjs-desktop build --target linux
 ```
 
+## ES2024 Features
+
+### File Operations with `using`
+
+```typescript
+import { FileSystem, readTextFile } from 'philjs-desktop';
+
+// Automatic resource cleanup with TypeScript 6 explicit resource management
+async function processFile(path: string) {
+  await using handle = await FileSystem.open(path, {
+    read: true,
+    [Symbol.asyncDispose]: async () => {
+      await handle.close();
+      console.log('File handle closed');
+    }
+  });
+
+  return handle.readAll();
+}
+```
+
+### Promise.withResolvers() for IPC
+
+```typescript
+import { invoke } from 'philjs-desktop';
+
+// Create cancellable IPC calls using Promise.withResolvers()
+function createCancellableInvoke<T>(command: string, args?: unknown) {
+  const { promise, resolve, reject } = Promise.withResolvers<T>();
+  let cancelled = false;
+
+  invoke<T>(command, args)
+    .then(result => !cancelled && resolve(result))
+    .catch(error => !cancelled && reject(error));
+
+  return {
+    promise,
+    cancel: () => { cancelled = true; }
+  };
+}
+
+const { promise, cancel } = createCancellableInvoke('long_operation', { data: 'test' });
+// Later: cancel() to abort
+```
+
+### Object.groupBy() for Window Management
+
+```typescript
+import { getAllWindows, type WindowInfo } from 'philjs-desktop';
+
+async function organizeWindows() {
+  const windows = await getAllWindows();
+
+  // Group windows by their state using ES2024 Object.groupBy()
+  const grouped = Object.groupBy(windows, (win: WindowInfo) =>
+    win.isMinimized ? 'minimized' :
+    win.isMaximized ? 'maximized' : 'normal'
+  );
+
+  return {
+    minimized: grouped.minimized ?? [],
+    maximized: grouped.maximized ?? [],
+    normal: grouped.normal ?? [],
+  };
+}
+```
+
 ## Requirements
 
-- Node.js 18+
-- Rust (for Tauri)
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
+- **Rust** (for Tauri)
 - Platform-specific dependencies (see [Tauri prerequisites](https://tauri.app/v2/guides/prerequisites/))
 
 ## API Reference

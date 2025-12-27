@@ -1,14 +1,20 @@
 # @philjs/i18n
 
-Internationalization utilities for React applications. Provides translation management, locale formatting, and pluralization with a simple, type-safe API.
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
+[![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
+[![ESM Only](https://img.shields.io/badge/module-ESM%20only-yellow)](https://nodejs.org/api/esm.html)
+
+Internationalization utilities for PhilJS applications. Provides translation management, locale formatting, and pluralization with a simple, type-safe API.
+
+## Requirements
+
+- **Node.js 24** or higher
+- **TypeScript 6** or higher
+- **ESM only** - CommonJS is not supported
 
 ## Installation
 
 ```bash
-npm install @philjs/i18n
-# or
-yarn add @philjs/i18n
-# or
 pnpm add @philjs/i18n
 ```
 

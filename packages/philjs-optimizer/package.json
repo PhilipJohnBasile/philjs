@@ -9,23 +9,19 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
-      "import": "./dist/vite.js",
-      "require": "./dist/vite.cjs"
+      "default": "./dist/vite.js"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
-      "import": "./dist/runtime.js",
-      "require": "./dist/runtime.cjs"
+      "default": "./dist/runtime.js"
     },
     "./transform": {
       "types": "./dist/transform.d.ts",
-      "import": "./dist/transform.js",
-      "require": "./dist/transform.cjs"
+      "default": "./dist/transform.js"
     }
   },
   "files": ["dist", "src"],

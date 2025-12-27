@@ -16,7 +16,8 @@ export async function GET(request{{#if typescript}}: Request{{/if}}{{#if isDynam
 {{#if isDynamic}}
     const { {{routeParams.[0]}} } = params;
 {{/if}}
-    // TODO: Implement {{#if isDynamic}}fetch single{{else}}fetch all{{/if}} logic
+    // Implement your {{#if isDynamic}}fetch single{{else}}fetch all{{/if}} logic here
+    // Example: const data = await db.query(...)
 {{#if isDynamic}}
     const data{{#if typescript}}: {{resourcePascal}}Data{{/if}} = { id: {{routeParams.[0]}}, /* ... */ };
 {{else}}
@@ -46,8 +47,8 @@ export async function POST(request{{#if typescript}}: Request{{/if}}) {
   try {
     const body{{#if typescript}} = await request.json() as Create{{resourcePascal}}Input{{else}} = await request.json(){{/if}};
 
-    // TODO: Validate input
-    // TODO: Create {{resourceName}} in database
+    // Validate input (consider using zod or similar)
+    // Create {{resourceName}} in database
 
     const created{{#if typescript}}: {{resourcePascal}}Data{{/if}} = {
       id: crypto.randomUUID(),
@@ -80,8 +81,8 @@ export async function PUT(request{{#if typescript}}: Request{{/if}}, params{{#if
     const { {{routeParams.[0]}} } = params;
     const body{{#if typescript}} = await request.json() as Update{{resourcePascal}}Input{{else}} = await request.json(){{/if}};
 
-    // TODO: Validate input
-    // TODO: Update {{resourceName}} in database
+    // Validate input (consider using zod or similar)
+    // Update {{resourceName}} in database
 
     const updated{{#if typescript}}: {{resourcePascal}}Data{{/if}} = {
       id: {{routeParams.[0]}},
@@ -113,7 +114,7 @@ export async function DELETE(request{{#if typescript}}: Request{{/if}}, params{{
   try {
     const { {{routeParams.[0]}} } = params;
 
-    // TODO: Delete {{resourceName}} from database
+    // Delete {{resourceName}} from database
 
     return new Response(null, { status: 204 });
   } catch (error) {

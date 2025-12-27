@@ -145,18 +145,13 @@ export class PersistedQueryManager {
     }
 
     // Fallback to Node.js crypto (if available)
-    if (typeof require !== 'undefined') {
-      try {
-        const crypto = require('crypto');
-        return crypto.createHash('sha256').update(query).digest('hex');
-      } catch {
-        // If require is not available, use a simple hash
-        return this.simpleHash(query);
-      }
+    try {
+      const nodeCrypto = await import('crypto');
+      return nodeCrypto.createHash('sha256').update(query).digest('hex');
+    } catch {
+      // If import is not available, use a simple hash
+      return this.simpleHash(query);
     }
-
-    // Simple fallback hash for environments without crypto
-    return this.simpleHash(query);
   }
 
   /**
