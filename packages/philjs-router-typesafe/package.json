@@ -35,14 +35,14 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "devDependencies": {
-    "tsup": "^8.0.0",
-    "typescript": "^5.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
     "vitest": "^1.0.0",
-    "zod": "^3.23.8"
+    "zod": "^3.25.56"
   },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0",
-    "zod": "^3.20.0"
+    "zod": "^3.25.56"
   },
   "peerDependenciesMeta": {
     "zod": {

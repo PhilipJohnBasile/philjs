@@ -51,12 +51,12 @@
     }
   },
   "devDependencies": {
-    "@types/three": "^0.169.0",
-    "@vitest/coverage-v8": "^3.2.4",
-    "jsdom": "^27.0.0",
-    "three": "^0.170.0",
+    "@types/three": "^0.182.0",
+    "@vitest/coverage-v8": "^4.0.16",
+    "jsdom": "^27.4.0",
+    "three": "^0.182.0",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.16"
   },
   "license": "MIT",
   "author": "PhilJS Team",

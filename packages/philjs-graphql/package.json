@@ -25,15 +25,15 @@
     "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "graphql": "^16.9.0",
+    "graphql": "^16.12.0",
     "@graphql-tools/schema": "^10.0.4",
     "@graphql-tools/utils": "^10.5.7",
-    "vitest": "^3.2.4",
-    "typescript": "^5.7.2",
-    "rollup": "^4.28.1"
+    "vitest": "^4.0.16",
+    "typescript": "^5.9.3",
+    "rollup": "^4.54.0"
   },
   "peerDependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^16.12.0"
   },
   "sideEffects": false,
   "license": "MIT",

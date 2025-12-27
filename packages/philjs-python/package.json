@@ -48,10 +48,10 @@
     "execa": "^9.5.2"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "tsup": "^8.0.0",
+    "@types/node": "^24.0.0",
+    "tsup": "^8.5.1",
     "typescript": "next",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",

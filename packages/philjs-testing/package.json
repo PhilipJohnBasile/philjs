@@ -32,9 +32,9 @@
     "pretty-format": "^29.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.3.0",
-    "vitest": "^3.2.4",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16",
     "@philjs/core": "workspace:*"
   },
   "files": [

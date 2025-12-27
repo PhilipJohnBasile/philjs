@@ -56,15 +56,15 @@
     "@types/babel__traverse": "^7.20.0",
     "@types/babel__generator": "^7.6.0",
     "@philjs/core": "workspace:*",
-    "rollup": "^4.0.0",
+    "rollup": "^4.54.0",
     "@rollup/plugin-typescript": "^11.0.0",
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4",
-    "vite": "^6.4.1"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16",
+    "vite": "^7.3.0"
   },
   "peerDependencies": {
     "vite": "^5.0.0 || ^6.0.0",
-    "rollup": "^4.0.0"
+    "rollup": "^4.54.0"
   },
   "peerDependenciesMeta": {
     "vite": {

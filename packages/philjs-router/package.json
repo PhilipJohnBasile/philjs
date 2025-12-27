@@ -24,9 +24,9 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "rollup": "^4.28.1",
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4"
+    "rollup": "^4.54.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   },
   "sideEffects": false,
   "license": "MIT",
