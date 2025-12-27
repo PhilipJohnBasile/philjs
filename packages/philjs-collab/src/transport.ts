@@ -75,58 +75,60 @@ export class WebSocketTransport {
    * Connect to the server
    */
   connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        const url = new URL(this.config.url);
-        url.searchParams.set('room', this.config.roomId);
-        url.searchParams.set('client', this.config.clientId);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
 
-        this.ws = new WebSocket(url.toString());
+    try {
+      const url = new URL(this.config.url);
+      url.searchParams.set('room', this.config.roomId);
+      url.searchParams.set('client', this.config.clientId);
 
-        this.ws.onopen = () => {
-          this.connected = true;
-          this.reconnectAttempts = 0;
-          this.startPing();
-          this.flushQueue();
-          this.emit('connect');
-          resolve();
-        };
+      this.ws = new WebSocket(url.toString());
 
-        this.ws.onclose = (event) => {
-          this.connected = false;
-          this.stopPing();
-          this.emit('disconnect', event.reason || 'Connection closed');
+      this.ws.onopen = () => {
+        this.connected = true;
+        this.reconnectAttempts = 0;
+        this.startPing();
+        this.flushQueue();
+        this.emit('connect');
+        resolve();
+      };
 
-          if (this.config.reconnect && this.reconnectAttempts < this.config.maxReconnectAttempts) {
-            this.scheduleReconnect();
+      this.ws.onclose = (event) => {
+        this.connected = false;
+        this.stopPing();
+        this.emit('disconnect', event.reason || 'Connection closed');
+
+        if (this.config.reconnect && this.reconnectAttempts < this.config.maxReconnectAttempts) {
+          this.scheduleReconnect();
+        }
+      };
+
+      this.ws.onerror = () => {
+        const error = new Error('WebSocket error');
+        this.emit('error', error);
+        if (!this.connected) {
+          reject(error);
+        }
+      };
+
+      this.ws.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data) as CollabMessage;
+
+          if (message.type === 'pong') {
+            return;
           }
-        };
 
-        this.ws.onerror = () => {
-          const error = new Error('WebSocket error');
-          this.emit('error', error);
-          if (!this.connected) {
-            reject(error);
-          }
-        };
+          this.emit('message', message);
+        } catch (error) {
+          this.emit('error', new Error(`Invalid message: ${error}`));
+        }
+      };
+    } catch (error) {
+      reject(error as Error);
+    }
 
-        this.ws.onmessage = (event) => {
-          try {
-            const message = JSON.parse(event.data) as CollabMessage;
-
-            if (message.type === 'pong') {
-              return;
-            }
-
-            this.emit('message', message);
-          } catch (error) {
-            this.emit('error', new Error(`Invalid message: ${error}`));
-          }
-        };
-      } catch (error) {
-        reject(error);
-      }
-    });
+    return promise;
   }
 
   /**

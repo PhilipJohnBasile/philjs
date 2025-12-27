@@ -589,34 +589,28 @@ export function debounceAsync<T, A extends any[]>(
   delay: number
 ): (...args: A) => Promise<T> {
   let timeout: ReturnType<typeof setTimeout>;
-  let pendingPromise: Promise<T> | null = null;
-  let resolve: ((value: T) => void) | null = null;
-  let reject: ((error: Error) => void) | null = null;
+  let deferred: PromiseWithResolvers<T> | null = null;
 
   return (...args: A): Promise<T> => {
     clearTimeout(timeout);
 
-    if (!pendingPromise) {
-      pendingPromise = new Promise<T>((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
+    if (!deferred) {
+      deferred = Promise.withResolvers<T>();
     }
 
+    const currentDeferred = deferred;
     timeout = setTimeout(async () => {
       try {
         const result = await fn(...args);
-        resolve!(result);
+        currentDeferred.resolve(result);
       } catch (error) {
-        reject!(error instanceof Error ? error : new Error(String(error)));
+        currentDeferred.reject(error instanceof Error ? error : new Error(String(error)));
       } finally {
-        pendingPromise = null;
-        resolve = null;
-        reject = null;
+        deferred = null;
       }
     }, delay);
 
-    return pendingPromise;
+    return currentDeferred.promise;
   };
 }
 

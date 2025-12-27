@@ -527,8 +527,9 @@ export function detectUnusedExports(
   const unused = new Map<string, string[]>();
 
   for (const [moduleId, exports] of modules) {
-    const imported = imports.get(moduleId) || new Set();
-    const unusedExports = Array.from(exports).filter(exp => !imported.has(exp));
+    const imported = imports.get(moduleId) || new Set<string>();
+    // ES2024: Use Set.difference() for cleaner set operations
+    const unusedExports = [...exports.difference(imported)];
 
     if (unusedExports.length > 0) {
       unused.set(moduleId, unusedExports);

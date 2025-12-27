@@ -538,8 +538,9 @@ export function splitCSSByRoute(
   // Create route-specific chunks
   for (const [route, selectors] of Object.entries(routeSelectors)) {
     const routeNodes: CSSNode[] = [];
-    const routeOnlySelectors = selectors.filter(s => !sharedSet.has(s));
-    const routeSet = new Set(routeOnlySelectors);
+    // ES2024: Use Set.difference() for cleaner set operations
+    const selectorsSet = new Set(selectors);
+    const routeSet = selectorsSet.difference(sharedSet);
 
     for (const node of nodes) {
       if (node.type === 'rule') {

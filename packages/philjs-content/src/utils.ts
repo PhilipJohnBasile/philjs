@@ -263,9 +263,11 @@ export function findRelatedPosts<T extends CollectionEntry>(
 
       let score = 0;
 
-      // Tag similarity (weighted higher)
-      const sharedTags = currentTags.filter(tag => postTags.includes(tag));
-      const tagSimilarity = sharedTags.length / Math.max(currentTags.length, postTags.length);
+      // Tag similarity (weighted higher) - ES2024 Set.intersection()
+      const currentTagSet = new Set(currentTags);
+      const postTagSet = new Set(postTags);
+      const sharedTags = currentTagSet.intersection(postTagSet);
+      const tagSimilarity = sharedTags.size / Math.max(currentTags.length, postTags.length);
       score += tagSimilarity * 0.7;
 
       // Title similarity (basic word overlap)
