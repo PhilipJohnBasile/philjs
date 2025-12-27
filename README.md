@@ -42,5 +42,10 @@ PhilJS is a futuristic, AI-native monorepo designed to simulate the ultimate con
 - **`@philjs/polyglot`**: Pydantic Generator, Java/Maven support.
 - **`@philjs/cli`**: The universal toolbelt (`doctor`, `scaffold`, `bench`).
 
+## Project Analysis
+
+- [Executive summary](./EXECUTIVE_SUMMARY.md) — historical snapshot from December 27, 2025
+- [Product improvement report](./PRODUCT_IMPROVEMENT_REPORT.md) — detailed historical analysis from December 27, 2025
+
 ---
 *Built for the Post-AGI Era.*
