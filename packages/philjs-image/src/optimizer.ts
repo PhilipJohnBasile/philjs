@@ -13,10 +13,16 @@ import type {
 
 // Sharp is optional - only used in build/server environments
 let sharp: any;
-try {
-  sharp = require('sharp');
-} catch {
+const sharpPromise = import('sharp').then(m => { sharp = m.default; }).catch(() => {
   // Sharp not available - that's OK for browser builds
+});
+
+async function ensureSharp(): Promise<any> {
+  await sharpPromise;
+  if (!sharp) {
+    throw new Error('Sharp is not available. Install it with: npm install sharp');
+  }
+  return sharp;
 }
 
 const defaultConfig: ImageOptimizationConfig = {
@@ -59,13 +65,11 @@ export async function optimizeImage(
   input: Buffer | string,
   options: ImageTransformOptions
 ): Promise<Buffer> {
-  if (!sharp) {
-    throw new Error('Sharp is not available. Install it with: npm install sharp');
-  }
+  const sharpModule = await ensureSharp();
 
   const { width, height, format = 'webp', quality, fit = 'cover', position = 'center', blur } = options;
 
-  let pipeline = sharp(input);
+  let pipeline = sharpModule(input);
 
   // Resize
   if (width || height) {
@@ -126,11 +130,9 @@ export async function optimizeImage(
  * Get image metadata
  */
 export async function getMetadata(input: Buffer | string): Promise<ImageMetadata> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  const sharpModule = await ensureSharp();
 
-  const image = sharp(input);
+  const image = sharpModule(input);
   const metadata = await image.metadata();
   const stats = await image.stats();
 
@@ -165,9 +167,7 @@ export async function generateBlurPlaceholder(
   input: Buffer | string,
   options: BlurPlaceholderOptions = {}
 ): Promise<string> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  await ensureSharp();
 
   const {
     type = 'base64',
@@ -201,11 +201,9 @@ async function generateBase64Placeholder(
   quality: number,
   blurAmount: number
 ): Promise<string> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  const sharpModule = await ensureSharp();
 
-  const buffer = await sharp(input)
+  const buffer = await sharpModule(input)
     .resize(width, height, { fit: 'inside' })
     .blur(blurAmount)
     .jpeg({ quality })
@@ -223,11 +221,9 @@ async function generateLQIP(
   width: number,
   height: number
 ): Promise<string> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  const sharpModule = await ensureSharp();
 
-  const buffer = await sharp(input)
+  const buffer = await sharpModule(input)
     .resize(width * 2, height * 2, { fit: 'inside' })
     .jpeg({ quality: 20 })
     .toBuffer();
@@ -240,15 +236,13 @@ async function generateLQIP(
  * Compact representation of an image for placeholder
  */
 async function generateBlurHash(input: Buffer | string): Promise<string> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  const sharpModule = await ensureSharp();
 
   try {
     // Try to use blurhash library if available
-    const { encode } = require('blurhash');
+    const { encode } = await import('blurhash');
 
-    const image = sharp(input);
+    const image = sharpModule(input);
     const { data, info } = await image
       .resize(32, 32, { fit: 'inside' })
       .ensureAlpha()
@@ -282,9 +276,7 @@ export async function generateResponsiveSet(
     quality?: number;
   } = {}
 ): Promise<Array<{ buffer: Buffer; width: number; format: ImageFormat }>> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  await ensureSharp();
 
   const formats = options.formats || config.formats || ['webp', 'jpeg'];
   const breakpoints = options.breakpoints || config.breakpoints || [640, 750, 828, 1080, 1200, 1920];
@@ -314,11 +306,9 @@ export async function generateResponsiveSet(
  * Extract dominant color
  */
 export async function extractDominantColor(input: Buffer | string): Promise<string> {
-  if (!sharp) {
-    throw new Error('Sharp is not available');
-  }
+  const sharpModule = await ensureSharp();
 
-  const stats = await sharp(input).stats();
+  const stats = await sharpModule(input).stats();
 
   if (stats.dominant) {
     const { r, g, b } = stats.dominant;
