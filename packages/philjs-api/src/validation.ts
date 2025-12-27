@@ -123,9 +123,7 @@ export function validate(
           break;
 
         case 'url':
-          try {
-            new URL(value as string);
-          } catch {
+          if (URL.parse(value as string) === null) {
             fieldErrors.push(`${key} must be a valid URL`);
           }
           break;

@@ -267,12 +267,7 @@ export class FormValidator<T extends Record<string, unknown>> {
   }
 
   private isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
+    return URL.parse(url) !== null;
   }
 }
 

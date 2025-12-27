@@ -452,3 +452,18 @@ export type {
   MutationState,
   MutationOptions,
 } from "./async.js";
+
+// Disposable Utilities (TypeScript 6 Explicit Resource Management)
+export {
+  disposableTimeout,
+  disposableInterval,
+  disposableAbortController,
+  disposableEventListener,
+  disposableSubscription,
+  asyncDisposable,
+  createDisposableScope,
+  createAsyncDisposableScope,
+  toDisposable,
+  toAsyncDisposable,
+  createDisposableMutex,
+} from "./disposable.js";

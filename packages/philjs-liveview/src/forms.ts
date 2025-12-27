@@ -119,12 +119,7 @@ const builtinRules: Record<string, ValidationRule> = {
   url: {
     validate: (value) => {
       if (!value) return true;
-      try {
-        new URL(String(value));
-        return true;
-      } catch {
-        return false;
-      }
+      return URL.parse(String(value)) !== null;
     },
     message: () => 'Invalid URL',
   },

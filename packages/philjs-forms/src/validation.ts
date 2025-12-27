@@ -69,12 +69,7 @@ export const validators = {
   url: (message = 'Invalid URL'): ValidationRule<string> => ({
     validate: (value) => {
       if (!value) return true;
-      try {
-        new URL(value);
-        return true;
-      } catch {
-        return false;
-      }
+      return URL.parse(value) !== null;
     },
     message
   }),

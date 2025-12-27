@@ -87,10 +87,7 @@ export function validate(data, schema) {
                     }
                     break;
                 case 'url':
-                    try {
-                        new URL(value);
-                    }
-                    catch {
+                    if (URL.parse(value) === null) {
                         fieldErrors.push(`${key} must be a valid URL`);
                     }
                     break;

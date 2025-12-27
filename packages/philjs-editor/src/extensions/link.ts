@@ -64,12 +64,7 @@ export function isValidUrl(url: string, protocols = ['http', 'https', 'mailto', 
   });
 
   if (hasValidProtocol) {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
+    return URL.parse(url) !== null;
   }
 
   // Allow relative URLs
@@ -78,12 +73,7 @@ export function isValidUrl(url: string, protocols = ['http', 'https', 'mailto', 
   }
 
   // Try adding https:// and validating
-  try {
-    new URL(`https://${url}`);
-    return true;
-  } catch {
-    return false;
-  }
+  return URL.parse(`https://${url}`) !== null;
 }
 
 /**

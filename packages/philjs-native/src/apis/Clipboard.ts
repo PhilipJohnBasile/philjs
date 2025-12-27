@@ -102,12 +102,7 @@ export const Clipboard = {
 
     if (platform === 'web') {
       const text = await this.getString();
-      try {
-        new URL(text);
-        return text;
-      } catch {
-        return null;
-      }
+      return URL.parse(text) !== null ? text : null;
     }
 
     return nativeBridge.call<string | null>('Clipboard', 'getUrl');

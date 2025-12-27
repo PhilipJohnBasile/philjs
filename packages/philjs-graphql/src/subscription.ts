@@ -70,16 +70,18 @@ interface Subscription {
   state: Signal<SubscriptionState>;
 }
 
-enum MessageType {
-  ConnectionInit = 'connection_init',
-  ConnectionAck = 'connection_ack',
-  Ping = 'ping',
-  Pong = 'pong',
-  Subscribe = 'subscribe',
-  Next = 'next',
-  Error = 'error',
-  Complete = 'complete',
-}
+const MessageType = {
+  ConnectionInit: 'connection_init',
+  ConnectionAck: 'connection_ack',
+  Ping: 'ping',
+  Pong: 'pong',
+  Subscribe: 'subscribe',
+  Next: 'next',
+  Error: 'error',
+  Complete: 'complete',
+} as const;
+
+type MessageType = (typeof MessageType)[keyof typeof MessageType];
 
 interface Message {
   id?: string;

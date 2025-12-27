@@ -5,11 +5,15 @@
  */
 // Sharp is optional - only used in build/server environments
 let sharp;
-try {
-    sharp = require('sharp');
-}
-catch {
+const sharpPromise = import('sharp').then(m => { sharp = m.default; }).catch(() => {
     // Sharp not available - that's OK for browser builds
+});
+async function ensureSharp() {
+    await sharpPromise;
+    if (!sharp) {
+        throw new Error('Sharp is not available. Install it with: npm install sharp');
+    }
+    return sharp;
 }
 const defaultConfig = {
     formats: ['webp', 'avif', 'jpeg'],
@@ -44,11 +48,9 @@ export function getConfig() {
  * Optimize an image
  */
 export async function optimizeImage(input, options) {
-    if (!sharp) {
-        throw new Error('Sharp is not available. Install it with: npm install sharp');
-    }
+    const sharpModule = await ensureSharp();
     const { width, height, format = 'webp', quality, fit = 'cover', position = 'center', blur } = options;
-    let pipeline = sharp(input);
+    let pipeline = sharpModule(input);
     // Resize
     if (width || height) {
         pipeline = pipeline.resize(width, height, {
@@ -99,10 +101,8 @@ export async function optimizeImage(input, options) {
  * Get image metadata
  */
 export async function getMetadata(input) {
-    if (!sharp) {
-        throw new Error('Sharp is not available');
-    }
-    const image = sharp(input);
+    const sharpModule = await ensureSharp();
+    const image = sharpModule(input);
     const metadata = await image.metadata();
     const stats = await image.stats();
     const width = metadata.width || 0;
@@ -120,10 +120,8 @@ export async function getMetadata(input) {
  * Generate blur placeholder
  */
 export async function generateBlurPlaceholder(input, width = 10, height = 10) {
-    if (!sharp) {
-        throw new Error('Sharp is not available');
-    }
-    const buffer = await sharp(input)
+    const sharpModule = await ensureSharp();
+    const buffer = await sharpModule(input)
         .resize(width, height, { fit: 'inside' })
         .blur(10)
         .jpeg({ quality: 50 })
@@ -134,9 +132,7 @@ export async function generateBlurPlaceholder(input, width = 10, height = 10) {
  * Generate responsive image set
  */
 export async function generateResponsiveSet(input, options = {}) {
-    if (!sharp) {
-        throw new Error('Sharp is not available');
-    }
+    await ensureSharp();
     const formats = options.formats || config.formats || ['webp', 'jpeg'];
     const breakpoints = options.breakpoints || config.breakpoints || [640, 750, 828, 1080, 1200, 1920];
     const quality = options.quality || config.quality || 85;
@@ -159,10 +155,8 @@ export async function generateResponsiveSet(input, options = {}) {
  * Extract dominant color
  */
 export async function extractDominantColor(input) {
-    if (!sharp) {
-        throw new Error('Sharp is not available');
-    }
-    const stats = await sharp(input).stats();
+    const sharpModule = await ensureSharp();
+    const stats = await sharpModule(input).stats();
     if (stats.dominant) {
         const { r, g, b } = stats.dominant;
         return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
@@ -173,6 +167,13 @@ export async function extractDominantColor(input) {
  * Check if Sharp is available
  */
 export function isSharpAvailable() {
+    return !!sharp;
+}
+/**
+ * Wait for Sharp to be loaded (async check)
+ */
+export async function waitForSharp() {
+    await sharpPromise;
     return !!sharp;
 }
 //# sourceMappingURL=optimizer.js.map

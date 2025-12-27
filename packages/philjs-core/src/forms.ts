@@ -116,12 +116,7 @@ class Schema<T> {
     this.config.rules.push({
       validate: (val) => {
         if (typeof val !== "string") return false;
-        try {
-          new URL(val);
-          return true;
-        } catch {
-          return false;
-        }
+        return URL.parse(val) !== null;
       },
       message: message || "Invalid URL",
     });
