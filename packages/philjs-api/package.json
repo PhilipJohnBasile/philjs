@@ -1,6 +1,6 @@
 {
   "name": "@philjs/api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "API routes and full-stack utilities for PhilJS",
   "type": "module",
   "main": "dist/index.js",

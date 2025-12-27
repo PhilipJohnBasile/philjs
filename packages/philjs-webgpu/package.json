@@ -1,6 +1,6 @@
 {
   "name": "@philjs/webgpu",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "WebGPU Integration - GPU-accelerated rendering, compute shaders, parallel DOM diffing, and real-time effects",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

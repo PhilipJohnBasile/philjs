@@ -1,6 +1,6 @@
 {
   "name": "@philjs/migrate",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Migration CLI for PhilJS - migrate from React, Vue, Angular, Svelte",
   "type": "module",
   "bin": {

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/ssr",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "SSR streaming, loaders, actions, and resumability for PhilJS",
   "type": "module",
   "main": "./dist/index.js",

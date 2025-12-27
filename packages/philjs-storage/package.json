@@ -1,6 +1,6 @@
 {
   "name": "@philjs/storage",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Cloud storage abstraction layer for PhilJS with S3, GCS, Azure, and local providers",
   "type": "module",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/compiler",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Automatic optimization compiler for PhilJS - zero-overhead memoization and performance optimizations",
   "type": "module",
   "main": "./dist/index.js",

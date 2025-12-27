@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-philjs",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "ESLint config with a11y and security plugins for PhilJS",
   "type": "module",
   "main": "./index.js",

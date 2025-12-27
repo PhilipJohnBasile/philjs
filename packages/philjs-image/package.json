@@ -1,6 +1,6 @@
 {
   "name": "@philjs/image",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Image optimization for PhilJS with automatic format conversion, responsive sizing, and lazy loading",
   "type": "module",
   "main": "./dist/index.js",

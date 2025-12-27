@@ -1,6 +1,6 @@
 {
   "name": "@philjs/virtual",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "High-performance list virtualization for PhilJS - render millions of items efficiently",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/3d",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "WebGL and game engine integrations for PhilJS - Three.js, Godot, Unreal, Unity",
   "type": "module",
   "sideEffects": false,

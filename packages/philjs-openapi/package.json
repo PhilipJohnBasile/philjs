@@ -1,6 +1,6 @@
 {
   "name": "@philjs/openapi",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Automatic OpenAPI spec generation for PhilJS APIs - inspired by Elysia",
   "type": "module",
   "main": "dist/index.js",

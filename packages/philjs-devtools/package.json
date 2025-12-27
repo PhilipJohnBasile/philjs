@@ -1,6 +1,6 @@
 {
   "name": "@philjs/devtools",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Developer tools overlay for PhilJS",
   "type": "module",
   "main": "./dist/index.js",

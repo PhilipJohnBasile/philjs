@@ -1,6 +1,6 @@
 {
   "name": "@philjs/cdn",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "PhilJS CDN bundle - single file for Alpine.js-style usage, no build step required",
   "type": "module",
   "main": "./dist/philjs.global.js",

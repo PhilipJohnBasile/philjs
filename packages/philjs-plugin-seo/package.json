@@ -1,6 +1,6 @@
 {
   "name": "@philjs/plugin-seo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "SEO plugin for PhilJS with meta tags, OpenGraph, JSON-LD, and sitemap generation",
   "type": "module",
   "main": "./dist/index.js",

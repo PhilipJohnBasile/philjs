@@ -1,6 +1,6 @@
 {
   "name": "@philjs/observability",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Observability for PhilJS - distributed tracing, metrics, logging, and error tracking",
   "type": "module",
   "main": "./dist/index.js",

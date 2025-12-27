@@ -1,6 +1,6 @@
 {
   "name": "@philjs/ui",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Official UI component library for PhilJS with dark mode, accessibility, and theming",
   "type": "module",
   "main": "./dist/index.js",

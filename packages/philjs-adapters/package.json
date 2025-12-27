@@ -1,6 +1,6 @@
 {
   "name": "@philjs/adapters",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Deployment adapters for PhilJS - Vercel, Netlify, Cloudflare, AWS, Bun, Deno, and more",
   "type": "module",
   "main": "dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/graphql",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "GraphQL integration for PhilJS with typed queries and mutations",
   "type": "module",
   "main": "./dist/index.js",

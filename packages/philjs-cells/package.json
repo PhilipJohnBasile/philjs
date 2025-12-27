@@ -1,6 +1,6 @@
 {
   "name": "@philjs/cells",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "RedwoodJS-style Cells pattern for PhilJS - Declarative data loading components",
   "type": "module",
   "main": "./dist/index.js",

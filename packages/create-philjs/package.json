@@ -1,6 +1,6 @@
 {
   "name": "create-philjs",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Create PhilJS apps with one command",
   "bin": {
     "create-philjs": "./dist/cli.js"

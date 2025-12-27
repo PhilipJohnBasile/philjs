@@ -1,6 +1,6 @@
 {
   "name": "@philjs/table",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Headless, type-safe table component for PhilJS - TanStack Table inspired",
   "type": "module",
   "main": "./dist/index.js",

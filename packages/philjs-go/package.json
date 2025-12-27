@@ -1,6 +1,6 @@
 {
   "name": "@philjs/go",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Go server adapter and CLI tools for PhilJS - High-performance SSR and edge functions",
   "type": "module",
   "sideEffects": false,

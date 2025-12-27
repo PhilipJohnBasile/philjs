@@ -1,6 +1,6 @@
 {
   "name": "@philjs/cli",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI tools for PhilJS - The framework that thinks ahead",
   "type": "module",
   "bin": {

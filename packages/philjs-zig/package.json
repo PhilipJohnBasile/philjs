@@ -1,6 +1,6 @@
 {
   "name": "@philjs/zig",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Zig bindings for PhilJS - Ultra-fast low-level performance tooling (Bun-level speed)",
   "type": "module",
   "sideEffects": false,

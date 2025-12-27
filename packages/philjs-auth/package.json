@@ -1,6 +1,6 @@
 {
   "name": "@philjs/auth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Authentication and authorization utilities for PhilJS",
   "type": "module",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/atoms",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Jotai-style atomic state management for PhilJS with signals",
   "type": "module",
   "sideEffects": false,

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/plugin-pwa",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Progressive Web App (PWA) plugin for PhilJS with service workers and offline support",
   "type": "module",
   "main": "./dist/index.js",

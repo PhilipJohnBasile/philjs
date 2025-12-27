@@ -1,6 +1,6 @@
 {
   "name": "@philjs/builder",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Visual component builder with drag-and-drop UI for building PhilJS components",
   "type": "module",
   "main": "./dist/index.js",

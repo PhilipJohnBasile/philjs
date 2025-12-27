@@ -1,6 +1,6 @@
 {
   "name": "@philjs/content",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Astro-style Content Collections for PhilJS with type-safe schemas and MDX support",
   "type": "module",
   "sideEffects": false,

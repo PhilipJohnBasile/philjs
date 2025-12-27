@@ -1,6 +1,6 @@
 {
   "name": "@philjs/rpc",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "tRPC-style end-to-end type-safe RPC system for PhilJS",
   "type": "module",
   "sideEffects": false,

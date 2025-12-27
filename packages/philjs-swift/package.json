@@ -1,6 +1,6 @@
 {
   "name": "@philjs/swift",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Swift bindings for PhilJS - iOS and macOS native app development",
   "type": "module",
   "sideEffects": false,

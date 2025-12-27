@@ -1,6 +1,6 @@
 {
   "name": "@philjs/python",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Python bindings for PhilJS AI/ML server functions - LLM, embeddings, and ML model serving",
   "type": "module",
   "sideEffects": false,

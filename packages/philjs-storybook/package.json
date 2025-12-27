@@ -1,6 +1,6 @@
 {
   "name": "@philjs/storybook",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Storybook integration for PhilJS - component development and testing",
   "type": "module",
   "sideEffects": false,

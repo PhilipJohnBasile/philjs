@@ -1,6 +1,6 @@
 {
   "name": "@philjs/runtime",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "PhilJS Runtime with Self-Healing capabilities - automatic error recovery, circuit breakers, hot-patching",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

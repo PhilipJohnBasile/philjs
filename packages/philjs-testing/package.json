@@ -1,6 +1,6 @@
 {
   "name": "@philjs/testing",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Official testing library for PhilJS - render, queries, events, and utilities",
   "type": "module",
   "main": "./dist/index.js",

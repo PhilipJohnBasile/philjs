@@ -1,6 +1,6 @@
 {
   "name": "@philjs/devtools-extension",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Chrome DevTools Extension for PhilJS - inspect signals, components, and performance",
   "type": "module",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "@philjs/tailwind",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Tailwind CSS integration for PhilJS with IntelliSense and optimizations",
   "type": "module",
   "main": "dist/index.js",

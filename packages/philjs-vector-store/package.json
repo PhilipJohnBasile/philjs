@@ -1,6 +1,6 @@
 {
   "name": "@philjs/vector-store",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "High-performance vector database for PhilJS with WASM-powered semantic search",
   "type": "module",
   "main": "./dist/index.js",

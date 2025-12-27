@@ -1,6 +1,6 @@
 {
   "name": "@philjs/styles",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Scoped styles, CSS Modules, and CSS-in-JS for PhilJS",
   "type": "module",
   "main": "dist/index.js",

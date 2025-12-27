@@ -1,6 +1,6 @@
 {
   "name": "@philjs/router",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "File-based routing with nested layouts for PhilJS",
   "type": "module",
   "main": "./dist/index.js",
