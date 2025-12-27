@@ -186,35 +186,36 @@ export class PoolWorker {
 
     this.currentTaskId = task.id;
 
-    return new Promise((resolve, reject) => {
-      this.resolvers.set(task.id, { resolve, reject });
+    const { promise, resolve, reject } = Promise.withResolvers<T>();
+    this.resolvers.set(task.id, { resolve, reject });
 
-      if (task.onProgress) {
-        this.progressHandlers.set(task.id, task.onProgress);
-      }
+    if (task.onProgress) {
+      this.progressHandlers.set(task.id, task.onProgress);
+    }
 
-      const message: WorkerMessage = {
-        type: 'task',
-        taskId: task.id,
-        payload: {
-          fnString: task.fn.toString(),
-          args: task.args
-        },
-        transferables: task.transferables
-      };
+    const message: WorkerMessage = {
+      type: 'task',
+      taskId: task.id,
+      payload: {
+        fnString: task.fn.toString(),
+        args: task.args
+      },
+      transferables: task.transferables
+    };
 
-      this.worker.postMessage(message, task.transferables ?? []);
+    this.worker.postMessage(message, task.transferables ?? []);
 
-      // Set timeout if specified
-      if (task.timeout) {
-        setTimeout(() => {
-          if (this.resolvers.has(task.id)) {
-            this.cancel(task.id);
-            reject(new Error(`Task ${task.id} timed out after ${task.timeout}ms`));
-          }
-        }, task.timeout);
-      }
-    });
+    // Set timeout if specified
+    if (task.timeout) {
+      setTimeout(() => {
+        if (this.resolvers.has(task.id)) {
+          this.cancel(task.id);
+          reject(new Error(`Task ${task.id} timed out after ${task.timeout}ms`));
+        }
+      }, task.timeout);
+    }
+
+    return promise;
   }
 
   cancel(taskId: string): void {

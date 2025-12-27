@@ -274,24 +274,18 @@ const apiRouter = createAPIRouter(apiRoutes);
 // Load and organize content
 const content = await loadContent('./content/**/*.md');
 
-// Group by directory (collection)
-const byCollection = content.reduce((acc, item) => {
-  const collection = item.pathInfo.segments[1] || 'default';
-  if (!acc[collection]) acc[collection] = [];
-  acc[collection].push(item);
-  return acc;
-}, {} as Record<string, typeof content>);
+// Group by directory (collection) - ES2024 Object.groupBy()
+const byCollection = Object.groupBy(content, item =>
+  item.pathInfo.segments[1] || 'default'
+);
 
 console.log('Content by collection:', Object.keys(byCollection));
 // ['blog', 'docs', 'tutorials', ...]
 
-// Group by year (from frontmatter)
-const byYear = content.reduce((acc, item) => {
-  const year = new Date((item.module as any).frontmatter?.date).getFullYear();
-  if (!acc[year]) acc[year] = [];
-  acc[year].push(item);
-  return acc;
-}, {} as Record<number, typeof content>);
+// Group by year (from frontmatter) - ES2024 Object.groupBy()
+const byYear = Object.groupBy(content, item =>
+  new Date((item.module as any).frontmatter?.date).getFullYear()
+);
 
 console.log('Content by year:', Object.keys(byYear));
 // ['2023', '2024', '2025']

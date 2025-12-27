@@ -153,24 +153,26 @@ export function scheduleIdle<T>(
   fn: () => T,
   options?: IdleRequestOptions
 ): Promise<T> {
-  return new Promise((resolve, reject) => {
-    if ('requestIdleCallback' in globalThis) {
-      requestIdleCallback(() => {
-        try {
-          resolve(fn());
-        } catch (error) {
-          reject(error);
-        }
-      }, options);
-    } else {
-      // Fallback to setTimeout
-      setTimeout(() => {
-        try {
-          resolve(fn());
-        } catch (error) {
-          reject(error);
-        }
-      }, 1);
-    }
-  });
+  const { promise, resolve, reject } = Promise.withResolvers<T>();
+
+  if ('requestIdleCallback' in globalThis) {
+    requestIdleCallback(() => {
+      try {
+        resolve(fn());
+      } catch (error) {
+        reject(error as Error);
+      }
+    }, options);
+  } else {
+    // Fallback to setTimeout
+    setTimeout(() => {
+      try {
+        resolve(fn());
+      } catch (error) {
+        reject(error as Error);
+      }
+    }, 1);
+  }
+
+  return promise;
 }
