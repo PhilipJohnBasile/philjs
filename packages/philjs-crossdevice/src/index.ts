@@ -440,8 +440,8 @@ export class CrossDeviceSync {
 
   private mergeValues(local: unknown, remote: unknown): unknown {
     if (Array.isArray(local) && Array.isArray(remote)) {
-      // Merge arrays uniquely
-      return [...new Set([...local, ...remote])];
+      // Merge arrays uniquely - ES2024 Set.union()
+      return [...new Set(local).union(new Set(remote))];
     }
 
     if (typeof local === 'object' && typeof remote === 'object' &&

@@ -352,7 +352,7 @@ export class NavigationPredictor {
    * Export model for analysis
    */
   exportModel(): NavigationModel {
-    return JSON.parse(JSON.stringify({
+    return structuredClone({
       transitions: Object.fromEntries(
         Array.from(this.model.transitions.entries()).map(([k, v]) => [k, Object.fromEntries(v)])
       ),
@@ -366,7 +366,7 @@ export class NavigationPredictor {
       totalNavigations: this.model.totalNavigations,
       version: this.model.version,
       lastUpdate: this.model.lastUpdate,
-    }));
+    });
   }
 
   // ===========================================================================
@@ -627,7 +627,8 @@ export class NavigationPredictor {
         // Combine predictions for same route
         existing.confidence = Math.min(1, existing.confidence + pred.confidence * 0.5);
         existing.priority = Math.max(existing.priority, pred.priority);
-        existing.factors = [...new Set([...existing.factors, ...pred.factors])];
+        // ES2024: Use Set.union() for cleaner set operations
+        existing.factors = [...new Set(existing.factors).union(new Set(pred.factors))];
       } else {
         merged.set(pred.route, { ...pred });
       }

@@ -309,8 +309,8 @@ export function mergeCSP(
     const baseValues = normalizeDirectiveValue(merged[directive]);
     const overrideValues = normalizeDirectiveValue(value);
 
-    // Combine and deduplicate
-    const combined = [...new Set([...baseValues, ...overrideValues])];
+    // Combine and deduplicate - ES2024 Set.union()
+    const combined = [...new Set(baseValues).union(new Set(overrideValues))];
     merged[directive] = combined;
   }
 

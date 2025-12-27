@@ -47,7 +47,8 @@ export class VectorClock {
     let beforeCount = 0;
     let afterCount = 0;
 
-    const allKeys = new Set([...this.clock.keys(), ...other.clock.keys()]);
+    // ES2024: Use Set.union() for cleaner set operations
+    const allKeys = new Set(this.clock.keys()).union(new Set(other.clock.keys()));
 
     for (const key of allKeys) {
       const thisTime = this.get(key);
@@ -146,7 +147,8 @@ export class GCounter {
 
   merge(other: GCounter): GCounter {
     const merged = new GCounter(this.nodeId);
-    const allKeys = new Set([...this.counts.keys(), ...other.counts.keys()]);
+    // ES2024: Use Set.union() for cleaner set operations
+    const allKeys = new Set(this.counts.keys()).union(new Set(other.counts.keys()));
 
     for (const key of allKeys) {
       const thisCount = this.counts.get(key) || 0;

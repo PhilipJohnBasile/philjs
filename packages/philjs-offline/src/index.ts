@@ -90,50 +90,51 @@ export class OfflineDB {
   async open(): Promise<IDBDatabase> {
     if (this.db) return this.db;
 
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, this.dbVersion);
+    const { promise, resolve, reject } = Promise.withResolvers<IDBDatabase>();
+    const request = indexedDB.open(this.dbName, this.dbVersion);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve(this.db);
-      };
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      this.db = request.result;
+      resolve(this.db);
+    };
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
 
-        // Create stores
-        for (const store of this.stores.values()) {
-          if (!db.objectStoreNames.contains(store.name)) {
-            const objectStore = db.createObjectStore(store.name, {
-              keyPath: store.keyPath,
-              autoIncrement: store.keyPath === 'id'
-            });
-
-            // Create indexes
-            store.indexes?.forEach(index => {
-              objectStore.createIndex(index.name, index.keyPath, {
-                unique: index.unique ?? false
-              });
-            });
-          }
-        }
-
-        // Create sync queue store
-        if (!db.objectStoreNames.contains('_sync_queue')) {
-          const syncStore = db.createObjectStore('_sync_queue', {
-            keyPath: 'id'
+      // Create stores
+      for (const store of this.stores.values()) {
+        if (!db.objectStoreNames.contains(store.name)) {
+          const objectStore = db.createObjectStore(store.name, {
+            keyPath: store.keyPath,
+            autoIncrement: store.keyPath === 'id'
           });
-          syncStore.createIndex('status', 'status');
-          syncStore.createIndex('store', 'store');
-        }
 
-        // Create metadata store
-        if (!db.objectStoreNames.contains('_metadata')) {
-          db.createObjectStore('_metadata', { keyPath: 'key' });
+          // Create indexes
+          store.indexes?.forEach(index => {
+            objectStore.createIndex(index.name, index.keyPath, {
+              unique: index.unique ?? false
+            });
+          });
         }
-      };
-    });
+      }
+
+      // Create sync queue store
+      if (!db.objectStoreNames.contains('_sync_queue')) {
+        const syncStore = db.createObjectStore('_sync_queue', {
+          keyPath: 'id'
+        });
+        syncStore.createIndex('status', 'status');
+        syncStore.createIndex('store', 'store');
+      }
+
+      // Create metadata store
+      if (!db.objectStoreNames.contains('_metadata')) {
+        db.createObjectStore('_metadata', { keyPath: 'key' });
+      }
+    };
+
+    return promise;
   }
 
   registerStore<T>(store: OfflineStore<T>): void {
@@ -142,28 +143,30 @@ export class OfflineDB {
 
   async get<T>(storeName: string, key: IDBValidKey): Promise<T | undefined> {
     const db = await this.open();
+    const { promise, resolve, reject } = Promise.withResolvers<T | undefined>();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      const request = store.get(key);
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const request = store.get(key);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    return promise;
   }
 
   async getAll<T>(storeName: string): Promise<T[]> {
     const db = await this.open();
+    const { promise, resolve, reject } = Promise.withResolvers<T[]>();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      const request = store.getAll();
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const request = store.getAll();
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    return promise;
   }
 
   async query<T>(
@@ -172,68 +175,71 @@ export class OfflineDB {
     query: IDBKeyRange | IDBValidKey
   ): Promise<T[]> {
     const db = await this.open();
+    const { promise, resolve, reject } = Promise.withResolvers<T[]>();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      const index = store.index(indexName);
-      const request = index.getAll(query);
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const index = store.index(indexName);
+    const request = index.getAll(query);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    return promise;
   }
 
   async put<T>(storeName: string, data: T, addToSyncQueue = true): Promise<IDBValidKey> {
     const db = await this.open();
+    const { promise, resolve, reject } = Promise.withResolvers<IDBValidKey>();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.put(data);
+    const transaction = db.transaction(storeName, 'readwrite');
+    const store = transaction.objectStore(storeName);
+    const request = store.put(data);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = async () => {
-        if (addToSyncQueue) {
-          await this.addToSyncQueue({
-            id: crypto.randomUUID(),
-            type: 'update',
-            store: storeName,
-            data,
-            timestamp: Date.now(),
-            retries: 0,
-            status: 'pending'
-          });
-        }
-        resolve(request.result);
-      };
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = async () => {
+      if (addToSyncQueue) {
+        await this.addToSyncQueue({
+          id: crypto.randomUUID(),
+          type: 'update',
+          store: storeName,
+          data,
+          timestamp: Date.now(),
+          retries: 0,
+          status: 'pending'
+        });
+      }
+      resolve(request.result);
+    };
+
+    return promise;
   }
 
   async add<T>(storeName: string, data: T, addToSyncQueue = true): Promise<IDBValidKey> {
     const db = await this.open();
+    const { promise, resolve, reject } = Promise.withResolvers<IDBValidKey>();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-      const request = store.add(data);
+    const transaction = db.transaction(storeName, 'readwrite');
+    const store = transaction.objectStore(storeName);
+    const request = store.add(data);
 
-      request.onerror = () => reject(request.error);
-      request.onsuccess = async () => {
-        if (addToSyncQueue) {
-          await this.addToSyncQueue({
-            id: crypto.randomUUID(),
-            type: 'create',
-            store: storeName,
-            data,
-            timestamp: Date.now(),
-            retries: 0,
-            status: 'pending'
-          });
-        }
-        resolve(request.result);
-      };
-    });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = async () => {
+      if (addToSyncQueue) {
+        await this.addToSyncQueue({
+          id: crypto.randomUUID(),
+          type: 'create',
+          store: storeName,
+          data,
+          timestamp: Date.now(),
+          retries: 0,
+          status: 'pending'
+        });
+      }
+      resolve(request.result);
+    };
+
+    return promise;
   }
 
   async delete(storeName: string, key: IDBValidKey, addToSyncQueue = true): Promise<void> {
