@@ -22,7 +22,7 @@ Current release: v0.0.1 (Alpha)
 
 ## Quick Start
 
-Prerequisites: Node.js 18+ and a package manager (npm, pnpm, yarn, or bun).
+Prerequisites: Node.js 24+ and a package manager (npm, pnpm, yarn, or bun). See [SUPPORT.md](./SUPPORT.md) for version policy.
 
 ```bash
 pnpm create philjs my-app
