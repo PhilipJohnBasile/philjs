@@ -34,7 +34,7 @@
     "@philjs/core": "workspace:*",
     "@philjs/router": "workspace:*",
     "@philjs/ssr": "workspace:*",
-    "vite": "^6.4.1",
+    "vite": "^7.3.0",
     "rollup": "^4.28.1",
     "esbuild": "^0.24.2",
     "chokidar": "^4.0.3",
