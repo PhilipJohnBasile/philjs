@@ -375,7 +375,8 @@ export class SentryExporter {
 
   private convertStackFrames(frames: StackFrame[]): SentryStackFrame[] {
     // Sentry expects frames in reverse order (most recent last)
-    return frames.reverse().map((frame) => ({
+    // ES2023+: Use toReversed() for non-mutating reverse
+    return frames.toReversed().map((frame) => ({
       filename: frame.fileName || undefined,
       function: frame.functionName || undefined,
       lineno: frame.lineNumber ?? undefined,

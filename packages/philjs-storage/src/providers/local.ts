@@ -3,12 +3,18 @@
  *
  * File-based storage for development, testing, and self-hosted deployments.
  * Supports all StorageClient operations with local files.
+ *
+ * Optimized for Node 24+ with:
+ * - Native ReadableStream
+ * - Efficient buffer operations
+ * - Modern async patterns
  */
 
 import * as fs from 'node:fs';
 import * as fsp from 'node:fs/promises';
 import * as path from 'node:path';
 import * as crypto from 'node:crypto';
+import { Readable } from 'node:stream';
 
 import {
   StorageClient,
@@ -123,7 +129,7 @@ export class LocalStorageClient extends StorageClient {
 
       return new Promise((resolve, reject) => {
         const writeChunk = () => {
-          const chunk = buffer.slice(offset, offset + chunkSize);
+          const chunk = buffer.subarray(offset, offset + chunkSize);
           if (chunk.length === 0) {
             writeStream.end(async () => {
               await this.saveMetadata(key, { contentType, metadata: options.metadata });
@@ -215,22 +221,8 @@ export class LocalStorageClient extends StorageClient {
 
     const nodeStream = fs.createReadStream(filePath, streamOptions);
 
-    return new ReadableStream<Uint8Array>({
-      start(controller) {
-        nodeStream.on('data', (chunk: Buffer) => {
-          controller.enqueue(new Uint8Array(chunk));
-        });
-        nodeStream.on('end', () => {
-          controller.close();
-        });
-        nodeStream.on('error', (err) => {
-          controller.error(err);
-        });
-      },
-      cancel() {
-        nodeStream.destroy();
-      },
-    });
+    // Node 24+: Use native Readable.toWeb() for efficient stream conversion
+    return Readable.toWeb(nodeStream) as ReadableStream<Uint8Array>;
   }
 
   async delete(key: string): Promise<void> {

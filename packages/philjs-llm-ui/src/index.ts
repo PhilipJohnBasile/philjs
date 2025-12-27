@@ -1135,7 +1135,8 @@ function useChat(
 
     // Remove assistant message and get last user message
     messages = messages.slice(0, index);
-    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+    // ES2023+: Use findLast() instead of reverse().find() for better performance
+    const lastUserMessage = messages.findLast(m => m.role === 'user');
 
     if (lastUserMessage) {
       await send(lastUserMessage.content);

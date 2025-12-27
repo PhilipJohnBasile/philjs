@@ -291,7 +291,7 @@ export class TranslationExtractor {
    * Get all extracted keys.
    */
   getKeys(): string[] {
-    return Array.from(this.keys).sort();
+    return Array.from(this.keys).toSorted();
   }
 
   /**

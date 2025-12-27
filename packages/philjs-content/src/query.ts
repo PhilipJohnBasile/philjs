@@ -245,9 +245,9 @@ export async function getCollection<TName extends string>(
     entries = entries.filter(filter);
   }
 
-  // Apply sort
+  // Apply sort (ES2023+ toSorted for non-mutating sort)
   if (sort) {
-    entries = entries.sort(sort);
+    entries = entries.toSorted(sort);
   }
 
   // Apply offset and limit
@@ -404,7 +404,7 @@ export async function getCollectionTags(
     }
   }
 
-  return Array.from(tagSet).sort();
+  return Array.from(tagSet).toSorted();
 }
 
 /**
@@ -478,6 +478,7 @@ export async function resolveReference<TName extends string>(
 
 /**
  * Group entries by a field value.
+ * Uses ES2024 Object.groupBy for optimal performance.
  *
  * @example
  * ```typescript
@@ -494,17 +495,8 @@ export async function groupBy(
 ): Promise<Record<string, CollectionEntry[]>> {
   const entries = await getCollection(collection, filter);
 
-  const groups: Record<string, CollectionEntry[]> = {};
-
-  for (const entry of entries) {
-    const key = keyFn(entry);
-    if (!groups[key]) {
-      groups[key] = [];
-    }
-    groups[key].push(entry);
-  }
-
-  return groups;
+  // ES2024: Use native Object.groupBy
+  return Object.groupBy(entries, keyFn) as Record<string, CollectionEntry[]>;
 }
 
 /**
