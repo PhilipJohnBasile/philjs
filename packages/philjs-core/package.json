@@ -142,7 +142,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "fast-glob": "^3.3.2"
+    "fast-glob": "^3.3.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.16",

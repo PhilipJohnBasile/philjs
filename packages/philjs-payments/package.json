@@ -46,7 +46,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "stripe": "^14.0.0",
+    "stripe": "^20.1.0",
     "@paypal/checkout-server-sdk": "^1.0.3",
     "square": "^35.0.0"
   },
@@ -54,7 +54,7 @@
     "@types/node": "^24.0.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0"

@@ -65,7 +65,7 @@
     "@types/supercluster": "^7.1.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0"

@@ -62,11 +62,11 @@
     "@types/babel__traverse": "^7.20.5",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0",
-    "vite": "^5.0.0 || ^6.0.0"
+    "vite": "^7.3.0"
   },
   "peerDependenciesMeta": {
     "vite": {

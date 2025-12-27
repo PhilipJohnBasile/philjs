@@ -23,7 +23,7 @@
     "linting"
   ],
   "peerDependencies": {
-    "eslint": "^8.0.0 || ^9.0.0"
+    "eslint": "^9.39.2"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.0.0"

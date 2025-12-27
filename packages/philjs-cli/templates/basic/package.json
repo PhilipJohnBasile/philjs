@@ -17,7 +17,7 @@
   "devDependencies": {
     "@philjs/cli": "workspace:*",
     "typescript": "^5.9.3",
-    "vitest": "^2.1.8",
+    "vitest": "^4.0.16",
     "@types/node": "^24.0.0"
   }
 }

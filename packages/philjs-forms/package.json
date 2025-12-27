@@ -33,7 +33,7 @@
     "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
-    "zod": "^3.25.56"
+    "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
     "zod": {
@@ -41,12 +41,12 @@
     }
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-typescript": "^12.1.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.54.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16",
-    "zod": "^3.25.56"
+    "zod": "^4.2.1"
   },
   "keywords": [
     "philjs",

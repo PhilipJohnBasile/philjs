@@ -28,7 +28,7 @@
     "@philjs/core": "workspace:*"
   },
   "dependencies": {
-    "@testing-library/dom": "^10.0.0",
+    "@testing-library/dom": "^10.4.1",
     "pretty-format": "^29.0.0"
   },
   "devDependencies": {

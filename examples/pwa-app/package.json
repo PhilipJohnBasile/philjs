@@ -17,7 +17,7 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "typescript": "next",
-    "vite": "^6.4.1",
+    "vite": "^7.3.0",
     "vite-plugin-pwa": "^0.21.1"
   }
 }

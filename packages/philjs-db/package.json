@@ -22,9 +22,9 @@
     "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "^7.2.0",
     "drizzle-orm": "^0.45.1",
-    "@supabase/supabase-js": "^2.0.0"
+    "@supabase/supabase-js": "^2.89.0"
   },
   "peerDependenciesMeta": {
     "@prisma/client": {
@@ -39,11 +39,11 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0",
+    "vitest": "^4.0.16",
     "@types/node": "^24.0.0",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "^7.2.0",
     "drizzle-orm": "^0.45.1",
-    "@supabase/supabase-js": "^2.0.0"
+    "@supabase/supabase-js": "^2.89.0"
   },
   "files": [
     "dist",

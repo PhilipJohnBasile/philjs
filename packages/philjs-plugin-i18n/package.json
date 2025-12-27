@@ -41,7 +41,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "fast-glob": "^3.3.2",
+    "fast-glob": "^3.3.3",
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {

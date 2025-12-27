@@ -37,12 +37,12 @@
   "devDependencies": {
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0",
-    "zod": "^3.25.56"
+    "vitest": "^4.0.16",
+    "zod": "^4.2.1"
   },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0",
-    "zod": "^3.25.56"
+    "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
     "zod": {

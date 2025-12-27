@@ -44,7 +44,7 @@
   "peerDependencies": {
     "@opentelemetry/api": "^1.0.0",
     "@opentelemetry/sdk-node": "^0.50.0",
-    "@sentry/node": "^8.0.0"
+    "@sentry/node": "^10.32.1"
   },
   "peerDependenciesMeta": {
     "@opentelemetry/api": {
@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^3.1.1"
+    "vitest": "^4.0.16"
   },
   "keywords": [
     "philjs",

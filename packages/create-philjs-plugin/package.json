@@ -34,7 +34,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^14.0.2",
     "prompts": "^2.4.2",
     "picocolors": "^1.1.1"
   },
@@ -42,7 +42,7 @@
     "typescript": "^5.9.3",
     "@types/node": "^24.0.0",
     "@types/prompts": "^2.4.9",
-    "vitest": "^1.0.0"
+    "vitest": "^4.0.16"
   },
   "repository": {
     "type": "git",

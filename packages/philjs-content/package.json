@@ -55,7 +55,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^3.25.56",
+    "zod": "^4.2.1",
     "gray-matter": "^4.0.3",
     "unified": "^11.0.5",
     "remark": "^15.0.1",
@@ -81,7 +81,7 @@
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",
-    "vite": "^5.0.0 || ^6.0.0"
+    "vite": "^7.3.0"
   },
   "peerDependenciesMeta": {
     "vite": {

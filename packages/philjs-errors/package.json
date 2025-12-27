@@ -19,7 +19,7 @@
     "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
-    "@sentry/browser": "^8.0.0",
+    "@sentry/browser": "^10.32.1",
     "logrocket": "^5.0.0",
     "rollbar": "^2.0.0"
   },

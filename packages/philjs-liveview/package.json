@@ -41,7 +41,7 @@
   "devDependencies": {
     "typescript": "^5.9.3",
     "tsup": "^8.5.1",
-    "vitest": "^1.1.0"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

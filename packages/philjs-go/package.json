@@ -41,7 +41,7 @@
     "go:build": "cd go && go build ./..."
   },
   "dependencies": {
-    "execa": "^9.5.2"
+    "execa": "^9.6.1"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

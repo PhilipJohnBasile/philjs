@@ -69,7 +69,7 @@
     "@tauri-apps/plugin-global-shortcut": "^2.0.0",
     "@tauri-apps/plugin-process": "^2.0.0",
     "@tauri-apps/plugin-updater": "^2.0.0",
-    "commander": "^12.0.0",
+    "commander": "^14.0.2",
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
