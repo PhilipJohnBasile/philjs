@@ -25,7 +25,7 @@
     "@philjs/router": "workspace:*"
   },
   "devDependencies": {
-    "rollup": "^4.28.1",
+    "rollup": "^4.54.0",
     "typescript": "^5.7.2",
     "vitest": "^3.2.4"
   },
