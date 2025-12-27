@@ -72,7 +72,8 @@ export function calculateStats(samples: number[]): {
     return { mean: 0, median: 0, min: 0, max: 0, stddev: 0 };
   }
 
-  const sorted = [...samples].sort((a, b) => a - b);
+  // ES2023+: toSorted() is cleaner and more explicit than spread + sort
+  const sorted = samples.toSorted((a, b) => a - b);
   const sum = samples.reduce((a, b) => a + b, 0);
   const mean = sum / samples.length;
 

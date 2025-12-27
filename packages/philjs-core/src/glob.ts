@@ -217,7 +217,8 @@ export function sortContent<T = any>(
   items: ContentItem<T>[],
   compareFn: (a: ContentItem<T>, b: ContentItem<T>) => number
 ): ContentItem<T>[] {
-  return [...items].sort(compareFn);
+  // ES2023+: toSorted() for non-mutating sort
+  return items.toSorted(compareFn);
 }
 
 /**
@@ -383,7 +384,8 @@ export function sortByFrontmatter<F = any, C = any>(
   field: keyof F,
   order: 'asc' | 'desc' = 'asc'
 ): ContentWithFrontmatter<F, C>[] {
-  return [...items].sort((a, b) => {
+  // ES2023+: toSorted() for non-mutating sort
+  return items.toSorted((a, b) => {
     const aVal = a.frontmatter[field];
     const bVal = b.frontmatter[field];
 

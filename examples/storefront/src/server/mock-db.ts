@@ -203,7 +203,8 @@ type MockDb = {
 };
 
 export function createMockDb(): MockDb {
-  const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
+  // ES2024: structuredClone() is faster and handles more types than JSON.parse/stringify
+  const clone = <T,>(value: T): T => structuredClone(value);
 
   return {
     product: {

@@ -696,7 +696,8 @@ export class PrivacyFirstAnalytics {
 
   private calculateSessionDuration(events: AnalyticsEvent[]): number {
     if (events.length < 2) return 0;
-    const sorted = [...events].sort((a, b) => a.timestamp - b.timestamp);
+    // ES2023+: toSorted() for non-mutating sort
+    const sorted = events.toSorted((a, b) => a.timestamp - b.timestamp);
     return sorted[sorted.length - 1].timestamp - sorted[0].timestamp;
   }
 
@@ -711,7 +712,8 @@ export class PrivacyFirstAnalytics {
       if (values.length === 0) {
         return { p50: 0, p75: 0, p90: 0 };
       }
-      const sorted = [...values].sort((a, b) => a - b);
+      // ES2023+: toSorted() for non-mutating sort
+      const sorted = values.toSorted((a, b) => a - b);
       return {
         p50: sorted[Math.floor(sorted.length * 0.5)] || 0,
         p75: sorted[Math.floor(sorted.length * 0.75)] || 0,

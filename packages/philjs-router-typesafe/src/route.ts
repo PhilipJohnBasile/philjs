@@ -428,8 +428,9 @@ export function matchRoutes(
   // Flatten routes for matching
   const flatRoutes = flattenRouteTree(routes);
 
+  // ES2023+: toSorted() for non-mutating sort
   // Sort routes by specificity (more specific routes first)
-  const sortedRoutes = [...flatRoutes].sort((a, b) => {
+  const sortedRoutes = flatRoutes.toSorted((a, b) => {
     // Count static segments (more static = more specific)
     const aStatic = a.fullPath.split("/").filter((s) => s && !s.startsWith("$")).length;
     const bStatic = b.fullPath.split("/").filter((s) => s && !s.startsWith("$")).length;

@@ -433,8 +433,9 @@ export function getLinksInScrollPath(
   const viewportHeight = window.innerHeight;
   const viewportWidth = window.innerWidth;
 
+  // ES2023+: toSorted() for non-mutating sort
   // Sort links by their position relative to scroll direction
-  const sortedLinks = [...links].sort((a, b) => {
+  const sortedLinks = links.toSorted((a, b) => {
     const rectA = a.getBoundingClientRect();
     const rectB = b.getBoundingClientRect();
 

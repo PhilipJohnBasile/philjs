@@ -1269,7 +1269,8 @@ function serializeClosureVars(vars: Record<string, any>): Record<string, any> {
     } else {
       // Regular values are serialized directly
       try {
-        result[key] = JSON.parse(JSON.stringify(value));
+        // ES2024: structuredClone() is faster and handles more types
+        result[key] = structuredClone(value);
       } catch {
         result[key] = String(value);
       }

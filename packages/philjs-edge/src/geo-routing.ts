@@ -116,7 +116,8 @@ export class GeoRouter {
   }
 
   private routeByLatency(nodes: EdgeNode[]): RoutingDecision {
-    const sorted = [...nodes].sort((a, b) => {
+    // ES2023+: toSorted() for non-mutating sort
+    const sorted = nodes.toSorted((a, b) => {
       const latencyA = this.healthStatus.get(a.id)?.latency || Infinity;
       const latencyB = this.healthStatus.get(b.id)?.latency || Infinity;
       return latencyA - latencyB;
@@ -184,8 +185,9 @@ export class GeoRouter {
   }
 
   private routeByFailover(nodes: EdgeNode[]): RoutingDecision {
+    // ES2023+: toSorted() for non-mutating sort
     // Sort by weight descending (primary nodes have higher weight)
-    const sorted = [...nodes].sort((a, b) => b.weight - a.weight);
+    const sorted = nodes.toSorted((a, b) => b.weight - a.weight);
 
     return {
       node: sorted[0],

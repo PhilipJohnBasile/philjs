@@ -856,8 +856,9 @@ function generateBundleReport(
   console.log('║             PhilJS Bundle Analysis Report                 ║');
   console.log('╚════════════════════════════════════════════════════════════╝\n');
 
+  // ES2023+: toSorted() for non-mutating sort
   // Sort by size (largest first)
-  const sorted = [...stats].sort((a, b) => b.size - a.size);
+  const sorted = stats.toSorted((a, b) => b.size - a.size);
 
   console.log('Bundle Breakdown:');
   console.log('─────────────────────────────────────────────────────────────');

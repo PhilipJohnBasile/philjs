@@ -716,8 +716,8 @@ export const useEditorStore = create<EditorState & EditorActions>()(
           // Remove any redo entries
           state.history = state.history.slice(0, state.historyIndex + 1);
 
-          // Create deep copy of components
-          const componentsCopy = JSON.parse(JSON.stringify(state.components));
+          // ES2024: structuredClone() is faster and handles more types than JSON.parse/stringify
+          const componentsCopy = structuredClone(state.components);
 
           state.history.push({
             components: componentsCopy,
@@ -749,7 +749,8 @@ export const useEditorStore = create<EditorState & EditorActions>()(
 
         set((draft) => {
           draft.clipboard = {
-            components: JSON.parse(JSON.stringify(selectedComponents)),
+            // ES2024: structuredClone() for deep cloning
+            components: structuredClone(selectedComponents),
             type: 'cut',
           };
         });
@@ -766,7 +767,8 @@ export const useEditorStore = create<EditorState & EditorActions>()(
 
         set((state) => {
           state.clipboard = {
-            components: JSON.parse(JSON.stringify(selectedComponents)),
+            // ES2024: structuredClone() for deep cloning
+            components: structuredClone(selectedComponents),
             type: 'copy',
           };
         });
