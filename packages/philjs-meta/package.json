@@ -85,6 +85,6 @@
   },
   "homepage": "https://github.com/yourusername/philjs#readme",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24"
   }
 }
