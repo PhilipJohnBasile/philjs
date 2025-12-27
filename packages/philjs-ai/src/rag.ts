@@ -75,8 +75,9 @@ export class InMemoryVectorStore implements VectorStore {
       results.push({ document: doc, score });
     }
 
+    // ES2023+: Use toSorted for non-mutating sort
     return results
-      .sort((a, b) => b.score - a.score)
+      .toSorted((a, b) => b.score - a.score)
       .slice(0, topK);
   }
 

@@ -474,13 +474,13 @@ export async function createDenoKV(path?: string) {
 
     /**
      * List values by prefix
+     * ES2024: Uses Array.fromAsync for cleaner async collection
      */
     async list<T = unknown>(prefix: string[]): Promise<Array<{ key: string[]; value: T }>> {
-      const results: Array<{ key: string[]; value: T }> = [];
-      for await (const entry of kv.list<T>({ prefix })) {
-        results.push({ key: entry.key, value: entry.value });
-      }
-      return results;
+      return Array.fromAsync(
+        kv.list<T>({ prefix }),
+        (entry) => ({ key: entry.key, value: entry.value })
+      );
     },
 
     /**

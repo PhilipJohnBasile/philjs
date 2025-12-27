@@ -368,8 +368,8 @@ export function applyGeoRouting(
   geo: GeoLocation,
   config: GeoRoutingConfig
 ): { action: 'allow' | 'block' | 'redirect' | 'rewrite'; url?: string } {
-  // Sort rules by priority (descending)
-  const sortedRules = [...config.rules].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+  // ES2023+: toSorted for non-mutating sort by priority (descending)
+  const sortedRules = config.rules.toSorted((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
 
   for (const rule of sortedRules) {
     if (matchesRule(geo, rule)) {
