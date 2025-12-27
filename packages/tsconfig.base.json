@@ -1,45 +1,38 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    // TypeScript 6 / ES2025+ target (ESNext includes ES2025 features)
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ESNext", "DOM", "DOM.Iterable", "Decorators"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "Decorators", "ESNext.Disposable"],
 
-    // Strict type checking
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
 
-    // Performance optimizations
     "skipLibCheck": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "useDefineForClassFields": true,
-    "noEmit": true,
 
-    // Native Decorators (Stage 3)
     "experimentalDecorators": false,
 
-    // Incremental builds (faster rebuilds)
     "incremental": true,
     "composite": false,
     "tsBuildInfoFile": "./node_modules/.cache/tsc/.tsbuildinfo",
 
-    // Type output
     "declaration": true,
     "declarationMap": true,
+    "noEmit": true,
 
-    // Interop
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
 
-    // Path resolution
     "baseUrl": ".",
     "paths": {
       "@philjs/*": ["./philjs-*/src"]

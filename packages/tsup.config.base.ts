@@ -67,7 +67,6 @@ export const baseConfig: Options = {
   // Don't bundle workspace packages
   external: [
     /^@philjs\//,
-    'tslib',
   ],
 
   // No shims for smaller bundles
