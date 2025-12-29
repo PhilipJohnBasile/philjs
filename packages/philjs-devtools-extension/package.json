@@ -9,7 +9,7 @@
     "zip": "node scripts/zip.js"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.260",
+    "@types/chrome": "^0.1.32",
     "vite": "^7.3.0",
     "typescript": "^5.9.3"
   },
