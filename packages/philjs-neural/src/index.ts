@@ -102,7 +102,7 @@ class Tensor {
   add(other: Tensor): Tensor {
     const result = new Float32Array(this.data.length);
     for (let i = 0; i < this.data.length; i++) {
-      result[i] = this.data[i] + other.data[i % other.data.length];
+      result[i] = this.data[i]! + other.data[i % other.data.length]!;
     }
     return new Tensor(result, this.shape);
   }
@@ -110,14 +110,16 @@ class Tensor {
   multiply(other: Tensor): Tensor {
     const result = new Float32Array(this.data.length);
     for (let i = 0; i < this.data.length; i++) {
-      result[i] = this.data[i] * other.data[i % other.data.length];
+      result[i] = this.data[i]! * other.data[i % other.data.length]!;
     }
     return new Tensor(result, this.shape);
   }
 
   matmul(other: Tensor): Tensor {
-    const [m, k1] = this.shape;
-    const [k2, n] = other.shape;
+    const m = this.shape[0]!;
+    const k1 = this.shape[1]!;
+    const k2 = other.shape[0]!;
+    const n = other.shape[1]!;
     if (k1 !== k2) throw new Error('Matrix dimensions mismatch');
 
     const result = new Float32Array(m * n);
@@ -125,7 +127,7 @@ class Tensor {
       for (let j = 0; j < n; j++) {
         let sum = 0;
         for (let k = 0; k < k1; k++) {
-          sum += this.data[i * k1 + k] * other.data[k * n + j];
+          sum += this.data[i * k1 + k]! * other.data[k * n + j]!;
         }
         result[i * n + j] = sum;
       }
@@ -136,7 +138,7 @@ class Tensor {
   relu(): Tensor {
     const result = new Float32Array(this.data.length);
     for (let i = 0; i < this.data.length; i++) {
-      result[i] = Math.max(0, this.data[i]);
+      result[i] = Math.max(0, this.data[i]!);
     }
     return new Tensor(result, this.shape);
   }
@@ -144,21 +146,21 @@ class Tensor {
   sigmoid(): Tensor {
     const result = new Float32Array(this.data.length);
     for (let i = 0; i < this.data.length; i++) {
-      result[i] = 1 / (1 + Math.exp(-this.data[i]));
+      result[i] = 1 / (1 + Math.exp(-this.data[i]!));
     }
     return new Tensor(result, this.shape);
   }
 
   softmax(): Tensor {
     const result = new Float32Array(this.data.length);
-    const max = Math.max(...this.data);
+    const max = Math.max(...Array.from(this.data));
     let sum = 0;
     for (let i = 0; i < this.data.length; i++) {
-      result[i] = Math.exp(this.data[i] - max);
-      sum += result[i];
+      result[i] = Math.exp(this.data[i]! - max);
+      sum += result[i]!;
     }
     for (let i = 0; i < this.data.length; i++) {
-      result[i] /= sum;
+      result[i]! /= sum;
     }
     return new Tensor(result, this.shape);
   }
@@ -188,9 +190,9 @@ class NeuralNetwork {
   forward(input: Tensor): Tensor {
     let current = input;
     for (let i = 0; i < this.layers.length - 1; i++) {
-      current = this.layers[i].forward(current).relu();
+      current = this.layers[i]!.forward(current).relu();
     }
-    return this.layers[this.layers.length - 1].forward(current).sigmoid();
+    return this.layers[this.layers.length - 1]!.forward(current).sigmoid();
   }
 }
 
@@ -252,7 +254,10 @@ class RenderPredictor {
       const input = new Tensor(new Float32Array(features), [1, features.length]);
       const output = this.network.forward(input);
 
-      const [probability, timeNorm, priorityNorm, prerenderNorm] = output.data;
+      const probability = output.data[0]!;
+      const timeNorm = output.data[1]!;
+      const priorityNorm = output.data[2]!;
+      const prerenderNorm = output.data[3]!;
 
       predictions.push({
         componentId,
@@ -278,7 +283,7 @@ class RenderPredictor {
 
     const renderFrequency = recentRenders.length / 10;
     const lastRenderAge = recentRenders.length > 0
-      ? (Date.now() - recentRenders[recentRenders.length - 1].timestamp) / 1000
+      ? (Date.now() - recentRenders[recentRenders.length - 1]!.timestamp) / 1000
       : Infinity;
 
     const triggerCounts = { state: 0, props: 0, context: 0, effect: 0 };
@@ -412,7 +417,7 @@ class ComponentPrioritizer {
       this.observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            const id = (entry.target as HTMLElement).dataset.componentId;
+            const id = (entry.target as HTMLElement).dataset['componentId'];
             if (id) {
               this.visibilityScores.set(id, entry.intersectionRatio);
             }
@@ -424,7 +429,7 @@ class ComponentPrioritizer {
   }
 
   observe(element: Element, componentId: string): void {
-    (element as HTMLElement).dataset.componentId = componentId;
+    (element as HTMLElement).dataset['componentId'] = componentId;
     this.observer?.observe(element);
   }
 
@@ -444,8 +449,8 @@ class ComponentPrioritizer {
   }
 
   getPriorities(componentIds: string[]): ComponentPriority[] {
-    const maxInteraction = Math.max(...this.interactionScores.values(), 1);
-    const maxCost = Math.max(...this.renderCosts.values(), 1);
+    const maxInteraction = Math.max(...Array.from(this.interactionScores.values()), 1);
+    const maxCost = Math.max(...Array.from(this.renderCosts.values()), 1);
 
     return componentIds.map(id => {
       const visibility = this.visibilityScores.get(id) || 0;
@@ -495,7 +500,7 @@ class NeuralLayoutOptimizer {
   getSuggestions(elements: Map<string, LayoutMetrics>): NeuralLayoutSuggestion[] {
     const suggestions: NeuralLayoutSuggestion[] = [];
 
-    for (const [elementId, current] of elements) {
+    for (const [elementId, current] of Array.from(elements.entries())) {
       const history = this.layoutHistory.get(elementId) || [];
       if (history.length < 5) continue;
 
@@ -503,7 +508,10 @@ class NeuralLayoutOptimizer {
       const input = new Tensor(new Float32Array(features), [1, features.length]);
       const output = this.network.forward(input);
 
-      const [dx, dy, dw, dh] = output.data;
+      const dx = output.data[0]!;
+      const dy = output.data[1]!;
+      const dw = output.data[2]!;
+      const dh = output.data[3]!;
 
       // Only suggest if there's significant potential improvement
       const adjustmentMagnitude = Math.abs(dx) + Math.abs(dy) + Math.abs(dw) + Math.abs(dh);
@@ -512,10 +520,14 @@ class NeuralLayoutOptimizer {
           x: current.x + dx * 10,
           y: current.y + dy * 10,
           width: current.width * (1 + dw * 0.1),
-          height: current.height * (1 + dh * 0.1),
-          willChange: this.shouldAddWillChange(history) ? 'transform' : undefined,
-          containment: this.shouldAddContainment(current) ? 'layout' : undefined
+          height: current.height * (1 + dh * 0.1)
         };
+        if (this.shouldAddWillChange(history)) {
+          suggested.willChange = 'transform';
+        }
+        if (this.shouldAddContainment(current)) {
+          suggested.containment = 'layout';
+        }
 
         suggestions.push({
           elementId,
@@ -557,7 +569,7 @@ class NeuralLayoutOptimizer {
     if (history.length < 2) return false;
     let changes = 0;
     for (let i = 1; i < history.length; i++) {
-      if (history[i].x !== history[i - 1].x || history[i].y !== history[i - 1].y) {
+      if (history[i]!.x !== history[i - 1]!.x || history[i]!.y !== history[i - 1]!.y) {
         changes++;
       }
     }
@@ -659,13 +671,16 @@ export class NeuralRenderer {
   // Public API
 
   recordRender(componentId: string, renderTime: number, triggerType: 'state' | 'props' | 'context' | 'effect', parentId?: string): void {
-    this.predictor.recordRender({
+    const entry: RenderHistoryEntry = {
       timestamp: Date.now(),
       componentId,
       renderTime,
-      triggerType,
-      parentId
-    });
+      triggerType
+    };
+    if (parentId !== undefined) {
+      entry.parentId = parentId;
+    }
+    this.predictor.recordRender(entry);
     this.prioritizer.recordRenderCost(componentId, renderTime);
   }
 
@@ -812,7 +827,6 @@ export function useLayoutOptimization(
 // ============================================================================
 
 export {
-  NeuralRenderer,
   RenderPredictor,
   AdaptiveQualityManager,
   ComponentPrioritizer,

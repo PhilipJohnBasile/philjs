@@ -302,7 +302,7 @@ export class SelfHealingRuntime {
       id: `cp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
       timestamp: Date.now(),
       states: new Map(this.componentStates),
-      metadata,
+      ...(metadata !== undefined && { metadata }),
     };
 
     this.checkpoints.push(checkpoint);
@@ -371,8 +371,8 @@ export class SelfHealingRuntime {
 
     // Increasing error rate
     if (patterns.length >= 2) {
-      const recent = patterns[patterns.length - 1];
-      const previous = patterns[patterns.length - 2];
+      const recent = patterns[patterns.length - 1]!;
+      const previous = patterns[patterns.length - 2]!;
       if (recent > previous) {
         probability += 0.2;
         factors.push('Increasing error rate');
@@ -483,10 +483,10 @@ export class SelfHealingRuntime {
       componentName: partial.componentName || componentId,
       severity: this.determineSeverity(error),
       timestamp: Date.now(),
-      stack: error.stack,
+      ...(error.stack !== undefined && { stack: error.stack }),
       componentState: this.componentStates.get(componentId),
       occurrences: history.filter(e => e.error.name === error.name).length + 1,
-      metadata: partial.metadata,
+      ...(partial.metadata !== undefined && { metadata: partial.metadata }),
     };
   }
 

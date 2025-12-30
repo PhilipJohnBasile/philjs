@@ -5,6 +5,24 @@
  * with context, suggestions, and the ability to retry or rollback.
  */
 
+// Extend ImportMeta for HMR support
+interface ImportMetaHot {
+  invalidate: () => void;
+  accept: (callback?: () => void) => void;
+}
+
+interface ImportMetaEnv {
+  DEV?: boolean;
+  PROD?: boolean;
+  MODE?: string;
+}
+
+declare global {
+  interface ImportMeta {
+    hot?: ImportMetaHot;
+    env?: ImportMetaEnv;
+  }
+}
 /**
  * HMR error types
  */

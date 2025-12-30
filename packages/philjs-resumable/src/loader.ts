@@ -140,10 +140,14 @@ export function configureLoader(options: Partial<LoaderConfig>): void {
 
   // Also configure QRL base path
   if (options.basePath !== undefined || options.resolver !== undefined) {
-    configureQRL({
-      basePath: options.basePath,
-      resolver: options.resolver,
-    });
+    const qrlOptions: { basePath?: string; resolver?: (chunk: string) => Promise<Record<string, unknown>> } = {};
+    if (options.basePath !== undefined) {
+      qrlOptions.basePath = options.basePath;
+    }
+    if (options.resolver !== undefined) {
+      qrlOptions.resolver = options.resolver;
+    }
+    configureQRL(qrlOptions);
   }
 }
 
@@ -512,7 +516,7 @@ function processLoadQueue(): void {
     const request = loadQueue.shift()!;
     loadingCount++;
 
-    loadAndHydrate(request.element, { state: undefined })
+    loadAndHydrate(request.element)
       .then(() => request.resolve(undefined))
       .catch((error) => {
         if (config.retryOnError && request.retries < config.maxRetries) {

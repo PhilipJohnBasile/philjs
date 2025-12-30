@@ -6,7 +6,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types.js';
 
 export interface AWSConfig extends AdapterConfig {
   /** Deployment mode */
@@ -50,7 +50,8 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
     cloudfront,
     s3Bucket,
     apiGateway = { type: 'HTTP', corsEnabled: true },
-  } = config;
+    static: staticConfig,
+  } = config as AWSConfig & { outDir?: string; static?: AdapterConfig['static'] };
 
   return {
     name: 'aws',
@@ -112,17 +113,18 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
     );
 
     // Create SAM template
+    const samTemplateOptions: Parameters<typeof generateSAMTemplate>[0] = {
+      runtime,
+      memory,
+      timeout,
+      architecture,
+      streaming,
+      apiGateway,
+    };
+    if (s3Bucket !== undefined) samTemplateOptions.s3Bucket = s3Bucket;
     writeFileSync(
       join(outDir, 'template.yaml'),
-      generateSAMTemplate({
-        runtime,
-        memory,
-        timeout,
-        architecture,
-        streaming,
-        apiGateway,
-        s3Bucket,
-      })
+      generateSAMTemplate(samTemplateOptions)
     );
 
     // Create package.json for Lambda
@@ -141,7 +143,7 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
     // Copy static assets if S3 bucket specified
     if (s3Bucket) {
       mkdirSync(join(outDir, 'static'), { recursive: true });
-      const staticDir = config.static?.assets || 'public';
+      const staticDir = staticConfig?.assets || 'public';
       if (existsSync(staticDir)) {
         cpSync(staticDir, join(outDir, 'static'), { recursive: true });
       }
@@ -156,13 +158,14 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
     );
 
     // CloudFormation template for Lambda@Edge + CloudFront
+    const edgeTemplateOptions: Parameters<typeof generateLambdaEdgeTemplate>[0] = {
+      runtime,
+    };
+    if (cloudfront !== undefined) edgeTemplateOptions.cloudfront = cloudfront;
+    if (s3Bucket !== undefined) edgeTemplateOptions.s3Bucket = s3Bucket;
     writeFileSync(
       join(outDir, 'template.yaml'),
-      generateLambdaEdgeTemplate({
-        runtime,
-        cloudfront,
-        s3Bucket,
-      })
+      generateLambdaEdgeTemplate(edgeTemplateOptions)
     );
   }
 
@@ -181,7 +184,7 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
     );
 
     // Copy static assets
-    const staticDir = config.static?.assets || 'public';
+    const staticDir = staticConfig?.assets || 'public';
     if (existsSync(staticDir)) {
       cpSync(staticDir, join(outDir, 'public'), { recursive: true });
     }

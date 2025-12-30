@@ -87,7 +87,7 @@ export function detectDeviceCapabilities(): DeviceCapabilities {
 
   // Device type
   const width = win?.innerWidth || 1024;
-  const touch = nav?.maxTouchPoints > 0 || false;
+  const touch = (nav?.maxTouchPoints ?? 0) > 0;
   let deviceType: 'mobile' | 'tablet' | 'desktop' = 'desktop';
   if (width < 768) deviceType = 'mobile';
   else if (width < 1024 && touch) deviceType = 'tablet';

@@ -60,15 +60,15 @@ export async function createZip(
 
   // Add files to the archive
   for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+    const file = files[i]!;
 
-    zip.file(file.name, file.content, {
+    zip.file(file.name, file.content as string | ArrayBuffer | Uint8Array | Blob, {
       compression,
       compressionOptions: {
         level: file.compressionLevel ?? compressionLevel,
       },
-      comment: file.comment,
-      date: file.date,
+      ...(file.comment !== undefined && { comment: file.comment }),
+      ...(file.date !== undefined && { date: file.date }),
     });
 
     onProgress?.((i + 1) / files.length);
@@ -82,7 +82,7 @@ export async function createZip(
       compressionOptions: {
         level: compressionLevel,
       },
-      comment,
+      ...(comment !== undefined && { comment }),
     },
     (metadata) => {
       onProgress?.(metadata.percent / 100);
@@ -116,19 +116,19 @@ export async function createZipWithFolders(
       const folder = parent.folder(path);
       if (folder) {
         for (const file of content) {
-          folder.file(file.name, file.content, {
+          folder.file(file.name, file.content as string | ArrayBuffer | Uint8Array | Blob, {
             compression,
             compressionOptions: {
               level: file.compressionLevel ?? compressionLevel,
             },
-            comment: file.comment,
-            date: file.date,
+            ...(file.comment !== undefined && { comment: file.comment }),
+            ...(file.date !== undefined && { date: file.date }),
           });
         }
       }
     } else {
       // It's a file at root level
-      parent.file(path, content, {
+      parent.file(path, content as string | ArrayBuffer | Blob, {
         compression,
         compressionOptions: {
           level: compressionLevel,
@@ -139,7 +139,7 @@ export async function createZipWithFolders(
 
   const entries = Object.entries(structure);
   for (let i = 0; i < entries.length; i++) {
-    const [path, content] = entries[i];
+    const [path, content] = entries[i]!;
     addToZip(zip, path, content);
     onProgress?.((i + 1) / entries.length * 0.5); // First 50% for adding
   }
@@ -151,7 +151,7 @@ export async function createZipWithFolders(
       compressionOptions: {
         level: compressionLevel,
       },
-      comment,
+      ...(comment !== undefined && { comment }),
     },
     (metadata) => {
       onProgress?.(0.5 + (metadata.percent / 100) * 0.5); // Last 50% for compression
@@ -178,13 +178,13 @@ export async function streamToZip(
   let fileCount = 0;
 
   for await (const file of fileStream) {
-    zip.file(file.name, file.content, {
+    zip.file(file.name, file.content as string | ArrayBuffer | Uint8Array | Blob, {
       compression,
       compressionOptions: {
         level: file.compressionLevel ?? compressionLevel,
       },
-      comment: file.comment,
-      date: file.date,
+      ...(file.comment !== undefined && { comment: file.comment }),
+      ...(file.date !== undefined && { date: file.date }),
     });
 
     fileCount++;
@@ -198,7 +198,7 @@ export async function streamToZip(
       compressionOptions: {
         level: compressionLevel,
       },
-      comment,
+      ...(comment !== undefined && { comment }),
     },
     (metadata) => {
       onProgress?.(metadata.percent / 100);
@@ -221,12 +221,12 @@ export async function extractZip(
   const files = new Map<string, Blob>();
 
   const fileNames = Object.keys(zip.files).filter(
-    name => !zip.files[name].dir
+    name => !zip.files[name]!.dir
   );
 
   for (let i = 0; i < fileNames.length; i++) {
-    const name = fileNames[i];
-    const file = zip.files[name];
+    const name = fileNames[i]!;
+    const file = zip.files[name]!;
 
     const blob = await file.async('blob');
     files.set(name, blob);
@@ -281,13 +281,13 @@ export async function addToZip(
   const zip = await JSZip.loadAsync(existingZip);
 
   for (const file of newFiles) {
-    zip.file(file.name, file.content, {
+    zip.file(file.name, file.content as string | ArrayBuffer | Uint8Array | Blob, {
       compression,
       compressionOptions: {
         level: file.compressionLevel ?? compressionLevel,
       },
-      comment: file.comment,
-      date: file.date,
+      ...(file.comment !== undefined && { comment: file.comment }),
+      ...(file.date !== undefined && { date: file.date }),
     });
   }
 

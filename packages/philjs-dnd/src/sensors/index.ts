@@ -4,7 +4,7 @@ export {
   DelayedMouseSensor,
   DistanceMouseSensor,
   type MouseSensorOptions,
-} from './mouse';
+} from './mouse.js';
 
 export {
   TouchSensor,
@@ -12,7 +12,7 @@ export {
   ImmediateTouchSensor,
   preventScrolling,
   type TouchSensorOptions,
-} from './touch';
+} from './touch.js';
 
 export {
   KeyboardSensor,
@@ -22,4 +22,4 @@ export {
   getDroppableCenter,
   type KeyboardSensorOptions,
   type KeyboardCoordinates,
-} from './keyboard';
+} from './keyboard.js';

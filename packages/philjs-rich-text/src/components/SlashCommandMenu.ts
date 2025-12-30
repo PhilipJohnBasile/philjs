@@ -3,7 +3,7 @@
  * Notion-style command palette - vanilla JS
  */
 
-import type { SlashCommand } from '../types';
+import type { SlashCommand } from '../types.js';
 
 export interface SlashCommandMenuOptions {
   commands: SlashCommand[];
@@ -57,7 +57,7 @@ export class SlashCommandMenu {
     return this.commands.filter((cmd) =>
       cmd.name.toLowerCase().includes(search) ||
       cmd.description.toLowerCase().includes(search) ||
-      cmd.keywords?.some((kw) => kw.toLowerCase().includes(search))
+      cmd.keywords?.some((kw: string) => kw.toLowerCase().includes(search))
     );
   }
 
@@ -77,8 +77,9 @@ export class SlashCommandMenu {
         break;
       case 'Enter':
         e.preventDefault();
-        if (filtered[this.selectedIndex]) {
-          this.onSelect(filtered[this.selectedIndex]);
+        const selectedCmd = filtered[this.selectedIndex];
+        if (selectedCmd) {
+          this.onSelect(selectedCmd);
           this.close();
         }
         break;

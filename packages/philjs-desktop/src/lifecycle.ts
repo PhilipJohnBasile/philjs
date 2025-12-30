@@ -2,10 +2,10 @@
  * App Lifecycle for PhilJS Desktop
  */
 
-import { isTauri } from './tauri/context';
-import { invoke } from './tauri/invoke';
-import { listen, emit, TauriEvents } from './tauri/events';
-import type { UnlistenFn } from './tauri/types';
+import { isTauri } from './tauri/context.js';
+import { invoke } from './tauri/invoke.js';
+import { listen, emit, TauriEvents } from './tauri/events.js';
+import type { UnlistenFn } from './tauri/types.js';
 
 // Lifecycle types
 export interface UpdateInfo {
@@ -61,7 +61,7 @@ export async function initLifecycle(): Promise<void> {
   ];
 
   for (const [tauriEvent, lifecycleEvent] of events) {
-    const unlisten = await listen(tauriEvent, (e) => {
+    const unlisten = await listen(tauriEvent, (e: { payload: unknown }) => {
       emitLifecycle(lifecycleEvent, e.payload);
     });
     unlistenFns.push(unlisten);
@@ -196,9 +196,9 @@ export async function checkForUpdates(): Promise<UpdateInfo | null> {
     if (update?.available) {
       const info: UpdateInfo = {
         version: update.version,
-        date: update.date,
-        body: update.body,
       };
+      if (update.date !== undefined) info.date = update.date;
+      if (update.body !== undefined) info.body = update.body;
       emitLifecycle('update-available', info);
       return info;
     }

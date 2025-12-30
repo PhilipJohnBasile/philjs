@@ -11,7 +11,7 @@
  * - CSS Anchor Positioning
  */
 
-import type { CSSProperties, CSSStyleObject } from './types';
+import type { CSSProperties, CSSStyleObject } from './types.js';
 
 // =============================================================================
 // Container Queries

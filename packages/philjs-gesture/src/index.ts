@@ -194,9 +194,9 @@ export class HandTracker {
     return current.map((landmark, i) => ({
       ...landmark,
       position: {
-        x: prev[i].position.x * factor + landmark.position.x * (1 - factor),
-        y: prev[i].position.y * factor + landmark.position.y * (1 - factor),
-        z: prev[i].position.z * factor + landmark.position.z * (1 - factor)
+        x: prev[i]!.position.x * factor + landmark.position.x * (1 - factor),
+        y: prev[i]!.position.y * factor + landmark.position.y * (1 - factor),
+        z: prev[i]!.position.z * factor + landmark.position.z * (1 - factor)
       }
     }));
   }
@@ -440,7 +440,7 @@ export class GestureRecognizer {
         const result: RecognizedGesture = {
           name,
           confidence: 1,
-          hand: recognized[recognized.length - 1]?.hand || hands[0],
+          hand: recognized[recognized.length - 1]?.hand ?? hands[0]!,
           timestamp: Date.now()
         };
         this.emitGesture(result);
@@ -516,10 +516,10 @@ export class GestureRecognizer {
     if (recent.length < sequence.gestures.length) return false;
 
     for (let i = 0; i < sequence.gestures.length; i++) {
-      if (recent[i].name !== sequence.gestures[i]) return false;
+      if (recent[i]!.name !== sequence.gestures[i]) return false;
 
       if (i > 0) {
-        const interval = recent[i].timestamp - recent[i - 1].timestamp;
+        const interval = recent[i]!.timestamp - recent[i - 1]!.timestamp;
         if (interval > sequence.maxInterval) return false;
       }
     }
@@ -566,8 +566,8 @@ export class MotionAnalyzer {
     const history = this.positionHistory.get(handId);
     if (!history || history.length < 10) return null;
 
-    const start = history[0];
-    const end = history[history.length - 1];
+    const start = history[0]!;
+    const end = history[history.length - 1]!;
 
     const dx = end.x - start.x;
     const dy = end.y - start.y;
@@ -607,8 +607,8 @@ export class MotionAnalyzer {
     // Check if points form a circle around center
     let totalAngle = 0;
     for (let i = 1; i < history.length; i++) {
-      const prev = Math.atan2(history[i - 1].y - cy, history[i - 1].x - cx);
-      const curr = Math.atan2(history[i].y - cy, history[i].x - cx);
+      const prev = Math.atan2(history[i - 1]!.y - cy, history[i - 1]!.x - cx);
+      const curr = Math.atan2(history[i]!.y - cy, history[i]!.x - cx);
       let delta = curr - prev;
 
       if (delta > Math.PI) delta -= 2 * Math.PI;
@@ -650,8 +650,8 @@ export class MotionAnalyzer {
       return { x: 0, y: 0, z: 0 };
     }
 
-    const last = history[history.length - 1];
-    const prev = history[history.length - 2];
+    const last = history[history.length - 1]!;
+    const prev = history[history.length - 2]!;
 
     return {
       x: last.x - prev.x,
@@ -821,7 +821,7 @@ export class GestureController {
       }
 
       if (this.airCursor && hands.length > 0) {
-        this.airCursor.update(hands[0]);
+        this.airCursor.update(hands[0]!);
       }
     });
   }

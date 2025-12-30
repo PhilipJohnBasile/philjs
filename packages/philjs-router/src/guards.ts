@@ -247,8 +247,8 @@ export async function runNavigationGuards(
         return { redirect: context.redirectTo };
       }
 
-      if (typeof result === 'string' || (result && 'redirect' in result)) {
-        return typeof result === 'string' ? { redirect: result } : result;
+      if (typeof result === 'string' || (result && typeof result === 'object' && 'redirect' in result)) {
+        return typeof result === 'string' ? { redirect: result } : result as { redirect: string | RouteLocation };
       }
     }
 
@@ -516,7 +516,7 @@ export function createRateLimitGuard(options: {
     const windowStart = now - windowMs;
 
     // Remove old navigations
-    while (navigations.length > 0 && navigations[0] < windowStart) {
+    while (navigations.length > 0 && navigations[0] !== undefined && navigations[0] < windowStart) {
       navigations.shift();
     }
 

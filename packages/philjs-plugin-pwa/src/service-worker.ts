@@ -494,7 +494,8 @@ export async function skipWaitingAndReload(): Promise<void> {
  */
 export async function getServiceWorkerVersion(): Promise<string | null> {
   const registration = await navigator.serviceWorker.getRegistration();
-  if (!registration?.active) {
+  const activeWorker = registration?.active;
+  if (!activeWorker) {
     return null;
   }
 
@@ -504,7 +505,7 @@ export async function getServiceWorkerVersion(): Promise<string | null> {
       resolve(event.data.version);
     };
 
-    registration.active.postMessage(
+    activeWorker.postMessage(
       { type: 'GET_VERSION' },
       [messageChannel.port2]
     );

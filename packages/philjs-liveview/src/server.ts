@@ -18,10 +18,10 @@ import type {
   LiveMessage,
   JoinPayload,
   ViewPatch,
-} from './types';
-import { createLiveSocket, mountLiveView, LiveViewInstance } from './live-view';
-import { mountLiveComponent, LiveComponentInstance } from './live-component';
-import { createDiffer } from './differ';
+} from './types.js';
+import { createLiveSocket, mountLiveView, type LiveViewInstance } from './live-view.js';
+import { mountLiveComponent, type LiveComponentInstance } from './live-component.js';
+import { createDiffer } from './differ.js';
 
 // ============================================================================
 // Server Instance
@@ -450,5 +450,5 @@ export function createMemoryPubSub(): PubSub {
 // Exports
 // ============================================================================
 
-export { createLiveView } from './live-view';
-export { createLiveComponent } from './live-component';
+export { createLiveView } from './live-view.js';
+export { createLiveComponent } from './live-component.js';

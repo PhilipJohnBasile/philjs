@@ -1,5 +1,5 @@
 import { bench, describe } from 'vitest';
-import { signal, memo, effect, batch, createRoot } from './signals';
+import { signal, memo, effect, batch, createRoot } from './signals.js';
 
 describe('Signal Performance', () => {
   bench('signal creation', () => {
@@ -90,7 +90,7 @@ describe('Effect Performance', () => {
     const disposes: Array<() => void> = [];
 
     for (let i = 0; i < 100; i++) {
-      disposes.push(effect(() => count()));
+      disposes.push(effect(() => { count(); }));
     }
 
     count.set(1);

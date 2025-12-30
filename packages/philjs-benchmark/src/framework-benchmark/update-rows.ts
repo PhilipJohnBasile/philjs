@@ -97,7 +97,7 @@ function createFineGrainedTable(mockDOM: ReturnType<typeof createMockDOM>) {
   const updateEvery10th = () => {
     const currentRows = rows();
     for (let i = 0; i < currentRows.length; i += 10) {
-      currentRows[i].label.set(currentRows[i].label() + ' !!!');
+      currentRows[i]!.label.set(currentRows[i]!.label() + ' !!!');
     }
   };
 
@@ -106,7 +106,7 @@ function createFineGrainedTable(mockDOM: ReturnType<typeof createMockDOM>) {
     batch(() => {
       const currentRows = rows();
       for (let i = 0; i < currentRows.length; i += 10) {
-        currentRows[i].label.set(currentRows[i].label() + ' !!!');
+        currentRows[i]!.label.set(currentRows[i]!.label() + ' !!!');
       }
     });
   };
@@ -177,7 +177,7 @@ export const partialUpdate: Benchmark = {
 
     batch(() => {
       for (const idx of indices) {
-        currentRows[idx].label.set(randomLabel());
+        currentRows[idx]!.label.set(randomLabel());
       }
     });
   },
@@ -196,7 +196,7 @@ export const singleRowUpdate: Benchmark = {
 
     const currentRows = table.rows();
     const randomIdx = Math.floor(Math.random() * currentRows.length);
-    currentRows[randomIdx].label.set(randomLabel());
+    currentRows[randomIdx]!.label.set(randomLabel());
   },
 };
 

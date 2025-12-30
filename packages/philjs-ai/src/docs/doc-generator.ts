@@ -533,7 +533,7 @@ Return JSON with module documentation structure.`;
       for (const module of modules) {
         for (const exp of module.exports) {
           if (!byType[exp.type]) byType[exp.type] = [];
-          byType[exp.type].push(exp);
+          byType[exp.type]!.push(exp);
         }
       }
 
@@ -664,24 +664,27 @@ Best practices:
 
     const code = extractCode(response) || config.code;
 
-    return {
+    const result: GeneratedDocumentation = {
       code,
       summary: this.extractSummary(response),
-      examples: config.includeExamples ? this.extractExamplesFromResponse(response) : undefined,
     };
+    if (config.includeExamples) {
+      result.examples = this.extractExamplesFromResponse(response);
+    }
+    return result;
   }
 
   /**
    * Extract summary from response
    */
   private extractSummary(response: string): string {
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]!.trim();
     if (beforeCode.length > 20) {
       return beforeCode;
     }
 
     const summaryMatch = response.match(/(?:summary|description|overview)[:\s]*\n?([\s\S]*?)(?=\n\n|```|$)/i);
-    return summaryMatch?.[1].trim() || 'Documentation generated';
+    return summaryMatch?.[1]?.trim() || 'Documentation generated';
   }
 
   /**
@@ -699,7 +702,7 @@ Best practices:
         isFirst = false;
         continue;
       }
-      examples.push(match[1].trim());
+      examples.push(match[1]!.trim());
     }
 
     return examples;
@@ -713,7 +716,7 @@ Best practices:
     const suggestionMatch = response.match(/(?:suggestions?|improvements?)[:\s]*\n?([\s\S]*?)(?=\n\n[A-Z]|$)/i);
 
     if (suggestionMatch) {
-      const lines = suggestionMatch[1].split('\n');
+      const lines = suggestionMatch[1]!.split('\n');
       for (const line of lines) {
         const cleaned = line.replace(/^[-*\d.]\s*/, '').trim();
         if (cleaned) {
@@ -784,7 +787,11 @@ export async function generateDocs(
   style?: DocStyle
 ): Promise<GeneratedDocumentation> {
   const generator = new DocGenerator(provider);
-  return generator.generateDocs({ code, style });
+  const config: DocGenerationConfig = { code };
+  if (style !== undefined) {
+    config.style = style;
+  }
+  return generator.generateDocs(config);
 }
 
 /**

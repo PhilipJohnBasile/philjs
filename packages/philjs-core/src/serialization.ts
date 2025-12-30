@@ -9,7 +9,7 @@
  * - State debugging and devtools
  */
 
-import { signal, computed, type Signal } from './signals';
+import { signal, computed, type Signal } from './signals.js';
 
 // ============================================================================
 // Types
@@ -138,20 +138,26 @@ export function serialize(
   // Handle signals
   if (signals && isSignal(value)) {
     const signalId = getOrCreateSignalId(value);
-    return {
+    const result: SerializedState = {
       type: 'signal',
       value: serialize(value(), options, depth + 1).value,
-      metadata: metadata ? { signalId, timestamp: Date.now() } : undefined,
     };
+    if (metadata) {
+      result.metadata = { signalId, timestamp: Date.now() };
+    }
+    return result;
   }
 
   // Handle computed values
   if (includeComputed && isComputed(value)) {
-    return {
+    const result: SerializedState = {
       type: 'computed',
       value: serialize(value(), options, depth + 1).value,
-      metadata: metadata ? { timestamp: Date.now() } : undefined,
     };
+    if (metadata) {
+      result.metadata = { timestamp: Date.now() };
+    }
+    return result;
   }
 
   // Handle primitives
@@ -440,7 +446,7 @@ export function persistentSignal<T>(
 
   // Persist on change
   if (typeof localStorage !== 'undefined') {
-    sig.subscribe((value) => {
+    sig.subscribe((value: T) => {
       persistToLocalStorage(key, value, options);
     });
   }
@@ -530,7 +536,7 @@ export function urlSignal<T>(
   const sig = signal<T>(restoredValue);
 
   // Update URL on change
-  sig.subscribe((value) => {
+  sig.subscribe((value: T) => {
     const params = new URLSearchParams(window.location.search);
 
     if (value !== null && value !== undefined) {

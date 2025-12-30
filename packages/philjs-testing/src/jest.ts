@@ -5,14 +5,18 @@
  * Import this in your setupFilesAfterEnv array in jest.config.js
  */
 
-import { cleanup } from './render';
-import { cleanupHooks } from './hooks';
-import * as matchers from './matchers';
+import { cleanup } from './render.js';
+import { cleanupHooks } from './hooks.js';
+import * as matchers from './matchers.js';
+
+// Declare Jest globals to avoid TS2304 errors
+declare const afterEach: ((fn: () => void) => void) | undefined;
+declare const expect: (typeof globalThis extends { expect: infer E } ? E : any) | undefined;
 
 /**
  * Auto-cleanup after each test
  */
-if (typeof afterEach !== 'undefined') {
+if (typeof afterEach !== 'undefined' && afterEach) {
   afterEach(() => {
     cleanup();
     cleanupHooks();
@@ -22,7 +26,7 @@ if (typeof afterEach !== 'undefined') {
 /**
  * Extend Jest matchers with PhilJS-specific assertions
  */
-if (typeof expect !== 'undefined' && (expect as any).extend) {
+if (typeof expect !== 'undefined' && expect && (expect as any).extend) {
   (expect as any).extend({
     toBeInTheDocument: matchers.toBeInTheDocument,
     toHaveTextContent: matchers.toHaveTextContent,
@@ -43,18 +47,18 @@ if (typeof expect !== 'undefined' && (expect as any).extend) {
  * Setup jsdom environment
  */
 if (typeof global !== 'undefined') {
-  // Mock ResizeObserver
-  if (!global.ResizeObserver) {
-    global.ResizeObserver = class ResizeObserver {
+  // Mock ResizeObserver (TS4111: bracket notation, TS2375: conditional assignment)
+  if (!global['ResizeObserver']) {
+    (global as any)['ResizeObserver'] = class ResizeObserver {
       observe() {}
       unobserve() {}
       disconnect() {}
-    } as any;
+    };
   }
 
-  // Mock IntersectionObserver
-  if (!global.IntersectionObserver) {
-    global.IntersectionObserver = class IntersectionObserver {
+  // Mock IntersectionObserver (TS4111: bracket notation, TS2375: conditional assignment)
+  if (!global['IntersectionObserver']) {
+    (global as any)['IntersectionObserver'] = class IntersectionObserver {
       constructor() {}
       observe() {}
       unobserve() {}
@@ -65,7 +69,7 @@ if (typeof global !== 'undefined') {
       root = null;
       rootMargin = '';
       thresholds = [];
-    } as any;
+    };
   }
 
   // Mock window.matchMedia
@@ -85,9 +89,9 @@ if (typeof global !== 'undefined') {
     });
   }
 
-  // Mock window.scrollTo
-  if (typeof window !== 'undefined' && !window.scrollTo) {
-    window.scrollTo = () => {};
+  // Mock window.scrollTo (TS2532: non-null assertion after typeof check)
+  if (typeof window !== 'undefined' && !window!.scrollTo) {
+    window!.scrollTo = () => {};
   }
 
   // Mock HTMLElement.prototype.scrollIntoView
@@ -144,4 +148,4 @@ export {
   debug,
   logDOM,
   prettyDOM,
-} from './index';
+} from './index.js';

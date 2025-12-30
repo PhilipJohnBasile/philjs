@@ -128,7 +128,8 @@ export default createRule<Options, MessageIds>({
         ) {
           // Might be a signal call, but we need more context
           // For now, check if the callee name starts with lowercase (likely a signal)
-          if (n.callee.name[0] === n.callee.name[0].toLowerCase()) {
+          const firstName = n.callee.name[0];
+          if (firstName && firstName === firstName.toLowerCase()) {
             hasSignalAccess = true;
             return;
           }

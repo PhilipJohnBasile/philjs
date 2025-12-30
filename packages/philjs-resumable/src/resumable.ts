@@ -369,8 +369,13 @@ export async function renderToResumableString(
   app: unknown,
   config?: ResumableConfig
 ): Promise<string> {
+  const serializationOptions: { isDev?: boolean } = {};
+  if (config?.isDev !== undefined) {
+    serializationOptions.isDev = config.isDev;
+  }
+
   const ctx: ResumableContext = {
-    serialization: createSerializationContext({ isDev: config?.isDev }),
+    serialization: createSerializationContext(serializationOptions),
     componentStack: [],
     signals: new Map(),
     isServer: true,
@@ -386,9 +391,11 @@ export async function renderToResumableString(
   const stateScript = generateStateScript(ctx.serialization);
 
   // Generate bootstrap script
-  const bootstrapScript = generateBootstrapScript({
-    basePath: config?.basePath,
-  });
+  const bootstrapOptions: { basePath?: string } = {};
+  if (config?.basePath !== undefined) {
+    bootstrapOptions.basePath = config.basePath;
+  }
+  const bootstrapScript = generateBootstrapScript(bootstrapOptions);
 
   return `${html}${stateScript}${bootstrapScript}`;
 }
@@ -431,7 +438,7 @@ function renderToHTML(vnode: unknown): string {
 
     // Handle fragments
     if (type === 'fragment' || type === null) {
-      return renderToHTML(props.children);
+      return renderToHTML(props['children']);
     }
 
     // Handle function components
@@ -545,7 +552,7 @@ function renderElement(
   }
 
   // Render children
-  const children = renderToHTML(props.children);
+  const children = renderToHTML(props['children']);
 
   // Self-closing tags
   const voidElements = new Set([
@@ -647,7 +654,7 @@ function setupSignalBindings(): void {
 
         // Set up reactive updates
         bindings.forEach(({ signalId, attr }) => {
-          if (state.signals?.[signalId]) {
+          if (signalId && state.signals?.[signalId]) {
             // Would integrate with signal system
           }
         });
@@ -670,8 +677,13 @@ export function createStreamingRenderer(config?: ResumableConfig): {
   flush: () => string;
   end: () => string;
 } {
+  const serializationOptions: { isDev?: boolean } = {};
+  if (config?.isDev !== undefined) {
+    serializationOptions.isDev = config.isDev;
+  }
+
   const ctx: ResumableContext = {
-    serialization: createSerializationContext({ isDev: config?.isDev }),
+    serialization: createSerializationContext(serializationOptions),
     componentStack: [],
     signals: new Map(),
     isServer: true,
@@ -691,9 +703,11 @@ export function createStreamingRenderer(config?: ResumableConfig): {
     end(): string {
       // Generate final scripts
       const stateScript = generateStateScript(ctx.serialization);
-      const bootstrapScript = generateBootstrapScript({
-        basePath: config?.basePath,
-      });
+      const bootstrapOptions: { basePath?: string } = {};
+      if (config?.basePath !== undefined) {
+        bootstrapOptions.basePath = config.basePath;
+      }
+      const bootstrapScript = generateBootstrapScript(bootstrapOptions);
       return `${stateScript}${bootstrapScript}`;
     },
   };

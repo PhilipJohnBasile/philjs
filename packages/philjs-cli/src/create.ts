@@ -74,6 +74,8 @@ export async function createProject(projectName?: string): Promise<void> {
 }
 
 async function gatherProjectConfig(projectName?: string): Promise<ProjectConfig> {
+  // Use type assertion for prompts questions array since the types don't fully support
+  // the conditional type field (null for skipping questions)
   const responses = await prompts([
     {
       type: projectName ? null : 'text',
@@ -120,7 +122,7 @@ async function gatherProjectConfig(projectName?: string): Promise<ProjectConfig>
       initial: true,
     },
     {
-      type: (prev) => prev ? 'select' : null,
+      type: (prev: boolean) => prev ? 'select' : null,
       name: 'testFramework',
       message: 'Testing framework:',
       choices: [
@@ -152,23 +154,25 @@ async function gatherProjectConfig(projectName?: string): Promise<ProjectConfig>
       ],
       initial: 1,
     },
-  ], {
-    onCancel: () => {
-      console.log(pc.red('\n✖ Cancelled\n'));
-      process.exit(1);
-    }
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ] as any);
+
+  // Handle cancellation
+  if (Object.keys(responses).length === 0) {
+    console.log(pc.red('\n✖ Cancelled\n'));
+    process.exit(1);
+  }
 
   return {
-    name: projectName || responses.name,
-    template: responses.template,
-    typescript: responses.typescript,
-    cssFramework: responses.cssFramework,
-    testing: responses.testing,
-    testFramework: responses.testFramework,
-    linting: responses.linting,
-    git: responses.git,
-    packageManager: responses.packageManager,
+    name: projectName ?? responses['name'],
+    template: responses['template'],
+    typescript: responses['typescript'],
+    cssFramework: responses['cssFramework'],
+    testing: responses['testing'],
+    testFramework: responses['testFramework'],
+    linting: responses['linting'],
+    git: responses['git'],
+    packageManager: responses['packageManager'],
   };
 }
 

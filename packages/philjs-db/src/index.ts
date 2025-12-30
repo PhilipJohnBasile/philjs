@@ -20,7 +20,7 @@ export {
   SupabaseProvider,
   useSupabaseAuth,
   useSupabaseStorage,
-} from './supabase';
+} from './supabase.js';
 
 // Type-Safe Database Utilities
 export {
@@ -37,7 +37,7 @@ export {
   assert,
   pick,
   omit,
-} from './type-safe-db';
+} from './type-safe-db.js';
 
 export type {
   InferModel,
@@ -57,7 +57,7 @@ export type {
   DeepPartial,
   DeepRequired,
   Exact,
-} from './type-safe-db';
+} from './type-safe-db.js';
 
 // Generic utilities
 export {
@@ -79,7 +79,7 @@ export {
   TransactionRollbackError,
   createTransaction,
   transaction,
-} from './utils';
+} from './utils.js';
 
 export type {
   DatabaseProvider,
@@ -90,14 +90,14 @@ export type {
   UpdateOptions,
   DeleteOptions,
   CascadeRelation,
-} from './utils';
+} from './utils.js';
 
 export type {
   DatabaseConfig,
   Repository,
   PaginationOptions,
   PaginatedResult,
-} from './types';
+} from './types.js';
 
 // Migrations
 export {
@@ -114,7 +114,7 @@ export {
   PrismaSchemaParser,
   DrizzleMigrationIntegration,
   DrizzleSchemaParser,
-} from './migrations';
+} from './migrations/index.js';
 
 export type {
   DatabaseType,
@@ -142,4 +142,4 @@ export type {
   Seed,
   AutoMigrationOptions,
   DryRunResult,
-} from './migrations';
+} from './migrations/index.js';

@@ -62,13 +62,13 @@ interface AgentConfig {
   name: string;
   description: string;
   systemPrompt: string;
-  model?: string;
-  provider?: 'openai' | 'anthropic' | 'google' | 'local';
-  tools?: ToolDefinition[];
-  maxTokens?: number;
-  temperature?: number;
-  memory?: MemoryConfig;
-  capabilities?: string[];
+  model?: string | undefined;
+  provider?: 'openai' | 'anthropic' | 'google' | 'local' | undefined;
+  tools?: ToolDefinition[] | undefined;
+  maxTokens?: number | undefined;
+  temperature?: number | undefined;
+  memory?: MemoryConfig | undefined;
+  capabilities?: string[] | undefined;
 }
 
 interface MemoryConfig {
@@ -81,10 +81,10 @@ interface MemoryConfig {
 interface AgentContext {
   agentId: string;
   conversationId: string;
-  userId?: string;
+  userId?: string | undefined;
   memory: Memory;
   metadata: Record<string, any>;
-  abortSignal?: AbortSignal;
+  abortSignal?: AbortSignal | undefined;
 }
 
 interface AgentResponse {
@@ -201,9 +201,9 @@ class SemanticMemory implements Memory {
     let normA = 0;
     let normB = 0;
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dotProduct += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
@@ -545,10 +545,10 @@ class Agent {
 
 interface LLMRequest {
   messages: Message[];
-  tools?: ToolDefinition[];
-  model?: string;
-  maxTokens?: number;
-  temperature?: number;
+  tools?: ToolDefinition[] | undefined;
+  model?: string | undefined;
+  maxTokens?: number | undefined;
+  temperature?: number | undefined;
 }
 
 interface LLMClient {
@@ -894,7 +894,7 @@ class AgentOrchestrator {
     }
 
     // Return first agent as default
-    return agents[0];
+    return agents[0]!;
   }
 
   async route(message: string): Promise<Agent> {
@@ -1006,15 +1006,15 @@ Use the delegate tool with worker name and task.
         required: ['worker', 'task']
       },
       handler: async (args, context) => {
-        const worker = this.workers.get(args.worker);
+        const worker = this.workers.get(args['worker']);
         if (!worker) {
-          return { error: `Worker ${args.worker} not found` };
+          return { error: `Worker ${args['worker']} not found` };
         }
 
-        const response = await worker.chat(args.task, context);
+        const response = await worker.chat(args['task'], context);
         return {
-          worker: args.worker,
-          task: args.task,
+          worker: args['worker'],
+          task: args['task'],
           response: response.message.content
         };
       }
@@ -1119,7 +1119,7 @@ const webSearchTool: ToolDefinition = {
   handler: async (args) => {
     // Placeholder - would integrate with search API
     return {
-      query: args.query,
+      query: args['query'],
       results: [
         { title: 'Example Result 1', snippet: 'This is a search result...', url: 'https://example.com/1' },
         { title: 'Example Result 2', snippet: 'Another search result...', url: 'https://example.com/2' }
@@ -1144,10 +1144,10 @@ const calculatorTool: ToolDefinition = {
   handler: async (args) => {
     try {
       // Safe math evaluation (would use a proper math parser in production)
-      const result = Function(`"use strict"; return (${args.expression})`)();
-      return { expression: args.expression, result };
+      const result = Function(`"use strict"; return (${args['expression']})`)();
+      return { expression: args['expression'], result };
     } catch (error) {
-      return { expression: args.expression, error: 'Invalid expression' };
+      return { expression: args['expression'], error: 'Invalid expression' };
     }
   }
 };
@@ -1168,10 +1168,10 @@ const codeExecutorTool: ToolDefinition = {
   handler: async (args) => {
     try {
       // In production, use a proper sandbox (e.g., Web Workers, VM2)
-      const result = eval(args.code);
-      return { code: args.code, result };
+      const result = eval(args['code']);
+      return { code: args['code'], result };
     } catch (error) {
-      return { code: args.code, error: error instanceof Error ? error.message : 'Execution failed' };
+      return { code: args['code'], error: error instanceof Error ? error.message : 'Execution failed' };
     }
   }
 };

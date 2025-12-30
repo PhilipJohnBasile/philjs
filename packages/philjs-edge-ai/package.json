@@ -1,6 +1,7 @@
 {
   "name": "@philjs/edge-ai",
   "version": "0.1.0",
+  "type": "module",
   "description": "On-device ML inference for PhilJS - WebGPU/WebNN accelerated, ONNX/TFLite support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

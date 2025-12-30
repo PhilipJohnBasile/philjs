@@ -464,9 +464,9 @@ export class WorkflowEngine {
       instanceId: instance.id,
       nodeId: node.id,
       title: node.name,
-      description: node.config.description as string,
-      assignee: node.config.assignee as string,
-      formFields: node.config.formFields as FormField[],
+      description: node.config['description'] as string,
+      assignee: node.config['assignee'] as string,
+      formFields: node.config['formFields'] as FormField[],
       status: 'pending',
       createdAt: Date.now()
     };
@@ -495,7 +495,7 @@ export class WorkflowEngine {
     const condition = node.config.loopCondition;
 
     let iteration = 0;
-    const maxIterations = (node.config.maxIterations as number) ?? 1000;
+    const maxIterations = (node.config['maxIterations'] as number) ?? 1000;
 
     while (iteration < maxIterations) {
       if (condition) {
@@ -656,7 +656,10 @@ export class WorkflowBuilder {
     defaultValue?: unknown,
     required?: boolean
   ): this {
-    this.workflow.variables.push({ name, type, defaultValue, required });
+    const varDef: VariableDefinition = { name, type };
+    if (defaultValue !== undefined) varDef.defaultValue = defaultValue;
+    if (required !== undefined) varDef.required = required;
+    this.workflow.variables.push(varDef);
     return this;
   }
 
@@ -719,7 +722,10 @@ export class WorkflowBuilder {
 
   connect(source: string, target: string, condition?: string, label?: string): this {
     const id = `edge-${this.workflow.edges.length + 1}`;
-    this.workflow.edges.push({ id, source, target, condition, label });
+    const edge: WorkflowEdge = { id, source, target };
+    if (condition !== undefined) edge.condition = condition;
+    if (label !== undefined) edge.label = label;
+    this.workflow.edges.push(edge);
     return this;
   }
 
@@ -753,7 +759,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

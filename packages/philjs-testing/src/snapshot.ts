@@ -2,7 +2,7 @@
  * PhilJS Testing - Snapshot Testing Utilities
  */
 
-import { prettyDOM } from './debug';
+import { prettyDOM } from './debug.js';
 
 export interface SnapshotOptions {
   /**

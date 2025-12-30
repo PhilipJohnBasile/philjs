@@ -1,4 +1,4 @@
-import type { Theme, ThemeTokens } from './types';
+import type { Theme, ThemeTokens } from './types.js';
 
 /**
  * Global theme registry
@@ -70,7 +70,7 @@ export function createTheme<T extends ThemeTokens>(tokens: T): Theme & {
   const theme: Theme = {
     tokens,
     cssVars,
-    getToken(category, key) {
+    getToken(category: keyof ThemeTokens, key: string) {
       const categoryTokens = tokens[category];
       if (!categoryTokens) {
         throw new Error(`Theme category "${String(category)}" does not exist`);
@@ -78,7 +78,7 @@ export function createTheme<T extends ThemeTokens>(tokens: T): Theme & {
       if (!(key in categoryTokens)) {
         throw new Error(`Token "${key}" does not exist in category "${String(category)}"`);
       }
-      return categoryTokens[key];
+      return categoryTokens[key]!;
     }
   };
 
@@ -161,7 +161,7 @@ export function createThemeVariant<T extends ThemeTokens>(
   return {
     tokens: mergedTokens,
     cssVars,
-    getToken(category, key) {
+    getToken(category: keyof ThemeTokens, key: string) {
       const categoryTokens = mergedTokens[category];
       if (!categoryTokens) {
         throw new Error(`Theme category "${String(category)}" does not exist`);
@@ -169,7 +169,7 @@ export function createThemeVariant<T extends ThemeTokens>(
       if (!(key in categoryTokens)) {
         throw new Error(`Token "${key}" does not exist in category "${String(category)}"`);
       }
-      return categoryTokens[key];
+      return categoryTokens[key]!;
     }
   };
 }

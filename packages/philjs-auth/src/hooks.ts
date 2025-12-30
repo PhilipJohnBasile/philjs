@@ -209,8 +209,8 @@ export function useHasPermission(permission: string): boolean {
   if (!user) return false;
 
   // Check in metadata
-  const role = user.metadata?.role;
-  const permissions = user.metadata?.permissions as string[] | undefined;
+  const role = user.metadata?.['role'];
+  const permissions = user.metadata?.['permissions'] as string[] | undefined;
 
   return role === permission || permissions?.includes(permission) || false;
 }

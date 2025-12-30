@@ -106,6 +106,8 @@ export function predictNextRoute(
     const from = visitHistory[i];
     const to = visitHistory[i + 1];
 
+    if (from === undefined || to === undefined) continue;
+
     if (from === currentPath) {
       const current = predictions.get(to) || 0;
       predictions.set(to, current + 1);
@@ -442,10 +444,13 @@ export function usePreload(
   const preloader = getSmartPreloader();
 
   if (preloader) {
-    preloader.preload(href, {
+    const preloadOptions: { strategy: PreloadStrategy; priority?: "high" | "low" | "auto" } = {
       strategy: options.strategy || "manual",
-      priority: options.priority,
-    });
+    };
+    if (options.priority !== undefined) {
+      preloadOptions.priority = options.priority;
+    }
+    preloader.preload(href, preloadOptions);
   }
 
   return () => {

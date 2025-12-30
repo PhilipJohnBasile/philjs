@@ -39,7 +39,7 @@ export const defaultConfig: Required<CompilerConfig> = {
   optimizeEffects: true,
   optimizeComponents: true,
   sourceMaps: true,
-  development: process.env.NODE_ENV !== 'production',
+  development: process.env['NODE_ENV'] !== 'production',
   include: ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
   exclude: ['**/node_modules/**', '**/dist/**'],
   plugins: [],

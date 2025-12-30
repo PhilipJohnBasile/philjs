@@ -11,7 +11,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types.js';
 
 export interface RailwayConfig extends AdapterConfig {
   /** Output directory for build artifacts */

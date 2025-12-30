@@ -19,8 +19,8 @@
  * ```
  */
 
-export * from './directives';
-export * from './htmx';
-export * from './alpine';
-export * from './minimal';
-export { init, PhilJSHTML } from './runtime';
+export * from './directives.js';
+export * from './htmx.js';
+export * from './alpine.js';
+export * from './minimal.js';
+export { init, PhilJSHTML } from './runtime.js';

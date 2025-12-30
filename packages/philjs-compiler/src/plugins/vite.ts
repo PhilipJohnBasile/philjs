@@ -18,8 +18,8 @@
 
 import type { Plugin, HmrContext, ModuleNode, ViteDevServer } from 'vite';
 import { createFilter } from '@rollup/pluginutils';
-import { Optimizer } from '../optimizer';
-import type { CompilerConfig, TransformResult } from '../types';
+import { Optimizer } from '../optimizer.js';
+import type { CompilerConfig, TransformResult, CompilerWarning } from '../types.js';
 import { createHash } from 'crypto';
 
 export interface PhilJSCompilerPluginOptions extends CompilerConfig {
@@ -200,10 +200,13 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
     preserveHmrState = true,
     enhancedErrors = true,
     filter: customFilter,
-    include = ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
-    exclude = ['**/node_modules/**', '**/dist/**', '**/*.test.*', '**/*.spec.*'],
+    include: includeOpt,
+    exclude: excludeOpt,
     ...compilerConfig
   } = options;
+
+  const include = includeOpt ?? ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'];
+  const exclude = excludeOpt ?? ['**/node_modules/**', '**/dist/**', '**/*.test.*', '**/*.spec.*'];
 
   // Create file filter
   const filter = customFilter || createFilter(include, exclude);
@@ -259,11 +262,11 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
         console.log('  HMR State Preservation:', preserveHmrState ? 'enabled' : 'disabled');
         console.log('  Enhanced Errors:', enhancedErrors ? 'enabled' : 'disabled');
         console.log('  Optimizations:');
-        console.log('    - Auto-memo:', compilerConfig.autoMemo !== false);
-        console.log('    - Auto-batch:', compilerConfig.autoBatch !== false);
-        console.log('    - Dead code elimination:', compilerConfig.deadCodeElimination !== false);
-        console.log('    - Effect optimization:', compilerConfig.optimizeEffects !== false);
-        console.log('    - Component optimization:', compilerConfig.optimizeComponents !== false);
+        console.log('    - Auto-memo:', compilerConfig['autoMemo'] !== false);
+        console.log('    - Auto-batch:', compilerConfig['autoBatch'] !== false);
+        console.log('    - Dead code elimination:', compilerConfig['deadCodeElimination'] !== false);
+        console.log('    - Effect optimization:', compilerConfig['optimizeEffects'] !== false);
+        console.log('    - Component optimization:', compilerConfig['optimizeComponents'] !== false);
       }
     },
 
@@ -362,7 +365,7 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           );
 
           if (result.optimizations.length > 0) {
-            result.optimizations.forEach(opt => {
+            result.optimizations.forEach((opt: string) => {
               console.log(`  ✓ ${opt}`);
             });
           }
@@ -370,7 +373,7 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
         // Log warnings in development mode with enhanced formatting
         if (isDevelopment && result.warnings && result.warnings.length > 0) {
-          result.warnings.forEach(warning => {
+          result.warnings.forEach((warning: CompilerWarning) => {
             const loc = warning.location;
             const location = loc?.start
               ? `:${loc.start.line}${loc.start.column ? `:${loc.start.column}` : ''}`
@@ -393,20 +396,30 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           // Send warnings to error overlay in dev mode
           if (enhancedErrors && server) {
             const viteServer = server;
-            result.warnings.forEach(warning => {
+            result.warnings.forEach((warning: CompilerWarning) => {
               if (warning.type === 'correctness') {
-                viteServer.ws.send({
+                const errorPayload: {
+                  type: 'error';
+                  err: {
+                    message: string;
+                    stack: string;
+                    loc?: { file: string; line: number; column: number };
+                  };
+                } = {
                   type: 'error',
                   err: {
                     message: `[PhilJS] ${warning.message}`,
                     stack: warning.suggestion ? `Suggestion: ${warning.suggestion}` : '',
-                    loc: warning.location ? {
-                      file: id,
-                      line: warning.location.start?.line || 0,
-                      column: warning.location.start?.column || 0,
-                    } : undefined,
                   },
-                });
+                };
+                if (warning.location) {
+                  errorPayload.err.loc = {
+                    file: id,
+                    line: warning.location.start?.line ?? 0,
+                    column: warning.location.start?.column ?? 0,
+                  };
+                }
+                viteServer.ws.send(errorPayload);
               }
             });
           }
@@ -455,20 +468,32 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
         // Show error in Vite error overlay if in development
         if (enhancedErrors && isDevelopment && server) {
-          server.ws.send({
+          const errorPayload: {
+            type: 'error';
+            err: {
+              message: string;
+              stack: string;
+              id: string;
+              plugin: string;
+              loc?: { file: string; line: number; column: number };
+            };
+          } = {
             type: 'error',
             err: {
               message: `[PhilJS Compiler] ${errorMessage}\n\n${err.message}`,
               stack: err.stack || '',
               id,
-              loc: err.loc ? {
-                file: id,
-                line: err.loc.line,
-                column: err.loc.column,
-              } : undefined,
               plugin: 'philjs-compiler',
             },
-          });
+          };
+          if (err.loc) {
+            errorPayload.err.loc = {
+              file: id,
+              line: err.loc.line,
+              column: err.loc.column,
+            };
+          }
+          server.ws.send(errorPayload);
         }
 
         // Return original code on error (don't break the build)
@@ -865,7 +890,7 @@ function generateBundleReport(
 
   sorted.forEach((stat, idx) => {
     const dependencies = chunkMap.get(stat.name) || [];
-    const sizeBar = createSizeBar(stat.size, sorted[0].size);
+    const sizeBar = createSizeBar(stat.size, sorted[0]!.size);
 
     console.log(`${(idx + 1).toString().padStart(2)}. ${stat.name}`);
     console.log(`    ${sizeBar} ${formatBytes(stat.size)}`);

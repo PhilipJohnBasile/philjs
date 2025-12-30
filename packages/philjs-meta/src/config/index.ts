@@ -481,7 +481,7 @@ export interface LoadConfigOptions {
  * Load configuration from file
  */
 export async function loadConfig(options: LoadConfigOptions = {}): Promise<PhilJSConfig> {
-  const { root = process.cwd(), configFile, env = process.env.NODE_ENV } = options;
+  const { root = process.cwd(), configFile, env = process.env['NODE_ENV'] } = options;
 
   let config: PhilJSConfig = { ...defaultConfig };
 
@@ -569,18 +569,18 @@ function applyEnvOverrides(config: PhilJSConfig): PhilJSConfig {
   const result = { ...config };
 
   // Server port
-  if (process.env.PORT) {
-    result.server = { ...result.server, port: parseInt(process.env.PORT, 10) };
+  if (process.env['PORT']) {
+    result.server = { ...result.server, port: parseInt(process.env['PORT'], 10) };
   }
 
   // Server host
-  if (process.env.HOST) {
-    result.server = { ...result.server, host: process.env.HOST };
+  if (process.env['HOST']) {
+    result.server = { ...result.server, host: process.env['HOST'] };
   }
 
   // Base path
-  if (process.env.BASE_PATH) {
-    result.basePath = process.env.BASE_PATH;
+  if (process.env['BASE_PATH']) {
+    result.basePath = process.env['BASE_PATH'];
   }
 
   // Collect public environment variables

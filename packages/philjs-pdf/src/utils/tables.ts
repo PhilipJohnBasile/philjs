@@ -163,9 +163,9 @@ export class TableRenderer {
       // Header text
       let headerX = x;
       for (let i = 0; i < columns.length; i++) {
-        const col = columns[i];
-        const colWidth = columnWidths[i];
-        const textX = this.getTextX(headerX, colWidth, col.align, paddingValues.left, paddingValues.right);
+        const col = columns[i]!;
+        const colWidth = columnWidths[i]!;
+        const textX = this.getTextX(headerX, colWidth, col.align, paddingValues.left!, paddingValues.right!);
 
         page.drawText(col.header, {
           x: textX,
@@ -217,12 +217,12 @@ export class TableRenderer {
       // Draw row content
       let cellX = x;
       for (let i = 0; i < columns.length; i++) {
-        const col = columns[i];
-        const colWidth = columnWidths[i];
-        const value = row[col.key];
-        const displayValue = col.formatter ? col.formatter(value, row) : String(value ?? '');
+        const col = columns[i]!;
+        const colWidth = columnWidths[i]!;
+        const value = row![col.key];
+        const displayValue = col.formatter ? col.formatter(value, row!) : String(value ?? '');
 
-        const textX = this.getTextX(cellX, colWidth, col.align, paddingValues.left, paddingValues.right);
+        const textX = this.getTextX(cellX, colWidth, col.align, paddingValues.left!, paddingValues.right!);
 
         page.drawText(displayValue, {
           x: textX,
@@ -260,7 +260,7 @@ export class TableRenderer {
           color: rgb(borderColor.r, borderColor.g, borderColor.b),
         });
         if (i < columns.length) {
-          borderX += columnWidths[i];
+          borderX += columnWidths[i]!;
         }
       }
     }

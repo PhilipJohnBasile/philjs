@@ -232,7 +232,7 @@ export class InMemoryQueue implements IQueue {
     }
 
     job.status = 'waiting';
-    job.error = undefined;
+    delete job.error;
     return true;
   }
 
@@ -375,7 +375,7 @@ export class InMemoryQueue implements IQueue {
         return definition.handler(payload, context);
       }
 
-      const mw = middleware[index++];
+      const mw = middleware[index++]!;
       return mw(payload, context, dispatch);
     };
 
@@ -616,19 +616,23 @@ export class RedisQueue implements IQueue {
   }
 
   private bullJobToJob(bullJob: any): Job {
-    return {
+    const job: Job = {
       id: bullJob.id,
       name: bullJob.name,
       payload: bullJob.data,
       status: this.mapBullStatus(bullJob),
       progress: bullJob.progress || 0,
       attemptsMade: bullJob.attemptsMade || 0,
-      result: bullJob.returnvalue,
-      error: bullJob.failedReason ? new Error(bullJob.failedReason) : undefined,
       createdAt: new Date(bullJob.timestamp),
-      processedAt: bullJob.processedOn ? new Date(bullJob.processedOn) : undefined,
-      finishedAt: bullJob.finishedOn ? new Date(bullJob.finishedOn) : undefined,
     };
+
+    // Only set optional properties if they have values (for exactOptionalPropertyTypes)
+    if (bullJob.returnvalue !== undefined) job.result = bullJob.returnvalue;
+    if (bullJob.failedReason) job.error = new Error(bullJob.failedReason);
+    if (bullJob.processedOn) job.processedAt = new Date(bullJob.processedOn);
+    if (bullJob.finishedOn) job.finishedAt = new Date(bullJob.finishedOn);
+
+    return job;
   }
 
   private mapBullStatus(bullJob: any): Job['status'] {
@@ -652,7 +656,7 @@ export class RedisQueue implements IQueue {
         return definition.handler(payload, context);
       }
 
-      const mw = middleware[index++];
+      const mw = middleware[index++]!;
       return mw(payload, context, dispatch);
     };
 

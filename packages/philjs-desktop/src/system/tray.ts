@@ -2,9 +2,9 @@
  * System Tray APIs
  */
 
-import { isTauri } from '../tauri/context';
-import { listen } from '../tauri/events';
-import type { UnlistenFn } from '../tauri/types';
+import { isTauri } from '../tauri/context.js';
+import { listen } from '../tauri/events.js';
+import type { UnlistenFn } from '../tauri/types.js';
 
 // Tray types
 export interface TrayOptions {
@@ -66,20 +66,27 @@ export const SystemTray = {
     }
 
     const { TrayIcon } = await import('@tauri-apps/api/tray');
-    const { Menu, MenuItem, Submenu } = await import('@tauri-apps/api/menu');
+
+    // Import menu components from specific submodules to work with NodeNext moduleResolution
+    const { Menu } = await import('@tauri-apps/api/menu/menu');
+    const { MenuItem } = await import('@tauri-apps/api/menu/menuItem');
+    const { Submenu } = await import('@tauri-apps/api/menu/submenu');
+    const { PredefinedMenuItem } = await import('@tauri-apps/api/menu/predefinedMenuItem');
 
     // Build menu
-    const menu = options.menu ? await buildMenu(options.menu, Menu, MenuItem, Submenu) : undefined;
+    const menu = options.menu ? await buildMenu(options.menu, { Menu, MenuItem, Submenu, PredefinedMenuItem }) : undefined;
 
-    // Create tray
-    trayInstance = await TrayIcon.new({
+    // Create tray with conditional properties to satisfy exactOptionalPropertyTypes
+    const trayOptions: Parameters<typeof TrayIcon.new>[0] = {
       icon: options.icon,
-      tooltip: options.tooltip,
-      title: options.title,
-      menu,
-      iconAsTemplate: options.iconAsTemplate,
-      menuOnLeftClick: options.menuOnLeftClick,
-    });
+    };
+    if (options.tooltip !== undefined) trayOptions.tooltip = options.tooltip;
+    if (options.title !== undefined) trayOptions.title = options.title;
+    if (menu !== undefined) trayOptions.menu = menu;
+    if (options.iconAsTemplate !== undefined) trayOptions.iconAsTemplate = options.iconAsTemplate;
+    if (options.menuOnLeftClick !== undefined) trayOptions.menuOnLeftClick = options.menuOnLeftClick;
+
+    trayInstance = await TrayIcon.new(trayOptions);
   },
 
   /**
@@ -112,8 +119,13 @@ export const SystemTray = {
   async setMenu(items: TrayMenuItem[]): Promise<void> {
     if (!trayInstance) return;
 
-    const { Menu, MenuItem, Submenu } = await import('@tauri-apps/api/menu');
-    const menu = await buildMenu(items, Menu, MenuItem, Submenu);
+    // Import menu components from specific submodules to work with NodeNext moduleResolution
+    const { Menu } = await import('@tauri-apps/api/menu/menu');
+    const { MenuItem } = await import('@tauri-apps/api/menu/menuItem');
+    const { Submenu } = await import('@tauri-apps/api/menu/submenu');
+    const { PredefinedMenuItem } = await import('@tauri-apps/api/menu/predefinedMenuItem');
+
+    const menu = await buildMenu(items, { Menu, MenuItem, Submenu, PredefinedMenuItem });
     await trayInstance.setMenu(menu);
   },
 
@@ -174,40 +186,59 @@ export const SystemTray = {
   },
 };
 
+/** Type imports for menu components */
+type MenuType = typeof import('@tauri-apps/api/menu/menu').Menu;
+type MenuItemType = typeof import('@tauri-apps/api/menu/menuItem').MenuItem;
+type SubmenuType = typeof import('@tauri-apps/api/menu/submenu').Submenu;
+type PredefinedMenuItemType = typeof import('@tauri-apps/api/menu/predefinedMenuItem').PredefinedMenuItem;
+
+/** Interface for menu components passed to buildMenu */
+interface MenuComponents {
+  Menu: MenuType;
+  MenuItem: MenuItemType;
+  Submenu: SubmenuType;
+  PredefinedMenuItem: PredefinedMenuItemType;
+}
+
 /**
  * Build menu from items
  */
 async function buildMenu(
   items: TrayMenuItem[],
-  Menu: any,
-  MenuItem: any,
-  Submenu: any
-): Promise<any> {
-  const menuItems = [];
+  components: MenuComponents
+): Promise<Awaited<ReturnType<MenuType['new']>>> {
+  const { Menu, MenuItem, Submenu, PredefinedMenuItem } = components;
+
+  const menuItems: Array<
+    Awaited<ReturnType<MenuItemType['new']>> |
+    Awaited<ReturnType<SubmenuType['new']>> |
+    Awaited<ReturnType<PredefinedMenuItemType['new']>>
+  > = [];
 
   for (const item of items) {
     if (item.isSeparator) {
-      // Separator
-      menuItems.push(await MenuItem.new({ isSeparator: true }));
+      // Separator - use PredefinedMenuItem for separators
+      menuItems.push(await PredefinedMenuItem.new({ item: 'Separator' }));
     } else if (item.items && item.items.length > 0) {
       // Submenu
-      const submenu = await buildMenu(item.items, Menu, MenuItem, Submenu);
+      const submenu = await buildMenu(item.items, components);
       menuItems.push(await Submenu.new({
         text: item.text,
-        items: submenu.items(),
+        items: await submenu.items(),
       }));
     } else {
-      // Regular item
-      const menuItem = await MenuItem.new({
+      // Regular item - use conditional assignment for exactOptionalPropertyTypes (TS2375)
+      const menuItemOptions: Parameters<MenuItemType['new']>[0] = {
         id: item.id,
         text: item.text,
         enabled: item.enabled !== false,
-        accelerator: item.accelerator,
         action: () => {
           const handler = menuClickHandlers.get(item.id);
           handler?.();
         },
-      });
+      };
+      if (item.accelerator !== undefined) menuItemOptions.accelerator = item.accelerator;
+      const menuItem = await MenuItem.new(menuItemOptions);
       menuItems.push(menuItem);
     }
   }

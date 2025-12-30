@@ -252,7 +252,7 @@ export function useNavigateTyped<
     const fullPath = `${path}${search}${hash}`;
 
     await navigate(fullPath, {
-      replace: options.replace,
+      ...(options.replace !== undefined ? { replace: options.replace } : {}),
       state: options.state,
     });
   };

@@ -9,7 +9,7 @@ export {
   type CompactMetricCardProps,
   type TrendDirection,
   type MetricStatus,
-} from './MetricCard';
+} from './MetricCard.js';
 
 export {
   StatusIndicator,
@@ -19,7 +19,7 @@ export {
   type StatusCardProps,
   type UptimeBarProps,
   type HealthStatus,
-} from './StatusIndicator';
+} from './StatusIndicator.js';
 
 export {
   AlertBadge,
@@ -32,4 +32,4 @@ export {
   type AlertToastProps,
   type Alert,
   type AlertSeverity,
-} from './AlertBadge';
+} from './AlertBadge.js';

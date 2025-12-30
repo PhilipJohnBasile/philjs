@@ -249,14 +249,17 @@ export class TestGenerator {
     name?: string,
     options?: Partial<TestGenerationConfig>
   ): Promise<GeneratedTests> {
-    return this.generateTests({
+    const config: TestGenerationConfig = {
       code,
-      name,
       type: 'unit',
       framework: 'vitest',
       coverage: ['functions', 'branches', 'edge-cases', 'error-handling'],
       ...options,
-    });
+    };
+    if (name !== undefined) {
+      config.name = name;
+    }
+    return this.generateTests(config);
   }
 
   /**
@@ -658,7 +661,7 @@ PhilJS-specific:
     let match;
 
     while ((match = testRegex.exec(code)) !== null) {
-      const name = match[1];
+      const name = match[1]!;
       testCases.push({
         name,
         description: name,
@@ -704,7 +707,7 @@ PhilJS-specific:
     let match;
 
     while ((match = importRegex.exec(code)) !== null) {
-      imports.push(match[1]);
+      imports.push(match[1]!);
     }
 
     return imports;
@@ -714,7 +717,7 @@ PhilJS-specific:
    * Extract explanation from response
    */
   private extractExplanation(response: string): string {
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]!.trim();
     return beforeCode || 'Tests generated successfully';
   }
 }

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/collab",
   "version": "0.1.0",
+  "type": "module",
   "description": "Collaborative state management - CRDT-based real-time collaboration like Figma/Notion",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

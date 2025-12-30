@@ -12,7 +12,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types.js';
 
 export interface AWSLambdaConfig extends AdapterConfig {
   /** AWS region */
@@ -102,6 +102,7 @@ export interface AWSLambdaConfig extends AdapterConfig {
 export function awsLambdaAdapter(config: AWSLambdaConfig = {}): Adapter & ServerlessAdapter {
   const {
     outDir = '.aws',
+    static: staticConfig,
     region = 'us-east-1',
     runtime = 'nodejs20.x',
     memorySize = 1024,
@@ -186,7 +187,7 @@ export function awsLambdaAdapter(config: AWSLambdaConfig = {}): Adapter & Server
       // Copy static assets to S3 preparation directory
       if (s3) {
         mkdirSync(join(outDir, 's3'), { recursive: true });
-        const staticDir = config.static?.assets || 'public';
+        const staticDir = staticConfig?.assets || 'public';
         if (existsSync(staticDir)) {
           cpSync(staticDir, join(outDir, 's3'), { recursive: true });
         }
@@ -993,7 +994,7 @@ export {};
         const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
         const client = new S3Client({ region: s3?.region || region });
         const command = new GetObjectCommand({
-          Bucket: s3?.bucket,
+          Bucket: s3!.bucket,
           Key: key,
         });
         return client.send(command);
@@ -1001,19 +1002,22 @@ export {};
       async putObject(key: string, body: any, contentType?: string) {
         const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
         const client = new S3Client({ region: s3?.region || region });
-        const command = new PutObjectCommand({
-          Bucket: s3?.bucket,
+        const commandInput: { Bucket: string; Key: string; Body: any; ContentType?: string } = {
+          Bucket: s3!.bucket,
           Key: key,
           Body: body,
-          ContentType: contentType,
-        });
+        };
+        if (contentType !== undefined) {
+          commandInput.ContentType = contentType;
+        }
+        const command = new PutObjectCommand(commandInput);
         return client.send(command);
       },
       async deleteObject(key: string) {
         const { S3Client, DeleteObjectCommand } = await import('@aws-sdk/client-s3');
         const client = new S3Client({ region: s3?.region || region });
         const command = new DeleteObjectCommand({
-          Bucket: s3?.bucket,
+          Bucket: s3!.bucket,
           Key: key,
         });
         return client.send(command);
@@ -1021,12 +1025,15 @@ export {};
       async listObjects(prefix?: string) {
         const { S3Client, ListObjectsV2Command } = await import('@aws-sdk/client-s3');
         const client = new S3Client({ region: s3?.region || region });
-        const command = new ListObjectsV2Command({
-          Bucket: s3?.bucket,
-          Prefix: prefix,
-        });
+        const commandInput: { Bucket: string; Prefix?: string } = {
+          Bucket: s3!.bucket,
+        };
+        if (prefix !== undefined) {
+          commandInput.Prefix = prefix;
+        }
+        const command = new ListObjectsV2Command(commandInput);
         const response = await client.send(command);
-        return response.Contents?.map(obj => obj.Key || '') || [];
+        return response.Contents?.map((obj: { Key?: string }) => obj.Key || '') || [];
       },
     };
   }

@@ -245,8 +245,8 @@ export class MetricsCollector {
       value,
       unit,
       timestamp: Date.now(),
-      tags,
-      metadata,
+      ...(tags !== undefined && { tags }),
+      ...(metadata !== undefined && { metadata }),
     };
 
     this.customMetrics.push(metric);

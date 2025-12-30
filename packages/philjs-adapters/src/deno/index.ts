@@ -11,8 +11,8 @@
  * - npm compatibility mode
  */
 
-import type { Adapter, AdapterConfig, RequestContext } from '../types';
-import { isDeno } from '../runtime-detect';
+import type { Adapter, AdapterConfig, RequestContext } from '../types.js';
+import { isDeno } from '../runtime-detect.js';
 
 export interface DenoConfig extends AdapterConfig {
   /** Port to listen on */
@@ -583,7 +583,9 @@ export function denoAdapter(config: DenoConfig = {}): Adapter {
 
     getHandler() {
       const handler = createDenoAdapter(config);
-      return handler;
+      return (request: Request, context?: unknown): Response | Promise<Response> => {
+        return handler(request, context as DenoServeHandlerInfo | undefined);
+      };
     },
   };
 }

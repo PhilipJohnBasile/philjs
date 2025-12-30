@@ -151,15 +151,15 @@ export class ManifestGenerator {
     };
 
     if (this.config.screenshots) {
-      manifest.screenshots = this.config.screenshots;
+      manifest['screenshots'] = this.config.screenshots;
     }
 
     if (this.config.shortcuts) {
-      manifest.shortcuts = this.config.shortcuts;
+      manifest['shortcuts'] = this.config.shortcuts;
     }
 
     if (this.config.shareTarget) {
-      manifest.share_target = {
+      manifest['share_target'] = {
         action: this.config.shareTarget.action,
         method: this.config.shareTarget.method ?? 'GET',
         enctype: this.config.shareTarget.enctype,
@@ -168,7 +168,7 @@ export class ManifestGenerator {
     }
 
     if (this.config.fileHandlers) {
-      manifest.file_handlers = this.config.fileHandlers.map(handler => ({
+      manifest['file_handlers'] = this.config.fileHandlers.map(handler => ({
         action: handler.action,
         accept: handler.accept,
         icons: handler.icons,
@@ -646,7 +646,7 @@ export class PWAManager {
     try {
       const subscription = await this.registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
+        applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey) as BufferSource
       });
 
       this.state.pushEnabled = true;
@@ -901,14 +901,8 @@ export function pwaPlugin(config: PWAConfig): any {
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  ManifestGenerator,
-  ServiceWorkerGenerator,
-  PWAManager
-};
 
 export default {
   ManifestGenerator,

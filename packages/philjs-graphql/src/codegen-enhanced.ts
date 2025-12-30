@@ -555,7 +555,7 @@ export class GraphQLCodegen {
    */
   private generateInputFieldDefinition(
     name: string,
-    field: { type: GraphQLInputType; description?: string | null; defaultValue?: unknown }
+    field: { type: GraphQLInputType; description?: string | null | undefined; defaultValue?: unknown }
   ): string[] {
     const lines: string[] = [];
 

@@ -175,7 +175,7 @@ export function getProcedureAtPath(
   path: string
 ): ProcedureDefinition<ProcedureType, unknown, unknown, ProcedureContext> | null {
   const parts = path.split('.');
-  let current: RouterNode | Router = router;
+  let current: RouterNode | Router | undefined = router;
 
   for (const part of parts) {
     if (current === null || current === undefined) {
@@ -190,7 +190,7 @@ export function getProcedureAtPath(
     current = (current as Router)[part];
   }
 
-  if (isProcedure(current)) {
+  if (current !== undefined && isProcedure(current)) {
     return current;
   }
 

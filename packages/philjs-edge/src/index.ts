@@ -113,8 +113,10 @@ export class MemoryKVStore implements KVStore {
 
     const entry: StoredValue = {
       value: storedValue,
-      metadata: options?.metadata,
     };
+    if (options?.metadata) {
+      entry.metadata = options.metadata;
+    }
 
     if (options?.expirationTtl) {
       entry.expiration = Date.now() / 1000 + options.expirationTtl;
@@ -140,11 +142,14 @@ export class MemoryKVStore implements KVStore {
           this.store.delete(key);
           continue;
         }
-        keys.push({
-          name: key,
-          expiration: stored.expiration,
-          metadata: stored.metadata,
-        });
+        const keyEntry: { name: string; expiration?: number; metadata?: Record<string, any> } = { name: key };
+        if (stored.expiration !== undefined) {
+          keyEntry.expiration = stored.expiration;
+        }
+        if (stored.metadata !== undefined) {
+          keyEntry.metadata = stored.metadata;
+        }
+        keys.push(keyEntry);
         if (keys.length >= limit) break;
       }
     }
@@ -332,8 +337,10 @@ export class MemoryQueue<T = any> implements EdgeQueue<T> {
     this.options = {
       maxRetries: options.maxRetries || 3,
       retryDelay: options.retryDelay || 1000,
-      deadLetterQueue: options.deadLetterQueue,
     };
+    if (options.deadLetterQueue) {
+      this.options.deadLetterQueue = options.deadLetterQueue;
+    }
   }
 
   async send(message: T): Promise<void> {
@@ -470,19 +477,19 @@ export class CronScheduler {
     const parts = schedule.split(' ');
     const now = new Date();
 
-    if (parts.length === 1 && parts[0].endsWith('s')) {
+    if (parts.length === 1 && parts[0]!.endsWith('s')) {
       // Simple interval: "30s", "60s"
-      const seconds = parseInt(parts[0]);
+      const seconds = parseInt(parts[0]!);
       return new Date(now.getTime() + seconds * 1000);
     }
 
-    if (parts.length === 1 && parts[0].endsWith('m')) {
-      const minutes = parseInt(parts[0]);
+    if (parts.length === 1 && parts[0]!.endsWith('m')) {
+      const minutes = parseInt(parts[0]!);
       return new Date(now.getTime() + minutes * 60 * 1000);
     }
 
-    if (parts.length === 1 && parts[0].endsWith('h')) {
-      const hours = parseInt(parts[0]);
+    if (parts.length === 1 && parts[0]!.endsWith('h')) {
+      const hours = parseInt(parts[0]!);
       return new Date(now.getTime() + hours * 60 * 60 * 1000);
     }
 
@@ -593,13 +600,13 @@ export function useEdgeKV<T = any>(store: KVStore, key: string) {
 // Re-exports from specialized modules
 // ============================================================================
 
-export * from './geo-routing';
-export * from './prefetch';
-export * from './streaming';
-export * from './state-replication';
-export * from './smart-cache';
-export * from './rate-limiter';
-export * from './edge-functions';
+export * from './geo-routing.js';
+export * from './prefetch.js';
+export * from './streaming.js';
+export * from './state-replication.js';
+export * from './smart-cache.js';
+export * from './rate-limiter.js';
+export * from './edge-functions.js';
 
 // ============================================================================
 // Exports - All types and classes defined above are already exported inline

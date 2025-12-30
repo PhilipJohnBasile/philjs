@@ -174,10 +174,11 @@ export function createNativeRouter(config: RouterConfig): {
 
   // Initialize state
   const initialRouteName = options?.initialRouteName || screens[0]?.name;
+  const initialParams = screens.find(s => s.name === initialRouteName)?.initialParams;
   const initialRoute: Route = {
     key: generateKey(),
     name: initialRouteName || '',
-    params: screens.find(s => s.name === initialRouteName)?.initialParams,
+    ...(initialParams !== undefined && { params: initialParams }),
   };
 
   const state: NavigationState = {
@@ -221,7 +222,7 @@ export function createNativeRouter(config: RouterConfig): {
       const newRoute: Route = {
         key: generateKey(),
         name,
-        params,
+        ...(params !== undefined && { params }),
       };
 
       navigationHistory.push(newRoute);
@@ -270,7 +271,7 @@ export function createNativeRouter(config: RouterConfig): {
       batch(() => {
         navigationState.set({
           ...currentState,
-          routes: [currentState.routes[0]],
+          routes: [currentState.routes[0]!],
           index: 0,
         });
       });
@@ -290,7 +291,7 @@ export function createNativeRouter(config: RouterConfig): {
       const newRoute: Route = {
         key: generateKey(),
         name,
-        params,
+        ...(params !== undefined && { params }),
       };
 
       navigationHistory[navigationHistory.length - 1] = newRoute;
@@ -387,7 +388,7 @@ export function createNativeRouter(config: RouterConfig): {
 
     if (!currentState) return null;
 
-    const currentRoute = currentState.routes[currentState.index];
+    const currentRoute = currentState.routes[currentState.index]!;
     const screenDef = screens.find(s => s.name === currentRoute.name);
 
     if (!screenDef) {
@@ -537,7 +538,7 @@ export function createNativeStack(options?: StackNavigatorOptions): {
 
     const router = createNativeRouter({
       screens,
-      options,
+      ...(options !== undefined && { options }),
     });
 
     return router.Navigator(props);
@@ -591,7 +592,7 @@ export function createNativeTabs(options?: TabNavigatorOptions): {
       routes: screens.map((s, i) => ({
         key: generateKey(),
         name: s.name,
-        params: s.initialParams,
+        ...(s.initialParams !== undefined && { params: s.initialParams }),
       })),
       index: activeTab(),
       key: generateKey(),
@@ -627,7 +628,7 @@ export function createNativeTabs(options?: TabNavigatorOptions): {
         children: screens.map((screen, index) => {
           const isActive = index === activeTab();
           const screenOptions = typeof screen.options === 'function'
-            ? screen.options({ route: state.routes[index], navigation: {} as Navigation })
+            ? screen.options({ route: state.routes[index]!, navigation: {} as Navigation })
             : screen.options || {};
 
           return {
@@ -752,7 +753,7 @@ export function useNativeNavigation(): Navigation {
   return {
     navigate(name, params) {
       const currentState = navigationState()!;
-      const newRoute: Route = { key: generateKey(), name, params };
+      const newRoute: Route = { key: generateKey(), name, ...(params !== undefined && { params }) };
 
       navigationState.set({
         ...currentState,
@@ -775,7 +776,7 @@ export function useNativeNavigation(): Navigation {
       const currentState = navigationState()!;
       navigationState.set({
         ...currentState,
-        routes: [currentState.routes[0]],
+        routes: [currentState.routes[0]!],
         index: 0,
       });
     },
@@ -784,7 +785,7 @@ export function useNativeNavigation(): Navigation {
     },
     replace(name, params) {
       const currentState = navigationState()!;
-      const newRoute: Route = { key: generateKey(), name, params };
+      const newRoute: Route = { key: generateKey(), name, ...(params !== undefined && { params }) };
       const newRoutes = [...currentState.routes];
       newRoutes[currentState.index] = newRoute;
       navigationState.set({ ...currentState, routes: newRoutes });

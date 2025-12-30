@@ -2,7 +2,7 @@
  * PhilJS Image - Utility Functions
  */
 
-import type { ImageFormat, ImageTransformOptions, OptimizedImage } from './types';
+import type { ImageFormat, ImageTransformOptions, OptimizedImage } from './types.js';
 
 /**
  * Check if URL is external
@@ -69,7 +69,7 @@ export function getOptimizedUrl(
   const { width, height, quality = 85, format = 'webp' } = options;
 
   // For external URLs or development, return as-is
-  if (isExternalUrl(src) || process.env.NODE_ENV === 'development') {
+  if (isExternalUrl(src) || process.env['NODE_ENV'] === 'development') {
     return src;
   }
 

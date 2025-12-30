@@ -82,7 +82,7 @@ export class DeviceDetector {
       simd: false,
       threads: false,
       sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
-      memory: navigator.deviceMemory ?? 4
+      memory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4
     };
 
     // WebGPU detection
@@ -299,9 +299,9 @@ export class Tensor {
     const tensor = new Float32Array(3 * width * height);
 
     for (let i = 0; i < width * height; i++) {
-      const r = data[i * 4];
-      const g = data[i * 4 + 1];
-      const b = data[i * 4 + 2];
+      const r = data[i * 4]!;
+      const g = data[i * 4 + 1]!;
+      const b = data[i * 4 + 2]!;
 
       if (normalize) {
         tensor[i] = r / 255;
@@ -344,7 +344,7 @@ export class Tensor {
 
   argmax(axis: number = -1): number[] {
     const actualAxis = axis < 0 ? this.shape.length + axis : axis;
-    const axisSize = this.shape[actualAxis];
+    const axisSize = this.shape[actualAxis]!;
 
     // Simplified argmax for last axis
     if (actualAxis === this.shape.length - 1) {
@@ -353,11 +353,11 @@ export class Tensor {
 
       for (let b = 0; b < batchSize; b++) {
         let maxIdx = 0;
-        let maxVal = this.data[b * axisSize];
+        let maxVal = this.data[b * axisSize]!;
 
         for (let i = 1; i < axisSize; i++) {
-          if (this.data[b * axisSize + i] > maxVal) {
-            maxVal = this.data[b * axisSize + i];
+          if (this.data[b * axisSize + i]! > maxVal) {
+            maxVal = this.data[b * axisSize + i]!;
             maxIdx = i;
           }
         }
@@ -373,7 +373,7 @@ export class Tensor {
 
   softmax(axis: number = -1): Tensor {
     const actualAxis = axis < 0 ? this.shape.length + axis : axis;
-    const axisSize = this.shape[actualAxis];
+    const axisSize = this.shape[actualAxis]!;
     const result = new Float32Array(this.data.length);
 
     const batchSize = this.data.length / axisSize;
@@ -382,19 +382,19 @@ export class Tensor {
       // Find max for numerical stability
       let max = -Infinity;
       for (let i = 0; i < axisSize; i++) {
-        max = Math.max(max, this.data[b * axisSize + i] as number);
+        max = Math.max(max, this.data[b * axisSize + i]!);
       }
 
       // Compute exp and sum
       let sum = 0;
       for (let i = 0; i < axisSize; i++) {
-        result[b * axisSize + i] = Math.exp((this.data[b * axisSize + i] as number) - max);
-        sum += result[b * axisSize + i];
+        result[b * axisSize + i] = Math.exp(this.data[b * axisSize + i]! - max);
+        sum += result[b * axisSize + i]!;
       }
 
       // Normalize
       for (let i = 0; i < axisSize; i++) {
-        result[b * axisSize + i] /= sum;
+        result[b * axisSize + i]! /= sum;
       }
     }
 
@@ -731,9 +731,9 @@ export class TextEmbedder {
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dotProduct += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
@@ -805,7 +805,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

@@ -208,7 +208,7 @@ export function detectMimeTypeFromBytes(data: Buffer | Uint8Array): string | nul
     let matches = true;
     for (let i = 0; i < magic.bytes.length; i++) {
       const mask = magic.mask?.[i] ?? 0xff;
-      if ((data[i] & mask) !== (magic.bytes[i] & mask)) {
+      if ((data[i]! & mask) !== (magic.bytes[i]! & mask)) {
         matches = false;
         break;
       }
@@ -218,7 +218,7 @@ export function detectMimeTypeFromBytes(data: Buffer | Uint8Array): string | nul
       // Special case for RIFF container (WebP check)
       if (magic.bytes[0] === 0x52 && magic.bytes[1] === 0x49) {
         if (data.length >= 12) {
-          const webpCheck = String.fromCharCode(data[8], data[9], data[10], data[11]);
+          const webpCheck = String.fromCharCode(data[8]!, data[9]!, data[10]!, data[11]!);
           if (webpCheck === 'WEBP') {
             return 'image/webp';
           }
@@ -229,9 +229,9 @@ export function detectMimeTypeFromBytes(data: Buffer | Uint8Array): string | nul
 
       // Special case for MP4/MOV detection
       if (magic.bytes[0] === 0x00 && data.length >= 12) {
-        const ftyp = String.fromCharCode(data[4], data[5], data[6], data[7]);
+        const ftyp = String.fromCharCode(data[4]!, data[5]!, data[6]!, data[7]!);
         if (ftyp === 'ftyp') {
-          const brand = String.fromCharCode(data[8], data[9], data[10], data[11]);
+          const brand = String.fromCharCode(data[8]!, data[9]!, data[10]!, data[11]!);
           if (brand.startsWith('mp4') || brand === 'isom' || brand === 'M4V ') {
             return 'video/mp4';
           }
@@ -293,7 +293,7 @@ function isTextContent(data: Buffer | Uint8Array): boolean {
   let nullCount = 0;
 
   for (let i = 0; i < checkLength; i++) {
-    const byte = data[i];
+    const byte = data[i]!;
 
     // Count null bytes
     if (byte === 0) {

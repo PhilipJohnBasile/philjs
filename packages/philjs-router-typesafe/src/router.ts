@@ -212,7 +212,7 @@ export class TypeSafeRouter {
       if (!matchResult) {
         // No route matched - show 404
         const notFoundMatch: MatchedRoute = {
-          route: this.createNotFoundRoute(),
+          route: this.createNotFoundRoute() as unknown as MatchedRoute['route'],
           params: {},
           search: {},
           status: "success",
@@ -294,7 +294,7 @@ export class TypeSafeRouter {
         params,
         search,
         loaderData,
-        error: loaderError,
+        ...(loaderError !== undefined && { error: loaderError }),
         status: loaderError ? "error" : "success",
       };
 
@@ -336,22 +336,19 @@ export class TypeSafeRouter {
    * Create a synthetic "not found" route.
    */
   private createNotFoundRoute(): RouteDefinition<string, undefined, never> {
-    return {
+    const route: RouteDefinition<string, undefined, never> = {
       id: "__not_found__",
       path: "*",
       fullPath: "*",
       validateSearch: undefined,
-      loader: undefined,
       component: this.options.notFoundComponent as never,
-      errorComponent: undefined,
-      pendingComponent: undefined,
       meta: { title: "Not Found" },
-      parent: undefined,
       children: [],
       useParams: () => ({}) as never,
       useSearch: () => ({}) as never,
       useLoaderData: () => undefined as never,
     };
+    return route;
   }
 
   /**
@@ -459,15 +456,16 @@ export function Router(props: {
   } = props;
 
   // Create router instance
-  const router = new TypeSafeRouter({
+  const routerOptions: RouterOptions = {
     routes,
-    basePath,
-    defaultPendingComponent,
-    defaultErrorComponent,
-    notFoundComponent,
-    onNavigate,
-    scrollRestoration,
-  });
+    ...(basePath !== undefined && { basePath }),
+    ...(defaultPendingComponent !== undefined && { defaultPendingComponent }),
+    ...(defaultErrorComponent !== undefined && { defaultErrorComponent }),
+    ...(notFoundComponent !== undefined && { notFoundComponent }),
+    ...(onNavigate !== undefined && { onNavigate }),
+    ...(scrollRestoration !== undefined && { scrollRestoration }),
+  };
+  const router = new TypeSafeRouter(routerOptions);
 
   // Initialize router
   router.initialize();
@@ -701,7 +699,7 @@ export async function loadRouteData(
     params,
     search,
     loaderData: data,
-    error: error ?? undefined,
+    ...(error !== null && { error }),
     status: error ? "error" : "success",
   };
 

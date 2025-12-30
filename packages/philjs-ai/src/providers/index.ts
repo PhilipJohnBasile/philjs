@@ -57,37 +57,37 @@ export function createProvider(providerConfig: ProviderConfig): AIProvider {
  */
 export function autoDetectProvider(): AIProvider {
   // Check for OpenAI
-  const openaiKey = process.env.OPENAI_API_KEY;
+  const openaiKey = process.env['OPENAI_API_KEY'];
   if (openaiKey) {
     return new OpenAIProvider({ apiKey: openaiKey });
   }
 
   // Check for Anthropic
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const anthropicKey = process.env['ANTHROPIC_API_KEY'];
   if (anthropicKey) {
     return new AnthropicProvider({ apiKey: anthropicKey });
   }
 
   // Check for Gemini
-  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
+  const geminiKey = process.env['GEMINI_API_KEY'] || process.env['GOOGLE_AI_API_KEY'];
   if (geminiKey) {
     return new GeminiProvider({ apiKey: geminiKey });
   }
 
   // Check for Cohere
-  const cohereKey = process.env.COHERE_API_KEY;
+  const cohereKey = process.env['COHERE_API_KEY'];
   if (cohereKey) {
     return new CohereProvider({ apiKey: cohereKey });
   }
 
   // Check for LM Studio
-  const lmstudioUrl = process.env.LMSTUDIO_URL;
+  const lmstudioUrl = process.env['LMSTUDIO_URL'];
   if (lmstudioUrl) {
     return new LMStudioProvider({ baseURL: lmstudioUrl });
   }
 
   // Fall back to local (Ollama)
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+  const ollamaUrl = process.env['OLLAMA_URL'] || 'http://localhost:11434';
   return new LocalProvider({ baseURL: ollamaUrl });
 }
 

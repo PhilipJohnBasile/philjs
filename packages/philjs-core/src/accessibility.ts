@@ -3,8 +3,8 @@
  * Automatically improves accessibility with minimal developer effort
  */
 
-import { signal, effect, type Signal } from './signals';
-import type { VNode } from './jsx-runtime';
+import { signal, effect, type Signal } from './signals.js';
+import type { VNode } from './jsx-runtime.js';
 
 // ============================================================================
 // Types
@@ -62,7 +62,7 @@ let globalConfig: Required<A11yConfig> = {
   keyboardNav: true,
   colorContrast: true,
   focusManagement: true,
-  devWarnings: typeof process !== 'undefined' && process.env.NODE_ENV !== 'production',
+  devWarnings: typeof process !== 'undefined' && process.env['NODE_ENV'] !== 'production',
   minContrastRatio: 4.5, // WCAG AA
 };
 
@@ -139,7 +139,7 @@ export function enhanceWithAria(
   const enhanced = { ...props };
 
   // Skip if already has ARIA role or label
-  if (props.role || props['aria-label'] || props['aria-labelledby']) {
+  if (props['role'] || props['aria-label'] || props['aria-labelledby']) {
     return enhanced;
   }
 
@@ -149,16 +149,16 @@ export function enhanceWithAria(
   // Add appropriate ARIA attributes
   switch (type) {
     case 'button':
-      Object.assign(enhanced, ariaPatterns.button(props.children?.toString()));
+      Object.assign(enhanced, ariaPatterns.button(props['children']?.toString()));
       break;
     case 'a':
-      Object.assign(enhanced, ariaPatterns.link(props.href));
+      Object.assign(enhanced, ariaPatterns.link(props['href']));
       break;
     case 'input':
-      Object.assign(enhanced, ariaPatterns.input(props.type, props.placeholder));
+      Object.assign(enhanced, ariaPatterns.input(props['type'], props['placeholder']));
       break;
     case 'img':
-      if (!props.alt) {
+      if (!props['alt']) {
         Object.assign(enhanced, ariaPatterns.image());
       }
       break;
@@ -168,8 +168,8 @@ export function enhanceWithAria(
     case 'h4':
     case 'h5':
     case 'h6':
-      const level = parseInt(type[1]);
-      Object.assign(enhanced, ariaPatterns.heading(level, props.children?.toString()));
+      const level = parseInt(type[1]!);
+      Object.assign(enhanced, ariaPatterns.heading(level, props['children']?.toString()));
       break;
     case 'ul':
     case 'ol':
@@ -198,7 +198,7 @@ class HeadingTracker {
     if (!globalConfig.headingHierarchy) return;
 
     if (this.headings.length > 0) {
-      const lastLevel = this.headings[this.headings.length - 1];
+      const lastLevel = this.headings[this.headings.length - 1]!;
 
       // Check if skipping levels
       if (level > lastLevel + 1) {
@@ -238,7 +238,7 @@ const headingTracker = new HeadingTracker();
 
 export function validateHeadingHierarchy(element: string): void {
   if (element.match(/^h[1-6]$/i)) {
-    const level = parseInt(element[1]);
+    const level = parseInt(element[1]!);
     headingTracker.addHeading(level);
   }
 }
@@ -262,7 +262,7 @@ function getLuminance(r: number, g: number, b: number): number {
   const [rs, gs, bs] = [r, g, b].map(c => {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  });
+  }) as [number, number, number];
 
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -284,7 +284,7 @@ export function getContrastRatio(color1: string, color2: string): number {
     // Handle rgb/rgba
     const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
-      return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+      return [parseInt(match[1]!), parseInt(match[2]!), parseInt(match[3]!)];
     }
 
     return null;

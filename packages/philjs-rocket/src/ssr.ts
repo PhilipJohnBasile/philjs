@@ -5,7 +5,7 @@
  * Provides streaming SSR, hydration, and SEO utilities.
  */
 
-import type { RocketSSRConfig } from './types';
+import type { RocketSSRConfig } from './types.js';
 
 // ============================================================================
 // SSR Types
@@ -400,7 +400,7 @@ export class SSRRenderer {
  * Head content collector
  */
 class HeadCollector {
-  private title?: string;
+  private title?: string | undefined;
   private meta: MetaTag[] = [];
   private links: LinkTag[] = [];
   private scripts: ScriptTag[] = [];
@@ -408,7 +408,7 @@ class HeadCollector {
   private jsonLd?: Record<string, unknown>;
 
   constructor(defaultTitle?: string, defaultMeta?: MetaTag[]) {
-    this.title = defaultTitle;
+    if (defaultTitle !== undefined) this.title = defaultTitle;
     this.meta = [...(defaultMeta || [])];
   }
 
@@ -454,14 +454,15 @@ class HeadCollector {
   }
 
   build(): HeadContent {
-    return {
-      title: this.title,
+    const result: HeadContent = {
       meta: this.meta,
       links: this.links,
       scripts: this.scripts,
       styles: this.styles,
-      jsonLd: this.jsonLd,
     };
+    if (this.title !== undefined) result.title = this.title;
+    if (this.jsonLd !== undefined) result.jsonLd = this.jsonLd;
+    return result;
   }
 }
 
@@ -524,8 +525,8 @@ function parseAcceptLanguage(header: string): string[] {
   if (!header) return ['en'];
   return header
     .split(',')
-    .map(lang => lang.split(';')[0].trim())
-    .filter(Boolean);
+    .map(lang => lang.split(';')[0]?.trim())
+    .filter((s): s is string => Boolean(s));
 }
 
 /**

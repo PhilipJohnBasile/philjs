@@ -4,8 +4,8 @@
  * Svelte-style scoped CSS with automatic class name generation.
  */
 
-import type { CSSProperties, StyleObject } from './types';
-import { generateHash, cssPropertyToString, injectStyles } from './utils';
+import type { CSSProperties, StyleObject } from './types.js';
+import { generateHash, cssPropertyToString, injectStyles } from './utils.js';
 
 const styleCache = new Map<string, string>();
 const injectedStyles = new Set<string>();

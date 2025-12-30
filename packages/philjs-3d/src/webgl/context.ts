@@ -7,7 +7,7 @@ import type {
   WebGLContextOptions,
   WebGLContextResult,
   WebGLExtensions,
-} from './types';
+} from './types.js';
 
 /**
  * Default WebGL context options
@@ -67,12 +67,12 @@ export function createWebGLContext(
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
   const contextAttributes: WebGLContextAttributes = {
-    antialias: opts.antialias,
-    alpha: opts.alpha,
-    depth: opts.depth,
-    stencil: opts.stencil,
-    powerPreference: opts.powerPreference,
-    preserveDrawingBuffer: opts.preserveDrawingBuffer,
+    ...(opts.antialias !== undefined && { antialias: opts.antialias }),
+    ...(opts.alpha !== undefined && { alpha: opts.alpha }),
+    ...(opts.depth !== undefined && { depth: opts.depth }),
+    ...(opts.stencil !== undefined && { stencil: opts.stencil }),
+    ...(opts.powerPreference !== undefined && { powerPreference: opts.powerPreference }),
+    ...(opts.preserveDrawingBuffer !== undefined && { preserveDrawingBuffer: opts.preserveDrawingBuffer }),
   };
 
   let gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;

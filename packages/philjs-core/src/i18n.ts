@@ -75,11 +75,13 @@ export function I18nProvider(props: {
 
   const t = (key: TranslationKey, options?: FormatOptions): string => {
     const locale = currentLocale();
-    let message = getNestedTranslation(config.messages[locale], key);
+    const localeMessages = config.messages[locale];
+    let message = localeMessages ? getNestedTranslation(localeMessages, key) : null;
 
     // Fallback to default locale
     if (!message && config.fallbackLocale) {
-      message = getNestedTranslation(config.messages[config.fallbackLocale], key);
+      const fallbackMessages = config.messages[config.fallbackLocale];
+      message = fallbackMessages ? getNestedTranslation(fallbackMessages, key) : null;
     }
 
     // Fallback to key itself
@@ -177,7 +179,8 @@ function detectLocale(config: I18nConfig): Locale {
   }
 
   // 3. Check browser language
-  const browserLocale = navigator.language.split("-")[0];
+  const browserLocaleParts = navigator.language.split("-");
+  const browserLocale = browserLocaleParts[0]!;
   if (config.locales.includes(browserLocale)) {
     return browserLocale;
   }
@@ -193,7 +196,7 @@ function extractLocaleFromPath(path: string, pattern?: string): Locale | null {
 
   // Simple pattern matching for /[locale]/*
   const match = path.match(/^\/([a-z]{2}(?:-[A-Z]{2})?)\//);
-  return match ? match[1] : null;
+  return match ? match[1]! : null;
 }
 
 /**
@@ -262,7 +265,7 @@ export class TranslationExtractor {
       const remaining = code.slice(i);
       match = regex.exec(remaining);
       if (match) {
-        const key = match[1];
+        const key = match[1]!;
         this.keys.add(key);
 
         const usages = this.usage.get(key) || [];
@@ -341,14 +344,14 @@ function setNestedKey(obj: Translations, key: string, value: string): void {
   let current: any = obj;
 
   for (let i = 0; i < keys.length - 1; i++) {
-    const k = keys[i];
+    const k = keys[i]!;
     if (!(k in current)) {
       current[k] = {};
     }
     current = current[k];
   }
 
-  current[keys[keys.length - 1]] = value;
+  current[keys[keys.length - 1]!] = value;
 }
 
 /**
@@ -374,7 +377,7 @@ function flattenKeys(obj: Translations, prefix = ""): string[] {
  * AI-powered translation service.
  */
 export class AITranslationService {
-  private apiKey?: string;
+  private apiKey: string | undefined;
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey;
@@ -449,8 +452,8 @@ export function createLocaleMiddleware(config: I18nConfig) {
     const acceptLanguage = request.headers.get("Accept-Language");
     if (acceptLanguage) {
       const preferred = acceptLanguage
-        .split(",")[0]
-        .split("-")[0]
+        .split(",")[0]!
+        .split("-")[0]!
         .toLowerCase();
 
       if (config.locales.includes(preferred)) {

@@ -2,8 +2,8 @@
  * Type definitions for PhilJS Charts
  */
 
-import type { ChartTheme } from './utils/colors';
-import type { AnimationConfig } from './utils/animations';
+import type { ChartTheme } from './utils/colors.js';
+import type { AnimationConfig } from './utils/animations.js';
 
 // Signal type from philjs-core
 export interface Signal<T> {

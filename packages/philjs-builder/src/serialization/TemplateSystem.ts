@@ -555,12 +555,41 @@ export function createTemplateManager(options: TemplateManagerOptions = {}): Tem
     const index = templates().findIndex(t => t.id === templateId);
     if (index === -1) return undefined;
 
+    const existing = templates()[index]!;
+
+    // Build the updated template, preserving optional properties correctly
     const updatedTemplate: Template = {
-      ...templates()[index],
-      ...updates,
       id: templateId, // Ensure ID doesn't change
+      name: updates.name ?? existing.name,
+      category: updates.category ?? existing.category,
+      version: updates.version ?? existing.version,
+      createdAt: updates.createdAt ?? existing.createdAt,
       updatedAt: Date.now(),
+      tags: updates.tags ?? existing.tags,
+      nodes: updates.nodes ?? existing.nodes,
+      rootId: updates.rootId ?? existing.rootId,
     };
+
+    // Handle optional properties - only add if they have a value
+    const description = 'description' in updates ? updates.description : existing.description;
+    if (description !== undefined) {
+      updatedTemplate.description = description;
+    }
+
+    const thumbnail = 'thumbnail' in updates ? updates.thumbnail : existing.thumbnail;
+    if (thumbnail !== undefined) {
+      updatedTemplate.thumbnail = thumbnail;
+    }
+
+    const author = 'author' in updates ? updates.author : existing.author;
+    if (author !== undefined) {
+      updatedTemplate.author = author;
+    }
+
+    const metadata = 'metadata' in updates ? updates.metadata : existing.metadata;
+    if (metadata !== undefined) {
+      updatedTemplate.metadata = metadata;
+    }
 
     const newTemplates = [...templates()];
     newTemplates[index] = updatedTemplate;

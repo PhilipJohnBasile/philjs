@@ -3,8 +3,8 @@
  * Customizable QR code generation - vanilla JS
  */
 
-import type { QRCodeOptions, QRStyle } from '../types';
-import { generateQRCode, generateQRCodeDataURL, generateQRCodeCanvas } from '../generator';
+import type { QRCodeOptions, QRStyle } from '../types.js';
+import { generateQRCode, generateQRCodeDataURL, generateQRCodeCanvas } from '../generator.js';
 
 export interface QRCodeConfig extends QRCodeOptions {
   container?: HTMLElement;
@@ -18,11 +18,11 @@ export class QRCode {
   constructor(config: QRCodeConfig) {
     this.container = config.container || null;
     this.options = {
-      data: config.data,
-      style: config.style,
-      logo: config.logo,
-      errorCorrectionLevel: config.errorCorrectionLevel,
-      gradient: config.gradient,
+      data: config['data'],
+      ...(config['style'] !== undefined && { style: config['style'] }),
+      ...(config['logo'] !== undefined && { logo: config['logo'] }),
+      ...(config['errorCorrectionLevel'] !== undefined && { errorCorrectionLevel: config['errorCorrectionLevel'] }),
+      ...(config['gradient'] !== undefined && { gradient: config['gradient'] }),
     };
 
     if (this.container) {

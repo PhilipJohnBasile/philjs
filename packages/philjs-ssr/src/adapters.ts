@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { TLSSocket } from "node:tls";
-import { createRouteMatcher } from "philjs-router";
-import type { RouteDefinition, RouteManifestOptions } from "philjs-router";
+import { createRouteMatcher } from "@philjs/router";
+import type { RouteDefinition, RouteManifestOptions } from "@philjs/router";
 import { handleRequest } from "./request-handler.js";
 import type { RenderOptions } from "./request-handler.js";
 
@@ -14,12 +14,16 @@ export type PhilJSServerOptions = {
 
 export function createFetchHandler(options: PhilJSServerOptions) {
   const match = createRouteMatcher(options.routes, options.routeOptions);
-  return (request: Request) =>
-    handleRequest(request, {
-      match,
-      baseUrl: options.baseUrl,
-      render: options.render,
-    });
+  return (request: Request) => {
+    const renderOptions: RenderOptions = { match };
+    if (options.baseUrl !== undefined) {
+      renderOptions.baseUrl = options.baseUrl;
+    }
+    if (options.render !== undefined) {
+      renderOptions.render = options.render;
+    }
+    return handleRequest(request, renderOptions);
+  };
 }
 
 export function createNodeHttpHandler(options: PhilJSServerOptions) {

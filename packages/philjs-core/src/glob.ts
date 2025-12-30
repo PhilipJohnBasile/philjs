@@ -167,7 +167,7 @@ export function parseGlobPath(path: string): GlobPathInfo {
   const segments = path.split('/').filter(Boolean);
   const filename = segments[segments.length - 1] || '';
   const extensionMatch = filename.match(/\.([^.]+)$/);
-  const extension = extensionMatch ? extensionMatch[1] : '';
+  const extension = extensionMatch?.[1] ?? '';
   const name = filename.replace(/\.[^.]+$/, '');
   const directory = segments.slice(0, -1).join('/');
 

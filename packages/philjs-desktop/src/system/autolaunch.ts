@@ -2,8 +2,8 @@
  * Auto Launch APIs
  */
 
-import { isTauri } from '../tauri/context';
-import { invoke } from '../tauri/invoke';
+import { isTauri } from '../tauri/context.js';
+import { invoke } from '../tauri/invoke.js';
 
 // Auto launch types
 export interface AutoLaunchOptions {

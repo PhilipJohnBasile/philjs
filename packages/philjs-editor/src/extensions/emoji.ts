@@ -189,6 +189,9 @@ function createEmojiPlugin(emojis: Record<string, string>) {
         }
 
         const shortcode = match[1];
+        if (shortcode === undefined) {
+          return false;
+        }
         const emoji = emojis[shortcode];
 
         if (!emoji) {

@@ -46,7 +46,7 @@ export class OpenAIProvider implements AIProvider {
       messages,
       temperature: options?.temperature ?? 0.7,
       max_tokens: options?.maxTokens ?? 4096,
-      stop: options?.stopSequences,
+      ...(options?.stopSequences && { stop: options.stopSequences }),
     });
 
     return response.choices[0]?.message?.content || '';
@@ -72,7 +72,7 @@ export class OpenAIProvider implements AIProvider {
       messages,
       temperature: options?.temperature ?? 0.7,
       max_tokens: options?.maxTokens ?? 4096,
-      stop: options?.stopSequences,
+      ...(options?.stopSequences && { stop: options.stopSequences }),
       stream: true,
     });
 

@@ -73,7 +73,10 @@ export async function analyzeProject(projectPath: string): Promise<ProjectAnalys
 
     // Detect framework
     analysis.framework = detectFramework(packageJson);
-    analysis.version = getFrameworkVersion(packageJson, analysis.framework);
+    const version = getFrameworkVersion(packageJson, analysis.framework);
+    if (version !== undefined) {
+      analysis.version = version;
+    }
 
     // Detect TypeScript
     analysis.typescript = !!packageJson.devDependencies?.typescript ||
@@ -168,12 +171,15 @@ function analyzeDependencies(packageJson: any): DependencyInfo[] {
 
   for (const [name, version] of Object.entries(allDeps)) {
     const info = categoryMap[name];
-    deps.push({
+    const depInfo: DependencyInfo = {
       name,
       version: version as string,
-      category: info?.category || 'other',
-      philjsEquivalent: info?.philjs,
-    });
+      category: info?.category ?? 'other',
+    };
+    if (info?.philjs !== undefined) {
+      depInfo.philjsEquivalent = info.philjs;
+    }
+    deps.push(depInfo);
   }
 
   return deps;

@@ -97,7 +97,7 @@ export async function executeMiddlewareChain<TContext extends ProcedureContext>(
     }
 
     // Get the next middleware
-    const middleware = middlewares[index++];
+    const middleware = middlewares[index++]!;
 
     try {
       return await middleware.fn({
@@ -315,7 +315,7 @@ export function createAuthMiddleware<TUser>(options: {
 }): Middleware {
   const {
     getToken = (ctx) => {
-      const authHeader = ctx.headers?.authorization;
+      const authHeader = ctx.headers?.['authorization'];
       if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
         return authHeader.slice(7);
       }
@@ -386,7 +386,7 @@ export function permissionMiddleware(
   }
 ): Middleware {
   const {
-    getPermissions = (ctx) => {
+    getPermissions = (ctx: ProcedureContext) => {
       const user = ctx.user as { permissions?: string[]; roles?: string[] } | undefined;
       return user?.permissions ?? user?.roles ?? [];
     },
@@ -433,7 +433,7 @@ export function retryMiddleware(options?: {
     maxRetries = 3,
     delay = 1000,
     backoff = 2,
-    shouldRetry = (error) => {
+    shouldRetry = (error: RPCError) => {
       // Only retry on server errors
       return error.code === 'INTERNAL_SERVER_ERROR' || error.code === 'TIMEOUT';
     },
@@ -465,10 +465,13 @@ export function retryMiddleware(options?: {
       }
     }
 
-    return {
+    const result: MiddlewareResult = {
       ok: false,
-      error: lastError,
     };
+    if (lastError !== undefined) {
+      result.error = lastError;
+    }
+    return result;
   });
 }
 
@@ -489,7 +492,7 @@ export function cacheMiddleware(options?: {
 }): Middleware {
   const {
     ttl = 60000, // 1 minute default
-    keyGenerator = (path, input) => `rpc:${path}:${JSON.stringify(input)}`,
+    keyGenerator = (path: string, input: unknown) => `rpc:${path}:${JSON.stringify(input)}`,
   } = options ?? {};
 
   // Simple in-memory cache

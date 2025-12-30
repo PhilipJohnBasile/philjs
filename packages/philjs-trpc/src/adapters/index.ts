@@ -3,7 +3,27 @@
  * Adapters for various server frameworks - no external dependencies
  */
 
-import type { AdapterConfig, BaseContext } from '../types';
+import type { AdapterConfig, BaseContext, TRPCClientErrorLike, AnyRouter } from '../types.js';
+
+/**
+ * Helper type for router with handle method
+ */
+type RouterWithHandle = { handle: (r: unknown, c: unknown) => Promise<unknown> };
+
+/**
+ * Convert an Error to TRPCClientErrorLike for the error handler
+ */
+function toTRPCError(error: Error): TRPCClientErrorLike<AnyRouter> {
+  return {
+    message: error.message,
+    data: {
+      code: 'INTERNAL_SERVER_ERROR',
+      httpStatus: 500,
+      ...(error.stack != null && { stack: error.stack }),
+    },
+    cause: error,
+  };
+}
 
 /**
  * Create Express adapter
@@ -18,7 +38,7 @@ export function createExpressAdapter(config: AdapterConfig) {
       if (body.batch && Array.isArray(body.batch)) {
         const results = await Promise.all(
           body.batch.map(async (item) => {
-            const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(item, ctx);
+            const result = await (config.router as unknown as RouterWithHandle).handle(item, ctx);
             return result;
           })
         );
@@ -27,10 +47,10 @@ export function createExpressAdapter(config: AdapterConfig) {
       }
 
       // Handle single request
-      const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(body, ctx);
+      const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
       res.json(result);
     } catch (error) {
-      config.onError?.(error as Error, {} as BaseContext);
+      config.onError?.(toTRPCError(error as Error), {} as BaseContext);
       res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } });
     }
   };
@@ -48,17 +68,17 @@ export function createFastifyAdapter(config: AdapterConfig) {
       if (body.batch && Array.isArray(body.batch)) {
         const results = await Promise.all(
           body.batch.map(async (item) => {
-            return await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(item, ctx);
+            return await (config.router as unknown as RouterWithHandle).handle(item, ctx);
           })
         );
         reply.send(results);
         return;
       }
 
-      const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(body, ctx);
+      const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
       reply.send(result);
     } catch (error) {
-      config.onError?.(error as Error, {} as BaseContext);
+      config.onError?.(toTRPCError(error as Error), {} as BaseContext);
       reply.code(500).send({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } });
     }
   };
@@ -76,16 +96,16 @@ export function createHonoAdapter(config: AdapterConfig) {
       if (body.batch && Array.isArray(body.batch)) {
         const results = await Promise.all(
           body.batch.map(async (item) => {
-            return await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(item, ctx);
+            return await (config.router as unknown as RouterWithHandle).handle(item, ctx);
           })
         );
         return c.json(results);
       }
 
-      const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(body, ctx);
+      const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
       return c.json(result);
     } catch (error) {
-      config.onError?.(error as Error, {} as BaseContext);
+      config.onError?.(toTRPCError(error as Error), {} as BaseContext);
       return c.json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }, 500);
     }
   };
@@ -104,7 +124,7 @@ export function createCloudflareAdapter(config: AdapterConfig) {
         if (body.batch && Array.isArray(body.batch)) {
           const results = await Promise.all(
             body.batch.map(async (item) => {
-              return await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(item, ctx);
+              return await (config.router as unknown as RouterWithHandle).handle(item, ctx);
             })
           );
           return new Response(JSON.stringify(results), {
@@ -112,12 +132,12 @@ export function createCloudflareAdapter(config: AdapterConfig) {
           });
         }
 
-        const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(body, ctx);
+        const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
         return new Response(JSON.stringify(result), {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
-        config.onError?.(error as Error, {} as BaseContext);
+        config.onError?.(toTRPCError(error as Error), {} as BaseContext);
         return new Response(
           JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }),
           { status: 500, headers: { 'Content-Type': 'application/json' } }
@@ -139,7 +159,7 @@ export function createLambdaAdapter(config: AdapterConfig) {
       if (body.batch && Array.isArray(body.batch)) {
         const results = await Promise.all(
           body.batch.map(async (item) => {
-            return await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(item, ctx);
+            return await (config.router as unknown as RouterWithHandle).handle(item, ctx);
           })
         );
         return {
@@ -149,14 +169,14 @@ export function createLambdaAdapter(config: AdapterConfig) {
         };
       }
 
-      const result = await (config.router as { handle: (r: unknown, c: unknown) => Promise<unknown> }).handle(body, ctx);
+      const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
       return {
         statusCode: 200,
         body: JSON.stringify(result),
         headers: { 'Content-Type': 'application/json' },
       };
     } catch (error) {
-      config.onError?.(error as Error, {} as BaseContext);
+      config.onError?.(toTRPCError(error as Error), {} as BaseContext);
       return {
         statusCode: 500,
         body: JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }),

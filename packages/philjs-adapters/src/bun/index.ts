@@ -11,8 +11,8 @@
  * - Hot reload in dev
  */
 
-import type { Adapter, AdapterConfig, RequestContext } from '../types';
-import { isBun } from '../runtime-detect';
+import type { Adapter, AdapterConfig, RequestContext } from '../types.js';
+import { isBun } from '../runtime-detect.js';
 
 export interface BunConfig extends AdapterConfig {
   /** Port to listen on */
@@ -150,7 +150,7 @@ export function createBunAdapter(config: BunConfig = {}): BunServerHandler {
   const {
     port = 3000,
     hostname = '0.0.0.0',
-    development = process.env.NODE_ENV !== 'production',
+    development = process.env['NODE_ENV'] !== 'production',
     staticDir = 'public',
     compression = true,
     sqlite,
@@ -365,31 +365,38 @@ export function createBunAdapter(config: BunConfig = {}): BunServerHandler {
     return server;
   }
 
+  if (websocket?.enabled) {
+    return {
+      fetch,
+      port,
+      hostname,
+      start,
+      websocket: {
+        message: (ws, message) => {
+          const handler = wsHandlers.get('message');
+          if (handler) handler(ws, message);
+        },
+        open: (ws) => {
+          const handler = wsHandlers.get('open');
+          if (handler) handler(ws, null);
+        },
+        close: (ws, code, reason) => {
+          const handler = wsHandlers.get('close');
+          if (handler) handler(ws, { code, reason });
+        },
+        drain: (ws) => {
+          const handler = wsHandlers.get('drain');
+          if (handler) handler(ws, null);
+        },
+      },
+    };
+  }
+
   return {
     fetch,
     port,
     hostname,
     start,
-    websocket: websocket?.enabled
-      ? {
-          message: (ws, message) => {
-            const handler = wsHandlers.get('message');
-            if (handler) handler(ws, message);
-          },
-          open: (ws) => {
-            const handler = wsHandlers.get('open');
-            if (handler) handler(ws, null);
-          },
-          close: (ws, code, reason) => {
-            const handler = wsHandlers.get('close');
-            if (handler) handler(ws, { code, reason });
-          },
-          drain: (ws) => {
-            const handler = wsHandlers.get('drain');
-            if (handler) handler(ws, null);
-          },
-        }
-      : undefined,
   };
 }
 

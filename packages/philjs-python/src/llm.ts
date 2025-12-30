@@ -111,9 +111,9 @@ export class LLM {
       id: data.id,
       model: data.model,
       choices: data.choices.map((c: Record<string, unknown>) => ({
-        index: c.index as number,
-        message: c.message as ChatMessage,
-        finishReason: (c.finish_reason || c.finishReason) as ChatResponse['choices'][0]['finishReason'],
+        index: c['index'] as number,
+        message: c['message'] as ChatMessage,
+        finishReason: (c['finish_reason'] || c['finishReason']) as ChatResponse['choices'][0]['finishReason'],
       })),
       usage: {
         promptTokens: data.usage?.prompt_tokens ?? data.usage?.promptTokens ?? 0,
@@ -276,12 +276,13 @@ export class LLM {
     messages: ChatMessage[],
     options?: { temperature?: number; maxTokens?: number }
   ): Promise<{ response: string; messages: ChatMessage[] }> {
-    const response = await this.chat({
+    const request: ChatRequest = {
       model: this.config.model,
       messages,
-      temperature: options?.temperature,
-      maxTokens: options?.maxTokens,
-    });
+    };
+    if (options?.temperature !== undefined) request.temperature = options.temperature;
+    if (options?.maxTokens !== undefined) request.maxTokens = options.maxTokens;
+    const response = await this.chat(request);
 
     const assistantMessage = response.choices[0]?.message;
     if (!assistantMessage) {
@@ -306,14 +307,15 @@ export class LLM {
       toolChoice?: ChatRequest['toolChoice'];
     }
   ): Promise<ChatResponse> {
-    return this.chat({
+    const request: ChatRequest = {
       model: this.config.model,
       messages,
       tools,
       toolChoice: options?.toolChoice ?? 'auto',
-      temperature: options?.temperature,
-      maxTokens: options?.maxTokens,
-    });
+    };
+    if (options?.temperature !== undefined) request.temperature = options.temperature;
+    if (options?.maxTokens !== undefined) request.maxTokens = options.maxTokens;
+    return this.chat(request);
   }
 
   /**
@@ -403,14 +405,16 @@ export function createOpenAI(options?: {
   temperature?: number;
   maxTokens?: number;
 }): LLM {
-  return new LLM({
+  const config: LLMConfig = {
     provider: 'openai',
     model: options?.model || 'gpt-4-turbo-preview',
-    apiKey: options?.apiKey || process.env.OPENAI_API_KEY,
     baseUrl: options?.baseUrl || 'http://localhost:8000',
-    temperature: options?.temperature,
-    maxTokens: options?.maxTokens,
-  });
+  };
+  const apiKey = options?.apiKey || process.env['OPENAI_API_KEY'];
+  if (apiKey !== undefined) config.apiKey = apiKey;
+  if (options?.temperature !== undefined) config.temperature = options.temperature;
+  if (options?.maxTokens !== undefined) config.maxTokens = options.maxTokens;
+  return new LLM(config);
 }
 
 /**
@@ -423,22 +427,26 @@ export function createAnthropic(options?: {
   temperature?: number;
   maxTokens?: number;
 }): LLM {
-  return new LLM({
+  const config: LLMConfig = {
     provider: 'anthropic',
     model: options?.model || 'claude-3-5-sonnet-20241022',
-    apiKey: options?.apiKey || process.env.ANTHROPIC_API_KEY,
     baseUrl: options?.baseUrl || 'http://localhost:8000',
-    temperature: options?.temperature,
-    maxTokens: options?.maxTokens,
-  });
+  };
+  const apiKey = options?.apiKey || process.env['ANTHROPIC_API_KEY'];
+  if (apiKey !== undefined) config.apiKey = apiKey;
+  if (options?.temperature !== undefined) config.temperature = options.temperature;
+  if (options?.maxTokens !== undefined) config.maxTokens = options.maxTokens;
+  return new LLM(config);
 }
 
 /**
  * Default LLM instance using environment variables
  */
-export const llm = new LLM({
+const defaultConfig: LLMConfig = {
   provider: 'openai',
-  model: process.env.PHILJS_LLM_MODEL || 'gpt-4-turbo-preview',
-  apiKey: process.env.OPENAI_API_KEY,
-  baseUrl: process.env.PHILJS_LLM_URL || 'http://localhost:8000',
-});
+  model: process.env['PHILJS_LLM_MODEL'] || 'gpt-4-turbo-preview',
+  baseUrl: process.env['PHILJS_LLM_URL'] || 'http://localhost:8000',
+};
+const defaultApiKey = process.env['OPENAI_API_KEY'];
+if (defaultApiKey !== undefined) defaultConfig.apiKey = defaultApiKey;
+export const llm = new LLM(defaultConfig);

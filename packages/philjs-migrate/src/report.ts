@@ -3,8 +3,8 @@
  */
 
 import * as fs from 'fs/promises';
-import type { MigrationResult } from './migrate';
-import type { ProjectAnalysis } from './analyze';
+import type { MigrationResult, MigrationError, MigrationWarning, ManualReviewItem } from './migrate.js';
+import type { ProjectAnalysis, DependencyInfo } from './analyze.js';
 
 export interface MigrationReport {
   summary: string;
@@ -63,7 +63,7 @@ Generated: ${timestamp}
 
 ${result.errors.length === 0 ? 'No errors occurred during migration.' : ''}
 
-${result.errors.map(error => `
+${result.errors.map((error: MigrationError) => `
 ### ${error.file}${error.line ? `:${error.line}` : ''}
 
 **Code**: \`${error.code}\`
@@ -77,7 +77,7 @@ ${error.message}
 
 ${result.warnings.length === 0 ? 'No warnings generated.' : ''}
 
-${result.warnings.map((warning, i) => `
+${result.warnings.map((warning: MigrationWarning, i: number) => `
 ${i + 1}. **${warning.file}**${warning.line ? ` (line ${warning.line})` : ''}
    - ${warning.message}
    ${warning.suggestion ? `\n   - **Suggestion**: ${warning.suggestion}` : ''}
@@ -91,7 +91,7 @@ The following items need manual review and may require code adjustments:
 
 ${result.manualReviewNeeded.length === 0 ? 'No items require manual review.' : ''}
 
-${result.manualReviewNeeded.map((item, i) => `
+${result.manualReviewNeeded.map((item: ManualReviewItem, i: number) => `
 ### ${i + 1}. ${item.type} - ${item.file}:${item.line}
 
 **Description**: ${item.description}
@@ -117,8 +117,8 @@ The following dependencies can be replaced with PhilJS equivalents:
 | Original | PhilJS Equivalent |
 |----------|-------------------|
 ${analysis.dependencies
-  .filter(d => d.philjsEquivalent)
-  .map(d => `| ${d.name}@${d.version} | ${d.philjsEquivalent} |`)
+  .filter((d: DependencyInfo) => d.philjsEquivalent)
+  .map((d: DependencyInfo) => `| ${d.name}@${d.version} | ${d.philjsEquivalent} |`)
   .join('\n')}
 
 ---

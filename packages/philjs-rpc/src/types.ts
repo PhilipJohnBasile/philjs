@@ -195,7 +195,7 @@ export const RPC_ERROR_CODES_TO_HTTP: Record<RPCErrorCode, number> = {
  */
 export class RPCError extends Error {
   public readonly code: RPCErrorCode;
-  public readonly cause?: unknown;
+  public override readonly cause?: unknown;
 
   constructor(opts: { code: RPCErrorCode; message: string; cause?: unknown }) {
     super(opts.message);

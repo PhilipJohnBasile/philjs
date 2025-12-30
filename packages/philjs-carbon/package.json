@@ -1,6 +1,7 @@
 {
   "name": "@philjs/carbon",
   "version": "0.1.0",
+  "type": "module",
   "description": "Carbon-aware computing for PhilJS - schedule tasks during low-carbon periods",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

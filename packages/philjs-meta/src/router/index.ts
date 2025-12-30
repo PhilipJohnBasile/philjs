@@ -17,7 +17,7 @@ export {
   type RouteMetadata,
   type RouteSegment,
   type RouteSegmentType,
-} from './file-based';
+} from './file-based.js';
 
 // Layouts
 export {
@@ -42,4 +42,4 @@ export {
   type LoadingFactory,
   type ParallelRouteSlot,
   type InterceptedRoute,
-} from './layouts';
+} from './layouts.js';

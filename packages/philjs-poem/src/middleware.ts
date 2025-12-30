@@ -11,7 +11,7 @@ import type {
   PoemCORSConfig,
   PoemSecurityConfig,
   ExtractorContext,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Base Middleware
@@ -723,12 +723,12 @@ impl<E: Endpoint> Endpoint for SecurityEndpoint<E> {
  * Compose multiple middleware together
  */
 export class MiddlewareComposer {
-  private middleware: Array<{ name: string; toRustCode: () => string }> = [];
+  private middleware: Array<{ toRustCode: () => string }> = [];
 
   /**
    * Add SSR middleware
    */
-  withSSR(config?: SSRMiddlewareConfig): this {
+  withSSR(config: SSRMiddlewareConfig = {}): this {
     this.middleware.push(new SSRMiddleware(config));
     return this;
   }
@@ -736,7 +736,7 @@ export class MiddlewareComposer {
   /**
    * Add CORS middleware
    */
-  withCORS(config?: CORSMiddlewareConfig): this {
+  withCORS(config: CORSMiddlewareConfig = {}): this {
     this.middleware.push(new CORSMiddleware(config));
     return this;
   }
@@ -744,7 +744,7 @@ export class MiddlewareComposer {
   /**
    * Add tracing middleware
    */
-  withTracing(config?: TracingMiddlewareConfig): this {
+  withTracing(config: TracingMiddlewareConfig = {}): this {
     this.middleware.push(new TracingMiddleware(config));
     return this;
   }
@@ -752,7 +752,7 @@ export class MiddlewareComposer {
   /**
    * Add compression middleware
    */
-  withCompression(config?: CompressionMiddlewareConfig): this {
+  withCompression(config: CompressionMiddlewareConfig = {}): this {
     this.middleware.push(new CompressionMiddleware(config));
     return this;
   }
@@ -760,7 +760,7 @@ export class MiddlewareComposer {
   /**
    * Add rate limiting middleware
    */
-  withRateLimit(config?: RateLimitMiddlewareConfig): this {
+  withRateLimit(config: RateLimitMiddlewareConfig = {}): this {
     this.middleware.push(new RateLimitMiddleware(config));
     return this;
   }
@@ -768,7 +768,7 @@ export class MiddlewareComposer {
   /**
    * Add security headers middleware
    */
-  withSecurity(config?: SecurityMiddlewareConfig): this {
+  withSecurity(config: SecurityMiddlewareConfig = {}): this {
     this.middleware.push(new SecurityMiddleware(config));
     return this;
   }

@@ -222,7 +222,7 @@ export function interpolateValues(
   to: number[],
   t: number
 ): number[] {
-  return from.map((start, i) => start + (to[i] - start) * t);
+  return from.map((start, i) => start + ((to[i] ?? 0) - start) * t);
 }
 
 export function interpolateColor(
@@ -267,6 +267,6 @@ export function morphPath(
   let i = 0;
 
   return fromPath.replace(/-?\d+\.?\d*/g, () =>
-    interpolated[i++].toFixed(2)
+    (interpolated[i++] ?? 0).toFixed(2)
   );
 }

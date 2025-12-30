@@ -61,7 +61,7 @@ function constantTimeEqual(a: string, b: string): boolean {
 
   let diff = 0;
   for (let i = 0; i < bufA.length; i++) {
-    diff |= bufA[i] ^ bufB[i];
+    diff |= bufA[i]! ^ bufB[i]!;
   }
 
   return diff === 0;
@@ -112,15 +112,15 @@ export class JWTManager {
     const fullPayload = {
       ...payload,
       iat: now,
-      exp: now + this.config.expiresIn
+      exp: now + this.config.expiresIn!
     } as JWTPayload;
 
     if (this.config.issuer) {
-      fullPayload.iss = this.config.issuer;
+      fullPayload['iss'] = this.config.issuer;
     }
 
     if (this.config.audience) {
-      fullPayload.aud = this.config.audience;
+      fullPayload['aud'] = this.config.audience;
     }
 
     const header = {
@@ -149,15 +149,15 @@ export class JWTManager {
     const [encodedHeader, encodedPayload, signature] = parts;
 
     // Verify signature using constant-time comparison to prevent timing attacks
-    const data = `${encodedHeader}.${encodedPayload}`;
+    const data = `${encodedHeader!}.${encodedPayload!}`;
     const expectedSignature = await sign(data, this.config.secret);
 
-    if (!constantTimeEqual(signature, expectedSignature)) {
+    if (!constantTimeEqual(signature!, expectedSignature)) {
       throw new Error('Invalid token signature');
     }
 
     // Decode payload
-    const payload: JWTPayload = JSON.parse(base64UrlDecode(encodedPayload));
+    const payload: JWTPayload = JSON.parse(base64UrlDecode(encodedPayload!));
 
     // Check expiration
     if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) {
@@ -165,12 +165,12 @@ export class JWTManager {
     }
 
     // Check issuer
-    if (this.config.issuer && payload.iss !== this.config.issuer) {
+    if (this.config.issuer && payload['iss'] !== this.config.issuer) {
       throw new Error('Invalid token issuer');
     }
 
     // Check audience
-    if (this.config.audience && payload.aud !== this.config.audience) {
+    if (this.config.audience && payload['aud'] !== this.config.audience) {
       throw new Error('Invalid token audience');
     }
 
@@ -185,7 +185,7 @@ export class JWTManager {
       const parts = token.split('.');
       if (parts.length !== 3) return null;
 
-      const payload = JSON.parse(base64UrlDecode(parts[1]));
+      const payload = JSON.parse(base64UrlDecode(parts[1]!));
       return payload;
     } catch {
       return null;
@@ -267,7 +267,7 @@ export function decodeToken(token: string): JWTPayload | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
-    return JSON.parse(base64UrlDecode(parts[1]));
+    return JSON.parse(base64UrlDecode(parts[1]!));
   } catch {
     return null;
   }

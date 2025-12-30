@@ -3,8 +3,8 @@
  * Threshold alerts, anomaly detection, and notification channels
  */
 
-import type { MetricsSnapshot, WebVitalsMetrics } from '../collector/metrics';
-import type { CapturedError } from '../collector/errors';
+import type { MetricsSnapshot, WebVitalsMetrics } from '../collector/metrics.js';
+import type { CapturedError } from '../collector/errors.js';
 
 // ============================================================================
 // Types
@@ -408,7 +408,9 @@ export class AlertManager {
     if (alert && alert.status === 'active') {
       alert.status = 'acknowledged';
       alert.acknowledgedAt = Date.now();
-      alert.acknowledgedBy = acknowledgedBy;
+      if (acknowledgedBy !== undefined) {
+        alert.acknowledgedBy = acknowledgedBy;
+      }
     }
   }
 
@@ -608,7 +610,7 @@ export class AlertManager {
     const condition = rule.condition;
     const threshold = 'value' in condition ? condition.value : undefined;
 
-    return {
+    const alert: Alert = {
       id: this.generateAlertId(),
       ruleId: rule.id,
       ruleName: rule.name,
@@ -617,9 +619,16 @@ export class AlertManager {
       message: this.formatAlertMessage(rule, value),
       triggeredAt: Date.now(),
       value,
-      threshold,
-      tags: rule.tags,
     };
+
+    if (threshold !== undefined) {
+      alert.threshold = threshold;
+    }
+    if (rule.tags !== undefined) {
+      alert.tags = rule.tags;
+    }
+
+    return alert;
   }
 
   private formatAlertMessage(rule: AlertRule, value: number): string {

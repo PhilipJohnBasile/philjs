@@ -2,7 +2,7 @@
  * PhilJS DevTools - Network Inspector
  */
 
-import type { NetworkRequest } from '../types';
+import type { NetworkRequest } from '../types.js';
 
 export class NetworkInspector {
   private requests: NetworkRequest[] = [];

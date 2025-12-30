@@ -42,7 +42,9 @@ export class LocalStorageClient extends StorageClient {
     super(config);
     this.localConfig = config;
     this.directory = path.resolve(config.directory);
-    this.publicUrl = config.publicUrl;
+    if (config.publicUrl !== undefined) {
+      this.publicUrl = config.publicUrl;
+    }
     this.metadataDir = path.join(this.directory, '.metadata');
 
     // Ensure directories exist
@@ -132,7 +134,11 @@ export class LocalStorageClient extends StorageClient {
           const chunk = buffer.subarray(offset, offset + chunkSize);
           if (chunk.length === 0) {
             writeStream.end(async () => {
-              await this.saveMetadata(key, { contentType, metadata: options.metadata });
+              const metadataToSave: { contentType: string; metadata?: Record<string, string> } = { contentType };
+              if (options.metadata !== undefined) {
+                metadataToSave.metadata = options.metadata;
+              }
+              await this.saveMetadata(key, metadataToSave);
               const metadata = await this.getMetadata(key);
               resolve(metadata!);
             });
@@ -159,7 +165,11 @@ export class LocalStorageClient extends StorageClient {
     }
 
     await fsp.writeFile(filePath, buffer);
-    await this.saveMetadata(key, { contentType, metadata: options.metadata });
+    const metadataToSave: { contentType: string; metadata?: Record<string, string> } = { contentType };
+    if (options.metadata !== undefined) {
+      metadataToSave.metadata = options.metadata;
+    }
+    await this.saveMetadata(key, metadataToSave);
 
     const metadata = await this.getMetadata(key);
     return metadata!;
@@ -271,14 +281,17 @@ export class LocalStorageClient extends StorageClient {
 
         const savedMetadata = await this.loadMetadata(key);
 
-        files.push({
+        const file: StorageFile = {
           key,
           size: entry.stats.size,
           contentType: savedMetadata?.contentType || detectMimeType(key),
           lastModified: entry.stats.mtime,
           etag: crypto.createHash('md5').update(`${entry.stats.ino}-${entry.stats.mtime.getTime()}`).digest('hex'),
-          metadata: savedMetadata?.metadata,
-        });
+        };
+        if (savedMetadata?.metadata !== undefined) {
+          file.metadata = savedMetadata.metadata;
+        }
+        files.push(file);
       }
     } catch (error: any) {
       if (error.code !== 'ENOENT') {
@@ -292,12 +305,15 @@ export class LocalStorageClient extends StorageClient {
     const paginatedFiles = files.slice(startIndex, startIndex + maxResults);
     const hasMore = startIndex + maxResults < files.length;
 
-    return {
+    const result: ListResult = {
       files: paginatedFiles,
       prefixes: Array.from(prefixes),
-      nextToken: hasMore ? String(startIndex + maxResults) : undefined,
       isTruncated: hasMore,
     };
+    if (hasMore) {
+      result.nextToken = String(startIndex + maxResults);
+    }
+    return result;
   }
 
   private async listRecursive(
@@ -342,14 +358,17 @@ export class LocalStorageClient extends StorageClient {
       const stats = await fsp.stat(filePath);
       const savedMetadata = await this.loadMetadata(key);
 
-      return {
+      const file: StorageFile = {
         key,
         size: stats.size,
         contentType: savedMetadata?.contentType || detectMimeType(key),
         lastModified: stats.mtime,
         etag: crypto.createHash('md5').update(`${stats.ino}-${stats.mtime.getTime()}`).digest('hex'),
-        metadata: savedMetadata?.metadata,
       };
+      if (savedMetadata?.metadata !== undefined) {
+        file.metadata = savedMetadata.metadata;
+      }
+      return file;
     } catch (error: any) {
       if (error.code === 'ENOENT') {
         return null;
@@ -412,10 +431,14 @@ export class LocalStorageClient extends StorageClient {
 
     // Copy or update metadata
     const sourceMetadata = await this.loadMetadata(sourceKey);
-    await this.saveMetadata(destinationKey, {
+    const metadataToSave: { contentType: string; metadata?: Record<string, string> } = {
       contentType: options.contentType || sourceMetadata?.contentType || detectMimeType(destinationKey),
-      metadata: options.metadata || sourceMetadata?.metadata,
-    });
+    };
+    const resolvedMetadata = options.metadata || sourceMetadata?.metadata;
+    if (resolvedMetadata !== undefined) {
+      metadataToSave.metadata = resolvedMetadata;
+    }
+    await this.saveMetadata(destinationKey, metadataToSave);
 
     const metadata = await this.getMetadata(destinationKey);
     return metadata!;

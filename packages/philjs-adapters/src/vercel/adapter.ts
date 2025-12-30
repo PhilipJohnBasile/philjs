@@ -13,7 +13,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, ServerlessAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, EdgeAdapter, ServerlessAdapter, RequestContext } from '../types.js';
 
 export interface VercelConfig extends AdapterConfig {
   /** Use Edge Runtime (default: false, uses Node.js serverless) */

@@ -17,10 +17,11 @@ import type {
   OpenAPIParameter,
   OpenAPIRequestBody,
   OpenAPIResponse,
+  OpenAPIPathItem,
   JSONSchema,
   TypeGenerationOptions,
   GeneratedTypes,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // CLI Argument Parsing
@@ -60,25 +61,33 @@ function parseArgs(args: string[]): CLIArgs {
         result.command = 'version';
         break;
       case '--input':
-      case '-i':
-        result.input = args[++i];
+      case '-i': {
+        const val = args[++i];
+        if (val !== undefined) result.input = val;
         break;
+      }
       case '--output':
-      case '-o':
-        result.output = args[++i];
+      case '-o': {
+        const val = args[++i];
+        if (val !== undefined) result.output = val;
         break;
+      }
       case '--client':
         result.generateClient = true;
         break;
       case '--zod':
         result.generateZod = true;
         break;
-      case '--prefix':
-        result.typePrefix = args[++i];
+      case '--prefix': {
+        const val = args[++i];
+        if (val !== undefined) result.typePrefix = val;
         break;
-      case '--suffix':
-        result.typeSuffix = args[++i];
+      }
+      case '--suffix': {
+        const val = args[++i];
+        if (val !== undefined) result.typeSuffix = val;
         break;
+      }
       case '--enums-as-union':
         result.enumsAsUnion = true;
         break;
@@ -142,20 +151,20 @@ function jsonSchemaToTS(schema: JSONSchema, options: TypeGenerationOptions): str
   }
 
   if (schema.oneOf) {
-    return schema.oneOf.map((s) => jsonSchemaToTS(s, options)).join(' | ');
+    return schema.oneOf.map((s: JSONSchema) => jsonSchemaToTS(s, options)).join(' | ');
   }
 
   if (schema.anyOf) {
-    return schema.anyOf.map((s) => jsonSchemaToTS(s, options)).join(' | ');
+    return schema.anyOf.map((s: JSONSchema) => jsonSchemaToTS(s, options)).join(' | ');
   }
 
   if (schema.allOf) {
-    return schema.allOf.map((s) => jsonSchemaToTS(s, options)).join(' & ');
+    return schema.allOf.map((s: JSONSchema) => jsonSchemaToTS(s, options)).join(' & ');
   }
 
   if (schema.enum) {
     if (enumsAsUnion || schema.type === 'string') {
-      return schema.enum.map((v) => JSON.stringify(v)).join(' | ');
+      return schema.enum.map((v: unknown) => JSON.stringify(v)).join(' | ');
     }
     return 'unknown';
   }
@@ -177,7 +186,7 @@ function jsonSchemaToTS(schema: JSONSchema, options: TypeGenerationOptions): str
     case 'array':
       if (schema.items) {
         if (Array.isArray(schema.items)) {
-          const tupleTypes = schema.items.map((s) => jsonSchemaToTS(s, options));
+          const tupleTypes = schema.items.map((s: JSONSchema) => jsonSchemaToTS(s, options));
           return `${readonly}[${tupleTypes.join(', ')}]`;
         }
         return `${readonly}${jsonSchemaToTS(schema.items, options)}[]`;
@@ -294,7 +303,7 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
     operation: OpenAPIOperation;
   }> = [];
 
-  for (const [path, pathItem] of Object.entries(spec.paths)) {
+  for (const [path, pathItem] of Object.entries(spec.paths) as [string, OpenAPIPathItem][]) {
     for (const method of ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'] as const) {
       const operation = pathItem[method];
       if (!operation) continue;
@@ -308,12 +317,12 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
 
       // Parameters
       if (operation.parameters) {
-        const pathParams = operation.parameters.filter((p) => p.in === 'path');
-        const queryParams = operation.parameters.filter((p) => p.in === 'query');
-        const headerParams = operation.parameters.filter((p) => p.in === 'header');
+        const pathParams = operation.parameters.filter((p: OpenAPIParameter) => p.in === 'path');
+        const queryParams = operation.parameters.filter((p: OpenAPIParameter) => p.in === 'query');
+        const headerParams = operation.parameters.filter((p: OpenAPIParameter) => p.in === 'header');
 
         if (pathParams.length > 0) {
-          const props = pathParams.map((p) => {
+          const props = pathParams.map((p: OpenAPIParameter) => {
             const type = p.schema ? jsonSchemaToTS(p.schema, options) : 'string';
             return `${p.name}: ${type}`;
           });
@@ -321,7 +330,7 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
         }
 
         if (queryParams.length > 0) {
-          const props = queryParams.map((p) => {
+          const props = queryParams.map((p: OpenAPIParameter) => {
             const type = p.schema ? jsonSchemaToTS(p.schema, options) : 'string';
             const optional = p.required ? '' : '?';
             return `${p.name}${optional}: ${type}`;
@@ -330,7 +339,7 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
         }
 
         if (headerParams.length > 0) {
-          const props = headerParams.map((p) => {
+          const props = headerParams.map((p: OpenAPIParameter) => {
             const type = p.schema ? jsonSchemaToTS(p.schema, options) : 'string';
             const optional = p.required ? '' : '?';
             return `${p.name}${optional}: ${type}`;
@@ -430,8 +439,8 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
     clientLines.push('  return {');
 
     for (const { operationId, method, path, operation } of operations) {
-      const hasParams = operation.parameters?.some((p) => p.in === 'path');
-      const hasQuery = operation.parameters?.some((p) => p.in === 'query');
+      const hasParams = operation.parameters?.some((p: OpenAPIParameter) => p.in === 'path');
+      const hasQuery = operation.parameters?.some((p: OpenAPIParameter) => p.in === 'query');
       const hasBody = !!operation.requestBody;
       const hasArgs = hasParams || hasQuery || hasBody;
 
@@ -473,11 +482,16 @@ export function generateTypes(spec: OpenAPISpec, options: TypeGenerationOptions)
     allLines.push(...clientLines);
   }
 
-  return {
+  const result: GeneratedTypes = {
     types: allLines.join('\n'),
-    schemas: zodLines.length > 0 ? zodLines.join('\n') : undefined,
-    client: clientLines.length > 0 ? clientLines.join('\n') : undefined,
   };
+  if (zodLines.length > 0) {
+    result.schemas = zodLines.join('\n');
+  }
+  if (clientLines.length > 0) {
+    result.client = clientLines.join('\n');
+  }
+  return result;
 }
 
 /**
@@ -509,17 +523,17 @@ function jsonSchemaToZod(schema: JSONSchema): string {
   }
 
   if (schema.allOf) {
-    const first = jsonSchemaToZod(schema.allOf[0]);
+    const first = jsonSchemaToZod(schema.allOf[0]!);
     const rest = schema.allOf.slice(1).map(jsonSchemaToZod);
-    return rest.reduce((acc, s) => `${acc}.and(${s})`, first);
+    return rest.reduce((acc: string, s: string) => `${acc}.and(${s})`, first);
   }
 
   if (schema.enum) {
     if (schema.type === 'string') {
-      const values = schema.enum.map((v) => JSON.stringify(v)).join(', ');
+      const values = schema.enum.map((v: unknown) => JSON.stringify(v)).join(', ');
       return `z.enum([${values}])`;
     }
-    const values = schema.enum.map((v) => `z.literal(${JSON.stringify(v)})`).join(', ');
+    const values = schema.enum.map((v: unknown) => `z.literal(${JSON.stringify(v)})`).join(', ');
     return `z.union([${values}])`;
   }
 
@@ -659,16 +673,17 @@ export async function main(args: string[]): Promise<void> {
         const spec = await loadSpec(parsed.input);
 
         console.log('Generating types...');
-        const result = generateTypes(spec, {
+        const options: TypeGenerationOptions = {
           input: parsed.input,
           output: parsed.output,
-          generateClient: parsed.generateClient,
-          generateZod: parsed.generateZod,
-          typePrefix: parsed.typePrefix,
-          typeSuffix: parsed.typeSuffix,
-          enumsAsUnion: parsed.enumsAsUnion,
-          readonlyTypes: parsed.readonlyTypes,
-        });
+        };
+        if (parsed.generateClient !== undefined) options.generateClient = parsed.generateClient;
+        if (parsed.generateZod !== undefined) options.generateZod = parsed.generateZod;
+        if (parsed.typePrefix !== undefined) options.typePrefix = parsed.typePrefix;
+        if (parsed.typeSuffix !== undefined) options.typeSuffix = parsed.typeSuffix;
+        if (parsed.enumsAsUnion !== undefined) options.enumsAsUnion = parsed.enumsAsUnion;
+        if (parsed.readonlyTypes !== undefined) options.readonlyTypes = parsed.readonlyTypes;
+        const result = generateTypes(spec, options);
 
         console.log(`Writing output to ${parsed.output}...`);
         await writeOutput(parsed.output, result.types);

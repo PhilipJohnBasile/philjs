@@ -14,7 +14,7 @@ export const hasUpdate: Signal<boolean> = signal(false);
 /**
  * Update version info
  */
-export const updateInfo: Signal<UpdateCheckResult | null> = signal(null);
+export const updateInfo: Signal<UpdateCheckResult | null> = signal<UpdateCheckResult | null>(null);
 
 /**
  * Initialize update checking

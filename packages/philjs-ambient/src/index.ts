@@ -755,7 +755,7 @@ export class AdaptiveUI {
   unregister(element: HTMLElement): void {
     const saved = this.elements.get(element);
     if (saved) {
-      element.style.cssText = saved.original[0];
+      element.style.cssText = saved.original[0]!;
       this.elements.delete(element);
     }
   }
@@ -849,7 +849,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

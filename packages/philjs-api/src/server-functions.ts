@@ -294,13 +294,17 @@ function extractExportedFunctions(code: string): string[] {
   let match;
 
   while ((match = regex.exec(code)) !== null) {
-    functions.push(match[1]);
+    if (match[1] !== undefined) {
+      functions.push(match[1]);
+    }
   }
 
   // Also check for export const/let
   const constRegex = /export\s+const\s+(\w+)\s*=/g;
   while ((match = constRegex.exec(code)) !== null) {
-    functions.push(match[1]);
+    if (match[1] !== undefined) {
+      functions.push(match[1]);
+    }
   }
 
   return functions;
@@ -317,7 +321,7 @@ function extractFunctionBody(code: string, fnName: string): string {
   );
 
   const match = code.match(fnRegex);
-  return match ? match[1] : '/* Could not extract function body */';
+  return match?.[1] ?? '/* Could not extract function body */';
 }
 
 // ============================================================================
@@ -445,7 +449,7 @@ export function serverFunctionsMiddleware() {
         new Request(req.url, {
           method: req.method,
           headers: req.headers,
-          body: req.body ? JSON.stringify(req.body) : undefined,
+          ...(req.body ? { body: JSON.stringify(req.body) } : {}),
         })
       );
 

@@ -136,6 +136,7 @@ export function cleanupHooks(): void {
 }
 
 // Auto-cleanup
+declare const afterEach: ((fn: () => void) => void) | undefined;
 if (typeof afterEach !== 'undefined') {
   afterEach(() => {
     cleanupHooks();

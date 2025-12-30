@@ -3,7 +3,7 @@
  * @description Generate basic 3D primitive geometries
  */
 
-import type { PrimitiveGeometry } from './types';
+import type { PrimitiveGeometry } from './types.js';
 
 /**
  * Create a cube geometry
@@ -425,9 +425,9 @@ export function createRoundedBox(
   // Scale vertices to match dimensions
   const vertices = new Float32Array(cube.vertices.length);
   for (let i = 0; i < cube.vertices.length; i += 3) {
-    vertices[i] = cube.vertices[i] * width;
-    vertices[i + 1] = cube.vertices[i + 1] * height;
-    vertices[i + 2] = cube.vertices[i + 2] * depth;
+    vertices[i] = cube.vertices[i]! * width;
+    vertices[i + 1] = cube.vertices[i + 1]! * height;
+    vertices[i + 2] = cube.vertices[i + 2]! * depth;
   }
 
   return {
@@ -452,22 +452,22 @@ export function mergeGeometries(geometries: PrimitiveGeometry[]): PrimitiveGeome
   for (const geom of geometries) {
     // Copy vertices
     for (let i = 0; i < geom.vertices.length; i++) {
-      vertices.push(geom.vertices[i]);
+      vertices.push(geom.vertices[i]!);
     }
 
     // Copy normals
     for (let i = 0; i < geom.normals.length; i++) {
-      normals.push(geom.normals[i]);
+      normals.push(geom.normals[i]!);
     }
 
     // Copy UVs
     for (let i = 0; i < geom.uvs.length; i++) {
-      uvs.push(geom.uvs[i]);
+      uvs.push(geom.uvs[i]!);
     }
 
     // Copy indices with offset
     for (let i = 0; i < geom.indices.length; i++) {
-      indices.push(geom.indices[i] + indexOffset);
+      indices.push(geom.indices[i]! + indexOffset);
     }
 
     indexOffset += geom.vertices.length / 3;
@@ -501,9 +501,9 @@ export function transformGeometry(
     const y = geometry.vertices[i + 1];
     const z = geometry.vertices[i + 2];
 
-    vertices[i] = matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12];
-    vertices[i + 1] = matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13];
-    vertices[i + 2] = matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14];
+    vertices[i] = matrix[0]! * x! + matrix[4]! * y! + matrix[8]! * z! + matrix[12]!;
+    vertices[i + 1] = matrix[1]! * x! + matrix[5]! * y! + matrix[9]! * z! + matrix[13]!;
+    vertices[i + 2] = matrix[2]! * x! + matrix[6]! * y! + matrix[10]! * z! + matrix[14]!;
   }
 
   // Transform normals (using upper-left 3x3 without translation)
@@ -512,9 +512,9 @@ export function transformGeometry(
     const y = geometry.normals[i + 1];
     const z = geometry.normals[i + 2];
 
-    const nx = matrix[0] * x + matrix[4] * y + matrix[8] * z;
-    const ny = matrix[1] * x + matrix[5] * y + matrix[9] * z;
-    const nz = matrix[2] * x + matrix[6] * y + matrix[10] * z;
+    const nx = matrix[0]! * x! + matrix[4]! * y! + matrix[8]! * z!;
+    const ny = matrix[1]! * x! + matrix[5]! * y! + matrix[9]! * z!;
+    const nz = matrix[2]! * x! + matrix[6]! * y! + matrix[10]! * z!;
 
     // Normalize
     const len = Math.sqrt(nx * nx + ny * ny + nz * nz);

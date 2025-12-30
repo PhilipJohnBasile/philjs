@@ -5,7 +5,7 @@
  * Messages are automatically cleared after being read.
  */
 
-import type { Session, SessionData, SessionStorage } from './session';
+import type { Session, SessionData, SessionStorage } from './session.js';
 
 /**
  * Flash message categories
@@ -74,9 +74,9 @@ export function setFlash(
   const flashMessage: FlashMessage = {
     category,
     message,
-    metadata,
     timestamp: Date.now(),
   };
+  if (metadata !== undefined) flashMessage.metadata = metadata;
 
   flashMessages.push(flashMessage);
   session.set(FLASH_KEY as keyof FlashSessionData, flashMessages as any);

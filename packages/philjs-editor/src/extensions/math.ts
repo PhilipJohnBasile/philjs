@@ -61,7 +61,7 @@ export const InlineMath = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const latex = HTMLAttributes.latex || '';
+    const latex = HTMLAttributes['latex'] || '';
     let rendered = '';
 
     try {
@@ -159,7 +159,7 @@ export const BlockMath = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const latex = HTMLAttributes.latex || '';
+    const latex = HTMLAttributes['latex'] || '';
     let rendered = '';
 
     try {

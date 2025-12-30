@@ -3,7 +3,7 @@
  * @description Create and manage WebGL buffers (VBO, VAO, IBO)
  */
 
-import type { BufferInfo, VertexArrayInfo, WebGLExtensions } from './types';
+import type { BufferInfo, VertexArrayInfo, WebGLExtensions } from './types.js';
 
 // WebGL constants (avoid runtime dependency on WebGLRenderingContext)
 const GL_ARRAY_BUFFER = 34962;
@@ -220,9 +220,9 @@ export function createVertexArrayInfo(
   return {
     vao,
     buffers,
-    indexBuffer,
     vertexCount,
-    indexCount,
+    ...(indexBuffer !== undefined && { indexBuffer }),
+    ...(indexCount !== undefined && { indexCount }),
   };
 }
 

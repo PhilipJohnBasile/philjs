@@ -119,8 +119,8 @@ function parseOptions(args: string[]): Record<string, string | boolean> {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg.startsWith('--')) {
-      const key = arg.slice(2);
+    if (arg!.startsWith('--')) {
+      const key = arg!.slice(2);
       const nextArg = args[i + 1];
 
       if (nextArg && !nextArg.startsWith('-')) {
@@ -129,8 +129,8 @@ function parseOptions(args: string[]): Record<string, string | boolean> {
       } else {
         options[key] = true;
       }
-    } else if (arg.startsWith('-')) {
-      const key = arg.slice(1);
+    } else if (arg!.startsWith('-')) {
+      const key = arg!.slice(1);
       options[key] = true;
     }
   }
@@ -460,7 +460,7 @@ async function runIOS(
   spawnSync('pod', ['install'], { cwd: iosDir, stdio: 'inherit' });
 
   // Build and run - validate simulator name
-  const simulator = options.simulator as string || 'iPhone 15';
+  const simulator = options['simulator'] as string || 'iPhone 15';
   if (!validateSimulatorName(simulator)) {
     console.error('  Error: Invalid simulator name');
     process.exit(1);
@@ -500,7 +500,7 @@ async function runAndroid(
   options: Record<string, string | boolean>
 ): Promise<void> {
   // Check for Android SDK
-  const androidHome = process.env.ANDROID_HOME || process.env.ANDROID_SDK_ROOT;
+  const androidHome = process.env['ANDROID_HOME'] || process.env['ANDROID_SDK_ROOT'];
   if (!androidHome) {
     console.error('  Error: ANDROID_HOME or ANDROID_SDK_ROOT is not set');
     console.log('  Install Android Studio and set up the SDK');
@@ -548,7 +548,7 @@ async function runWeb(
   options: Record<string, string | boolean>
 ): Promise<void> {
   // Validate port
-  const port = validatePort(options.port as string || '3000');
+  const port = validatePort(options['port'] as string || '3000');
 
   console.log(`  Starting development server on http://localhost:${port}`);
   console.log('  Press Ctrl+C to stop\n');
@@ -573,8 +573,8 @@ async function runWeb(
  */
 async function buildApp(options: Record<string, string | boolean>): Promise<void> {
   const config = loadConfig();
-  const platform = options.platform as string || 'web';
-  const outDir = options.outDir as string || 'dist';
+  const platform = options['platform'] as string || 'web';
+  const outDir = options['outDir'] as string || 'dist';
 
   console.log(`\n  Building ${config.displayName} for ${platform}...\n`);
 
@@ -669,7 +669,7 @@ async function buildWeb(config: ProjectConfig, outDir: string): Promise<void> {
  */
 async function startDevServer(options: Record<string, string | boolean>): Promise<void> {
   // Validate port
-  const port = validatePort(options.port as string || '3000');
+  const port = validatePort(options['port'] as string || '3000');
 
   const localIP = await getLocalIP();
   console.log(`\n  Starting PhilJS Native development server...\n`);
@@ -749,7 +749,7 @@ async function runDoctor(): Promise<void> {
     {
       name: 'Android SDK',
       check: () => {
-        const androidHome = process.env.ANDROID_HOME || process.env.ANDROID_SDK_ROOT;
+        const androidHome = process.env['ANDROID_HOME'] || process.env['ANDROID_SDK_ROOT'];
         if (androidHome) {
           console.log(`    Android SDK: ${androidHome}`);
           return true;

@@ -6,18 +6,20 @@
  */
 
 // Core rendering
-export { render, cleanup, RenderResult, RenderOptions } from './render';
+export { render, cleanup } from './render.js';
+export type { RenderResult, RenderOptions } from './render.js';
 
 // Queries (re-exported from @testing-library/dom with PhilJS enhancements)
-export { screen, within, queries } from './queries';
-export type { BoundFunctions, Queries } from './queries';
+export { screen, within, queries } from './queries.js';
+export type { BoundFunctions, Queries } from './queries.js';
 
 // Events
-export { fireEvent, createEvent } from './events';
-export { userEvent, user, setup } from './user-event';
+export { fireEvent, createEvent } from './events.js';
+export { userEvent, user, setup } from './user-event.js';
 
 // Hooks testing
-export { renderHook, act, cleanupHooks, HookResult } from './hooks';
+export { renderHook, act, cleanupHooks } from './hooks.js';
+export type { HookResult } from './hooks.js';
 
 // Async utilities
 export {
@@ -28,8 +30,8 @@ export {
   waitForLoadingToFinish,
   waitForNetworkIdle,
   delay,
-  WaitForOptions,
-} from './async';
+} from './async.js';
+export type { WaitForOptions } from './async.js';
 
 // Debug utilities
 export {
@@ -41,7 +43,7 @@ export {
   debugForm,
   snapshot,
   compareSnapshots,
-} from './debug';
+} from './debug.js';
 
 // Matchers
 export {
@@ -57,8 +59,8 @@ export {
   toHaveValue,
   toBeChecked,
   toBeEmptyDOMElement,
-  MatcherResult,
-} from './matchers';
+} from './matchers.js';
+export type { MatcherResult } from './matchers.js';
 
 // Signal testing utilities
 export {
@@ -68,8 +70,8 @@ export {
   waitForSignal,
   waitForSignalValue,
   assertSignalHistory,
-  MockSignal,
-} from './signals';
+} from './signals.js';
+export type { MockSignal } from './signals.js';
 
 // Snapshot testing
 export {
@@ -77,10 +79,8 @@ export {
   createSnapshotMatcher,
   snapshotSignalState,
   compareSignalSnapshots,
-  SnapshotOptions,
-  SnapshotResult,
-  SnapshotMatcher,
-} from './snapshot';
+} from './snapshot.js';
+export type { SnapshotOptions, SnapshotResult, SnapshotMatcher } from './snapshot.js';
 
 // Route testing utilities
 export {
@@ -103,7 +103,7 @@ export {
   assertRouteParams,
   assertSearchParams,
   assertNavigationState,
-} from './route-testing';
+} from './route-testing.js';
 
 export type {
   MockRouteOptions,
@@ -115,7 +115,7 @@ export type {
   RouteTestContext,
   NavigateOptions,
   SubmitOptions,
-} from './route-testing';
+} from './route-testing.js';
 
 // Integration testing utilities
 export {
@@ -131,13 +131,13 @@ export {
   expectJSONSnapshot,
   waitFor as integrationWaitFor,
   retry,
-} from './integration';
+} from './integration.js';
 
 export type {
   IntegrationTestOptions,
   TestContext,
   APITestHelper,
-} from './integration';
+} from './integration.js';
 
 // Component Testing
 export {
@@ -151,7 +151,7 @@ export {
   interactionTest,
   createFixture,
   componentFixture,
-} from './component-testing';
+} from './component-testing.js';
 
 export type {
   ComponentTestConfig,
@@ -166,7 +166,7 @@ export type {
   VisualTestOptions,
   VisualDiff,
   TestFixture,
-} from './component-testing';
+} from './component-testing.js';
 
 // Network Mocking
 export {
@@ -185,7 +185,7 @@ export {
   getNetworkStats,
   createGraphQLMock,
   createWebSocketMock,
-} from './network-mocking';
+} from './network-mocking.js';
 
 export type {
   MockRequest,
@@ -196,4 +196,4 @@ export type {
   NetworkStats,
   GraphQLMock,
   WebSocketMock,
-} from './network-mocking';
+} from './network-mocking.js';

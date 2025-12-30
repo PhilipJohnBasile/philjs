@@ -4,8 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
-    "moduleResolution": "Bundler"
+    "jsxImportSource": "philjs-core"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

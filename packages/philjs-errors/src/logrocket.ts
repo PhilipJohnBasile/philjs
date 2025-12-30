@@ -11,7 +11,7 @@ import type {
   UserContext,
   Breadcrumb,
   Span,
-} from './index';
+} from './index.js';
 
 export interface LogRocketOptions extends TrackerOptions {
   /** App ID (replaces dsn) */

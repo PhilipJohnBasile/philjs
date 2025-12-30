@@ -1,6 +1,7 @@
 {
   "name": "@philjs/vector",
   "version": "0.1.0",
+  "type": "module",
   "description": "Vector embeddings and RAG pipelines for PhilJS - semantic search, document chunking, hybrid search",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

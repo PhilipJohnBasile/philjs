@@ -169,7 +169,7 @@ function buildTOCTree(headings: ContentHeading[], baseDepth: number): TOCEntry[]
     };
 
     // Find the correct parent level
-    while (stack.length > 0 && stack[stack.length - 1].depth >= heading.depth) {
+    while (stack.length > 0 && stack[stack.length - 1]!.depth >= heading.depth) {
       stack.pop();
     }
 
@@ -178,7 +178,7 @@ function buildTOCTree(headings: ContentHeading[], baseDepth: number): TOCEntry[]
       root.push(entry);
     } else {
       // Child item
-      stack[stack.length - 1].children.push(entry);
+      stack[stack.length - 1]!.children.push(entry);
     }
 
     stack.push(entry);
@@ -285,7 +285,7 @@ export function findRelatedPosts<T extends CollectionEntry>(
       return {
         ...post,
         score,
-        sharedTags: sharedTags.length,
+        sharedTags: sharedTags.size,
       };
     })
     .filter(post => post.sharedTags >= minSharedTags && post.score >= threshold)
@@ -476,7 +476,7 @@ export function groupByDate<T extends CollectionEntry>(
     } else if (granularity === 'month') {
       key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     } else {
-      key = date.toISOString().split('T')[0];
+      key = date.toISOString().split('T')[0]!;
     }
 
     if (!groups.has(key)) {
@@ -601,7 +601,7 @@ export function formatDate(
     long: { year: 'numeric', month: 'long', day: 'numeric' },
     full: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
   };
-  const options: Intl.DateTimeFormatOptions = formatOptions[format];
+  const options: Intl.DateTimeFormatOptions = formatOptions[format]!;
 
   return new Intl.DateTimeFormat(locale, options).format(date);
 }

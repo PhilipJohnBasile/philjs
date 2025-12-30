@@ -2,7 +2,7 @@
  * State Panel - Display component state and signals
  */
 
-import type { ComponentNode, StateInfo, SignalInfo } from './types';
+import type { ComponentNode, StateInfo, SignalInfo } from './types.js';
 
 export class StatePanel {
   private container: HTMLElement | null = null;

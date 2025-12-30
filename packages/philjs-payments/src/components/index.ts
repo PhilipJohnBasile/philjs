@@ -2,7 +2,7 @@
  * PhilJS Payments Components
  */
 
-export { PaymentForm } from './PaymentForm';
-export { SubscriptionManager } from './SubscriptionManager';
-export { PricingTable } from './PricingTable';
-export { InvoiceList } from './InvoiceList';
+export { PaymentForm } from './PaymentForm.js';
+export { SubscriptionManager } from './SubscriptionManager.js';
+export { PricingTable } from './PricingTable.js';
+export { InvoiceList } from './InvoiceList.js';

@@ -29,18 +29,21 @@ export class AnthropicProvider implements AIProvider {
       model: options?.model || this.defaultModel,
       max_tokens: options?.maxTokens ?? 4096,
       temperature: options?.temperature ?? 0.7,
-      system: options?.systemPrompt,
+      ...(options?.systemPrompt && { system: options.systemPrompt }),
       messages: [
         {
           role: 'user',
           content: prompt,
         },
       ],
-      stop_sequences: options?.stopSequences,
+      ...(options?.stopSequences && { stop_sequences: options.stopSequences }),
     });
 
     const content = response.content[0];
-    return content.type === 'text' ? content.text : '';
+    if (content?.type === 'text') {
+      return content.text;
+    }
+    return '';
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {
@@ -48,14 +51,14 @@ export class AnthropicProvider implements AIProvider {
       model: options?.model || this.defaultModel,
       max_tokens: options?.maxTokens ?? 4096,
       temperature: options?.temperature ?? 0.7,
-      system: options?.systemPrompt,
+      ...(options?.systemPrompt && { system: options.systemPrompt }),
       messages: [
         {
           role: 'user',
           content: prompt,
         },
       ],
-      stop_sequences: options?.stopSequences,
+      ...(options?.stopSequences && { stop_sequences: options.stopSequences }),
     });
 
     for await (const chunk of stream) {

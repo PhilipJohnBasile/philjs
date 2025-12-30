@@ -2,7 +2,7 @@
  * PhilJS DevTools - Performance Profiler
  */
 
-import type { PerformanceMetrics, RenderMetrics } from '../types';
+import type { PerformanceMetrics, RenderMetrics, HydrationMismatch } from '../types.js';
 
 export class PerformanceProfiler {
   private metrics: PerformanceMetrics;
@@ -146,13 +146,13 @@ export class PerformanceProfiler {
       `;
     }
 
-    const maxDuration = Math.max(...recentRenders.map(r => r.duration), 16);
+    const maxDuration = Math.max(...recentRenders.map((r: RenderMetrics) => r.duration), 16);
 
     return `
       <section class="profiler-section">
         <h3>Render Timeline</h3>
         <div class="render-timeline">
-          ${recentRenders.map(render => {
+          ${recentRenders.map((render: RenderMetrics) => {
             const width = (render.duration / maxDuration * 100);
             const isSlow = render.duration > 16;
 
@@ -192,7 +192,7 @@ export class PerformanceProfiler {
             <div class="hydration-mismatches">
               <h4>Mismatches</h4>
               <ul>
-                ${hydration.mismatches.map(m => `
+                ${hydration.mismatches.map((m: HydrationMismatch) => `
                   <li>
                     <strong>${m.componentName}</strong>: ${m.type}
                     <br/>Expected: <code>${m.expected}</code>
@@ -210,6 +210,6 @@ export class PerformanceProfiler {
   private calculateAverageRenderTime(): number {
     const renders = this.isRecording ? this.renderHistory : this.metrics.renders;
     if (renders.length === 0) return 0;
-    return renders.reduce((sum, r) => sum + r.duration, 0) / renders.length;
+    return renders.reduce((sum: number, r: RenderMetrics) => sum + r.duration, 0) / renders.length;
   }
 }

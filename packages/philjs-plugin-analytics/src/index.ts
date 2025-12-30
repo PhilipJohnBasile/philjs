@@ -106,7 +106,7 @@ function generateAnalyticsScript(config: AnalyticsPluginConfig): string {
     case "plausible":
       return `
 <!-- Plausible Analytics -->
-<script defer data-domain="${options.domain || window.location.hostname}" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="${options['domain'] || window.location.hostname}" src="https://plausible.io/js/script.js"></script>
       `;
 
     case "mixpanel":
@@ -131,7 +131,7 @@ for(h=0;h<l.length;h++)c(e,l[h]);var f="set set_once union unset remove delete".
     case "umami":
       return `
 <!-- Umami Analytics -->
-<script async src="${options.scriptUrl || "https://analytics.umami.is/script.js"}" data-website-id="${trackingId}"></script>
+<script async src="${options['scriptUrl'] || "https://analytics.umami.is/script.js"}" data-website-id="${trackingId}"></script>
       `;
 
     case "fathom":

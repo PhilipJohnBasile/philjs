@@ -186,7 +186,7 @@ export class PoolWorker {
 
     this.currentTaskId = task.id;
 
-    const { promise, resolve, reject } = Promise.withResolvers<T>();
+    const { promise, resolve, reject } = Promise.withResolvers<R>();
     this.resolvers.set(task.id, { resolve, reject });
 
     if (task.onProgress) {
@@ -199,9 +199,11 @@ export class PoolWorker {
       payload: {
         fnString: task.fn.toString(),
         args: task.args
-      },
-      transferables: task.transferables
+      }
     };
+    if (task.transferables !== undefined) {
+      message.transferables = task.transferables;
+    }
 
     this.worker.postMessage(message, task.transferables ?? []);
 
@@ -394,7 +396,7 @@ export class WorkerPool {
   ): Promise<R> {
     let result = initial;
     for (const item of items) {
-      result = await this.exec(fn, result, item);
+      result = await this.exec(fn as (...args: (R | T)[]) => R, result, item);
     }
     return result;
   }
@@ -489,7 +491,7 @@ export class SharedState<T extends Record<string, number>> {
   toObject(): T {
     const obj: Record<string, number> = {};
     this.keys.forEach((key, i) => {
-      obj[key as string] = this.view[i];
+      obj[key as string] = this.view[i]!;
     });
     return obj as T;
   }
@@ -734,16 +736,8 @@ export function useSharedState<T extends Record<string, number>>(
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  PoolWorker,
-  WorkerPool,
-  SharedState,
-  Channel,
-  ParallelIterator
-};
 
 export default {
   PoolWorker,

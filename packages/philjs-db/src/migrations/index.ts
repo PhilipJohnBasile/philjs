@@ -12,25 +12,25 @@
  */
 
 // Core
-export { MigrationManager } from './manager';
-export { MigrationCLI } from './cli';
+export { MigrationManager } from './manager.js';
+export { MigrationCLI } from './cli.js';
 
 // Adapters
-export { PostgresMigrationAdapter } from './adapters/postgres';
-export { MySQLMigrationAdapter } from './adapters/mysql';
-export { SQLiteMigrationAdapter } from './adapters/sqlite';
+export { PostgresMigrationAdapter } from './adapters/postgres.js';
+export { MySQLMigrationAdapter } from './adapters/mysql.js';
+export { SQLiteMigrationAdapter } from './adapters/sqlite.js';
 
 // Tools
-export { SchemaDiffGenerator } from './schema-diff';
+export { SchemaDiffGenerator } from './schema-diff.js';
 export {
   AutoMigrationGenerator,
   BackupManager,
   DataMigrationHelper,
-} from './auto-migration';
+} from './auto-migration.js';
 
 // Integrations
-export { PrismaMigrationIntegration, PrismaSchemaParser } from './integrations/prisma';
-export { DrizzleMigrationIntegration, DrizzleSchemaParser } from './integrations/drizzle';
+export { PrismaMigrationIntegration, PrismaSchemaParser } from './integrations/prisma.js';
+export { DrizzleMigrationIntegration, DrizzleSchemaParser } from './integrations/drizzle.js';
 
 // Types
 export type {
@@ -62,4 +62,4 @@ export type {
   Seed,
   AutoMigrationOptions,
   DryRunResult,
-} from './types';
+} from './types.js';

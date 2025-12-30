@@ -131,10 +131,15 @@ export function exampleCustomClass() {
     }
   }
 
+  // Type guard for Point
+  function isPoint(value: unknown): value is Point {
+    return value instanceof Point;
+  }
+
   // Create a custom type handler
   const pointHandler: CustomTypeHandler<Point> = {
     name: 'Point',
-    isApplicable: (value): value is Point => value instanceof Point,
+    isApplicable: isPoint,
     serialize: (point) => ({ x: point.x, y: point.y }),
     deserialize: (data) => {
       const { x, y } = data as { x: number; y: number };
@@ -147,8 +152,8 @@ export function exampleCustomClass() {
     end: new Point(10, 10),
   };
 
-  const serialized = serialize(data, { customTypes: [pointHandler] });
-  const deserialized = deserialize<typeof data>(serialized, { customTypes: [pointHandler] });
+  const serialized = serialize(data, { customTypes: [pointHandler as CustomTypeHandler] });
+  const deserialized = deserialize<typeof data>(serialized, { customTypes: [pointHandler as CustomTypeHandler] });
 
   console.log('Start is Point:', deserialized.start instanceof Point);
   console.log('Distance:', deserialized.start.distance(deserialized.end));
@@ -173,11 +178,16 @@ export function exampleGlobalCustomTypes() {
     }
   }
 
+  // Type guard for Color
+  function isColor(value: unknown): value is Color {
+    return value instanceof Color;
+  }
+
   // Register globally
   registerCustomType({
     name: 'Color',
-    isApplicable: (value): value is Color => value instanceof Color,
-    serialize: (color) => color.hex,
+    isApplicable: isColor,
+    serialize: (color) => isColor(color) ? color.hex : String(color),
     deserialize: (hex) => new Color(hex as string),
   });
 
@@ -236,7 +246,7 @@ export async function exampleCompression() {
   });
 
   console.log('Users count:', decompressed.users.length);
-  console.log('First user created:', decompressed.users[0].created instanceof Date);
+  console.log('First user created:', decompressed.users[0]?.created instanceof Date);
 
   return decompressed;
 }
@@ -315,19 +325,19 @@ export async function exampleStreaming() {
 // RPC Integration Examples
 // ============================================================================
 
+export interface UserData {
+  id: bigint;
+  name: string;
+  created: Date;
+  tags: Set<string>;
+}
+
 /**
  * Example 9: RPC with SuperJSON (would be used with philjs-rpc)
  */
 export function exampleRPCIntegration() {
   // This example shows the data structures, actual RPC integration
   // is in philjs-rpc/src/superjson.ts
-
-  interface UserData {
-    id: bigint;
-    name: string;
-    created: Date;
-    tags: Set<string>;
-  }
 
   // Server response
   const serverData: UserData = {
@@ -356,25 +366,25 @@ export function exampleRPCIntegration() {
 // SSR Integration Examples
 // ============================================================================
 
+export interface LoaderData {
+  user: {
+    id: bigint;
+    name: string;
+    registered: Date;
+  };
+  posts: Map<number, { title: string; published: Date }>;
+  settings: {
+    theme: string;
+    notifications: Set<string>;
+  };
+}
+
 /**
  * Example 10: SSR loader data serialization
  */
 export function exampleSSRLoader() {
   // This example shows the data structures, actual SSR integration
   // is in philjs-ssr/src/superjson.ts
-
-  interface LoaderData {
-    user: {
-      id: bigint;
-      name: string;
-      registered: Date;
-    };
-    posts: Map<number, { title: string; published: Date }>;
-    settings: {
-      theme: string;
-      notifications: Set<string>;
-    };
-  }
 
   // Loader returns complex data
   const loaderData: LoaderData = {

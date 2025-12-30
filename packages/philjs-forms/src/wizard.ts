@@ -183,7 +183,8 @@ export function createWizard(config: WizardConfig): WizardController {
 
     const fromStep = state.currentStep;
     state.direction = targetIndex > currentActiveIndex ? 'forward' : 'backward';
-    state.currentStep = steps.findIndex((s) => s.id === activeSteps[targetIndex].id);
+    const targetStep = activeSteps[targetIndex];
+    state.currentStep = targetStep ? steps.findIndex((s) => s.id === targetStep.id) : -1;
     state.visitedSteps.add(state.currentStep);
 
     onStepChange?.(fromStep, state.currentStep);
@@ -267,7 +268,7 @@ export function createWizard(config: WizardConfig): WizardController {
       return getActiveSteps();
     },
     get currentStepData() {
-      return steps[state.currentStep];
+      return steps[state.currentStep]!;
     },
     get progress() {
       const activeSteps = getActiveSteps();
@@ -477,7 +478,7 @@ export function createCheckoutWizard(options: {
       title: 'Billing',
       description: 'Enter billing information',
       fields: ['billingAddress', 'sameAsShipping'],
-      condition: (data) => !data.sameAsShipping,
+      condition: (data) => !data['sameAsShipping'],
     });
   }
 

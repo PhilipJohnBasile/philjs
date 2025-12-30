@@ -189,8 +189,9 @@ export function createCookie<T = unknown>(name: string, options: CookieOptions<T
 }
 
 function signValue(payload: string, secrets: string[]) {
-  if (!secrets.length) return payload;
-  const signature = sign(payload, secrets[0]);
+  const firstSecret = secrets[0];
+  if (!firstSecret) return payload;
+  const signature = sign(payload, firstSecret);
   return `${payload}.${signature}`;
 }
 

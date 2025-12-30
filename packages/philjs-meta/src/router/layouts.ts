@@ -8,7 +8,7 @@
  * - Layout composition and data passing
  */
 
-import type { RouteDefinition } from './file-based';
+import type { RouteDefinition } from './file-based.js';
 
 /**
  * Layout component props
@@ -124,7 +124,7 @@ export function createLayoutTree(routes: RouteDefinition[]): LayoutTreeNode {
 
     // Walk through segments, creating nodes as needed
     for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
+      const segment = segments[i]!;
 
       if (!currentNode.children.has(segment)) {
         currentNode.children.set(segment, {
@@ -141,13 +141,13 @@ export function createLayoutTree(routes: RouteDefinition[]): LayoutTreeNode {
 
     // Process layouts for this route
     for (let i = 0; i < route.layouts.length; i++) {
-      const layoutPath = route.layouts[i];
+      const layoutPath = route.layouts[i]!;
       const depth = i;
 
       // Find or create the node for this layout depth
       let layoutNode = root;
       for (let j = 0; j < depth; j++) {
-        const seg = segments[j];
+        const seg = segments[j]!;
         if (layoutNode.children.has(seg)) {
           layoutNode = layoutNode.children.get(seg)!;
         }
@@ -155,13 +155,18 @@ export function createLayoutTree(routes: RouteDefinition[]): LayoutTreeNode {
 
       // Set layout if not already set
       if (!layoutNode.layout) {
-        layoutNode.layout = {
+        const newLayout: LayoutDefinition = {
           filePath: layoutPath,
-          segment: segments[depth - 1] || '',
+          segment: segments[depth - 1] ?? '',
           depth,
-          errorBoundary: route.error,
-          loading: route.loading,
         };
+        if (route.error !== undefined) {
+          newLayout.errorBoundary = route.error;
+        }
+        if (route.loading !== undefined) {
+          newLayout.loading = route.loading;
+        }
+        layoutNode.layout = newLayout;
       }
     }
   }
@@ -173,13 +178,20 @@ export function createLayoutTree(routes: RouteDefinition[]): LayoutTreeNode {
  * Get all layouts for a specific route (from root to leaf)
  */
 export function getLayoutsForRoute(route: RouteDefinition): LayoutDefinition[] {
-  return route.layouts.map((filePath, index) => ({
-    filePath,
-    segment: route.pattern.split('/').filter(Boolean)[index - 1] || '',
-    depth: index,
-    errorBoundary: route.error,
-    loading: route.loading,
-  }));
+  return route.layouts.map((filePath: string, index: number) => {
+    const layout: LayoutDefinition = {
+      filePath,
+      segment: route.pattern.split('/').filter(Boolean)[index - 1] ?? '',
+      depth: index,
+    };
+    if (route.error !== undefined) {
+      layout.errorBoundary = route.error;
+    }
+    if (route.loading !== undefined) {
+      layout.loading = route.loading;
+    }
+    return layout;
+  });
 }
 
 /**
@@ -341,7 +353,7 @@ export const LayoutUtils = {
     let commonAncestor: LayoutDefinition | undefined;
 
     for (let i = 0; i < minLength; i++) {
-      if (layouts1[i].filePath === layouts2[i].filePath) {
+      if (layouts1[i]!.filePath === layouts2[i]!.filePath) {
         commonAncestor = layouts1[i];
       } else {
         break;

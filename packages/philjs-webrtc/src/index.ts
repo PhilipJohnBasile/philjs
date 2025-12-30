@@ -367,14 +367,21 @@ export class PeerConnection {
     if (!this.options.dataChannels) return;
 
     for (const config of this.options.dataChannels) {
-      const channel = this.pc.createDataChannel(config.label, {
+      const channelInit: RTCDataChannelInit = {
         ordered: config.ordered ?? true,
-        maxRetransmits: config.maxRetransmits,
-        maxPacketLifeTime: config.maxPacketLifeTime,
         protocol: config.protocol ?? '',
-        negotiated: config.negotiated ?? false,
-        id: config.id
-      });
+        negotiated: config.negotiated ?? false
+      };
+      if (config.maxRetransmits !== undefined) {
+        channelInit.maxRetransmits = config.maxRetransmits;
+      }
+      if (config.maxPacketLifeTime !== undefined) {
+        channelInit.maxPacketLifeTime = config.maxPacketLifeTime;
+      }
+      if (config.id !== undefined) {
+        channelInit.id = config.id;
+      }
+      const channel = this.pc.createDataChannel(config.label, channelInit);
 
       this.handleDataChannel(channel);
     }
@@ -520,23 +527,38 @@ export class PeerConnection {
       }
     });
 
-    return {
+    const result: PeerStats = {
       peerId: this.options.peerId,
       connectionState: this.pc.connectionState,
       iceConnectionState: this.pc.iceConnectionState,
-      localCandidateType,
-      remoteCandidateType,
       bytesReceived,
       bytesSent,
       packetsLost,
       roundTripTime,
-      jitter,
-      audioLevel,
-      framesPerSecond,
-      frameWidth,
-      frameHeight,
-      codec
+      jitter
     };
+    if (localCandidateType !== undefined) {
+      result.localCandidateType = localCandidateType;
+    }
+    if (remoteCandidateType !== undefined) {
+      result.remoteCandidateType = remoteCandidateType;
+    }
+    if (audioLevel !== undefined) {
+      result.audioLevel = audioLevel;
+    }
+    if (framesPerSecond !== undefined) {
+      result.framesPerSecond = framesPerSecond;
+    }
+    if (frameWidth !== undefined) {
+      result.frameWidth = frameWidth;
+    }
+    if (frameHeight !== undefined) {
+      result.frameHeight = frameHeight;
+    }
+    if (codec !== undefined) {
+      result.codec = codec;
+    }
+    return result;
   }
 
   startStatsMonitoring(interval: number, callback: (stats: PeerStats) => void): void {
@@ -1070,7 +1092,8 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function useCallback<T extends (...args: any[]) => any>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 
@@ -1103,10 +1126,11 @@ export function useWebRTC(signalingUrl: string, roomId: string, rtcConfig?: RTCC
       });
 
       room.onTrack((peerId, track, streams) => {
-        if (streams[0]) {
+        const stream = streams[0];
+        if (stream) {
           setRemoteStreams((prev) => {
             const next = new Map(prev);
-            next.set(peerId, streams[0]);
+            next.set(peerId, stream);
             return next;
           });
         }

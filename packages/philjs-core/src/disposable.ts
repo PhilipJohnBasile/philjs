@@ -155,12 +155,12 @@ export function createDisposableScope(): Disposable & {
     [Symbol.dispose]() {
       // Dispose in reverse order (LIFO)
       for (let i = disposables.length - 1; i >= 0; i--) {
-        disposables[i][Symbol.dispose]();
+        disposables[i]?.[Symbol.dispose]();
       }
       // Note: async disposables should use AsyncDisposableScope
       for (let i = asyncDisposables.length - 1; i >= 0; i--) {
         // Fire and forget for sync dispose - use AsyncDisposableScope for proper async
-        void asyncDisposables[i][Symbol.asyncDispose]();
+        void asyncDisposables[i]?.[Symbol.asyncDispose]();
       }
     },
   };
@@ -189,10 +189,10 @@ export function createAsyncDisposableScope(): AsyncDisposable & {
     async [Symbol.asyncDispose]() {
       // Dispose in reverse order (LIFO)
       for (let i = asyncDisposables.length - 1; i >= 0; i--) {
-        await asyncDisposables[i][Symbol.asyncDispose]();
+        await asyncDisposables[i]?.[Symbol.asyncDispose]();
       }
       for (let i = disposables.length - 1; i >= 0; i--) {
-        disposables[i][Symbol.dispose]();
+        disposables[i]?.[Symbol.dispose]();
       }
     },
   };

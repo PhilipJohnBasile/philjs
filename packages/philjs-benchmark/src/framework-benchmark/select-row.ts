@@ -89,7 +89,10 @@ function createSelectableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     const currentRows = rows();
     if (currentRows.length > 0) {
       const randomIdx = Math.floor(Math.random() * currentRows.length);
-      selectedId.set(currentRows[randomIdx].id);
+      const row = currentRows[randomIdx];
+      if (row) {
+        selectedId.set(row.id);
+      }
     }
   };
 
@@ -181,7 +184,10 @@ function createFineGrainedSelectableTable(mockDOM: ReturnType<typeof createMockD
     const currentRows = rows();
     if (currentRows.length > 0) {
       const randomIdx = Math.floor(Math.random() * currentRows.length);
-      selectById(currentRows[randomIdx].data.id);
+      const row = currentRows[randomIdx];
+      if (row) {
+        selectById(row.data.id);
+      }
     }
   };
 
@@ -250,7 +256,10 @@ function createComputedSelectableTable(mockDOM: ReturnType<typeof createMockDOM>
     const currentRows = rows();
     if (currentRows.length > 0) {
       const randomIdx = Math.floor(Math.random() * currentRows.length);
-      selectedId.set(currentRows[randomIdx].id);
+      const row = currentRows[randomIdx];
+      if (row) {
+        selectedId.set(row.id);
+      }
     }
   };
 
@@ -305,7 +314,10 @@ export const selectRowBatched: Benchmark = {
     const currentRows = table.rows();
     if (currentRows.length > 0) {
       const randomIdx = Math.floor(Math.random() * currentRows.length);
-      table.selectByIdBatched(currentRows[randomIdx].data.id);
+      const row = currentRows[randomIdx];
+      if (row) {
+        table.selectByIdBatched(row.data.id);
+      }
     }
   },
 };

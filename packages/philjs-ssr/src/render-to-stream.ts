@@ -202,7 +202,7 @@ async function renderVNodeToString(
 
   // Handle Fragment
   if (type === Fragment) {
-    return renderVNodeToString(props.children, ctx, isShell);
+    return renderVNodeToString(props['children'] as VNode, ctx, isShell);
   }
 
   // Handle Suspense
@@ -260,7 +260,8 @@ async function renderSuspense(
   ctx: StreamContext,
   isShell: boolean
 ): Promise<string> {
-  const { children, fallback } = vnode.props;
+  const children = vnode.props['children'] as VNode;
+  const fallback = vnode.props['fallback'] as VNode | undefined;
   const id = `s${ctx.suspenseCounter++}`;
 
   if (isShell) {
@@ -271,9 +272,9 @@ async function renderSuspense(
     } catch (error) {
       if (isPromiseLike(error)) {
         // Async content - show fallback and schedule streaming
-        ctx.pendingBoundaries.set(id, (error as Promise<any>).then(() => children));
+        ctx.pendingBoundaries.set(id, (error as Promise<any>).then(() => children) as Promise<VNode>);
         const fallbackHtml = fallback
-          ? await renderVNodeToString(fallback, ctx, isShell)
+          ? await renderVNodeToString(fallback as VNode, ctx, isShell)
           : "<!-- loading -->";
         return `<template id="${id}-placeholder">${fallbackHtml}</template>`;
       }
@@ -281,7 +282,7 @@ async function renderSuspense(
     }
   } else {
     // We're already resolving a boundary
-    return renderVNodeToString(children, ctx, isShell);
+    return renderVNodeToString(children as VNode, ctx, isShell);
   }
 }
 
@@ -293,7 +294,8 @@ async function renderIsland(
   ctx: StreamContext,
   isShell: boolean
 ): Promise<string> {
-  const { children, name } = vnode.props;
+  const children = vnode.props['children'] as VNode;
+  const name = vnode.props['name'] as string | undefined;
   const id = `i${ctx.islandCounter++}`;
 
   const content = await renderVNodeToString(children, ctx, isShell);

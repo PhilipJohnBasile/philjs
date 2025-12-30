@@ -125,7 +125,7 @@ async function renderWithSuspense(vnode: VNode, ctx: StreamContext): Promise<str
   // Check for Suspense component
   if (isJSXElement(vnode) && vnode.type === Suspense) {
     const id = `suspense-${ctx.suspenseId++}`;
-    const { children, fallback } = vnode.props;
+    const { children, fallback } = vnode.props as { children: VNode; fallback?: VNode };
 
     // Try to render children
     try {
@@ -134,7 +134,7 @@ async function renderWithSuspense(vnode: VNode, ctx: StreamContext): Promise<str
     } catch (error) {
       // If it throws a promise (lazy component), show fallback
       if (error instanceof Promise) {
-        ctx.pending.set(id, error.then(() => children));
+        ctx.pending.set(id, error.then(() => children) as Promise<VNode>);
         const fallbackHtml = fallback ? await renderWithSuspense(fallback, ctx) : "Loading...";
         return `<div id="phil-suspense-${id}">${fallbackHtml}</div>`;
       }

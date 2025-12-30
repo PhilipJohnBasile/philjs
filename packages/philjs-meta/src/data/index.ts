@@ -36,7 +36,7 @@ export {
   type CookieStore,
   type CookieOptions,
   type FormActionHandler,
-} from './loaders';
+} from './loaders.js';
 
 // Cache
 export {
@@ -56,4 +56,4 @@ export {
   type SWRConfig,
   type SWRState,
   type ISRConfig,
-} from './cache';
+} from './cache.js';

@@ -367,18 +367,22 @@ export function pipeStreams(
   }
 
   if (streams.length === 1) {
-    return streams[0];
+    return streams[0]!;
   }
 
   // Connect streams
-  let readable = streams[0].readable;
+  const firstStream = streams[0]!;
+  let readable = firstStream.readable;
   for (let i = 1; i < streams.length; i++) {
-    readable = readable.pipeThrough(streams[i]);
+    const stream = streams[i];
+    if (stream) {
+      readable = readable.pipeThrough(stream);
+    }
   }
 
   return {
     readable,
-    writable: streams[0].writable,
+    writable: firstStream.writable,
   } as TransformStream<Uint8Array, Uint8Array>;
 }
 

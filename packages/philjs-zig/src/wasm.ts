@@ -50,7 +50,7 @@ export class SIMDOps {
 
   constructor(instance: WebAssembly.Instance) {
     this.instance = instance;
-    this.memory = instance.exports.memory as WebAssembly.Memory;
+    this.memory = instance.exports['memory'] as WebAssembly.Memory;
     this.heap = new Float32Array(this.memory.buffer);
   }
 
@@ -59,7 +59,7 @@ export class SIMDOps {
    */
   sum(arr: Float32Array): number {
     const ptr = this.allocate(arr);
-    const result = (this.instance.exports.simd_sum as Function)(ptr, arr.length);
+    const result = (this.instance.exports['simd_sum'] as Function)(ptr, arr.length);
     this.reset();
     return result;
   }
@@ -74,7 +74,7 @@ export class SIMDOps {
 
     const ptrA = this.allocate(a);
     const ptrB = this.allocate(b);
-    const result = (this.instance.exports.simd_dot as Function)(ptrA, ptrB, a.length);
+    const result = (this.instance.exports['simd_dot'] as Function)(ptrA, ptrB, a.length);
     this.reset();
     return result;
   }
@@ -89,7 +89,7 @@ export class SIMDOps {
 
     const ptrA = this.allocate(a);
     const ptrB = this.allocate(b);
-    const result = (this.instance.exports.cosine_similarity as Function)(ptrA, ptrB, a.length);
+    const result = (this.instance.exports['cosine_similarity'] as Function)(ptrA, ptrB, a.length);
     this.reset();
     return result;
   }
@@ -101,13 +101,13 @@ export class SIMDOps {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(str);
     const ptr = this.allocateBytes(bytes);
-    const result = (this.instance.exports.fnv1a_hash as Function)(ptr, bytes.length);
+    const result = (this.instance.exports['fnv1a_hash'] as Function)(ptr, bytes.length);
     this.reset();
     return BigInt(result);
   }
 
   private allocate(arr: Float32Array): number {
-    const ptr = (this.instance.exports.alloc as Function)(arr.length * 4);
+    const ptr = (this.instance.exports['alloc'] as Function)(arr.length * 4);
     if (ptr === 0) throw new Error('WASM allocation failed');
 
     // Refresh heap view (memory may have grown)
@@ -117,7 +117,7 @@ export class SIMDOps {
   }
 
   private allocateBytes(bytes: Uint8Array): number {
-    const ptr = (this.instance.exports.alloc as Function)(bytes.length);
+    const ptr = (this.instance.exports['alloc'] as Function)(bytes.length);
     if (ptr === 0) throw new Error('WASM allocation failed');
 
     const view = new Uint8Array(this.memory.buffer);
@@ -126,7 +126,7 @@ export class SIMDOps {
   }
 
   private reset(): void {
-    (this.instance.exports.reset_heap as Function)();
+    (this.instance.exports['reset_heap'] as Function)();
   }
 }
 

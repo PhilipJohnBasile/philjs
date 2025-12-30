@@ -15,9 +15,9 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets } from '../utils/build';
-import { loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, ServerlessAdapter, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets } from '../utils/build.js';
+import { loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the AWS Lambda adapter

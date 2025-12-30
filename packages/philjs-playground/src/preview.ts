@@ -2,7 +2,7 @@
  * PhilJS Playground Preview
  */
 
-import type { PreviewConfig } from './types';
+import type { PreviewConfig } from './types.js';
 
 export function createPreview(container: HTMLElement, config: PreviewConfig = {}) {
   const { sandboxed = true } = config;

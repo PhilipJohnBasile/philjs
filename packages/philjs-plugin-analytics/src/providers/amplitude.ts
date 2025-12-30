@@ -134,11 +134,14 @@ export class AmplitudeProvider implements IAnalyticsProvider {
   private loadScript(): void {
     if (typeof document === "undefined") return;
 
+    // Capture class instance for use in IIFE
+    const self = this;
+
     // Amplitude SDK snippet
     (function(e: Window, t: Document) {
       const n = e.amplitude || { _q: [], _iq: {} };
       if (n.invoked)
-        e.console &&
+        typeof console !== "undefined" &&
           console.error &&
           console.error("Amplitude snippet has been loaded.");
       else {
@@ -154,23 +157,23 @@ export class AmplitudeProvider implements IAnalyticsProvider {
           if (!e.amplitude.runQueuedFunctions) {
             console.log("[Amplitude] Amplitude SDK loaded");
           }
-          e.amplitude.init(this.config.trackingId, undefined, {
+          e.amplitude.init(self.config.trackingId, undefined, {
             defaultTracking: {
               sessions: true,
-              pageViews: this.config.customEvents?.pageViews ?? true,
-              formInteractions: this.config.customEvents?.forms ?? false,
+              pageViews: self.config.customEvents?.pageViews ?? true,
+              formInteractions: self.config.customEvents?.forms ?? false,
               fileDownloads: true,
             },
           });
-          this.loaded = true;
+          self.loaded = true;
         };
         const r = t.getElementsByTagName("script")[0];
-        r.parentNode!.insertBefore(s, r);
-        function i(e: string) {
+        r!.parentNode!.insertBefore(s, r!);
+        const i = (e: string) => {
           return function (...args: any[]) {
             n._q.push({ name: e, args: Array.prototype.slice.call(args, 0) });
           };
-        }
+        };
         const o = [
           "init",
           "logEvent",
@@ -207,10 +210,15 @@ export class AmplitudeProvider implements IAnalyticsProvider {
           "track",
           "revenue",
         ];
-        for (let a = 0; a < o.length; a++) n[o[a]] = i(o[a]);
+        for (let a = 0; a < o.length; a++) {
+          const methodName = o[a];
+          if (methodName !== undefined) {
+            n[methodName] = i(methodName);
+          }
+        }
         e.amplitude = n;
       }
-    }.bind(this))(window, document);
+    })(window, document);
 
     if (this.config.debug) {
       console.log("[Amplitude] Script loading...");

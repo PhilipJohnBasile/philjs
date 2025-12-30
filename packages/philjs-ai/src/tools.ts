@@ -34,9 +34,9 @@ export function tool(builder: ToolBuilder): ToolDefinition {
   };
 
   for (const [key, param] of Object.entries(builder.parameters)) {
-    jsonSchema.properties[key] = parameterToSchema(param);
+    jsonSchema['properties'][key] = parameterToSchema(param);
     if (param.required !== false) {
-      jsonSchema.required.push(key);
+      jsonSchema['required'].push(key);
     }
   }
 
@@ -55,17 +55,17 @@ function parameterToSchema(param: ParameterDef): Record<string, any> {
   };
 
   if (param.enum) {
-    schema.enum = param.enum;
+    schema['enum'] = param.enum;
   }
 
   if (param.type === 'array' && param.items) {
-    schema.items = parameterToSchema(param.items);
+    schema['items'] = parameterToSchema(param.items);
   }
 
   if (param.type === 'object' && param.properties) {
-    schema.properties = {};
+    schema['properties'] = {};
     for (const [key, prop] of Object.entries(param.properties)) {
-      schema.properties[key] = parameterToSchema(prop);
+      schema['properties'][key] = parameterToSchema(prop);
     }
   }
 
@@ -123,7 +123,7 @@ function safeMathEvaluate(expression: string): number {
 
   function parseNumber(): number {
     let numStr = '';
-    while (pos < expr.length && (/\d/.test(expr[pos]) || expr[pos] === '.')) {
+    while (pos < expr.length && (/\d/.test(expr[pos]!) || expr[pos] === '.')) {
       numStr += expr[pos++];
     }
     if (!numStr || numStr.split('.').length > 2) {
@@ -155,7 +155,7 @@ function safeMathEvaluate(expression: string): number {
 
   function parseTerm(): number {
     let result = parseFactor();
-    while (pos < expr.length && ('*/%'.includes(expr[pos]))) {
+    while (pos < expr.length && ('*/%'.includes(expr[pos]!))) {
       const op = expr[pos++];
       const right = parseFactor();
       if (op === '*') result *= right;
@@ -173,7 +173,7 @@ function safeMathEvaluate(expression: string): number {
 
   function parseExpression(): number {
     let result = parseTerm();
-    while (pos < expr.length && '+-'.includes(expr[pos])) {
+    while (pos < expr.length && '+-'.includes(expr[pos]!)) {
       const op = expr[pos++];
       const right = parseTerm();
       if (op === '+') result += right;
@@ -205,7 +205,7 @@ export const calculatorTool = tool({
   handler: async (args) => {
     try {
       // Safe math evaluation without Function() or eval()
-      const result = safeMathEvaluate(args.expression);
+      const result = safeMathEvaluate(args['expression']);
       return { result };
     } catch (e) {
       return { error: e instanceof Error ? e.message : 'Invalid expression' };
@@ -234,7 +234,7 @@ export const weatherTool = tool({
   },
   handler: async (args) => {
     // Integration point for weather APIs
-    return { message: 'Weather API not configured', location: args.location };
+    return { message: 'Weather API not configured', location: args['location'] };
   },
 });
 

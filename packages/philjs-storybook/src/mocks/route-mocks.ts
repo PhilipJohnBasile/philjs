@@ -39,7 +39,7 @@ export function createMockLoader<T = any>(
     error: error$,
 
     async load(params?: Record<string, any>) {
-      calls.push({ params, timestamp: Date.now() });
+      calls.push({ ...(params !== undefined ? { params } : {}), timestamp: Date.now() });
       loading$.set(true);
       error$.set(null);
 

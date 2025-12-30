@@ -333,13 +333,22 @@ export function withSuperJSON<T extends ProcedureDefinition>(
 ): SuperJSONProcedure {
   const enhanced = procedure as SuperJSONProcedure;
 
-  enhanced[SUPERJSON_ENABLED] = {
+  const config: NonNullable<SuperJSONProcedure[typeof SUPERJSON_ENABLED]> = {
     serialize: true,
     deserialize: true,
-    customTypes: options.customTypes,
-    serializeOptions: options.serializeOptions,
-    deserializeOptions: options.deserializeOptions,
   };
+
+  if (options.customTypes !== undefined) {
+    config.customTypes = options.customTypes;
+  }
+  if (options.serializeOptions !== undefined) {
+    config.serializeOptions = options.serializeOptions;
+  }
+  if (options.deserializeOptions !== undefined) {
+    config.deserializeOptions = options.deserializeOptions;
+  }
+
+  enhanced[SUPERJSON_ENABLED] = config;
 
   return enhanced;
 }
@@ -377,12 +386,21 @@ export function getSuperJSONOptions(
   const options = (procedure as SuperJSONProcedure)[SUPERJSON_ENABLED];
   if (!options) return null;
 
-  return {
+  const result: SuperJSONHandlerOptions = {
     enabled: true,
-    customTypes: options.customTypes,
-    serializeOptions: options.serializeOptions,
-    deserializeOptions: options.deserializeOptions,
   };
+
+  if (options.customTypes !== undefined) {
+    result.customTypes = options.customTypes;
+  }
+  if (options.serializeOptions !== undefined) {
+    result.serializeOptions = options.serializeOptions;
+  }
+  if (options.deserializeOptions !== undefined) {
+    result.deserializeOptions = options.deserializeOptions;
+  }
+
+  return result;
 }
 
 // ============================================================================
@@ -412,11 +430,9 @@ export function createLazyDeserialized<T>(
   serialized: SuperJSONResult,
   options?: DeserializeOptions
 ): LazyDeserialized<T> {
-  return {
+  const lazy: LazyDeserialized<T> = {
     [LAZY_MARKER]: true,
     _serialized: serialized,
-    _options: options,
-    _deserialized: undefined,
     get(): T {
       if (this._deserialized === undefined) {
         this._deserialized = deserialize<T>(this._serialized, this._options);
@@ -424,6 +440,12 @@ export function createLazyDeserialized<T>(
       return this._deserialized;
     },
   };
+
+  if (options !== undefined) {
+    lazy._options = options;
+  }
+
+  return lazy;
 }
 
 /**

@@ -27,7 +27,7 @@ export function lazyStore<T = any>(
   return {
     symbolId,
     loaded: false,
-    initialState,
+    ...(initialState !== undefined && { initialState }),
   };
 }
 

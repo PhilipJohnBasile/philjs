@@ -1,6 +1,7 @@
 {
   "name": "@philjs/crossdevice",
   "version": "0.1.0",
+  "type": "module",
   "description": "Cross-device state sync for PhilJS - Apple Continuity-like seamless state transfer",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

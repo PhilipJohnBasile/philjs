@@ -2,4 +2,4 @@
  * PhilJS Maps - Utilities
  */
 
-export * from './cluster';
+export * from './cluster.js';

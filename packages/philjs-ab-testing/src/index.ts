@@ -279,12 +279,12 @@ export class AssignmentEngine {
 export class FeatureFlagManager {
   private flags: Map<string, FeatureFlag> = new Map();
   private userId: string;
-  private context?: UserContext;
+  private context: UserContext | undefined;
   private overrides: Map<string, boolean> = new Map();
 
   constructor(userId: string, context?: UserContext) {
     this.userId = userId;
-    this.context = context;
+    if (context !== undefined) this.context = context;
     this.loadOverrides();
   }
 
@@ -407,12 +407,12 @@ export class FeatureFlagManager {
 
 export class EventTracker {
   private events: ExperimentEvent[] = [];
-  private trackingEndpoint?: string;
+  private trackingEndpoint: string | undefined;
   private flushInterval: ReturnType<typeof setInterval> | null = null;
   private batchSize = 50;
 
   constructor(trackingEndpoint?: string) {
-    this.trackingEndpoint = trackingEndpoint;
+    if (trackingEndpoint !== undefined) this.trackingEndpoint = trackingEndpoint;
 
     if (trackingEndpoint) {
       this.startAutoFlush();
@@ -437,14 +437,15 @@ export class EventTracker {
     value?: number,
     metadata?: Record<string, any>
   ): void {
-    this.track({
+    const event: Omit<ExperimentEvent, 'timestamp'> = {
       experimentId,
       variantId,
       eventName: 'conversion',
-      value,
-      userId,
-      metadata
-    });
+      userId
+    };
+    if (value !== undefined) event.value = value;
+    if (metadata !== undefined) event.metadata = metadata;
+    this.track(event);
   }
 
   trackEvent(
@@ -455,14 +456,15 @@ export class EventTracker {
     value?: number,
     metadata?: Record<string, any>
   ): void {
-    this.track({
+    const event: Omit<ExperimentEvent, 'timestamp'> = {
       experimentId,
       variantId,
       eventName,
-      value,
-      userId,
-      metadata
-    });
+      userId
+    };
+    if (value !== undefined) event.value = value;
+    if (metadata !== undefined) event.metadata = metadata;
+    this.track(event);
   }
 
   async flush(): Promise<void> {
@@ -671,11 +673,11 @@ export class ABTestingManager {
   private eventTracker: EventTracker;
   private statisticalAnalyzer: StatisticalAnalyzer;
   private userId: string;
-  private context?: UserContext;
+  private context: UserContext | undefined;
 
   constructor(userId: string, config: ABTestingConfig = {}, context?: UserContext) {
     this.userId = userId;
-    this.context = context;
+    if (context !== undefined) this.context = context;
 
     this.config = {
       storageKey: config.storageKey ?? 'philjs_ab',
@@ -892,25 +894,3 @@ export function useFeatureFlag(flagId: string): {
   };
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  AssignmentEngine,
-  FeatureFlagManager,
-  EventTracker,
-  StatisticalAnalyzer,
-  ABTestingManager
-};
-
-export default {
-  AssignmentEngine,
-  FeatureFlagManager,
-  EventTracker,
-  StatisticalAnalyzer,
-  ABTestingManager,
-  useABTesting,
-  useExperiment,
-  useFeatureFlag
-};

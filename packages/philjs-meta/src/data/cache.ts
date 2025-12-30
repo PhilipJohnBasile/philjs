@@ -690,14 +690,16 @@ export function unstable_cache<T extends (...args: unknown[]) => Promise<unknown
   return (async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
     const key = `${keyPrefix}:${JSON.stringify(args)}`;
 
+    const cacheOpts: import('./cache.js').CacheOptions = {
+      swr: options?.revalidate === false ? 0 : 60,
+      ...(options?.tags !== undefined ? { tags: options.tags } : {}),
+    };
+    const ttl = options?.revalidate === false ? 0 : options?.revalidate;
+    if (ttl !== undefined) cacheOpts.ttl = ttl;
     return cached(
       key,
       () => fn(...args) as Promise<Awaited<ReturnType<T>>>,
-      {
-        ttl: options?.revalidate === false ? 0 : options?.revalidate,
-        swr: options?.revalidate === false ? 0 : 60,
-        tags: options?.tags,
-      }
+      cacheOpts
     );
   }) as T;
 }

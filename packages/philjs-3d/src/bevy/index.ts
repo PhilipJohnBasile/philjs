@@ -112,7 +112,7 @@ export type {
   // Bridge types
   EntityBridge,
   ComponentBridge,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Hooks
@@ -140,7 +140,7 @@ export {
   // Utilities
   isBevySupported,
   getAllBevyInstances,
-} from './hooks';
+} from './hooks.js';
 
 // ============================================================================
 // ECS Bridge
@@ -177,7 +177,7 @@ export {
 
   // Cleanup
   disposeAllBridges,
-} from './ecs-bridge';
+} from './ecs-bridge.js';
 
 // ============================================================================
 // Assets
@@ -211,7 +211,7 @@ export {
   getAssetBundle,
   isBundleLoaded,
   type AssetBundle,
-} from './assets';
+} from './assets.js';
 
 // ============================================================================
 // Components
@@ -226,4 +226,4 @@ export {
   BevyFullscreenButton,
   BevyPauseButton,
   BevyFPSCounter,
-} from './BevyEmbed';
+} from './BevyEmbed.js';

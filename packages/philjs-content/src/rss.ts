@@ -489,16 +489,16 @@ export function generateJSONFeed(config: JSONFeedConfig): string {
     home_page_url: config.home_page_url,
   };
 
-  if (config.description) feed.description = config.description;
-  if (config.feed_url) feed.feed_url = config.feed_url;
-  if (config.icon) feed.icon = config.icon;
-  if (config.favicon) feed.favicon = config.favicon;
-  if (config.author) feed.author = config.author;
-  if (config.language) feed.language = config.language;
-  if (config.expired) feed.expired = config.expired;
-  if (config.user_comment) feed.user_comment = config.user_comment;
+  if (config.description) feed['description'] = config.description;
+  if (config.feed_url) feed['feed_url'] = config.feed_url;
+  if (config.icon) feed['icon'] = config.icon;
+  if (config.favicon) feed['favicon'] = config.favicon;
+  if (config.author) feed['author'] = config.author;
+  if (config.language) feed['language'] = config.language;
+  if (config.expired) feed['expired'] = config.expired;
+  if (config.user_comment) feed['user_comment'] = config.user_comment;
 
-  feed.items = config.items;
+  feed['items'] = config.items;
 
   return JSON.stringify(feed, null, 2);
 }
@@ -513,15 +513,18 @@ export function generateRSSFromCollection(options: FeedFromCollectionOptions): s
     title: options.title,
     description: options.description,
     site: options.site,
-    items: items.map(item => ({
-      title: item.title,
-      link: item.link,
-      description: item.description,
-      content: item.content,
-      pubDate: item.pubDate,
-      author: item.author,
-      categories: item.categories,
-    })),
+    items: items.map(item => {
+      const rssItem: RSSFeedItem = {
+        title: item.title,
+        link: item.link,
+        description: item.description,
+        pubDate: item.pubDate,
+      };
+      if (item.content !== undefined) rssItem.content = item.content;
+      if (item.author !== undefined) rssItem.author = item.author;
+      if (item.categories !== undefined) rssItem.categories = item.categories;
+      return rssItem;
+    }),
   });
 }
 
@@ -531,20 +534,24 @@ export function generateRSSFromCollection(options: FeedFromCollectionOptions): s
 export function generateAtomFromCollection(options: FeedFromCollectionOptions): string {
   const items = createFeedItems(options);
 
-  return generateAtom({
+  const atomConfig: AtomFeedConfig = {
     title: options.title,
     subtitle: options.description,
     site: options.site,
-    feedUrl: options.feedUrl,
-    items: items.map(item => ({
-      title: item.title,
-      link: item.link,
-      summary: item.description,
-      content: item.content,
-      published: item.pubDate,
-      categories: item.categories,
-    })),
-  });
+    items: items.map(item => {
+      const atomItem: AtomFeedItem = {
+        title: item.title,
+        link: item.link,
+        summary: item.description,
+        published: item.pubDate,
+      };
+      if (item.content !== undefined) atomItem.content = item.content;
+      if (item.categories !== undefined) atomItem.categories = item.categories;
+      return atomItem;
+    }),
+  };
+  if (options.feedUrl !== undefined) atomConfig.feedUrl = options.feedUrl;
+  return generateAtom(atomConfig);
 }
 
 /**
@@ -553,21 +560,25 @@ export function generateAtomFromCollection(options: FeedFromCollectionOptions): 
 export function generateJSONFeedFromCollection(options: FeedFromCollectionOptions): string {
   const items = createFeedItems(options);
 
-  return generateJSONFeed({
+  const jsonConfig: JSONFeedConfig = {
     title: options.title,
     description: options.description,
     home_page_url: options.site,
-    feed_url: options.feedUrl,
-    items: items.map(item => ({
-      id: item.link,
-      url: item.link,
-      title: item.title,
-      summary: item.description,
-      content_html: item.content,
-      date_published: item.pubDate.toISOString(),
-      tags: item.categories,
-    })),
-  });
+    items: items.map(item => {
+      const jsonItem: JSONFeedItem = {
+        id: item.link,
+        url: item.link,
+        title: item.title,
+        summary: item.description,
+        date_published: item.pubDate.toISOString(),
+      };
+      if (item.content !== undefined) jsonItem.content_html = item.content;
+      if (item.categories !== undefined) jsonItem.tags = item.categories;
+      return jsonItem;
+    }),
+  };
+  if (options.feedUrl !== undefined) jsonConfig.feed_url = options.feedUrl;
+  return generateJSONFeed(jsonConfig);
 }
 
 /**
@@ -590,25 +601,34 @@ function createFeedItems(options: FeedFromCollectionOptions): Array<{
 
     // Extract values using mapping or defaults
     const slug = 'slug' in entry ? entry.slug : entry.id;
-    const title = extractValue(mapping.title, entry, data, 'title', data.title as string || slug);
-    const description = extractValue(mapping.description, entry, data, 'description', data.description as string || '');
+    const title = extractValue(mapping.title, entry, data, 'title', data['title'] as string || slug);
+    const description = extractValue(mapping.description, entry, data, 'description', data['description'] as string || '');
     const link = extractValue(mapping.link, entry, data, 'slug', `${site}/${slug}`);
-    const pubDate = extractValue(mapping.pubDate, entry, data, 'date', data.date as Date || entry.modifiedTime);
-    const author = extractValue(mapping.author, entry, data, 'author', data.author as string | undefined);
-    const categories = extractValue(mapping.categories, entry, data, 'tags', data.tags as string[] | undefined);
+    const pubDate = extractValue(mapping.pubDate, entry, data, 'date', data['date'] as Date || entry.modifiedTime);
+    const author = extractValue(mapping.author, entry, data, 'author', data['author'] as string | undefined);
+    const categories = extractValue(mapping.categories, entry, data, 'tags', data['tags'] as string[] | undefined);
     const content = entry.type === 'content'
       ? extractValue(mapping.content, entry, data, 'body', entry.body)
       : undefined;
 
-    return {
+    const result: {
+      title: string;
+      link: string;
+      description: string;
+      content?: string;
+      pubDate: Date;
+      author?: string;
+      categories?: string[];
+    } = {
       title: String(title),
       link: String(link),
       description: String(description),
-      content: content ? String(content) : undefined,
       pubDate: pubDate instanceof Date ? pubDate : new Date(pubDate),
-      author: author ? String(author) : undefined,
-      categories: Array.isArray(categories) ? categories.map(String) : undefined,
     };
+    if (content) result.content = String(content);
+    if (author) result.author = String(author);
+    if (Array.isArray(categories)) result.categories = categories.map(String);
+    return result;
   });
 }
 

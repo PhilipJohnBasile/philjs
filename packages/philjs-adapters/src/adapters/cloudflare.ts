@@ -16,9 +16,9 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets } from '../utils/build';
-import { injectEnvVariables, loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets } from '../utils/build.js';
+import { injectEnvVariables, loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the Cloudflare adapter
@@ -775,7 +775,7 @@ export default {
         }
       }
       lines.push(``, `[[queues.consumers]]`);
-      lines.push(`queue = "${queues[0].queue}"`);
+      lines.push(`queue = "${queues[0]!.queue}"`);
       lines.push(`max_batch_size = 10`);
       lines.push(`max_batch_timeout = 30`);
     }

@@ -73,11 +73,17 @@ function getOrCreateObserver(options: IntersectionOptions): IntersectionObserver
 
   let observer = sharedObservers.get(key);
   if (!observer) {
-    observer = new IntersectionObserver(handleIntersection, {
-      root: options.root,
-      rootMargin: options.rootMargin,
-      threshold: options.threshold,
-    });
+    const observerInit: IntersectionObserverInit = {};
+    if (options.root !== undefined) {
+      observerInit.root = options.root;
+    }
+    if (options.rootMargin !== undefined) {
+      observerInit.rootMargin = options.rootMargin;
+    }
+    if (options.threshold !== undefined) {
+      observerInit.threshold = options.threshold;
+    }
+    observer = new IntersectionObserver(handleIntersection, observerInit);
     sharedObservers.set(key, observer);
   }
 

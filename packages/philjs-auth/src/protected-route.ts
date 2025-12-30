@@ -12,9 +12,9 @@ import { getDefaultSessionManager } from './session.js';
 export function ProtectedRoute(props: {
   children: any;
   fallback?: any;
-  redirectTo?: string;
-  checkAuth?: () => boolean | Promise<boolean>;
-  onUnauthorized?: () => void;
+  redirectTo?: string | undefined;
+  checkAuth?: (() => boolean | Promise<boolean>) | undefined;
+  onUnauthorized?: (() => void) | undefined;
 }) {
   const sessionManager = getDefaultSessionManager();
   const isAuth = sessionManager.isAuthenticated();

@@ -259,14 +259,15 @@ interface Trigger {
 
 function parseTrigger(triggerStr: string): Trigger {
   const parts = triggerStr.split(' ');
-  const event = parts[0].split('[')[0];
+  const event = parts[0]?.split('[')[0] ?? '';
   const modifiers = parts.slice(1);
   const filterMatch = triggerStr.match(/\[(.+)\]/);
 
+  const filter = filterMatch?.[1];
   return {
     event,
     modifiers,
-    filter: filterMatch?.[1],
+    ...(filter !== undefined && { filter }),
   };
 }
 

@@ -18,7 +18,7 @@ export type {
   UnrealEmbedProps,
   UnrealState,
   UseUnrealResult,
-} from './types';
+} from './types.js';
 
 // Hooks
 export {
@@ -26,11 +26,11 @@ export {
   useUnreal,
   setupInputForwarding,
   disposeUnreal,
-} from './hooks';
+} from './hooks.js';
 
 // Components
 export {
   UnrealEmbed,
   createUnrealEmbedElement,
   UnrealStatsOverlay,
-} from './UnrealEmbed';
+} from './UnrealEmbed.js';

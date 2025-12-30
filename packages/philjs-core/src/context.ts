@@ -135,7 +135,7 @@ export function createReducerContext<State, Action>(
   initialState: State
 ) {
   // Deprecation warning
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+  if (typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production') {
     console.warn(
       '[PhilJS] DEPRECATION WARNING: createReducerContext() is deprecated.\n' +
       'Use signal() and createSignalContext() instead for simpler state management.\n' +

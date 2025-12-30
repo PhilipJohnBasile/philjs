@@ -3,7 +3,7 @@
  * @description Compile, link, and manage WebGL shaders
  */
 
-import type { ShaderProgram, ShaderSource } from './types';
+import type { ShaderProgram, ShaderSource } from './types.js';
 
 /**
  * Compile a shader from source

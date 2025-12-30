@@ -88,10 +88,10 @@ interface ContactEvent {
 
 interface RaycastResult {
   hit: boolean;
-  bodyId?: string;
-  point?: Vector3;
-  normal?: Vector3;
-  distance?: number;
+  bodyId?: string | undefined;
+  point?: Vector3 | undefined;
+  normal?: Vector3 | undefined;
+  distance?: number | undefined;
 }
 
 // ============================================================================
@@ -951,7 +951,7 @@ class VehicleController {
     this.config.wheels.forEach((wheel, i) => {
       if (!wheel.isDriving) return;
 
-      const wheelId = this.wheelBodies[i];
+      const wheelId = this.wheelBodies[i]!;
       const chassisRot = this.world.getRotation(this.chassisId);
 
       // Calculate forward direction
@@ -974,7 +974,7 @@ class VehicleController {
 
       // Rotate wheel based on steering input
       const steerQuat = this.eulerToQuaternion(0, this.steerAngle * maxSteer, 0);
-      const wheelId = this.wheelBodies[i];
+      const wheelId = this.wheelBodies[i]!;
 
       // Apply steering through angular velocity
       this.world.setAngularVelocity(wheelId, {
@@ -1010,7 +1010,7 @@ class VehicleController {
 
   private applySuspension(): void {
     this.config.wheels.forEach((wheel, i) => {
-      const wheelId = this.wheelBodies[i];
+      const wheelId = this.wheelBodies[i]!;
       const wheelPos = this.world.getPosition(wheelId);
       const chassisPos = this.world.getPosition(this.chassisId);
 

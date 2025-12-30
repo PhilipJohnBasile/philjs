@@ -63,7 +63,7 @@ export {
   removeAllListeners,
   removeAllEventListeners,
   TauriEvents,
-} from './tauri';
+} from './tauri/index.js';
 
 export type {
   TauriConfig,
@@ -79,7 +79,7 @@ export type {
   CommandDefinition,
   TypedCommand,
   TauriEventType,
-} from './tauri';
+} from './tauri/index.js';
 
 // Window Management
 export {
@@ -100,7 +100,7 @@ export {
   setPosition,
   getPrimaryMonitor,
   getAllMonitors,
-} from './window';
+} from './window.js';
 
 export type {
   WindowOptions,
@@ -110,7 +110,7 @@ export type {
   PhysicalPosition,
   Monitor,
   WindowState,
-} from './window';
+} from './window.js';
 
 // System APIs
 export {
@@ -185,7 +185,7 @@ export {
   disableAutoLaunch,
   isAutoLaunchEnabled,
   toggleAutoLaunch,
-} from './system';
+} from './system/index.js';
 
 export type {
   OpenDialogOptions,
@@ -209,7 +209,7 @@ export type {
   TrayMenuItem,
   TrayClickEvent,
   AutoLaunchOptions,
-} from './system';
+} from './system/index.js';
 
 // IPC Bridge
 export {
@@ -219,13 +219,13 @@ export {
   createTypedIPC,
   createChannel,
   createRequestChannel,
-} from './ipc';
+} from './ipc.js';
 
 export type {
   IPCBridge,
   IPCBridgeOptions,
   TypedIPCSchema,
-} from './ipc';
+} from './ipc.js';
 
 // Lifecycle
 export {
@@ -249,14 +249,14 @@ export {
   isAppReady,
   useLifecycle,
   createAppState,
-} from './lifecycle';
+} from './lifecycle.js';
 
 export type {
   UpdateInfo,
   UpdateStatus,
   LifecycleEvent,
   AppState,
-} from './lifecycle';
+} from './lifecycle.js';
 
 // Electron Compatibility Layer
 // These exports are disabled pending TypeScript compatibility fixes.

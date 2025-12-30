@@ -380,11 +380,13 @@ export function bundleOptimizerPlugin(
             if (existing) {
               existing.chunks.push(fileName);
             } else {
+              // Cast module to access optional properties that may exist on RenderedModule
+              const moduleWithImports = module as typeof module & { importedIds?: string[] };
               stats.modules.push({
                 id: moduleId,
                 size: moduleSize,
                 chunks: [fileName],
-                imports: module.importedIds || [],
+                imports: moduleWithImports.importedIds ?? [],
                 exports: [], // Would need AST analysis
                 usedExports: [],
                 sideEffects: !module.removedExports,

@@ -2,7 +2,7 @@
  * File System APIs
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 // FileSystem types
 export interface FileEntry {
@@ -109,10 +109,10 @@ export const FileSystem = {
     }
 
     const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
-    await writeTextFile(path, contents, {
-      baseDir: baseDirValue,
-      append: options?.append,
-    });
+    const writeOptions: Parameters<typeof writeTextFile>[2] = {};
+    if (baseDirValue !== undefined) writeOptions.baseDir = baseDirValue;
+    if (options?.append !== undefined) writeOptions.append = options.append;
+    await writeTextFile(path, contents, writeOptions);
   },
 
   /**
@@ -135,10 +135,10 @@ export const FileSystem = {
     }
 
     const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
-    await writeFile(path, contents, {
-      baseDir: baseDirValue,
-      append: options?.append,
-    });
+    const writeOptions: Parameters<typeof writeFile>[2] = {};
+    if (baseDirValue !== undefined) writeOptions.baseDir = baseDirValue;
+    if (options?.append !== undefined) writeOptions.append = options.append;
+    await writeFile(path, contents, writeOptions);
   },
 
   /**
@@ -164,10 +164,10 @@ export const FileSystem = {
 
     const { mkdir } = await import('@tauri-apps/plugin-fs');
     const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
-    await mkdir(path, {
-      recursive: options?.recursive,
-      baseDir: baseDirValue,
-    });
+    const mkdirOptions: Parameters<typeof mkdir>[1] = {};
+    if (options?.recursive !== undefined) mkdirOptions.recursive = options.recursive;
+    if (baseDirValue !== undefined) mkdirOptions.baseDir = baseDirValue;
+    await mkdir(path, mkdirOptions);
   },
 
   /**
@@ -180,7 +180,9 @@ export const FileSystem = {
 
     const { remove } = await import('@tauri-apps/plugin-fs');
     const baseDirValue = baseDir ? await getBaseDir(baseDir) : undefined;
-    await remove(path, { baseDir: baseDirValue });
+    const removeOptions: Parameters<typeof remove>[1] = {};
+    if (baseDirValue !== undefined) removeOptions.baseDir = baseDirValue;
+    await remove(path, removeOptions);
   },
 
   /**
@@ -193,10 +195,10 @@ export const FileSystem = {
 
     const { remove } = await import('@tauri-apps/plugin-fs');
     const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
-    await remove(path, {
-      recursive: options?.recursive,
-      baseDir: baseDirValue,
-    });
+    const removeDirOptions: Parameters<typeof remove>[1] = {};
+    if (options?.recursive !== undefined) removeDirOptions.recursive = options.recursive;
+    if (baseDirValue !== undefined) removeDirOptions.baseDir = baseDirValue;
+    await remove(path, removeDirOptions);
   },
 
   /**
@@ -216,16 +218,17 @@ export const FileSystem = {
       const fullPath = `${path}/${entry.name}`;
       try {
         const info = await stat(fullPath, baseDirValue ? { baseDir: baseDirValue } : undefined);
-        result.push({
+        const fileEntry: FileEntry = {
           name: entry.name,
           path: fullPath,
           isDirectory: info.isDirectory,
           isFile: info.isFile,
           isSymlink: info.isSymlink,
           size: info.size,
-          modifiedAt: info.mtime ? new Date(info.mtime) : undefined,
-          createdAt: info.birthtime ? new Date(info.birthtime) : undefined,
-        });
+        };
+        if (info.mtime) fileEntry.modifiedAt = new Date(info.mtime);
+        if (info.birthtime) fileEntry.createdAt = new Date(info.birthtime);
+        result.push(fileEntry);
       } catch {
         result.push({
           name: entry.name,
@@ -278,16 +281,17 @@ export const FileSystem = {
 
     const name = path.split('/').pop() || path;
 
-    return {
+    const fileEntry: FileEntry = {
       name,
       path,
       isDirectory: info.isDirectory,
       isFile: info.isFile,
       isSymlink: info.isSymlink,
       size: info.size,
-      modifiedAt: info.mtime ? new Date(info.mtime) : undefined,
-      createdAt: info.birthtime ? new Date(info.birthtime) : undefined,
     };
+    if (info.mtime) fileEntry.modifiedAt = new Date(info.mtime);
+    if (info.birthtime) fileEntry.createdAt = new Date(info.birthtime);
+    return fileEntry;
   },
 
   /**
@@ -304,6 +308,9 @@ export const FileSystem = {
 
     const { watch } = await import('@tauri-apps/plugin-fs');
     const baseDirValue = options?.baseDir ? await getBaseDir(options.baseDir) : undefined;
+    const watchOptions: Parameters<typeof watch>[2] = {};
+    if (options?.recursive !== undefined) watchOptions.recursive = options.recursive;
+    if (baseDirValue !== undefined) watchOptions.baseDir = baseDirValue;
     const unwatch = await watch(
       path,
       (event) => {
@@ -312,10 +319,7 @@ export const FileSystem = {
           paths: event.paths.map(p => String(p)),
         });
       },
-      {
-        recursive: options?.recursive,
-        baseDir: baseDirValue,
-      }
+      watchOptions
     );
 
     return unwatch;

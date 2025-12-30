@@ -15,9 +15,9 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets, optimizeAssets } from '../utils/build';
-import { injectEnvVariables, loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets, optimizeAssets } from '../utils/build.js';
+import { injectEnvVariables, loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the Vercel adapter
@@ -312,13 +312,15 @@ export function vercelAdapter(config: VercelAdapterConfig = {}): Adapter & Parti
     sourceMaps = true,
   } = config;
 
+  const edgeConfig = edge ? {
+    regions: regions as string[],
+    maxDuration,
+  } : undefined;
+
   return {
     name: 'vercel',
     edge,
-    edgeConfig: edge ? {
-      regions: regions as string[],
-      maxDuration,
-    } : undefined,
+    ...(edgeConfig !== undefined ? { edgeConfig } : {}),
 
     async adapt() {
       console.log(`Building for Vercel (${buildOutput})...`);
@@ -484,20 +486,20 @@ export function vercelAdapter(config: VercelAdapterConfig = {}): Adapter & Parti
     };
 
     if (regions.length > 0 && !regions.includes('all')) {
-      functionConfig.regions = regions;
+      functionConfig['regions'] = regions;
     }
 
     if (!edge && memory) {
-      functionConfig.memory = memory;
+      functionConfig['memory'] = memory;
     }
 
     if (maxDuration) {
-      functionConfig.maxDuration = maxDuration;
+      functionConfig['maxDuration'] = maxDuration;
     }
 
     // ISR configuration
     if (isr) {
-      (functionConfig as Record<string, unknown>).supportsResponseStreaming = streaming;
+      functionConfig['supportsResponseStreaming'] = streaming;
     }
 
     writeFileSync(
@@ -616,12 +618,19 @@ export function vercelAdapter(config: VercelAdapterConfig = {}): Adapter & Parti
     if (functions.length > 0) {
       config.functions = {};
       for (const fn of functions) {
-        config.functions[fn.pattern] = {
+        const fnConfig: { runtime?: string; memory?: number; maxDuration?: number; regions?: string[] } = {
           runtime: fn.runtime === 'edge' ? 'edge' : 'nodejs20.x',
-          memory: fn.memory,
-          maxDuration: fn.maxDuration,
-          regions: fn.regions,
         };
+        if (fn.memory !== undefined) {
+          fnConfig.memory = fn.memory;
+        }
+        if (fn.maxDuration !== undefined) {
+          fnConfig.maxDuration = fn.maxDuration;
+        }
+        if (fn.regions !== undefined) {
+          fnConfig.regions = fn.regions;
+        }
+        config.functions[fn.pattern] = fnConfig;
       }
     }
 

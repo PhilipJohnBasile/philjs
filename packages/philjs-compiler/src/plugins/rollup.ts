@@ -7,8 +7,8 @@
 
 import type { Plugin } from 'rollup';
 import { createFilter } from '@rollup/pluginutils';
-import { Optimizer } from '../optimizer';
-import type { CompilerConfig } from '../types';
+import { Optimizer } from '../optimizer.js';
+import type { CompilerConfig } from '../types.js';
 
 export interface PhilJSRollupPluginOptions extends CompilerConfig {
   /**
@@ -61,10 +61,11 @@ export default function philJSCompiler(options: PhilJSRollupPluginOptions = {}):
     enabled = true,
     verbose = false,
     filter: customFilter,
-    include = ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'],
-    exclude = ['**/node_modules/**', '**/dist/**', '**/*.test.*', '**/*.spec.*'],
     ...compilerConfig
   } = options;
+
+  const include = compilerConfig.include ?? ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js'];
+  const exclude = compilerConfig.exclude ?? ['**/node_modules/**', '**/dist/**', '**/*.test.*', '**/*.spec.*'];
 
   // Create file filter
   const filter = customFilter || createFilter(include, exclude);
@@ -126,7 +127,7 @@ export default function philJSCompiler(options: PhilJSRollupPluginOptions = {}):
               `[philjs-compiler] Optimized ${id} in ${duration.toFixed(2)}ms (${result.optimizations.length} optimizations)`
             );
 
-            result.optimizations.forEach(opt => {
+            result.optimizations.forEach((opt: string) => {
               console.log(`  - ${opt}`);
             });
           }

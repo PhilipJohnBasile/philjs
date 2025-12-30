@@ -461,7 +461,12 @@ export function preload<T>(
   }
 
   // Cache promise
-  const entry = {
+  const entry: {
+    promise: Promise<T>;
+    timestamp: number;
+    result?: T;
+    error?: Error;
+  } = {
     promise,
     timestamp: Date.now(),
   };

@@ -8,7 +8,7 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { createServer as createHttpsServer } from 'https';
 import { readFileSync, existsSync, statSync } from 'fs';
 import { join, extname } from 'path';
-import type { Adapter, AdapterConfig, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, RequestContext } from '../types.js';
 
 export interface NodeConfig extends AdapterConfig {
   /** Port to listen on */

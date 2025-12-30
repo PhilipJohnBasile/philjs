@@ -8,7 +8,7 @@
  * - Build-time errors
  */
 
-import { createPhilJSError, type PhilJSError, type SourceLocation } from './error-codes';
+import { createPhilJSError, type PhilJSError, type SourceLocation, type ErrorSuggestion } from './error-codes.js';
 
 /**
  * Compiler error context
@@ -34,12 +34,16 @@ export function createJSXSyntaxError(
   });
 
   if (context.line && context.column) {
-    error.sourceLocation = {
+    const sourceLocation: SourceLocation = {
       file: context.filePath,
       line: context.line,
       column: context.column,
-      source: extractLineFromCode(context.code, context.line),
     };
+    const source = extractLineFromCode(context.code, context.line);
+    if (source !== undefined) {
+      sourceLocation.source = source;
+    }
+    error.sourceLocation = sourceLocation;
   }
 
   return error;
@@ -59,12 +63,16 @@ export function createUnsupportedFeatureError(
   });
 
   if (context.line && context.column) {
-    error.sourceLocation = {
+    const sourceLocation: SourceLocation = {
       file: context.filePath,
       line: context.line,
       column: context.column,
-      source: extractLineFromCode(context.code, context.line),
     };
+    const source = extractLineFromCode(context.code, context.line);
+    if (source !== undefined) {
+      sourceLocation.source = source;
+    }
+    error.sourceLocation = sourceLocation;
   }
 
   return error;
@@ -80,12 +88,16 @@ export function createOptimizationWarning(
   const error = createPhilJSError('PHIL-302', { issue });
 
   if (context.line && context.column) {
-    error.sourceLocation = {
+    const sourceLocation: SourceLocation = {
       file: context.filePath,
       line: context.line,
       column: context.column,
-      source: extractLineFromCode(context.code, context.line),
     };
+    const source = extractLineFromCode(context.code, context.line);
+    if (source !== undefined) {
+      sourceLocation.source = source;
+    }
+    error.sourceLocation = sourceLocation;
   }
 
   return error;
@@ -331,19 +343,19 @@ export function formatCompilerError(
 
   if (error.suggestions.length > 0) {
     output += 'Suggestions:\n';
-    error.suggestions.forEach((suggestion, idx) => {
+    error.suggestions.forEach((suggestion: ErrorSuggestion, idx: number) => {
       output += `  ${idx + 1}. ${suggestion.description}\n`;
 
       if (suggestion.codeExample) {
         output += '\n    Before:\n';
         output += suggestion.codeExample.before
           .split('\n')
-          .map(line => `    ${line}`)
+          .map((line: string) => `    ${line}`)
           .join('\n');
         output += '\n\n    After:\n';
         output += suggestion.codeExample.after
           .split('\n')
-          .map(line => `    ${line}`)
+          .map((line: string) => `    ${line}`)
           .join('\n');
         output += '\n\n';
       }

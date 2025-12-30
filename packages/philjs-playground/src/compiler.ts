@@ -2,7 +2,7 @@
  * PhilJS Playground Compiler
  */
 
-import type { CompileResult } from './types';
+import type { CompileResult } from './types.js';
 
 export async function compileCode(code: string): Promise<CompileResult> {
   const start = Date.now();

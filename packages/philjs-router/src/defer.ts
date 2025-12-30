@@ -343,11 +343,16 @@ export function getDeferredStates<T extends Record<string, unknown>>(
 
   for (const [key, value] of Object.entries(data)) {
     if (isDeferred(value)) {
-      result[key] = {
+      const state: { status: DeferredStatus; value?: unknown; error?: Error } = {
         status: value.status,
-        value: value.value,
-        error: value.error,
       };
+      if (value.value !== undefined) {
+        state.value = value.value;
+      }
+      if (value.error !== undefined) {
+        state.error = value.error;
+      }
+      result[key] = state;
     }
   }
 

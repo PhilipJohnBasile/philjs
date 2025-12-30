@@ -9,7 +9,7 @@ import type {
   ImageTransformOptions,
   ImageMetadata,
   ImageOptimizationConfig,
-} from './types';
+} from './types.js';
 
 // Sharp is optional - only used in build/server environments
 let sharp: any;
@@ -139,13 +139,15 @@ export async function getMetadata(input: Buffer | string): Promise<ImageMetadata
   const width = metadata.width || 0;
   const height = metadata.height || 0;
 
+  const dominantColor = stats.dominant ? `rgb(${stats.dominant.r}, ${stats.dominant.g}, ${stats.dominant.b})` : undefined;
+
   return {
     width,
     height,
     format: metadata.format || 'unknown',
     size: metadata.size || 0,
     aspectRatio: width / height,
-    dominantColor: stats.dominant ? `rgb(${stats.dominant.r}, ${stats.dominant.g}, ${stats.dominant.b})` : undefined,
+    ...(dominantColor !== undefined && { dominantColor }),
   };
 }
 

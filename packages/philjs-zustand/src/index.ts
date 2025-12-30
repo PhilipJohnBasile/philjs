@@ -466,12 +466,15 @@ export function combine<T extends Record<string, UseStore<any>>>(
     const initialState = {} as CombinedState;
 
     for (const key in stores) {
-      initialState[key] = stores[key].getState();
+      const store = stores[key];
+      if (store) {
+        initialState[key] = store.getState();
 
-      // Subscribe to individual stores
-      stores[key].subscribe((state) => {
-        set((prev) => ({ ...prev, [key]: state }));
-      });
+        // Subscribe to individual stores
+        store.subscribe((state) => {
+          set((prev) => ({ ...prev, [key]: state }));
+        });
+      }
     }
 
     return initialState;

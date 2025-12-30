@@ -12,7 +12,7 @@
  * - Template syntax → JSX
  */
 
-import type { MigrationWarning, ManualReviewItem } from '../migrate';
+import type { MigrationWarning, ManualReviewItem } from '../migrate.js';
 
 export interface TransformResult {
   code: string;
@@ -63,8 +63,8 @@ export class VueTransform {
       return result;
     }
 
-    const script = scriptMatch[1];
-    const template = templateMatch[1];
+    const script = scriptMatch[1]!;
+    const template = templateMatch[1]!;
     const style = styleMatch?.[1];
 
     // Transform script section
@@ -214,14 +214,14 @@ ${style ? `/* Styles - consider using CSS modules or Tailwind */\n/*\n${style}\n
   private extractSetupBody(script: string, result: TransformResult): string {
     const match = script.match(/setup\(\)\s*\{([\s\S]*?)return\s*\{/);
     if (match) {
-      return match[1].trim();
+      return match[1]!.trim();
     }
     return '';
   }
 
   private extractComponentName(script: string): string | null {
     const match = script.match(/name:\s*['"](\w+)['"]/);
-    return match ? match[1] : null;
+    return match ? match[1]! : null;
   }
 
   private templateToJSX(template: string, result: TransformResult): string {

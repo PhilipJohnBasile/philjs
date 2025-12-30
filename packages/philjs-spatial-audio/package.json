@@ -1,6 +1,7 @@
 {
   "name": "@philjs/spatial-audio",
   "version": "0.1.0",
+  "type": "module",
   "description": "3D spatial audio for PhilJS - HRTF, room acoustics, ambisonics, VR/AR audio sync",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

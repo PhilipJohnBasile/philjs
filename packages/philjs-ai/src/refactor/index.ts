@@ -627,7 +627,7 @@ export async function refactorCode(
   focusAreas?: RefactorFocusArea[]
 ): Promise<RefactorResult> {
   const engine = new RefactoringEngine(provider);
-  return engine.refactor({ code, focusAreas });
+  return engine.refactor({ code, ...(focusAreas !== undefined ? { focusAreas } : {}) });
 }
 
 /**

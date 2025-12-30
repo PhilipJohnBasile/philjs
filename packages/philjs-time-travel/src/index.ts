@@ -239,7 +239,7 @@ export class TimeTravelEngine {
 
   record(action?: ActionInfo): StateSnapshot {
     if (!this.state.isRecording || this.state.isPaused) {
-      return this.state.snapshots[this.state.currentIndex];
+      return this.state.snapshots[this.state.currentIndex]!;
     }
 
     // If we're not at the end, create a new branch
@@ -277,11 +277,13 @@ export class TimeTravelEngine {
       id: this.generateId(),
       timestamp: Date.now(),
       state,
-      action,
       metadata: {
         branch: 'main'
       }
     };
+    if (action !== undefined) {
+      snapshot.action = action;
+    }
 
     if (this.config.captureComponents) {
       snapshot.componentTree = this.captureComponentTree();
@@ -301,7 +303,7 @@ export class TimeTravelEngine {
       return false;
     }
 
-    const snapshot = this.state.snapshots[index];
+    const snapshot = this.state.snapshots[index]!;
     this.restoreState(snapshot);
     this.state.currentIndex = index;
     this.notifySubscribers();
@@ -388,11 +390,11 @@ export class TimeTravelEngine {
       if (this.state.isPaused) break;
 
       this.goTo(i);
-      onFrame?.(this.state.snapshots[i]);
+      onFrame?.(this.state.snapshots[i]!);
 
       if (i < this.state.snapshots.length - 1) {
-        const currentTime = this.state.snapshots[i].timestamp;
-        const nextTime = this.state.snapshots[i + 1].timestamp;
+        const currentTime = this.state.snapshots[i]!.timestamp;
+        const nextTime = this.state.snapshots[i + 1]!.timestamp;
         const delay = (nextTime - currentTime) / speed;
         await this.sleep(Math.min(delay, 1000));
       }
@@ -555,7 +557,7 @@ export class TimeTravelEngine {
 
     window.fetch = async function(input, init) {
       const id = engine.generateId();
-      const url = typeof input === 'string' ? input : input.url;
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
       const method = init?.method || 'GET';
       const timestamp = Date.now();
 
@@ -733,11 +735,7 @@ export function useStateDiff(fromIndex: number, toIndex: number): StateDiff[] {
 }
 
 // ============================================================================
-// Exports
+// Additional Exports
 // ============================================================================
 
-export {
-  TimeTravelEngine,
-  diffStates,
-  deepEqual
-};
+export { deepEqual };

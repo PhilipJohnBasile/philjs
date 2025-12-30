@@ -10,7 +10,7 @@ import {
   extractExample,
   getSchemaDescription,
   isZodSchema,
-} from './zod-to-schema';
+} from './zod-to-schema.js';
 import type {
   APIDefinition,
   APIRouteDefinition,
@@ -24,7 +24,7 @@ import type {
   OpenAPIComponents,
   JSONSchema,
   RouteGroup,
-} from './types';
+} from './types.js';
 
 // HTTP methods
 type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options';
@@ -37,10 +37,10 @@ function parseRoute(route: string): { method: HTTPMethod; path: string } {
   const parts = route.trim().split(/\s+/);
 
   if (parts.length === 1) {
-    return { method: 'get', path: parts[0] };
+    return { method: 'get', path: parts[0]! };
   }
 
-  const method = parts[0].toLowerCase() as HTTPMethod;
+  const method = parts[0]!.toLowerCase() as HTTPMethod;
   const path = parts.slice(1).join(' ');
 
   return { method, path };
@@ -352,7 +352,7 @@ export function openapi(
 
   // Handle route groups
   const processRoutes = (routes: APIDefinition, basePath = '', groupTags: string[] = []) => {
-    for (const [routeKey, route] of Object.entries(routes)) {
+    for (const [routeKey, route] of Object.entries(routes) as [string, APIRouteDefinition][]) {
       const { method, path: routePath } = parseRoute(routeKey);
       const fullPath = convertPathParams(
         (options.basePath || '') + basePath + routePath
@@ -364,7 +364,7 @@ export function openapi(
       }
 
       // Generate operation with merged tags
-      const routeWithTags = {
+      const routeWithTags: APIRouteDefinition = {
         ...route,
         tags: [...groupTags, ...(route.tags || [])],
       };
@@ -378,7 +378,7 @@ export function openapi(
 
       // Track tags
       if (operation.tags) {
-        operation.tags.forEach((tag) => allTags.add(tag));
+        operation.tags.forEach((tag: string) => allTags.add(tag));
       }
 
       // Add operation to path item
@@ -409,9 +409,18 @@ export function openapi(
   // Build tags from groups and options
   const tags = options.tags || [];
   const groupTags = Array.isArray(api)
-    ? api.map((g) => ({ name: g.name, description: g.description }))
+    ? api.map((g) => {
+        const tag: { name: string; description?: string } = { name: g.name };
+        if (g.description) tag.description = g.description;
+        return tag;
+      })
     : 'routes' in api && 'name' in api
-    ? [{ name: (api as RouteGroup).name, description: (api as RouteGroup).description }]
+    ? (() => {
+        const g = api as RouteGroup;
+        const tag: { name: string; description?: string } = { name: g.name };
+        if (g.description) tag.description = g.description;
+        return [tag];
+      })()
     : [];
 
   // Merge and deduplicate tags

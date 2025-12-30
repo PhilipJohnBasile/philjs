@@ -5,7 +5,7 @@
  * Supports live_patch (partial updates) and live_redirect (full navigation).
  */
 
-import type { LiveNavigation, NavigationEvent } from './types';
+import type { LiveNavigation, NavigationEvent } from './types.js';
 
 // ============================================================================
 // Navigation State
@@ -36,7 +36,7 @@ export function livePatch(to: string, options?: { replace?: boolean }): void {
   const event: NavigationEvent = {
     type: 'patch',
     to,
-    replace: options?.replace,
+    replace: options?.replace ?? false,
   };
 
   // Update browser history
@@ -65,7 +65,7 @@ export function liveRedirect(to: string, options?: { replace?: boolean }): void 
   const event: NavigationEvent = {
     type: 'redirect',
     to,
-    replace: options?.replace,
+    replace: options?.replace ?? false,
   };
 
   // For redirects, we let the browser handle it
@@ -326,12 +326,13 @@ export function setPageTitle(title: string, prefix?: string, suffix?: string): v
 
 interface LoadingState {
   isLoading: boolean;
-  target?: string;
+  target: string | undefined;
   listeners: Set<(loading: boolean) => void>;
 }
 
 const loadingState: LoadingState = {
   isLoading: false,
+  target: undefined,
   listeners: new Set(),
 };
 

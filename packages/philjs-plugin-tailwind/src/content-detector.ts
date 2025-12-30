@@ -100,7 +100,7 @@ export class ContentDetector {
     return {
       patterns: uniquePatterns,
       directories,
-      framework,
+      ...(framework !== undefined && { framework }),
     };
   }
 
@@ -273,7 +273,8 @@ export function optimizeContentPatterns(patterns: string[]): string[] {
 
     // Check if this pattern is covered by a broader pattern
     const isCovered = optimized.some((existing) => {
-      if (existing.includes("**") && normalized.startsWith(existing.split("**")[0])) {
+      const prefix = existing.split("**")[0];
+      if (existing.includes("**") && prefix !== undefined && normalized.startsWith(prefix)) {
         return true;
       }
       return false;

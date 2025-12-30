@@ -68,7 +68,7 @@ export function serializeHandler(
   return {
     module,
     export: exportName,
-    closure,
+    ...(closure !== undefined && { closure }),
   };
 }
 

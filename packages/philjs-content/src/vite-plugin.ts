@@ -262,8 +262,8 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
 
     let match;
     while ((match = headingRegex.exec(content)) !== null) {
-      const depth = match[1].length;
-      const text = match[2].trim();
+      const depth = match[1]!.length;
+      const text = match[2]!.trim();
       const slug = text
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')
@@ -284,18 +284,23 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
 
     let match;
     while ((match = mdImageRegex.exec(content)) !== null) {
+      const imageSrc = match[2]!;
       const image: ContentImage = {
-        src: match[2],
+        src: imageSrc,
         alt: match[1] || '',
       };
 
       // Try to get image dimensions
       try {
-        const imagePath = resolve(options.contentDir, match[2]);
+        const imagePath = resolve(options.contentDir, imageSrc);
         if (existsSync(imagePath)) {
           const dimensions = (imageSize as unknown as (path: string) => { width?: number; height?: number })(imagePath);
-          image.width = dimensions.width;
-          image.height = dimensions.height;
+          if (dimensions.width !== undefined) {
+            image.width = dimensions.width;
+          }
+          if (dimensions.height !== undefined) {
+            image.height = dimensions.height;
+          }
         }
       } catch {
         // Ignore errors getting image dimensions

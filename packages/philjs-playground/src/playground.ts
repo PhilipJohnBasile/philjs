@@ -4,12 +4,12 @@
  * The main playground component that brings together the editor, preview, and console.
  */
 
-import type { PlaygroundConfig, CompileResult, ConsoleMessage } from './types';
-import { createEditor } from './editor';
-import { createPreview } from './preview';
-import { createConsole } from './console';
-import { compileCode } from './compiler';
-import { exampleCode } from './examples';
+import type { PlaygroundConfig, CompileResult, ConsoleMessage } from './types.js';
+import { createEditor } from './editor.js';
+import { createPreview } from './preview.js';
+import { createConsole } from './console.js';
+import { compileCode } from './compiler.js';
+import { exampleCode } from './examples.js';
 
 /**
  * Create a PhilJS playground
@@ -56,7 +56,7 @@ export function createPlayground(container: HTMLElement, config: PlaygroundConfi
   const editor = createEditor(editorPane, {
     initialCode,
     theme,
-    onChange: autoRun ? debounce(runCode, 500) : undefined,
+    ...(autoRun ? { onChange: debounce(runCode, 500) } : {}),
   });
 
   const preview = createPreview(previewPane);
@@ -85,10 +85,10 @@ export function createPlayground(container: HTMLElement, config: PlaygroundConfi
 
         // Execute in preview
         preview.render(result.output, {
-          onConsole: (type, ...args) => {
+          onConsole: (type: string, ...args: unknown[]) => {
             consoleView.log(type as any, args.map(String).join(' '));
           },
-          onError: (error) => {
+          onError: (error: Error) => {
             consoleView.log('error', error.message);
             onError?.(error);
           },

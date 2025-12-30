@@ -73,7 +73,7 @@ async function handleInit(
   positionals: string[]
 ): Promise<void> {
   const dir = positionals[1] || '.';
-  const module = (values.module as string) || `github.com/user/${resolve(dir).split(/[/\\]/).pop()}`;
+  const module = (values['module'] as string) || `github.com/user/${resolve(dir).split(/[/\\]/).pop()}`;
 
   console.log(`Initializing PhilJS Go project in ${dir}...`);
 
@@ -81,7 +81,7 @@ async function handleInit(
     module,
     goVersion: '1.22',
     server: {
-      port: parseInt(values.port as string, 10),
+      port: parseInt(values['port'] as string, 10),
       ssr: true,
     },
   });
@@ -99,27 +99,27 @@ async function handleBuild(values: Record<string, unknown>): Promise<void> {
   console.log('Building Go server...');
 
   const outputPath = await buildGoServer({
-    outDir: values.output as string,
+    outDir: values['output'] as string,
     mode: 'release',
-    docker: values.docker as boolean,
+    docker: values['docker'] as boolean,
   });
 
   console.log(`Build complete: ${outputPath}`);
 
-  if (values.docker) {
+  if (values['docker']) {
     console.log('Docker image built: philjs-server');
   }
 }
 
 async function handleDev(values: Record<string, unknown>): Promise<void> {
-  const port = parseInt(values.port as string, 10);
-  const host = values.host as string;
+  const port = parseInt(values['port'] as string, 10);
+  const host = values['host'] as string;
 
   console.log(`Starting development server on ${host}:${port}...`);
 
   // First build
   await buildGoServer({
-    outDir: values.output as string,
+    outDir: values['output'] as string,
     mode: 'debug',
   });
 
@@ -146,10 +146,10 @@ Press Ctrl+C to stop
 
 async function handleGenerate(values: Record<string, unknown>): Promise<void> {
   const srcDir = './src/server';
-  const outDir = values.output as string;
-  const module = (values.module as string) || 'github.com/user/app';
+  const outDir = values['output'] as string;
+  const module = (values['module'] as string) || 'github.com/user/app';
 
-  if (values.watch) {
+  if (values['watch']) {
     console.log('Watching for changes...');
     await watchAndGenerate({ srcDir, outDir, module });
   } else {

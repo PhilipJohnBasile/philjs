@@ -11,11 +11,11 @@ import type {
   ShaderProgram,
   TextureInfo,
   Camera,
-} from './types';
-import { createWebGLContext, resizeCanvas } from './context';
-import { createProgram, useProgram, setUniforms } from './shaders';
-import { createAnimationLoop, type FrameCallback } from './animation';
-import { createCamera, updateCameraView, updateCameraProjection } from './camera';
+} from './types.js';
+import { createWebGLContext, resizeCanvas } from './context.js';
+import { createProgram, useProgram, setUniforms } from './shaders.js';
+import { createAnimationLoop, type FrameCallback } from './animation.js';
+import { createCamera, updateCameraView, updateCameraProjection } from './camera.js';
 
 /**
  * Global WebGL state (singleton per context)

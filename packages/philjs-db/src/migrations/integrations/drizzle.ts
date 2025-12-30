@@ -2,7 +2,7 @@
  * Drizzle ORM Migration Integration
  */
 
-import type { MigrationConfig, Migration, MigrationContext } from '../types';
+import type { MigrationConfig, Migration, MigrationContext } from '../types.js';
 
 export class DrizzleMigrationIntegration {
   /**

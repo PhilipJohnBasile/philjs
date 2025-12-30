@@ -2,8 +2,8 @@
  * Tauri event system utilities
  */
 
-import type { Event, EventCallback, UnlistenFn } from './types';
-import { getTauriContext, isTauri } from './context';
+import type { Event, EventCallback, UnlistenFn } from './types.js';
+import { getTauriContext, isTauri } from './context.js';
 
 // Store for event listeners
 const eventListeners = new Map<string, Map<EventCallback, UnlistenFn>>();

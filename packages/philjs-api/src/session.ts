@@ -4,7 +4,7 @@
  * Server-side session handling with multiple storage backends.
  */
 
-import { createSignedCookie, verifySignedCookie, serializeCookie, parseCookies } from './cookies';
+import { createSignedCookie, verifySignedCookie, serializeCookie, parseCookies } from './cookies.js';
 
 export interface SessionData {
   [key: string]: unknown;
@@ -107,11 +107,11 @@ export function createSessionStorage<T extends SessionData = SessionData>(option
 
       return serializeCookie(cookieOptions.cookieName || 'session', signedId, {
         path: cookieOptions.cookie?.path || '/',
-        domain: cookieOptions.cookie?.domain,
+        ...(cookieOptions.cookie?.domain !== undefined ? { domain: cookieOptions.cookie.domain } : {}),
         secure: cookieOptions.cookie?.secure ?? true,
         httpOnly: cookieOptions.cookie?.httpOnly ?? true,
         sameSite: cookieOptions.cookie?.sameSite || 'lax',
-        maxAge: cookieOptions.cookie?.maxAge,
+        ...(cookieOptions.cookie?.maxAge !== undefined ? { maxAge: cookieOptions.cookie.maxAge } : {}),
       });
     },
 
@@ -165,11 +165,11 @@ export function createCookieSessionStorage<T extends SessionData = SessionData>(
 
       return serializeCookie(options.cookieName || 'session', signedData, {
         path: options.cookie?.path || '/',
-        domain: options.cookie?.domain,
+        ...(options.cookie?.domain !== undefined ? { domain: options.cookie.domain } : {}),
         secure: options.cookie?.secure ?? true,
         httpOnly: options.cookie?.httpOnly ?? true,
         sameSite: options.cookie?.sameSite || 'lax',
-        maxAge: options.cookie?.maxAge,
+        ...(options.cookie?.maxAge !== undefined ? { maxAge: options.cookie.maxAge } : {}),
       });
     },
 
@@ -194,7 +194,7 @@ export function createMemorySessionStorage<T extends SessionData = SessionData>(
     cookie: options,
     async createData(data, expiresAt) {
       const id = generateSessionId();
-      sessions.set(id, { data, expiresAt });
+      sessions.set(id, { data, ...(expiresAt !== undefined ? { expiresAt } : {}) });
       return id;
     },
     async readData(id) {
@@ -207,7 +207,7 @@ export function createMemorySessionStorage<T extends SessionData = SessionData>(
       return session.data;
     },
     async updateData(id, data, expiresAt) {
-      sessions.set(id, { data, expiresAt });
+      sessions.set(id, { data, ...(expiresAt !== undefined ? { expiresAt } : {}) });
     },
     async deleteData(id) {
       sessions.delete(id);

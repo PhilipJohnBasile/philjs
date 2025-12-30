@@ -16,7 +16,7 @@ export {
   getArea,
   getIntersectionArea,
   rectsIntersect,
-} from './collision';
+} from './collision.js';
 
 export {
   // Basic modifiers
@@ -42,7 +42,7 @@ export {
   // Utilities
   clamp,
   createBoundingBox,
-} from './modifiers';
+} from './modifiers.js';
 
 export {
   // Default animations
@@ -81,4 +81,4 @@ export {
   type LayoutShiftAnimation,
   type FlipState,
   defaultLayoutShiftAnimation,
-} from './animations';
+} from './animations.js';

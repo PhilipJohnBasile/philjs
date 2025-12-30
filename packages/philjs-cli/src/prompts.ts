@@ -5,6 +5,9 @@
  */
 
 import prompts from 'prompts';
+
+// Type alias for prompts options - use any to avoid compatibility issues with @types/prompts
+type PromptOptions = Parameters<typeof prompts>[0];
 import * as pc from 'picocolors';
 
 export type GeneratorType = 'component' | 'page' | 'api' | 'model' | 'scaffold' | 'hook' | 'context' | 'route' | 'store';
@@ -47,7 +50,7 @@ export async function promptGeneratorType(): Promise<GeneratorType | null> {
     initial: 0,
   });
 
-  return response.type || null;
+  return response['type'] || null;
 }
 
 /**
@@ -80,9 +83,9 @@ export async function promptName(type: GeneratorType): Promise<string | null> {
       }
       return true;
     },
-  });
+  } as PromptOptions);
 
-  return response.name || null;
+  return response['name'] || null;
 }
 
 /**
@@ -102,9 +105,9 @@ export async function promptModelFields(): Promise<ModelField[]> {
       name: 'field',
       message: 'Field definition:',
       hint: 'e.g., email:string:unique or title:string',
-    });
+    } as PromptOptions);
 
-    const fieldDef = response.field?.trim();
+    const fieldDef = response['field']?.trim();
     if (!fieldDef) break;
 
     const field = parseFieldDefinition(fieldDef);
@@ -144,7 +147,7 @@ export function parseFieldDefinition(definition: string): ModelField | null {
     name: name.trim(),
     type: normalizeType(type.trim()),
     modifiers,
-    references,
+    ...(references !== undefined && { references }),
   };
 }
 
@@ -176,7 +179,7 @@ function normalizeType(type: string): string {
  * Interactive prompt for generator options
  */
 export async function promptOptions(type: GeneratorType): Promise<Partial<GeneratorAnswers>> {
-  const questions: prompts.PromptObject[] = [];
+  const questions: PromptOptions = [];
 
   // Tests option (for most generators)
   if (!['model'].includes(type)) {
@@ -228,7 +231,7 @@ export async function runInteractiveMode(): Promise<GeneratorAnswers | null> {
   let fields: string[] | undefined;
   if (type === 'model' || type === 'scaffold') {
     const modelFields = await promptModelFields();
-    fields = modelFields.map(f => {
+    fields = modelFields.map((f: ModelField) => {
       let def = `${f.name}:${f.type.toLowerCase()}`;
       if (f.modifiers.length > 0) {
         def += ':' + f.modifiers.join(':');
@@ -246,7 +249,7 @@ export async function runInteractiveMode(): Promise<GeneratorAnswers | null> {
     includeTests: options.includeTests ?? true,
     includeStyles: options.includeStyles ?? false,
     typescript: options.typescript ?? true,
-    fields,
+    ...(fields !== undefined && { fields }),
   };
 }
 
@@ -267,5 +270,5 @@ export async function confirmGeneration(files: string[]): Promise<boolean> {
     initial: true,
   });
 
-  return response.confirm ?? false;
+  return response['confirm'] ?? false;
 }

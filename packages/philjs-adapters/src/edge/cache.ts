@@ -9,7 +9,7 @@
  * - Automatic asset optimization caching
  */
 
-import { detectEdgePlatform, type EdgePlatform, type EdgeKVNamespace } from './edge-runtime';
+import { detectEdgePlatform, type EdgePlatform, type EdgeKVNamespace, type EdgeKVListOptions } from './edge-runtime.js';
 
 // ============================================================================
 // Types
@@ -320,7 +320,11 @@ function createCloudflareKVStore(namespace: EdgeKVNamespace): EdgeKVStore {
       let cursor: string | undefined;
 
       do {
-        const result = await namespace.list({ prefix, cursor, limit: 1000 });
+        const listOptions: EdgeKVListOptions = { prefix, limit: 1000 };
+        if (cursor !== undefined) {
+          listOptions.cursor = cursor;
+        }
+        const result = await namespace.list(listOptions);
         const deletePromises = result.keys.map((k) => namespace.delete(k.name));
         await Promise.all(deletePromises);
         count += result.keys.length;
@@ -477,11 +481,14 @@ export class EdgeCache {
       // Background revalidation
       revalidate()
         .then((newValue) => {
-          this.set(key, newValue, {
+          const cacheOptions: CacheOptions = {
             ttl: this.config.defaultTTL,
             swr: this.config.defaultSWR,
-            tags: entry?.tags,
-          });
+          };
+          if (entry?.tags !== undefined) {
+            cacheOptions.tags = entry.tags;
+          }
+          this.set(key, newValue, cacheOptions);
         })
         .catch((error) => {
           console.error(`Revalidation failed for ${key}:`, error);
@@ -509,9 +516,12 @@ export class EdgeCache {
       createdAt: now,
       staleAt: now + ttl * 1000,
       expiresAt: now + (ttl + swr) * 1000,
-      tags: options.tags,
       lastModified: now,
     };
+
+    if (options.tags !== undefined) {
+      entry.tags = options.tags;
+    }
 
     // Generate ETag
     try {

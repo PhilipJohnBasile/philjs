@@ -11,7 +11,7 @@
  * - Desktop/Mobile: Dioxus has native renderers
  */
 
-import type { MigrationWarning, ManualReviewItem } from '../migrate';
+import type { MigrationWarning, ManualReviewItem } from '../migrate.js';
 
 export interface TransformResult {
   code: string;

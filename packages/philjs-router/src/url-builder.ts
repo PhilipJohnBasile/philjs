@@ -222,13 +222,15 @@ export function parseQueryString(queryString: string): QueryParams {
   for (const part of query.split('&')) {
     const [key, value] = part.split('=').map(decodeURIComponent);
 
+    if (!key) continue;
+
     if (key in params) {
       // Convert to array if multiple values
       const existing = params[key];
       if (Array.isArray(existing)) {
-        existing.push(value);
+        (existing as string[]).push(value!);
       } else {
-        params[key] = [existing as string, value];
+        params[key] = [existing as string, value!];
       }
     } else {
       params[key] = value;
@@ -251,11 +253,11 @@ export function mergeQueryParams(...paramSets: QueryParams[]): QueryParams {
       if (key in result) {
         const existing = result[key];
         if (Array.isArray(existing) && Array.isArray(value)) {
-          result[key] = [...existing, ...value];
+          result[key] = [...existing, ...value] as string[] | number[];
         } else if (Array.isArray(existing)) {
-          result[key] = [...existing, value as string];
+          result[key] = [...existing, value as string | number] as string[] | number[];
         } else if (Array.isArray(value)) {
-          result[key] = [existing as string, ...value];
+          result[key] = [existing as string | number, ...value] as string[] | number[];
         } else {
           result[key] = value;
         }
@@ -313,7 +315,7 @@ export function generateBreadcrumbs(
   let currentPath = '';
 
   for (let i = 0; i < segments.length; i++) {
-    const segment = segments[i];
+    const segment = segments[i]!;
     currentPath += '/' + segment;
 
     // Skip dynamic segments (params)
@@ -355,7 +357,7 @@ export function extractParamNames(pattern: string): string[] {
   const matches = pattern.matchAll(/[:[\]]([a-zA-Z_][a-zA-Z0-9_]*)\??/g);
 
   for (const match of matches) {
-    names.push(match[1]);
+    names.push(match[1]!);
   }
 
   return [...new Set(names)];
@@ -423,9 +425,9 @@ export function parseURL(url: string): {
   // Extract protocol and host
   const protocolMatch = pathname.match(/^([a-z]+):\/\/([^/]+)/i);
   if (protocolMatch) {
-    protocol = protocolMatch[1];
-    host = protocolMatch[2];
-    pathname = pathname.slice(protocolMatch[0].length);
+    protocol = protocolMatch[1]!;
+    host = protocolMatch[2]!;
+    pathname = pathname.slice(protocolMatch[0]!.length);
   }
 
   // Ensure leading slash
@@ -465,7 +467,7 @@ export function matchPattern(
   const params: RouteParams = {};
 
   for (let i = 0; i < patternParts.length; i++) {
-    const patternPart = patternParts[i];
+    const patternPart = patternParts[i]!;
     const urlPart = urlParts[i];
 
     // Catch-all

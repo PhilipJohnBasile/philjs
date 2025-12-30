@@ -1,6 +1,7 @@
 {
   "name": "@philjs/workflow",
   "version": "0.1.0",
+  "type": "module",
   "description": "Visual workflow engine for PhilJS - node-based execution, human tasks, parallel/conditional flows",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

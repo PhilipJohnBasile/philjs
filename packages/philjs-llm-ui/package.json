@@ -2,6 +2,7 @@
   "name": "@philjs/llm-ui",
   "version": "0.1.0",
   "description": "Streaming chat UI components for PhilJS - ChatGPT-style interfaces, markdown, code blocks, tool calls",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

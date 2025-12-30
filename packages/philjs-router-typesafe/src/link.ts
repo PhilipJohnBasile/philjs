@@ -124,12 +124,20 @@ export function Link<
   } = props;
 
   // Build href
-  const href = buildHref({
+  const hrefOptions: {
+    to: RouteDefinition<TPath, TSearchSchema, unknown> | string;
+    params?: PathParams<TPath> | Record<string, string>;
+    search?: TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : Record<string, unknown>;
+    hash?: string;
+  } = {
     to: to as RouteDefinition<TPath, TSearchSchema, unknown> | string,
     params: params as PathParams<TPath> | Record<string, string>,
     search: search as TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : Record<string, unknown>,
-    hash,
-  });
+  };
+  if (hash !== undefined) {
+    hrefOptions.hash = hash;
+  }
+  const href = buildHref(hrefOptions);
 
   // Check if this link is active
   const isActive = checkIsActive(to, href);
@@ -150,8 +158,8 @@ export function Link<
   // Handle click
   const handleClick = (event: MouseEvent) => {
     // Call any existing onClick handler
-    if (typeof rest.onClick === "function") {
-      rest.onClick(event);
+    if (typeof rest['onClick'] === "function") {
+      rest['onClick'](event);
     }
 
     // Don't handle if:
@@ -211,9 +219,9 @@ export function Link<
   };
 
   if (target) {
-    linkProps.target = target;
+    linkProps['target'] = target;
     if (target === "_blank") {
-      linkProps.rel = "noopener noreferrer";
+      linkProps['rel'] = "noopener noreferrer";
     }
   }
 
@@ -302,7 +310,7 @@ export function createNavigateLink<
   const href = buildHref({
     to: route,
     params: params as PathParams<TPath>,
-    search: search as TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : undefined,
+    search: search as TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : Record<string, unknown>,
   });
 
   return {
@@ -373,7 +381,7 @@ export function Redirect<
   const href = buildHref({
     to: to as RouteDefinition<TPath, TSearchSchema, unknown> | string,
     params: params as PathParams<TPath>,
-    search: search as TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : undefined,
+    search: search as TSearchSchema extends z.ZodType ? Partial<z.infer<TSearchSchema>> : Record<string, unknown>,
   });
 
   // Schedule navigation for next tick to avoid rendering issues

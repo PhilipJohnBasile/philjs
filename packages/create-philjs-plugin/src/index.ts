@@ -80,10 +80,10 @@ export interface PluginConfigSchema {
 
 export interface Plugin {
   meta: PluginMetadata;
-  configSchema?: PluginConfigSchema;
-  setup?: (config: any, ctx: PluginContext) => Promise<void> | void;
+  configSchema?: PluginConfigSchema | undefined;
+  setup?: ((config: any, ctx: PluginContext) => Promise<void> | void) | undefined;
   hooks?: PluginHooks;
-  vitePlugin?: (config: any) => any;
+  vitePlugin?: ((config: any) => any) | undefined;
 }
 
 // Export generator

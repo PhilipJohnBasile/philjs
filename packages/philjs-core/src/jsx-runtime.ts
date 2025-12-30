@@ -27,9 +27,9 @@ export function jsx(
     type,
     props: {
       ...rest,
-      children: children !== undefined ? normalizeChildren(children) : undefined,
+      ...(children !== undefined && { children: normalizeChildren(children) }),
     },
-    key,
+    ...(key !== undefined && { key }),
   };
 }
 
@@ -81,5 +81,5 @@ export function createElement(
   props: Record<string, any> | null,
   ...children: any[]
 ): JSXElement {
-  return jsx(type, { ...props, children }, props?.key);
+  return jsx(type, { ...props, children }, props?.['key']);
 }

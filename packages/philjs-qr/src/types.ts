@@ -107,8 +107,9 @@ export interface CameraPermission {
 }
 
 // Component props
-export interface QRCodeProps extends QRCodeOptions {
+export interface QRCodeProps extends Omit<QRCodeOptions, 'style'> {
   className?: string;
+  qrStyle?: QRStyle;
   style?: React.CSSProperties;
   onLoad?: () => void;
   onError?: (error: Error) => void;

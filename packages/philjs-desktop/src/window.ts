@@ -2,9 +2,9 @@
  * Window Management for PhilJS Desktop
  */
 
-import { isTauri } from './tauri/context';
-import { listen, emit, TauriEvents } from './tauri/events';
-import type { UnlistenFn } from './tauri/types';
+import { isTauri } from './tauri/context.js';
+import { listen, emit, TauriEvents } from './tauri/events.js';
+import type { UnlistenFn, Event } from './tauri/types.js';
 
 // Window types
 export interface WindowOptions {
@@ -314,13 +314,13 @@ export class WindowHandle {
   }
 
   async onResize(callback: (size: WindowSize) => void): Promise<UnlistenFn> {
-    return listen(TauriEvents.WINDOW_RESIZED, (e) => {
+    return listen(TauriEvents.WINDOW_RESIZED, (e: Event<WindowSize>) => {
       callback(e.payload as WindowSize);
     });
   }
 
   async onMove(callback: (position: WindowPosition) => void): Promise<UnlistenFn> {
-    return listen(TauriEvents.WINDOW_MOVED, (e) => {
+    return listen(TauriEvents.WINDOW_MOVED, (e: Event<WindowPosition>) => {
       callback(e.payload as WindowPosition);
     });
   }

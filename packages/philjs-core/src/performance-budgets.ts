@@ -131,7 +131,7 @@ export class PerformanceBudgetManager {
     const history = this.history.get(current.route) || [];
     if (history.length === 0) return [];
 
-    const previous = history[history.length - 1];
+    const previous = history[history.length - 1]!;
     const reports: RegressionReport[] = [];
 
     for (const [key, currentValue] of Object.entries(current.metrics)) {
@@ -274,7 +274,9 @@ export class PerformanceBudgetManager {
     const trends: ReturnType<typeof this.getTrends> = [];
 
     // Analyze each metric
-    for (const metric of Object.keys(recent[0].metrics)) {
+    const firstMetrics = recent[0]?.metrics;
+    if (!firstMetrics) return [];
+    for (const metric of Object.keys(firstMetrics)) {
       const dataPoints = recent.map((h) => ({
         timestamp: h.timestamp,
         value: h.metrics[metric as keyof typeof h.metrics] as number,

@@ -257,6 +257,6 @@ export function trackSignalErrors<T>(
 }
 
 // Re-export integrations
-export { createSentryTracker } from './sentry';
-export { createLogRocketTracker } from './logrocket';
-export { createRollbarTracker } from './rollbar';
+export { createSentryTracker } from './sentry.js';
+export { createLogRocketTracker } from './logrocket.js';
+export { createRollbarTracker } from './rollbar.js';

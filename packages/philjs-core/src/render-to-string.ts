@@ -44,7 +44,7 @@ export function renderToString(vnode: VNode): string {
 
   // Handle Fragment
   if (type === Fragment) {
-    return renderToString(props.children);
+    return renderToString(props['children']);
   }
 
   // Handle function components

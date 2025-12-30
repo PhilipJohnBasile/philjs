@@ -1,6 +1,7 @@
 {
   "name": "@philjs/pwa",
   "version": "0.1.0",
+  "type": "module",
   "description": "Zero-config PWA generation for PhilJS - service worker, manifest, push notifications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

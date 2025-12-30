@@ -451,7 +451,7 @@ export class CLIPluginManager {
       yarn: { cmd: "yarn", args: ["add", ...(dev ? ["-D"] : []), packageSpec] },
       bun: { cmd: "bun", args: ["add", ...(dev ? ["-d"] : []), packageSpec] },
     };
-    return commands[pm] || commands.npm;
+    return commands[pm] ?? commands["npm"]!;
   }
 
   /**
@@ -464,7 +464,7 @@ export class CLIPluginManager {
       yarn: { cmd: "yarn", args: ["remove", packageName] },
       bun: { cmd: "bun", args: ["remove", packageName] },
     };
-    return commands[pm] || commands.npm;
+    return commands[pm] ?? commands["npm"]!;
   }
 
   /**
@@ -477,7 +477,7 @@ export class CLIPluginManager {
       yarn: { cmd: "yarn", args: ["upgrade", packageName] },
       bun: { cmd: "bun", args: ["update", packageName] },
     };
-    return commands[pm] || commands.npm;
+    return commands[pm] ?? commands["npm"]!;
   }
 
   /**
@@ -532,7 +532,7 @@ export class CLIPluginManager {
     const packageJson = await this.readPackageJson();
 
     return {
-      version: packageJson.dependencies?.["philjs-core"] || "2.0.0",
+      version: packageJson["dependencies"]?.["philjs-core"] ?? "2.0.0",
       root: this.projectRoot,
       mode: "development" as const,
       config: {},
@@ -622,10 +622,10 @@ export class CLIPluginManager {
     }
 
     const packageJson = await this.readPackageJson();
-    const currentVersion = packageJson.dependencies?.["philjs-core"] || "2.0.0";
+    const currentVersion = packageJson["dependencies"]?.["philjs-core"] ?? "2.0.0";
 
     // Extract major version
-    const required = parseInt(requiredVersion.split(".")[0]);
+    const required = parseInt(requiredVersion.split(".")[0]!);
     const current = parseInt(currentVersion.split(".")[0]);
 
     return required === current;

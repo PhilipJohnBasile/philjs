@@ -13,7 +13,7 @@ export {
   calculateCompressionRatio,
   defaultProductionConfig,
   type ProductionPresetOptions,
-} from './production';
+} from './production.js';
 
 export {
   createDevelopmentPreset,
@@ -25,7 +25,7 @@ export {
   type DevelopmentPresetOptions,
   type DevMetrics,
   type DevBuildReport,
-} from './development';
+} from './development.js';
 
 export {
   createLibraryPreset,
@@ -36,4 +36,4 @@ export {
   defaultLibraryConfig,
   type LibraryPresetOptions,
   type LibraryValidation,
-} from './library';
+} from './library.js';

@@ -30,7 +30,7 @@ export {
   type LoggerOptions,
   type CompressionOptions,
   type BodyParserOptions,
-} from './middleware';
+} from './middleware.js';
 
 // API Routes
 export {
@@ -54,4 +54,4 @@ export {
   type JSONBody,
   type FormBody,
   type MultipartBody,
-} from './api-routes';
+} from './api-routes.js';

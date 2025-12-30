@@ -29,7 +29,7 @@ export function lazy<P = any>(
   return {
     symbolId,
     loaded: false,
-    fallback: options?.fallback,
+    ...(options?.fallback !== undefined && { fallback: options.fallback }),
   };
 }
 

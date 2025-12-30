@@ -9,8 +9,8 @@ import { createHash } from 'crypto';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join, dirname } from 'path';
-import type { ImageOptimizationConfig } from './types';
-import { optimizeImage, generateBlurPlaceholder, isSharpAvailable } from './optimizer';
+import type { ImageOptimizationConfig } from './types.js';
+import { optimizeImage, generateBlurPlaceholder, isSharpAvailable } from './optimizer.js';
 
 interface PhilJSImagePluginOptions extends ImageOptimizationConfig {
   // Additional plugin options
@@ -75,9 +75,9 @@ export default function philjsImage(options: PhilJSImagePluginOptions = {}): Plu
 
           // Optimize
           const optimized = await optimizeImage(buffer, {
-            width: width ? parseInt(width) : undefined,
-            height: height ? parseInt(height) : undefined,
-            quality: quality ? parseInt(quality) : config.quality,
+            ...(width ? { width: parseInt(width) } : {}),
+            ...(height ? { height: parseInt(height) } : {}),
+            ...(quality ? { quality: parseInt(quality) } : config['quality'] !== undefined ? { quality: config['quality'] } : {}),
             format: format || 'webp',
           });
 
@@ -108,20 +108,20 @@ export default function philjsImage(options: PhilJSImagePluginOptions = {}): Plu
             // Generate cache key
             const hash = createHash('md5').update(buffer).digest('hex').slice(0, 8);
 
-            const outputDir = join(root, config.outputDir || 'public/_images');
+            const outputDir = join(root, config['outputDir'] ?? 'public/_images');
             await mkdir(outputDir, { recursive: true });
 
             // Generate blur placeholder
             const blurDataURL = await generateBlurPlaceholder(buffer);
 
             // Optimize in different formats
-            const formats = config.formats || ['webp', 'jpeg'];
+            const formats = config['formats'] ?? ['webp', 'jpeg'];
             const optimized: Record<string, string> = {};
 
             for (const format of formats) {
               const optimizedBuffer = await optimizeImage(buffer, {
                 format: format as any,
-                quality: config.quality,
+                ...(config['quality'] !== undefined ? { quality: config['quality'] } : {}),
               });
 
               const filename = `${hash}.${format}`;
@@ -135,7 +135,7 @@ export default function philjsImage(options: PhilJSImagePluginOptions = {}): Plu
             // Return metadata
             return {
               code: `export default ${JSON.stringify({
-                src: optimized[formats[0]],
+                src: optimized[formats[0]!],
                 sources: optimized,
                 blurDataURL,
               })}`,

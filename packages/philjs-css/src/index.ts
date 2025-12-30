@@ -23,7 +23,7 @@ export {
   extractCSS as extractAllCSS,
   resetStyles,
   styleRegistry
-} from './css';
+} from './css.js';
 
 // Theme system
 export {
@@ -35,7 +35,7 @@ export {
   themeVar,
   createBreakpoints,
   defaultTheme
-} from './theme';
+} from './theme.js';
 
 // Variants
 export {
@@ -46,7 +46,7 @@ export {
   dataVariants,
   stateVariants,
   slotVariants
-} from './variants';
+} from './variants.js';
 
 // Atomic CSS
 export {
@@ -59,7 +59,7 @@ export {
   extractAtomicCSS,
   resetAtomicRegistry,
   atomicRegistry
-} from './atomic';
+} from './atomic.js';
 
 // Build-time extraction
 export {
@@ -70,7 +70,7 @@ export {
   createRollupPlugin,
   createWebpackPlugin,
   analyzeCSSBundle
-} from './extract';
+} from './extract.js';
 
 // Runtime utilities (SSR hydration, dynamic styles)
 export {
@@ -92,7 +92,7 @@ export {
   batchStyleUpdates,
   prefetchStyles,
   getStyleDebugInfo
-} from './runtime';
+} from './runtime.js';
 
 // Compiler utilities (build-time optimization)
 export {
@@ -107,7 +107,7 @@ export {
   generateSourceMap,
   generateOptimizationReport,
   optimizeCSS
-} from './compiler';
+} from './compiler.js';
 
 // Advanced CSS features (next-gen CSS)
 export {
@@ -145,7 +145,7 @@ export {
   supportsCSS,
   cssFeatures,
   featureDetectionCSS
-} from './advanced';
+} from './advanced.js';
 
 // Types
 export type {
@@ -161,7 +161,7 @@ export type {
   CSSRule,
   StyleSheet,
   ResponsiveValue
-} from './types';
+} from './types.js';
 
 // Advanced types
 export type {
@@ -174,7 +174,7 @@ export type {
   ViewTimelineConfig,
   AnchorConfig,
   AnchorPositionConfig
-} from './advanced';
+} from './advanced.js';
 
 // Animation System
 export {
@@ -214,7 +214,7 @@ export {
   // Generators
   generateAllKeyframes,
   generateAnimationUtilities,
-} from './animations';
+} from './animations.js';
 
 export type {
   SpringConfig,
@@ -224,10 +224,10 @@ export type {
   StaggerConfig,
   OrchestrationConfig,
   FLIPState,
-} from './animations';
+} from './animations.js';
 
 // Re-export from extract for convenience
-export type { BuildPlugin, BundleStats } from './extract';
+export type { BuildPlugin, BundleStats } from './extract.js';
 
 // Gesture System
 export {
@@ -242,7 +242,7 @@ export {
   createCarousel,
   gesturePresets,
   directionVectors,
-} from './gestures';
+} from './gestures.js';
 
 export type {
   Point,
@@ -263,4 +263,4 @@ export type {
   RotateConfig,
   GestureHandler,
   GestureHandlers,
-} from './gestures';
+} from './gestures.js';

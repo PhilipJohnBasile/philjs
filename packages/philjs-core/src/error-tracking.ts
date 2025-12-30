@@ -10,7 +10,7 @@
  * - Performance impact tracking
  */
 
-import { signal, type Signal } from './signals';
+import { signal, type Signal } from './signals.js';
 
 // ============================================================================
 // Types
@@ -322,15 +322,17 @@ export class ErrorTracker {
 
     const errorEvent: ErrorEvent = {
       message: errorObj.message,
-      stack: errorObj.stack,
+      ...(errorObj.stack != null && { stack: errorObj.stack }),
       type: context?.type || 'Error',
       timestamp: Date.now(),
-      user: this.user || undefined,
       tags: Object.fromEntries(this.tags),
       extra: Object.fromEntries(this.context),
       breadcrumbs: this.breadcrumbs.slice(-20),
       level: context?.level || 'error',
-      ...context,
+      ...(this.user != null && { user: this.user }),
+      ...(context?.user != null && { user: context.user }),
+      ...(context?.request != null && { request: context.request }),
+      ...(context?.componentStack != null && { componentStack: context.componentStack }),
     };
 
     // Before send hook

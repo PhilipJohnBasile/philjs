@@ -314,7 +314,7 @@ function getDefaultProvider(): PaymentProvider {
       throw new Error('No payment providers registered');
     }
     if (available.length === 1) {
-      return providers.get(available[0])!;
+      return providers.get(available[0]!)!
     }
     throw new Error(`Multiple providers available but no default set. Call setDefaultProvider()`);
   }
@@ -558,22 +558,22 @@ export function addMoney(a: Money, b: Money): Money {
 // Re-exports
 // ============================================================================
 
-export { StripeProvider, createStripeProvider } from './providers/stripe';
-export { PayPalProvider, createPayPalProvider } from './providers/paypal';
-export { SquareProvider, createSquareProvider } from './providers/square';
-export { PaddleProvider, createPaddleProvider } from './providers/paddle';
+export { StripeProvider, createStripeProvider } from './providers/stripe.js';
+export { PayPalProvider, createPayPalProvider } from './providers/paypal.js';
+export { SquareProvider, createSquareProvider } from './providers/square.js';
+export { PaddleProvider, createPaddleProvider } from './providers/paddle.js';
 
-export { usePayment, useSubscription, useInvoices } from './hooks';
+export { usePayment, useSubscription, useInvoices } from './hooks.js';
 
 export {
   PaymentForm,
   SubscriptionManager,
   PricingTable,
   InvoiceList,
-} from './components';
+} from './components/index.js';
 
 export {
   handleStripeWebhook,
   handlePayPalWebhook,
   verifyWebhookSignature,
-} from './webhooks';
+} from './webhooks/index.js';

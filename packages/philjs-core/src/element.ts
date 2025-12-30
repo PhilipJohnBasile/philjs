@@ -533,7 +533,7 @@ export function query(selector: string, all = false) {
     return {
       get(this: PhilElement): T | null {
         if (all) {
-          return this.shadowRoot.querySelectorAll(selector) as T;
+          return this.shadowRoot.querySelectorAll(selector) as unknown as T;
         }
         return this.shadowRoot.querySelector(selector) as T | null;
       },

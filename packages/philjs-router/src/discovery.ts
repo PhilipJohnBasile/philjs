@@ -156,7 +156,7 @@ export function matchRoute(
 
       // Extract parameters
       route.params.forEach((paramName, index) => {
-        params[paramName] = match[index + 1];
+        params[paramName] = match[index + 1] ?? '';
       });
 
       return { route, params };

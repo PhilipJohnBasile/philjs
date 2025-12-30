@@ -3,7 +3,7 @@
  * @description Load and manage WebGL textures
  */
 
-import type { TextureInfo, TextureOptions, WebGLExtensions } from './types';
+import type { TextureInfo, TextureOptions, WebGLExtensions } from './types.js';
 
 /**
  * Get default texture options (lazy to avoid SSR issues)

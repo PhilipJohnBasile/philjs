@@ -239,11 +239,19 @@ export class PrefetchManager {
     url: string,
     options: { preload?: boolean; params?: Record<string, string> } = {}
   ): Promise<PrefetchResult> {
-    return this.prefetch(url, {
+    const prefetchOptions: {
+      mode?: PrefetchMode;
+      withData?: boolean;
+      priority?: PrefetchPriority;
+      params?: Record<string, string>;
+    } = {
       mode: options.preload ? 'render' : 'intent',
       withData: true,
-      params: options.params,
-    });
+    };
+    if (options.params !== undefined) {
+      prefetchOptions.params = options.params;
+    }
+    return this.prefetch(url, prefetchOptions);
   }
 
   /**
@@ -550,6 +558,7 @@ export class PrefetchManager {
 
     for (let i = 0; i < patternParts.length; i++) {
       const segment = patternParts[i];
+      if (segment === undefined) continue;
       if (segment.startsWith(':') || segment === '*') {
         continue;
       }

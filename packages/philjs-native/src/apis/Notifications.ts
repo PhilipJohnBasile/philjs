@@ -234,13 +234,15 @@ export const Notifications = {
       }
 
       const showNotification = () => {
-        new window.Notification(content.title, {
-          body: content.body,
-          icon: content.attachments?.[0]?.url,
-          badge: content.badge?.toString(),
-          data: content.data,
+        const notificationOptions: NotificationOptions = {
           silent: !content.sound,
-        });
+        };
+        if (content.body !== undefined) notificationOptions.body = content.body;
+        if (content.attachments?.[0]?.url !== undefined) notificationOptions.icon = content.attachments[0].url;
+        if (content.badge !== undefined) notificationOptions.badge = content.badge.toString();
+        if (content.data !== undefined) notificationOptions.data = content.data;
+
+        new window.Notification(content.title, notificationOptions);
       };
 
       if (!trigger) {

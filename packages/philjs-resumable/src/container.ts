@@ -152,9 +152,11 @@ export function ResumableContainer(props: ContainerProps): unknown {
  * Render the container on the server
  */
 function renderServerContainer(id: string, props: ContainerProps): unknown {
-  const serialization = createSerializationContext({
-    isDev: props.isDev,
-  });
+  const serializationOptions: { isDev?: boolean } = {};
+  if (props.isDev !== undefined) {
+    serializationOptions.isDev = props.isDev;
+  }
+  const serialization = createSerializationContext(serializationOptions);
 
   const resumable: ResumableContext = {
     serialization,
@@ -179,9 +181,11 @@ function renderServerContainer(id: string, props: ContainerProps): unknown {
 
   // Generate scripts
   const stateScript = generateStateScript(serialization);
-  const bootstrapScript = generateBootstrapScript({
-    basePath: props.basePath,
-  });
+  const bootstrapOptions: { basePath?: string; inlineRuntime?: boolean } = {};
+  if (props.basePath !== undefined) {
+    bootstrapOptions.basePath = props.basePath;
+  }
+  const bootstrapScript = generateBootstrapScript(bootstrapOptions);
 
   // Return container with children and scripts
   return {
@@ -244,10 +248,14 @@ export async function resumeContainer(
   });
 
   // Configure QRL
-  configureQRL({
-    basePath: config?.basePath,
-    resolver: config?.resolver,
-  });
+  const qrlOptions: { basePath?: string; resolver?: (chunk: string) => Promise<Record<string, unknown>> } = {};
+  if (config?.basePath !== undefined) {
+    qrlOptions.basePath = config.basePath;
+  }
+  if (config?.resolver !== undefined) {
+    qrlOptions.resolver = config.resolver;
+  }
+  configureQRL(qrlOptions);
 
   // Update container state
   const state: ContainerState = {

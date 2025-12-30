@@ -140,15 +140,16 @@ export const Storage = {
 
     if (platform === 'web') {
       return Promise.all(
-        prefixedKeys.map(async (key, index) => {
-          const value = await this.getItem(keys[index]);
-          return [keys[index], value] as [string, string | null];
+        prefixedKeys.map(async (_key, index) => {
+          const originalKey = keys[index]!;
+          const value = await this.getItem(originalKey);
+          return [originalKey, value] as [string, string | null];
         })
       );
     }
 
     const results = await nativeBridge.call<MultiGetResult>('Storage', 'multiGet', prefixedKeys);
-    return results.map(([key, value], index) => [keys[index], value]);
+    return results.map(([_key, value], index) => [keys[index]!, value]);
   },
 
   /**

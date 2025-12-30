@@ -301,7 +301,7 @@ export abstract class AggregateRoot<TState = unknown> {
       version: this.version + 1,
       timestamp: Date.now(),
       data,
-      metadata
+      ...(metadata !== undefined && { metadata })
     };
 
     this.applyEvent(event);
@@ -554,7 +554,7 @@ export class SagaManager {
 
   private async executeSaga(saga: SagaDefinition, state: SagaState): Promise<void> {
     for (let i = state.step; i < saga.steps.length; i++) {
-      const step = saga.steps[i];
+      const step = saga.steps[i]!;
       state.step = i;
 
       await step.execute(state.data);
@@ -569,7 +569,7 @@ export class SagaManager {
     state.status = 'compensating';
 
     for (let i = state.step; i >= 0; i--) {
-      const step = saga.steps[i];
+      const step = saga.steps[i]!;
       if (step.compensate) {
         await step.compensate(state.data);
       }
@@ -620,7 +620,7 @@ export class TimeTravelDebugger<T extends AggregateRoot<S>, S = unknown> {
     if (index < 0 || index >= this.events.length) return null;
 
     this.currentIndex = index;
-    this.aggregate = this.aggregateFactory(this.events[0].aggregateId);
+    this.aggregate = this.aggregateFactory(this.events[0]!.aggregateId);
     this.aggregate.loadFromHistory(this.events.slice(0, index + 1));
 
     return this.aggregate.getState();
@@ -689,7 +689,7 @@ export function createEvent<T>(
     version,
     timestamp: Date.now(),
     data,
-    metadata
+    ...(metadata !== undefined && { metadata })
   };
 }
 
@@ -702,7 +702,7 @@ export function createCommand<T>(
   return {
     id: `cmd-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     type,
-    aggregateId,
+    ...(aggregateId !== undefined && { aggregateId }),
     data,
     metadata: {
       timestamp: Date.now(),
@@ -736,7 +736,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

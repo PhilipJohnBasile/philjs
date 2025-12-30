@@ -5,7 +5,7 @@
  * universal QueryBuilder, and modern TypeScript 6 transaction support.
  */
 
-import type { DatabaseConfig, Repository, PaginationOptions, PaginatedResult } from './types';
+import type { DatabaseConfig, Repository, PaginationOptions, PaginatedResult } from './types.js';
 
 // ============================================================================
 // Database Provider Detection
@@ -954,10 +954,10 @@ export async function createDatabaseConnection(config: DatabaseConfig) {
       throw new Error('Drizzle support requires drizzle-orm. Use createDrizzleClient from philjs-db/drizzle directly.');
 
     case 'supabase':
-      const { createSupabaseClient } = await import('./supabase');
+      const { createSupabaseClient } = await import('./supabase.js');
       return createSupabaseClient({
         url: config.connectionString,
-        anonKey: config.options.anonKey as string,
+        anonKey: config.options['anonKey'] as string,
       });
 
     default:

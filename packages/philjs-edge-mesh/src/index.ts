@@ -283,7 +283,7 @@ export class GossipProtocol {
 
     for (let i = 0; i < Math.min(this.fanout, peerArray.length); i++) {
       const idx = Math.floor(Math.random() * peerArray.length);
-      const peer = peerArray.splice(idx, 1)[0];
+      const peer = peerArray.splice(idx, 1)[0]!;
       selected.push(peer);
     }
 
@@ -396,7 +396,7 @@ export class RaftConsensus {
     }
 
     const lastLogIndex = this.log.length - 1;
-    const lastLogTerm = lastLogIndex >= 0 ? this.log[lastLogIndex].term : 0;
+    const lastLogTerm = lastLogIndex >= 0 ? this.log[lastLogIndex]!.term : 0;
 
     const logOk =
       request.lastLogTerm > lastLogTerm ||
@@ -447,7 +447,7 @@ export class RaftConsensus {
         return { term: this.currentTerm, success: false };
       }
 
-      if (this.log[request.prevLogIndex].term !== request.prevLogTerm) {
+      if (this.log[request.prevLogIndex]!.term !== request.prevLogTerm) {
         // Truncate log
         this.log = this.log.slice(0, request.prevLogIndex);
         return { term: this.currentTerm, success: false };
@@ -457,7 +457,7 @@ export class RaftConsensus {
     // Append new entries
     for (const entry of request.entries) {
       if (entry.index < this.log.length) {
-        if (this.log[entry.index].term !== entry.term) {
+        if (this.log[entry.index]!.term !== entry.term) {
           this.log = this.log.slice(0, entry.index);
           this.log.push(entry);
         }
@@ -519,7 +519,7 @@ export class RaftConsensus {
     this.notifyListeners();
 
     const lastLogIndex = this.log.length - 1;
-    const lastLogTerm = lastLogIndex >= 0 ? this.log[lastLogIndex].term : 0;
+    const lastLogTerm = lastLogIndex >= 0 ? this.log[lastLogIndex]!.term : 0;
 
     const request: VoteRequest = {
       term: this.currentTerm,
@@ -575,7 +575,7 @@ export class RaftConsensus {
     for (const peerId of this.peers) {
       const nextIdx = this.nextIndex.get(peerId) ?? 0;
       const prevLogIndex = nextIdx - 1;
-      const prevLogTerm = prevLogIndex >= 0 ? this.log[prevLogIndex].term : 0;
+      const prevLogTerm = prevLogIndex >= 0 ? this.log[prevLogIndex]!.term : 0;
 
       const entries = this.log.slice(nextIdx);
 
@@ -595,7 +595,7 @@ export class RaftConsensus {
   private updateCommitIndex(): void {
     // Find the highest index that a majority has replicated
     for (let n = this.log.length - 1; n > this.commitIndex; n--) {
-      if (this.log[n].term !== this.currentTerm) continue;
+      if (this.log[n]!.term !== this.currentTerm) continue;
 
       let count = 1; // Count self
       for (const matchIdx of this.matchIndex.values()) {
@@ -613,7 +613,7 @@ export class RaftConsensus {
   private applyCommitted(): void {
     while (this.lastApplied < this.commitIndex) {
       this.lastApplied++;
-      const entry = this.log[this.lastApplied];
+      const entry = this.log[this.lastApplied]!;
       this.onApply(entry.command);
     }
   }
@@ -1025,15 +1025,8 @@ export function useGossipState<T>(key: string, initialValue?: T): [T | undefined
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  VectorClock,
-  GossipProtocol,
-  RaftConsensus,
-  EdgeMesh
-};
 
 export default {
   VectorClock,

@@ -336,7 +336,7 @@ export function calculateVirtualizedRange(
   // Calculate offset for first visible item
   let offsetTop = 0;
   for (let i = 0; i < startIndex; i++) {
-    offsetTop += heights[i];
+    offsetTop += heights[i] ?? 0;
   }
 
   // Build visible items array
@@ -658,7 +658,9 @@ export function preloadImages(
     if (index >= sources.length) return Promise.resolve();
 
     const currentIndex = index++;
-    return preloadImage(sources[currentIndex])
+    const src = sources[currentIndex];
+    if (src === undefined) return loadNext();
+    return preloadImage(src)
       .then(img => {
         results[currentIndex] = img;
         return loadNext();

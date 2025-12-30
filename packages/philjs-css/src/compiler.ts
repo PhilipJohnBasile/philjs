@@ -9,10 +9,10 @@
  * - Bundle splitting
  */
 
-import type { CSSStyleObject, ExtractConfig, CSSResult } from './types';
-import { styleRegistry } from './css';
-import { atomicRegistry } from './atomic';
-import { getTheme, generateThemeCSS } from './theme';
+import type { CSSStyleObject, ExtractConfig, CSSResult } from './types.js';
+import { styleRegistry } from './css.js';
+import { atomicRegistry } from './atomic.js';
+import { getTheme, generateThemeCSS } from './theme.js';
 
 // ============================================================================
 // AST Types
@@ -48,15 +48,15 @@ function parseCSS(css: string): CSSNode[] {
   let match;
 
   while ((match = ruleRegex.exec(css)) !== null) {
-    const selector = match[1].trim();
-    const declarations = match[2].trim();
+    const selector = match[1]!.trim();
+    const declarations = match[2]!.trim();
 
     if (selector.startsWith('@')) {
       // At-rule
       const [name, ...params] = selector.split(/\s+/);
       nodes.push({
         type: 'atrule',
-        name: name.substring(1),
+        name: name!.substring(1),
         params: params.join(' '),
         children: parseDeclarations(declarations)
       });
@@ -162,26 +162,26 @@ export function extractUsageFromHTML(html: string): UsageInfo {
   let match;
 
   while ((match = classRegex.exec(html)) !== null) {
-    const classes = match[1].split(/\s+/);
+    const classes = match[1]!.split(/\s+/);
     classes.forEach(c => c && usage.classes.add(c));
   }
 
   // Extract IDs
   const idRegex = /id=["']([^"']+)["']/g;
   while ((match = idRegex.exec(html)) !== null) {
-    usage.ids.add(match[1]);
+    usage.ids.add(match[1]!);
   }
 
   // Extract tags
   const tagRegex = /<([a-zA-Z][a-zA-Z0-9]*)/g;
   while ((match = tagRegex.exec(html)) !== null) {
-    usage.tags.add(match[1].toLowerCase());
+    usage.tags.add(match[1]!.toLowerCase());
   }
 
   // Extract data attributes
   const attrRegex = /data-([a-zA-Z0-9-]+)/g;
   while ((match = attrRegex.exec(html)) !== null) {
-    usage.attributes.add(`data-${match[1]}`);
+    usage.attributes.add(`data-${match[1]!}`);
   }
 
   return usage;
@@ -203,14 +203,14 @@ export function extractUsageFromJSX(source: string): UsageInfo {
   let match;
 
   while ((match = classNameRegex.exec(source)) !== null) {
-    const classes = match[1].split(/\s+/);
+    const classes = match[1]!.split(/\s+/);
     classes.forEach(c => c && usage.classes.add(c));
   }
 
   // Extract className with template literals (simplified)
   const templateRegex = /className=\{`([^`]+)`\}/g;
   while ((match = templateRegex.exec(source)) !== null) {
-    const classes = match[1].split(/\s+/).filter(c => !c.includes('$'));
+    const classes = match[1]!.split(/\s+/).filter(c => !c.includes('$'));
     classes.forEach(c => c && usage.classes.add(c));
   }
 
@@ -223,8 +223,8 @@ export function extractUsageFromJSX(source: string): UsageInfo {
   // Extract JSX tags (React components are PascalCase, HTML is lowercase)
   const tagRegex = /<([A-Za-z][A-Za-z0-9]*)/g;
   while ((match = tagRegex.exec(source)) !== null) {
-    const tag = match[1];
-    if (tag[0] === tag[0].toLowerCase()) {
+    const tag = match[1]!;
+    if (tag[0] === tag[0]!.toLowerCase()) {
       usage.tags.add(tag);
     }
   }
@@ -284,7 +284,7 @@ export function purgeUnusedCSS(css: string, usage: UsageInfo): string {
 
       // Check tag selectors
       const tagMatch = selector.match(/^([a-zA-Z][a-zA-Z0-9]*)/);
-      if (tagMatch && usage.tags.has(tagMatch[1].toLowerCase())) {
+      if (tagMatch && usage.tags.has(tagMatch[1]!.toLowerCase())) {
         isUsed = true;
       }
 
@@ -374,14 +374,16 @@ export function atomicDeduplication(css: string): {
       const atomicClass = `_${atomicCounter++}`;
       atomicMap.set(key, atomicClass);
 
+      const declaration: CSSNode = {
+        type: 'declaration'
+      };
+      if (property !== undefined) declaration.property = property;
+      if (value !== undefined) declaration.value = value;
+
       atomicRules.push({
         type: 'rule',
         selector: `.${atomicClass}`,
-        children: [{
-          type: 'declaration',
-          property,
-          value
-        }]
+        children: [declaration]
       });
     }
   }
@@ -445,7 +447,7 @@ export function extractCriticalCSS(
       for (const selector of selectors) {
         // Extract class from selector
         const classMatch = selector.match(/\.([a-zA-Z0-9_-]+)/);
-        if (classMatch && aboveFoldSet.has(classMatch[1])) {
+        if (classMatch && aboveFoldSet.has(classMatch[1]!)) {
           isCritical = true;
           break;
         }
@@ -523,7 +525,7 @@ export function splitCSSByRoute(
   for (const node of nodes) {
     if (node.type === 'rule') {
       const classMatch = (node.selector || '').match(/\.([a-zA-Z0-9_-]+)/);
-      if (classMatch && sharedSet.has(classMatch[1])) {
+      if (classMatch && sharedSet.has(classMatch[1]!)) {
         sharedNodes.push(node);
       }
     }
@@ -545,7 +547,7 @@ export function splitCSSByRoute(
     for (const node of nodes) {
       if (node.type === 'rule') {
         const classMatch = (node.selector || '').match(/\.([a-zA-Z0-9_-]+)/);
-        if (classMatch && routeSet.has(classMatch[1])) {
+        if (classMatch && routeSet.has(classMatch[1]!)) {
           routeNodes.push(node);
         }
       }
@@ -556,7 +558,7 @@ export function splitCSSByRoute(
     chunks.push({
       name: routeName,
       css: stringifyCSS(routeNodes),
-      selectors: routeOnlySelectors
+      selectors: Array.from(routeSet)
     });
   }
 

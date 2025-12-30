@@ -3,8 +3,8 @@
  * Export metrics to Grafana Cloud or self-hosted Grafana/Prometheus
  */
 
-import type { MetricsSnapshot, WebVitalsMetrics, CustomMetric } from '../collector/metrics';
-import type { Span } from '../collector/tracing';
+import type { MetricsSnapshot, WebVitalsMetrics, CustomMetric } from '../collector/metrics.js';
+import type { Span } from '../collector/tracing.js';
 
 // ============================================================================
 // Types
@@ -397,7 +397,6 @@ export class GrafanaExporter {
       const tempoSpan: TempoSpan = {
         traceId: span.traceId,
         spanId: span.spanId,
-        parentSpanId: span.parentSpanId,
         operationName: span.name,
         serviceName: span.resource.serviceName,
         startTime: span.startTime * 1000, // microseconds
@@ -411,6 +410,7 @@ export class GrafanaExporter {
             value: value as string | number | boolean,
           })),
         ],
+        ...(span.parentSpanId !== undefined && { parentSpanId: span.parentSpanId }),
         logs: span.events.map((event) => ({
           timestamp: event.timestamp * 1000,
           fields: [

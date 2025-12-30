@@ -3,7 +3,7 @@
  * @description Camera management and matrix utilities for 3D rendering
  */
 
-import type { Camera, CameraOptions } from './types';
+import type { Camera, CameraOptions } from './types.js';
 
 /**
  * Create a 4x4 identity matrix
@@ -27,7 +27,7 @@ export function mat4Multiply(a: Float32Array, b: Float32Array): Float32Array {
     for (let j = 0; j < 4; j++) {
       let sum = 0;
       for (let k = 0; k < 4; k++) {
-        sum += a[i * 4 + k] * b[k * 4 + j];
+        sum += a[i * 4 + k]! * b[k * 4 + j]!;
       }
       result[i * 4 + j] = sum;
     }
@@ -88,18 +88,18 @@ export function mat4LookAt(
   up: Float32Array | number[]
 ): Float32Array {
   const zAxis = normalize([
-    eye[0] - target[0],
-    eye[1] - target[1],
-    eye[2] - target[2],
+    eye[0]! - target[0]!,
+    eye[1]! - target[1]!,
+    eye[2]! - target[2]!,
   ]);
 
   const xAxis = normalize(cross(up as number[], zAxis));
   const yAxis = normalize(cross(zAxis, xAxis));
 
   return new Float32Array([
-    xAxis[0], yAxis[0], zAxis[0], 0,
-    xAxis[1], yAxis[1], zAxis[1], 0,
-    xAxis[2], yAxis[2], zAxis[2], 0,
+    xAxis[0]!, yAxis[0]!, zAxis[0]!, 0,
+    xAxis[1]!, yAxis[1]!, zAxis[1]!, 0,
+    xAxis[2]!, yAxis[2]!, zAxis[2]!, 0,
     -dot(xAxis, eye as number[]), -dot(yAxis, eye as number[]), -dot(zAxis, eye as number[]), 1,
   ]);
 }
@@ -179,10 +179,10 @@ export function mat4Scale(x: number, y: number, z: number): Float32Array {
 export function mat4Invert(m: Float32Array): Float32Array {
   const result = new Float32Array(16);
 
-  const m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3];
-  const m10 = m[4], m11 = m[5], m12 = m[6], m13 = m[7];
-  const m20 = m[8], m21 = m[9], m22 = m[10], m23 = m[11];
-  const m30 = m[12], m31 = m[13], m32 = m[14], m33 = m[15];
+  const m00 = m[0]!, m01 = m[1]!, m02 = m[2]!, m03 = m[3]!;
+  const m10 = m[4]!, m11 = m[5]!, m12 = m[6]!, m13 = m[7]!;
+  const m20 = m[8]!, m21 = m[9]!, m22 = m[10]!, m23 = m[11]!;
+  const m30 = m[12]!, m31 = m[13]!, m32 = m[14]!, m33 = m[15]!;
 
   const tmp0 = m22 * m33 - m23 * m32;
   const tmp1 = m21 * m33 - m23 * m31;
@@ -226,10 +226,10 @@ export function mat4Invert(m: Float32Array): Float32Array {
  */
 export function mat4Transpose(m: Float32Array): Float32Array {
   return new Float32Array([
-    m[0], m[4], m[8], m[12],
-    m[1], m[5], m[9], m[13],
-    m[2], m[6], m[10], m[14],
-    m[3], m[7], m[11], m[15],
+    m[0]!, m[4]!, m[8]!, m[12]!,
+    m[1]!, m[5]!, m[9]!, m[13]!,
+    m[2]!, m[6]!, m[10]!, m[14]!,
+    m[3]!, m[7]!, m[11]!, m[15]!,
   ]);
 }
 
@@ -238,9 +238,9 @@ export function mat4Transpose(m: Float32Array): Float32Array {
  */
 export function mat3FromMat4(m: Float32Array): Float32Array {
   return new Float32Array([
-    m[0], m[1], m[2],
-    m[4], m[5], m[6],
-    m[8], m[9], m[10],
+    m[0]!, m[1]!, m[2]!,
+    m[4]!, m[5]!, m[6]!,
+    m[8]!, m[9]!, m[10]!,
   ]);
 }
 
@@ -248,9 +248,9 @@ export function mat3FromMat4(m: Float32Array): Float32Array {
  * Invert and transpose 3x3 matrix for normal transformation
  */
 export function mat3InvertTranspose(m: Float32Array): Float32Array {
-  const a00 = m[0], a01 = m[1], a02 = m[2];
-  const a10 = m[3], a11 = m[4], a12 = m[5];
-  const a20 = m[6], a21 = m[7], a22 = m[8];
+  const a00 = m[0]!, a01 = m[1]!, a02 = m[2]!;
+  const a10 = m[3]!, a11 = m[4]!, a12 = m[5]!;
+  const a20 = m[6]!, a21 = m[7]!, a22 = m[8]!;
 
   const b01 = a22 * a11 - a12 * a21;
   const b11 = -a22 * a10 + a12 * a20;
@@ -280,21 +280,21 @@ export function mat3InvertTranspose(m: Float32Array): Float32Array {
 // Vector utilities
 
 function normalize(v: number[]): number[] {
-  const len = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  const len = Math.sqrt(v[0]! * v[0]! + v[1]! * v[1]! + v[2]! * v[2]!);
   if (len === 0) return [0, 0, 0];
-  return [v[0] / len, v[1] / len, v[2] / len];
+  return [v[0]! / len, v[1]! / len, v[2]! / len];
 }
 
 function cross(a: number[], b: number[]): number[] {
   return [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0],
+    a[1]! * b[2]! - a[2]! * b[1]!,
+    a[2]! * b[0]! - a[0]! * b[2]!,
+    a[0]! * b[1]! - a[1]! * b[0]!,
   ];
 }
 
 function dot(a: number[], b: number[]): number {
-  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  return a[0]! * b[0]! + a[1]! * b[1]! + a[2]! * b[2]!;
 }
 
 /**
@@ -373,9 +373,9 @@ export function setCameraAspect(camera: Camera, aspect: number): void {
  * Orbit camera around target
  */
 export function orbitCamera(camera: Camera, deltaX: number, deltaY: number): void {
-  const dx = camera.position[0] - camera.target[0];
-  const dy = camera.position[1] - camera.target[1];
-  const dz = camera.position[2] - camera.target[2];
+  const dx = camera.position[0]! - camera.target[0]!;
+  const dy = camera.position[1]! - camera.target[1]!;
+  const dz = camera.position[2]! - camera.target[2]!;
 
   const radius = Math.sqrt(dx * dx + dy * dy + dz * dz);
   let theta = Math.atan2(dx, dz);
@@ -384,9 +384,9 @@ export function orbitCamera(camera: Camera, deltaX: number, deltaY: number): voi
   theta += deltaX;
   phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi + deltaY));
 
-  camera.position[0] = camera.target[0] + radius * Math.sin(phi) * Math.sin(theta);
-  camera.position[1] = camera.target[1] + radius * Math.cos(phi);
-  camera.position[2] = camera.target[2] + radius * Math.sin(phi) * Math.cos(theta);
+  camera.position[0] = camera.target[0]! + radius * Math.sin(phi) * Math.sin(theta);
+  camera.position[1] = camera.target[1]! + radius * Math.cos(phi);
+  camera.position[2] = camera.target[2]! + radius * Math.sin(phi) * Math.cos(theta);
 
   updateCameraView(camera);
 }
@@ -395,14 +395,14 @@ export function orbitCamera(camera: Camera, deltaX: number, deltaY: number): voi
  * Zoom camera
  */
 export function zoomCamera(camera: Camera, delta: number): void {
-  const dx = camera.position[0] - camera.target[0];
-  const dy = camera.position[1] - camera.target[1];
-  const dz = camera.position[2] - camera.target[2];
+  const dx = camera.position[0]! - camera.target[0]!;
+  const dy = camera.position[1]! - camera.target[1]!;
+  const dz = camera.position[2]! - camera.target[2]!;
 
   const factor = 1 + delta;
-  camera.position[0] = camera.target[0] + dx * factor;
-  camera.position[1] = camera.target[1] + dy * factor;
-  camera.position[2] = camera.target[2] + dz * factor;
+  camera.position[0] = camera.target[0]! + dx * factor;
+  camera.position[1] = camera.target[1]! + dy * factor;
+  camera.position[2] = camera.target[2]! + dz * factor;
 
   updateCameraView(camera);
 }

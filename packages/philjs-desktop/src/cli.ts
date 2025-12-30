@@ -10,8 +10,8 @@ import * as path from 'path';
 
 // CLI types
 interface CLIOptions {
-  name?: string;
-  template?: string;
+  name?: string | undefined;
+  template?: string | undefined;
   target?: 'windows' | 'macos' | 'linux' | 'all';
   debug?: boolean;
   verbose?: boolean;
@@ -204,7 +204,7 @@ function parseArgs(args: string[]): { command: string; options: CLIOptions } {
       options.verbose = true;
     } else if (arg === '--watch' || arg === '-w') {
       options.watch = true;
-    } else if (!arg.startsWith('-') && !options.name) {
+    } else if (arg && !arg.startsWith('-') && !options.name) {
       options.name = arg;
     }
   }

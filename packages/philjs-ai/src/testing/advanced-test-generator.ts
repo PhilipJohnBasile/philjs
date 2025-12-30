@@ -300,16 +300,17 @@ export class AdvancedTestGenerator {
     // Generate file name
     const fileName = this.generateFileName(code, framework);
 
-    return {
+    const result: GeneratedTestSuite = {
       testFile,
       fileName,
       testCases,
-      mocks,
-      fixtures,
-      utilities,
       coverage,
       suggestions,
     };
+    if (mocks !== undefined) result.mocks = mocks;
+    if (fixtures !== undefined) result.fixtures = fixtures;
+    if (utilities !== undefined) result.utilities = utilities;
+    return result;
   }
 
   /**
@@ -802,7 +803,7 @@ Include setup and teardown when needed.`;
     const testMatches = testFile.matchAll(/(?:it|test)\s*\(\s*['"`]([^'"`]+)['"`]/g);
 
     for (const match of testMatches) {
-      const name = match[1];
+      const name = match[1]!;
       const category = this.inferCategory(name);
       const priority = this.inferPriority(name, category);
 
@@ -959,11 +960,11 @@ Return the test utilities code.`;
 
     // Find uncovered areas
     const uncovered: string[] = [];
-    const functionNames = code.match(/(?:function|const)\s+(\w+)/g)?.map(m => m.split(/\s+/)[1]) || [];
+    const functionNames = code.match(/(?:function|const)\s+(\w+)/g)?.map((m: string) => m.split(/\s+/)[1]!) || [];
 
     for (const name of functionNames) {
-      if (!tests.includes(name)) {
-        uncovered.push(name);
+      if (!tests.includes(name!)) {
+        uncovered.push(name!);
       }
     }
 

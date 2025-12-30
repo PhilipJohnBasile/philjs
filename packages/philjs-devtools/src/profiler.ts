@@ -147,7 +147,7 @@ export function recordRenderStart(componentName: string, props: Record<string, u
   };
 
   if (profileStack.length > 0) {
-    profileStack[profileStack.length - 1].children.push(profile);
+    profileStack[profileStack.length - 1]!.children.push(profile);
   } else {
     renderProfiles.push(profile);
   }
@@ -173,7 +173,7 @@ export function recordRenderEnd(): void {
 export function recordMemo(hit: boolean): void {
   if (!isProfilerActive || profileStack.length === 0) return;
 
-  const profile = profileStack[profileStack.length - 1];
+  const profile = profileStack[profileStack.length - 1]!;
   if (hit) {
     profile.memoHits++;
   } else {
@@ -475,14 +475,14 @@ export function analyzeMemoryUsage(profiles: MemoryProfile[]): {
   const recommendations: string[] = [];
 
   // Check signal growth
-  const signalGrowth = profiles[profiles.length - 1].signals - profiles[0].signals;
+  const signalGrowth = profiles[profiles.length - 1]!.signals - profiles[0]!.signals;
   if (signalGrowth > 100) {
     leakSuspects.push('Signals appear to be leaking');
     recommendations.push('Check for signals created in loops or not properly disposed');
   }
 
   // Check effect growth
-  const effectGrowth = profiles[profiles.length - 1].effects - profiles[0].effects;
+  const effectGrowth = profiles[profiles.length - 1]!.effects - profiles[0]!.effects;
   if (effectGrowth > 50) {
     leakSuspects.push('Effects appear to be leaking');
     recommendations.push('Ensure effects are properly cleaned up');

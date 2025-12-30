@@ -2,6 +2,6 @@
  * Utils Exports
  */
 
-export * from './formatters';
-export * from './streaming';
-export * from './zip';
+export * from './formatters.js';
+export * from './streaming.js';
+export * from './zip.js';

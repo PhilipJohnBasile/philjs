@@ -155,7 +155,10 @@ export function getUTMParams(): Record<string, string> {
 
   Object.keys(params).forEach((key) => {
     if (key.startsWith("utm_")) {
-      utmParams[key] = params[key];
+      const value = params[key];
+      if (value !== undefined) {
+        utmParams[key] = value;
+      }
     }
   });
 
@@ -226,7 +229,7 @@ export function getCookie(name: string): string | null {
   if (!isBrowser()) return null;
 
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? match[2] : null;
+  return match?.[2] ?? null;
 }
 
 /**

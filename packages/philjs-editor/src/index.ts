@@ -61,7 +61,7 @@ export class PhilEditor extends HTMLElement {
     }
   }
 
-  getHTML(): string {
+  override getHTML(): string {
     return this.editorEl?.innerHTML ?? '';
   }
 
@@ -81,11 +81,11 @@ export class PhilEditor extends HTMLElement {
     }
   }
 
-  focus(): void {
+  override focus(): void {
     this.editorEl?.focus();
   }
 
-  blur(): void {
+  override blur(): void {
     this.editorEl?.blur();
   }
 
@@ -182,7 +182,7 @@ export class PhilEditor extends HTMLElement {
     this.shadow.querySelectorAll('.toolbar-button').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const cmd = (btn as HTMLElement).dataset.cmd;
+        const cmd = (btn as HTMLElement).dataset['cmd'];
         if (cmd) this.executeCommand(cmd);
       });
     });

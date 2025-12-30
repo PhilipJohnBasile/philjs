@@ -1,6 +1,7 @@
 {
   "name": "@philjs/quantum",
   "version": "0.1.0",
+  "type": "module",
   "description": "Quantum-Ready Primitives - Post-quantum cryptography, quantum RNG, quantum simulation, and quantum-inspired optimization",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

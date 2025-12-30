@@ -2,7 +2,7 @@
  * PhilJS DevTools - Component Tree
  */
 
-import type { ComponentNode } from '../types';
+import type { ComponentNode } from '../types.js';
 
 export class ComponentTree {
   private root: ComponentNode | null = null;

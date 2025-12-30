@@ -166,7 +166,7 @@ export class ComponentNavigator {
   public next(): Element | null {
     if (this.elements.length === 0) return null;
     this.currentIndex = (this.currentIndex + 1) % this.elements.length;
-    return this.elements[this.currentIndex];
+    return this.elements[this.currentIndex] ?? null;
   }
 
   /**
@@ -176,7 +176,7 @@ export class ComponentNavigator {
     if (this.elements.length === 0) return null;
     this.currentIndex =
       this.currentIndex <= 0 ? this.elements.length - 1 : this.currentIndex - 1;
-    return this.elements[this.currentIndex];
+    return this.elements[this.currentIndex] ?? null;
   }
 
   /**
@@ -219,7 +219,7 @@ export class ComponentNavigator {
     );
     const currentIndex = siblings.indexOf(current);
     if (currentIndex === -1 || currentIndex === siblings.length - 1) return null;
-    const nextSib = siblings[currentIndex + 1];
+    const nextSib = siblings[currentIndex + 1]!;
     this.currentIndex = this.elements.indexOf(nextSib);
     return nextSib;
   }
@@ -234,7 +234,7 @@ export class ComponentNavigator {
     );
     const currentIndex = siblings.indexOf(current);
     if (currentIndex === -1 || currentIndex === 0) return null;
-    const prevSib = siblings[currentIndex - 1];
+    const prevSib = siblings[currentIndex - 1]!;
     this.currentIndex = this.elements.indexOf(prevSib);
     return prevSib;
   }
@@ -246,7 +246,7 @@ export class ComponentNavigator {
     if (this.currentIndex === -1 || this.currentIndex >= this.elements.length) {
       return null;
     }
-    return this.elements[this.currentIndex];
+    return this.elements[this.currentIndex] ?? null;
   }
 
   /**

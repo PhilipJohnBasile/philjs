@@ -449,8 +449,7 @@ export type {
   AsyncOptions,
   RetryConfig,
   CacheConfig,
-  MutationState,
-  MutationOptions,
+  MutationOptions as AsyncMutationOptions,
 } from "./async.js";
 
 // Disposable Utilities (TypeScript 6 Explicit Resource Management)

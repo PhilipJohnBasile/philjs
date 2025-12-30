@@ -1,6 +1,7 @@
 {
   "name": "@philjs/ab-testing",
   "version": "0.1.0",
+  "type": "module",
   "description": "Native A/B testing framework for PhilJS - experiments, feature flags, statistical analysis",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

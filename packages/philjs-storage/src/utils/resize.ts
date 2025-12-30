@@ -341,7 +341,7 @@ export async function createThumbnail(
     width: options.size,
     height: options.size,
     fit: 'inside',
-    format: options.format,
+    ...(options.format !== undefined ? { format: options.format } : {}),
     quality: options.quality || 70,
     stripMetadata: true,
   });
@@ -502,8 +502,8 @@ export async function getImageMetadata(input: Buffer | Uint8Array | string): Pro
     format: metadata.format || 'unknown',
     size: metadata.size || 0,
     hasAlpha: metadata.hasAlpha || false,
-    orientation: metadata.orientation,
-    density: metadata.density,
+    ...(metadata.orientation !== undefined && { orientation: metadata.orientation }),
+    ...(metadata.density !== undefined && { density: metadata.density }),
   };
 }
 

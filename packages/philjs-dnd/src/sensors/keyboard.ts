@@ -1,4 +1,4 @@
-import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types';
+import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types.js';
 
 // ============================================================================
 // Keyboard Sensor
@@ -214,15 +214,15 @@ export function getNextDroppableId(
   switch (direction) {
     case 'up':
     case 'left':
-      if (currentIndex <= 0) return droppableOrder[droppableOrder.length - 1];
-      return droppableOrder[currentIndex - 1];
+      if (currentIndex <= 0) return droppableOrder[droppableOrder.length - 1]!;
+      return droppableOrder[currentIndex - 1]!;
 
     case 'down':
     case 'right':
       if (currentIndex >= droppableOrder.length - 1 || currentIndex === -1) {
-        return droppableOrder[0];
+        return droppableOrder[0]!;
       }
-      return droppableOrder[currentIndex + 1];
+      return droppableOrder[currentIndex + 1]!;
 
     default:
       return null;

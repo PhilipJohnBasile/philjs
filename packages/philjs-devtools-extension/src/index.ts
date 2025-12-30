@@ -6,14 +6,14 @@
  */
 
 // Re-export all modules
-export { DevToolsPanel } from './panel/DevToolsPanel';
-export { SignalInspector } from './panel/SignalInspector';
-export { ComponentTree } from './panel/ComponentTree';
-export { PerformanceProfiler } from './panel/PerformanceProfiler';
-export { NetworkInspector } from './panel/NetworkInspector';
+export { DevToolsPanel } from './panel/DevToolsPanel.js';
+export { SignalInspector } from './panel/SignalInspector.js';
+export { ComponentTree } from './panel/ComponentTree.js';
+export { PerformanceProfiler } from './panel/PerformanceProfiler.js';
+export { NetworkInspector } from './panel/NetworkInspector.js';
 
 // Client-side hook for connecting to DevTools
-export { connectDevTools, disconnectDevTools, isDevToolsConnected } from './client/connector';
+export { connectDevTools, disconnectDevTools, isDevToolsConnected } from './client/connector.js';
 
 // Types
-export type { DevToolsState, SignalData, ComponentNode, PerformanceMetrics } from './types';
+export type { DevToolsState, SignalData, ComponentNode, PerformanceMetrics } from './types.js';

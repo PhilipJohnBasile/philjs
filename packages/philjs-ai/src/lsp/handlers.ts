@@ -63,6 +63,9 @@ export interface CompletionItem {
   documentation?: string | { kind: string; value: string };
   insertText?: string;
   insertTextFormat?: number;
+  sortText?: string;
+  filterText?: string;
+  preselect?: boolean;
   textEdit?: {
     range: Range;
     newText: string;
@@ -334,7 +337,7 @@ export class LSPHandlers {
       position: { line: params.position.line, column: params.position.character },
       filePath: this.uriToPath(params.textDocument.uri),
       language: this.getLanguage(doc.languageId),
-      trigger: params.context?.triggerCharacter,
+      ...(params.context?.triggerCharacter && { trigger: params.context.triggerCharacter }),
       prefix: this.getPrefix(doc.content, params.position),
     };
 
@@ -343,17 +346,20 @@ export class LSPHandlers {
 
       return {
         isIncomplete: true,
-        items: completions.map((c, i) => ({
-          label: c.label,
-          kind: c.kind,
-          detail: c.detail,
-          documentation: c.documentation ? { kind: 'markdown', value: c.documentation } : undefined,
-          insertText: c.insertText,
-          sortText: c.sortText || String(i).padStart(4, '0'),
-          filterText: c.filterText,
-          preselect: c.preselect,
-          additionalTextEdits: c.additionalTextEdits,
-        })),
+        items: completions.map((c, i) => {
+          const item: CompletionItem = {
+            label: c.label,
+            kind: c.kind,
+            insertText: c.insertText,
+            sortText: c.sortText || String(i).padStart(4, '0'),
+            filterText: c.filterText || c.label,
+            preselect: c.preselect ?? false,
+          };
+          if (c.detail) item.detail = c.detail;
+          if (c.documentation) item.documentation = { kind: 'markdown', value: c.documentation };
+          if (c.additionalTextEdits) item.additionalTextEdits = c.additionalTextEdits;
+          return item;
+        }),
       };
     } catch (error) {
       console.error('Completion error:', error);
@@ -396,8 +402,8 @@ export class LSPHandlers {
       };
 
       const signatureHelp = await this.autocomplete.getSignatureHelp(word, context);
-      if (signatureHelp && signatureHelp.signatures.length > 0) {
-        const sig = signatureHelp.signatures[0];
+      const sig = signatureHelp?.signatures[0];
+      if (sig) {
         return {
           contents: {
             kind: 'markdown',
@@ -440,14 +446,30 @@ export class LSPHandlers {
       }
 
       return {
-        signatures: help.signatures.map(sig => ({
-          label: sig.label,
-          documentation: sig.documentation ? { kind: 'markdown', value: sig.documentation } : undefined,
-          parameters: sig.parameters.map(p => ({
-            label: p.label,
-            documentation: p.documentation ? { kind: 'markdown', value: p.documentation } : undefined,
-          })),
-        })),
+        signatures: help.signatures.map(sig => {
+          const signature: {
+            label: string;
+            documentation?: string | { kind: string; value: string };
+            parameters?: { label: string | [number, number]; documentation?: string | { kind: string; value: string } }[];
+          } = {
+            label: sig.label,
+          };
+          if (sig.documentation) {
+            signature.documentation = { kind: 'markdown', value: sig.documentation };
+          }
+          if (sig.parameters.length > 0) {
+            signature.parameters = sig.parameters.map(p => {
+              const param: { label: string | [number, number]; documentation?: string | { kind: string; value: string } } = {
+                label: p.label,
+              };
+              if (p.documentation) {
+                param.documentation = { kind: 'markdown', value: p.documentation };
+              }
+              return param;
+            });
+          }
+          return signature;
+        }),
         activeSignature: help.activeSignature,
         activeParameter: help.activeParameter,
       };

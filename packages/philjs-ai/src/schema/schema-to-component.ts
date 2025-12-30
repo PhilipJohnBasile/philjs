@@ -458,14 +458,16 @@ export class SchemaToComponentGenerator {
     // Generate example
     const example = this.generateExample(name, type, schema);
 
+    const types = options.generateTypes ? this.generateTypes(schema) : undefined;
+
     return {
       name,
       type,
       code,
-      types: options.generateTypes ? this.generateTypes(schema) : undefined,
-      validationSchema,
       example,
       propsInterface,
+      ...(types !== undefined && { types }),
+      ...(validationSchema !== undefined && { validationSchema }),
     };
   }
 

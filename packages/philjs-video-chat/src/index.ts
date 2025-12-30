@@ -73,7 +73,8 @@ class VirtualBackgroundProcessor {
       return inputFrame;
     }
 
-    const { width, height } = inputFrame;
+    const width = inputFrame.displayWidth;
+    const height = inputFrame.displayHeight;
     this.canvas.width = width;
     this.canvas.height = height;
 
@@ -245,8 +246,10 @@ class AudioEnhancer {
     if (this.config.noiseGate) {
       this.noiseGateNode = new AudioWorkletNode(this.audioContext, 'noise-gate');
       if (this.config.noiseGateThreshold !== undefined) {
-        (this.noiseGateNode.parameters.get('threshold') as AudioParam).value =
-          this.config.noiseGateThreshold;
+        const thresholdParam = this.noiseGateNode.parameters['get']('threshold');
+        if (thresholdParam) {
+          thresholdParam.value = this.config.noiseGateThreshold;
+        }
       }
       currentNode.connect(this.noiseGateNode);
       currentNode = this.noiseGateNode;
@@ -260,7 +263,7 @@ class AudioEnhancer {
         filter.type = 'peaking';
         filter.frequency.value = freq;
         filter.Q.value = 1.4;
-        filter.gain.value = this.config.equalizer![i];
+        filter.gain.value = this.config.equalizer![i]!;
         currentNode.connect(filter);
         currentNode = filter;
         return filter;
@@ -286,7 +289,7 @@ class AudioEnhancer {
   setEqualizer(bands: number[]): void {
     if (bands.length !== 10) return;
     this.eqNodes.forEach((node, i) => {
-      node.gain.value = bands[i];
+      node.gain.value = bands[i]!;
     });
   }
 
@@ -435,7 +438,7 @@ class Participant {
     this.state.reaction = emoji;
     this.emit('reaction', emoji);
     setTimeout(() => {
-      this.state.reaction = undefined;
+      delete this.state.reaction;
       this.emit('reactionEnded', emoji);
     }, 3000);
   }
@@ -560,11 +563,11 @@ class VideoRoom {
     // Apply audio enhancement
     if (this.audioEnhancer) {
       const enhancedAudio = this.audioEnhancer.processStream(localStream);
+      const audioTrack = enhancedAudio.getAudioTracks()[0];
       const videoTrack = localStream.getVideoTracks()[0];
-      localStream = new MediaStream([
-        enhancedAudio.getAudioTracks()[0],
-        videoTrack
-      ]);
+      if (audioTrack && videoTrack) {
+        localStream = new MediaStream([audioTrack, videoTrack]);
+      }
     }
 
     // Apply virtual background using Insertable Streams
@@ -911,10 +914,10 @@ class VideoRoom {
 
     // Create canvas stream with mixed audio
     const canvasStream = canvas.captureStream(30);
-    const compositeStream = new MediaStream([
-      canvasStream.getVideoTracks()[0],
-      destination.stream.getAudioTracks()[0]
-    ]);
+    const videoTrack = canvasStream.getVideoTracks()[0];
+    const audioTrack = destination.stream.getAudioTracks()[0];
+    if (!videoTrack || !audioTrack) return;
+    const compositeStream = new MediaStream([videoTrack, audioTrack]);
 
     this.mediaRecorder = new MediaRecorder(compositeStream, {
       mimeType: 'video/webm;codecs=vp9,opus'
@@ -1084,6 +1087,8 @@ class VideoRoom {
 
     // Replace video track in all peer connections
     const screenTrack = screenStream.getVideoTracks()[0];
+    if (!screenTrack) return;
+
     this.peerConnections.forEach(pc => {
       const sender = pc.getSenders().find(s => s.track?.kind === 'video');
       sender?.replaceTrack(screenTrack);
@@ -1102,11 +1107,13 @@ class VideoRoom {
       this.localParticipant.setScreenStream(null);
 
       // Restore video track
-      const videoTrack = this.localParticipant.stream!.getVideoTracks()[0];
-      this.peerConnections.forEach(pc => {
-        const sender = pc.getSenders().find(s => s.track?.kind === 'video');
-        sender?.replaceTrack(videoTrack);
-      });
+      const videoTrack = this.localParticipant.stream?.getVideoTracks()[0];
+      if (videoTrack) {
+        this.peerConnections.forEach(pc => {
+          const sender = pc.getSenders().find(s => s.track?.kind === 'video');
+          sender?.replaceTrack(videoTrack);
+        });
+      }
 
       this.emit('screenShareStopped', { participantId: this.localParticipant.id });
     }

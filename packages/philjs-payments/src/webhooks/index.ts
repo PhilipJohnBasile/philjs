@@ -43,11 +43,12 @@ export async function handlePayPalWebhook(
   payload: string | Buffer,
   headers: Record<string, string>
 ): Promise<WebhookEvent> {
+  const signature = headers['paypal-transmission-sig'];
   const event: WebhookEvent = {
     type: 'paypal.event',
     data: JSON.parse(typeof payload === 'string' ? payload : payload.toString()),
     timestamp: new Date(),
-    signature: headers['paypal-transmission-sig'],
+    ...(signature !== undefined && { signature }),
   };
 
   return event;

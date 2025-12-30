@@ -127,7 +127,7 @@ export function memoAsync<T extends (...args: any[]) => Promise<any>>(
     // Check cache
     const cached = cache.get(key);
     if (cached !== undefined && cached.expires > now) {
-      return cached.value;
+      return cached.value as Awaited<ReturnType<T>>;
     }
 
     // Check pending requests (deduplication)

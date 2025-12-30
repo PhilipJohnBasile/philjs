@@ -1,6 +1,7 @@
 {
   "name": "@philjs/event-sourcing",
   "version": "0.1.0",
+  "type": "module",
   "description": "Event sourcing with CQRS for PhilJS - event store, aggregates, projections, sagas, time-travel",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

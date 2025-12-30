@@ -68,10 +68,10 @@ export function toYAML<T>(data: T, options: YAMLOptions = {}): string {
   const processedData = processData(data, {
     includeNulls,
     dateFormat,
-    formatDate,
-    transform,
-    fields,
-    excludeFields,
+    ...(formatDate !== undefined ? { formatDate } : {}),
+    ...(transform !== undefined ? { transform } : {}),
+    ...(fields !== undefined ? { fields } : {}),
+    ...(excludeFields !== undefined ? { excludeFields } : {}),
   });
 
   // Create YAML document
@@ -117,10 +117,10 @@ export function arrayToYAMLDocuments<T>(data: T[], options: YAMLOptions = {}): s
     const processedItem = processData(item, {
       includeNulls,
       dateFormat,
-      formatDate,
-      transform,
-      fields,
-      excludeFields,
+      ...(formatDate !== undefined ? { formatDate } : {}),
+      ...(transform !== undefined ? { transform } : {}),
+      ...(fields !== undefined ? { fields } : {}),
+      ...(excludeFields !== undefined ? { excludeFields } : {}),
     });
 
     const doc = new YAML.Document(processedItem);
@@ -190,10 +190,10 @@ export async function* streamToYAML<T>(
         const processedItem = processData(bufItem, {
           includeNulls,
           dateFormat,
-          formatDate,
-          transform,
-          fields,
-          excludeFields,
+          ...(formatDate !== undefined ? { formatDate } : {}),
+          ...(transform !== undefined ? { transform } : {}),
+          ...(fields !== undefined ? { fields } : {}),
+          ...(excludeFields !== undefined ? { excludeFields } : {}),
         });
 
         const doc = new YAML.Document(processedItem);
@@ -228,10 +228,10 @@ export async function* streamToYAML<T>(
       const processedItem = processData(bufItem, {
         includeNulls,
         dateFormat,
-        formatDate,
-        transform,
-        fields,
-        excludeFields,
+        ...(formatDate !== undefined ? { formatDate } : {}),
+        ...(transform !== undefined ? { transform } : {}),
+        ...(fields !== undefined ? { fields } : {}),
+        ...(excludeFields !== undefined ? { excludeFields } : {}),
       });
 
       const doc = new YAML.Document(processedItem);

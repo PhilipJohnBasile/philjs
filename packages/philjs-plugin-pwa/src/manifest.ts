@@ -30,12 +30,12 @@ export function generateManifest(config: Partial<WebAppManifest>): WebAppManifes
         type: 'image/png',
       },
     ],
-    screenshots: config.screenshots,
-    categories: config.categories,
-    share_target: config.share_target,
-    shortcuts: config.shortcuts,
-    prefer_related_applications: config.prefer_related_applications,
-    related_applications: config.related_applications,
+    ...(config.screenshots !== undefined && { screenshots: config.screenshots }),
+    ...(config.categories !== undefined && { categories: config.categories }),
+    ...(config.share_target !== undefined && { share_target: config.share_target }),
+    ...(config.shortcuts !== undefined && { shortcuts: config.shortcuts }),
+    ...(config.prefer_related_applications !== undefined && { prefer_related_applications: config.prefer_related_applications }),
+    ...(config.related_applications !== undefined && { related_applications: config.related_applications }),
   };
 }
 

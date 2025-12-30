@@ -622,29 +622,29 @@ export class AudioPath {
   }
 
   getPositionAt(t: number): Vector3 {
-    if (t <= 0) return this.points[0];
-    if (t >= 1) return this.points[this.points.length - 1];
+    if (t <= 0) return this.points[0]!;
+    if (t >= 1) return this.points[this.points.length - 1]!;
 
     const totalDuration = this.durations.reduce((a, b) => a + b, 0);
     let elapsed = t * totalDuration;
     let segmentIndex = 0;
 
     for (let i = 0; i < this.durations.length; i++) {
-      if (elapsed <= this.durations[i]) {
+      if (elapsed <= this.durations[i]!) {
         segmentIndex = i;
         break;
       }
-      elapsed -= this.durations[i];
+      elapsed -= this.durations[i]!;
       segmentIndex = i + 1;
     }
 
     if (segmentIndex >= this.points.length - 1) {
-      return this.points[this.points.length - 1];
+      return this.points[this.points.length - 1]!;
     }
 
-    const segmentT = elapsed / this.durations[segmentIndex];
-    const p1 = this.points[segmentIndex];
-    const p2 = this.points[segmentIndex + 1];
+    const segmentT = elapsed / this.durations[segmentIndex]!;
+    const p1 = this.points[segmentIndex]!;
+    const p2 = this.points[segmentIndex + 1]!;
 
     return {
       x: p1.x + (p2.x - p1.x) * segmentT,
@@ -700,7 +700,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

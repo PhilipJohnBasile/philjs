@@ -161,10 +161,16 @@ export interface UnrealEmbedProps {
   width?: number;
   /** Height of the video */
   height?: number;
+  /** Video element ID */
+  videoId?: string;
+  /** Start video muted */
+  startMuted?: boolean;
   /** Configuration options */
   config?: Partial<PixelStreamingConfig>;
   /** Called when connected */
   onConnect?: (instance: PixelStreamingInstance) => void;
+  /** Called when connected and ready */
+  onReady?: (instance: PixelStreamingInstance) => void;
   /** Called on disconnect */
   onDisconnect?: () => void;
   /** Called on error */

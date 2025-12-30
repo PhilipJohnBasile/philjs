@@ -515,7 +515,7 @@ export class PluginManager {
  * Allows combining multiple plugins into one
  */
 export function composePlugins(plugins: Plugin[]): Plugin {
-  const firstPlugin = plugins[0];
+  const firstPlugin = plugins[0]!;
 
   return {
     meta: {

@@ -11,7 +11,7 @@
  * - Stagger and sequence animations
  */
 
-import type { CSSStyleObject } from './types';
+import type { CSSStyleObject } from './types.js';
 
 // =============================================================================
 // Types
@@ -80,7 +80,7 @@ export const springPresets: Record<string, SpringConfig> = {
 export function calculateSpring(
   from: number,
   to: number,
-  config: SpringConfig = springPresets.default,
+  config: SpringConfig = springPresets['default']!,
   precision: number = 0.01
 ): number[] {
   const { mass, stiffness, damping, velocity = 0 } = config;
@@ -124,7 +124,7 @@ export function springAnimation(
   property: string,
   from: number | string,
   to: number | string,
-  config: SpringConfig = springPresets.default,
+  config: SpringConfig = springPresets['default']!,
   unit: string = ''
 ): string {
   const fromNum = typeof from === 'number' ? from : parseFloat(from);
@@ -151,7 +151,7 @@ export function springAnimation(
 /**
  * Create spring-based CSS timing function
  */
-export function springEasing(config: SpringConfig = springPresets.default): string {
+export function springEasing(config: SpringConfig = springPresets['default']!): string {
   // Approximate spring curve with cubic-bezier
   const { stiffness, damping } = config;
   const ratio = damping / (2 * Math.sqrt(stiffness));
@@ -186,7 +186,7 @@ export function slide(
     right: [`translateX(-${distance})`, 'translateX(0)'],
   };
 
-  const [from, to] = transforms[direction];
+  const [from, to] = transforms[direction]!;
   return `
 @keyframes slide-${direction} {
   from { transform: ${from}; opacity: 0; }
@@ -221,7 +221,7 @@ export function fade(
     },
   };
 
-  const { from, to } = configs[type];
+  const { from, to } = configs[type]!;
   return generateKeyframes(`fade-${type}`, from, to);
 }
 
@@ -238,7 +238,7 @@ export function scale(
     down: { from: { transform: 'scale(1.05)' }, to: { transform: 'scale(1)' } },
   };
 
-  const { from, to } = configs[type];
+  const { from, to } = configs[type]!;
   return generateKeyframes(`scale-${type}`, from, to);
 }
 
@@ -271,7 +271,7 @@ export function bounce(intensity: 'light' | 'medium' | 'heavy' = 'medium'): stri
     heavy: [0, -30, 0, -15, 0, -7, 0, -3, 0],
   };
 
-  const values = configs[intensity];
+  const values = configs[intensity]!;
   const keyframes = values.map((y, i) => {
     const percent = (i / (values.length - 1)) * 100;
     return `${percent.toFixed(0)}% { transform: translateY(${y}px); }`;
@@ -538,7 +538,7 @@ export function batchFLIP(
   const lastStates = elements.map(captureState);
 
   // Invert & Play
-  return elements.map((el, i) => playFLIP(el, firstStates[i], lastStates[i], options));
+  return elements.map((el, i) => playFLIP(el, firstStates[i]!, lastStates[i]!, options));
 }
 
 // =============================================================================
@@ -782,7 +782,8 @@ export function generateAnimationUtilities(): string {
 
   // Preset animations
   Object.entries(motionPresets).forEach(([name, preset]) => {
-    const iterations = preset.iterations === 'infinite' ? 'infinite' : (preset.iterations || 1);
+    const presetWithIterations = preset as typeof preset & { iterations?: number | string };
+    const iterations = presetWithIterations.iterations === 'infinite' ? 'infinite' : (presetWithIterations.iterations || 1);
     css += `.animate-${name.replace(/([A-Z])/g, '-$1').toLowerCase()} { animation: ${preset.animation} ${preset.duration}s ${preset.easing} ${iterations}; }\n`;
   });
 

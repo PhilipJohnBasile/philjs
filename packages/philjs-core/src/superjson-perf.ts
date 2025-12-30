@@ -81,7 +81,7 @@ export const NativeCompression: CompressionAlgorithm = {
   async decompress(data: Uint8Array): Promise<string> {
     // Check for DecompressionStream API (modern browsers)
     if (typeof DecompressionStream !== 'undefined') {
-      const stream = new Blob([data]).stream();
+      const stream = new Blob([data as BlobPart]).stream();
       const decompressedStream = stream.pipeThrough(
         new DecompressionStream('gzip')
       );
@@ -119,21 +119,21 @@ export const LZCompression: CompressionAlgorithm = {
       if (dict[combined] !== undefined) {
         current = combined;
       } else {
-        result.push(dict[current]);
+        result.push(dict[current]!);
         dict[combined] = dictSize++;
-        current = char;
+        current = char!;
       }
     }
 
     if (current) {
-      result.push(dict[current]);
+      result.push(dict[current]!);
     }
 
     // Convert to Uint8Array (simple 16-bit encoding)
     const compressed = new Uint8Array(result.length * 2);
     for (let i = 0; i < result.length; i++) {
-      compressed[i * 2] = result[i] & 0xff;
-      compressed[i * 2 + 1] = (result[i] >> 8) & 0xff;
+      compressed[i * 2] = result[i]! & 0xff;
+      compressed[i * 2 + 1] = (result[i]! >> 8) & 0xff;
     }
 
     return compressed;
@@ -143,7 +143,7 @@ export const LZCompression: CompressionAlgorithm = {
     // Decode 16-bit values
     const codes: number[] = [];
     for (let i = 0; i < data.length; i += 2) {
-      codes.push(data[i] | (data[i + 1] << 8));
+      codes.push(data[i]! | (data[i + 1]! << 8));
     }
 
     const dict: Record<number, string> = {};
@@ -154,15 +154,15 @@ export const LZCompression: CompressionAlgorithm = {
       dict[i] = String.fromCharCode(i);
     }
 
-    let result = dict[codes[0]];
+    let result = dict[codes[0]!]!;
     let current = result;
 
     for (let i = 1; i < codes.length; i++) {
-      const code = codes[i];
+      const code = codes[i]!;
       let entry: string;
 
       if (dict[code] !== undefined) {
-        entry = dict[code];
+        entry = dict[code]!;
       } else if (code === dictSize) {
         entry = current + current[0];
       } else {
@@ -293,14 +293,14 @@ export class StreamingDeserializer<T> {
       let current = result;
 
       for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
+        const part = parts[i]!;
         if (!(part in current)) {
           current[part] = {};
         }
         current = current[part];
       }
 
-      current[parts[parts.length - 1]] = value;
+      current[parts[parts.length - 1]!] = value;
     }
 
     return result;
@@ -347,7 +347,7 @@ export class StreamingSerializer {
       const entries = Object.entries(data);
 
       for (let i = 0; i < entries.length; i++) {
-        const [key, value] = entries[i];
+        const [key, value] = entries[i]!;
         const serialized = serialize(value, this.options);
 
         yield {
@@ -505,8 +505,8 @@ export async function serializeWithMetrics(
 
   if (isCompressed(result)) {
     metrics.compressedSize = result.compressed.length;
-    metrics.originalSize = result.originalSize;
-    if (result.originalSize) {
+    if (result.originalSize !== undefined) {
+      metrics.originalSize = result.originalSize;
       metrics.compressionRatio = result.originalSize / result.compressed.length;
     }
   }

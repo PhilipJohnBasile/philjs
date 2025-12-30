@@ -289,7 +289,7 @@ class MessageComponent {
 
     this.element = document.createElement('div');
     this.element.className = `chat-message ${this.message.role}`;
-    this.element.dataset.messageId = this.message.id;
+    this.element.dataset['messageId'] = this.message.id;
 
     this.render();
   }
@@ -693,8 +693,8 @@ class ChatContainer {
 
     // Create input
     this.inputComponent = new ChatInput({
-      placeholder: this.config.placeholder,
-      maxLength: this.config.maxLength,
+      ...(this.config.placeholder !== undefined && { placeholder: this.config.placeholder }),
+      ...(this.config.maxLength !== undefined && { maxLength: this.config.maxLength }),
       onSend: (message) => this.emit('send', message)
     });
 
@@ -1131,7 +1131,7 @@ function useChat(
 
   const regenerate = async (messageId: string) => {
     const index = messages.findIndex(m => m.id === messageId);
-    if (index === -1 || messages[index].role !== 'assistant') return;
+    if (index === -1 || messages[index]!.role !== 'assistant') return;
 
     // Remove assistant message and get last user message
     messages = messages.slice(0, index);

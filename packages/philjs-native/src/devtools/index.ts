@@ -91,7 +91,7 @@ export const lastUpdatedModules: Signal<ModuleUpdate[]> = signal<ModuleUpdate[]>
  * Dev mode enabled
  */
 export const devModeEnabled: Signal<boolean> = signal(
-  typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production'
+  typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production'
 );
 
 /**
@@ -474,7 +474,7 @@ function showWebDevMenu(): void {
 
   menu.querySelectorAll('button').forEach((btn, index) => {
     btn.addEventListener('click', () => {
-      allItems[index].handler();
+      allItems[index]?.handler();
       hideWebDevMenu();
     });
   });

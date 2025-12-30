@@ -11,7 +11,7 @@
  */
 
 import { createHmac, createVerify } from 'crypto';
-import {
+import type {
   PaymentProvider,
   CreateCheckoutRequest,
   CheckoutSession,
@@ -28,10 +28,12 @@ import {
   Refund,
   WebhookRequest,
   WebhookEvent,
+  SubscriptionStatus,
+} from '../index.js';
+import {
   PaymentError,
   WebhookVerificationError,
-  SubscriptionStatus,
-} from '../index';
+} from '../index.js';
 
 export interface PaddleConfig {
   apiKey: string;
@@ -85,7 +87,7 @@ export class PaddleProvider implements PaymentProvider {
         customer_id?: string;
         expires_at: string;
       }>('/transactions', 'POST', {
-        items: request.lineItems.map((item) => ({
+        items: request.lineItems.map((item: { name: string; quantity: number }) => ({
           price_id: item.name, // Paddle uses price IDs
           quantity: item.quantity,
         })),
@@ -96,17 +98,22 @@ export class PaddleProvider implements PaymentProvider {
         custom_data: request.metadata,
       });
 
-      return {
+      const result: CheckoutSession = {
         id: response.id,
         url: response.url,
         status: this.mapTransactionStatus(response.status),
-        customerId: response.customer_id,
         lineItems: request.lineItems,
         successUrl: request.successUrl,
         cancelUrl: request.cancelUrl,
         expiresAt: new Date(response.expires_at),
-        metadata: request.metadata,
       };
+      if (response.customer_id) {
+        result.customerId = response.customer_id;
+      }
+      if (request.metadata) {
+        result.metadata = request.metadata;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -128,11 +135,10 @@ export class PaddleProvider implements PaymentProvider {
         };
       }>(`/transactions/${sessionId}`, 'GET');
 
-      return {
+      const result: CheckoutSession = {
         id: response.id,
         url: response.checkout?.url || '',
         status: this.mapTransactionStatus(response.status),
-        customerId: response.customer_id,
         lineItems:
           response.details?.line_items.map((item) => ({
             name: item.price_id,
@@ -143,6 +149,10 @@ export class PaddleProvider implements PaymentProvider {
         cancelUrl: '',
         expiresAt: new Date(),
       };
+      if (response.customer_id) {
+        result.customerId = response.customer_id;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -200,7 +210,7 @@ export class PaddleProvider implements PaymentProvider {
       const updatePayload: Record<string, unknown> = {};
 
       if (updates.priceId || updates.quantity) {
-        updatePayload.items = [
+        updatePayload['items'] = [
           {
             price_id: updates.priceId,
             quantity: updates.quantity,
@@ -209,7 +219,7 @@ export class PaddleProvider implements PaymentProvider {
       }
 
       if (updates.metadata) {
-        updatePayload.custom_data = updates.metadata;
+        updatePayload['custom_data'] = updates.metadata;
       }
 
       const response = await this.makeRequest<any>(
@@ -271,13 +281,18 @@ export class PaddleProvider implements PaymentProvider {
         custom_data: request.metadata,
       });
 
-      return {
+      const result: Customer = {
         id: response.id,
         email: response.email,
-        name: response.name,
-        metadata: response.custom_data,
         createdAt: new Date(response.created_at),
       };
+      if (response.name) {
+        result.name = response.name;
+      }
+      if (response.custom_data) {
+        result.metadata = response.custom_data;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -293,13 +308,18 @@ export class PaddleProvider implements PaymentProvider {
         custom_data?: Record<string, string>;
       }>(`/customers/${customerId}`, 'GET');
 
-      return {
+      const result: Customer = {
         id: response.id,
         email: response.email,
-        name: response.name,
-        metadata: response.custom_data,
         createdAt: new Date(response.created_at),
       };
+      if (response.name) {
+        result.name = response.name;
+      }
+      if (response.custom_data) {
+        result.metadata = response.custom_data;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -322,13 +342,18 @@ export class PaddleProvider implements PaymentProvider {
         custom_data: updates.metadata,
       });
 
-      return {
+      const result: Customer = {
         id: response.id,
         email: response.email,
-        name: response.name,
-        metadata: response.custom_data,
         createdAt: new Date(response.created_at),
       };
+      if (response.name) {
+        result.name = response.name;
+      }
+      if (response.custom_data) {
+        result.metadata = response.custom_data;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -358,20 +383,21 @@ export class PaddleProvider implements PaymentProvider {
       }>(`/customers/${request.customerId}/payment-methods`, 'GET');
 
       // Return the first (default) payment method
-      return {
+      const result: PaymentMethod = {
         id: response.id,
         type: response.type === 'card' ? 'card' : 'paypal',
-        card: response.card
-          ? {
-              brand: response.card.brand,
-              last4: response.card.last4,
-              expMonth: response.card.expiry_month,
-              expYear: response.card.expiry_year,
-            }
-          : undefined,
         isDefault: true,
         customerId: request.customerId,
       };
+      if (response.card) {
+        result.card = {
+          brand: response.card.brand,
+          last4: response.card.last4,
+          expMonth: response.card.expiry_month,
+          expYear: response.card.expiry_year,
+        };
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -395,20 +421,23 @@ export class PaddleProvider implements PaymentProvider {
         }>
       >(`/customers/${customerId}/payment-methods`, 'GET');
 
-      return response.map((pm, index) => ({
-        id: pm.id,
-        type: pm.type === 'card' ? 'card' as const : 'paypal' as const,
-        card: pm.card
-          ? {
-              brand: pm.card.brand,
-              last4: pm.card.last4,
-              expMonth: pm.card.expiry_month,
-              expYear: pm.card.expiry_year,
-            }
-          : undefined,
-        isDefault: index === 0,
-        customerId,
-      }));
+      return response.map((pm, index) => {
+        const result: PaymentMethod = {
+          id: pm.id,
+          type: pm.type === 'card' ? 'card' as const : 'paypal' as const,
+          isDefault: index === 0,
+          customerId,
+        };
+        if (pm.card) {
+          result.card = {
+            brand: pm.card.brand,
+            last4: pm.card.last4,
+            expMonth: pm.card.expiry_month,
+            expYear: pm.card.expiry_year,
+          };
+        }
+        return result;
+      });
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -442,7 +471,7 @@ export class PaddleProvider implements PaymentProvider {
         created_at: string;
       }>('/transactions', 'POST', {
         customer_id: request.customerId,
-        items: request.lineItems.map((item) => ({
+        items: request.lineItems.map((item: { description: string; quantity: number }) => ({
           price_id: item.description,
           quantity: item.quantity,
         })),
@@ -518,7 +547,7 @@ export class PaddleProvider implements PaymentProvider {
           : [{ type: 'full' }],
       });
 
-      return {
+      const result: Refund = {
         id: response.id,
         paymentId: response.transaction_id,
         amount: {
@@ -526,9 +555,12 @@ export class PaddleProvider implements PaymentProvider {
           currency: response.totals.currency_code.toLowerCase(),
         },
         status: this.mapRefundStatus(response.status),
-        reason: response.reason as Refund['reason'],
         createdAt: new Date(response.created_at),
       };
+      if (response.reason) {
+        result.reason = response.reason as NonNullable<Refund['reason']>;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -545,7 +577,7 @@ export class PaddleProvider implements PaymentProvider {
         created_at: string;
       }>(`/adjustments/${refundId}`, 'GET');
 
-      return {
+      const result: Refund = {
         id: response.id,
         paymentId: response.transaction_id,
         amount: {
@@ -553,9 +585,12 @@ export class PaddleProvider implements PaymentProvider {
           currency: response.totals.currency_code.toLowerCase(),
         },
         status: this.mapRefundStatus(response.status),
-        reason: response.reason as Refund['reason'],
         createdAt: new Date(response.created_at),
       };
+      if (response.reason) {
+        result.reason = response.reason as NonNullable<Refund['reason']>;
+      }
+      return result;
     } catch (error) {
       throw this.handlePaddleError(error);
     }
@@ -591,8 +626,8 @@ export class PaddleProvider implements PaymentProvider {
 
       // Paddle v2 webhook signature format: ts=timestamp;h1=signature
       const parts = signature.split(';');
-      const tsMatch = parts.find((p) => p.startsWith('ts='));
-      const h1Match = parts.find((p) => p.startsWith('h1='));
+      const tsMatch = parts.find((p: string) => p.startsWith('ts='));
+      const h1Match = parts.find((p: string) => p.startsWith('h1='));
 
       if (!tsMatch || !h1Match) return false;
 
@@ -622,14 +657,17 @@ export class PaddleProvider implements PaymentProvider {
   ): Promise<T> {
     const url = `${this.baseUrl}${path}`;
 
-    const response = await fetch(url, {
+    const fetchOptions: RequestInit = {
       method,
       headers: {
         'Authorization': `Bearer ${this.apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    };
+    if (body) {
+      fetchOptions.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, fetchOptions);
 
     const json = (await response.json()) as PaddleApiResponse<T>;
 
@@ -667,7 +705,7 @@ export class PaddleProvider implements PaymentProvider {
       trialing: 'trialing',
     };
 
-    return {
+    const result: Subscription = {
       id: sub.id,
       customerId: sub.customer_id,
       status: statusMap[sub.status] || 'unpaid',
@@ -676,9 +714,14 @@ export class PaddleProvider implements PaymentProvider {
       currentPeriodStart: new Date(sub.current_billing_period?.starts_at || Date.now()),
       currentPeriodEnd: new Date(sub.current_billing_period?.ends_at || Date.now()),
       cancelAtPeriodEnd: sub.scheduled_change?.action === 'cancel',
-      canceledAt: sub.canceled_at ? new Date(sub.canceled_at) : undefined,
-      trialEnd: sub.trial?.ends_at ? new Date(sub.trial.ends_at) : undefined,
     };
+    if (sub.canceled_at) {
+      result.canceledAt = new Date(sub.canceled_at);
+    }
+    if (sub.trial?.ends_at) {
+      result.trialEnd = new Date(sub.trial.ends_at);
+    }
+    return result;
   }
 
   private mapInvoice(txn: any): Invoice {

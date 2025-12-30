@@ -45,7 +45,7 @@ let currentNestedDisposers: Array<() => void> | null = null;
 // ============================================================================
 
 // HMR state is only tracked in development mode to reduce production bundle size
-const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
+const isDev = typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production';
 
 /**
  * Global HMR state registry for preserving signal values across hot updates.

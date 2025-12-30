@@ -84,10 +84,12 @@ export function createAPIClient(options: APIClientOptions = {}) {
 
     while (attempts <= retry.count) {
       try {
+        // Build fetch options, excluding signal from init to use our controller
+        const { signal: _ignored, ...restInit } = init;
         const response = await fetch(url, {
-          ...init,
+          ...restInit,
           headers,
-          body,
+          body: body ?? null,
           credentials,
           signal: controller.signal,
         });

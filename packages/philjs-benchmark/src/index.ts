@@ -15,52 +15,37 @@ export * from './types.js';
 export * from './utils.js';
 
 // Framework Benchmark (krausest/js-framework-benchmark compatible)
-export { runFrameworkBenchmarks } from './framework-benchmark/runner.js';
-export { create1000Rows, create10000Rows } from './framework-benchmark/create-rows.js';
-export { updateEvery10th } from './framework-benchmark/update-rows.js';
-export { swapRows } from './framework-benchmark/swap-rows.js';
-export { selectRow } from './framework-benchmark/select-row.js';
-export { deleteRow } from './framework-benchmark/delete-row.js';
+export {
+  runFrameworkBenchmarks,
+  allFrameworkBenchmarks,
+  coreFrameworkBenchmarks,
+} from './framework-benchmark/runner.js';
+export { create1000Rows, create10000Rows, createRowsBenchmarks } from './framework-benchmark/create-rows.js';
+export { updateEvery10thRow, updateRowsBenchmarks } from './framework-benchmark/update-rows.js';
+export { swapRows, swapRowsBenchmarks } from './framework-benchmark/swap-rows.js';
+export { selectRow, selectRowBenchmarks } from './framework-benchmark/select-row.js';
+export { removeRow, clearRows, deleteRowBenchmarks } from './framework-benchmark/delete-row.js';
 
 // Reactivity Benchmarks
 export {
   runReactivityBenchmarks,
-  signalReadBenchmark,
-  signalWriteBenchmark,
-  signalPropagationBenchmark,
-} from './reactivity/signals.js';
-export {
-  effectCreationBenchmark,
-  effectTriggerBenchmark,
-  effectCleanupBenchmark,
-} from './reactivity/effects.js';
-export {
-  memoCreationBenchmark,
-  memoCachingBenchmark,
-  memoDependencyBenchmark,
-} from './reactivity/memos.js';
-export {
-  batchSmallBenchmark,
-  batchLargeBenchmark,
-  batchNestedBenchmark,
-} from './reactivity/batch.js';
+  allReactivityBenchmarks,
+  coreReactivityBenchmarks,
+} from './reactivity/index.js';
+export { signalBenchmarks } from './reactivity/signals.js';
+export { effectBenchmarks } from './reactivity/effects.js';
+export { memoBenchmarks } from './reactivity/memos.js';
+export { batchBenchmarks } from './reactivity/batch.js';
 
 // SSR Benchmarks
 export {
-  ssrRenderTimeBenchmark,
-  ssrThroughputBenchmark,
-  ssrMemoryBenchmark,
-} from './ssr/render-time.js';
-export {
-  hydrationTimeBenchmark,
-  partialHydrationBenchmark,
-  progressiveHydrationBenchmark,
-} from './ssr/hydration.js';
-export {
-  streamingTTFBBenchmark,
-  streamingThroughputBenchmark,
-  streamingChunkBenchmark,
-} from './ssr/streaming.js';
+  runSSRBenchmarks as runSSRBenchmarkSuite,
+  allSSRBenchmarks,
+  coreSSRBenchmarks,
+} from './ssr/index.js';
+export { renderTimeBenchmarks } from './ssr/render-time.js';
+export { hydrationBenchmarks, progressiveHydration } from './ssr/hydration.js';
+export { streamingBenchmarks, streamingThroughput } from './ssr/streaming.js';
 
 /**
  * Run all benchmarks and generate a comprehensive report
@@ -78,12 +63,12 @@ export async function runAllBenchmarks(options: {
     outputPath,
   } = options;
 
-  console.log('🚀 PhilJS Benchmark Suite');
+  console.log('PhilJS Benchmark Suite');
   console.log('========================\n');
 
   const results: BenchmarkReport = {
     timestamp: new Date().toISOString(),
-    environment: await getEnvironmentInfo(),
+    environment: await getEnvironmentInfoLocal(),
     framework: [],
     reactivity: [],
     ssr: [],
@@ -91,22 +76,52 @@ export async function runAllBenchmarks(options: {
     rust: null,
   };
 
-  // Framework benchmarks
-  console.log('📊 Running Framework Benchmarks...');
-  results.framework = await runFrameworkBenchmarks({ iterations, warmup });
+  // Framework benchmarks - dynamically import to avoid circular deps
+  console.log('Running Framework Benchmarks...');
+  const { runFrameworkBenchmarks: runFwBench } = await import('./framework-benchmark/runner.js');
+  const fwSuite = await runFwBench({ iterations, warmupIterations: warmup, verbose: false });
+  results.framework = fwSuite.results.map(r => ({
+    name: r.name,
+    mean: r.mean,
+    median: r.median,
+    min: r.min,
+    max: r.max,
+    stdDev: r.stddev,
+    ops: r.ops,
+  }));
 
   // Reactivity benchmarks
-  console.log('\n⚡ Running Reactivity Benchmarks...');
-  results.reactivity = await runReactivityBenchmarks({ iterations, warmup });
+  console.log('\nRunning Reactivity Benchmarks...');
+  const { runReactivityBenchmarks: runReactBench } = await import('./reactivity/index.js');
+  const reactSuite = await runReactBench({ iterations, warmupIterations: warmup, verbose: false });
+  results.reactivity = reactSuite.results.map(r => ({
+    name: r.name,
+    mean: r.mean,
+    median: r.median,
+    min: r.min,
+    max: r.max,
+    stdDev: r.stddev,
+    ops: r.ops,
+  }));
 
   // SSR benchmarks
-  console.log('\n🖥️ Running SSR Benchmarks...');
-  results.ssr = await runSSRBenchmarks({ iterations, warmup });
+  console.log('\nRunning SSR Benchmarks...');
+  const { runSSRBenchmarks: runSSRBench } = await import('./ssr/index.js');
+  const ssrSuite = await runSSRBench({ iterations, warmupIterations: warmup, verbose: false });
+  results.ssr = ssrSuite.results.map(r => ({
+    name: r.name,
+    mean: r.mean,
+    median: r.median,
+    min: r.min,
+    max: r.max,
+    stdDev: r.stddev,
+    ops: r.ops,
+  }));
 
   // Generate report
   if (outputPath) {
     await writeReport(results, outputPath, outputFormat);
-    console.log(`\n✅ Report saved to ${outputPath}`);
+    console.log(`\nReport saved to ${outputPath}`);
   }
 
   return results;
@@ -153,7 +168,7 @@ interface RustBenchmark {
   operations: BenchmarkResult[];
 }
 
-async function getEnvironmentInfo(): Promise<EnvironmentInfo> {
+async function getEnvironmentInfoLocal(): Promise<EnvironmentInfo> {
   const os = await import('os');
   return {
     nodeVersion: process.version,
@@ -162,34 +177,6 @@ async function getEnvironmentInfo(): Promise<EnvironmentInfo> {
     cpus: os.cpus().length,
     memory: os.totalmem(),
   };
-}
-
-async function runSSRBenchmarks(options: { iterations: number; warmup: number }): Promise<BenchmarkResult[]> {
-  const results: BenchmarkResult[] = [];
-
-  // Import and run SSR benchmarks
-  const { ssrRenderTimeBenchmark, ssrThroughputBenchmark, ssrMemoryBenchmark } = await import('./ssr/render-time.js');
-  const { hydrationTimeBenchmark, partialHydrationBenchmark } = await import('./ssr/hydration.js');
-  const { streamingTTFBBenchmark, streamingThroughputBenchmark } = await import('./ssr/streaming.js');
-
-  const benchmarks = [
-    ssrRenderTimeBenchmark,
-    ssrThroughputBenchmark,
-    ssrMemoryBenchmark,
-    hydrationTimeBenchmark,
-    partialHydrationBenchmark,
-    streamingTTFBBenchmark,
-    streamingThroughputBenchmark,
-  ];
-
-  for (const benchmark of benchmarks) {
-    if (benchmark) {
-      const result = await benchmark.fn(options);
-      results.push(result);
-    }
-  }
-
-  return results;
 }
 
 async function writeReport(

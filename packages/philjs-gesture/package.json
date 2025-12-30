@@ -1,6 +1,7 @@
 {
   "name": "@philjs/gesture",
   "version": "0.1.0",
+  "type": "module",
   "description": "Camera-based gesture recognition for PhilJS - hand tracking, air cursor, touchless UI",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

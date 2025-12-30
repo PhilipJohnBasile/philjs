@@ -666,7 +666,7 @@ function parseQueryString(url: string): Record<string, string | string[] | undef
   const params: Record<string, string | string[] | undefined> = {};
 
   for (const pair of queryString.split('&')) {
-    const [key, value] = pair.split('=').map(decodeURIComponent);
+    const [key, value = ''] = pair.split('=').map(decodeURIComponent);
     if (key) {
       const existing = params[key];
       if (existing !== undefined) {

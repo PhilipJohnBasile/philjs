@@ -717,31 +717,31 @@ Guidelines:
 
       if (funcMatch) {
         type = 'function';
-        name = funcMatch[1];
+        name = funcMatch[1]!;
       } else if (constMatch) {
         type = afterDoc.includes('=>') || afterDoc.includes('function') ? 'function' : 'constant';
-        name = constMatch[1];
+        name = constMatch[1]!;
       } else if (interfaceMatch) {
         type = 'interface';
-        name = interfaceMatch[1];
+        name = interfaceMatch[1]!;
       } else if (typeMatch) {
         type = 'type';
-        name = typeMatch[1];
+        name = typeMatch[1]!;
       } else if (classMatch) {
         type = 'class';
-        name = classMatch[1];
+        name = classMatch[1]!;
       }
 
       // Extract description from JSDoc
       const descMatch = match[0].match(/\/\*\*\s*\n?\s*\*?\s*([^\n@]*)/);
-      const description = descMatch ? descMatch[1].trim() : '';
+      const description = descMatch ? descMatch[1]!.trim() : '';
 
       // Extract params
       const params: DocParam[] = [];
       const paramMatches = match[0].matchAll(/@param\s+(?:\{([^}]+)\}\s+)?(\w+)\s*-?\s*(.*)/g);
       for (const pm of paramMatches) {
         params.push({
-          name: pm[2],
+          name: pm[2]!,
           type: pm[1] || 'unknown',
           description: pm[3] || '',
           optional: pm[0].includes('?') || pm[0].includes('['),
@@ -758,15 +758,20 @@ Guidelines:
       // Calculate insert line
       const insertLine = code.slice(0, match.index).split('\n').length;
 
-      blocks.push({
+      const block: DocBlock = {
         type,
         name,
         documentation: match[0],
         insertLine,
         description,
-        params: params.length > 0 ? params : undefined,
-        returns,
-      });
+      };
+      if (params.length > 0) {
+        block.params = params;
+      }
+      if (returns) {
+        block.returns = returns;
+      }
+      blocks.push(block);
     }
 
     return blocks;
@@ -820,11 +825,11 @@ Guidelines:
     }, {} as Record<string, number>);
 
     const parts: string[] = [];
-    if (types.function) parts.push(`${types.function} functions`);
-    if (types.component) parts.push(`${types.component} components`);
-    if (types.interface) parts.push(`${types.interface} interfaces`);
-    if (types.type) parts.push(`${types.type} types`);
-    if (types.class) parts.push(`${types.class} classes`);
+    if (types['function']) parts.push(`${types['function']} functions`);
+    if (types['component']) parts.push(`${types['component']} components`);
+    if (types['interface']) parts.push(`${types['interface']} interfaces`);
+    if (types['type']) parts.push(`${types['type']} types`);
+    if (types['class']) parts.push(`${types['class']} classes`);
 
     return `Documented ${parts.join(', ')}.`;
   }
@@ -871,14 +876,14 @@ Guidelines:
     const props: PropDoc[] = [];
 
     if (propsMatch) {
-      const propsContent = propsMatch[2];
+      const propsContent = propsMatch[2]!;
       const propLines = propsContent.split('\n');
       for (const line of propLines) {
         const propMatch = line.match(/(\w+)(\?)?:\s*([^;]+)/);
         if (propMatch) {
           props.push({
-            name: propMatch[1],
-            type: propMatch[3].trim(),
+            name: propMatch[1]!,
+            type: propMatch[3]!.trim(),
             description: '',
             required: !propMatch[2],
           });
@@ -904,7 +909,7 @@ Guidelines:
     const headingMatches = content.matchAll(/^##?\s+(.+)$/gm);
 
     for (const match of headingMatches) {
-      sections.push(match[1]);
+      sections.push(match[1]!);
     }
 
     return sections;

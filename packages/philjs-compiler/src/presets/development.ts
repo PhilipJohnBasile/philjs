@@ -11,7 +11,7 @@
  * - No minification (for readability)
  */
 
-import type { CompilerConfig } from '../types';
+import type { CompilerConfig } from '../types.js';
 import type { UserConfig, BuildOptions } from 'vite';
 
 export interface DevelopmentPresetOptions {
@@ -128,8 +128,8 @@ export function createDevelopmentViteConfig(
     // Development server configuration
     server: {
       port: config.port,
-      https: config.https ? {} : undefined,
       open: config.open,
+      ...(config.https && { https: {} }),
 
       // HMR configuration
       hmr: {

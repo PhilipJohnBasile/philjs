@@ -209,8 +209,8 @@ export class RateLimiter {
     // Use X-Forwarded-For or client IP
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded
-      ? forwarded.split(",")[0].trim()
-      : request.headers.get("x-real-ip") || "unknown";
+      ? (forwarded.split(",")[0]?.trim() ?? "unknown")
+      : (request.headers.get("x-real-ip") ?? "unknown");
 
     const url = new URL(request.url);
     return `${ip}:${url.pathname}`;
@@ -418,7 +418,7 @@ export class SlidingWindowRateLimiter {
 
     // Check if limit exceeded
     if (timestamps.length >= this.config.maxRequests) {
-      const oldestTimestamp = timestamps[0];
+      const oldestTimestamp = timestamps[0] ?? now;
       const resetAt = oldestTimestamp + this.config.windowMs;
 
       return new Response(
@@ -453,8 +453,8 @@ export class SlidingWindowRateLimiter {
   private defaultKeyGenerator(request: Request): string {
     const forwarded = request.headers.get("x-forwarded-for");
     const ip = forwarded
-      ? forwarded.split(",")[0].trim()
-      : request.headers.get("x-real-ip") || "unknown";
+      ? (forwarded.split(",")[0]?.trim() ?? "unknown")
+      : (request.headers.get("x-real-ip") ?? "unknown");
     const url = new URL(request.url);
     return `${ip}:${url.pathname}`;
   }

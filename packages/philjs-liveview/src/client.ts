@@ -16,12 +16,12 @@ import type {
   LiveViewEvent,
   DOMPatch,
   ViewPatch,
-} from './types';
-import { SocketConnection, serializeEvent, serializeKeyEvent } from './live-socket';
-import { registerHooks, mountHook, updateHook, destroyHook, disconnectHooks, reconnectHooks } from './hooks';
-import { initNavigation, livePatch, liveRedirect, onNavigate, setLoading, scrollToTarget, setPageTitle } from './navigation';
-import { applyPatches } from './differ';
-import { serializeForm } from './forms';
+} from './types.js';
+import { SocketConnection, serializeEvent, serializeKeyEvent } from './live-socket.js';
+import { registerHooks, mountHook, updateHook, destroyHook, disconnectHooks, reconnectHooks } from './hooks.js';
+import { initNavigation, livePatch, liveRedirect, onNavigate, setLoading, scrollToTarget, setPageTitle } from './navigation.js';
+import { applyPatches } from './differ.js';
+import { serializeForm } from './forms.js';
 
 // ============================================================================
 // LiveView Client
@@ -47,9 +47,9 @@ export class LiveViewClient {
         ...options.params,
       },
       reconnectAfterMs: options.reconnect
-        ? (tries) => {
+        ? (tries: number) => {
             const delays = [1000, 2000, 5000, 10000, 30000];
-            return delays[Math.min(tries, delays.length - 1)];
+            return delays[Math.min(tries, delays.length - 1)]!;
           }
         : undefined,
       onOpen: () => this.handleOpen(),
@@ -337,7 +337,7 @@ export class LiveViewClient {
       if (disableWith) {
         const btn = phxTarget as HTMLButtonElement;
         btn.disabled = true;
-        btn.dataset.originalText = btn.textContent || '';
+        btn.dataset['originalText'] = btn.textContent || '';
         btn.textContent = disableWith;
       }
 
@@ -421,7 +421,7 @@ export class LiveViewClient {
     const formData = new FormData();
 
     for (let i = 0; i < files.length; i++) {
-      formData.append(`${name}[]`, files[i]);
+      formData.append(`${name}[]`, files[i]!);
     }
 
     // Push upload event
@@ -469,10 +469,10 @@ export function initLiveView(options?: Partial<LiveViewClientOptions>): LiveView
   const wsUrl = `${wsProtocol}//${window.location.host}/live/websocket`;
 
   const client = new LiveViewClient({
-    url: options?.url || wsUrl,
-    csrfToken: options?.csrfToken || csrfToken,
-    debug: options?.debug || false,
-    params: options?.params,
+    url: options?.url ?? wsUrl,
+    csrfToken: options?.csrfToken ?? csrfToken,
+    debug: options?.debug ?? false,
+    params: options?.params ?? {},
     reconnect: options?.reconnect,
   });
 
@@ -485,5 +485,5 @@ export function initLiveView(options?: Partial<LiveViewClientOptions>): LiveView
 // Exports
 // ============================================================================
 
-export { registerHooks } from './hooks';
-export { livePatch, liveRedirect } from './navigation';
+export { registerHooks } from './hooks.js';
+export { livePatch, liveRedirect } from './navigation.js';

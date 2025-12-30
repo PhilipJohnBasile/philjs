@@ -94,18 +94,23 @@ export function extractAPIMetadata<TRouter extends Router>(
         const procedure = value as ProcedureDefinition;
         const pathString = currentPath.join('.');
 
-        routes.push({
+        const routeMetadata: RouteMetadata = {
           path: pathString,
           type: procedure._type,
-          input: procedure._def.inputSchema
-            ? {
-                required: true,
-                schemaType: getSchemaTypeName(procedure._def.inputSchema),
-              }
-            : undefined,
           methods: getHTTPMethods(procedure._type),
           middlewareCount: procedure._def.middlewares.length,
-        });
+        };
+
+        if (procedure._def.inputSchema) {
+          const schemaType = getSchemaTypeName(procedure._def.inputSchema);
+          const inputInfo: { required: boolean; schemaType?: string } = { required: true };
+          if (schemaType !== undefined) {
+            inputInfo.schemaType = schemaType;
+          }
+          routeMetadata.input = inputInfo;
+        }
+
+        routes.push(routeMetadata);
       } else if (typeof value === 'object' && value !== null) {
         // It's a nested router
         traverse(value as Router, currentPath);
@@ -115,12 +120,17 @@ export function extractAPIMetadata<TRouter extends Router>(
 
   traverse(api._def.router);
 
-  return {
-    routes,
-    version: options?.version,
-    title: options?.title,
-    description: options?.description,
-  };
+  const result: APIMetadata = { routes };
+  if (options?.version !== undefined) {
+    result.version = options.version;
+  }
+  if (options?.title !== undefined) {
+    result.title = options.title;
+  }
+  if (options?.description !== undefined) {
+    result.description = options.description;
+  }
+  return result;
 }
 
 /**
@@ -256,10 +266,8 @@ export function generateOpenAPI(metadata: APIMetadata): {
     }
 
     for (const method of methods) {
-      paths[path][method] = {
+      const operation: OpenAPIOperation = {
         operationId: route.path.replace(/\./g, '_'),
-        tags: route.tags,
-        description: route.description,
         responses: {
           '200': {
             description: 'Successful response',
@@ -280,10 +288,17 @@ export function generateOpenAPI(metadata: APIMetadata): {
           },
         },
       };
+      if (route.tags !== undefined) {
+        operation.tags = route.tags;
+      }
+      if (route.description !== undefined) {
+        operation.description = route.description;
+      }
+      paths[path]![method] = operation;
 
       // Add request body for mutations
       if (route.type === 'mutation' && route.input?.required) {
-        paths[path][method].requestBody = {
+        paths[path]![method]!.requestBody = {
           required: true,
           content: {
             'application/json': {
@@ -295,13 +310,16 @@ export function generateOpenAPI(metadata: APIMetadata): {
     }
   }
 
+  const info: { title: string; version: string; description?: string } = {
+    title: metadata.title ?? 'API',
+    version: metadata.version ?? '1.0.0',
+  };
+  if (metadata.description !== undefined) {
+    info.description = metadata.description;
+  }
   return {
     openapi: '3.0.0',
-    info: {
-      title: metadata.title ?? 'API',
-      version: metadata.version ?? '1.0.0',
-      description: metadata.description,
-    },
+    info,
     paths,
   };
 }
@@ -371,7 +389,7 @@ export function generateTypeDefinitions(
     let current = routeTree;
 
     for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i];
+      const segment = segments[i]!;
       if (i === segments.length - 1) {
         // Leaf node
         current[segment] = {

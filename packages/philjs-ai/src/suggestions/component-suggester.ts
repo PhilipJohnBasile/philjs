@@ -673,7 +673,7 @@ Return JSON array of ComponentSuggestion objects for appropriate children.`;
 
     return {
       contextType,
-      parentComponent,
+      ...(parentComponent !== undefined && { parentComponent }),
       siblingComponents,
       patterns,
       missingCommon,
@@ -683,7 +683,7 @@ Return JSON array of ComponentSuggestion objects for appropriate children.`;
   private isInsideJSX(content: string, line: number): boolean {
     const lines = content.split('\n');
     for (let i = line; i >= 0; i--) {
-      const l = lines[i];
+      const l = lines[i]!;
       if (l.includes('return (') || l.includes('return <')) {
         return true;
       }
@@ -697,7 +697,7 @@ Return JSON array of ComponentSuggestion objects for appropriate children.`;
   private findParentComponent(lines: string[], currentLine: number): string | undefined {
     let depth = 0;
     for (let i = currentLine; i >= 0; i--) {
-      const line = lines[i];
+      const line = lines[i]!;
       // Count closing tags
       const closeTags = (line.match(/<\/\w+>/g) || []).length;
       const selfCloseTags = (line.match(/\/>/g) || []).length;

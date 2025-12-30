@@ -7,7 +7,7 @@
  * - Mixed rendering: Different modes per route
  */
 
-import type { RouteModule } from "philjs-router";
+import type { RouteModule } from "@philjs/router";
 
 export type RenderMode = "ssr" | "ssg" | "isr" | "csr";
 
@@ -160,8 +160,10 @@ export class StaticGenerator {
       path,
       html,
       timestamp: Date.now(),
-      revalidate: config?.revalidate,
     };
+    if (config?.revalidate !== undefined) {
+      page.revalidate = config.revalidate;
+    }
 
     // Cache for ISR
     if (config?.mode === "isr") {

@@ -365,7 +365,7 @@ export function getBreakpoint(
     }
   }
 
-  return Object.keys(breakpoints)[0];
+  return Object.keys(breakpoints)[0] ?? 'xs';
 }
 
 /**

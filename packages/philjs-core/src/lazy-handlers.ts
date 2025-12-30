@@ -34,12 +34,15 @@ class HandlerRegistry {
     handler: T,
     modulePath?: string
   ): void {
-    this.handlers.set(symbolId, {
+    const entry: LazyHandler = {
       symbolId,
       handler,
-      modulePath,
       loaded: false,
-    });
+    };
+    if (modulePath !== undefined) {
+      entry.modulePath = modulePath;
+    }
+    this.handlers.set(symbolId, entry);
   }
 
   /**
@@ -314,7 +317,7 @@ export function hydrateLazyHandlers(element: Element): void {
     const attrs = el.attributes;
 
     for (let i = 0; i < attrs.length; i++) {
-      const attr = attrs[i];
+      const attr = attrs[i]!;
 
       // Check if this is a lazy handler attribute
       if (attr.name.startsWith('data-on')) {
@@ -322,7 +325,7 @@ export function hydrateLazyHandlers(element: Element): void {
         const symbolId = attr.value;
 
         // Attach the lazy event handler
-        el.addEventListener(eventName, async (event) => {
+        el.addEventListener(eventName, async (event: Event) => {
           await loadHandler(symbolId, event);
         });
 

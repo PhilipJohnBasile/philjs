@@ -262,8 +262,8 @@ export class ComplianceManager {
       consents,
       timestamp: new Date(),
       expiresAt: new Date(Date.now() + this.config.consent.expirationDays * 24 * 60 * 60 * 1000),
-      ipAddress: metadata?.ipAddress as string,
-      userAgent: metadata?.userAgent as string,
+      ipAddress: metadata?.['ipAddress'] as string,
+      userAgent: metadata?.['userAgent'] as string,
       version: this.getConsentVersion(),
     };
 
@@ -494,8 +494,8 @@ export class ComplianceManager {
       eventType,
       userId,
       details,
-      ipAddress: details.ipAddress as string,
-      userAgent: details.userAgent as string,
+      ipAddress: details['ipAddress'] as string,
+      userAgent: details['userAgent'] as string,
     };
 
     this.auditLog.push(entry);
@@ -748,12 +748,15 @@ export class ComplianceManager {
       recommendation = 'Enable encryption at rest';
     }
 
-    return {
+    const result: ControlResult = {
       controlId: control.id,
       name: control.name,
       status,
-      recommendation,
     };
+    if (recommendation !== undefined) {
+      result.recommendation = recommendation;
+    }
+    return result;
   }
 }
 

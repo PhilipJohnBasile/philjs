@@ -80,8 +80,8 @@ export function calculateStats(samples: number[]): {
   // Median
   const mid = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
+    ? (sorted[mid - 1]! + sorted[mid]!) / 2
+    : sorted[mid]!;
 
   // Standard deviation
   const squaredDiffs = samples.map(x => Math.pow(x - mean, 2));
@@ -91,8 +91,8 @@ export function calculateStats(samples: number[]): {
   return {
     mean,
     median,
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
+    min: sorted[0]!,
+    max: sorted[sorted.length - 1]!,
     stddev,
   };
 }
@@ -202,7 +202,7 @@ export function getEnvironmentInfo(): EnvironmentInfo {
     runtime: typeof Bun !== 'undefined' ? 'bun' : typeof Deno !== 'undefined' ? 'deno' : 'node',
     runtimeVersion: process.version,
     os: `${os.type()} ${os.release()}`,
-    cpu: cpus.length > 0 ? `${cpus[0].model} (${cpus.length} cores)` : 'Unknown',
+    cpu: cpus.length > 0 ? `${cpus[0]!.model} (${cpus.length} cores)` : 'Unknown',
     memory: `${Math.round(os.totalmem() / (1024 * 1024 * 1024))}GB`,
   };
 }

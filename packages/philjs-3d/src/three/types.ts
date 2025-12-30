@@ -191,6 +191,7 @@ export interface ThreeGLTF {
  */
 
 export interface ThreeCanvasProps {
+  id?: string;
   width?: number;
   height?: number;
   antialias?: boolean;
@@ -199,6 +200,7 @@ export interface ThreeCanvasProps {
   pixelRatio?: number;
   clearColor?: number | string;
   clearAlpha?: number;
+  autoResize?: boolean;
   camera?: {
     fov?: number;
     near?: number;
@@ -206,9 +208,11 @@ export interface ThreeCanvasProps {
     position?: [number, number, number];
     lookAt?: [number, number, number];
   };
+  onInit?: (state: ThreeState) => void;
   onCreated?: (state: ThreeState) => void;
-  onFrame?: (state: ThreeState, delta: number) => void;
+  onFrame?: (info: FrameInfo, state: ThreeState) => void;
   onResize?: (width: number, height: number) => void;
+  onError?: (error: Error) => void;
   style?: Record<string, string | number>;
   className?: string;
 }

@@ -215,7 +215,7 @@ export class CodeReviewer {
     const prompt = this.buildReviewPrompt(code, config);
 
     try {
-      const response = await this.provider.generate(prompt, {
+      const response = await this.provider.generateCompletion(prompt, {
         temperature: 0.3,
         maxTokens: 4000,
       });
@@ -301,7 +301,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.2 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<SecurityFinding[]>(response, []);
     } catch {
       return [];
@@ -339,7 +339,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.2 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<PerformanceNote[]>(response, []);
     } catch {
       return [];
@@ -378,7 +378,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.2 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<AccessibilityIssue[]>(response, []);
     } catch {
       return [];
@@ -419,18 +419,21 @@ Provide a comment as JSON:
 }`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.3 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
       const result = this.parseJSON<{ type: string; content: string; code?: string }>(response, {
         type: 'suggestion',
         content: 'No issues found.',
       });
 
-      return {
+      const comment: LineComment = {
         line: lineNumber,
         type: result.type as LineComment['type'],
         content: result.content,
-        code: result.code,
       };
+      if (result.code !== undefined) {
+        comment.code = result.code;
+      }
+      return comment;
     } catch {
       return {
         line: lineNumber,
@@ -474,7 +477,7 @@ Return suggestions as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.4 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.4 });
       return this.parseJSON<ReviewSuggestion[]>(response, []);
     } catch {
       return [];
@@ -646,7 +649,7 @@ ${diff}
 Focus on changes only. Return issues and suggestions as JSON.`;
 
     try {
-      const response = await this.provider.generate(prompt, { temperature: 0.3 });
+      const response = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
       return this.parseReviewResponse(response, diff, config);
     } catch {
       return this.createEmptyReview();
@@ -656,12 +659,17 @@ Focus on changes only. Return issues and suggestions as JSON.`;
   private generateLineComments(review: ReviewResult): LineComment[] {
     return review.issues
       .filter(issue => issue.line)
-      .map(issue => ({
-        line: issue.line!,
-        type: issue.severity === 'error' || issue.severity === 'critical' ? 'issue' : 'suggestion',
-        content: `**${issue.title}**: ${issue.description}`,
-        code: issue.suggestedFix,
-      }));
+      .map(issue => {
+        const comment: LineComment = {
+          line: issue.line!,
+          type: issue.severity === 'error' || issue.severity === 'critical' ? 'issue' : 'suggestion',
+          content: `**${issue.title}**: ${issue.description}`,
+        };
+        if (issue.suggestedFix !== undefined) {
+          comment.code = issue.suggestedFix;
+        }
+        return comment;
+      });
   }
 
   private async aggregateReviews(fileReviews: FileReview[], config: ReviewConfig): Promise<ReviewResult> {
@@ -742,7 +750,7 @@ Focus on changes only. Return issues and suggestions as JSON.`;
   private parseJSON<T>(text: string, fallback: T): T {
     try {
       const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-      const jsonStr = jsonMatch ? jsonMatch[1] : text;
+      const jsonStr = jsonMatch ? jsonMatch[1]! : text;
       return JSON.parse(jsonStr.trim());
     } catch {
       try {

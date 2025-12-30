@@ -161,7 +161,11 @@ export class EdgePrefetcher {
    */
   recordNavigation(from: string, to: string, geo?: string): void {
     // Update access log
-    this.accessLog.push({ path: to, timestamp: Date.now(), geo });
+    const logEntry: { path: string; timestamp: number; geo?: string } = { path: to, timestamp: Date.now() };
+    if (geo !== undefined) {
+      logEntry.geo = geo;
+    }
+    this.accessLog.push(logEntry);
     if (this.accessLog.length > 10000) {
       this.accessLog = this.accessLog.slice(-5000);
     }
@@ -262,7 +266,7 @@ export class EdgePrefetcher {
     if (paths.length === 0) return [];
 
     const predictions: PrefetchPrediction[] = [];
-    const lastPath = paths[paths.length - 1];
+    const lastPath = paths[paths.length - 1]!;
     const patterns = this.navigationPatterns.get(lastPath) || [];
 
     for (const pattern of patterns) {
@@ -277,7 +281,7 @@ export class EdgePrefetcher {
 
     // Second-order Markov (look at last 2 paths)
     if (paths.length >= 2) {
-      const secondLast = paths[paths.length - 2];
+      const secondLast = paths[paths.length - 2]!;
       const secondPatterns = this.navigationPatterns.get(secondLast) || [];
 
       for (const pattern of secondPatterns) {
@@ -389,7 +393,7 @@ export class EdgePrefetcher {
 
     this.timePatterns = [];
     for (const [key, group] of timeGroups) {
-      const [dayOfWeek, hour] = key.split('-').map(Number);
+      const [dayOfWeek, hour] = key.split('-').map(Number) as [number, number];
       const pathCounts = new Map<string, number>();
       for (const path of group.paths) {
         pathCounts.set(path, (pathCounts.get(path) || 0) + 1);

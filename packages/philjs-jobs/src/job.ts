@@ -115,6 +115,14 @@ export function defineJob<TPayload = any, TResult = any>(
     ...jobOptions
   } = options;
 
+  // Build hooks object excluding undefined values for exactOptionalPropertyTypes
+  const hooks: JobHooks<TPayload, TResult> = {};
+  if (onBefore !== undefined) hooks.onBefore = onBefore;
+  if (onComplete !== undefined) hooks.onComplete = onComplete;
+  if (onFail !== undefined) hooks.onFail = onFail;
+  if (onProgress !== undefined) hooks.onProgress = onProgress;
+  if (onFinally !== undefined) hooks.onFinally = onFinally;
+
   return {
     name,
     handler,
@@ -126,13 +134,7 @@ export function defineJob<TPayload = any, TResult = any>(
       removeOnFail: false,
       ...jobOptions,
     },
-    hooks: {
-      onBefore,
-      onComplete,
-      onFail,
-      onProgress,
-      onFinally,
-    },
+    hooks,
     middleware,
   };
 }
@@ -187,14 +189,16 @@ export function createRateLimitMiddleware<TPayload>(
     const oneMinuteAgo = now - 60000;
 
     // Remove old timestamps
-    while (timestamps.length > 0 && timestamps[0] < oneMinuteAgo) {
+    while (timestamps.length > 0 && timestamps[0]! < oneMinuteAgo) {
       timestamps.shift();
     }
 
     if (timestamps.length >= maxPerMinute) {
       const oldestTimestamp = timestamps[0];
-      const waitTime = oldestTimestamp + 60000 - now;
-      throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(waitTime / 1000)}s`);
+      if (oldestTimestamp !== undefined) {
+        const waitTime = oldestTimestamp + 60000 - now;
+        throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(waitTime / 1000)}s`);
+      }
     }
 
     timestamps.push(now);
@@ -246,7 +250,7 @@ export function composeMiddleware<TPayload>(
         return next();
       }
 
-      const mw = middleware[index++];
+      const mw = middleware[index++]!;
       return mw(payload, context, dispatch);
     };
 

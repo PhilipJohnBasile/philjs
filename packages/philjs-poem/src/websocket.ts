@@ -11,7 +11,7 @@ import type {
   LiveViewHandler,
   LiveViewMessage,
   LiveViewPatch,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // WebSocket Configuration
@@ -120,12 +120,13 @@ export class LiveViewSocketBuilder<S> {
       throw new Error('LiveView handler must have a render function');
     }
 
-    return {
-      onConnect: this.handler.onConnect,
-      onMessage: this.handler.onMessage,
-      onClose: this.handler.onClose,
+    const result: LiveViewHandler<S> = {
       render: this.handler.render,
     };
+    if (this.handler.onConnect !== undefined) result.onConnect = this.handler.onConnect;
+    if (this.handler.onMessage !== undefined) result.onMessage = this.handler.onMessage;
+    if (this.handler.onClose !== undefined) result.onClose = this.handler.onClose;
+    return result;
   }
 
   toRustCode(): string {
@@ -436,13 +437,15 @@ export class PresenceTracker {
     const index = current.findIndex(e => e.id === id);
     if (index === -1) return;
 
-    const [leftEntry] = current.splice(index, 1);
+    const leftEntry = current.splice(index, 1)[0];
 
     if (current.length === 0) {
       this.state.delete(key);
     }
 
-    this.onLeave?.(key, current, leftEntry);
+    if (leftEntry !== undefined) {
+      this.onLeave?.(key, current, leftEntry);
+    }
   }
 
   get(key: string): PresenceEntry[] {

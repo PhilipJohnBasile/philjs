@@ -276,7 +276,7 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
 
   // Handle Fragment
   if (type === Fragment) {
-    hydrateNode(props.children, ctx);
+    hydrateNode(props['children'] as VNode, ctx);
     return;
   }
 
@@ -302,12 +302,12 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
     attachEventHandlers(element, props);
 
     // Hydrate children
-    if (props.children) {
+    if (props['children']) {
       const childCtx: HydrationContext = {
         currentNode: element.firstChild,
         parentElement: element,
       };
-      hydrateNode(props.children, childCtx);
+      hydrateNode(props['children'] as VNode, childCtx);
     }
 
     // Move to next sibling

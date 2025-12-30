@@ -8,8 +8,8 @@ import type {
   AssetMetadata,
   AssetState,
   BevyAssetType,
-} from './types';
-import { getBevy, onBevyEvent } from './hooks';
+} from './types.js';
+import { getBevy, onBevyEvent } from './hooks.js';
 
 // ============================================================================
 // Asset Cache
@@ -126,13 +126,15 @@ export function loadBevyAsset<T = unknown>(
     return assetCache.get(path) as AssetHandle<T>;
   }
 
-  // Create handle
-  const handle: AssetHandle<T> = {
+  // Create handle - use type assertion to satisfy exactOptionalPropertyTypes
+  // since we're initializing with undefined values that will be set later
+  const handle: AssetHandle<T> & {
+    asset?: T;
+    error?: Error;
+  } = {
     path,
     type,
-    state: 'pending',
-    asset: undefined,
-    error: undefined,
+    state: 'pending' as const,
     isLoaded() {
       return this.state === 'loaded';
     },
@@ -213,14 +215,13 @@ async function loadAsset<T>(
       throw new Error(`Failed to load asset: ${path} (${response.status})`);
     }
 
-    // Store metadata
+    // Store metadata - conditionally add lastModified to avoid exactOptionalPropertyTypes issue
+    const lastModifiedHeader = response.headers.get('last-modified');
     const metadata: AssetMetadata = {
       path,
       type,
       size: parseInt(response.headers.get('content-length') || '0', 10),
-      lastModified: response.headers.get('last-modified')
-        ? new Date(response.headers.get('last-modified')!).getTime()
-        : undefined,
+      ...(lastModifiedHeader ? { lastModified: new Date(lastModifiedHeader).getTime() } : {}),
     };
     metadataCache.set(path, metadata);
 
@@ -586,7 +587,7 @@ export function watchAsset<T = unknown>(
   checkForChanges();
 
   // Then poll every 2 seconds in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     intervalId = setInterval(checkForChanges, 2000);
   }
 
@@ -668,7 +669,7 @@ export async function loadAssetBundle(
     return bundle;
   }
 
-  const results = await preloadAssets(bundle.assets, { onProgress });
+  const results = await preloadAssets(bundle.assets, onProgress ? { onProgress } : {});
   bundle.handles = results;
   bundle.loaded = true;
 

@@ -10,8 +10,8 @@ import type { PoolOptions } from './types.js';
 export class ObjectPool<T> {
   private pool: T[] = [];
   private readonly create: () => T;
-  private readonly reset?: (obj: T) => void;
-  private readonly validate?: (obj: T) => boolean;
+  private readonly reset?: ((obj: T) => void) | undefined;
+  private readonly validate?: ((obj: T) => boolean) | undefined;
   private readonly maxSize: number;
 
   constructor(options: PoolOptions<T>) {

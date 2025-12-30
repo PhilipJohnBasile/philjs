@@ -9,7 +9,7 @@ import type {
   ColumnBuilder,
   ForeignKeyBuilder,
   DataMigrationHelpers,
-} from '../types';
+} from '../types.js';
 
 export class PostgresMigrationAdapter {
   private queries: string[] = [];
@@ -80,7 +80,8 @@ export class PostgresMigrationAdapter {
         const rows = Array.isArray(data) ? data : [data];
         if (rows.length === 0) return;
 
-        const columns = Object.keys(rows[0]);
+        const firstRow = rows[0]!;
+        const columns = Object.keys(firstRow);
         const values = rows.map((row) => columns.map((col) => row[col]));
 
         const placeholders = values

@@ -220,9 +220,12 @@ export class RedisPPRCache implements PPRCache {
     const sampleSize = Math.min(10, keys.length);
 
     for (let i = 0; i < sampleSize; i++) {
-      const data = await this.client.get(keys[i]);
-      if (data) {
-        bytes += new TextEncoder().encode(data).length;
+      const key = keys[i];
+      if (key !== undefined) {
+        const data = await this.client.get(key);
+        if (data) {
+          bytes += new TextEncoder().encode(data).length;
+        }
       }
     }
 
@@ -542,12 +545,19 @@ export function parseConditionalRequest(request: Request): {
   ifNoneMatch?: string;
   ifModifiedSince?: Date;
 } {
-  return {
-    ifNoneMatch: request.headers.get("If-None-Match") || undefined,
-    ifModifiedSince: request.headers.get("If-Modified-Since")
-      ? new Date(request.headers.get("If-Modified-Since")!)
-      : undefined,
-  };
+  const result: { ifNoneMatch?: string; ifModifiedSince?: Date } = {};
+
+  const ifNoneMatch = request.headers.get("If-None-Match");
+  if (ifNoneMatch) {
+    result.ifNoneMatch = ifNoneMatch;
+  }
+
+  const ifModifiedSince = request.headers.get("If-Modified-Since");
+  if (ifModifiedSince) {
+    result.ifModifiedSince = new Date(ifModifiedSince);
+  }
+
+  return result;
 }
 
 /**

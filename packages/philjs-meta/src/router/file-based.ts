@@ -160,31 +160,40 @@ function parseSegment(segment: string): RouteSegment {
   // Optional catch-all: [[...slug]]
   const optionalCatchAllMatch = segment.match(/^\[\[\.\.\.(\w+)\]\]$/);
   if (optionalCatchAllMatch) {
-    return {
+    const result: RouteSegment = {
       type: 'optional-catch-all',
       value: segment,
-      paramName: optionalCatchAllMatch[1],
     };
+    if (optionalCatchAllMatch[1] !== undefined) {
+      result.paramName = optionalCatchAllMatch[1];
+    }
+    return result;
   }
 
   // Catch-all: [...slug]
   const catchAllMatch = segment.match(/^\[\.\.\.(\w+)\]$/);
   if (catchAllMatch) {
-    return {
+    const result: RouteSegment = {
       type: 'catch-all',
       value: segment,
-      paramName: catchAllMatch[1],
     };
+    if (catchAllMatch[1] !== undefined) {
+      result.paramName = catchAllMatch[1];
+    }
+    return result;
   }
 
   // Dynamic: [param]
   const dynamicMatch = segment.match(/^\[(\w+)\]$/);
   if (dynamicMatch) {
-    return {
+    const result: RouteSegment = {
       type: 'dynamic',
       value: segment,
-      paramName: dynamicMatch[1],
     };
+    if (dynamicMatch[1] !== undefined) {
+      result.paramName = dynamicMatch[1];
+    }
+    return result;
   }
 
   // Static segment
@@ -275,7 +284,7 @@ function extractParamNames(pattern: string): string[] {
   let match;
 
   while ((match = regex.exec(pattern)) !== null) {
-    params.push(match[1]);
+    params.push(match[1]!);
   }
 
   return params;
@@ -420,11 +429,19 @@ function scanDirectory(
         segments,
         paramNames: extractParamNames(finalPattern),
         layouts: isApiRoute ? [] : findLayouts(fullPath, pagesDir),
-        loading: isApiRoute ? undefined : findLoading(fullPath, pagesDir),
-        error: isApiRoute ? undefined : findError(fullPath, pagesDir),
         isApiRoute,
         meta: {},
       };
+      if (!isApiRoute) {
+        const loadingPath = findLoading(fullPath, pagesDir);
+        if (loadingPath !== undefined) {
+          route.loading = loadingPath;
+        }
+        const errorPath = findError(fullPath, pagesDir);
+        if (errorPath !== undefined) {
+          route.error = errorPath;
+        }
+      }
 
       routes.push(route);
     }
@@ -511,15 +528,22 @@ export function generateRouteManifest(options: FileRouterOptions): RouteManifest
     }
   }
 
-  return {
+  const manifest: RouteManifest = {
     routes,
     apiRoutes,
-    rootLayout,
-    notFound,
-    globalError,
     generatedAt: Date.now(),
     pagesDir,
   };
+  if (rootLayout !== undefined) {
+    manifest.rootLayout = rootLayout;
+  }
+  if (notFound !== undefined) {
+    manifest.notFound = notFound;
+  }
+  if (globalError !== undefined) {
+    manifest.globalError = globalError;
+  }
+  return manifest;
 }
 
 /**
@@ -541,7 +565,7 @@ export function matchRoute(
 
       // Extract parameters from match groups
       for (let i = 0; i < route.paramNames.length; i++) {
-        const paramName = route.paramNames[i];
+        const paramName = route.paramNames[i]!;
         const value = match[i + 1];
 
         if (value !== undefined) {
@@ -578,7 +602,7 @@ export function matchApiRoute(
       const params: Record<string, string | string[]> = {};
 
       for (let i = 0; i < route.paramNames.length; i++) {
-        const paramName = route.paramNames[i];
+        const paramName = route.paramNames[i]!;
         const value = match[i + 1];
 
         if (value !== undefined) {

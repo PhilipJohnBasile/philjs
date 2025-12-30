@@ -639,7 +639,7 @@ export class PredictiveMaintenance {
     const n = values.length;
     let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
 
-    const startTime = values[0].timestamp;
+    const startTime = values[0]!.timestamp;
 
     for (const point of values) {
       const x = (point.timestamp - startTime) / 3600000; // Hours
@@ -654,8 +654,8 @@ export class PredictiveMaintenance {
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
 
-    const currentValue = values[values.length - 1].value;
-    const currentTime = (values[values.length - 1].timestamp - startTime) / 3600000;
+    const currentValue = values[values.length - 1]!.value;
+    const currentTime = (values[values.length - 1]!.timestamp - startTime) / 3600000;
 
     // Predict time to threshold
     if (slope > 0) {
@@ -854,7 +854,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

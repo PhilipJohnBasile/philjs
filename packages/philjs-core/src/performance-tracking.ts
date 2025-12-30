@@ -10,7 +10,7 @@
  * - Real-time monitoring dashboard
  */
 
-import { signal, effect, type Signal } from './signals';
+import { signal, effect, type Signal } from './signals.js';
 
 // ============================================================================
 // Types
@@ -88,7 +88,7 @@ export class PerformanceTracker {
     const mark: PerformanceMark = {
       name,
       timestamp: performance.now(),
-      metadata,
+      ...(metadata !== undefined && { metadata }),
     };
 
     this.marks.set(name, mark);
@@ -210,7 +210,7 @@ export class PerformanceTracker {
       duration,
       status,
       timestamp: Date.now(),
-      error,
+      ...(error !== undefined ? { error } : {}),
     });
 
     // Keep only last 100 calls

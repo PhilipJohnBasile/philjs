@@ -5,7 +5,8 @@
  * with Zod schema validation.
  */
 
-import { z, ZodType, ZodObject, ZodRawShape, ZodLiteral, ZodString } from 'zod';
+import { z } from 'zod';
+import type { ZodType, ZodObject, ZodRawShape, ZodLiteral, ZodString } from 'zod';
 import type {
   CollectionType,
   CollectionConfig,
@@ -46,8 +47,8 @@ export function defineCollection<
   return {
     type: config.type,
     schema: config.schema,
-    directory: config.directory,
     _brand: 'CollectionDefinition' as const,
+    ...(config.directory !== undefined && { directory: config.directory }),
   };
 }
 

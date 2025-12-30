@@ -431,11 +431,18 @@ Return JSON array of props with: name, type, required, defaultValue, description
     );
 
     if (matchingImports.length > 0) {
-      return matchingImports.map(m => ({
-        module: m.path,
-        named: m.exports.includes(identifier) ? [identifier] : undefined,
-        default: m.hasDefault && m.name === identifier ? identifier : undefined,
-      }));
+      return matchingImports.map(m => {
+        const suggestion: ImportSuggestion = {
+          module: m.path,
+        };
+        if (m.exports.includes(identifier)) {
+          suggestion.named = [identifier];
+        }
+        if (m.hasDefault && m.name === identifier) {
+          suggestion.default = identifier;
+        }
+        return suggestion;
+      });
     }
 
     // Use AI for unknown imports
@@ -859,7 +866,7 @@ Do not include any explanation or markdown.`;
 
       // Calculate insertion range
       const prefixLines = prefix.split('\n');
-      const lastLine = prefixLines[prefixLines.length - 1];
+      const lastLine = prefixLines[prefixLines.length - 1] ?? '';
 
       return {
         text,
@@ -954,27 +961,32 @@ Return JSON with:
       cursor: context.position,
       filePath: context.filePath || 'untitled.ts',
       language: context.language || 'typescript',
-      prefix: context.prefix,
-      triggerCharacter: context.trigger,
-      projectContext: context.projectContext,
+      ...(context.prefix && { prefix: context.prefix }),
+      ...(context.trigger && { triggerCharacter: context.trigger }),
+      ...(context.projectContext && { projectContext: context.projectContext }),
     };
 
     const suggestions = await this.getSuggestions(autocompleteContext);
 
-    return suggestions.map((s, i) => ({
-      label: s.label,
-      kind: this.mapSuggestionKind(s.kind),
-      detail: s.detail,
-      documentation: s.documentation,
-      insertText: s.insertText || s.text,
-      sortText: String(i).padStart(4, '0'),
-      filterText: s.label,
-      preselect: i === 0,
-      additionalTextEdits: s.imports?.map(imp => ({
-        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
-        newText: this.formatImport(imp),
-      })),
-    }));
+    return suggestions.map((s, i) => {
+      const item: CompletionItem = {
+        label: s.label,
+        kind: this.mapSuggestionKind(s.kind),
+        insertText: s.insertText || s.text,
+        sortText: String(i).padStart(4, '0'),
+        filterText: s.label,
+        preselect: i === 0,
+      };
+      if (s.detail) item.detail = s.detail;
+      if (s.documentation) item.documentation = s.documentation;
+      if (s.imports && s.imports.length > 0) {
+        item.additionalTextEdits = s.imports.map(imp => ({
+          range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+          newText: this.formatImport(imp),
+        }));
+      }
+      return item;
+    });
   }
 
   /**

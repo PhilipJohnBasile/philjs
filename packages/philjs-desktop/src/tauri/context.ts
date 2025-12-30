@@ -2,7 +2,7 @@
  * Tauri Context and Hook
  */
 
-import type { TauriContext, AppInfo, EventCallback, UnlistenFn } from './types';
+import type { TauriContext, AppInfo, EventCallback, UnlistenFn } from './types.js';
 
 // Check if we're in a Tauri environment
 function checkTauriEnvironment(): boolean {

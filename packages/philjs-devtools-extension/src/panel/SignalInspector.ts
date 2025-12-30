@@ -2,7 +2,7 @@
  * PhilJS DevTools - Signal Inspector
  */
 
-import type { SignalData } from '../types';
+import type { SignalData } from '../types.js';
 
 export class SignalInspector {
   private signals: Map<string, SignalData> = new Map();

@@ -247,11 +247,16 @@ export function findCommonDependencies(
   );
 
   // Find intersection of all dependency sets
-  let common = new Set(allDeps[0]);
+  const firstDeps = allDeps[0];
+  if (!firstDeps) return new Set();
+  let common = new Set(firstDeps);
   for (let i = 1; i < allDeps.length; i++) {
-    common = new Set(
-      Array.from(common).filter((id) => allDeps[i].has(id))
-    );
+    const deps = allDeps[i];
+    if (deps) {
+      common = new Set(
+        Array.from(common).filter((id) => deps.has(id))
+      );
+    }
   }
 
   return common;

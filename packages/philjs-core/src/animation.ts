@@ -222,7 +222,7 @@ export class FLIPAnimator {
   recordPositions(selector: string = "[data-flip]") {
     const elements = document.querySelectorAll(selector);
     elements.forEach((el) => {
-      const id = (el as HTMLElement).dataset.flipId || el.id;
+      const id = (el as HTMLElement).dataset['flipId'] || el.id;
       if (id) {
         this.positions.set(id, el.getBoundingClientRect());
       }
@@ -237,7 +237,7 @@ export class FLIPAnimator {
 
     elements.forEach((el) => {
       const element = el as HTMLElement;
-      const id = element.dataset.flipId || element.id;
+      const id = element.dataset['flipId'] || element.id;
       if (!id) return;
 
       const firstPos = this.positions.get(id);

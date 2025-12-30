@@ -26,14 +26,14 @@ class ProcedureBuilder<
   TInput = void,
   TContext extends ProcedureContext = ProcedureContext
 > {
-  private inputSchema?: Schema<TInput>;
+  private inputSchema: Schema<TInput> | undefined;
   private middlewares: Middleware[] = [];
 
   constructor(
     inputSchema?: Schema<TInput>,
     middlewares: Middleware[] = []
   ) {
-    this.inputSchema = inputSchema;
+    this.inputSchema = inputSchema ?? undefined;
     this.middlewares = middlewares;
   }
 
@@ -77,7 +77,7 @@ class ProcedureBuilder<
   ): ProcedureBuilder<TInput, TNewContext> {
     return new ProcedureBuilder<TInput, TNewContext>(
       this.inputSchema,
-      [...this.middlewares, middleware as Middleware]
+      [...this.middlewares, middleware as unknown as Middleware]
     );
   }
 
@@ -146,17 +146,22 @@ class ProcedureBuilder<
     type: TType,
     handler: ProcedureHandler<TInput, TOutput, TContext>
   ): ProcedureDefinition<TType, TInput, TOutput, TContext> {
+    const def: ProcedureDefinition<TType, TInput, TOutput, TContext>['_def'] = {
+      type,
+      handler: handler as ProcedureHandler<TInput, TOutput, TContext>,
+      middlewares: this.middlewares as unknown as Middleware<unknown, TContext>[],
+    };
+
+    if (this.inputSchema !== undefined) {
+      def.inputSchema = this.inputSchema;
+    }
+
     return {
       _type: type,
       _input: undefined as TInput,
       _output: undefined as TOutput,
       _context: undefined as unknown as TContext,
-      _def: {
-        type,
-        inputSchema: this.inputSchema,
-        handler: handler as ProcedureHandler<TInput, TOutput, TContext>,
-        middlewares: this.middlewares as any,
-      },
+      _def: def,
     };
   }
 }
@@ -249,7 +254,7 @@ export async function executeProcedure<
   if (middlewares.length > 0) {
     const { executeMiddlewareChain } = await import('./middleware.js');
 
-    const result = await executeMiddlewareChain(middlewares, {
+    const result = await executeMiddlewareChain(middlewares as unknown as Middleware<unknown, ProcedureContext>[], {
       ctx,
       input: validatedInput,
       type,

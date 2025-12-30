@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
-import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import type {
   EmailProvider,
   EmailMessage,
@@ -9,8 +9,9 @@ import type {
   EmailAddress,
   BulkEmailMessage,
   BulkEmailResult,
-} from '../types';
-import { renderReactEmail, formatAddress, withRetry } from '../utils';
+  EmailAttachment,
+} from '../types.js';
+import { renderReactEmail, formatAddress, withRetry } from '../utils.js';
 
 /**
  * SMTP Email Provider using Nodemailer
@@ -58,9 +59,14 @@ export class SmtpProvider implements EmailProvider {
           text = text ?? rendered.text;
         }
 
+        const from = message.from ?? this.config.defaultFrom;
+        if (!from) {
+          throw new Error('From address is required');
+        }
+
         // Build email options
         const mailOptions: nodemailer.SendMailOptions = {
-          from: formatAddress(message.from),
+          from: formatAddress(from),
           to: this.formatRecipients(message.to),
           cc: message.cc ? this.formatRecipients(message.cc) : undefined,
           bcc: message.bcc ? this.formatRecipients(message.bcc) : undefined,
@@ -68,7 +74,7 @@ export class SmtpProvider implements EmailProvider {
           subject: message.subject,
           text,
           html,
-          attachments: message.attachments?.map((att) => ({
+          attachments: message.attachments?.map((att: EmailAttachment) => ({
             filename: att.filename,
             content: att.content,
             contentType: att.contentType,
@@ -204,12 +210,12 @@ export class SmtpProvider implements EmailProvider {
 
     // Add priority header
     if (message.priority) {
-      const priorityMap = {
+      const priorityMap: Record<string, string> = {
         high: '1 (Highest)',
         normal: '3 (Normal)',
         low: '5 (Lowest)',
       };
-      headers['X-Priority'] = priorityMap[message.priority];
+      headers['X-Priority'] = priorityMap[message.priority]!;
     }
 
     return headers;

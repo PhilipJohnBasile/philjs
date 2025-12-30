@@ -343,29 +343,29 @@ export class AnimatedTransform {
   private applyTransform(values: Record<string, number>): void {
     const transforms: string[] = [];
 
-    if (values.x !== 0 || values.y !== 0 || values.z !== 0) {
-      transforms.push(`translate3d(${values.x}px, ${values.y}px, ${values.z}px)`);
+    if (values['x'] !== 0 || values['y'] !== 0 || values['z'] !== 0) {
+      transforms.push(`translate3d(${values['x']}px, ${values['y']}px, ${values['z']}px)`);
     }
 
-    if (values.scale !== 1) {
-      transforms.push(`scale(${values.scale})`);
+    if (values['scale'] !== 1) {
+      transforms.push(`scale(${values['scale']})`);
     } else {
-      if (values.scaleX !== 1) transforms.push(`scaleX(${values.scaleX})`);
-      if (values.scaleY !== 1) transforms.push(`scaleY(${values.scaleY})`);
+      if (values['scaleX'] !== 1) transforms.push(`scaleX(${values['scaleX']})`);
+      if (values['scaleY'] !== 1) transforms.push(`scaleY(${values['scaleY']})`);
     }
 
-    if (values.rotate !== 0) {
-      transforms.push(`rotate(${values.rotate}deg)`);
+    if (values['rotate'] !== 0) {
+      transforms.push(`rotate(${values['rotate']}deg)`);
     }
-    if (values.rotateX !== 0) transforms.push(`rotateX(${values.rotateX}deg)`);
-    if (values.rotateY !== 0) transforms.push(`rotateY(${values.rotateY}deg)`);
-    if (values.rotateZ !== 0) transforms.push(`rotateZ(${values.rotateZ}deg)`);
+    if (values['rotateX'] !== 0) transforms.push(`rotateX(${values['rotateX']}deg)`);
+    if (values['rotateY'] !== 0) transforms.push(`rotateY(${values['rotateY']}deg)`);
+    if (values['rotateZ'] !== 0) transforms.push(`rotateZ(${values['rotateZ']}deg)`);
 
-    if (values.skewX !== 0) transforms.push(`skewX(${values.skewX}deg)`);
-    if (values.skewY !== 0) transforms.push(`skewY(${values.skewY}deg)`);
+    if (values['skewX'] !== 0) transforms.push(`skewX(${values['skewX']}deg)`);
+    if (values['skewY'] !== 0) transforms.push(`skewY(${values['skewY']}deg)`);
 
     this.element.style.transform = transforms.join(' ');
-    this.element.style.opacity = String(values.opacity);
+    this.element.style.opacity = String(values['opacity']);
   }
 
   animate(values: Partial<TransformValues>): Promise<void[]> {
@@ -702,12 +702,22 @@ export class AnimationSequence {
     values: TransformValues,
     options?: { config?: SpringConfig; stagger?: number }
   ): AnimationSequence {
-    this.steps.push({
+    const step: {
+      targets: HTMLElement[];
+      values: TransformValues;
+      config?: SpringConfig;
+      stagger?: number;
+    } = {
       targets: Array.isArray(targets) ? targets : [targets],
-      values,
-      config: options?.config,
-      stagger: options?.stagger
-    });
+      values
+    };
+    if (options?.config !== undefined) {
+      step.config = options.config;
+    }
+    if (options?.stagger !== undefined) {
+      step.stagger = options.stagger;
+    }
+    this.steps.push(step);
     return this;
   }
 
@@ -804,7 +814,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

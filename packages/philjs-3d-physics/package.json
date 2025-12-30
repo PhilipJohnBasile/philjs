@@ -1,6 +1,7 @@
 {
   "name": "@philjs/3d-physics",
   "version": "0.1.0",
+  "type": "module",
   "description": "High-performance 3D physics engine for PhilJS - rigid bodies, vehicles, ragdolls, character controllers",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

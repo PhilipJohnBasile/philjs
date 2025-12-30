@@ -183,20 +183,20 @@ export interface LiveViewClientOptions {
   url: string;
 
   /** CSRF token */
-  csrfToken?: string;
+  csrfToken?: string | undefined;
 
   /** Enable debug logging */
-  debug?: boolean;
+  debug?: boolean | undefined;
 
   /** Custom params to send on connect */
-  params?: Record<string, any>;
+  params?: Record<string, any> | undefined;
 
   /** Reconnection options */
   reconnect?: {
-    maxAttempts?: number;
-    initialDelay?: number;
-    maxDelay?: number;
-  };
+    maxAttempts?: number | undefined;
+    initialDelay?: number | undefined;
+    maxDelay?: number | undefined;
+  } | undefined;
 }
 
 export interface ClientHook {

@@ -277,7 +277,7 @@ export class RustToJSMapper {
     // Handle arrays [T; N]
     if (rustType.name.startsWith('[') && rustType.name.includes(';')) {
       const match = rustType.name.match(/\[([^;]+);\s*(\d+)\]/);
-      if (match) {
+      if (match?.[1] !== undefined && match[2] !== undefined) {
         const innerType = this.mapTypeString(match[1].trim());
         return `[${Array(parseInt(match[2])).fill(innerType).join(', ')}]`;
       }
@@ -448,16 +448,17 @@ export function parseRustType(typeStr: string): RustType {
     generics = splitGenericParams(genericStr).map(g => parseRustType(g.trim()));
   }
 
-  return {
+  const result: RustType = {
     raw: typeStr,
     name,
-    generics,
     isReference,
     isMutable,
-    lifetime,
     isOptional,
     isResult
   };
+  if (generics !== undefined) result.generics = generics;
+  if (lifetime !== undefined) result.lifetime = lifetime;
+  return result;
 }
 
 /**
@@ -514,14 +515,17 @@ function parseWasmBindgenAttrs(attrStr: string): WasmBindgenAttrs {
 
   // Extract content between parentheses
   const match = attrStr.match(/wasm_bindgen\s*\(([^)]*)\)/);
-  if (!match) return attrs;
+  if (!match?.[1]) return attrs;
 
   const content = match[1];
   const parts = content.split(',').map(p => p.trim());
 
   for (const part of parts) {
     if (part.includes('=')) {
-      const [key, value] = part.split('=').map(s => s.trim());
+      const splitParts = part.split('=').map(s => s.trim());
+      const key = splitParts[0];
+      const value = splitParts[1];
+      if (key === undefined || value === undefined) continue;
       const cleanValue = value.replace(/^["']|["']$/g, '');
 
       switch (key) {
@@ -576,7 +580,7 @@ function extractDocComment(lines: string[], endIndex: number): string | undefine
   let i = endIndex - 1;
 
   while (i >= 0) {
-    const line = lines[i].trim();
+    const line = lines[i]?.trim() ?? '';
     if (line.startsWith('///')) {
       docLines.unshift(line.slice(3).trim());
       i--;
@@ -616,10 +620,11 @@ function parseRustFunction(signature: string, attrs: string[] = []): RustFunctio
   if (!fnMatch) return null;
 
   const [, pubMarker, asyncMarker, name, genericsStr, paramsStr, , returnTypeStr] = fnMatch;
+  if (name === undefined) return null;
 
   // Parse parameters
   const params: RustParam[] = [];
-  if (paramsStr.trim()) {
+  if (paramsStr?.trim()) {
     const paramParts = splitParams(paramsStr);
     for (const param of paramParts) {
       const trimmed = param.trim();
@@ -651,19 +656,20 @@ function parseRustFunction(signature: string, attrs: string[] = []): RustFunctio
   }
 
   // Determine JS name
-  const jsName = wasmBindgenAttrs?.jsName || snakeToCamel(name);
+  const jsName = wasmBindgenAttrs?.jsName ?? snakeToCamel(name);
 
-  return {
+  const result: RustFunction = {
     name: jsName,
     rustName: name,
     isAsync: !!asyncMarker,
     isPublic: !!pubMarker,
     hasWasmBindgen,
-    wasmBindgenAttrs,
     params,
-    returnType: returnTypeStr ? parseRustType(returnTypeStr.trim()) : undefined,
-    generics
   };
+  if (returnTypeStr) result.returnType = parseRustType(returnTypeStr.trim());
+  if (wasmBindgenAttrs !== undefined) result.wasmBindgenAttrs = wasmBindgenAttrs;
+  if (generics !== undefined) result.generics = generics;
+  return result;
 }
 
 /**
@@ -708,7 +714,7 @@ function parseRustStruct(code: string, attrs: string[] = []): RustStruct | null 
     }
     if (attr.includes('derive')) {
       const deriveMatch = attr.match(/derive\s*\(([^)]+)\)/);
-      if (deriveMatch) {
+      if (deriveMatch?.[1]) {
         derives = deriveMatch[1].split(',').map(d => d.trim());
       }
     }
@@ -723,22 +729,25 @@ function parseRustStruct(code: string, attrs: string[] = []): RustStruct | null 
     // Try unit struct or tuple struct
     const unitMatch = code.match(/^(pub\s+)?struct\s+(\w+)(<[^>]+>)?\s*;/);
     if (unitMatch) {
-      const [, pubMarker, name, genericsStr] = unitMatch;
-      return {
-        name: wasmBindgenAttrs?.jsName || name,
-        rustName: name,
+      const [, pubMarker, unitName, genericsStr] = unitMatch;
+      if (unitName === undefined) return null;
+      const result: RustStruct = {
+        name: wasmBindgenAttrs?.jsName ?? unitName,
+        rustName: unitName,
         isPublic: !!pubMarker,
         hasWasmBindgen,
-        wasmBindgenAttrs,
         fields: [],
-        generics: genericsStr ? genericsStr.slice(1, -1).split(',').map(g => g.trim()) : undefined,
         derives
       };
+      if (wasmBindgenAttrs !== undefined) result.wasmBindgenAttrs = wasmBindgenAttrs;
+      if (genericsStr) result.generics = genericsStr.slice(1, -1).split(',').map(g => g.trim());
+      return result;
     }
     return null;
   }
 
   const [, pubMarker, name, genericsStr] = structMatch;
+  if (name === undefined) return null;
 
   // Parse fields
   const fieldsStart = code.indexOf('{') + 1;
@@ -767,6 +776,7 @@ function parseRustStruct(code: string, attrs: string[] = []): RustStruct | null 
     const fieldMatch = trimmed.match(/^(pub\s+)?(\w+)\s*:\s*(.+?)\s*,?\s*$/);
     if (fieldMatch) {
       const [, fieldPub, fieldName, fieldType] = fieldMatch;
+      if (fieldName === undefined || fieldType === undefined) continue;
 
       let hasGetter = false;
       let hasSetter = false;
@@ -776,30 +786,32 @@ function parseRustStruct(code: string, attrs: string[] = []): RustStruct | null 
         if (attr.includes('wasm_bindgen') && attr.includes('setter')) hasSetter = true;
       }
 
-      fields.push({
+      const field: RustField = {
         name: fieldName,
         type: parseRustType(fieldType),
         isPublic: !!fieldPub,
-        doc: currentDoc || undefined,
         hasGetter,
         hasSetter
-      });
+      };
+      if (currentDoc) field.doc = currentDoc;
+      fields.push(field);
 
       currentDoc = '';
       currentAttrs = [];
     }
   }
 
-  return {
-    name: wasmBindgenAttrs?.jsName || name,
+  const result: RustStruct = {
+    name: wasmBindgenAttrs?.jsName ?? name,
     rustName: name,
     isPublic: !!pubMarker,
     hasWasmBindgen,
-    wasmBindgenAttrs,
     fields,
-    generics: genericsStr ? genericsStr.slice(1, -1).split(',').map(g => g.trim()) : undefined,
     derives
   };
+  if (wasmBindgenAttrs !== undefined) result.wasmBindgenAttrs = wasmBindgenAttrs;
+  if (genericsStr) result.generics = genericsStr.slice(1, -1).split(',').map(g => g.trim());
+  return result;
 }
 
 /**
@@ -840,6 +852,7 @@ function parseRustEnum(code: string, attrs: string[] = []): RustEnum | null {
   if (!enumMatch) return null;
 
   const [, pubMarker, name, genericsStr] = enumMatch;
+  if (name === undefined) return null;
 
   // Parse variants
   const variantsStart = code.indexOf('{') + 1;
@@ -866,52 +879,59 @@ function parseRustEnum(code: string, attrs: string[] = []): RustEnum | null {
     const structMatch = trimmed.match(/^(\w+)\s*\{([^}]+)\}\s*,?\s*$/);
 
     if (tupleMatch) {
-      const [, variantName, fieldsStr] = tupleMatch;
-      variants.push({
-        name: variantName,
-        doc: currentDoc || undefined,
-        tupleFields: fieldsStr.split(',').map(f => parseRustType(f.trim()))
-      });
+      const [, tupleVariantName, tupleFieldsStr] = tupleMatch;
+      if (tupleVariantName === undefined || tupleFieldsStr === undefined) continue;
+      const variant: RustEnumVariant = {
+        name: tupleVariantName,
+        tupleFields: tupleFieldsStr.split(',').map(f => parseRustType(f.trim()))
+      };
+      if (currentDoc) variant.doc = currentDoc;
+      variants.push(variant);
       currentDoc = '';
     } else if (structMatch) {
-      const [, variantName, fieldsStr] = structMatch;
+      const [, structVariantName, structFieldsStr] = structMatch;
+      if (structVariantName === undefined || structFieldsStr === undefined) continue;
       const structFields: RustField[] = [];
-      for (const field of fieldsStr.split(',')) {
-        const match = field.trim().match(/(\w+)\s*:\s*(.+)/);
-        if (match) {
+      for (const field of structFieldsStr.split(',')) {
+        const fieldMatch = field.trim().match(/(\w+)\s*:\s*(.+)/);
+        if (fieldMatch?.[1] !== undefined && fieldMatch[2] !== undefined) {
           structFields.push({
-            name: match[1],
-            type: parseRustType(match[2]),
+            name: fieldMatch[1],
+            type: parseRustType(fieldMatch[2]),
             isPublic: true
           });
         }
       }
-      variants.push({
-        name: variantName,
-        doc: currentDoc || undefined,
+      const variant: RustEnumVariant = {
+        name: structVariantName,
         structFields
-      });
+      };
+      if (currentDoc) variant.doc = currentDoc;
+      variants.push(variant);
       currentDoc = '';
     } else if (unitMatch) {
-      const [, variantName, discriminant] = unitMatch;
-      variants.push({
-        name: variantName,
-        doc: currentDoc || undefined,
-        discriminant: discriminant ? parseInt(discriminant) : undefined
-      });
+      const [, unitVariantName, discriminant] = unitMatch;
+      if (unitVariantName === undefined) continue;
+      const variant: RustEnumVariant = {
+        name: unitVariantName,
+      };
+      if (currentDoc) variant.doc = currentDoc;
+      if (discriminant !== undefined) variant.discriminant = parseInt(discriminant);
+      variants.push(variant);
       currentDoc = '';
     }
   }
 
-  return {
-    name: wasmBindgenAttrs?.jsName || name,
+  const result: RustEnum = {
+    name: wasmBindgenAttrs?.jsName ?? name,
     rustName: name,
     isPublic: !!pubMarker,
     hasWasmBindgen,
-    wasmBindgenAttrs,
     variants,
-    generics: genericsStr ? genericsStr.slice(1, -1).split(',').map(g => g.trim()) : undefined
   };
+  if (wasmBindgenAttrs !== undefined) result.wasmBindgenAttrs = wasmBindgenAttrs;
+  if (genericsStr) result.generics = genericsStr.slice(1, -1).split(',').map(g => g.trim());
+  return result;
 }
 
 /**
@@ -935,7 +955,12 @@ export function parseRustModule(code: string): RustModule {
   let i = 0;
 
   while (i < lines.length) {
-    const line = lines[i].trim();
+    const currentLine = lines[i];
+    if (currentLine === undefined) {
+      i++;
+      continue;
+    }
+    const line = currentLine.trim();
 
     // Collect doc comments
     if (line.startsWith('///')) {
@@ -963,14 +988,17 @@ export function parseRustModule(code: string): RustModule {
       let signature = line;
       while (!signature.includes('{') && !signature.includes(';') && i < lines.length - 1) {
         i++;
-        signature += ' ' + lines[i].trim();
+        const nextLine = lines[i];
+        if (nextLine !== undefined) {
+          signature += ' ' + nextLine.trim();
+        }
       }
       // Remove the body
       signature = signature.replace(/\s*\{[\s\S]*$/, '').replace(/\s*;[\s\S]*$/, '');
 
       const fn = parseRustFunction(signature, currentAttrs);
       if (fn) {
-        fn.doc = currentDoc || undefined;
+        if (currentDoc) fn.doc = currentDoc;
         module.functions.push(fn);
       }
 
@@ -984,17 +1012,20 @@ export function parseRustModule(code: string): RustModule {
     if (line.match(/^(pub\s+)?struct\s+/)) {
       // Collect full struct
       let structCode = line;
-      let braceDepth = (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+      let braceDepth = (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
 
       while ((braceDepth > 0 || !structCode.includes('{')) && i < lines.length - 1) {
         i++;
-        structCode += '\n' + lines[i];
-        braceDepth += (lines[i].match(/\{/g) || []).length - (lines[i].match(/\}/g) || []).length;
+        const nextLine = lines[i];
+        if (nextLine !== undefined) {
+          structCode += '\n' + nextLine;
+          braceDepth += (nextLine.match(/\{/g) ?? []).length - (nextLine.match(/\}/g) ?? []).length;
+        }
       }
 
       const struct = parseRustStruct(structCode, currentAttrs);
       if (struct) {
-        struct.doc = currentDoc || undefined;
+        if (currentDoc) struct.doc = currentDoc;
         module.structs.push(struct);
       }
 
@@ -1008,17 +1039,20 @@ export function parseRustModule(code: string): RustModule {
     if (line.match(/^(pub\s+)?enum\s+/)) {
       // Collect full enum
       let enumCode = line;
-      let braceDepth = (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+      let braceDepth = (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
 
       while ((braceDepth > 0 || !enumCode.includes('{')) && i < lines.length - 1) {
         i++;
-        enumCode += '\n' + lines[i];
-        braceDepth += (lines[i].match(/\{/g) || []).length - (lines[i].match(/\}/g) || []).length;
+        const nextLine = lines[i];
+        if (nextLine !== undefined) {
+          enumCode += '\n' + nextLine;
+          braceDepth += (nextLine.match(/\{/g) ?? []).length - (nextLine.match(/\}/g) ?? []).length;
+        }
       }
 
       const enumDef = parseRustEnum(enumCode, currentAttrs);
       if (enumDef) {
-        enumDef.doc = currentDoc || undefined;
+        if (currentDoc) enumDef.doc = currentDoc;
         module.enums.push(enumDef);
       }
 
@@ -1031,7 +1065,7 @@ export function parseRustModule(code: string): RustModule {
     // Parse type alias
     if (line.match(/^(pub\s+)?type\s+/)) {
       const typeMatch = line.match(/^(?:pub\s+)?type\s+(\w+)\s*=\s*(.+?)\s*;/);
-      if (typeMatch) {
+      if (typeMatch?.[1] !== undefined && typeMatch[2] !== undefined) {
         module.typeAliases.set(typeMatch[1], parseRustType(typeMatch[2]));
       }
       currentAttrs = [];
@@ -1044,36 +1078,41 @@ export function parseRustModule(code: string): RustModule {
     if (line.match(/^impl\s+/)) {
       // Collect full impl block
       let implCode = line;
-      let braceDepth = (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+      let braceDepth = (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
 
       while ((braceDepth > 0 || !implCode.includes('{')) && i < lines.length - 1) {
         i++;
-        implCode += '\n' + lines[i];
-        braceDepth += (lines[i].match(/\{/g) || []).length - (lines[i].match(/\}/g) || []).length;
+        const nextLine = lines[i];
+        if (nextLine !== undefined) {
+          implCode += '\n' + nextLine;
+          braceDepth += (nextLine.match(/\{/g) ?? []).length - (nextLine.match(/\}/g) ?? []).length;
+        }
       }
 
       // Parse impl header
       const implMatch = implCode.match(/^impl\s+(?:(<[^>]+>)\s+)?(?:(\w+)\s+for\s+)?(\w+)/);
       if (implMatch) {
         const [, genericsStr, traitName, typeName] = implMatch;
+        if (typeName !== undefined) {
+          // Parse methods in impl
+          const methods: RustFunction[] = [];
+          const implBody = implCode.slice(implCode.indexOf('{') + 1, findMatchingBrace(implCode, implCode.indexOf('{')));
+          const methodMatches = implBody.matchAll(/((?:#\[.*?\]\s*)*)(?:pub\s+)?(?:async\s+)?fn\s+\w+[^{;]+/g);
 
-        // Parse methods in impl
-        const methods: RustFunction[] = [];
-        const implBody = implCode.slice(implCode.indexOf('{') + 1, findMatchingBrace(implCode, implCode.indexOf('{')));
-        const methodMatches = implBody.matchAll(/((?:#\[.*?\]\s*)*)(?:pub\s+)?(?:async\s+)?fn\s+\w+[^{;]+/g);
+          for (const match of methodMatches) {
+            const attrs = match[1] ? match[1].split('#[').filter(a => a).map(a => '#[' + a.trim()) : [];
+            const fn = parseRustFunction(match[0].trim(), attrs);
+            if (fn) methods.push(fn);
+          }
 
-        for (const match of methodMatches) {
-          const attrs = match[1] ? match[1].split('#[').filter(a => a).map(a => '#[' + a.trim()) : [];
-          const fn = parseRustFunction(match[0].trim(), attrs);
-          if (fn) methods.push(fn);
+          const impl: RustImpl = {
+            targetType: typeName,
+            methods,
+          };
+          if (traitName !== undefined) impl.trait = traitName;
+          if (genericsStr) impl.generics = genericsStr.slice(1, -1).split(',').map(g => g.trim());
+          module.impls.push(impl);
         }
-
-        module.impls.push({
-          targetType: typeName,
-          trait: traitName,
-          methods,
-          generics: genericsStr ? genericsStr.slice(1, -1).split(',').map(g => g.trim()) : undefined
-        });
       }
 
       currentAttrs = [];

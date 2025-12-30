@@ -4,7 +4,7 @@
  * Connects PhilJS applications to the DevTools extension.
  */
 
-import type { SignalData, ComponentNode, DevToolsMessage } from '../types';
+import type { SignalData, ComponentNode, DevToolsMessage } from '../types.js';
 
 let isConnected = false;
 let signalRegistry = new Map<string, SignalData>();

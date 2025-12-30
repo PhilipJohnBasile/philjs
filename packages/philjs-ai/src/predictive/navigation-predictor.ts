@@ -293,6 +293,9 @@ export class NavigationPredictor {
       const prev = this.history[i - 1];
       const actual = this.history[i];
 
+      // Skip if history entries are missing
+      if (!prev || !actual) continue;
+
       // Get predictions from the previous state
       const predictions = this.predictFromTransitions(prev.from);
       const wasCorrect = predictions.some(
@@ -349,9 +352,17 @@ export class NavigationPredictor {
   }
 
   /**
-   * Export model for analysis
+   * Export model for analysis (returns serializable object)
    */
-  exportModel(): NavigationModel {
+  exportModel(): {
+    transitions: { [k: string]: { [k: string]: number } };
+    visitCounts: { [k: string]: number };
+    temporalPatterns: { [k: string]: { [k: string]: number } };
+    sequencePatterns: { [k: string]: { [k: string]: number } };
+    totalNavigations: number;
+    version: number;
+    lastUpdate: number;
+  } {
     return structuredClone({
       transitions: Object.fromEntries(
         Array.from(this.model.transitions.entries()).map(([k, v]) => [k, Object.fromEntries(v)])

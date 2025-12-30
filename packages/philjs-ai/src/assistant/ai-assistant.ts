@@ -204,7 +204,9 @@ export class AIAssistant {
 
   constructor(config: AssistantConfig) {
     this.provider = config.provider;
-    this.projectContext = config.projectContext;
+    if (config.projectContext !== undefined) {
+      this.projectContext = config.projectContext;
+    }
     this.defaultOptions = {
       temperature: 0.3,
       maxTokens: 4096,
@@ -260,13 +262,16 @@ export class AIAssistant {
     description: string,
     options?: ComponentGenerationConfig
   ): Promise<CodeGenResult> {
+    const context: CodeGenRequest['context'] = {
+      includeDocs: true,
+    };
+    if (options?.includeTests !== undefined) {
+      context.includeTests = options.includeTests;
+    }
     return this.generateCode({
       description,
       type: 'component',
-      context: {
-        includeTests: options?.includeTests,
-        includeDocs: true,
-      },
+      context,
     });
   }
 
@@ -329,9 +334,11 @@ export class AIAssistant {
    * Get refactoring suggestions for code
    */
   async refactor(request: RefactorRequest): Promise<RefactoringSuggestion[]> {
-    const result = await this.refactoringEngine.analyze(request.code, {
-      projectContext: request.filePath,
-    });
+    const analysisOptions: { projectContext?: string } = {};
+    if (request.filePath !== undefined) {
+      analysisOptions.projectContext = request.filePath;
+    }
+    const result = await this.refactoringEngine.analyze(request.code, analysisOptions);
 
     let suggestions = result.suggestions;
 
@@ -471,12 +478,19 @@ Respond naturally:`;
       metadata: { code, ...metadata },
     });
 
-    return {
+    const chatResponse: ChatResponse = {
       message: response.replace(/```[\s\S]*?```/g, '').trim(),
-      code: code || undefined,
-      actions: metadata?.actions,
-      suggestions: metadata?.suggestions,
     };
+    if (code) {
+      chatResponse.code = code;
+    }
+    if (metadata?.actions !== undefined) {
+      chatResponse.actions = metadata.actions;
+    }
+    if (metadata?.suggestions !== undefined) {
+      chatResponse.suggestions = metadata.suggestions;
+    }
+    return chatResponse;
   }
 
   /**
@@ -795,14 +809,19 @@ PhilJS-specific guidelines:
     }>(response);
 
     if (parsed) {
-      return {
+      const result: CodeGenResult = {
         code: parsed.code,
         fileName: parsed.fileName,
         explanation: parsed.explanation,
-        relatedFiles: parsed.relatedFiles ? new Map(Object.entries(parsed.relatedFiles)) : undefined,
         suggestions: parsed.suggestions || [],
-        dependencies: parsed.dependencies,
       };
+      if (parsed.relatedFiles) {
+        result.relatedFiles = new Map(Object.entries(parsed.relatedFiles));
+      }
+      if (parsed.dependencies !== undefined) {
+        result.dependencies = parsed.dependencies;
+      }
+      return result;
     }
 
     // Fallback: extract code from response
@@ -889,8 +908,11 @@ export function createAutoAssistant(
   projectContext?: ProjectContext
 ): AIAssistant {
   const { autoDetectProvider } = require('../providers/index.js');
-  return new AIAssistant({
+  const config: AssistantConfig = {
     provider: autoDetectProvider(),
-    projectContext,
-  });
+  };
+  if (projectContext !== undefined) {
+    config.projectContext = projectContext;
+  }
+  return new AIAssistant(config);
 }

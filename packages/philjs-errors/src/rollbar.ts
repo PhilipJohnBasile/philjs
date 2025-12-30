@@ -9,7 +9,7 @@ import type {
   UserContext,
   Breadcrumb,
   Span,
-} from './index';
+} from './index.js';
 
 export interface RollbarOptions extends TrackerOptions {
   /** Access token (replaces dsn) */

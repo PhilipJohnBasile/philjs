@@ -1,6 +1,7 @@
 {
   "name": "@philjs/intent",
   "version": "0.1.0",
+  "type": "module",
   "description": "Intent-based development for PhilJS - natural language to working components",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -137,9 +137,9 @@ function parseColor(color: string): { r: number; g: number; b: number } | null {
   const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
   if (rgbMatch) {
     return {
-      r: parseInt(rgbMatch[1]),
-      g: parseInt(rgbMatch[2]),
-      b: parseInt(rgbMatch[3])
+      r: parseInt(rgbMatch[1]!),
+      g: parseInt(rgbMatch[2]!),
+      b: parseInt(rgbMatch[3]!)
     };
   }
 
@@ -147,9 +147,9 @@ function parseColor(color: string): { r: number; g: number; b: number } | null {
   const hexMatch = color.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
   if (hexMatch) {
     return {
-      r: parseInt(hexMatch[1], 16),
-      g: parseInt(hexMatch[2], 16),
-      b: parseInt(hexMatch[3], 16)
+      r: parseInt(hexMatch[1]!, 16),
+      g: parseInt(hexMatch[2]!, 16),
+      b: parseInt(hexMatch[3]!, 16)
     };
   }
 
@@ -161,7 +161,7 @@ function getLuminance(r: number, g: number, b: number): number {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
-  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+  return 0.2126 * rs! + 0.7152 * gs! + 0.0722 * bs!;
 }
 
 function getContrastRatio(color1: string, color2: string): number {
@@ -253,9 +253,9 @@ class AltTextGenerator {
       const result: GeneratedAltText = {
         text: altText,
         confidence: this.config.apiKey ? 0.9 : 0.3,
-        language: 'en',
-        context
+        language: 'en'
       };
+      if (context !== undefined) result.context = context;
 
       this.cache.set(cacheKey, result);
       return result;
@@ -346,19 +346,19 @@ class AltTextGenerator {
   private generateFallback(imageUrl: string): string {
     // Extract filename from URL
     const urlParts = imageUrl.split('/');
-    const filename = urlParts[urlParts.length - 1];
-    const name = filename.split('.')[0].replace(/[-_]/g, ' ');
+    const filename = urlParts[urlParts.length - 1]!;
+    const name = filename.split('.')[0]!.replace(/[-_]/g, ' ');
 
     return `Image: ${name}`;
   }
 
   private blobToBase64(blob: Blob): Promise<string> {
-    const { promise, resolve, reject } = Promise.withResolvers<string>();
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-    return promise;
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 }
 
@@ -375,7 +375,7 @@ class AriaLabelGenerator {
     // Check for icon classes
     const iconClass = button.className.match(/icon[-_]?(\w+)/i);
     if (iconClass) {
-      const iconName = iconClass[1].replace(/[-_]/g, ' ');
+      const iconName = iconClass[1]!.replace(/[-_]/g, ' ');
       return this.capitalizeFirst(iconName);
     }
 
@@ -506,7 +506,7 @@ export class A11yAI {
   private async auditImages(root: Element): Promise<void> {
     const images = root.querySelectorAll('img');
 
-    for (const img of images) {
+    for (const img of Array.from(images)) {
       const alt = img.getAttribute('alt');
 
       if (alt === null) {
@@ -558,7 +558,7 @@ export class A11yAI {
   private auditContrast(root: Element): void {
     const textElements = root.querySelectorAll('p, span, a, button, label, h1, h2, h3, h4, h5, h6, li');
 
-    for (const el of textElements) {
+    for (const el of Array.from(textElements)) {
       const styles = window.getComputedStyle(el);
       const color = styles.color;
       const bgColor = this.getBackgroundColor(el);
@@ -606,7 +606,7 @@ export class A11yAI {
   private auditForms(root: Element): void {
     const inputs = root.querySelectorAll('input, select, textarea');
 
-    for (const input of inputs) {
+    for (const input of Array.from(inputs)) {
       const id = input.getAttribute('id');
       const ariaLabel = input.getAttribute('aria-label');
       const ariaLabelledBy = input.getAttribute('aria-labelledby');
@@ -635,7 +635,7 @@ export class A11yAI {
   private auditButtons(root: Element): void {
     const buttons = root.querySelectorAll('button, [role="button"]');
 
-    for (const button of buttons) {
+    for (const button of Array.from(buttons)) {
       const text = button.textContent?.trim();
       const ariaLabel = button.getAttribute('aria-label');
 
@@ -656,7 +656,7 @@ export class A11yAI {
   private auditLinks(root: Element): void {
     const links = root.querySelectorAll('a');
 
-    for (const link of links) {
+    for (const link of Array.from(links)) {
       const text = link.textContent?.trim();
       const ariaLabel = link.getAttribute('aria-label');
 
@@ -678,8 +678,8 @@ export class A11yAI {
     const headings = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
     let previousLevel = 0;
 
-    for (const heading of headings) {
-      const level = parseInt(heading.tagName[1]);
+    for (const heading of Array.from(headings)) {
+      const level = parseInt(heading.tagName[1]!);
 
       if (level - previousLevel > 1 && previousLevel !== 0) {
         this.addIssue({
@@ -730,7 +730,7 @@ export class A11yAI {
       'a, button, input, select, textarea, [tabindex]'
     );
 
-    for (const el of focusableElements) {
+    for (const el of Array.from(focusableElements)) {
       const styles = window.getComputedStyle(el);
       const outlineStyle = styles.outlineStyle;
       const outlineWidth = parseFloat(styles.outlineWidth);
@@ -761,7 +761,7 @@ export class A11yAI {
     const videos = root.querySelectorAll('video');
     const audios = root.querySelectorAll('audio');
 
-    for (const video of videos) {
+    for (const video of Array.from(videos)) {
       // Check for captions
       const hasTrack = video.querySelector('track[kind="captions"]');
       if (!hasTrack) {
@@ -786,7 +786,7 @@ export class A11yAI {
       }
     }
 
-    for (const audio of audios) {
+    for (const audio of Array.from(audios)) {
       if (audio.hasAttribute('autoplay')) {
         this.addIssue({
           type: 'auto-playing-media',
@@ -1004,7 +1004,6 @@ export function useAutoAltText(imageUrl: string, context?: string): Promise<Gene
 // ============================================================================
 
 export {
-  A11yAI,
   AltTextGenerator,
   AriaLabelGenerator,
   getContrastRatio,

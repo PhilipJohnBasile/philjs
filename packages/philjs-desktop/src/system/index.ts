@@ -10,14 +10,14 @@ export {
   showMessage,
   showConfirm,
   showAsk,
-} from './dialog';
+} from './dialog.js';
 export type {
   OpenDialogOptions,
   SaveDialogOptions,
   DialogFilter,
   MessageDialogOptions,
   ConfirmDialogOptions,
-} from './dialog';
+} from './dialog.js';
 
 // File System
 export {
@@ -35,14 +35,14 @@ export {
   rename,
   stat,
   watchPath,
-} from './filesystem';
+} from './filesystem.js';
 export type {
   FileEntry,
   ReadOptions,
   WriteOptions,
   CopyOptions,
   BaseDirectory,
-} from './filesystem';
+} from './filesystem.js';
 
 // Shell
 export {
@@ -54,12 +54,12 @@ export {
   runScript,
   powershell,
   sidecar,
-} from './shell';
+} from './shell.js';
 export type {
   CommandOptions,
   CommandOutput,
   SpawnedProcess,
-} from './shell';
+} from './shell.js';
 
 // Clipboard
 export {
@@ -70,7 +70,7 @@ export {
   readClipboardImage,
   writeClipboardImage,
   clearClipboard,
-} from './clipboard';
+} from './clipboard.js';
 
 // Notification
 export {
@@ -81,12 +81,12 @@ export {
   notify,
   scheduleNotification,
   cancelNotification,
-} from './notification';
+} from './notification.js';
 export type {
   NotificationOptions,
   NotificationAction,
   ScheduledNotificationOptions,
-} from './notification';
+} from './notification.js';
 
 // Global Shortcut
 export {
@@ -95,10 +95,10 @@ export {
   unregisterShortcut,
   unregisterAllShortcuts,
   isShortcutRegistered,
-} from './shortcut';
+} from './shortcut.js';
 export type {
   ShortcutHandler,
-} from './shortcut';
+} from './shortcut.js';
 
 // System Tray
 export {
@@ -113,12 +113,12 @@ export {
   trayItem,
   traySeparator,
   traySubmenu,
-} from './tray';
+} from './tray.js';
 export type {
   TrayOptions,
   TrayMenuItem,
   TrayClickEvent,
-} from './tray';
+} from './tray.js';
 
 // Auto Launch
 export {
@@ -127,7 +127,7 @@ export {
   disableAutoLaunch,
   isAutoLaunchEnabled,
   toggleAutoLaunch,
-} from './autolaunch';
+} from './autolaunch.js';
 export type {
   AutoLaunchOptions,
-} from './autolaunch';
+} from './autolaunch.js';

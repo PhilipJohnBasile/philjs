@@ -216,7 +216,7 @@ export class SegmentProvider implements IAnalyticsProvider {
             key +
             "/analytics.min.js";
           const n = document.getElementsByTagName("script")[0];
-          n.parentNode!.insertBefore(t, n);
+          n?.parentNode?.insertBefore(t, n);
           analytics._loadOptions = e;
         };
         analytics._writeKey = this.config.trackingId;

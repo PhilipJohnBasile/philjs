@@ -444,10 +444,14 @@ export async function getAdjacentEntries(
     filter?: CollectionFilter<CollectionEntry>;
   }
 ): Promise<{ prev: CollectionEntry | undefined; next: CollectionEntry | undefined }> {
-  const entries = await getCollection(collection, {
-    filter: options?.filter,
-    sort: options?.sort,
-  });
+  const collectionOptions: GetCollectionOptions<CollectionEntry> = {};
+  if (options?.filter) {
+    collectionOptions.filter = options.filter;
+  }
+  if (options?.sort) {
+    collectionOptions.sort = options.sort;
+  }
+  const entries = await getCollection(collection, collectionOptions);
 
   const currentIndex = entries.findIndex((e) => e.id === currentId);
 

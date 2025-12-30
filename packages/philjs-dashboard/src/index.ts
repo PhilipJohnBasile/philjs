@@ -28,7 +28,7 @@ export {
   type LongTaskAttribution,
   type NetworkRequest,
   type CustomMetric,
-} from './collector/metrics';
+} from './collector/metrics.js';
 
 export {
   // Tracing
@@ -47,7 +47,7 @@ export {
   type SpanEvent,
   type SpanLink,
   type TraceContext,
-} from './collector/tracing';
+} from './collector/tracing.js';
 
 export {
   // Errors
@@ -69,7 +69,7 @@ export {
   type UserInfo,
   type ErrorGroup,
   type ErrorBoundaryInfo,
-} from './collector/errors';
+} from './collector/errors.js';
 
 // ============================================================================
 // Storage
@@ -89,7 +89,7 @@ export {
   type StoredError,
   type StorageMetadata,
   type DashboardDBSchema,
-} from './storage/local';
+} from './storage/local.js';
 
 export {
   // Remote Storage
@@ -104,7 +104,7 @@ export {
   type BatchPayload,
   type BatchItem,
   type DataType,
-} from './storage/remote';
+} from './storage/remote.js';
 
 // ============================================================================
 // Alerts
@@ -136,7 +136,7 @@ export {
   type EmailConfig,
   type ConsoleConfig,
   type CustomConfig,
-} from './alerts';
+} from './alerts/index.js';
 
 // ============================================================================
 // Integrations
@@ -151,7 +151,7 @@ export {
   type SentrySpan,
   type SentryStackFrame,
   type SentryBreadcrumb,
-} from './integrations/sentry';
+} from './integrations/sentry.js';
 
 export {
   DatadogExporter,
@@ -161,7 +161,7 @@ export {
   type DatadogTrace,
   type DatadogLog,
   type DatadogRumEvent,
-} from './integrations/datadog';
+} from './integrations/datadog.js';
 
 export {
   GrafanaExporter,
@@ -175,126 +175,35 @@ export {
   type LokiLogEntry,
   type LokiPushRequest,
   type TempoSpan,
-} from './integrations/grafana';
+} from './integrations/grafana.js';
 
 // ============================================================================
 // UI Components
 // ============================================================================
 
 export {
-  Dashboard,
-  useDashboard,
-  MetricCard,
-  ChartContainer,
-  TimeRangeSelector,
-  RefreshButton,
-  OverviewCards,
-  type DashboardProps,
-  type DashboardContextValue,
+  PhilDashboard,
+  PhilMetricCard,
+  PhilChartContainer,
+  type DashboardConfig,
   type DashboardData,
   type DashboardFilter,
   type DashboardTab,
   type TimeRange,
   type TimeRangeValue,
-  type MetricCardProps,
-  type ChartContainerProps,
-} from './ui/Dashboard';
+} from './ui/Dashboard.js';
 
-export {
-  MetricsPanel,
-  WebVitalCard,
-  WebVitalsHistory,
-  MemorySection,
-  NetworkSection,
-  CustomMetricsSection,
-  type MetricsPanelProps,
-  type WebVitalThreshold,
-  type WebVitalStatus,
-} from './ui/MetricsPanel';
-
-export {
-  TracesPanel,
-  TraceCard,
-  TraceTimeline,
-  SpanDetail,
-  SpanKindBadge,
-  StatusBadge,
-  groupSpansByTrace,
-  type TracesPanelProps,
-  type TraceGroup,
-} from './ui/TracesPanel';
-
-export {
-  ErrorsPanel,
-  ErrorCard,
-  ErrorGroupCard,
-  ErrorDetail,
-  StackTraceView,
-  BreadcrumbsView,
-  type ErrorsPanelProps,
-  type ErrorSeverity,
-} from './ui/ErrorsPanel';
-
-export {
-  PerformanceScore,
-  CompactScore,
-  ScoreHistory,
-  CircularProgress,
-  TrendIndicator,
-  MetricBreakdown,
-  getScoreCategory,
-  SCORE_THRESHOLDS,
-  CATEGORY_COLORS,
-  CATEGORY_LABELS,
-  type PerformanceScoreProps,
-  type CompactScoreProps,
-  type ScoreHistoryProps,
-  type ScoreCategory,
-} from './ui/PerformanceScore';
-
-// ============================================================================
-// React Hooks
-// ============================================================================
-
-export {
-  // Context & Provider
-  MetricsProvider,
-  useMetricsContext,
-  type MetricsProviderProps,
-  type MetricsContextValue,
-
-  // Hooks
-  useWebVitals,
-  usePerformanceObserver,
-  useErrorBoundary,
-  useMeasure,
-  useRenderCount,
-  useNetworkStatus,
-  useIdleCallback,
-
-  // Types
-  type UseWebVitalsOptions,
-  type WebVitalsState,
-  type PerformanceObserverOptions,
-  type PerformanceEntryType,
-  type PerformanceEntries,
-  type UseErrorBoundaryOptions,
-  type ErrorBoundaryState,
-  type ErrorBoundaryFallbackProps,
-  type UseMeasureResult,
-  type NetworkStatus,
-} from './hooks/useMetrics';
 
 // ============================================================================
 // Convenience Functions
 // ============================================================================
 
-import { MetricsCollector } from './collector/metrics';
-import { TracingManager } from './collector/tracing';
-import { ErrorTracker } from './collector/errors';
-import { LocalStorageManager } from './storage/local';
-import { RemoteStorageManager } from './storage/remote';
-import { AlertManager, PRESET_RULES } from './alerts';
+import { MetricsCollector } from './collector/metrics.js';
+import { TracingManager } from './collector/tracing.js';
+import { ErrorTracker } from './collector/errors.js';
+import { LocalStorageManager } from './storage/local.js';
+import { RemoteStorageManager } from './storage/remote.js';
+import { AlertManager, PRESET_RULES } from './alerts/index.js';
 
 export interface DashboardInitConfig {
   /** Enable metrics collection */
@@ -356,9 +265,9 @@ export async function initDashboard(
   if (config.tracing) {
     tracing = new TracingManager({
       serviceName: config.tracing.serviceName,
-      serviceVersion: config.tracing.serviceVersion,
-      environment: config.tracing.environment,
-      sampleRate: config.tracing.sampleRate,
+      ...(config.tracing.serviceVersion !== undefined && { serviceVersion: config.tracing.serviceVersion }),
+      ...(config.tracing.environment !== undefined && { environment: config.tracing.environment }),
+      ...(config.tracing.sampleRate !== undefined && { sampleRate: config.tracing.sampleRate }),
     });
   }
 
@@ -381,7 +290,7 @@ export async function initDashboard(
   if (config.remoteStorage) {
     remoteStorage = new RemoteStorageManager({
       endpoint: config.remoteStorage.endpoint,
-      apiKey: config.remoteStorage.apiKey,
+      ...(config.remoteStorage.apiKey !== undefined && { apiKey: config.remoteStorage.apiKey }),
     });
   }
 

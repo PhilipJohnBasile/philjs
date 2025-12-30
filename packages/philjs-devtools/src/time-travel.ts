@@ -175,9 +175,13 @@ export class TimeTravelDebugger<T = any> {
       id: `snapshot-${now}-${Math.random().toString(36).slice(2)}`,
       timestamp: now,
       state: this.cloneState(state),
-      action: this.config.captureActions ? action : undefined,
-      metadata,
     };
+    if (this.config.captureActions && action !== undefined) {
+      snapshot.action = action;
+    }
+    if (metadata !== undefined) {
+      snapshot.metadata = metadata;
+    }
 
     // Add to linear history
     this.history.push(snapshot);
@@ -241,7 +245,7 @@ export class TimeTravelDebugger<T = any> {
       this.currentNode = this.currentNode.parent;
     }
 
-    return this.history[newIndex];
+    return this.history[newIndex] ?? null;
   }
 
   /**
@@ -257,10 +261,10 @@ export class TimeTravelDebugger<T = any> {
 
     // Move to first child in timeline (if exists)
     if (this.currentNode && this.currentNode.children.length > 0) {
-      this.currentNode = this.currentNode.children[0];
+      this.currentNode = this.currentNode.children[0] ?? null;
     }
 
-    return this.history[newIndex];
+    return this.history[newIndex] ?? null;
   }
 
   /**
@@ -275,9 +279,9 @@ export class TimeTravelDebugger<T = any> {
     this.updateNavigation();
 
     // Find node in timeline
-    this.currentNode = this.findNodeById(this.timeline!, snapshotId);
+    this.currentNode = this.findNodeById(this.timeline!, snapshotId) ?? null;
 
-    return this.history[index];
+    return this.history[index] ?? null;
   }
 
   /**
@@ -286,7 +290,7 @@ export class TimeTravelDebugger<T = any> {
   public getCurrent(): StateSnapshot<T> | null {
     const index = this.currentIndex();
     if (index < 0 || index >= this.history.length) return null;
-    return this.history[index];
+    return this.history[index] ?? null;
   }
 
   /**
@@ -321,10 +325,10 @@ export class TimeTravelDebugger<T = any> {
   public stopTimeTraveling(): void {
     this.isTimeTraveling.set(false);
     this.currentIndex.set(this.history.length - 1);
-    this.currentNode = this.findNodeById(
-      this.timeline!,
-      this.history[this.history.length - 1].id
-    );
+    const lastSnapshot = this.history[this.history.length - 1];
+    this.currentNode = lastSnapshot
+      ? this.findNodeById(this.timeline!, lastSnapshot.id)
+      : null;
     this.updateNavigation();
   }
 
@@ -374,14 +378,16 @@ export class TimeTravelDebugger<T = any> {
    * Get statistics
    */
   public getStats() {
+    const firstSnapshot = this.history[0];
+    const lastSnapshot = this.history[this.history.length - 1];
     return {
       totalSnapshots: this.history.length,
       currentIndex: this.currentIndex(),
       timeRange:
-        this.history.length > 0
+        this.history.length > 0 && firstSnapshot && lastSnapshot
           ? {
-              start: new Date(this.history[0].timestamp),
-              end: new Date(this.history[this.history.length - 1].timestamp),
+              start: new Date(firstSnapshot.timestamp),
+              end: new Date(lastSnapshot.timestamp),
             }
           : null,
       branches: this.countBranches(this.timeline),
@@ -418,16 +424,20 @@ export class TimeTravelDebugger<T = any> {
   private rebuildTimeline(): void {
     if (this.history.length === 0) return;
 
+    const firstSnapshot = this.history[0];
+    if (!firstSnapshot) return;
+
     // Build timeline from parent relationships
     this.timeline = {
-      snapshot: this.history[0],
+      snapshot: firstSnapshot,
       children: [],
     };
 
-    let currentNode = this.timeline;
+    let currentNode: TimelineNode<T> = this.timeline;
 
     for (let i = 1; i < this.history.length; i++) {
       const snapshot = this.history[i];
+      if (!snapshot) continue;
       const newNode: TimelineNode<T> = {
         snapshot,
         children: [],

@@ -1,5 +1,5 @@
-import type { CSSStyleObject, VariantConfig, VariantProps, CSSResult } from './types';
-import { css, compose } from './css';
+import type { CSSStyleObject, VariantConfig, VariantProps, CSSResult } from './types.js';
+import { css, compose } from './css.js';
 
 /**
  * Create a component with variants (similar to Stitches/CVA)
@@ -57,14 +57,14 @@ export function variants<V extends Record<string, Record<string, CSSStyleObject>
   if (config.variants) {
     for (const [variantName, variantOptions] of Object.entries(config.variants)) {
       compiledVariants[variantName] = {};
-      for (const [optionName, optionStyles] of Object.entries(variantOptions)) {
-        compiledVariants[variantName][optionName] = css(optionStyles);
+      for (const [optionName, optionStyles] of Object.entries(variantOptions as Record<string, CSSStyleObject>)) {
+        compiledVariants[variantName]![optionName] = css(optionStyles);
       }
     }
   }
 
   // Pre-compile compound variants
-  const compiledCompounds = config.compoundVariants?.map(compound => ({
+  const compiledCompounds = config.compoundVariants?.map((compound: { [key: string]: unknown; css: CSSStyleObject }) => ({
     conditions: { ...compound },
     style: css(compound.css)
   }));
@@ -346,7 +346,7 @@ export function slotVariants<
 
     // Build class names for each slot
     for (const slotName of Object.keys(config.slots)) {
-      const classes: string[] = [compiledSlots[slotName].className];
+      const classes: string[] = [compiledSlots[slotName]!.className];
 
       // Add variant classes
       for (const [variantName, selectedOption] of Object.entries(finalProps)) {
@@ -355,7 +355,7 @@ export function slotVariants<
           compiledVariants[variantName]?.[selectedOption as string]?.[slotName]
         ) {
           classes.push(
-            compiledVariants[variantName][selectedOption as string][slotName].className
+            compiledVariants[variantName]![selectedOption as string]![slotName]!.className
           );
         }
       }

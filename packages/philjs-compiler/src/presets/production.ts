@@ -11,7 +11,7 @@
  * - Performance budgets
  */
 
-import type { CompilerConfig } from '../types';
+import type { CompilerConfig } from '../types.js';
 import type { Plugin, BuildOptions, UserConfig } from 'vite';
 
 export interface ProductionPresetOptions {
@@ -158,7 +158,7 @@ export function createProductionViteConfig(
     // Minification
     minify: config.minify === 'none' ? false : 'terser',
 
-    terserOptions: config.minify === 'aggressive' ? {
+    ...(config.minify !== 'none' ? { terserOptions: config.minify === 'aggressive' ? {
       compress: {
         // Remove console and debugger in production
         drop_console: true,
@@ -203,7 +203,7 @@ export function createProductionViteConfig(
       format: {
         comments: false,
       },
-    },
+    } } : {}),
 
     // Source maps
     sourcemap: config.sourceMaps ? 'hidden' : false,
@@ -257,7 +257,7 @@ export function createProductionViteConfig(
     },
 
     // Asset handling
-    assetsInlineLimit: config.assets.inlineLimit,
+    ...(config.assets.inlineLimit !== undefined && { assetsInlineLimit: config.assets.inlineLimit }),
 
     // Report compressed size
     reportCompressedSize: true,

@@ -154,7 +154,7 @@ export default createRule<Options, MessageIds>({
           node.callee.name === 'effect' &&
           node.arguments.length > 0
         ) {
-          const effectFn = node.arguments[0];
+          const effectFn = node.arguments[0]!;
           if (
             effectFn.type === 'ArrowFunctionExpression' ||
             effectFn.type === 'FunctionExpression'

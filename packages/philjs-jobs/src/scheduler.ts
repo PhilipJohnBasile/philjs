@@ -78,25 +78,29 @@ export class Scheduler {
 
     // Validate cron expression
     try {
-      parseExpression(options.cron, {
+      const parserOptions: { currentDate: Date; tz?: string } = {
         currentDate: options.startDate || new Date(),
-        tz: options.timezone,
-      });
+      };
+      if (options.timezone !== undefined) {
+        parserOptions.tz = options.timezone;
+      }
+      parseExpression(options.cron, parserOptions);
     } catch (error) {
       throw new Error(`Invalid cron expression: ${options.cron}`);
     }
 
+    // Build scheduledJob excluding undefined optional properties (for exactOptionalPropertyTypes)
     const scheduledJob: ScheduledJob = {
       id: scheduleId,
       jobName: job.name,
       cron: options.cron,
-      timezone: options.timezone,
       nextRun: this.calculateNextRun(options),
       runsCount: 0,
-      maxRuns: options.maxRuns,
       active: true,
       createdAt: new Date(),
     };
+    if (options.timezone !== undefined) scheduledJob.timezone = options.timezone;
+    if (options.maxRuns !== undefined) scheduledJob.maxRuns = options.maxRuns;
 
     this.scheduledJobs.set(scheduleId, scheduledJob);
     this.jobDefinitions.set(job.name, job);
@@ -133,12 +137,14 @@ export class Scheduler {
 
     this.scheduledJobs.set(scheduleId, scheduledJob);
     this.jobDefinitions.set(job.name, job);
-    this.scheduleOptions.set(scheduleId, {
+    // Build schedule options excluding undefined values (for exactOptionalPropertyTypes)
+    const scheduleOpts: ScheduleOptions = {
       cron: '',
       payload,
-      enqueueOptions,
       maxRuns: 1,
-    });
+    };
+    if (enqueueOptions !== undefined) scheduleOpts.enqueueOptions = enqueueOptions;
+    this.scheduleOptions.set(scheduleId, scheduleOpts);
 
     if (this.running) {
       this.scheduleNextRun(scheduleId);
@@ -382,10 +388,13 @@ export class Scheduler {
     }
 
     try {
-      const interval = parseExpression(options.cron, {
+      const parserOptions: { currentDate: Date; tz?: string } = {
         currentDate: currentDate || options.startDate || new Date(),
-        tz: options.timezone,
-      });
+      };
+      if (options.timezone !== undefined) {
+        parserOptions.tz = options.timezone;
+      }
+      const interval = parseExpression(options.cron, parserOptions);
 
       const next = interval.next().toDate();
 

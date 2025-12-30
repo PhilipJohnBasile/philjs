@@ -19,7 +19,7 @@ export interface ComponentOptions {
   typescript?: boolean;
   withTest?: boolean;
   withStyles?: boolean;
-  styleType?: 'css-modules' | 'tailwind' | 'styled' | 'none';
+  styleType?: 'css-modules' | 'tailwind' | 'styled' | 'none' | undefined;
 }
 
 /**

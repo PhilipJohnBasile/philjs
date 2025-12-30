@@ -8,8 +8,11 @@ import type {
   AutoMigrationOptions,
   DryRunResult,
   SchemaDiff,
-} from './types';
-import { SchemaDiffGenerator } from './schema-diff';
+  ColumnDiff,
+  IndexDiff,
+  ForeignKeyDiff,
+} from './types.js';
+import { SchemaDiffGenerator } from './schema-diff.js';
 
 export class AutoMigrationGenerator {
   private diffGenerator: SchemaDiffGenerator;
@@ -44,25 +47,25 @@ export class AutoMigrationGenerator {
       warnings.push(
         `⚠ ${diff.tables.dropped.length} table(s) will be dropped. This will result in data loss.`
       );
-      diff.tables.dropped.forEach((table) => {
+      diff.tables.dropped.forEach((table: string) => {
         warnings.push(`  - ${table}`);
       });
     }
 
     // Warn about dropped columns
-    const droppedColumns = diff.columns.filter((c) => c.type === 'removed');
+    const droppedColumns = diff.columns.filter((c: ColumnDiff) => c.type === 'removed');
     if (droppedColumns.length > 0) {
       warnings.push(
         `⚠ ${droppedColumns.length} column(s) will be dropped. This will result in data loss.`
       );
-      droppedColumns.forEach((col) => {
+      droppedColumns.forEach((col: ColumnDiff) => {
         warnings.push(`  - ${col.table}.${col.name}`);
       });
     }
 
     // Warn about nullable changes
     const nullabilityChanges = diff.columns.filter(
-      (c) =>
+      (c: ColumnDiff) =>
         c.type === 'modified' &&
         c.oldDefinition &&
         c.newDefinition &&
@@ -71,7 +74,7 @@ export class AutoMigrationGenerator {
 
     if (nullabilityChanges.length > 0) {
       warnings.push(`⚠ ${nullabilityChanges.length} column(s) will change nullability.`);
-      nullabilityChanges.forEach((col) => {
+      nullabilityChanges.forEach((col: ColumnDiff) => {
         const change =
           col.newDefinition!.nullable === false
             ? 'NULL → NOT NULL'
@@ -82,7 +85,7 @@ export class AutoMigrationGenerator {
 
     // Warn about type changes
     const typeChanges = diff.columns.filter(
-      (c) =>
+      (c: ColumnDiff) =>
         c.type === 'modified' &&
         c.oldDefinition &&
         c.newDefinition &&
@@ -91,7 +94,7 @@ export class AutoMigrationGenerator {
 
     if (typeChanges.length > 0) {
       warnings.push(`⚠ ${typeChanges.length} column(s) will change type.`);
-      typeChanges.forEach((col) => {
+      typeChanges.forEach((col: ColumnDiff) => {
         warnings.push(
           `  - ${col.table}.${col.name}: ${col.oldDefinition!.type} → ${col.newDefinition!.type}`
         );
@@ -99,7 +102,7 @@ export class AutoMigrationGenerator {
     }
 
     // Warn about dropped indexes
-    const droppedIndexes = diff.indexes.filter((i) => i.type === 'removed');
+    const droppedIndexes = diff.indexes.filter((i: IndexDiff) => i.type === 'removed');
     if (droppedIndexes.length > 0) {
       warnings.push(
         `⚠ ${droppedIndexes.length} index(es) will be dropped. This may affect query performance.`
@@ -107,7 +110,7 @@ export class AutoMigrationGenerator {
     }
 
     // Warn about dropped foreign keys
-    const droppedForeignKeys = diff.foreignKeys.filter((fk) => fk.type === 'removed');
+    const droppedForeignKeys = diff.foreignKeys.filter((fk: ForeignKeyDiff) => fk.type === 'removed');
     if (droppedForeignKeys.length > 0) {
       warnings.push(
         `⚠ ${droppedForeignKeys.length} foreign key(s) will be dropped. This may affect data integrity.`

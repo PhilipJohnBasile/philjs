@@ -8,8 +8,8 @@
  * - Server/client state differences
  */
 
-import { createPhilJSError, type PhilJSError } from './error-codes';
-import { getPrimaryLocation } from './stack-trace';
+import { createPhilJSError, type PhilJSError } from './error-codes.js';
+import { getPrimaryLocation } from './stack-trace.js';
 
 /**
  * Track hydration state
@@ -62,11 +62,15 @@ export function recordHydrationMismatch(
 ): void {
   const mismatch: HydrationMismatch = {
     path,
-    serverHTML,
-    clientHTML,
     reason: reason || 'HTML content mismatch',
     timestamp: Date.now(),
   };
+  if (serverHTML !== undefined) {
+    mismatch.serverHTML = serverHTML;
+  }
+  if (clientHTML !== undefined) {
+    mismatch.clientHTML = clientHTML;
+  }
 
   hydrationMismatches.push(mismatch);
 
@@ -279,7 +283,7 @@ function extractNumbers(html: string): string[] {
   const matches: string[] = [];
   let match;
   while ((match = numberPattern.exec(html)) !== null) {
-    matches.push(match[1]);
+    matches.push(match[1]!);
   }
   return matches;
 }
@@ -294,10 +298,10 @@ function extractAttributes(html: string): Map<string, string[]> {
 
   while ((match = attrPattern.exec(html)) !== null) {
     const [, name, value] = match;
-    if (!attrs.has(name)) {
-      attrs.set(name, []);
+    if (!attrs.has(name!)) {
+      attrs.set(name!, []);
     }
-    attrs.get(name)!.push(value);
+    attrs.get(name!)!.push(value!);
   }
 
   return attrs;

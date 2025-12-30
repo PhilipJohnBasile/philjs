@@ -2,9 +2,9 @@
  * Desktop App Creation
  */
 
-import type { DesktopAppOptions, TauriConfig, TauriPlugin } from './types';
-import { initTauriContext, isTauri } from './context';
-import { listen, TauriEvents } from './events';
+import type { DesktopAppOptions, TauriConfig, TauriPlugin } from './types.js';
+import { initTauriContext, isTauri } from './context.js';
+import { listen, TauriEvents } from './events.js';
 
 // App state
 let appInitialized = false;
@@ -178,7 +178,7 @@ export function createDefaultConfig(overrides: Partial<TauriConfig> = {}): Tauri
       focus: true,
       visible: true,
     },
-    devTools: process.env.NODE_ENV === 'development',
+    devTools: process.env['NODE_ENV'] === 'development',
     ...overrides,
   };
 }

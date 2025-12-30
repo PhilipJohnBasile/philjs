@@ -4,7 +4,7 @@
  * High-level user interaction simulation similar to @testing-library/user-event
  */
 
-import { fireEvent } from './events';
+import { fireEvent } from './events.js';
 
 export interface UserEventOptions {
   delay?: number;
@@ -364,8 +364,8 @@ export function userEvent(options: UserEventOptions = {}) {
             pointerId: action.pointerId ?? 1,
             pointerType: action.pointerType ?? 'mouse',
             button: action.button ?? 0,
-            clientX: action.coords?.x,
-            clientY: action.coords?.y,
+            ...(action.coords?.x !== undefined && { clientX: action.coords.x }),
+            ...(action.coords?.y !== undefined && { clientY: action.coords.y }),
           };
 
           switch (action.keys) {
@@ -470,7 +470,7 @@ function parseKeyboardSequence(text: string): ParsedKey[] {
       i = endIndex + 1;
     } else {
       // Regular character
-      const char = text[i];
+      const char = text[i]!;
       keys.push({
         key: char,
         code: `Key${char.toUpperCase()}`,

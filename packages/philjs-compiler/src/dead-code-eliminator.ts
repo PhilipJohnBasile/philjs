@@ -3,9 +3,13 @@
  * Detects and removes unused signals, effects, and other reactive primitives
  */
 
-import traverse from '@babel/traverse';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import type { FileAnalysis, ReactiveBinding, CompilerConfig } from './types';
+import type { FileAnalysis, ReactiveBinding, CompilerConfig } from './types.js';
+
+// Handle both ESM and CJS exports - babel traverse exports default as the traverse function
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
 
 export interface DeadCodeReport {
   unusedSignals: string[];
@@ -39,8 +43,8 @@ export class DeadCodeEliminator {
     // Build set of unused bindings
     const unusedBindings = new Set(
       analysis.bindings
-        .filter(b => !b.isUsed)
-        .map(b => b.name)
+        .filter((b: ReactiveBinding) => !b.isUsed)
+        .map((b: ReactiveBinding) => b.name)
     );
 
     let initialSize = 0;
@@ -50,16 +54,16 @@ export class DeadCodeEliminator {
     const self = this;
 
     traverse(ast, {
-      Program(path) {
+      Program(path: NodePath<t.Program>) {
         // Estimate initial size
         initialSize = path.toString().length;
       },
 
-      VariableDeclarator(path) {
+      VariableDeclarator(path: NodePath<t.VariableDeclarator>) {
         if (!t.isIdentifier(path.node.id)) return;
 
         const name = path.node.id.name;
-        const binding = analysis.bindings.find(b => b.name === name);
+        const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === name);
 
         if (binding && !binding.isUsed && self.isSafeToRemove(binding)) {
           // Track what we're removing
@@ -93,7 +97,7 @@ export class DeadCodeEliminator {
       },
 
       // Remove unused function declarations
-      FunctionDeclaration(path) {
+      FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
         if (!path.node.id) return;
 
         const name = path.node.id.name;
@@ -111,10 +115,10 @@ export class DeadCodeEliminator {
       },
 
       // Remove unused imports
-      ImportDeclaration(path) {
+      ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
         const specifiersToRemove: number[] = [];
 
-        path.node.specifiers.forEach((spec, idx) => {
+        path.node.specifiers.forEach((spec: t.ImportSpecifier | t.ImportDefaultSpecifier | t.ImportNamespaceSpecifier, idx: number) => {
           if (t.isImportSpecifier(spec)) {
             const localName = spec.local.name;
             const binding = path.scope.getBinding(localName);
@@ -140,7 +144,7 @@ export class DeadCodeEliminator {
       },
 
       // Mark pure function calls for better tree-shaking
-      CallExpression(path) {
+      CallExpression(path: NodePath<t.CallExpression>) {
         const callee = path.node.callee;
 
         // Mark signal/memo/effect creators as pure
@@ -154,7 +158,7 @@ export class DeadCodeEliminator {
     });
 
     traverse(ast, {
-      Program(path) {
+      Program(path: NodePath<t.Program>) {
         finalSize = path.toString().length;
       },
     });

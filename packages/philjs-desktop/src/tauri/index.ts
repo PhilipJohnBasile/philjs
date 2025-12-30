@@ -9,7 +9,7 @@ export {
   useTauri,
   isTauri,
   resetTauriContext,
-} from './context';
+} from './context.js';
 
 // App creation
 export {
@@ -21,7 +21,7 @@ export {
   getAppVersion,
   getAppName,
   getTauriVersion,
-} from './app';
+} from './app.js';
 
 // Command invocation
 export {
@@ -31,7 +31,7 @@ export {
   batchInvoke,
   invokeWithTimeout,
   invokeWithRetry,
-} from './invoke';
+} from './invoke.js';
 
 // Events
 export {
@@ -45,7 +45,7 @@ export {
   removeAllListeners,
   removeAllEventListeners,
   TauriEvents,
-} from './events';
+} from './events.js';
 
 // Types
 export type {
@@ -62,4 +62,4 @@ export type {
   CommandDefinition,
   TypedCommand,
   TauriEventType,
-} from './types';
+} from './types.js';

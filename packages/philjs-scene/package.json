@@ -1,6 +1,7 @@
 {
   "name": "@philjs/scene",
   "version": "0.1.0",
+  "type": "module",
   "description": "Declarative 3D scene graph for PhilJS - React-three-fiber inspired API, animations, particles, GLTF loading",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

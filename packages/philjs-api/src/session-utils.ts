@@ -4,7 +4,7 @@
  * Helper functions and middleware for session management.
  */
 
-import type { Session, SessionData, SessionStorage } from './session';
+import type { Session, SessionData, SessionStorage } from './session.js';
 
 /**
  * Session middleware options

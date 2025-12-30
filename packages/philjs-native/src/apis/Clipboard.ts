@@ -20,10 +20,10 @@ export type ClipboardContentType = 'text' | 'url' | 'image' | 'html';
  * Clipboard content
  */
 export interface ClipboardContent {
-  text?: string;
-  html?: string;
-  url?: string;
-  image?: string; // Base64 or URI
+  text?: string | undefined;
+  html?: string | undefined;
+  url?: string | undefined;
+  image?: string | undefined; // Base64 or URI
 }
 
 // ============================================================================
@@ -215,10 +215,17 @@ export const Clipboard = {
   async getContent(): Promise<ClipboardContent> {
     const content: ClipboardContent = {};
 
-    content.text = await this.getString();
-    content.html = (await this.getHtml()) || undefined;
-    content.url = (await this.getUrl()) || undefined;
-    content.image = (await this.getImage()) || undefined;
+    const text = await this.getString();
+    if (text) content.text = text;
+
+    const html = await this.getHtml();
+    if (html) content.html = html;
+
+    const url = await this.getUrl();
+    if (url) content.url = url;
+
+    const image = await this.getImage();
+    if (image) content.image = image;
 
     return content;
   },

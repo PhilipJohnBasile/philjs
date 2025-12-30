@@ -4,8 +4,8 @@
  * Runtime CSS-in-JS with theming support.
  */
 
-import type { CSSProperties, Theme, ThemeConfig } from './types';
-import { generateHash, injectStyles } from './utils';
+import type { CSSProperties, Theme, ThemeConfig } from './types.js';
+import { generateHash, injectStyles } from './utils.js';
 
 // Default theme
 const defaultTheme: Theme = {
@@ -267,27 +267,27 @@ function updateCSSVariables(theme: Theme): void {
 
   // Colors
   for (const [key, value] of Object.entries(theme.colors)) {
-    root.style.setProperty(`--color-${key}`, value);
+    root.style.setProperty(`--color-${key}`, value as string);
   }
 
   // Spacing
   for (const [key, value] of Object.entries(theme.spacing)) {
-    root.style.setProperty(`--spacing-${key}`, value);
+    root.style.setProperty(`--spacing-${key}`, value as string);
   }
 
   // Font sizes
   for (const [key, value] of Object.entries(theme.fontSize)) {
-    root.style.setProperty(`--font-size-${key}`, value);
+    root.style.setProperty(`--font-size-${key}`, value as string);
   }
 
   // Border radius
   for (const [key, value] of Object.entries(theme.borderRadius)) {
-    root.style.setProperty(`--radius-${key}`, value);
+    root.style.setProperty(`--radius-${key}`, value as string);
   }
 
   // Shadows
   for (const [key, value] of Object.entries(theme.shadows)) {
-    root.style.setProperty(`--shadow-${key}`, value);
+    root.style.setProperty(`--shadow-${key}`, value as string);
   }
 }
 

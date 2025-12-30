@@ -9,16 +9,16 @@
  */
 
 // Scoped styles
-export { css, styled, keyframes, createGlobalStyle } from './scoped';
+export { css, styled, keyframes, createGlobalStyle } from './scoped.js';
 
 // CSS Modules
-export { cssModules, useCSSModule, bindStyles } from './css-modules';
+export { cssModules, useCSSModule, bindStyles } from './css-modules.js';
 
 // CSS-in-JS
-export { createStyled, createTheme, useTheme, ThemeProvider } from './css-in-js';
+export { createStyled, createTheme, useTheme, ThemeProvider } from './css-in-js.js';
 
 // Vite plugin
-export { philjsStylesPlugin } from './vite-plugin';
+export { philjsStylesPlugin } from './vite-plugin.js';
 
 // Utilities
 export {
@@ -28,7 +28,7 @@ export {
   mergeStyles,
   extractCriticalCSS,
   injectStyles,
-} from './utils';
+} from './utils.js';
 
 // Types
 export type {
@@ -37,4 +37,4 @@ export type {
   Theme,
   ThemeConfig,
   StyleVariant,
-} from './types';
+} from './types.js';

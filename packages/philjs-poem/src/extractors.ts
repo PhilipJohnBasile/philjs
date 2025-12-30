@@ -9,7 +9,7 @@ import type {
   ExtractorContext,
   ExtractorResult,
   ExtractorDefinition,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Base Extractor
@@ -39,7 +39,9 @@ export abstract class Extractor<T> {
    * Create a failed result
    */
   protected err(error: string, status?: number): ExtractorResult<T> {
-    return { ok: false, error, status };
+    const result: ExtractorResult<T> = { ok: false, error };
+    if (status !== undefined) (result as { ok: false; error: string; status?: number }).status = status;
+    return result;
   }
 }
 
@@ -99,7 +101,7 @@ export class SSRContextExtractor extends Extractor<SSRContextData> {
 
   private parseAcceptLanguage(header: string): string[] {
     if (!header) return ['en'];
-    return header.split(',').map(lang => lang.split(';')[0].trim()).filter(Boolean);
+    return header.split(',').map(lang => lang.split(';')[0]!.trim()).filter(Boolean);
   }
 
   toRustCode(): string {
@@ -461,7 +463,7 @@ export class AuthExtractor extends Extractor<AuthUser | null> {
       const parts = cleanToken.split('.');
       if (parts.length !== 3) return null;
 
-      const payload = JSON.parse(atob(parts[1]));
+      const payload = JSON.parse(atob(parts[1]!));
       return {
         id: payload.sub || payload.id,
         email: payload.email,

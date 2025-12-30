@@ -219,7 +219,7 @@ export interface GeneratedArtifact {
 export class NaturalLanguageGenerator {
   private provider: AIProvider;
   private defaultOptions: Partial<CompletionOptions>;
-  private conversationContext?: ConversationContext;
+  private conversationContext: ConversationContext | undefined;
 
   constructor(provider: AIProvider, options?: Partial<CompletionOptions>) {
     this.provider = provider;
@@ -277,16 +277,19 @@ export class NaturalLanguageGenerator {
       this.updateConversationContext(description, code, intent);
     }
 
-    return {
+    const result: NLGeneratedCode = {
       code,
       intent,
       explanation,
       imports,
-      tests,
       examples,
       suggestions,
       validation,
     };
+    if (tests !== undefined) {
+      result.tests = tests;
+    }
+    return result;
   }
 
   /**
@@ -822,13 +825,16 @@ Apply the request to the current code and return the updated version.`;
       .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
       .join('');
 
-    return {
+    const result: ParsedIntent = {
       type,
       confidence,
       entities: [],
       requirements: [description],
-      suggestedName: suggestedName || undefined,
     };
+    if (suggestedName) {
+      result.suggestedName = suggestedName;
+    }
+    return result;
   }
 
   private extractImports(code: string): string[] {
@@ -837,7 +843,7 @@ Apply the request to the current code and return the updated version.`;
     let match;
 
     while ((match = regex.exec(code)) !== null) {
-      imports.push(match[1]);
+      imports.push(match[1]!);
     }
 
     return imports;
@@ -848,10 +854,10 @@ Apply the request to the current code and return the updated version.`;
     const parts = response.split(/(?:example|usage)[s]?[:\s]*/i);
 
     if (parts.length > 1) {
-      const exampleSection = parts[1];
+      const exampleSection = parts[1]!;
       const codeBlocks = exampleSection.match(/```[\s\S]*?```/g);
       if (codeBlocks) {
-        examples.push(...codeBlocks.map(b =>
+        examples.push(...codeBlocks.map((b: string) =>
           b.replace(/```\w*\n?/g, '').replace(/```$/g, '').trim()
         ));
       }
@@ -868,7 +874,7 @@ Apply the request to the current code and return the updated version.`;
     for (const part of textParts) {
       const trimmed = part.trim();
       if (trimmed.length > 20 && !trimmed.startsWith('{')) {
-        return trimmed.split('\n')[0];
+        return trimmed.split('\n')[0] ?? trimmed;
       }
     }
 

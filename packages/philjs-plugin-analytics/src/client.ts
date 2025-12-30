@@ -114,7 +114,7 @@ class AnalyticsClient {
 
     const identification: UserIdentification = {
       userId,
-      traits,
+      ...(traits !== undefined && { traits }),
     };
 
     this.provider.identifyUser(identification);

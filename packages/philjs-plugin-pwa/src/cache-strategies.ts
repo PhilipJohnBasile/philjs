@@ -15,10 +15,10 @@ export function createCacheRule(
   return {
     pattern,
     strategy,
-    cacheName: options.cacheName,
-    maxAge: options.maxAge,
-    maxEntries: options.maxEntries,
-    networkTimeout: options.networkTimeout,
+    ...(options.cacheName !== undefined && { cacheName: options.cacheName }),
+    ...(options.maxAge !== undefined && { maxAge: options.maxAge }),
+    ...(options.maxEntries !== undefined && { maxEntries: options.maxEntries }),
+    ...(options.networkTimeout !== undefined && { networkTimeout: options.networkTimeout }),
   };
 }
 

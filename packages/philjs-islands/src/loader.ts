@@ -66,12 +66,11 @@ export class IslandLoader {
         const module = await loader();
         const Component = module.default;
 
-        if (typeof Component === 'function' && Component.prototype?.mount) {
-          return new Component();
-        }
-
         if (typeof Component === 'function') {
-          return await Component();
+          if (Component.prototype?.mount) {
+            return new (Component as new () => import('./types.js').IslandComponent)();
+          }
+          return await (Component as () => Promise<import('./types.js').IslandComponent>)();
         }
 
         throw new Error(`Invalid component export for island "${name}"`);

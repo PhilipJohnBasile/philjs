@@ -665,8 +665,9 @@ export function responsive<T>(options: Partial<Record<keyof typeof breakpoints, 
 
   // Find the closest defined value
   for (let i = currentIndex; i >= 0; i--) {
-    if (options[bpOrder[i]] !== undefined) {
-      return options[bpOrder[i]];
+    const key = bpOrder[i];
+    if (key !== undefined && options[key] !== undefined) {
+      return options[key];
     }
   }
 

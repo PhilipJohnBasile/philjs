@@ -3,10 +3,10 @@
  * Bidirectional JavaScript <-> Rust communication
  */
 
-import { isTauri } from './tauri/context';
-import { invoke } from './tauri/invoke';
-import { listen, emit } from './tauri/events';
-import type { EventCallback, UnlistenFn } from './tauri/types';
+import { isTauri } from './tauri/context.js';
+import { invoke } from './tauri/invoke.js';
+import { listen, emit } from './tauri/events.js';
+import type { Event, EventCallback, UnlistenFn } from './tauri/types.js';
 
 // IPC types
 export interface IPCBridge {
@@ -71,7 +71,7 @@ export function createIPCBridge(options: IPCBridgeOptions = {}): IPCBridge {
       const fullEvent = eventPrefix ? `${eventPrefix}${event}` : event;
       log(`on: ${fullEvent}`);
 
-      const unlisten = await listen<T>(fullEvent, (e) => {
+      const unlisten = await listen<T>(fullEvent, (e: Event<T>) => {
         log(`received: ${fullEvent}`, e.payload);
         callback(e.payload);
       });
@@ -113,7 +113,7 @@ export function createIPCBridge(options: IPCBridgeOptions = {}): IPCBridge {
  */
 async function setupRustToJSBridge(log: (msg: string, ...args: any[]) => void): Promise<void> {
   // Listen for JS command invocations from Rust
-  await listen<{ id: string; command: string; args: unknown }>('__philjs_ipc_invoke__', async (event) => {
+  await listen<{ id: string; command: string; args: unknown }>('__philjs_ipc_invoke__', async (event: Event<{ id: string; command: string; args: unknown }>) => {
     const { id, command, args } = event.payload;
     log(`Rust -> JS invoke: ${command}`, args);
 
@@ -205,7 +205,7 @@ export function createTypedIPC<TSchema extends TypedIPCSchema>(): {
       event: K,
       callback: (payload: TSchema['events'][K]) => void
     ): Promise<UnlistenFn> {
-      return listen(event as string, (e) => callback(e.payload as TSchema['events'][K]));
+      return listen(event as string, (e: Event<TSchema['events'][K]>) => callback(e.payload));
     },
 
     async emit<K extends keyof TSchema['events']>(
@@ -237,8 +237,8 @@ export function createChannel<T>(name: string): {
 
     async receive(callback: (data: T) => void): Promise<UnlistenFn> {
       if (closed) throw new Error('Channel is closed');
-      unlisten = await listen<T>(channelEvent, (e) => callback(e.payload));
-      return unlisten;
+      unlisten = await listen<T>(channelEvent, (e: Event<T>) => callback(e.payload));
+      return unlisten!;
     },
 
     close(): void {
@@ -268,7 +268,7 @@ export function createRequestChannel<TReq, TRes>(name: string): {
       });
 
       // Set up response listener
-      const unlisten = await listen<{ id: string; response: TRes }>(responseEvent, (e) => {
+      const unlisten = await listen<{ id: string; response: TRes }>(responseEvent, (e: Event<{ id: string; response: TRes }>) => {
         const resolver = pendingRequests.get(e.payload.id);
         if (resolver) {
           resolver(e.payload.response);
@@ -287,7 +287,7 @@ export function createRequestChannel<TReq, TRes>(name: string): {
     },
 
     async respond(handler: (request: TReq) => TRes | Promise<TRes>): Promise<UnlistenFn> {
-      return listen<{ id: string; data: TReq }>(requestEvent, async (e) => {
+      return listen<{ id: string; data: TReq }>(requestEvent, async (e: Event<{ id: string; data: TReq }>) => {
         const { id, data } = e.payload;
         const response = await handler(data);
         await emit(responseEvent, { id, response });

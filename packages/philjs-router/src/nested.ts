@@ -180,7 +180,7 @@ export function matchNestedRoutes(
   return {
     matches,
     params,
-    leaf: matches[matches.length - 1],
+    leaf: matches[matches.length - 1]!,
   };
 }
 
@@ -259,7 +259,7 @@ function matchPathSegment(
   let matchedSegments = 0;
 
   for (let i = 0; i < patternSegments.length; i++) {
-    const patternSeg = patternSegments[i];
+    const patternSeg = patternSegments[i]!;
     const pathSeg = pathSegments[i];
 
     if (pathSeg === undefined) {
@@ -320,23 +320,38 @@ export async function loadNestedRouteData(
     revalidate?: boolean;
   } = {}
 ): Promise<MatchedNestedRoute[]> {
-  const routes = matches.map((match) => ({
-    routeId: match.id,
-    loader: match.route.loader,
-    params: match.params,
-  }));
-
-  const results = await executeNestedLoaders(routes, request, {
-    signal: options.signal,
-    revalidate: options.revalidate,
+  const routes = matches.map((match) => {
+    const route: { routeId: string; loader?: LoaderFunction; params: Record<string, string> } = {
+      routeId: match.id,
+      params: match.params,
+    };
+    if (match.route.loader) {
+      route.loader = match.route.loader;
+    }
+    return route;
   });
 
+  const loaderOptions: { signal?: AbortSignal; revalidate?: boolean } = {};
+  if (options.signal) {
+    loaderOptions.signal = options.signal;
+  }
+  if (options.revalidate !== undefined) {
+    loaderOptions.revalidate = options.revalidate;
+  }
+  const results = await executeNestedLoaders(routes, request, loaderOptions);
+
   // Merge results back into matches
-  return matches.map((match, index) => ({
-    ...match,
-    data: results[index]?.data,
-    error: results[index]?.error,
-  }));
+  return matches.map((match, index) => {
+    const result = results[index];
+    const merged: MatchedNestedRoute = {
+      ...match,
+      data: result?.data,
+    };
+    if (result?.error) {
+      merged.error = result.error;
+    }
+    return merged;
+  });
 }
 
 /**
@@ -354,7 +369,7 @@ export async function executeNestedAction(
 
   // Find the leaf route with an action
   for (let i = matches.length - 1; i >= 0; i--) {
-    const match = matches[i];
+    const match = matches[i]!;
     if (match.route.action) {
       const context: ActionFunctionContext = {
         params: match.params,
@@ -364,11 +379,14 @@ export async function executeNestedAction(
 
       const result = await executeAction(match.route.action, context);
 
-      return {
+      const actionResult: { routeId: string; result: unknown; error?: Error } = {
         routeId: match.id,
         result: result.data,
-        error: result.error,
       };
+      if (result.error) {
+        actionResult.error = result.error;
+      }
+      return actionResult;
     }
   }
 
@@ -395,7 +413,7 @@ export function renderNestedRoutes(
   let outlet: VNode | JSXElement | string | null = null;
 
   for (let i = matches.length - 1; i >= 0; i--) {
-    const match = matches[i];
+    const match = matches[i]!;
     const Component = match.route.component;
 
     if (!Component) {
@@ -409,10 +427,12 @@ export function renderNestedRoutes(
       params: match.params,
       searchParams,
       data: match.data,
-      error: match.error,
       children: outlet,
       outlet,
     };
+    if (match.error) {
+      props.error = match.error;
+    }
 
     outlet = Component(props);
   }

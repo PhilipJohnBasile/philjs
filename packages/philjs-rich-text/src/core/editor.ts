@@ -5,6 +5,7 @@
 
 import type {
   Block,
+  BlockType,
   EditorInstance,
   EditorState,
   EditorCommands,
@@ -12,7 +13,7 @@ import type {
   Extension,
   Selection,
   CollaborationConfig,
-} from '../types';
+} from '../types.js';
 
 interface CreateEditorOptions {
   container: HTMLElement;
@@ -101,12 +102,12 @@ export function createEditor(options: CreateEditorOptions): EditorInstance {
       return true;
     },
 
-    setBlockType: (type) => {
+    setBlockType: (type: BlockType) => {
       if (readOnly) return false;
       const selection = state.selection;
       if (!selection) return false;
 
-      state.blocks = state.blocks.map((block) => {
+      state.blocks = state.blocks.map((block: Block) => {
         if (block.id === selection.anchor.blockId) {
           return { ...block, type };
         }
@@ -118,18 +119,22 @@ export function createEditor(options: CreateEditorOptions): EditorInstance {
       return true;
     },
 
-    insertBlock: (partial) => {
+    insertBlock: (partial: Partial<Block>) => {
       if (readOnly) return false;
       const newBlock: Block = {
         id: generateId(),
         type: partial.type || 'paragraph',
         content: partial.content || [],
-        attrs: partial.attrs,
-        children: partial.children,
       };
+      if (partial.attrs !== undefined) {
+        newBlock.attrs = partial.attrs;
+      }
+      if (partial.children !== undefined) {
+        newBlock.children = partial.children;
+      }
 
       const insertIndex = state.selection
-        ? state.blocks.findIndex((b) => b.id === state.selection!.anchor.blockId) + 1
+        ? state.blocks.findIndex((b: Block) => b.id === state.selection!.anchor.blockId) + 1
         : state.blocks.length;
 
       state.blocks = [
@@ -143,26 +148,28 @@ export function createEditor(options: CreateEditorOptions): EditorInstance {
       return true;
     },
 
-    deleteBlock: (id) => {
+    deleteBlock: (id: string) => {
       if (readOnly) return false;
       if (state.blocks.length <= 1) return false;
 
-      state.blocks = state.blocks.filter((b) => b.id !== id);
+      state.blocks = state.blocks.filter((b: Block) => b.id !== id);
       onUpdate(state);
       emit('update');
       return true;
     },
 
-    moveBlock: (id, direction) => {
+    moveBlock: (id: string, direction: 'up' | 'down') => {
       if (readOnly) return false;
-      const index = state.blocks.findIndex((b) => b.id === id);
+      const index = state.blocks.findIndex((b: Block) => b.id === id);
       if (index === -1) return false;
 
       const newIndex = direction === 'up' ? index - 1 : index + 1;
       if (newIndex < 0 || newIndex >= state.blocks.length) return false;
 
       const blocks = [...state.blocks];
-      [blocks[index], blocks[newIndex]] = [blocks[newIndex], blocks[index]];
+      const temp = blocks[index]!;
+      blocks[index] = blocks[newIndex]!;
+      blocks[newIndex] = temp;
       state.blocks = blocks;
 
       onUpdate(state);
@@ -225,7 +232,7 @@ export function createEditor(options: CreateEditorOptions): EditorInstance {
 
     getText: () => container.textContent || '',
 
-    setContent: (blocks) => {
+    setContent: (blocks: Block[]) => {
       state.blocks = blocks;
       onUpdate(state);
       emit('update');

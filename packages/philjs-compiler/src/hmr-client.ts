@@ -7,6 +7,14 @@
  * It should be automatically injected by the Vite plugin during development.
  */
 
+// Type-safe access to Vite's import.meta extensions
+type ViteHotContext = {
+  on: (event: string, cb: (data: unknown) => void) => void;
+};
+type ViteEnv = { DEV?: boolean; [key: string]: string | boolean | undefined };
+const importMetaHot = (import.meta as unknown as { hot?: ViteHotContext }).hot;
+const importMetaEnv = (import.meta as unknown as { env?: ViteEnv }).env;
+
 import {
   snapshotHMRState,
   restoreHMRState,
@@ -20,7 +28,7 @@ import {
 import {
   showHMRErrorOverlay,
   type HMRErrorType,
-} from './hmr-overlay';
+} from './hmr-overlay.js';
 
 /**
  * HMR client state
@@ -61,23 +69,24 @@ interface HMREventData {
  * This should be called automatically when the module is imported in dev mode.
  */
 export function setupHMRClient(options: HMROptions = {}): void {
-  if (typeof window === 'undefined' || !import.meta.hot) {
+  if (typeof window === 'undefined' || !importMetaHot) {
     return;
   }
 
   const verbose = options.verbose ?? false;
 
   // Listen for HMR snapshot events
-  import.meta.hot.on('philjs:hmr-snapshot', (data: HMREventData) => {
+  importMetaHot.on('philjs:hmr-snapshot', (data) => {
+    const eventData = data as HMREventData;
     const startTime = performance.now();
 
     try {
       if (verbose) {
-        console.log('[PhilJS HMR] Snapshotting state before update:', data);
+        console.log('[PhilJS HMR] Snapshotting state before update:', eventData);
       }
 
       // Cleanup old effects to prevent memory leaks
-      if (data.hasEffects) {
+      if (eventData.hasEffects) {
         cleanupHMREffects({ verbose });
       }
 
@@ -101,7 +110,7 @@ export function setupHMRClient(options: HMROptions = {}): void {
         showHMRErrorOverlay({
           type: 'timeout',
           message: `HMR snapshot took ${duration.toFixed(2)}ms (target: <100ms)`,
-          file: data.file,
+          file: eventData.file,
           suggestion: 'Consider reducing the number of signals or optimizing signal values for serialization.',
           canRetry: true,
           canRollback: false,
@@ -114,8 +123,8 @@ export function setupHMRClient(options: HMROptions = {}): void {
       showHMRErrorOverlay({
         type: 'snapshot-failed',
         message: error instanceof Error ? error.message : String(error),
-        file: data.file,
-        stack: error instanceof Error ? error.stack : undefined,
+        file: eventData.file,
+        ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
         canRetry: true,
         canRollback: false,
         timestamp: Date.now(),
@@ -128,18 +137,19 @@ export function setupHMRClient(options: HMROptions = {}): void {
   });
 
   // Listen for HMR error events
-  import.meta.hot.on('philjs:hmr-error', (data: HMREventData) => {
+  importMetaHot.on('philjs:hmr-error', (data) => {
+    const eventData = data as HMREventData;
     if (verbose) {
-      console.error('[PhilJS HMR] Update failed:', data);
+      console.error('[PhilJS HMR] Update failed:', eventData);
     }
 
     clientState.failureCount++;
 
     showHMRErrorOverlay({
       type: 'update-failed',
-      message: data.error || 'HMR update failed',
-      file: data.file,
-      stack: data.stack,
+      message: eventData.error || 'HMR update failed',
+      file: eventData.file,
+      ...(eventData.stack ? { stack: eventData.stack } : {}),
       suggestion: 'Check the console for detailed error information. You can try rolling back to the previous state or reload the page.',
       canRetry: true,
       canRollback: clientState.lastSnapshot !== null,
@@ -160,8 +170,8 @@ export function setupHMRClient(options: HMROptions = {}): void {
         showHMRErrorOverlay({
           type: 'restore-failed',
           message: rollbackError instanceof Error ? rollbackError.message : String(rollbackError),
-          file: data.file,
-          stack: rollbackError instanceof Error ? rollbackError.stack : undefined,
+          file: eventData.file,
+          ...(rollbackError instanceof Error && rollbackError.stack ? { stack: rollbackError.stack } : {}),
           suggestion: 'State rollback failed. A full page reload is recommended.',
           canRetry: false,
           canRollback: false,
@@ -171,14 +181,14 @@ export function setupHMRClient(options: HMROptions = {}): void {
     }
 
     // Full reload if suggested
-    if (data.shouldReload) {
+    if (eventData.shouldReload) {
       console.warn('[PhilJS HMR] Performing full page reload...');
       setTimeout(() => window.location.reload(), 1000);
     }
   });
 
   // Hook into Vite's HMR accept
-  import.meta.hot.on('vite:beforeUpdate', () => {
+  importMetaHot.on('vite:beforeUpdate', () => {
     if (!isHMRInProgress()) {
       return;
     }
@@ -211,7 +221,7 @@ export function setupHMRClient(options: HMROptions = {}): void {
   });
 
   // Hook into Vite's after update to restore state
-  import.meta.hot.on('vite:afterUpdate', () => {
+  importMetaHot.on('vite:afterUpdate', () => {
     if (!clientState.isActive) {
       return;
     }
@@ -281,8 +291,8 @@ export function resetHMRClientStats(): void {
 }
 
 // Auto-setup in development mode
-if (import.meta.env?.DEV && import.meta.hot) {
+if (importMetaEnv?.DEV && importMetaHot) {
   setupHMRClient({
-    verbose: import.meta.env?.VITE_PHILJS_HMR_VERBOSE === 'true',
+    verbose: importMetaEnv?.['VITE_PHILJS_HMR_VERBOSE'] === 'true',
   });
 }

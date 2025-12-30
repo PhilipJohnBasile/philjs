@@ -6,11 +6,11 @@
  */
 
 import * as vscode from 'vscode';
-import { PhilJSCompletionProvider } from './providers/completion';
-import { PhilJSHoverProvider } from './providers/hover';
-import { PhilJSDefinitionProvider } from './providers/definition';
-import { PhilJSDiagnosticsProvider } from './providers/diagnostics';
-import { createComponent, createRoute, createPage, createHook, createStore } from './generators';
+import { PhilJSCompletionProvider } from './providers/completion.js';
+import { PhilJSHoverProvider } from './providers/hover.js';
+import { PhilJSDefinitionProvider } from './providers/definition.js';
+import { PhilJSDiagnosticsProvider } from './providers/diagnostics.js';
+import { createComponent, createRoute, createPage, createHook, createStore } from './generators.js';
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('PhilJS extension is now active');

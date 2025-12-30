@@ -504,7 +504,7 @@ Return JSON:
     step.result = {
       success: parsed?.verified ?? true,
       output: response,
-      errors: parsed?.issues,
+      ...(parsed?.issues !== undefined && { errors: parsed.issues }),
     };
   }
 

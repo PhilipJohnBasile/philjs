@@ -13,7 +13,7 @@ import type {
   RocketSecurityConfig,
   FairingContext,
   FairingResponse,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // SSR Middleware
@@ -205,7 +205,7 @@ export class CORSMiddleware {
    * Handle preflight request
    */
   handlePreflight(ctx: FairingContext): FairingResponse {
-    const origin = ctx.headers['origin'] || '*';
+    const origin = ctx['headers']['origin'] ?? '*';
     return {
       status: 204,
       headers: this.getCORSHeaders(origin),

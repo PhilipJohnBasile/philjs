@@ -10,14 +10,14 @@
  */
 
 import * as vscode from 'vscode';
-import { PhilJSCompletionProvider } from './providers/completion-enhanced';
-import { PhilJSHoverProvider } from './providers/hover';
-import { PhilJSDefinitionProvider } from './providers/definition';
-import { PhilJSDiagnosticsProvider } from './providers/diagnostics';
-import { PhilJSSignatureHelpProvider } from './providers/signature';
-import { PhilJSCodeActionsProvider } from './providers/code-actions';
-import { PhilJSFormattingProvider, PhilJSRangeFormattingProvider } from './providers/formatting';
-import { createComponent, createRoute, createPage, createHook, createStore } from './generators';
+import { PhilJSCompletionProvider } from './providers/completion-enhanced.js';
+import { PhilJSHoverProvider } from './providers/hover.js';
+import { PhilJSDefinitionProvider } from './providers/definition.js';
+import { PhilJSDiagnosticsProvider } from './providers/diagnostics.js';
+import { PhilJSSignatureHelpProvider } from './providers/signature.js';
+import { PhilJSCodeActionsProvider } from './providers/code-actions.js';
+import { PhilJSFormattingProvider, PhilJSRangeFormattingProvider } from './providers/formatting.js';
+import { createComponent, createRoute, createPage, createHook, createStore } from './generators.js';
 
 let statusBarItem: vscode.StatusBarItem;
 

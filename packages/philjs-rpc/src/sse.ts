@@ -42,6 +42,21 @@ export interface SSEConnectionConfig {
   withCredentials?: boolean;
 }
 
+interface ResolvedSSEConnectionConfig {
+  url: string;
+  reconnect: {
+    enabled: boolean;
+    maxAttempts: number;
+    delay: number;
+    maxDelay: number;
+    backoffMultiplier: number;
+  };
+  headers: Record<string, string> | (() => Record<string, string> | Promise<Record<string, string>>);
+  fetch: typeof fetch;
+  heartbeatTimeout: number;
+  withCredentials: boolean;
+}
+
 export interface SSEMessage {
   type: 'data' | 'error' | 'complete' | 'heartbeat';
   id: string;
@@ -53,7 +68,7 @@ export interface SSEMessage {
 }
 
 export class SSEConnection {
-  private config: Required<SSEConnectionConfig>;
+  private config: ResolvedSSEConnectionConfig;
   private reconnectAttempts = 0;
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimeout: ReturnType<typeof setTimeout> | null = null;

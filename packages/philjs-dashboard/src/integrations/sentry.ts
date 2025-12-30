@@ -3,9 +3,9 @@
  * Export metrics, traces, and errors to Sentry
  */
 
-import type { MetricsSnapshot, WebVitalsMetrics } from '../collector/metrics';
-import type { Span, TraceContext } from '../collector/tracing';
-import type { CapturedError, StackFrame, Breadcrumb } from '../collector/errors';
+import type { MetricsSnapshot, WebVitalsMetrics } from '../collector/metrics.js';
+import type { Span, TraceContext } from '../collector/tracing.js';
+import type { CapturedError, StackFrame, Breadcrumb } from '../collector/errors.js';
 
 // ============================================================================
 // Types
@@ -315,14 +315,14 @@ export class SentryExporter {
     }
 
     return {
-      publicKey: match[1],
-      host: match[2],
-      projectId: match[3],
+      publicKey: match[1]!,
+      host: match[2]!,
+      projectId: match[3]!,
     };
   }
 
   private convertErrorToEvent(error: CapturedError): SentryEvent {
-    return {
+    const event: SentryEvent = {
       event_id: this.generateEventId(),
       timestamp: error.timestamp / 1000,
       platform: 'javascript',
@@ -354,14 +354,6 @@ export class SentryExporter {
         ...this.config.tags,
         ...error.tags,
       },
-      user: error.user
-        ? {
-            id: error.user.id,
-            username: error.user.username,
-            email: error.user.email,
-            ip_address: error.user.ipAddress,
-          }
-        : undefined,
       request: {
         url: error.url,
         headers: {
@@ -371,40 +363,65 @@ export class SentryExporter {
       environment: error.environment || this.config.environment,
       release: error.release || this.config.release,
     };
+
+    if (error.user) {
+      const user: NonNullable<SentryEvent['user']> = {};
+      if (error.user.id !== undefined) user.id = error.user.id;
+      if (error.user.username !== undefined) user.username = error.user.username;
+      if (error.user.email !== undefined) user.email = error.user.email;
+      if (error.user.ipAddress !== undefined) user.ip_address = error.user.ipAddress;
+      event.user = user;
+    }
+
+    return event;
   }
 
   private convertStackFrames(frames: StackFrame[]): SentryStackFrame[] {
     // Sentry expects frames in reverse order (most recent last)
     // ES2023+: Use toReversed() for non-mutating reverse
-    return frames.toReversed().map((frame) => ({
-      filename: frame.fileName || undefined,
-      function: frame.functionName || undefined,
-      lineno: frame.lineNumber ?? undefined,
-      colno: frame.columnNumber ?? undefined,
-      in_app: frame.inApp,
-      context_line: frame.context?.line,
-      pre_context: frame.context?.pre,
-      post_context: frame.context?.post,
-    }));
+    return frames.toReversed().map((frame) => {
+      const sentryFrame: SentryStackFrame = {
+        in_app: frame.inApp,
+      };
+      if (frame.fileName) sentryFrame.filename = frame.fileName;
+      if (frame.functionName) sentryFrame.function = frame.functionName;
+      if (frame.lineNumber !== null) sentryFrame.lineno = frame.lineNumber;
+      if (frame.columnNumber !== null) sentryFrame.colno = frame.columnNumber;
+      if (frame.context?.line) sentryFrame.context_line = frame.context.line;
+      if (frame.context?.pre) sentryFrame.pre_context = frame.context.pre;
+      if (frame.context?.post) sentryFrame.post_context = frame.context.post;
+      return sentryFrame;
+    });
   }
 
   private convertBreadcrumbs(breadcrumbs: Breadcrumb[]): SentryBreadcrumb[] {
-    return breadcrumbs.map((crumb) => ({
-      type: crumb.type,
-      category: crumb.category,
-      message: crumb.message,
-      level: crumb.level,
-      timestamp: crumb.timestamp / 1000,
-      data: crumb.data,
-    }));
+    return breadcrumbs.map((crumb) => {
+      const sentryBreadcrumb: SentryBreadcrumb = {
+        type: crumb.type,
+        category: crumb.category,
+        message: crumb.message,
+        level: crumb.level,
+        timestamp: crumb.timestamp / 1000,
+      };
+      if (crumb.data !== undefined) sentryBreadcrumb.data = crumb.data;
+      return sentryBreadcrumb;
+    });
   }
 
   private convertSpansToTransaction(spans: Span[]): SentryTransaction {
     const sortedSpans = [...spans].sort((a, b) => a.startTime - b.startTime);
-    const rootSpan = sortedSpans.find((s) => !s.parentSpanId) || sortedSpans[0];
+    const rootSpan = (sortedSpans.find((s) => !s.parentSpanId) || sortedSpans[0])!;
 
     const minStart = Math.min(...spans.map((s) => s.startTime));
     const maxEnd = Math.max(...spans.map((s) => s.startTime + (s.duration || 0)));
+
+    const traceContext: SentryTransaction['contexts']['trace'] = {
+      trace_id: rootSpan.traceId,
+      span_id: rootSpan.spanId,
+      op: this.mapSpanKindToOp(rootSpan.kind),
+      status: this.mapStatusCode(rootSpan.status.code),
+    };
+    if (rootSpan.parentSpanId !== undefined) traceContext.parent_span_id = rootSpan.parentSpanId;
 
     return {
       event_id: this.generateEventId(),
@@ -413,27 +430,24 @@ export class SentryExporter {
       start_timestamp: minStart / 1000,
       timestamp: maxEnd / 1000,
       contexts: {
-        trace: {
-          trace_id: rootSpan.traceId,
-          span_id: rootSpan.spanId,
-          parent_span_id: rootSpan.parentSpanId,
-          op: this.mapSpanKindToOp(rootSpan.kind),
-          status: this.mapStatusCode(rootSpan.status.code),
-        },
+        trace: traceContext,
       },
       spans: spans
         .filter((s) => s.spanId !== rootSpan.spanId)
-        .map((span) => ({
-          span_id: span.spanId,
-          trace_id: span.traceId,
-          parent_span_id: span.parentSpanId,
-          op: this.mapSpanKindToOp(span.kind),
-          description: span.name,
-          start_timestamp: span.startTime / 1000,
-          timestamp: (span.startTime + (span.duration || 0)) / 1000,
-          status: this.mapStatusCode(span.status.code),
-          tags: span.attributes as Record<string, string>,
-        })),
+        .map((span) => {
+          const sentrySpan: SentrySpan = {
+            span_id: span.spanId,
+            trace_id: span.traceId,
+            op: this.mapSpanKindToOp(span.kind),
+            description: span.name,
+            start_timestamp: span.startTime / 1000,
+            timestamp: (span.startTime + (span.duration || 0)) / 1000,
+            status: this.mapStatusCode(span.status.code),
+            tags: span.attributes as Record<string, string>,
+          };
+          if (span.parentSpanId !== undefined) sentrySpan.parent_span_id = span.parentSpanId;
+          return sentrySpan;
+        }),
       tags: this.config.tags,
       environment: this.config.environment,
       release: this.config.release,

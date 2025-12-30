@@ -285,7 +285,7 @@ const statusBarStack: StatusBarProps[] = [];
 function updateFromStack(): void {
   if (statusBarStack.length === 0) return;
 
-  const current = statusBarStack[statusBarStack.length - 1];
+  const current = statusBarStack[statusBarStack.length - 1]!;
   const platform = detectPlatform();
 
   if (current.hidden !== undefined) {

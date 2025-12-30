@@ -181,7 +181,7 @@ export class QuantumRNG {
     if (this.position >= this.bufferSize) {
       this.refill();
     }
-    return this.buffer[this.position++];
+    return this.buffer[this.position++]!;
   }
 
   nextBytes(n: number): Uint8Array {
@@ -223,7 +223,7 @@ export class QuantumRNG {
     const result = [...array];
     for (let i = result.length - 1; i > 0; i--) {
       const j = this.nextInt(i);
-      [result[i], result[j]] = [result[j], result[i]];
+      [result[i], result[j]] = [result[j]!, result[i]!];
     }
     return result;
   }
@@ -432,16 +432,16 @@ export class QuantumSimulator {
       const bit = (i >> qubit) & 1;
       if (bit === 0) {
         const j = i | (1 << qubit);
-        const a0 = this.state.amplitudes[i];
-        const a1 = this.state.amplitudes[j];
+        const a0 = this.state.amplitudes[i]!;
+        const a1 = this.state.amplitudes[j]!;
 
         newAmplitudes[i] = Complex.add(
-          Complex.mul(matrix[0][0], a0),
-          Complex.mul(matrix[0][1], a1)
+          Complex.mul(matrix[0]![0]!, a0),
+          Complex.mul(matrix[0]![1]!, a1)
         );
         newAmplitudes[j] = Complex.add(
-          Complex.mul(matrix[1][0], a0),
-          Complex.mul(matrix[1][1], a1)
+          Complex.mul(matrix[1]![0]!, a0),
+          Complex.mul(matrix[1]![1]!, a1)
         );
       }
     }
@@ -461,7 +461,7 @@ export class QuantumSimulator {
         const j = i ^ (1 << target);
         if (i < j) {
           [this.state.amplitudes[i], this.state.amplitudes[j]] =
-            [this.state.amplitudes[j], this.state.amplitudes[i]];
+            [this.state.amplitudes[j]!, this.state.amplitudes[i]!];
         }
       }
     }
@@ -475,7 +475,7 @@ export class QuantumSimulator {
       const controlBit = (i >> control) & 1;
       const targetBit = (i >> target) & 1;
       if (controlBit === 1 && targetBit === 1) {
-        this.state.amplitudes[i] = Complex.scale(this.state.amplitudes[i], -1);
+        this.state.amplitudes[i] = Complex.scale(this.state.amplitudes[i]!, -1);
       }
     }
   }
@@ -491,7 +491,7 @@ export class QuantumSimulator {
         const j = i ^ (1 << qubit1) ^ (1 << qubit2);
         if (i < j) {
           [this.state.amplitudes[i], this.state.amplitudes[j]] =
-            [this.state.amplitudes[j], this.state.amplitudes[i]];
+            [this.state.amplitudes[j]!, this.state.amplitudes[i]!];
         }
       }
     }
@@ -507,7 +507,7 @@ export class QuantumSimulator {
     let prob1 = 0;
     for (let i = 0; i < size; i++) {
       if ((i >> qubit) & 1) {
-        prob1 += Math.pow(Complex.magnitude(this.state.amplitudes[i]), 2);
+        prob1 += Math.pow(Complex.magnitude(this.state.amplitudes[i]!), 2);
       }
     }
 
@@ -520,7 +520,7 @@ export class QuantumSimulator {
       const bit = (i >> qubit) & 1;
       if (bit === result) {
         this.state.amplitudes[i] = Complex.scale(
-          this.state.amplitudes[i],
+          this.state.amplitudes[i]!,
           1 / normFactor
         );
       } else {
@@ -603,7 +603,7 @@ export class QuantumAnnealingOptimizer {
 
       for (let i = 0; i < numFlips; i++) {
         const flipIndex = this.rng.nextInt(numVariables - 1);
-        neighbor[flipIndex] = 1 - neighbor[flipIndex];
+        neighbor[flipIndex] = 1 - neighbor[flipIndex]!;
       }
 
       const neighborEnergy = costFunction(neighbor);
@@ -666,10 +666,10 @@ export class QAOAOptimizer {
       // Apply QAOA layers
       for (let layer = 0; layer < params.layers; layer++) {
         // Cost layer (phase separation)
-        this.applyCostLayer(costHamiltonian, params.gamma[layer]);
+        this.applyCostLayer(costHamiltonian, params.gamma[layer]!);
 
         // Mixer layer
-        this.applyMixerLayer(numQubits, params.beta[layer]);
+        this.applyMixerLayer(numQubits, params.beta[layer]!);
       }
 
       // Measure
@@ -702,10 +702,10 @@ export class QAOAOptimizer {
     // Apply e^(-i * gamma * H_C) for cost Hamiltonian
     for (let i = 0; i < hamiltonian.length; i++) {
       for (let j = i + 1; j < hamiltonian.length; j++) {
-        if (hamiltonian[i][j] !== 0) {
+        if (hamiltonian[i]![j] !== 0) {
           // ZZ interaction
           this.simulator.cnot(i, j);
-          this.simulator.rotateZ(j, 2 * gamma * hamiltonian[i][j]);
+          this.simulator.rotateZ(j, 2 * gamma * hamiltonian[i]![j]!);
           this.simulator.cnot(i, j);
         }
       }
@@ -724,9 +724,9 @@ export class QAOAOptimizer {
     for (let i = 0; i < hamiltonian.length; i++) {
       for (let j = i + 1; j < hamiltonian.length; j++) {
         // Convert {0,1} to {-1,+1} for Ising model
-        const si = 2 * solution[i] - 1;
-        const sj = 2 * solution[j] - 1;
-        energy += hamiltonian[i][j] * si * sj;
+        const si = 2 * solution[i]! - 1;
+        const sj = 2 * solution[j]! - 1;
+        energy += hamiltonian[i]![j]! * si * sj;
       }
     }
     return energy;
@@ -796,16 +796,3 @@ export function useQuantumShuffle<T>(array: T[]): T[] {
   return rng.shuffle(array);
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  QuantumRNG,
-  KyberKEM,
-  DilithiumSignature,
-  QuantumSimulator,
-  QuantumAnnealingOptimizer,
-  QAOAOptimizer,
-  Complex
-};

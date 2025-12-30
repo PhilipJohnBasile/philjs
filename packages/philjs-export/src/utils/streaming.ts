@@ -77,7 +77,7 @@ export function createProgressTracker(
       const progress: StreamProgress = {
         progress: totalItems ? processedItems / totalItems : 0,
         processedItems,
-        totalItems,
+        ...(totalItems !== undefined && { totalItems }),
         bytesWritten: totalBytes,
         elapsedMs,
         itemsPerSecond,

@@ -1,4 +1,4 @@
-import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types';
+import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types.js';
 
 // ============================================================================
 // Mouse Sensor

@@ -159,10 +159,10 @@ class RequestBatcher {
     // If only one request, send it directly
     if (requests.length === 1) {
       try {
-        const response = await this.sendSingle(requests[0].request);
-        requests[0].resolve(response);
+        const response = await this.sendSingle(requests[0]!.request);
+        requests[0]!.resolve(response);
       } catch (error) {
-        requests[0].reject(error as Error);
+        requests[0]!.reject(error as Error);
       }
       return;
     }
@@ -171,7 +171,7 @@ class RequestBatcher {
     try {
       const responses = await this.sendBatch(requests.map((r) => r.request));
       for (let i = 0; i < requests.length; i++) {
-        requests[i].resolve(responses[i]);
+        requests[i]!.resolve(responses[i]!);
       }
     } catch (error) {
       for (const req of requests) {
@@ -338,6 +338,7 @@ export function createClient<TApi extends APIDefinition>(
         options = maybeOptions;
       } else if (
         inputOrOptions !== undefined &&
+        inputOrOptions !== null &&
         typeof inputOrOptions === 'object' &&
         ('enabled' in inputOrOptions || 'staleTime' in inputOrOptions || 'onSuccess' in inputOrOptions)
       ) {

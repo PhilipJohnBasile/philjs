@@ -210,8 +210,8 @@ class QRLRegistry {
       symbol,
       chunk,
       exportName,
-      capturedState: options.capturedState,
-      resolved: chunk === 'inline' ? fn : undefined,
+      ...(options.capturedState !== undefined && { capturedState: options.capturedState }),
+      ...(chunk === 'inline' && { resolved: fn }),
       hash,
     };
 
@@ -232,7 +232,7 @@ class QRLRegistry {
       this.loadedModules.set(qrl.chunk, import(/* @vite-ignore */ qrl.chunk));
     }
 
-    const module = await this.loadedModules.get(qrl.chunk);
+    const module = await this.loadedModules.get(qrl.chunk)!;
     const fn = module[qrl.exportName] as T;
 
     // Cache the resolved function
@@ -256,7 +256,7 @@ class QRLRegistry {
       symbol: qrl.symbol,
       chunk: qrl.chunk,
       exportName: qrl.exportName,
-      capturedState: qrl.capturedState,
+      ...(qrl.capturedState !== undefined && { capturedState: qrl.capturedState }),
     }));
   }
 
@@ -270,7 +270,7 @@ class QRLRegistry {
         symbol: item.symbol,
         chunk: item.chunk,
         exportName: item.exportName,
-        capturedState: item.capturedState,
+        ...(item.capturedState !== undefined && { capturedState: item.capturedState }),
         hash: this.generateHash(item.symbol, item.chunk),
       };
       this.qrls.set(item.symbol, qrl);
@@ -329,7 +329,7 @@ export function qrl<T extends (...args: any[]) => any>(
 ): QRL<T> {
   return qrlRegistry.register(fn, {
     symbol,
-    capturedState,
+    ...(capturedState !== undefined && { capturedState }),
     chunk: 'inline',
   });
 }
@@ -347,7 +347,7 @@ export function qrlChunk<T extends (...args: any[]) => any>(
     symbol: symbol || `${chunk}#${exportName}`,
     chunk,
     exportName,
-    capturedState,
+    ...(capturedState !== undefined && { capturedState }),
   });
 }
 
@@ -754,7 +754,7 @@ export function on<K extends keyof HTMLElementEventMap>(
     module: options.module || 'unknown',
     handler: options.name || 'handler',
     selector: `[data-listener="${listenerId}"]`,
-    capture: options.capture,
+    ...(options.capture !== undefined && { capture: options.capture }),
   });
 
   // In production, we don't attach the handler immediately
@@ -780,7 +780,7 @@ function attachListener(listenerId: string, handler: Function): void {
     element.addEventListener(
       listener.event,
       handler as EventListener,
-      { capture: listener.capture }
+      { ...(listener.capture !== undefined && { capture: listener.capture }) }
     );
   });
 }
@@ -860,7 +860,7 @@ export function boundary(
   props: Record<string, any>,
   children?: string[]
 ): ComponentBoundary {
-  const boundary: ComponentBoundary = { id, type, props, children };
+  const boundary: ComponentBoundary = { id, type, props, ...(children !== undefined && { children }) };
   componentRegistry.set(id, boundary);
   return boundary;
 }
@@ -1200,7 +1200,7 @@ export function injectResumableState(
   options: ResumabilityOptions = {}
 ): string {
   const serialized = serializeContext(context, options);
-  const script = generateResumeScript(serialized, { moduleBasePath: options.moduleBasePath });
+  const script = generateResumeScript(serialized, { ...(options.moduleBasePath !== undefined && { moduleBasePath: options.moduleBasePath }) });
 
   // Inject before closing </body> tag
   return html.replace('</body>', `${script}</body>`);

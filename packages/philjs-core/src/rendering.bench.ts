@@ -1,18 +1,18 @@
 import { bench, describe } from 'vitest';
-import { jsx } from './jsx-runtime';
-import { signal } from './signals';
+import { jsx } from './jsx-runtime.js';
+import { signal } from './signals.js';
 
 describe('JSX Creation Performance', () => {
   bench('create simple element', () => {
-    jsx('div', { className: 'test' }, 'Hello');
+    jsx('div', { className: 'test', children: 'Hello' });
   });
 
   bench('create nested elements', () => {
-    jsx('div', { className: 'container' },
-      jsx('div', { className: 'header' }, 'Header'),
-      jsx('div', { className: 'content' }, 'Content'),
-      jsx('div', { className: 'footer' }, 'Footer')
-    );
+    jsx('div', { className: 'container', children: [
+      jsx('div', { className: 'header', children: 'Header' }),
+      jsx('div', { className: 'content', children: 'Content' }),
+      jsx('div', { className: 'footer', children: 'Footer' })
+    ]});
   });
 
   bench('create element with many props', () => {
@@ -26,59 +26,60 @@ describe('JSX Creation Performance', () => {
       onClick: () => {},
       onMouseEnter: () => {},
       onMouseLeave: () => {},
-      style: { color: 'red', fontSize: '16px' }
-    }, 'Test');
+      style: { color: 'red', fontSize: '16px' },
+      children: 'Test'
+    });
   });
 
   bench('create list of 100 items', () => {
     const items = Array.from({ length: 100 }, (_, i) =>
-      jsx('li', { key: i }, `Item ${i}`)
+      jsx('li', { key: i, children: `Item ${i}` })
     );
-    jsx('ul', {}, ...items);
+    jsx('ul', { children: items });
   });
 
   bench('create list of 1000 items', () => {
     const items = Array.from({ length: 1000 }, (_, i) =>
-      jsx('li', { key: i }, `Item ${i}`)
+      jsx('li', { key: i, children: `Item ${i}` })
     );
-    jsx('ul', {}, ...items);
+    jsx('ul', { children: items });
   });
 });
 
 describe('Component Rendering', () => {
   bench('create simple component', () => {
-    const Component = () => jsx('div', {}, 'Hello');
+    const Component = () => jsx('div', { children: 'Hello' });
     Component();
   });
 
   bench('create component with props', () => {
     const Component = ({ name }: { name: string }) =>
-      jsx('div', {}, `Hello ${name}`);
+      jsx('div', { children: `Hello ${name}` });
     Component({ name: 'World' });
   });
 
   bench('create component with state', () => {
     const Component = () => {
       const count = signal(0);
-      return jsx('div', {}, `Count: ${count()}`);
+      return jsx('div', { children: `Count: ${count()}` });
     };
     Component();
   });
 
   bench('create nested components (5 levels)', () => {
-    const Level5 = () => jsx('div', {}, 'Level 5');
-    const Level4 = () => jsx('div', {}, jsx(Level5, {}));
-    const Level3 = () => jsx('div', {}, jsx(Level4, {}));
-    const Level2 = () => jsx('div', {}, jsx(Level3, {}));
-    const Level1 = () => jsx('div', {}, jsx(Level2, {}));
+    const Level5 = () => jsx('div', { children: 'Level 5' });
+    const Level4 = () => jsx('div', { children: jsx(Level5, {}) });
+    const Level3 = () => jsx('div', { children: jsx(Level4, {}) });
+    const Level2 = () => jsx('div', { children: jsx(Level3, {}) });
+    const Level1 = () => jsx('div', { children: jsx(Level2, {}) });
     Level1();
   });
 
   bench('create component tree (breadth)', () => {
-    const Child = ({ id }: { id: number }) => jsx('div', {}, `Child ${id}`);
-    const Parent = () => jsx('div', {},
-      ...Array.from({ length: 10 }, (_, i) => jsx(Child, { key: i, id: i }))
-    );
+    const Child = ({ id }: { id: number }) => jsx('div', { children: `Child ${id}` });
+    const Parent = () => jsx('div', {
+      children: Array.from({ length: 10 }, (_, i) => jsx(Child, { key: i, id: i }))
+    });
     Parent();
   });
 });
@@ -86,7 +87,7 @@ describe('Component Rendering', () => {
 describe('Reactive Rendering', () => {
   bench('component with reactive signal', () => {
     const count = signal(0);
-    const Component = () => jsx('div', {}, count());
+    const Component = () => jsx('div', { children: count() });
 
     Component();
     count.set(1);
@@ -98,11 +99,11 @@ describe('Reactive Rendering', () => {
     const age = signal(25);
     const email = signal('john@example.com');
 
-    const Component = () => jsx('div', {},
-      jsx('div', {}, name()),
-      jsx('div', {}, age()),
-      jsx('div', {}, email())
-    );
+    const Component = () => jsx('div', { children: [
+      jsx('div', { children: name() }),
+      jsx('div', { children: age() }),
+      jsx('div', { children: email() })
+    ]});
 
     Component();
     name.set('Jane');
@@ -115,11 +116,11 @@ describe('Reactive Rendering', () => {
       text: `Item ${i}`
     })));
 
-    const Component = () => jsx('ul', {},
-      ...items().map(item =>
-        jsx('li', { key: item.id }, item.text)
+    const Component = () => jsx('ul', {
+      children: items().map(item =>
+        jsx('li', { key: item.id, children: item.text })
       )
-    );
+    });
 
     Component();
     items.set([...items(), { id: 50, text: 'Item 50' }]);
@@ -129,7 +130,7 @@ describe('Reactive Rendering', () => {
   bench('conditional rendering', () => {
     const show = signal(true);
     const Component = () => show()
-      ? jsx('div', {}, 'Visible')
+      ? jsx('div', { children: 'Visible' })
       : null;
 
     Component();
@@ -148,61 +149,61 @@ describe('Props and Children', () => {
       'data-value': '123',
       onClick: () => {}
     };
-    jsx('div', { ...props }, 'Content');
+    jsx('div', { ...props, children: 'Content' });
   });
 
   bench('children array', () => {
     const children = Array.from({ length: 20 }, (_, i) =>
-      jsx('span', { key: i }, `Child ${i}`)
+      jsx('span', { key: i, children: `Child ${i}` })
     );
-    jsx('div', {}, ...children);
+    jsx('div', { children });
   });
 
   bench('mixed children types', () => {
-    jsx('div', {},
+    jsx('div', { children: [
       'Text node',
-      jsx('span', {}, 'Nested element'),
+      jsx('span', { children: 'Nested element' }),
       42,
       true,
       null,
       undefined,
-      jsx('div', {}, 'Another element')
-    );
+      jsx('div', { children: 'Another element' })
+    ]});
   });
 
   bench('deep children nesting', () => {
-    jsx('div', {},
-      jsx('div', {},
-        jsx('div', {},
-          jsx('div', {},
-            jsx('div', {},
-              jsx('div', {},
-                jsx('div', {},
-                  jsx('div', {},
-                    jsx('div', {},
-                      jsx('div', {}, 'Deep content')
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    );
+    jsx('div', { children:
+      jsx('div', { children:
+        jsx('div', { children:
+          jsx('div', { children:
+            jsx('div', { children:
+              jsx('div', { children:
+                jsx('div', { children:
+                  jsx('div', { children:
+                    jsx('div', { children:
+                      jsx('div', { children: 'Deep content' })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    });
   });
 });
 
 describe('Real-world Component Patterns', () => {
   bench('card component', () => {
     const Card = ({ title, content }: { title: string; content: string }) =>
-      jsx('div', { className: 'card' },
-        jsx('div', { className: 'card-header' }, title),
-        jsx('div', { className: 'card-body' }, content),
-        jsx('div', { className: 'card-footer' },
-          jsx('button', {}, 'Action')
-        )
-      );
+      jsx('div', { className: 'card', children: [
+        jsx('div', { className: 'card-header', children: title }),
+        jsx('div', { className: 'card-body', children: content }),
+        jsx('div', { className: 'card-footer', children:
+          jsx('button', { children: 'Action' })
+        })
+      ]});
 
     Card({ title: 'Test Card', content: 'Some content here' });
   });
@@ -211,11 +212,11 @@ describe('Real-world Component Patterns', () => {
     const name = signal('');
     const email = signal('');
 
-    const Form = () => jsx('form', {},
+    const Form = () => jsx('form', { children: [
       jsx('input', { type: 'text', value: name(), onChange: () => {} }),
       jsx('input', { type: 'email', value: email(), onChange: () => {} }),
-      jsx('button', { type: 'submit' }, 'Submit')
-    );
+      jsx('button', { type: 'submit', children: 'Submit' })
+    ]});
 
     Form();
   });
@@ -228,61 +229,61 @@ describe('Real-world Component Patterns', () => {
       age: 20 + i
     }));
 
-    const Table = () => jsx('table', {},
-      jsx('thead', {},
-        jsx('tr', {},
-          jsx('th', {}, 'Name'),
-          jsx('th', {}, 'Email'),
-          jsx('th', {}, 'Age')
+    const Table = () => jsx('table', { children: [
+      jsx('thead', { children:
+        jsx('tr', { children: [
+          jsx('th', { children: 'Name' }),
+          jsx('th', { children: 'Email' }),
+          jsx('th', { children: 'Age' })
+        ]})
+      }),
+      jsx('tbody', { children:
+        data.map(row =>
+          jsx('tr', { key: row.id, children: [
+            jsx('td', { children: row.name }),
+            jsx('td', { children: row.email }),
+            jsx('td', { children: row.age.toString() })
+          ]})
         )
-      ),
-      jsx('tbody', {},
-        ...data.map(row =>
-          jsx('tr', { key: row.id },
-            jsx('td', {}, row.name),
-            jsx('td', {}, row.email),
-            jsx('td', {}, row.age.toString())
-          )
-        )
-      )
-    );
+      })
+    ]});
 
     Table();
   });
 
   bench('navigation menu', () => {
-    const Menu = () => jsx('nav', {},
-      jsx('ul', {},
-        jsx('li', {}, jsx('a', { href: '/' }, 'Home')),
-        jsx('li', {}, jsx('a', { href: '/about' }, 'About')),
-        jsx('li', {}, jsx('a', { href: '/contact' }, 'Contact')),
-        jsx('li', {},
-          jsx('a', { href: '/products' }, 'Products'),
-          jsx('ul', {},
-            jsx('li', {}, jsx('a', { href: '/products/1' }, 'Product 1')),
-            jsx('li', {}, jsx('a', { href: '/products/2' }, 'Product 2')),
-            jsx('li', {}, jsx('a', { href: '/products/3' }, 'Product 3'))
-          )
-        )
-      )
-    );
+    const Menu = () => jsx('nav', { children:
+      jsx('ul', { children: [
+        jsx('li', { children: jsx('a', { href: '/', children: 'Home' }) }),
+        jsx('li', { children: jsx('a', { href: '/about', children: 'About' }) }),
+        jsx('li', { children: jsx('a', { href: '/contact', children: 'Contact' }) }),
+        jsx('li', { children: [
+          jsx('a', { href: '/products', children: 'Products' }),
+          jsx('ul', { children: [
+            jsx('li', { children: jsx('a', { href: '/products/1', children: 'Product 1' }) }),
+            jsx('li', { children: jsx('a', { href: '/products/2', children: 'Product 2' }) }),
+            jsx('li', { children: jsx('a', { href: '/products/3', children: 'Product 3' }) })
+          ]})
+        ]})
+      ]})
+    });
 
     Menu();
   });
 
   bench('dashboard with widgets', () => {
     const Widget = ({ title, value }: { title: string; value: number }) =>
-      jsx('div', { className: 'widget' },
-        jsx('h3', {}, title),
-        jsx('div', { className: 'value' }, value.toString())
-      );
+      jsx('div', { className: 'widget', children: [
+        jsx('h3', { children: title }),
+        jsx('div', { className: 'value', children: value.toString() })
+      ]});
 
-    const Dashboard = () => jsx('div', { className: 'dashboard' },
+    const Dashboard = () => jsx('div', { className: 'dashboard', children: [
       jsx(Widget, { title: 'Users', value: 1234 }),
       jsx(Widget, { title: 'Revenue', value: 56789 }),
       jsx(Widget, { title: 'Orders', value: 432 }),
       jsx(Widget, { title: 'Products', value: 89 })
-    );
+    ]});
 
     Dashboard();
   });

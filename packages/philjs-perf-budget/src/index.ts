@@ -701,7 +701,7 @@ export class BuildBudgetChecker {
     const byType: Record<string, BuildArtifact[]> = {};
     for (const artifact of this.artifacts) {
       if (!byType[artifact.type]) byType[artifact.type] = [];
-      byType[artifact.type].push(artifact);
+      byType[artifact.type]!.push(artifact);
     }
 
     for (const [type, artifacts] of Object.entries(byType)) {
@@ -868,12 +868,6 @@ export function perfBudgetPlugin(budget: PerformanceBudget): any {
 // ============================================================================
 // Exports
 // ============================================================================
-
-export {
-  PerformanceObserverManager,
-  BudgetChecker,
-  BuildBudgetChecker
-};
 
 export default {
   PerformanceObserverManager,

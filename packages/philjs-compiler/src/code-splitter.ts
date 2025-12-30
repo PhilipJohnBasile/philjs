@@ -4,9 +4,13 @@
  */
 
 import { parse } from '@babel/parser';
-import traverse from '@babel/traverse';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import type { CompilerConfig } from './types';
+import type { CompilerConfig } from './types.js';
+
+// Handle both ESM and CJS exports - babel traverse exports default as the traverse function
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
 
 export interface CodeSplitBoundary {
   /** Route path */
@@ -100,7 +104,7 @@ export class CodeSplitter {
     };
 
     traverse(ast, {
-      ImportDeclaration(path) {
+      ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
         const source = path.node.source.value;
         analysis.dependencies.push(source);
 
@@ -120,7 +124,7 @@ export class CodeSplitter {
         }
       },
 
-      CallExpression(path) {
+      CallExpression(path: NodePath<t.CallExpression>) {
         // Check if already using lazy loading
         if (t.isIdentifier(path.node.callee) && path.node.callee.name === 'lazy') {
           analysis.isLazy = true;

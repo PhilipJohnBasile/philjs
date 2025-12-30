@@ -100,19 +100,19 @@ export class Embeddings {
 
     if (this.cacheEnabled) {
       for (let i = 0; i < inputs.length; i++) {
-        const cacheKey = this.getCacheKey(inputs[i], model, dimensions);
+        const cacheKey = this.getCacheKey(inputs[i]!, model, dimensions);
         const cached = this.cache.get(cacheKey);
         if (cached) {
           cachedResults.set(i, cached);
         } else {
           indexMapping.set(textsToEmbed.length, i);
-          textsToEmbed.push(inputs[i]);
+          textsToEmbed.push(inputs[i]!);
         }
       }
     } else {
       for (let i = 0; i < inputs.length; i++) {
         indexMapping.set(i, i);
-        textsToEmbed.push(inputs[i]);
+        textsToEmbed.push(inputs[i]!);
       }
     }
 
@@ -157,8 +157,8 @@ export class Embeddings {
     // Store in cache if enabled
     if (this.cacheEnabled) {
       for (let i = 0; i < textsToEmbed.length; i++) {
-        const cacheKey = this.getCacheKey(textsToEmbed[i], model, dimensions);
-        this.cache.set(cacheKey, apiEmbeddings[i]);
+        const cacheKey = this.getCacheKey(textsToEmbed[i]!, model, dimensions);
+        this.cache.set(cacheKey, apiEmbeddings[i]!);
       }
     }
 
@@ -170,7 +170,7 @@ export class Embeddings {
       if (cachedResults.has(i)) {
         finalEmbeddings.push(cachedResults.get(i)!);
       } else {
-        finalEmbeddings.push(apiEmbeddings[apiIndex++]);
+        finalEmbeddings.push(apiEmbeddings[apiIndex++]!);
       }
     }
 
@@ -192,7 +192,7 @@ export class Embeddings {
       model: this.config.model,
       input: text,
     });
-    return response.embeddings[0];
+    return response.embeddings[0]!;
   }
 
   /**
@@ -249,9 +249,9 @@ export class Embeddings {
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dotProduct += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
 
     const denominator = Math.sqrt(normA) * Math.sqrt(normB);
@@ -268,7 +268,7 @@ export class Embeddings {
 
     let sum = 0;
     for (let i = 0; i < a.length; i++) {
-      const diff = a[i] - b[i];
+      const diff = a[i]! - b[i]!;
       sum += diff * diff;
     }
     return Math.sqrt(sum);
@@ -284,7 +284,7 @@ export class Embeddings {
 
     let sum = 0;
     for (let i = 0; i < a.length; i++) {
-      sum += a[i] * b[i];
+      sum += a[i]! * b[i]!;
     }
     return sum;
   }
@@ -312,12 +312,17 @@ export class Embeddings {
       this.embedMany(corpus),
     ]);
 
-    const scores: SimilarityResult[] = corpusEmbeddings.map((embedding, index) => ({
-      text: corpus[index],
-      score: Embeddings.cosineSimilarity(queryEmbedding, embedding),
-      index,
-      ...(options?.includeEmbeddings && { embedding }),
-    }));
+    const scores: SimilarityResult[] = corpusEmbeddings.map((embedding, index) => {
+      const result: SimilarityResult = {
+        text: corpus[index]!,
+        score: Embeddings.cosineSimilarity(queryEmbedding, embedding),
+        index,
+      };
+      if (options?.includeEmbeddings) {
+        result.embedding = embedding;
+      }
+      return result;
+    });
 
     return scores
       .sort((a, b) => b.score - a.score)
@@ -338,7 +343,7 @@ export class Embeddings {
     }
 
     const scores: SimilarityResult[] = corpusEmbeddings.map((embedding, index) => ({
-      text: texts[index],
+      text: texts[index]!,
       score: Embeddings.cosineSimilarity(queryEmbedding, embedding),
       index,
     }));
@@ -367,7 +372,7 @@ export class Embeddings {
 
     // First centroid: random
     const firstIndex = Math.floor(Math.random() * embeddings.length);
-    centroids.push([...embeddings[firstIndex]]);
+    centroids.push([...embeddings[firstIndex]!]);
     usedIndices.add(firstIndex);
 
     // Remaining centroids: weighted by distance
@@ -383,9 +388,9 @@ export class Embeddings {
       let random = Math.random() * totalDistance;
 
       for (let i = 0; i < distances.length; i++) {
-        random -= distances[i];
+        random -= distances[i]!;
         if (random <= 0 && !usedIndices.has(i)) {
-          centroids.push([...embeddings[i]]);
+          centroids.push([...embeddings[i]!]);
           usedIndices.add(i);
           break;
         }
@@ -402,7 +407,7 @@ export class Embeddings {
         let minDist = Infinity;
         let nearest = 0;
         for (let c = 0; c < centroids.length; c++) {
-          const dist = Embeddings.euclideanDistance(emb, centroids[c]);
+          const dist = Embeddings.euclideanDistance(emb, centroids[c]!);
           if (dist < minDist) {
             minDist = dist;
             nearest = c;
@@ -421,9 +426,9 @@ export class Embeddings {
       for (let c = 0; c < centroids.length; c++) {
         const clusterPoints = embeddings.filter((_, i) => assignments[i] === c);
         if (clusterPoints.length > 0) {
-          const dims = clusterPoints[0].length;
+          const dims = clusterPoints[0]!.length;
           for (let d = 0; d < dims; d++) {
-            centroids[c][d] = clusterPoints.reduce((sum, p) => sum + p[d], 0) / clusterPoints.length;
+            centroids[c]![d] = clusterPoints.reduce((sum, p) => sum + p[d]!, 0) / clusterPoints.length;
           }
         }
       }
@@ -437,7 +442,7 @@ export class Embeddings {
         .filter(i => i !== -1);
       clusters.push({
         centroid: c,
-        texts: indices.map(i => texts[i]),
+        texts: indices.map(i => texts[i]!),
         indices,
       });
     }
@@ -473,19 +478,19 @@ export class Embeddings {
       let duplicateOf = '';
 
       for (let j = 0; j < uniqueEmbeddings.length; j++) {
-        const similarity = Embeddings.cosineSimilarity(embeddings[i], uniqueEmbeddings[j]);
+        const similarity = Embeddings.cosineSimilarity(embeddings[i]!, uniqueEmbeddings[j]!);
         if (similarity >= similarityThreshold) {
           isDuplicate = true;
-          duplicateOf = unique[j];
+          duplicateOf = unique[j]!;
           break;
         }
       }
 
       if (isDuplicate) {
-        duplicates.push({ text: texts[i], duplicateOf });
+        duplicates.push({ text: texts[i]!, duplicateOf });
       } else {
-        unique.push(texts[i]);
-        uniqueEmbeddings.push(embeddings[i]);
+        unique.push(texts[i]!);
+        uniqueEmbeddings.push(embeddings[i]!);
       }
     }
 
@@ -509,13 +514,19 @@ export function createOpenAIEmbeddings(options?: {
   apiKey?: string;
   baseUrl?: string;
 }): Embeddings {
-  return new Embeddings({
+  const config: EmbeddingsConfig = {
     provider: 'openai',
     model: options?.model || 'text-embedding-3-small',
-    dimensions: options?.dimensions,
-    apiKey: options?.apiKey || process.env.OPENAI_API_KEY,
     baseUrl: options?.baseUrl || 'http://localhost:8000',
-  });
+  };
+  const apiKey = options?.apiKey || process.env['OPENAI_API_KEY'];
+  if (apiKey !== undefined) {
+    config.apiKey = apiKey;
+  }
+  if (options?.dimensions !== undefined) {
+    config.dimensions = options.dimensions;
+  }
+  return new Embeddings(config);
 }
 
 /**
@@ -526,21 +537,29 @@ export function createOpenAILargeEmbeddings(options?: {
   apiKey?: string;
   baseUrl?: string;
 }): Embeddings {
-  return new Embeddings({
+  const config: EmbeddingsConfig = {
     provider: 'openai',
     model: 'text-embedding-3-large',
     dimensions: options?.dimensions || 3072,
-    apiKey: options?.apiKey || process.env.OPENAI_API_KEY,
     baseUrl: options?.baseUrl || 'http://localhost:8000',
-  });
+  };
+  const apiKey = options?.apiKey || process.env['OPENAI_API_KEY'];
+  if (apiKey !== undefined) {
+    config.apiKey = apiKey;
+  }
+  return new Embeddings(config);
 }
 
 /**
  * Default embeddings instance using environment variables
  */
-export const embeddings = new Embeddings({
+const defaultConfig: EmbeddingsConfig = {
   provider: 'openai',
-  model: process.env.PHILJS_EMBEDDINGS_MODEL || 'text-embedding-3-small',
-  apiKey: process.env.OPENAI_API_KEY,
-  baseUrl: process.env.PHILJS_EMBEDDINGS_URL || 'http://localhost:8000',
-});
+  model: process.env['PHILJS_EMBEDDINGS_MODEL'] || 'text-embedding-3-small',
+  baseUrl: process.env['PHILJS_EMBEDDINGS_URL'] || 'http://localhost:8000',
+};
+const defaultApiKey = process.env['OPENAI_API_KEY'];
+if (defaultApiKey !== undefined) {
+  defaultConfig.apiKey = defaultApiKey;
+}
+export const embeddings = new Embeddings(defaultConfig);

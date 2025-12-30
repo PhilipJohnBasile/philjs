@@ -11,7 +11,7 @@ import type {
   FairingResponse,
   FairingHooks,
   RocketConfig,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Base Fairing
@@ -84,13 +84,13 @@ export class SSRFairing extends PhilJsFairing {
     };
   }
 
-  onIgnite(): void {
+  override onIgnite(): void {
     console.log(`[${this.name}] Initializing SSR fairing`);
     console.log(`[${this.name}] Streaming: ${this.config.streaming}`);
     console.log(`[${this.name}] Hydration: ${this.config.hydration}`);
   }
 
-  onRequest(ctx: FairingContext): FairingResponse | void {
+  override onRequest(ctx: FairingContext): FairingResponse | void {
     // Add SSR context to request
     return {
       headers: {
@@ -100,7 +100,7 @@ export class SSRFairing extends PhilJsFairing {
     };
   }
 
-  onResponse(ctx: FairingContext, status: number): FairingResponse | void {
+  override onResponse(ctx: FairingContext, status: number): FairingResponse | void {
     // Add timing headers
     return {
       headers: {
@@ -202,13 +202,13 @@ export class LiveViewFairing extends PhilJsFairing {
     };
   }
 
-  onIgnite(): void {
+  override onIgnite(): void {
     console.log(`[${this.name}] Initializing LiveView fairing`);
     console.log(`[${this.name}] WebSocket path: ${this.config.wsPath}`);
     console.log(`[${this.name}] Max connections: ${this.config.maxConnections}`);
   }
 
-  onLiftoff(): void {
+  override onLiftoff(): void {
     console.log(`[${this.name}] LiveView WebSocket ready at ${this.config.wsPath}`);
   }
 
@@ -310,11 +310,11 @@ export class StateFairing extends PhilJsFairing {
     };
   }
 
-  onIgnite(): void {
+  override onIgnite(): void {
     console.log(`[${this.name}] Initializing state fairing`);
   }
 
-  onShutdown(): void {
+  override onShutdown(): void {
     if (this.config.persist) {
       console.log(`[${this.name}] Persisting state to ${this.config.persistPath}`);
     }
@@ -425,16 +425,16 @@ export class MetricsFairing extends PhilJsFairing {
     };
   }
 
-  onIgnite(): void {
+  override onIgnite(): void {
     console.log(`[${this.name}] Initializing metrics fairing`);
     console.log(`[${this.name}] Metrics endpoint: ${this.config.path}`);
   }
 
-  onRequest(ctx: FairingContext): void {
+  override onRequest(ctx: FairingContext): void {
     // Record request start time
   }
 
-  onResponse(ctx: FairingContext, status: number): void {
+  override onResponse(ctx: FairingContext, status: number): void {
     // Record request duration and status
   }
 

@@ -15,9 +15,9 @@ import { createServer, IncomingMessage, ServerResponse, Server } from 'http';
 import { createServer as createHttpsServer, Server as HttpsServer } from 'https';
 import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from 'fs';
 import { join, extname } from 'path';
-import type { Adapter, AdapterConfig, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets, MIME_TYPES } from '../utils/build';
-import { loadEnvFile, injectEnvVariables } from '../utils/env';
+import type { Adapter, AdapterConfig, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets, MIME_TYPES } from '../utils/build.js';
+import { loadEnvFile, injectEnvVariables } from '../utils/env.js';
 
 /**
  * Configuration options for the Node.js adapter
@@ -152,7 +152,7 @@ export interface LoggingConfig {
 export function nodeAdapter(config: NodeAdapterConfig = {}): Adapter {
   const {
     outDir = '.node',
-    port = parseInt(process.env.PORT || '3000'),
+    port = parseInt(process.env['PORT'] || '3000'),
     host = '0.0.0.0',
     https: httpsConfig,
     compression = true,
@@ -174,7 +174,7 @@ export function nodeAdapter(config: NodeAdapterConfig = {}): Adapter {
 
   const staticConfig: StaticConfig = typeof serveStatic === 'object'
     ? serveStatic
-    : { dir: config.static?.assets || 'public' };
+    : { dir: (config as AdapterConfig).static?.assets || 'public' };
 
   let server: Server | HttpsServer | null = null;
 
@@ -881,15 +881,18 @@ export function createExpressMiddleware(config: NodeAdapterConfig = {}) {
 
       const url = new URL(req.url, `${req.protocol}://${req.get('host')}`);
 
-      const request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: req.method,
         headers: req.headers as HeadersInit,
-        body: req.body ? JSON.stringify(req.body) : undefined,
-      });
+      };
+      if (req.body) {
+        requestInit.body = JSON.stringify(req.body);
+      }
+      const request = new Request(url.toString(), requestInit);
 
       const response = await handler(request);
 
-      response.headers.forEach((value, key) => {
+      response.headers.forEach((value: string, key: string) => {
         res.setHeader(key, value);
       });
 
@@ -912,15 +915,18 @@ export function createFastifyPlugin(config: NodeAdapterConfig = {}) {
     fastify.all('/*', async (request: any, reply: any) => {
       const url = new URL(request.url, `${request.protocol}://${request.hostname}`);
 
-      const webRequest = new Request(url.toString(), {
+      const webRequestInit: RequestInit = {
         method: request.method,
         headers: request.headers as HeadersInit,
-        body: request.body ? JSON.stringify(request.body) : undefined,
-      });
+      };
+      if (request.body) {
+        webRequestInit.body = JSON.stringify(request.body);
+      }
+      const webRequest = new Request(url.toString(), webRequestInit);
 
       const response = await handler(webRequest);
 
-      response.headers.forEach((value, key) => {
+      response.headers.forEach((value: string, key: string) => {
         reply.header(key, value);
       });
 
@@ -951,14 +957,17 @@ export async function startServer(config: NodeAdapterConfig = {}): Promise<Serve
       }
     }
 
-    const request = new Request(url.toString(), {
-      method: req.method,
+    const requestInit: RequestInit = {
       headers,
-    });
+    };
+    if (req.method) {
+      requestInit.method = req.method;
+    }
+    const request = new Request(url.toString(), requestInit);
 
     const response = await handler(request);
 
-    response.headers.forEach((value, key) => {
+    response.headers.forEach((value: string, key: string) => {
       res.setHeader(key, value);
     });
 

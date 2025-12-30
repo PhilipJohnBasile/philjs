@@ -564,13 +564,17 @@ Best practices:
     const code = this.extractCode(response);
     const scenarios = this.extractScenarios(response);
 
+    const setup = this.extractSection(code, 'beforeEach|beforeAll');
+    const teardown = this.extractSection(code, 'afterEach|afterAll');
+    const mocks = this.extractSection(code, 'vi\\.mock|jest\\.mock');
+
     return {
       code,
       testCount: this.countTests(code),
       coveredScenarios: scenarios,
-      setup: this.extractSection(code, 'beforeEach|beforeAll'),
-      teardown: this.extractSection(code, 'afterEach|afterAll'),
-      mocks: this.extractSection(code, 'vi\\.mock|jest\\.mock'),
+      ...(setup !== undefined && { setup }),
+      ...(teardown !== undefined && { teardown }),
+      ...(mocks !== undefined && { mocks }),
     };
   }
 
@@ -596,7 +600,7 @@ Best practices:
    */
   private extractCode(response: string): string {
     const codeMatch = response.match(/```(?:typescript|ts|javascript|js)\n([\s\S]*?)```/);
-    return codeMatch?.[1].trim() || response;
+    return codeMatch?.[1]?.trim() || response;
   }
 
   /**
@@ -606,7 +610,9 @@ Best practices:
     const scenarios: string[] = [];
     const itMatches = response.matchAll(/(?:it|test)\s*\(\s*['"`]([^'"`]+)['"`]/g);
     for (const match of itMatches) {
-      scenarios.push(match[1]);
+      if (match[1] !== undefined) {
+        scenarios.push(match[1]);
+      }
     }
     return scenarios;
   }

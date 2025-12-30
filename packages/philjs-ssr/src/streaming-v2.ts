@@ -9,7 +9,7 @@
  * - Resumability (serialize and resume state)
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode, JSXElement } from "philjs-core";
 
 // =============================================================================
 // Types
@@ -286,7 +286,7 @@ function renderToStreamV2(
     // Out-of-order mode - flush any completed boundaries
     const toFlush: BoundaryState[] = [];
 
-    for (const [id, boundary] of ctx.boundaries) {
+    for (const [id, boundary] of Array.from(ctx.boundaries.entries())) {
       if (boundary.status === 'complete' && !ctx.completed.includes(id)) {
         toFlush.push(boundary);
       }
@@ -355,6 +355,11 @@ async function renderNodeV2(node: VNode | null | undefined, ctx: StreamingV2Cont
     return parts.join('');
   }
 
+  // Check if node is a JSXElement before accessing type/props
+  if (!isJSXElement(node)) {
+    return '';
+  }
+
   // Handle Suspense boundaries
   if (node.type === 'Suspense' || (node.props as any)?.__suspense) {
     return await renderSuspenseV2(node, ctx);
@@ -378,7 +383,7 @@ async function renderNodeV2(node: VNode | null | undefined, ctx: StreamingV2Cont
   return `<${type}${attrs}>${childHtml}</${type}>`;
 }
 
-async function renderSuspenseV2(node: VNode, ctx: StreamingV2Context): Promise<string> {
+async function renderSuspenseV2(node: JSXElement, ctx: StreamingV2Context): Promise<string> {
   const id = String(++ctx.boundaryId);
   const props = node.props as any;
   const fallback = props.fallback || '<div>Loading...</div>';
@@ -481,6 +486,13 @@ const voidElements = new Set([
   'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
   'link', 'meta', 'param', 'source', 'track', 'wbr'
 ]);
+
+/**
+ * Type guard to check if a VNode is a JSXElement
+ */
+function isJSXElement(node: VNode): node is JSXElement {
+  return node != null && typeof node === 'object' && !Array.isArray(node) && 'type' in node;
+}
 
 function escapeHtml(str: string): string {
   return str

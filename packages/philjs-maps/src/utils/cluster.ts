@@ -3,7 +3,7 @@
  * Efficient marker clustering using spatial indexing
  */
 
-import type { LatLng, LatLngBounds, MarkerProps } from '../types';
+import type { LatLng, LatLngBounds, MarkerProps } from '../types.js';
 
 // ============================================================================
 // Types
@@ -77,14 +77,15 @@ function pixelDistance(a: LatLng, b: LatLng, zoom: number): number {
  * Calculate bounding box for a set of points
  */
 function calculateBounds(points: LatLng[]): LatLngBounds {
-  if (points.length === 0) {
+  const firstPoint = points[0];
+  if (!firstPoint) {
     return { north: 0, south: 0, east: 0, west: 0 };
   }
 
-  let north = points[0].lat;
-  let south = points[0].lat;
-  let east = points[0].lng;
-  let west = points[0].lng;
+  let north = firstPoint.lat;
+  let south = firstPoint.lat;
+  let east = firstPoint.lng;
+  let west = firstPoint.lng;
 
   for (const point of points) {
     if (point.lat > north) north = point.lat;

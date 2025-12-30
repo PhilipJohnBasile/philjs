@@ -99,10 +99,14 @@ export function createWorkbook<T extends Record<string, unknown>>(
 
   // Set workbook properties
   workbook.Props = {
-    Title: options.title,
-    Author: options.author,
     CreatedDate: new Date(),
   };
+  if (options.title !== undefined) {
+    workbook.Props.Title = options.title;
+  }
+  if (options.author !== undefined) {
+    workbook.Props.Author = options.author;
+  }
 
   for (const sheetConfig of sheets) {
     const worksheet = createSheet(sheetConfig, options);
@@ -164,7 +168,7 @@ export function createSheet<T extends Record<string, unknown>>(
     for (let i = 0; i < cols.length; i++) {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
       if (worksheet[cellRef]) {
-        worksheet[cellRef].s = convertStyleToXLSX(cols[i].headerStyle || defaultHeader);
+        worksheet[cellRef].s = convertStyleToXLSX(cols[i]!.headerStyle || defaultHeader);
       }
     }
   }
@@ -180,7 +184,7 @@ export function createSheet<T extends Record<string, unknown>>(
         for (let c = 0; c < cols.length; c++) {
           const cellRef = XLSX.utils.encode_cell({ r, c });
           if (worksheet[cellRef]) {
-            worksheet[cellRef].s = convertStyleToXLSX(cols[c].style || style);
+            worksheet[cellRef].s = convertStyleToXLSX(cols[c]!.style || style);
           }
         }
       }
@@ -336,7 +340,7 @@ function convertStyleToXLSX(style: CellStyle): Record<string, unknown> {
   const xlsxStyle: Record<string, unknown> = {};
 
   if (style.font) {
-    xlsxStyle.font = {
+    xlsxStyle['font'] = {
       name: style.font.name,
       sz: style.font.size,
       bold: style.font.bold,
@@ -347,7 +351,7 @@ function convertStyleToXLSX(style: CellStyle): Record<string, unknown> {
   }
 
   if (style.fill) {
-    xlsxStyle.fill = {
+    xlsxStyle['fill'] = {
       patternType: style.fill.patternType || 'solid',
       fgColor: style.fill.fgColor ? { rgb: style.fill.fgColor.replace('#', '') } : undefined,
       bgColor: style.fill.bgColor ? { rgb: style.fill.bgColor.replace('#', '') } : undefined,
@@ -355,7 +359,7 @@ function convertStyleToXLSX(style: CellStyle): Record<string, unknown> {
   }
 
   if (style.border) {
-    xlsxStyle.border = {
+    xlsxStyle['border'] = {
       top: style.border.top
         ? { style: style.border.top.style, color: { rgb: style.border.top.color?.replace('#', '') } }
         : undefined,
@@ -372,7 +376,7 @@ function convertStyleToXLSX(style: CellStyle): Record<string, unknown> {
   }
 
   if (style.alignment) {
-    xlsxStyle.alignment = {
+    xlsxStyle['alignment'] = {
       horizontal: style.alignment.horizontal,
       vertical: style.alignment.vertical,
       wrapText: style.alignment.wrapText,
@@ -380,7 +384,7 @@ function convertStyleToXLSX(style: CellStyle): Record<string, unknown> {
   }
 
   if (style.numFmt) {
-    xlsxStyle.numFmt = style.numFmt;
+    xlsxStyle['numFmt'] = style.numFmt;
   }
 
   return xlsxStyle;
@@ -401,13 +405,17 @@ export function parseExcel(
 
   const sheetName =
     options.sheetName || (options.sheetIndex !== undefined
-      ? workbook.SheetNames[options.sheetIndex]
-      : workbook.SheetNames[0]);
+      ? workbook.SheetNames[options.sheetIndex]!
+      : workbook.SheetNames[0]!);
 
-  const worksheet = workbook.Sheets[sheetName];
+  const worksheet = workbook.Sheets[sheetName]!;
 
-  return XLSX.utils.sheet_to_json(worksheet, {
-    header: options.header === false ? 1 : undefined,
+  const jsonOptions: XLSX.Sheet2JSONOpts = {
     defval: '',
-  });
+  };
+  if (options.header === false) {
+    jsonOptions.header = 1;
+  }
+
+  return XLSX.utils.sheet_to_json(worksheet, jsonOptions);
 }

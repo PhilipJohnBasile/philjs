@@ -113,14 +113,13 @@ export function getTranslation(locale) {
       }
     },
 
-    async handleHotUpdate({ file, server }) {
-      const path = await import('path');
-      const translationsPath = path.resolve(root, translationsDir);
+    handleHotUpdate({ file, server }) {
+      const translationsPath = root + '/' + translationsDir;
 
       if (file.startsWith(translationsPath)) {
         const module = server.moduleGraph.getModuleById(resolvedVirtualModuleId);
         if (module) {
-          return [module];
+          return [module] as unknown[];
         }
       }
       return undefined;

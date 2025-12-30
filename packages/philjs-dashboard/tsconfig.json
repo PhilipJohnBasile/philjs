@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "noUnusedLocals": false,
     "noUnusedParameters": false,

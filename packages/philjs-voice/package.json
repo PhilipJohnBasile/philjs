@@ -1,6 +1,7 @@
 {
   "name": "@philjs/voice",
   "version": "0.1.0",
+  "type": "module",
   "description": "Voice UI primitives for PhilJS - speech recognition, synthesis, and voice commands",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

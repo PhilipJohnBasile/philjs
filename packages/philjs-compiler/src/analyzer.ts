@@ -4,8 +4,12 @@
  */
 
 import { parse } from '@babel/parser';
-import traverse, { NodePath } from '@babel/traverse';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
 import * as t from '@babel/types';
+
+// Handle both ESM and CJS exports - babel traverse exports default as the traverse function
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
 import type {
   FileAnalysis,
   ReactiveBinding,
@@ -16,7 +20,7 @@ import type {
   ReactiveJSXExpression,
   OptimizationSuggestion,
   CompilerConfig,
-} from './types';
+} from './types.js';
 
 const PHILJS_SOURCES = ['philjs-core', 'philjs', '@philjs/core'];
 const REACTIVE_PRIMITIVES = ['signal', 'memo', 'effect', 'linkedSignal', 'resource', 'batch'];
@@ -70,17 +74,20 @@ export class Analyzer {
    */
   private collectImports(ast: t.File, analysis: FileAnalysis): void {
     traverse(ast, {
-      ImportDeclaration: (path) => {
+      ImportDeclaration: (path: NodePath<t.ImportDeclaration>) => {
         const source = path.node.source.value;
 
-        if (PHILJS_SOURCES.some(s => source.includes(s))) {
-          path.node.specifiers.forEach(spec => {
+        if (PHILJS_SOURCES.some((s: string) => source.includes(s))) {
+          path.node.specifiers.forEach((spec: t.ImportDeclaration['specifiers'][number]) => {
             if (t.isImportSpecifier(spec) && t.isIdentifier(spec.imported)) {
-              analysis.imports.push({
+              const importEntry: PhilJSImport = {
                 name: spec.imported.name,
-                alias: spec.local.name !== spec.imported.name ? spec.local.name : undefined,
                 source,
-              });
+              };
+              if (spec.local.name !== spec.imported.name) {
+                importEntry.alias = spec.local.name;
+              }
+              analysis.imports.push(importEntry);
             }
           });
         }
@@ -95,12 +102,12 @@ export class Analyzer {
     const importedNames = new Map<string, string>();
 
     // Map imported names to their original names
-    analysis.imports.forEach(imp => {
+    analysis.imports.forEach((imp: PhilJSImport) => {
       importedNames.set(imp.alias || imp.name, imp.name);
     });
 
     traverse(ast, {
-      VariableDeclarator: (path) => {
+      VariableDeclarator: (path: NodePath<t.VariableDeclarator>) => {
         const init = path.node.init;
 
         if (t.isCallExpression(init)) {
@@ -140,7 +147,7 @@ export class Analyzer {
   ): ReactiveBinding | null {
     if (!t.isIdentifier(node.id)) return null;
 
-    return {
+    const binding: ReactiveBinding = {
       name: node.id.name,
       type,
       node,
@@ -148,22 +155,25 @@ export class Analyzer {
       dependencies: [],
       dependents: [],
       isUsed: false,
-      loc: node.loc,
     };
+    if (node.loc !== undefined) {
+      binding.loc = node.loc;
+    }
+    return binding;
   }
 
   /**
    * Analyze dependencies between reactive bindings
    */
   private analyzeDependencies(ast: t.File, analysis: FileAnalysis): void {
-    const bindingNames = new Set(analysis.bindings.map(b => b.name));
+    const bindingNames = new Set(analysis.bindings.map((b: ReactiveBinding) => b.name));
 
     traverse(ast, {
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         // Find signal reads (calls like `count()`)
         if (t.isIdentifier(path.node.callee) && bindingNames.has(path.node.callee.name)) {
           const signalName = path.node.callee.name;
-          const binding = analysis.bindings.find(b => b.name === signalName);
+          const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === signalName);
 
           if (binding) {
             binding.isUsed = true;
@@ -194,7 +204,7 @@ export class Analyzer {
         const callee = current.node.callee;
 
         if (t.isIdentifier(callee)) {
-          const binding = analysis.bindings.find(b => b.name === callee.name);
+          const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === callee.name);
           if (binding) return binding;
         }
       }
@@ -204,7 +214,7 @@ export class Analyzer {
       if (t.isVariableDeclarator(current.node) && t.isIdentifier(current.node.id)) {
         const node = current.node as t.VariableDeclarator;
         const id = node.id as t.Identifier;
-        const binding = analysis.bindings.find(b => b.name === id.name);
+        const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === id.name);
         if (binding) return binding;
       }
 
@@ -219,13 +229,13 @@ export class Analyzer {
    */
   private analyzeComponents(ast: t.File, analysis: FileAnalysis): void {
     traverse(ast, {
-      FunctionDeclaration: (path) => {
+      FunctionDeclaration: (path: NodePath<t.FunctionDeclaration>) => {
         if (this.isComponent(path)) {
           const comp = this.analyzeComponent(path, analysis);
           if (comp) analysis.components.push(comp);
         }
       },
-      VariableDeclarator: (path) => {
+      VariableDeclarator: (path: NodePath<t.VariableDeclarator>) => {
         if (t.isArrowFunctionExpression(path.node.init) || t.isFunctionExpression(path.node.init)) {
           if (this.isComponentDeclarator(path)) {
             const comp = this.analyzeComponentDeclarator(path, analysis);
@@ -346,11 +356,11 @@ export class Analyzer {
     comp: ComponentAnalysis,
     analysis: FileAnalysis
   ): void {
-    const bindingNames = new Map(analysis.bindings.map(b => [b.name, b]));
+    const bindingNames = new Map(analysis.bindings.map((b: ReactiveBinding) => [b.name, b] as const));
 
     path.traverse({
       // Find signal/memo/effect calls
-      CallExpression: (callPath) => {
+      CallExpression: (callPath: NodePath<t.CallExpression>) => {
         const callee = callPath.node.callee;
 
         if (t.isIdentifier(callee)) {
@@ -364,13 +374,13 @@ export class Analyzer {
       },
 
       // Find JSX expressions that read signals
-      JSXExpressionContainer: (jsxPath) => {
+      JSXExpressionContainer: (jsxPath: NodePath<t.JSXExpressionContainer>) => {
         const expr = jsxPath.node.expression;
         if (t.isExpression(expr)) {
           const signalsRead: string[] = [];
 
           jsxPath.traverse({
-            CallExpression: (innerPath) => {
+            CallExpression: (innerPath: NodePath<t.CallExpression>) => {
               if (t.isIdentifier(innerPath.node.callee)) {
                 const binding = bindingNames.get(innerPath.node.callee.name);
                 if (binding && (binding.type === 'signal' || binding.type === 'memo')) {
@@ -449,7 +459,7 @@ export class Analyzer {
    */
   private findOptimizations(ast: t.File, analysis: FileAnalysis): void {
     // Find unused bindings (dead code)
-    analysis.bindings.forEach(binding => {
+    analysis.bindings.forEach((binding: ReactiveBinding) => {
       if (!binding.isUsed && this.config.deadCodeElimination) {
         analysis.optimizations.push({
           type: 'dead-code',
@@ -463,9 +473,9 @@ export class Analyzer {
     });
 
     // Find memo opportunities
-    analysis.components.forEach(comp => {
+    analysis.components.forEach((comp: ComponentAnalysis) => {
       if (comp.canMemoize && comp.reactiveJSX.length > 0) {
-        comp.reactiveJSX.forEach(jsx => {
+        comp.reactiveJSX.forEach((jsx: ReactiveJSXExpression) => {
           if (!jsx.isOptimized && jsx.signalsRead.length > 1) {
             analysis.optimizations.push({
               type: 'auto-memo',
@@ -486,93 +496,113 @@ export class Analyzer {
    */
   private generateWarnings(analysis: FileAnalysis): void {
     // Warn about diamond dependencies
-    analysis.bindings.forEach(binding => {
+    analysis.bindings.forEach((binding: ReactiveBinding) => {
       if (binding.dependencies.length > 1) {
         const sharedDeps = this.findSharedDependencies(binding, analysis);
         if (sharedDeps.length > 0) {
-          analysis.warnings.push({
+          const warning: CompilerWarning = {
             type: 'performance',
             message: `Potential diamond dependency in "${binding.name}"`,
-            location: binding.loc,
             suggestion: `PhilJS handles this automatically with glitch-free updates. Consider simplifying if the dependency chain is complex.`,
-          });
+          };
+          if (binding.loc !== undefined) {
+            warning.location = binding.loc;
+          }
+          analysis.warnings.push(warning);
         }
       }
     });
 
     // Warn about effects that might need cleanup
     analysis.bindings
-      .filter(b => b.type === 'effect')
-      .forEach(effect => {
+      .filter((b: ReactiveBinding) => b.type === 'effect')
+      .forEach((effect: ReactiveBinding) => {
         // Only warn if dependencies suggest cleanup might be needed
         if (effect.dependencies.length > 0) {
-          analysis.warnings.push({
+          const warning: CompilerWarning = {
             type: 'correctness',
             message: `Effect depends on ${effect.dependencies.length} signal(s)`,
-            location: effect.loc,
             suggestion: `If this effect sets up subscriptions, event listeners, or timers, return a cleanup function: effect(() => { /* setup */ return () => { /* cleanup */ }; });`,
-          });
+          };
+          if (effect.loc !== undefined) {
+            warning.location = effect.loc;
+          }
+          analysis.warnings.push(warning);
         }
       });
 
     // Warn about unused signals (dead code)
     analysis.bindings
-      .filter(b => b.type === 'signal' && !b.isUsed)
-      .forEach(binding => {
-        analysis.warnings.push({
+      .filter((b: ReactiveBinding) => b.type === 'signal' && !b.isUsed)
+      .forEach((binding: ReactiveBinding) => {
+        const warning: CompilerWarning = {
           type: 'performance',
           message: `Signal "${binding.name}" is declared but never read`,
-          location: binding.loc,
           suggestion: `Remove unused signal to reduce memory usage, or ensure you're reading it with ${binding.name}() in your JSX or effects.`,
-        });
+        };
+        if (binding.loc !== undefined) {
+          warning.location = binding.loc;
+        }
+        analysis.warnings.push(warning);
       });
 
     // Warn about memos with no dependents
     analysis.bindings
-      .filter(b => b.type === 'memo' && b.dependents.length === 0 && b.isUsed)
-      .forEach(binding => {
-        analysis.warnings.push({
+      .filter((b: ReactiveBinding) => b.type === 'memo' && b.dependents.length === 0 && b.isUsed)
+      .forEach((binding: ReactiveBinding) => {
+        const warning: CompilerWarning = {
           type: 'performance',
           message: `Memo "${binding.name}" has no reactive dependents`,
-          location: binding.loc,
           suggestion: `This memo runs but nothing reacts to its changes. If you only need the computed value once, consider using a regular variable instead.`,
-        });
+        };
+        if (binding.loc !== undefined) {
+          warning.location = binding.loc;
+        }
+        analysis.warnings.push(warning);
       });
 
     // Warn about deeply nested memo chains
     analysis.bindings
-      .filter(b => b.type === 'memo')
-      .forEach(binding => {
+      .filter((b: ReactiveBinding) => b.type === 'memo')
+      .forEach((binding: ReactiveBinding) => {
         const depth = this.getMemoDepth(binding, analysis, new Set());
         if (depth > 4) {
-          analysis.warnings.push({
+          const warning: CompilerWarning = {
             type: 'performance',
             message: `Memo "${binding.name}" is ${depth} levels deep in the dependency chain`,
-            location: binding.loc,
             suggestion: `Deep memo chains can impact performance. Consider flattening the computation or using batch() for updates.`,
-          });
+          };
+          if (binding.loc !== undefined) {
+            warning.location = binding.loc;
+          }
+          analysis.warnings.push(warning);
         }
       });
 
     // Warn about components with many signals
-    analysis.components.forEach(comp => {
+    analysis.components.forEach((comp: ComponentAnalysis) => {
       if (comp.signals.length > 5) {
-        analysis.warnings.push({
+        const warning: CompilerWarning = {
           type: 'performance',
           message: `Component "${comp.name}" has ${comp.signals.length} signals`,
-          location: comp.signals[0]?.loc,
           suggestion: `Consider extracting some state into a custom hook or splitting into smaller components for better maintainability.`,
-        });
+        };
+        const firstSignalLoc = comp.signals[0]?.loc;
+        if (firstSignalLoc !== undefined) {
+          warning.location = firstSignalLoc;
+        }
+        analysis.warnings.push(warning);
       }
 
       // Warn about components with many reactive JSX expressions
       if (comp.reactiveJSX.length > 10) {
-        analysis.warnings.push({
+        const warning: CompilerWarning = {
           type: 'performance',
           message: `Component "${comp.name}" has ${comp.reactiveJSX.length} reactive expressions in JSX`,
           location: null,
           suggestion: `Consider using memos to cache expensive computations or splitting into smaller components.`,
-        });
+        };
+        analysis.warnings.push(warning);
       }
     });
   }
@@ -588,7 +618,7 @@ export class Analyzer {
 
     let maxDepth = 0;
     for (const dep of binding.dependencies) {
-      const depBinding = analysis.bindings.find(b => b.name === dep);
+      const depBinding = analysis.bindings.find((b: ReactiveBinding) => b.name === dep);
       if (depBinding && depBinding.type === 'memo') {
         const depth = this.getMemoDepth(depBinding, analysis, visited);
         maxDepth = Math.max(maxDepth, depth);
@@ -608,10 +638,10 @@ export class Analyzer {
     const deps = binding.dependencies;
     const shared: string[] = [];
 
-    deps.forEach(dep => {
-      const depBinding = analysis.bindings.find(b => b.name === dep);
+    deps.forEach((dep: string) => {
+      const depBinding = analysis.bindings.find((b: ReactiveBinding) => b.name === dep);
       if (depBinding) {
-        const overlap = depBinding.dependencies.filter(d => deps.includes(d));
+        const overlap = depBinding.dependencies.filter((d: string) => deps.includes(d));
         shared.push(...overlap);
       }
     });
@@ -670,7 +700,7 @@ export class Analyzer {
     };
 
     traverse(ast, {
-      ImportDeclaration: (path) => {
+      ImportDeclaration: (path: NodePath<t.ImportDeclaration>) => {
         metrics.imports++;
         const source = path.node.source.value;
         if (!metrics.dependencies.includes(source)) {
@@ -682,7 +712,7 @@ export class Analyzer {
         metrics.exports++;
       },
 
-      FunctionDeclaration: (path) => {
+      FunctionDeclaration: (path: NodePath<t.FunctionDeclaration>) => {
         const name = path.node.id?.name;
         if (name && /^[A-Z]/.test(name)) {
           metrics.components++;
@@ -690,7 +720,7 @@ export class Analyzer {
         metrics.complexity += this.calculateComplexity(path);
       },
 
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         if (t.isIdentifier(path.node.callee)) {
           const name = path.node.callee.name;
           if (name === 'signal' || name === 'linkedSignal') {
@@ -702,7 +732,7 @@ export class Analyzer {
       },
 
       // Check for side effects that prevent tree shaking
-      ExpressionStatement: (path) => {
+      ExpressionStatement: (path: NodePath<t.ExpressionStatement>) => {
         const expr = path.node.expression;
         // Top-level expressions indicate side effects
         if (path.scope.parent === null) {
@@ -752,7 +782,7 @@ export class Analyzer {
     };
 
     // Add nodes for each binding
-    analysis.bindings.forEach(binding => {
+    analysis.bindings.forEach((binding: ReactiveBinding) => {
       graph.nodes.push({
         id: binding.name,
         type: binding.type,
@@ -761,8 +791,8 @@ export class Analyzer {
     });
 
     // Add edges for dependencies
-    analysis.bindings.forEach(binding => {
-      binding.dependencies.forEach(dep => {
+    analysis.bindings.forEach((binding: ReactiveBinding) => {
+      binding.dependencies.forEach((dep: string) => {
         graph.edges.push({
           from: dep,
           to: binding.name,
@@ -781,7 +811,7 @@ export class Analyzer {
     const candidates: ChunkCandidate[] = [];
 
     // Analyze each component for code splitting potential
-    analysis.components.forEach(comp => {
+    analysis.components.forEach((comp: ComponentAnalysis) => {
       const complexity = this.calculateComponentComplexity(comp);
       const size = this.estimateComponentSize(comp);
 
@@ -800,7 +830,7 @@ export class Analyzer {
 
     // Check for large utility modules
     const utilitySize = analysis.bindings.filter(
-      b => b.type === 'memo' || b.type === 'signal'
+      (b: ReactiveBinding) => b.type === 'memo' || b.type === 'signal'
     ).length;
 
     if (utilitySize > 10) {

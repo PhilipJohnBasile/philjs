@@ -5,8 +5,8 @@ import type {
   EmailResult,
   QueueOptions,
   QueueStats,
-} from './types';
-import { generateId } from './utils';
+} from './types.js';
+import { generateId } from './utils.js';
 
 /**
  * In-memory email queue implementation
@@ -225,7 +225,9 @@ export class InMemoryQueue implements EmailQueue {
   }
 
   private handleFailure(job: EmailQueueJob, error?: Error): void {
-    job.error = error?.message;
+    if (error?.message) {
+      job.error = error.message;
+    }
 
     if (job.attempts >= job.maxAttempts) {
       job.status = 'failed';

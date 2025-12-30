@@ -128,5 +128,5 @@ export interface RuntimeConfig {
   /** Whether to prefetch chunks */
   prefetch?: boolean;
   /** Custom loader function */
-  loader?: (symbolId: string) => Promise<unknown>;
+  loader?: ((symbolId: string) => Promise<unknown>) | undefined;
 }

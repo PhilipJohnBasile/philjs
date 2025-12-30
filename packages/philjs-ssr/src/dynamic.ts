@@ -126,9 +126,11 @@ export function registerDynamicBoundary(
     type: "dynamic",
     fallback: props.fallback || null,
     content: props.children,
-    dataDependencies: props.dataDependencies,
     priority: props.priority ?? 5,
   };
+  if (props.dataDependencies !== undefined) {
+    boundary.dataDependencies = props.dataDependencies;
+  }
 
   ctx.boundaries.set(id, boundary);
 

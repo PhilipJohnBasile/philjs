@@ -53,7 +53,7 @@ export type {
   LiveViewHandler,
   LiveViewMessage,
   LiveViewPatch,
-} from './types';
+} from './types.js';
 
 // Server exports
 export {
@@ -62,7 +62,7 @@ export {
   createDevServer,
   createProdServer,
   DEFAULT_SERVER_CONFIG,
-} from './server';
+} from './server.js';
 export type {
   RocketServerConfig,
   RocketServerBuild,
@@ -73,7 +73,7 @@ export type {
   CatcherDefinition,
   CatcherHandler,
   CatcherRequest,
-} from './server';
+} from './server.js';
 
 // Handler exports
 export {
@@ -106,7 +106,7 @@ export {
   getHeader,
   generateRustHandler,
   generateRustHandlerWithBody,
-} from './handlers';
+} from './handlers.js';
 export type {
   HttpMethod,
   RequestData,
@@ -115,8 +115,8 @@ export type {
   Handler,
   AsyncHandler,
   Middleware,
-} from './handlers';
-export type { CookieJar as HandlerCookieJar, CookieOptions as HandlerCookieOptions } from './handlers';
+} from './handlers.js';
+export type { CookieJar as HandlerCookieJar, CookieOptions as HandlerCookieOptions } from './handlers.js';
 
 // Middleware exports
 export {
@@ -132,7 +132,7 @@ export {
   createCompressionMiddleware,
   createRateLimitMiddleware,
   createTracingMiddleware,
-} from './middleware';
+} from './middleware.js';
 export type {
   SSRMiddlewareConfig,
   CORSMiddlewareConfig,
@@ -140,7 +140,7 @@ export type {
   CompressionMiddlewareConfig,
   RateLimitMiddlewareConfig,
   TracingMiddlewareConfig,
-} from './middleware';
+} from './middleware.js';
 
 // Fairing exports
 export {
@@ -153,13 +153,13 @@ export {
   FairingComposer,
   createFairing,
   composeFairings,
-} from './fairing';
+} from './fairing.js';
 export type {
   SSRFairingConfig,
   LiveViewFairingConfig,
   StateFairingConfig,
   MetricsFairingConfig,
-} from './fairing';
+} from './fairing.js';
 
 // Guard exports
 export {
@@ -173,7 +173,7 @@ export {
   QueryGuard,
   createGuard,
   combineGuards,
-} from './guards';
+} from './guards.js';
 export type {
   SSRContextData,
   AuthUser,
@@ -181,7 +181,7 @@ export type {
   CSRFGuardConfig,
   JsonBodyGuardConfig,
   QueryGuardConfig,
-} from './guards';
+} from './guards.js';
 
 // Responder exports
 export {
@@ -190,14 +190,14 @@ export {
   StreamResponder,
   RedirectResponder,
   ErrorResponder,
-} from './responders';
+} from './responders.js';
 export {
   html as htmlResponder,
   json as jsonResponder,
   stream as streamResponder,
   redirect as redirectResponder,
   error as errorResponder,
-} from './responders';
+} from './responders.js';
 
 // Template exports
 export {
@@ -211,13 +211,13 @@ export {
   createTemplateEngine,
   createLayoutBuilder,
   createComponentRegistry,
-} from './templates';
+} from './templates.js';
 export type {
   TemplateEngineType,
   TemplateEngineConfig,
   LayoutConfig,
   ComponentTemplate,
-} from './templates';
+} from './templates.js';
 
 // WebSocket exports
 export {
@@ -232,7 +232,7 @@ export {
   createPresenceTracker,
   createMessageEncoder,
   createMessageDecoder,
-} from './websocket';
+} from './websocket.js';
 export type {
   LiveViewState,
   LiveViewClientMessage,
@@ -240,7 +240,7 @@ export type {
   BroadcastChannel,
   PresenceEntry,
   PresenceState,
-} from './websocket';
+} from './websocket.js';
 
 // State exports
 export {
@@ -253,7 +253,7 @@ export {
   createDerivedSelector,
   generateRustState,
   generateRustStateGuard,
-} from './state';
+} from './state.js';
 export type {
   ManagedState,
   StateConfig,
@@ -261,7 +261,7 @@ export type {
   RequestState,
   AppState,
   Selector,
-} from './state';
+} from './state.js';
 
 // Forms exports
 export {
@@ -275,7 +275,7 @@ export {
   FormBuilder,
   createForm,
   generateRustFormStruct,
-} from './forms';
+} from './forms.js';
 export type {
   FieldType,
   FormField,
@@ -283,7 +283,7 @@ export type {
   FormValidationResult,
   UploadedFile,
   FormDataWithFiles,
-} from './forms';
+} from './forms.js';
 
 // Cookie exports
 export {
@@ -304,14 +304,14 @@ export {
   flashInfo,
   flashWarning,
   generateRustCookieCode,
-} from './cookies';
+} from './cookies.js';
 export type {
   CookieOptions as RocketCookieOptions,
   Cookie,
   PrivateCookie,
   CookieJar as RocketCookieJar,
   FlashMessage as RocketFlashMessage,
-} from './cookies';
+} from './cookies.js';
 
 // SSR exports
 export {
@@ -322,7 +322,7 @@ export {
   createSSRRenderer,
   createStreamingRenderer,
   generateRustSSRCode,
-} from './ssr';
+} from './ssr.js';
 export type {
   SSRContext,
   SSRResult,
@@ -333,7 +333,7 @@ export type {
   StyleTag,
   RenderFunction,
   SSRRendererConfig,
-} from './ssr';
+} from './ssr.js';
 
 // ============================================================================
 // Application Builder
@@ -345,7 +345,7 @@ import type {
   RocketLiveViewConfig,
   RocketCORSConfig,
   RocketSecurityConfig,
-} from './types';
+} from './types.js';
 
 /**
  * Create a PhilJS-enabled Rocket application configuration

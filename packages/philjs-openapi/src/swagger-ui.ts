@@ -4,7 +4,7 @@
  * Serve Swagger UI for API documentation.
  */
 
-import type { OpenAPISpec, SwaggerUIOptions } from './types';
+import type { OpenAPISpec, SwaggerUIOptions } from './types.js';
 
 // Swagger UI CDN URLs
 const SWAGGER_UI_VERSION = '5.10.3';
@@ -389,13 +389,13 @@ export function createDocsRoutes(
   return {
     [`${basePath}/docs`]: swaggerUI({
       spec,
-      title,
-      config: swaggerConfig,
+      ...(title !== undefined ? { title } : {}),
+      ...(swaggerConfig !== undefined ? { config: swaggerConfig } : {}),
     }),
     [`${basePath}/redoc`]: redoc({
       spec,
-      title,
-      config: redocConfig,
+      ...(title !== undefined ? { title } : {}),
+      ...(redocConfig !== undefined ? { config: redocConfig } : {}),
     }),
     [`${basePath}/openapi.json`]: specHandler(spec),
   };

@@ -4,8 +4,10 @@
  */
 
 import { parse } from '@babel/parser';
-import traverse, { NodePath } from '@babel/traverse';
-import generate from '@babel/generator';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
+import type { GeneratorOptions, GeneratorResult } from '@babel/generator';
+import * as _generate from '@babel/generator';
 import * as t from '@babel/types';
 import type {
   CompilerConfig,
@@ -13,10 +15,17 @@ import type {
   TransformResult,
   OptimizationOpportunity,
   CompilerWarning,
-} from './types';
-import { Analyzer } from './analyzer';
-import { DeadCodeEliminator } from './dead-code-eliminator';
-import { CodeSplitter } from './code-splitter';
+  ReactiveBinding,
+  ComponentAnalysis,
+  ReactiveJSXExpression,
+} from './types.js';
+import { Analyzer } from './analyzer.js';
+import { DeadCodeEliminator } from './dead-code-eliminator.js';
+import { CodeSplitter } from './code-splitter.js';
+
+// Handle both ESM and CJS exports
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
+const generate: (ast: t.Node, opts?: GeneratorOptions, code?: string) => GeneratorResult = (_generate as unknown as { default: (ast: t.Node, opts?: GeneratorOptions, code?: string) => GeneratorResult }).default;
 
 export class Optimizer {
   private config: CompilerConfig;
@@ -123,7 +132,7 @@ export class Optimizer {
     // Remove debug code
     traverse(ast, {
       // Remove console.log, console.debug, etc. (keep console.error, console.warn)
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         const callee = path.node.callee;
         if (t.isMemberExpression(callee)) {
           if (
@@ -141,13 +150,13 @@ export class Optimizer {
       },
 
       // Remove debugger statements
-      DebuggerStatement: (path) => {
+      DebuggerStatement: (path: NodePath<t.DebuggerStatement>) => {
         path.remove();
         applied.push('removed: debugger statement');
       },
 
       // Remove development-only code blocks
-      IfStatement: (path) => {
+      IfStatement: (path: NodePath<t.IfStatement>) => {
         const test = path.node.test;
 
         // Remove if (process.env.NODE_ENV === 'development')
@@ -210,7 +219,7 @@ export class Optimizer {
 
     // First pass: collect constants
     traverse(ast, {
-      VariableDeclarator: (path) => {
+      VariableDeclarator: (path: NodePath<t.VariableDeclarator>) => {
         if (
           t.isIdentifier(path.node.id) &&
           path.node.init &&
@@ -228,12 +237,12 @@ export class Optimizer {
 
     // Second pass: inline constants
     traverse(ast, {
-      Identifier: (path) => {
+      Identifier: (path: NodePath<t.Identifier>) => {
         const name = path.node.name;
         const constantValue = constants.get(name);
 
         if (constantValue && !path.isBindingIdentifier()) {
-          (path as any).replaceWith(constantValue);
+          (path as unknown as NodePath).replaceWith(constantValue);
           count++;
         }
       },
@@ -250,7 +259,7 @@ export class Optimizer {
 
     traverse(ast, {
       // Optimize string concatenation
-      BinaryExpression: (path) => {
+      BinaryExpression: (path: NodePath<t.BinaryExpression>) => {
         if (path.node.operator === '+') {
           const { left, right } = path.node;
 
@@ -263,9 +272,9 @@ export class Optimizer {
       },
 
       // Optimize template literals with no expressions
-      TemplateLiteral: (path) => {
+      TemplateLiteral: (path: NodePath<t.TemplateLiteral>) => {
         if (path.node.expressions.length === 0) {
-          const str = path.node.quasis[0].value.cooked || '';
+          const str = path.node.quasis[0]!.value.cooked || '';
           path.replaceWith(t.stringLiteral(str));
           count++;
         }
@@ -282,8 +291,8 @@ export class Optimizer {
     const applied: string[] = [];
 
     // Find expressions that read multiple signals and wrap in memo
-    analysis.components.forEach(comp => {
-      comp.reactiveJSX.forEach(jsx => {
+    analysis.components.forEach((comp: ComponentAnalysis) => {
+      comp.reactiveJSX.forEach((jsx: ReactiveJSXExpression) => {
         if (jsx.signalsRead.length > 1 && !jsx.isOptimized) {
           // This is a candidate for memo optimization
           // The actual transformation is complex, so we track it
@@ -294,7 +303,7 @@ export class Optimizer {
 
     // Transform: wrap expensive computations in memo
     traverse(ast, {
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         // Find signal reads inside JSX that could be memoized
         if (this.isExpensiveComputation(path)) {
           const memoized = this.wrapInMemo(path);
@@ -316,11 +325,11 @@ export class Optimizer {
 
     traverse(ast, {
       // Find consecutive signal.set() calls in block statements
-      BlockStatement: (path) => {
+      BlockStatement: (path: NodePath<t.BlockStatement>) => {
         const statements = path.node.body;
         const signalSets: number[] = [];
 
-        statements.forEach((stmt, idx) => {
+        statements.forEach((stmt: t.Statement, idx: number) => {
           if (this.isSignalSet(stmt)) {
             signalSets.push(idx);
           }
@@ -330,7 +339,7 @@ export class Optimizer {
         if (signalSets.length >= 2) {
           const consecutive = this.findConsecutiveRanges(signalSets);
 
-          consecutive.forEach(range => {
+          consecutive.forEach((range: number[]) => {
             if (range.length >= 2) {
               this.wrapInBatch(path, range);
               applied.push(`batched: ${range.length} signal updates`);
@@ -340,7 +349,7 @@ export class Optimizer {
       },
 
       // Detect signal updates inside event handlers
-      ArrowFunctionExpression: (path) => {
+      ArrowFunctionExpression: (path: NodePath<t.ArrowFunctionExpression>) => {
         const signalSets = this.countSignalSetsInFunction(path);
         if (signalSets >= 2) {
           const isEventHandler = this.isEventHandlerContext(path);
@@ -351,7 +360,7 @@ export class Optimizer {
       },
 
       // Detect signal updates inside async callbacks (Promise.then, async/await)
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         if (this.isPromiseThenCall(path)) {
           const callback = path.node.arguments[0];
           if (t.isArrowFunctionExpression(callback) || t.isFunctionExpression(callback)) {
@@ -382,14 +391,12 @@ export class Optimizer {
     traverse(
       t.file(t.program([t.isStatement(node) ? node : t.expressionStatement(node as t.Expression)])),
       {
-        CallExpression: (innerPath) => {
+        CallExpression: (innerPath: NodePath<t.CallExpression>) => {
           if (this.isSignalSetExpression(innerPath.node)) {
             count++;
           }
         },
-      },
-      undefined,
-      {}
+      }
     );
     return count;
   }
@@ -439,13 +446,13 @@ export class Optimizer {
    */
   private applyDeadCodeElimination(ast: t.File, analysis: FileAnalysis): string[] {
     const applied: string[] = [];
-    const unusedBindings = analysis.bindings.filter(b => !b.isUsed);
+    const unusedBindings = analysis.bindings.filter((b: ReactiveBinding) => !b.isUsed);
 
     traverse(ast, {
-      VariableDeclarator: (path) => {
+      VariableDeclarator: (path: NodePath<t.VariableDeclarator>) => {
         if (t.isIdentifier(path.node.id)) {
           const name = path.node.id.name;
-          const unused = unusedBindings.find(b => b.name === name);
+          const unused = unusedBindings.find((b: ReactiveBinding) => b.name === name);
 
           if (unused) {
             // Check if it's safe to remove
@@ -475,7 +482,7 @@ export class Optimizer {
     const applied: string[] = [];
 
     traverse(ast, {
-      CallExpression: (path) => {
+      CallExpression: (path: NodePath<t.CallExpression>) => {
         if (this.isEffectCall(path)) {
           // Check if effect has proper cleanup
           const hasCleanup = this.effectHasCleanup(path);
@@ -503,7 +510,7 @@ export class Optimizer {
   private applyComponentOptimizations(ast: t.File, analysis: FileAnalysis): string[] {
     const applied: string[] = [];
 
-    analysis.components.forEach(comp => {
+    analysis.components.forEach((comp: ComponentAnalysis) => {
       // Check if component should be wrapped in a factory for lazy rendering
       if (comp.signals.length > 3 || comp.memos.length > 3) {
         applied.push(`component-heavy: ${comp.name} (${comp.signals.length} signals, ${comp.memos.length} memos)`);
@@ -523,8 +530,8 @@ export class Optimizer {
    */
   private ensureImports(ast: t.File, optimizationsApplied: string[]): void {
     // Check what imports we need to add
-    const needsMemo = optimizationsApplied.some(o => o.startsWith('memoized:'));
-    const needsBatch = optimizationsApplied.some(o => o.startsWith('batched:'));
+    const needsMemo = optimizationsApplied.some((o: string) => o.startsWith('memoized:'));
+    const needsBatch = optimizationsApplied.some((o: string) => o.startsWith('batched:'));
 
     if (!needsMemo && !needsBatch) return;
 
@@ -532,7 +539,7 @@ export class Optimizer {
     let philjsImport: t.ImportDeclaration | null = null;
 
     traverse(ast, {
-      ImportDeclaration: (path) => {
+      ImportDeclaration: (path: NodePath<t.ImportDeclaration>) => {
         if (path.node.source.value.includes('philjs')) {
           philjsImport = path.node;
         }
@@ -563,7 +570,7 @@ export class Optimizer {
     let signalReads = 0;
 
     path.traverse({
-      CallExpression: (innerPath) => {
+      CallExpression: (innerPath: NodePath<t.CallExpression>) => {
         if (t.isIdentifier(innerPath.node.callee) && innerPath.node.arguments.length === 0) {
           signalReads++;
         }
@@ -617,15 +624,20 @@ export class Optimizer {
   private findConsecutiveRanges(indices: number[]): number[][] {
     if (indices.length === 0) return [];
 
+    const firstIndex = indices[0];
+    if (firstIndex === undefined) return [];
+
     const ranges: number[][] = [];
-    let currentRange: number[] = [indices[0]];
+    let currentRange: number[] = [firstIndex];
 
     for (let i = 1; i < indices.length; i++) {
-      if (indices[i] === indices[i - 1] + 1) {
-        currentRange.push(indices[i]);
-      } else {
+      const current = indices[i];
+      const prev = indices[i - 1];
+      if (current !== undefined && prev !== undefined && current === prev + 1) {
+        currentRange.push(current);
+      } else if (current !== undefined) {
         ranges.push(currentRange);
-        currentRange = [indices[i]];
+        currentRange = [current];
       }
     }
 
@@ -638,7 +650,7 @@ export class Optimizer {
     // Simplified for now - actual implementation would modify the AST
   }
 
-  private isSafeToRemove(path: NodePath, binding: any): boolean {
+  private isSafeToRemove(path: NodePath, binding: ReactiveBinding): boolean {
     // Conservative: only remove if it's definitely not used
     return binding.type === 'signal' && !binding.isUsed;
   }

@@ -35,9 +35,9 @@ export interface QRL<T = unknown> {
   /** Captured closure variables */
   readonly $capture$: unknown[];
   /** Captured closure variable names (for debugging) */
-  readonly $captureNames$?: string[];
+  readonly $captureNames$?: string[] | undefined;
   /** Resolved value (cached after first load) */
-  $resolved$?: T;
+  $resolved$?: T | undefined;
   /** Whether this QRL has been resolved */
   $isResolved$: boolean;
   /** Resolve and return the referenced value */
@@ -120,7 +120,7 @@ export function clearQRLRegistry(): void {
   registry.chunks.clear();
   registry.resolved.clear();
   registry.basePath = '';
-  registry.resolver = undefined;
+  delete registry.resolver;
 }
 
 /**
@@ -167,7 +167,7 @@ function generateQRLId(chunk: string, symbol: string): string {
 export function createQRL<T>(options: QRLOptions<T>): QRL<T> {
   const id = generateQRLId(options.chunk, options.symbol);
 
-  const qrl: QRL<T> = {
+  const qrl = {
     $id$: id,
     $chunk$: options.chunk,
     $symbol$: options.symbol,
@@ -240,7 +240,7 @@ export function createQRL<T>(options: QRLOptions<T>): QRL<T> {
         return (fn as Function)(...args);
       })() as Promise<T extends (...args: unknown[]) => infer R ? R : never>;
     },
-  };
+  } satisfies QRL<T>;
 
   return qrl;
 }
@@ -310,13 +310,18 @@ export function $<T extends Function>(
 ): QRL<T> {
   // In development, we keep the function inline
   // In production, the compiler will extract to chunks
-  return createQRL({
+  const options: QRLOptions<T> = {
     chunk: '__inline__',
     symbol: fn.name || 'anonymous',
-    capture: captures,
-    captureNames,
     resolved: fn,
-  });
+  };
+  if (captures !== undefined) {
+    options.capture = captures;
+  }
+  if (captureNames !== undefined) {
+    options.captureNames = captureNames;
+  }
+  return createQRL(options);
 }
 
 /**
@@ -506,11 +511,14 @@ export function qrl<T>(
   symbol: string,
   captures?: unknown[]
 ): QRL<T> {
-  return createQRL({
+  const options: QRLOptions<T> = {
     chunk,
     symbol,
-    capture: captures,
-  });
+  };
+  if (captures !== undefined) {
+    options.capture = captures;
+  }
+  return createQRL(options);
 }
 
 /**

@@ -88,14 +88,21 @@ export const VercelProvider: GeoLocationProvider = {
   detect(request: Request): GeolocationData {
     if (!request.headers.has('x-vercel-ip-country')) return {};
 
-    return {
-      country: request.headers.get('x-vercel-ip-country') || undefined,
-      region: request.headers.get('x-vercel-ip-country-region') || undefined,
-      city: request.headers.get('x-vercel-ip-city') || undefined,
-      latitude: parseFloatOrUndefined(request.headers.get('x-vercel-ip-latitude')),
-      longitude: parseFloatOrUndefined(request.headers.get('x-vercel-ip-longitude')),
-      timezone: request.headers.get('x-vercel-ip-timezone') || undefined,
-    };
+    const country = request.headers.get('x-vercel-ip-country') || undefined;
+    const region = request.headers.get('x-vercel-ip-country-region') || undefined;
+    const city = request.headers.get('x-vercel-ip-city') || undefined;
+    const latitude = parseFloatOrUndefined(request.headers.get('x-vercel-ip-latitude'));
+    const longitude = parseFloatOrUndefined(request.headers.get('x-vercel-ip-longitude'));
+    const timezone = request.headers.get('x-vercel-ip-timezone') || undefined;
+
+    const geo: GeolocationData = {};
+    if (country !== undefined) geo.country = country;
+    if (region !== undefined) geo.region = region;
+    if (city !== undefined) geo.city = city;
+    if (latitude !== undefined) geo.latitude = latitude;
+    if (longitude !== undefined) geo.longitude = longitude;
+    if (timezone !== undefined) geo.timezone = timezone;
+    return geo;
   },
 };
 
@@ -107,9 +114,10 @@ export const CloudflareProxyProvider: GeoLocationProvider = {
   detect(request: Request): GeolocationData {
     if (!request.headers.has('cf-ipcountry')) return {};
 
-    return {
-      country: request.headers.get('cf-ipcountry') || undefined,
-    };
+    const country = request.headers.get('cf-ipcountry') || undefined;
+    const geo: GeolocationData = {};
+    if (country !== undefined) geo.country = country;
+    return geo;
   },
 };
 
@@ -253,12 +261,15 @@ export function redirectByCountry(
   mapping: Record<string, string>,
   options: { status?: 301 | 302 | 307 | 308; exclude?: string[] } = {}
 ): EdgeMiddleware {
-  const rules: GeoRedirectRule[] = Object.entries(mapping).map(([countries, destination]) => ({
-    countries: countries.split(',').map((c) => c.trim()),
-    destination,
-    status: options.status,
-    exclude: options.exclude,
-  }));
+  const rules: GeoRedirectRule[] = Object.entries(mapping).map(([countries, destination]) => {
+    const rule: GeoRedirectRule = {
+      countries: countries.split(',').map((c) => c.trim()),
+      destination,
+    };
+    if (options.status !== undefined) rule.status = options.status;
+    if (options.exclude !== undefined) rule.exclude = options.exclude;
+    return rule;
+  });
 
   return geoRedirectMiddleware(rules);
 }
@@ -333,7 +344,7 @@ export function detectLanguageFromHeader(acceptLanguage: string | null): string[
   return acceptLanguage
     .split(',')
     .map((lang) => {
-      const [locale, q = '1'] = lang.trim().split(';q=');
+      const [locale = '', q = '1'] = lang.trim().split(';q=');
       return { locale: locale.trim(), quality: parseFloat(q) };
     })
     .sort((a, b) => b.quality - a.quality)

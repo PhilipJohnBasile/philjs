@@ -558,16 +558,20 @@ export class SSOManager {
 
     const m = { ...defaultMapping, ...mapping };
 
+    const firstName = attributes[m.firstName!] as string | undefined;
+    const lastName = attributes[m.lastName!] as string | undefined;
+    const displayName = attributes[m.displayName!] as string | undefined;
+
     return {
       id: String(attributes[m.id!] || attributes['sub'] || attributes['id'] || 'unknown'),
       email: String(attributes[m.email!] || attributes['email'] || ''),
-      firstName: attributes[m.firstName!] as string | undefined,
-      lastName: attributes[m.lastName!] as string | undefined,
-      displayName: attributes[m.displayName!] as string | undefined,
       groups: (attributes[m.groups!] as string[]) || [],
       roles: (attributes[m.roles!] as string[]) || [],
       attributes,
       raw: attributes,
+      ...(firstName !== undefined && { firstName }),
+      ...(lastName !== undefined && { lastName }),
+      ...(displayName !== undefined && { displayName }),
     };
   }
 

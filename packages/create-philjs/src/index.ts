@@ -3,13 +3,12 @@
  * Zero-config project scaffolding with intelligent defaults.
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
-import { execSync } from "child_process";
-import { generateRouteTypes } from "philjs-router";
-import type { RouteDefinition } from "philjs-router";
+import { generateRouteTypes } from "@philjs/router";
+import type { RouteDefinition } from "@philjs/router";
 
-const TEMPLATES = {
+const _TEMPLATES = {
   basic: "Basic app with routing and data fetching",
   ecommerce: "E-commerce with product catalog and cart",
   dashboard: "Admin dashboard with charts and tables",
@@ -68,7 +67,7 @@ async function main() {
   console.log(`  ✅ Islands architecture\n`);
 }
 
-function createProjectStructure(path: string, template: string) {
+function createProjectStructure(path: string, _template: string) {
   mkdirSync(path, { recursive: true });
   mkdirSync(join(path, "src"), { recursive: true });
   mkdirSync(join(path, "src/routes"), { recursive: true });
@@ -77,7 +76,7 @@ function createProjectStructure(path: string, template: string) {
   mkdirSync(join(path, "public"), { recursive: true });
 }
 
-function generatePackageJson(path: string, name: string, pm: string) {
+function generatePackageJson(path: string, name: string, _pm: string) {
   const pkg = {
     name,
     version: "0.1.0",
@@ -221,7 +220,7 @@ public/              # Static assets
   writeFileSync(join(path, "README.md"), readme);
 }
 
-function generateAppFiles(path: string, template: string) {
+function generateAppFiles(path: string, _template: string) {
   // index.html
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -380,7 +379,7 @@ export const routeManifest = createRouteManifest(routes);
   writeFileSync(join(path, "src/routes.d.ts"), routeTypes);
 }
 
-async function prompt(message: string, defaultValue: string): Promise<string> {
+async function prompt(_message: string, defaultValue: string): Promise<string> {
   // Simplified for now - in real implementation would use inquirer or prompts
   return defaultValue;
 }
@@ -397,7 +396,7 @@ async function selectPackageManager(): Promise<string> {
   return "npm";
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error("❌ Error creating project:", error);
   process.exit(1);
 });

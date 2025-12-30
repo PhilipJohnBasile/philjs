@@ -2,7 +2,7 @@
  * Search Bar - Component search with fuzzy matching
  */
 
-import type { ComponentNode } from './types';
+import type { ComponentNode } from './types.js';
 
 export interface SearchResult {
   node: ComponentNode;
@@ -356,13 +356,13 @@ export class SearchBar {
     // Attach click handlers
     this.resultsElement.querySelectorAll('.search-result-item').forEach((item) => {
       item.addEventListener('click', () => {
-        const index = parseInt((item as HTMLElement).dataset.index || '0');
+        const index = parseInt((item as HTMLElement).dataset['index'] || '0');
         this.selectedIndex = index;
         this.confirmSelection();
       });
 
       item.addEventListener('mouseenter', () => {
-        const index = parseInt((item as HTMLElement).dataset.index || '0');
+        const index = parseInt((item as HTMLElement).dataset['index'] || '0');
         this.selectedIndex = index;
         this.renderResults();
         this.onHover?.(this.results[index]?.node || null);
@@ -435,7 +435,10 @@ export class SearchBar {
 
   private confirmSelection(): void {
     if (this.selectedIndex >= 0 && this.selectedIndex < this.results.length) {
-      this.onSelect?.(this.results[this.selectedIndex].node);
+      const result = this.results[this.selectedIndex];
+      if (result) {
+        this.onSelect?.(result.node);
+      }
       this.hideResults();
     }
   }

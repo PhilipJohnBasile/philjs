@@ -1,6 +1,7 @@
 {
   "name": "@philjs/eye-tracking",
   "version": "0.1.0",
+  "type": "module",
   "description": "Gaze-based interactions for PhilJS - eye tracking, dwell click, attention heatmaps",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

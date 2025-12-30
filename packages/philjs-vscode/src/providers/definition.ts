@@ -38,7 +38,8 @@ export class PhilJSDefinitionProvider implements vscode.DefinitionProvider {
   private isJSXTag(line: string, word: string, character: number): boolean {
     // Check if word follows < or is a component name (PascalCase)
     const beforeWord = line.substring(0, character).trim();
-    return beforeWord.endsWith('<') || (word[0] === word[0].toUpperCase() && /^[A-Z]/.test(word));
+    const firstChar = word[0];
+    return beforeWord.endsWith('<') || (firstChar !== undefined && firstChar === firstChar.toUpperCase() && /^[A-Z]/.test(word));
   }
 
   private isSignalAccess(line: string, character: number): boolean {
@@ -109,7 +110,7 @@ export class PhilJSDefinitionProvider implements vscode.DefinitionProvider {
     const importMatch = line.match(/from\s+['"](.+)['"]/);
     if (!importMatch) return null;
 
-    const importPath = importMatch[1];
+    const importPath = importMatch[1]!;
 
     // Handle relative imports
     if (importPath.startsWith('.')) {

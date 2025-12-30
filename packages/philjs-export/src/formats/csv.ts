@@ -3,7 +3,7 @@
  * Handles CSV generation with streaming support for large datasets
  */
 
-import Papa from 'papaparse';
+import * as Papa from 'papaparse';
 
 export interface CSVOptions {
   /** Delimiter character (default: ',') */
@@ -111,7 +111,7 @@ export async function* streamToCSV<T extends Record<string, unknown>>(
 
   const processChunk = (chunk: Record<string, unknown>[], includeHeader: boolean): string => {
     if (!cols && chunk.length > 0) {
-      cols = columns || Object.keys(chunk[0]);
+      cols = columns || Object.keys(chunk[0]!);
     }
 
     if (!cols) return '';
@@ -207,15 +207,22 @@ export function parseCSV<T = Record<string, unknown>>(
   options: {
     header?: boolean;
     dynamicTyping?: boolean;
-    transformHeader?: (header: string) => string;
+    transformHeader?: (header: string, index: number) => string;
   } = {}
 ): T[] {
-  const result = Papa.parse<T>(csv, {
+  const config: Papa.ParseConfig<T> & { download: false; worker: false } = {
     header: options.header ?? true,
     dynamicTyping: options.dynamicTyping ?? true,
-    transformHeader: options.transformHeader,
     skipEmptyLines: true,
-  });
+    download: false,
+    worker: false,
+  };
+
+  if (options.transformHeader) {
+    config.transformHeader = options.transformHeader;
+  }
+
+  const result = Papa.parse<T>(csv, config);
 
   if (result.errors.length > 0) {
     console.warn('CSV parsing warnings:', result.errors);

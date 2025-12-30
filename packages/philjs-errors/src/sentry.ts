@@ -13,7 +13,7 @@ import type {
   Breadcrumb,
   Span,
   ErrorEvent,
-} from './index';
+} from './index.js';
 
 export interface SentryOptions extends TrackerOptions {
   /** Enable performance monitoring */

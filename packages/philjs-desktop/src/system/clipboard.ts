@@ -5,15 +5,15 @@
  * with browser fallbacks when running outside Tauri context.
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 /**
  * Error thrown when clipboard operations fail
  */
 export class ClipboardError extends Error {
-  constructor(message: string, public readonly cause?: unknown) {
+  override readonly name: string = 'ClipboardError';
+  constructor(message: string, public override readonly cause?: unknown) {
     super(message);
-    this.name = 'ClipboardError';
   }
 }
 
@@ -189,7 +189,7 @@ export const Clipboard = {
           const response = await fetch(imageData);
           blob = await response.blob();
         } else {
-          blob = new Blob([imageData], { type: 'image/png' });
+          blob = new Blob([imageData as BlobPart], { type: 'image/png' });
         }
         const item = new ClipboardItem({ 'image/png': blob });
         await navigator.clipboard.write([item]);

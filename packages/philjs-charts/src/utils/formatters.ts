@@ -178,5 +178,5 @@ export function formatScientific(value: number, decimals = 2): string {
 export function formatOrdinal(value: number): string {
   const suffixes = ['th', 'st', 'nd', 'rd'];
   const v = value % 100;
-  return value + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+  return value + (suffixes[(v - 20) % 10] ?? suffixes[v] ?? suffixes[0] ?? 'th');
 }

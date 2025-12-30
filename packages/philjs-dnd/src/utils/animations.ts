@@ -1,4 +1,4 @@
-import type { AnimationConfig, DropAnimation, Position, Rect } from '../types';
+import type { AnimationConfig, DropAnimation, Position, Rect } from '../types.js';
 
 // ============================================================================
 // Default Animation Configurations
@@ -72,7 +72,7 @@ export function applyDropAnimation(
     // Apply custom side effects
     if (sideEffects) {
       sideEffects({
-        active: { id: element.dataset.dragId ?? '', type: 'default' },
+        active: { id: element.dataset['dragId'] ?? '', type: 'default' },
         dragOverlay: element,
       });
     }

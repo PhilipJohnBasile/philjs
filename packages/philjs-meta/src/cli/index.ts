@@ -13,10 +13,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
-import { createCompiler, createCompilerFromConfig } from '../build/compiler';
-import { loadConfig } from '../config';
-import { createFileRouter } from '../router/file-based';
-import { MiddlewareChain, createMiddlewareContext } from '../server/middleware';
+import { createCompiler, createCompilerFromConfig } from '../build/compiler.js';
+import { loadConfig } from '../config/index.js';
+import { createFileRouter } from '../router/file-based.js';
+import { MiddlewareChain, createMiddlewareContext } from '../server/middleware.js';
 
 /**
  * CLI options
@@ -192,9 +192,9 @@ export async function dev(options: DevServerOptions = {}): Promise<void> {
     // Create middleware context
     const context = createMiddlewareContext(
       new Request(url.toString(), {
-        method: req.method,
+        method: req.method ?? 'GET',
         headers: Object.entries(req.headers).reduce((acc, [key, value]) => {
-          if (value) acc.append(key, Array.isArray(value) ? value[0] : value);
+          if (value) acc.append(key, Array.isArray(value) ? value[0]! : value);
           return acc;
         }, new Headers()),
       })
@@ -294,18 +294,18 @@ export async function build(options: BuildCLIOptions = {}): Promise<void> {
     }
 
     if (result.warnings.length > 0) {
-      result.warnings.forEach((warning) => log.warn(warning));
+      result.warnings.forEach((warning: string) => log.warn(warning));
     }
 
     if (analyze) {
       console.log('\nBundle Analysis:');
-      result.bundles.forEach((bundle) => {
+      result.bundles.forEach((bundle: { name: string; size: number }) => {
         console.log(`  ${bundle.name}: ${formatBytes(bundle.size)}`);
       });
     }
   } else {
     log.error('Build failed');
-    result.errors.forEach((error) => {
+    result.errors.forEach((error: { file?: string; message: string; stack?: string }) => {
       console.error(`  ${error.file || 'unknown'}: ${error.message}`);
       if (verbose && error.stack) {
         console.error(error.stack);
@@ -346,7 +346,7 @@ export async function start(options: StartServerOptions = {}): Promise<void> {
   const middlewareChain = new MiddlewareChain();
 
   // Add compression middleware
-  middlewareChain.use(async (ctx, next) => {
+  middlewareChain.use(async (_ctx: unknown, next: () => Promise<Response>) => {
     const response = await next();
     response.headers.set('X-Powered-By', 'PhilJS-Meta');
     return response;
@@ -466,7 +466,7 @@ export async function generate(options: GenerateOptions = {}): Promise<void> {
     }
   } else {
     log.error('Static generation failed');
-    result.errors.forEach((error) => {
+    result.errors.forEach((error: { file?: string; message: string }) => {
       console.error(`  ${error.file || 'unknown'}: ${error.message}`);
     });
     process.exit(1);
@@ -689,15 +689,19 @@ function parseArgs(args: string[]): CLIOptions {
     const arg = args[i];
 
     if (arg === '--port' || arg === '-p') {
-      options.port = parseInt(args[++i], 10);
+      const portArg = args[++i];
+      if (portArg) options.port = parseInt(portArg, 10);
     } else if (arg === '--host' || arg === '-H') {
-      options.host = args[++i];
+      const hostArg = args[++i];
+      if (hostArg) options.host = hostArg;
     } else if (arg === '--root' || arg === '-r') {
-      options.root = args[++i];
+      const rootArg = args[++i];
+      if (rootArg) options.root = rootArg;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
     } else if (arg === '--config' || arg === '-c') {
-      options.config = args[++i];
+      const configArg = args[++i];
+      if (configArg) options.config = configArg;
     }
   }
 

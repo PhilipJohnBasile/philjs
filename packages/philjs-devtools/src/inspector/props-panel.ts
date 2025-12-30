@@ -2,7 +2,7 @@
  * Props Panel - Display and edit component props
  */
 
-import type { ComponentNode, PropInfo } from './types';
+import type { ComponentNode, PropInfo } from './types.js';
 
 export class PropsPanel {
   private container: HTMLElement | null = null;
@@ -46,7 +46,7 @@ export class PropsPanel {
     this.container.querySelectorAll('.prop-value-input').forEach(input => {
       input.addEventListener('change', (e) => {
         const target = e.target as HTMLInputElement;
-        const propName = target.dataset.prop!;
+        const propName = target.dataset['prop']!;
         let value: unknown;
 
         try {

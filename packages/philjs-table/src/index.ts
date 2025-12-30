@@ -669,7 +669,7 @@ export function createTable<TData>(options: TableOptions<TData>): Table<TData> {
         id,
         columnDef: def,
         depth,
-        parent,
+        ...(parent !== undefined && { parent }),
         columns: [],
         getIsVisible: () => state.columnVisibility[id] !== false,
         getCanSort: () => def.enableSorting !== false && options.enableSorting !== false,
@@ -839,7 +839,7 @@ export function createTable<TData>(options: TableOptions<TData>): Table<TData> {
     getPreFilteredRowModel: () => table.getCoreRowModel(),
     getPrePaginatedRowModel: () => options.getSortedRowModel ? table.getSortedRowModel() : table.getFilteredRowModel(),
     getPreSortedRowModel: () => options.getFilteredRowModel ? table.getFilteredRowModel() : table.getCoreRowModel(),
-    getRow: (id) => table.getCoreRowModel().rowsById[id],
+    getRow: (id) => table.getCoreRowModel().rowsById[id]!,
 
     // Sorting
     setSorting: (updater) => {
@@ -1036,8 +1036,8 @@ export const sortingFns = {
     return dateA - dateB;
   },
   basic: <TData>(rowA: Row<TData>, rowB: Row<TData>, columnId: string): number => {
-    const a = rowA.getValue(columnId);
-    const b = rowB.getValue(columnId);
+    const a = rowA.getValue(columnId) as string | number;
+    const b = rowB.getValue(columnId) as string | number;
     return a === b ? 0 : a > b ? 1 : -1;
   },
 };
@@ -1082,19 +1082,3 @@ export function flexRender<TProps>(
   return component(props);
 }
 
-// Export all types
-export type {
-  ColumnDef,
-  Column,
-  Row,
-  Cell,
-  Header,
-  HeaderGroup,
-  HeaderContext,
-  CellContext,
-  TableOptions,
-  Table,
-  RowModel,
-  SortingFn,
-  FilterFn,
-};

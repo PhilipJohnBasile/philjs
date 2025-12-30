@@ -209,7 +209,7 @@ function processTemplate(result: TemplateResult): Node[] {
     if (node.nodeType === Node.COMMENT_NODE) {
       const match = node.textContent?.match(/^phil-(\d+)$/);
       if (match) {
-        nodesToProcess.push({ node, index: parseInt(match[1], 10) });
+        nodesToProcess.push({ node, index: parseInt(match[1]!, 10) });
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
       processElementBindings(node as Element, values);
@@ -245,7 +245,7 @@ function processElementBindings(element: Element, values: readonly unknown[]): v
     // Check for marker in attribute value
     const match = value.match(/^<!--phil-(\d+)-->$/);
     if (match) {
-      const index = parseInt(match[1], 10);
+      const index = parseInt(match[1]!, 10);
       const val = values[index];
 
       if (name.startsWith('@') || name.startsWith('on')) {
@@ -362,8 +362,8 @@ export function repeat<T>(
   keyFn: (item: T, index: number) => unknown,
   template: (item: T, index: number) => TemplateResult
 ): TemplateResult[] {
-  const arr = isSignal(items) ? items() : items;
-  return arr.map((item, index) => template(item, index));
+  const arr: T[] = typeof items === 'function' ? (items as Signal<T[]>)() : items;
+  return arr.map((item: T, index: number) => template(item, index));
 }
 
 /**

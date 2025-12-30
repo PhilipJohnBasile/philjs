@@ -113,11 +113,11 @@ export class Monitor {
   stop(): void {
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
-      this.metricsInterval = undefined;
+      delete this.metricsInterval;
     }
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
-      this.healthCheckInterval = undefined;
+      delete this.healthCheckInterval;
     }
   }
 
@@ -227,11 +227,14 @@ export class Monitor {
         ? job.finishedAt.getTime() - startTime
         : undefined;
 
-    return {
+    const result: JobDetail = {
       ...job,
-      duration,
       retries: job.attemptsMade,
     };
+    if (duration !== undefined) {
+      result.duration = duration;
+    }
+    return result;
   }
 
   /**
@@ -682,8 +685,8 @@ export class Monitor {
       return 0;
     }
 
-    const recent = this.metricsHistory[this.metricsHistory.length - 1];
-    const previous = this.metricsHistory[0];
+    const recent = this.metricsHistory[this.metricsHistory.length - 1]!;
+    const previous = this.metricsHistory[0]!;
 
     const timeDiff =
       recent.timestamp.getTime() - previous.timestamp.getTime();

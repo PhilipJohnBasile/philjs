@@ -11,7 +11,7 @@ import type {
   EndpointHandler,
   OpenAPIOperation,
   OpenAPISchema,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Endpoint Builder
@@ -208,15 +208,17 @@ export class RouteGroup {
    */
   add<TInput, TOutput>(endpoint: EndpointDefinition<TInput, TOutput>): this {
     // Prepend prefix to path
-    const prefixedEndpoint = {
-      ...endpoint,
+    const prefixedEndpoint: EndpointDefinition = {
+      method: endpoint.method,
       path: this.prefix + endpoint.path,
       options: {
         ...endpoint.options,
         path: this.prefix + endpoint.path,
         tags: [...this.tags, ...(endpoint.options.tags || [])],
       },
+      handler: endpoint.handler as EndpointHandler<unknown, unknown>,
     };
+    if (endpoint.openapi !== undefined) prefixedEndpoint.openapi = endpoint.openapi;
     this.endpoints.push(prefixedEndpoint);
     return this;
   }
@@ -431,7 +433,9 @@ export function crud(options: CRUDOptions): RouteGroup {
       endpoint()
         .get('/')
         .summary(`List ${resource}s`)
-        .handler(async (_, ctx) => ({ items: [], total: 0 }))
+        .input<unknown>()
+        .output<{ items: unknown[]; total: number }>()
+        .handler(async () => ({ items: [], total: 0 }))
     );
   }
 
@@ -440,7 +444,9 @@ export function crud(options: CRUDOptions): RouteGroup {
       endpoint()
         .get('/:id')
         .summary(`Get ${resource} by ID`)
-        .handler(async (_, ctx) => ({ id: ctx.params.id }))
+        .input<unknown>()
+        .output<{ id: string | undefined }>()
+        .handler(async (_, ctx) => ({ id: ctx.params['id'] }))
     );
   }
 
@@ -449,7 +455,9 @@ export function crud(options: CRUDOptions): RouteGroup {
       endpoint()
         .post('/')
         .summary(`Create ${resource}`)
-        .handler(async (input, ctx) => ({ id: 'new', ...input }))
+        .input<Record<string, unknown>>()
+        .output<Record<string, unknown>>()
+        .handler(async (input) => ({ id: 'new', ...(input as Record<string, unknown>) }))
     );
   }
 
@@ -458,7 +466,9 @@ export function crud(options: CRUDOptions): RouteGroup {
       endpoint()
         .put('/:id')
         .summary(`Update ${resource}`)
-        .handler(async (input, ctx) => ({ id: ctx.params.id, ...input }))
+        .input<Record<string, unknown>>()
+        .output<Record<string, unknown>>()
+        .handler(async (input, ctx) => ({ id: ctx.params['id'], ...(input as Record<string, unknown>) }))
     );
   }
 
@@ -467,7 +477,9 @@ export function crud(options: CRUDOptions): RouteGroup {
       endpoint()
         .delete('/:id')
         .summary(`Delete ${resource}`)
-        .handler(async (_, ctx) => ({ deleted: true }))
+        .input<unknown>()
+        .output<{ deleted: boolean }>()
+        .handler(async () => ({ deleted: true }))
     );
   }
 
@@ -495,11 +507,13 @@ export interface SSRPageOptions {
 /**
  * Create an SSR page endpoint
  */
-export function ssrPage(options: SSRPageOptions): EndpointDefinition {
+export function ssrPage(options: SSRPageOptions): EndpointDefinition<unknown, { component: string; title: string | undefined; data: unknown; path: string }> {
   return endpoint()
     .get(options.path)
     .summary(`SSR Page: ${options.title || options.path}`)
     .tags('pages')
+    .input<unknown>()
+    .output<{ component: string; title: string | undefined; data: unknown; path: string }>()
     .handler(async (_, ctx) => {
       const data = options.loader ? await options.loader() : {};
       return {
@@ -538,7 +552,8 @@ export function apiEndpoint<TInput, TOutput>(
   path: string,
   handler: EndpointHandler<TInput, TOutput>
 ): EndpointDefinition<TInput, TOutput> {
-  return endpoint()
+  const builder = new EndpointBuilder<TInput, TOutput>();
+  return builder
     .method(method, path)
     .tags('api')
     .handler(handler);
@@ -547,11 +562,13 @@ export function apiEndpoint<TInput, TOutput>(
 /**
  * Create a health check endpoint
  */
-export function healthCheck(path: string = '/health'): EndpointDefinition {
+export function healthCheck(path: string = '/health'): EndpointDefinition<unknown, { status: string; timestamp: string }> {
   return endpoint()
     .get(path)
     .summary('Health check')
     .tags('health')
+    .input<unknown>()
+    .output<{ status: string; timestamp: string }>()
     .handler(async () => ({
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -564,11 +581,13 @@ export function healthCheck(path: string = '/health'): EndpointDefinition {
 export function readinessProbe(
   path: string = '/ready',
   checks?: Array<{ name: string; check: () => Promise<boolean> }>
-): EndpointDefinition {
+): EndpointDefinition<unknown, { ready: boolean; checks: Record<string, boolean>; timestamp: string }> {
   return endpoint()
     .get(path)
     .summary('Readiness probe')
     .tags('health')
+    .input<unknown>()
+    .output<{ ready: boolean; checks: Record<string, boolean>; timestamp: string }>()
     .handler(async () => {
       const results: Record<string, boolean> = {};
       let allReady = true;

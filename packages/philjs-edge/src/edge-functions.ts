@@ -144,11 +144,11 @@ export function compose(...middlewares: EdgeMiddleware[]): EdgeMiddleware {
       }
       index = i;
 
-      const middleware = middlewares[i];
       if (i === middlewares.length) {
         return next();
       }
 
+      const middleware = middlewares[i]!;
       return middleware(ctx, () => dispatch(i + 1));
     };
 
@@ -425,8 +425,9 @@ async function validateRequest(
 
   // Validate params
   if (schema.params && ctx.params) {
+    const params = ctx.params;
     for (const [field, rules] of Object.entries(schema.params)) {
-      const value = ctx.params[field];
+      const value = params[field];
       const error = validateField(field, value, rules);
       if (error) errors.push(error);
     }

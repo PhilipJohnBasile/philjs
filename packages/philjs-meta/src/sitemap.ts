@@ -2,7 +2,7 @@
  * PhilJS Meta - Sitemap Generation
  */
 
-import type { SitemapEntry } from './types';
+import type { SitemapEntry } from './types.js';
 
 /**
  * Generate XML sitemap
@@ -105,15 +105,17 @@ export function createSitemapEntry(
 ): SitemapEntry {
   const url = new URL(path, options.baseUrl).toString();
 
+  const lastmod = options.lastmod
+    ? options.lastmod instanceof Date
+      ? options.lastmod.toISOString()
+      : options.lastmod
+    : undefined;
+
   return {
     url,
-    lastmod: options.lastmod
-      ? options.lastmod instanceof Date
-        ? options.lastmod.toISOString()
-        : options.lastmod
-      : undefined,
-    changefreq: options.changefreq,
-    priority: options.priority,
+    ...(lastmod !== undefined && { lastmod }),
+    ...(options.changefreq !== undefined && { changefreq: options.changefreq }),
+    ...(options.priority !== undefined && { priority: options.priority }),
   };
 }
 
@@ -158,9 +160,12 @@ export function generateSitemapFromRoutes(
 
   return routes
     .filter(route => !exclude.some(pattern => new RegExp(pattern).test(route)))
-    .map(route => ({
-      url: new URL(route, baseUrl).toString(),
-      priority: priority[route],
-      changefreq: changefreq[route],
-    }));
+    .map(route => {
+      const entry: SitemapEntry = {
+        url: new URL(route, baseUrl).toString(),
+      };
+      if (priority[route] !== undefined) entry.priority = priority[route];
+      if (changefreq[route] !== undefined) entry.changefreq = changefreq[route];
+      return entry;
+    });
 }

@@ -86,7 +86,8 @@ class VideoFilterProcessor {
   }
 
   processFrame(inputFrame: VideoFrame): VideoFrame {
-    const { width, height } = inputFrame;
+    const width = inputFrame.displayWidth;
+    const height = inputFrame.displayHeight;
 
     if (this.width !== width || this.height !== height) {
       this.width = width;
@@ -186,7 +187,7 @@ class VideoFilterProcessor {
           for (let ky = -1; ky <= 1; ky++) {
             for (let kx = -1; kx <= 1; kx++) {
               const idx = ((y + ky) * width + (x + kx)) * 4 + c;
-              sum += copy[idx] * kernel[(ky + 1) * 3 + (kx + 1)];
+              sum += copy[idx]! * kernel[(ky + 1) * 3 + (kx + 1)]!;
             }
           }
           const idx = (y * width + x) * 4 + c;
@@ -209,9 +210,9 @@ class VideoFilterProcessor {
         const factor = 1 - (dist / maxDist) * amount;
 
         const idx = (y * width + x) * 4;
-        data[idx] *= factor;
-        data[idx + 1] *= factor;
-        data[idx + 2] *= factor;
+        data[idx] = data[idx]! * factor;
+        data[idx + 1] = data[idx + 1]! * factor;
+        data[idx + 2] = data[idx + 2]! * factor;
       }
     }
   }
@@ -221,9 +222,9 @@ class VideoFilterProcessor {
 
     for (let i = 0; i < data.length; i += 4) {
       const noise = (Math.random() - 0.5) * intensity;
-      data[i] = Math.min(255, Math.max(0, data[i] + noise));
-      data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + noise));
-      data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + noise));
+      data[i] = Math.min(255, Math.max(0, data[i]! + noise));
+      data[i + 1] = Math.min(255, Math.max(0, data[i + 1]! + noise));
+      data[i + 2] = Math.min(255, Math.max(0, data[i + 2]! + noise));
     }
   }
 }
@@ -323,7 +324,8 @@ class ChromaKeyProcessor {
   }
 
   processFrame(inputFrame: VideoFrame): VideoFrame {
-    const { width, height } = inputFrame;
+    const width = inputFrame.displayWidth;
+    const height = inputFrame.displayHeight;
 
     // Resize canvas if needed
     if (this.canvas.width !== width || this.canvas.height !== height) {
@@ -358,9 +360,9 @@ class ChromaKeyProcessor {
     const keyRgb = this.hexToRgb(this.config.keyColor);
 
     for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
+      const r = data[i]!;
+      const g = data[i + 1]!;
+      const b = data[i + 2]!;
 
       // Calculate color distance
       const dr = r - keyRgb.r;
@@ -393,9 +395,9 @@ class ChromaKeyProcessor {
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
+      r: parseInt(result[1]!, 16),
+      g: parseInt(result[2]!, 16),
+      b: parseInt(result[3]!, 16)
     } : { r: 0, g: 255, b: 0 };
   }
 }
@@ -538,7 +540,7 @@ class AudioStreamProcessor {
     const data = this.getTimeDomainData();
     let sum = 0;
     for (let i = 0; i < data.length; i++) {
-      const sample = (data[i] - 128) / 128;
+      const sample = (data[i]! - 128) / 128;
       sum += sample * sample;
     }
     return Math.sqrt(sum / data.length);
@@ -647,7 +649,7 @@ class AudioVisualizer {
     let x = 0;
 
     for (let i = 0; i < data.length; i++) {
-      const v = data[i] / 128;
+      const v = data[i]! / 128;
       const y = (v * height) / 2;
 
       if (i === 0) {
@@ -674,7 +676,7 @@ class AudioVisualizer {
     let x = 0;
 
     for (let i = 0; i < data.length; i++) {
-      const v = data[i] / 255;
+      const v = data[i]! / 255;
       const y = height - v * height;
 
       if (i === 0) {
@@ -699,7 +701,7 @@ class AudioVisualizer {
     this.ctx.fillStyle = color;
 
     for (let i = 0; i < barCount; i++) {
-      const value = data[i * step] / 255;
+      const value = data[i * step]! / 255;
       const barHeight = value * height;
       const x = i * (barWidth + barGap);
       const y = height - barHeight;
@@ -728,7 +730,7 @@ class AudioVisualizer {
 
     for (let i = 0; i < data.length; i++) {
       const angle = (i / data.length) * Math.PI * 2;
-      const value = data[i] / 255;
+      const value = data[i]! / 255;
       const r = radius + value * radius * 0.5;
 
       const x = centerX + Math.cos(angle) * r;
@@ -795,11 +797,13 @@ class StreamMixer {
     this.audioDestination = this.audioContext.createMediaStreamDestination();
 
     // Create output stream
-    const canvasStream = this.canvas.captureStream(30);
-    this.outputStream = new MediaStream([
-      canvasStream.getVideoTracks()[0],
-      this.audioDestination.stream.getAudioTracks()[0]
-    ]);
+    const canvasStream = (this.canvas as unknown as { captureStream(frameRate?: number): MediaStream }).captureStream(30);
+    const videoTrack = canvasStream.getVideoTracks()[0];
+    const audioTrack = this.audioDestination.stream.getAudioTracks()[0];
+    const tracks: MediaStreamTrack[] = [];
+    if (videoTrack) tracks.push(videoTrack);
+    if (audioTrack) tracks.push(audioTrack);
+    this.outputStream = new MediaStream(tracks);
   }
 
   addInput(config: MixerInput): void {
@@ -854,36 +858,41 @@ class StreamMixer {
         const cellHeight = this.height / rows;
 
         inputs.forEach((input, i) => {
-          input.config.x = (i % cols) * cellWidth;
-          input.config.y = Math.floor(i / cols) * cellHeight;
-          input.config.width = cellWidth;
-          input.config.height = cellHeight;
+          const x = (i % cols) * cellWidth;
+          const y = Math.floor(i / cols) * cellHeight;
+          if (x !== undefined) input.config.x = x;
+          if (y !== undefined) input.config.y = y;
+          if (cellWidth !== undefined) input.config.width = cellWidth;
+          if (cellHeight !== undefined) input.config.height = cellHeight;
         });
         break;
       }
       case 'pip': {
-        if (inputs.length >= 1) {
-          inputs[0].config.x = 0;
-          inputs[0].config.y = 0;
-          inputs[0].config.width = this.width;
-          inputs[0].config.height = this.height;
+        const input0 = inputs[0];
+        if (input0) {
+          input0.config.x = 0;
+          input0.config.y = 0;
+          input0.config.width = this.width;
+          input0.config.height = this.height;
         }
-        if (inputs.length >= 2) {
+        const input1 = inputs[1];
+        if (input1) {
           const pipWidth = this.width * 0.25;
           const pipHeight = this.height * 0.25;
-          inputs[1].config.x = this.width - pipWidth - 20;
-          inputs[1].config.y = this.height - pipHeight - 20;
-          inputs[1].config.width = pipWidth;
-          inputs[1].config.height = pipHeight;
+          input1.config.x = this.width - pipWidth - 20;
+          input1.config.y = this.height - pipHeight - 20;
+          input1.config.width = pipWidth;
+          input1.config.height = pipHeight;
         }
         break;
       }
       case 'side-by-side': {
         const halfWidth = this.width / 2;
         inputs.forEach((input, i) => {
-          input.config.x = i * halfWidth;
+          const x = i * halfWidth;
+          if (x !== undefined) input.config.x = x;
           input.config.y = 0;
-          input.config.width = halfWidth;
+          if (halfWidth !== undefined) input.config.width = halfWidth;
           input.config.height = this.height;
         });
         break;
@@ -984,11 +993,12 @@ class MediaStreamRecorder {
   start(): void {
     this.chunks = [];
 
-    this.mediaRecorder = new MediaRecorder(this.stream, {
-      mimeType: this.config.mimeType,
-      videoBitsPerSecond: this.config.videoBitsPerSecond,
-      audioBitsPerSecond: this.config.audioBitsPerSecond
-    });
+    const options: MediaRecorderOptions = {};
+    if (this.config.mimeType !== undefined) options.mimeType = this.config.mimeType;
+    if (this.config.videoBitsPerSecond !== undefined) options.videoBitsPerSecond = this.config.videoBitsPerSecond;
+    if (this.config.audioBitsPerSecond !== undefined) options.audioBitsPerSecond = this.config.audioBitsPerSecond;
+
+    this.mediaRecorder = new MediaRecorder(this.stream, options);
 
     this.mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -998,7 +1008,9 @@ class MediaStreamRecorder {
     };
 
     this.mediaRecorder.onstop = () => {
-      const blob = new Blob(this.chunks, { type: this.config.mimeType });
+      const blobOptions: BlobPropertyBag = {};
+      if (this.config.mimeType !== undefined) blobOptions.type = this.config.mimeType;
+      const blob = new Blob(this.chunks, blobOptions);
       this.emit('stop', blob);
     };
 
@@ -1029,11 +1041,15 @@ class MediaStreamRecorder {
       this.mediaRecorder.stop();
     }
 
-    return new Blob(this.chunks, { type: this.config.mimeType });
+    const blobOptions: BlobPropertyBag = {};
+    if (this.config.mimeType !== undefined) blobOptions.type = this.config.mimeType;
+    return new Blob(this.chunks, blobOptions);
   }
 
   getBlob(): Blob {
-    return new Blob(this.chunks, { type: this.config.mimeType });
+    const blobOptions: BlobPropertyBag = {};
+    if (this.config.mimeType !== undefined) blobOptions.type = this.config.mimeType;
+    return new Blob(this.chunks, blobOptions);
   }
 
   getState(): RecordingState | null {
@@ -1233,7 +1249,11 @@ class MediaStreamProcessor {
     await this.audioProcessor.initialize();
 
     const processedStream = this.audioProcessor.processStream(this.inputStream);
-    return processedStream.getAudioTracks()[0];
+    const track = processedStream.getAudioTracks()[0];
+    if (!track) {
+      throw new Error('No audio track available in processed stream');
+    }
+    return track;
   }
 
   setVideoFilter(config: Partial<VideoFilterConfig>): void {

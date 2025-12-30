@@ -6,7 +6,7 @@
  */
 
 // Components
-export { Image, default } from './Image';
+export { Image, default } from './Image.js';
 
 // Types
 export type {
@@ -23,7 +23,7 @@ export type {
   ImageCache,
   ArtDirectionSource,
   LoadingAnimation,
-} from './types';
+} from './types.js';
 
 // Utilities
 export {
@@ -37,7 +37,7 @@ export {
   isValidFormat,
   getDominantColor,
   createCacheKey,
-} from './utils';
+} from './utils.js';
 
 // Server-side optimizer (only available in Node.js)
 export {
@@ -50,7 +50,7 @@ export {
   extractDominantColor,
   isSharpAvailable,
   type BlurPlaceholderOptions,
-} from './optimizer';
+} from './optimizer.js';
 
 // Image Services
 export {
@@ -66,4 +66,4 @@ export {
   getImageService,
   selectOptimalFormat,
   getFormatPriority,
-} from './image-service';
+} from './image-service.js';

@@ -330,7 +330,7 @@ export function generateErrorFingerprint(error: ParsedError): string {
     }
   } else if (error.stack.length > 0) {
     // Fallback to first frame
-    const firstFrame = error.stack[0];
+    const firstFrame = error.stack[0]!;
     if (firstFrame.fileName) {
       parts.push(firstFrame.fileName);
     }
@@ -479,12 +479,12 @@ export class ErrorTracker {
       breadcrumbs: [...this.breadcrumbs],
       context,
       tags,
-      user: this.user,
-      release: this.release,
-      environment: this.environment,
-      traceId: this.traceId,
-      spanId: this.spanId,
     };
+    if (this.user !== undefined) capturedError.user = this.user;
+    if (this.release !== undefined) capturedError.release = this.release;
+    if (this.environment !== undefined) capturedError.environment = this.environment;
+    if (this.traceId !== undefined) capturedError.traceId = this.traceId;
+    if (this.spanId !== undefined) capturedError.spanId = this.spanId;
 
     this.errors.push(capturedError);
     this.updateErrorGroup(capturedError);
@@ -628,9 +628,11 @@ export class ErrorTracker {
     if (this.config.captureGlobalErrors) {
       window.addEventListener('error', (event) => {
         if (event.error) {
-          this.captureError(event.error, {
-            element: event.target instanceof Element ? event.target.outerHTML.substring(0, 200) : undefined,
-          });
+          const errorContext: ErrorContext = {};
+          if (event.target instanceof Element) {
+            errorContext.element = event.target.outerHTML.substring(0, 200);
+          }
+          this.captureError(event.error, errorContext);
         }
       });
     }
@@ -750,8 +752,12 @@ export function captureReactError(
 ): Promise<CapturedError | null> {
   const tracker = getErrorTracker();
 
-  return tracker.captureError(error, {
+  const errorContext: ErrorContext = {
     componentStack: errorInfo.componentStack,
-    componentName,
-  });
+  };
+  if (componentName !== undefined) {
+    errorContext.componentName = componentName;
+  }
+
+  return tracker.captureError(error, errorContext);
 }

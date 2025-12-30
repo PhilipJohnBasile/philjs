@@ -327,7 +327,11 @@ export class SmartCache {
     if (pattern.accessTimes.length >= 2) {
       const intervals: number[] = [];
       for (let i = 1; i < pattern.accessTimes.length; i++) {
-        intervals.push(pattern.accessTimes[i] - pattern.accessTimes[i - 1]);
+        const current = pattern.accessTimes[i];
+        const prev = pattern.accessTimes[i - 1];
+        if (current !== undefined && prev !== undefined) {
+          intervals.push(current - prev);
+        }
       }
 
       pattern.avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
@@ -335,7 +339,7 @@ export class SmartCache {
 
       // Predict next access using exponential smoothing
       const alpha = 0.3;
-      const lastInterval = intervals[intervals.length - 1];
+      const lastInterval = intervals[intervals.length - 1]!;
       const smoothedInterval = alpha * lastInterval + (1 - alpha) * pattern.avgInterval;
       pattern.predictedNextAccess = now + smoothedInterval;
     }

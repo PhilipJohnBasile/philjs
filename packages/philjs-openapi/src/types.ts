@@ -11,7 +11,7 @@
 export interface JSONSchema {
   type?: 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object' | 'null';
   format?: string;
-  description?: string;
+  description?: string | undefined;
   default?: unknown;
   const?: unknown;
   enum?: unknown[];

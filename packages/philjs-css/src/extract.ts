@@ -1,7 +1,7 @@
-import type { ExtractConfig, CSSRule } from './types';
-import { styleRegistry } from './css';
-import { atomicRegistry } from './atomic';
-import { getTheme, generateThemeCSS } from './theme';
+import type { ExtractConfig, CSSRule } from './types.js';
+import { styleRegistry } from './css.js';
+import { atomicRegistry } from './atomic.js';
+import { getTheme, generateThemeCSS } from './theme.js';
 
 /**
  * CSS minification helper
@@ -261,7 +261,7 @@ export function extractCriticalCSS(
   let match;
 
   while ((match = classRegex.exec(html)) !== null) {
-    const classes = match[1].split(/\s+/);
+    const classes = match[1]!.split(/\s+/);
     classes.forEach(cls => {
       if (cls) classNames.add(cls);
     });

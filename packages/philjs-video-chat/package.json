@@ -1,6 +1,7 @@
 {
   "name": "@philjs/video-chat",
   "version": "0.1.0",
+  "type": "module",
   "description": "Full-featured video conferencing for PhilJS - virtual backgrounds, recording, transcription, breakout rooms",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -46,7 +46,7 @@ export class PlausibleProvider implements IAnalyticsProvider {
     if (!this.isLoaded()) return;
 
     window.plausible(event.name, {
-      props: event.properties,
+      ...(event.properties !== undefined ? { props: event.properties } : {}),
     });
 
     if (this.config.debug) {

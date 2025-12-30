@@ -119,7 +119,7 @@ export const wideSignalGraph: Benchmark = {
 
     // Update all sources
     for (let i = 0; i < sources.length; i++) {
-      sources[i].set(i + 1);
+      sources[i]!.set(i + 1);
     }
   },
 };
@@ -206,7 +206,7 @@ export const multipleDiamonds: Benchmark = {
 
     // Update all sources
     for (let i = 0; i < sources.length; i++) {
-      sources[i].set(i + 1);
+      sources[i]!.set(i + 1);
     }
 
     // Read all results again

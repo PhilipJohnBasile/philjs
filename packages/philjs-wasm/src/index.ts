@@ -175,7 +175,7 @@ const textDecoder = new TextDecoder();
  * Get memory from a WASM module
  */
 function getMemory(module: WasmModule): WebAssembly.Memory {
-  const exportedMemory = module.exports.memory;
+  const exportedMemory = module.exports['memory'];
   if (exportedMemory && typeof exportedMemory === 'object' && 'buffer' in exportedMemory) {
     return exportedMemory as WebAssembly.Memory;
   }
@@ -188,7 +188,7 @@ function getMemory(module: WasmModule): WebAssembly.Memory {
 function createMemoryManager(): WasmMemoryManager {
   return {
     alloc(module: WasmModule, size: number): number {
-      const malloc = module.exports.__wbindgen_malloc as WbMalloc | undefined;
+      const malloc = module.exports['__wbindgen_malloc'] as WbMalloc | undefined;
       if (!malloc || typeof malloc !== 'function') {
         throw new Error('WASM module does not export __wbindgen_malloc. Is it compiled with wasm-bindgen?');
       }
@@ -196,7 +196,7 @@ function createMemoryManager(): WasmMemoryManager {
     },
 
     free(module: WasmModule, ptr: number, size: number): void {
-      const free = module.exports.__wbindgen_free as WbFree | undefined;
+      const free = module.exports['__wbindgen_free'] as WbFree | undefined;
       if (!free || typeof free !== 'function') {
         throw new Error('WASM module does not export __wbindgen_free. Is it compiled with wasm-bindgen?');
       }
@@ -299,8 +299,8 @@ export async function loadWasm(url: string, options: WasmLoadOptions = {}): Prom
         instance = await WebAssembly.instantiate(module, imports);
       }
 
-      const memory = (instance.exports.memory as WebAssembly.Memory) ||
-        (imports.env?.memory as WebAssembly.Memory);
+      const memory = (instance.exports['memory'] as WebAssembly.Memory) ||
+        (imports['env']?.['memory'] as WebAssembly.Memory);
 
       if (!memory) {
         throw new Error('WASM module does not export memory');
@@ -423,10 +423,10 @@ export async function createWasmComponent(
       // Read result length (first 4 bytes)
       const memory = getMemory(module);
       const lenView = new Uint32Array(memory.buffer, resultPtr, 1);
-      const resultLen = lenView[0];
+      const resultLen = lenView[0]!;
 
       // Read HTML string
-      const html = memoryManager.readString(module, resultPtr + 4, resultLen);
+      const html = memoryManager.readString(module, resultPtr + 4, resultLen!);
 
       // Free result memory
       memoryManager.free(module, resultPtr, resultLen + 4);
@@ -443,8 +443,8 @@ export async function createWasmComponent(
 
   const dispose = (): void => {
     // Call Rust dispose function if available
-    if (typeof module.exports.dispose === 'function') {
-      (module.exports.dispose as Function)();
+    if (typeof module.exports['dispose'] === 'function') {
+      (module.exports['dispose'] as Function)();
     }
   };
 
@@ -928,7 +928,7 @@ export function createI32Signal(
       new Int32Array(buffer)[0] = v;
       return new Uint8Array(buffer);
     },
-    deserialize: (data) => new Int32Array(data.buffer, data.byteOffset, 1)[0]
+    deserialize: (data) => new Int32Array(data.buffer, data.byteOffset, 1)[0]!
   });
 }
 
@@ -948,7 +948,7 @@ export function createI64Signal(
       new BigInt64Array(buffer)[0] = v;
       return new Uint8Array(buffer);
     },
-    deserialize: (data) => new BigInt64Array(data.buffer, data.byteOffset, 1)[0]
+    deserialize: (data) => new BigInt64Array(data.buffer, data.byteOffset, 1)[0]!
   });
 }
 
@@ -968,7 +968,7 @@ export function createF32Signal(
       new Float32Array(buffer)[0] = v;
       return new Uint8Array(buffer);
     },
-    deserialize: (data) => new Float32Array(data.buffer, data.byteOffset, 1)[0]
+    deserialize: (data) => new Float32Array(data.buffer, data.byteOffset, 1)[0]!
   });
 }
 
@@ -988,7 +988,7 @@ export function createF64Signal(
       new Float64Array(buffer)[0] = v;
       return new Uint8Array(buffer);
     },
-    deserialize: (data) => new Float64Array(data.buffer, data.byteOffset, 1)[0]
+    deserialize: (data) => new Float64Array(data.buffer, data.byteOffset, 1)[0]!
   });
 }
 

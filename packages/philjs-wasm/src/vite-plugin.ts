@@ -406,7 +406,7 @@ export function detectWasmImports(code: string): Array<{
   lines.forEach((line, index) => {
     // Check for ES imports
     const importMatch = line.match(/import\s+.+\s+from\s+['"]([^'"]+\.wasm)['"]/);
-    if (importMatch) {
+    if (importMatch && importMatch[1] !== undefined) {
       imports.push({
         type: 'import',
         path: importMatch[1],
@@ -416,7 +416,7 @@ export function detectWasmImports(code: string): Array<{
 
     // Check for fetch calls
     const fetchMatch = line.match(/fetch\(['"]([^'"]+\.wasm)['"]\)/);
-    if (fetchMatch) {
+    if (fetchMatch && fetchMatch[1] !== undefined) {
       imports.push({
         type: 'fetch',
         path: fetchMatch[1],

@@ -6,9 +6,9 @@
  */
 
 import { afterEach, expect } from 'vitest';
-import { cleanup } from './render';
-import { cleanupHooks } from './hooks';
-import * as matchers from './matchers';
+import { cleanup } from './render.js';
+import { cleanupHooks } from './hooks.js';
+import * as matchers from './matchers.js';
 
 /**
  * Auto-cleanup after each test
@@ -144,4 +144,4 @@ export {
   debug,
   logDOM,
   prettyDOM,
-} from './index';
+} from './index.js';

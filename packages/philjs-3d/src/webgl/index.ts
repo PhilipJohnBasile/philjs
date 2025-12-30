@@ -22,7 +22,7 @@ export type {
   AnimationLoop,
   WebGLState,
   WebGLCanvasProps,
-} from './types';
+} from './types.js';
 
 // Context management
 export {
@@ -33,7 +33,7 @@ export {
   resizeCanvas,
   clearContext,
   enableDefaultFeatures,
-} from './context';
+} from './context.js';
 
 // Shader management
 export {
@@ -49,7 +49,7 @@ export {
   UNLIT_FRAGMENT_SHADER,
   TEXTURED_VERTEX_SHADER,
   TEXTURED_FRAGMENT_SHADER,
-} from './shaders';
+} from './shaders.js';
 
 // Buffer management
 export {
@@ -64,7 +64,7 @@ export {
   setupVertexAttributes,
   drawVertexArray,
   deleteVertexArrayInfo,
-} from './buffers';
+} from './buffers.js';
 
 // Texture management
 export {
@@ -77,7 +77,7 @@ export {
   bindTexture,
   unbindTexture,
   deleteTexture,
-} from './textures';
+} from './textures.js';
 
 // Camera and math utilities
 export {
@@ -104,7 +104,7 @@ export {
   orbitCamera,
   zoomCamera,
   getViewProjectionMatrix,
-} from './camera';
+} from './camera.js';
 
 // 3D Primitives
 export {
@@ -117,7 +117,7 @@ export {
   createRoundedBox,
   mergeGeometries,
   transformGeometry,
-} from './primitives';
+} from './primitives.js';
 
 // Animation
 export {
@@ -129,7 +129,7 @@ export {
   lerpVec3,
   slerp,
   type FrameCallback,
-} from './animation';
+} from './animation.js';
 
 // Hooks
 export {
@@ -143,7 +143,7 @@ export {
   useRenderPass,
   cleanupWebGL,
   type WebGLHookContext,
-} from './hooks';
+} from './hooks.js';
 
 // Components
-export { WebGLCanvas, createWebGLCanvasElement } from './WebGLCanvas';
+export { WebGLCanvas, createWebGLCanvasElement } from './WebGLCanvas.js';

@@ -182,8 +182,9 @@ export class GraphQLClient implements CacheStore {
         data: dataSignal,
         promise,
         timestamp: Date.now(),
-        ttl: cacheTTL || this.config.defaultCacheTTL,
       };
+      const ttlValue = cacheTTL || this.config.defaultCacheTTL;
+      if (ttlValue !== undefined) entry.ttl = ttlValue;
       this.cache.set(key, entry);
 
       // Update signal when promise resolves
@@ -379,8 +380,9 @@ export class GraphQLClient implements CacheStore {
       data: dataSignal,
       promise: null,
       timestamp: Date.now(),
-      ttl: ttl || this.config.defaultCacheTTL,
     };
+    const ttlValue = ttl || this.config.defaultCacheTTL;
+    if (ttlValue !== undefined) entry.ttl = ttlValue;
     this.cache.set(key, entry);
   }
 
@@ -496,7 +498,7 @@ export function createQuery<TData = any, TVariables = any>(
       const response = await client.query<TData, TVariables>(options);
 
       if (response.errors && response.errors.length > 0) {
-        throw new Error(response.errors[0].message);
+        throw new Error(response.errors[0]!.message);
       }
 
       data.set(response.data);
@@ -560,13 +562,12 @@ export function createMutation<TData = any, TVariables = any>(
   const execute = async (variables?: TVariables) => {
     try {
       loading.set(true);
-      const response = await client.mutate<TData, TVariables>({
-        mutation,
-        variables
-      });
+      const mutationOptions: GraphQLMutationOptions<TVariables> = { mutation };
+      if (variables !== undefined) mutationOptions.variables = variables;
+      const response = await client.mutate<TData, TVariables>(mutationOptions);
 
       if (response.errors && response.errors.length > 0) {
-        throw new Error(response.errors[0].message);
+        throw new Error(response.errors[0]!.message);
       }
 
       data.set(response.data);
@@ -605,7 +606,7 @@ export function createGraphQLLoader<TData = any, TVariables = any>(
     });
 
     if (response.errors && response.errors.length > 0) {
-      throw new Error(response.errors[0].message);
+      throw new Error(response.errors[0]!.message);
     }
 
     return response.data;
@@ -640,7 +641,7 @@ export function createGraphQLAction<TData = any, TVariables = any>(
     });
 
     if (response.errors && response.errors.length > 0) {
-      throw new Error(response.errors[0].message);
+      throw new Error(response.errors[0]!.message);
     }
 
     return response.data;
@@ -667,7 +668,7 @@ export {
   type SubscriptionConfig,
   type SubscriptionOptions,
   type SubscriptionState,
-} from './subscription';
+} from './subscription.js';
 
 // Export persisted query utilities
 export {
@@ -681,7 +682,7 @@ export {
   generatePersistedQueryManifest,
   type PersistedQueryConfig,
   type PersistedQueryLink,
-} from './persisted';
+} from './persisted.js';
 
 // Export fragment utilities
 export {
@@ -705,7 +706,7 @@ export {
   FragmentUtils,
   type FragmentDefinition,
   type MaskedFragment,
-} from './fragments';
+} from './fragments.js';
 
 // Export optimistic update utilities
 export {
@@ -722,7 +723,7 @@ export {
   type OptimisticMutation,
   type OptimisticUpdateSnapshot,
   type ConflictResolver,
-} from './optimistic';
+} from './optimistic.js';
 
 // Export code generation utilities
 export {
@@ -736,4 +737,4 @@ export {
   type CodegenConfig,
   type GeneratedOperation,
   type GeneratedFragment,
-} from './codegen-enhanced';
+} from './codegen-enhanced.js';

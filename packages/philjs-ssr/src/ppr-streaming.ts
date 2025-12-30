@@ -177,12 +177,15 @@ export class PPRStreamController {
         await Promise.race(inFlight);
         // Remove completed promises
         for (let i = inFlight.length - 1; i >= 0; i--) {
-          const status = await Promise.race([
-            inFlight[i].then(() => "resolved"),
-            Promise.resolve("pending"),
-          ]);
-          if (status === "resolved") {
-            inFlight.splice(i, 1);
+          const promise = inFlight[i];
+          if (promise) {
+            const status = await Promise.race([
+              promise.then(() => "resolved"),
+              Promise.resolve("pending"),
+            ]);
+            if (status === "resolved") {
+              inFlight.splice(i, 1);
+            }
           }
         }
       }
@@ -515,16 +518,25 @@ export async function streamPPRResponse(
     return await renderFullResponse(shell, vnode, requestData);
   }
 
-  const stream = createPPRStream({
+  const streamOptions: PPRStreamOptions = {
     shell,
     requestData,
-    onShellSent: options.onShellSent,
-    onBoundaryResolved: options.onBoundaryResolved,
-    onComplete: options.onComplete,
-    onError: options.onError,
-    timeout: options.timeout || 10000,
-    abortOnError: options.abortOnError || false,
-  });
+    timeout: options.timeout ?? 10000,
+    abortOnError: options.abortOnError ?? false,
+  };
+  if (options.onShellSent) {
+    streamOptions.onShellSent = options.onShellSent;
+  }
+  if (options.onBoundaryResolved) {
+    streamOptions.onBoundaryResolved = options.onBoundaryResolved;
+  }
+  if (options.onComplete) {
+    streamOptions.onComplete = options.onComplete;
+  }
+  if (options.onError) {
+    streamOptions.onError = options.onError;
+  }
+  const stream = createPPRStream(streamOptions);
 
   return new Response(stream, {
     headers: {

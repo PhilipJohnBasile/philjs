@@ -1,6 +1,7 @@
 {
   "name": "@philjs/time-travel",
   "version": "0.1.0",
+  "type": "module",
   "description": "Time-travel debugging for PhilJS - Elm-style state history with visual debugger",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -5,7 +5,7 @@
  */
 
 import type { Plugin } from 'vite';
-import { generateHash } from './utils';
+import { generateHash } from './utils.js';
 
 export interface PhilJSStylesPluginOptions {
   /** Enable CSS scoping */
@@ -152,6 +152,7 @@ function transformTaggedTemplates(code: string, id: string, prefix: string): { c
 
   while ((match = cssTagRegex.exec(code)) !== null) {
     const cssContent = match[1];
+    if (cssContent === undefined) continue;
     const hash = generateHash(cssContent + id);
     const scopedClass = `${prefix}-${hash}`;
 

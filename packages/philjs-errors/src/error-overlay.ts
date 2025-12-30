@@ -5,8 +5,8 @@
  * Shows errors with syntax highlighting, suggestions, and docs links.
  */
 
-import type { PhilJSError } from './error-codes';
-import { formatErrorForDev } from './stack-trace';
+import type { PhilJSError, ErrorSuggestion } from './error-codes.js';
+import { formatErrorForDev } from './stack-trace.js';
 
 /**
  * Error overlay state
@@ -309,7 +309,7 @@ function createOverlayElement(error: PhilJSError): HTMLElement {
           <h2 class="philjs-suggestions-title">
             💡 Suggestions
           </h2>
-          ${error.suggestions.map((suggestion, idx) => `
+          ${error.suggestions.map((suggestion: ErrorSuggestion, idx: number) => `
             <div class="philjs-suggestion">
               <div class="philjs-suggestion-description">
                 ${idx + 1}. ${escapeHtml(suggestion.description)}
@@ -378,7 +378,7 @@ export function initErrorOverlay(): void {
   (window as any).__PHILJS_HIDE_ERROR_OVERLAY__ = hideErrorOverlay;
 
   // Intercept unhandled errors in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     window.addEventListener('error', (event) => {
       // Check if this is a PhilJS error
       if ((event.error as any)?.code?.startsWith('PHIL-')) {

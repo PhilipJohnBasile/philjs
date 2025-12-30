@@ -103,7 +103,6 @@ class QueryCache {
       data: value,
       error,
       timestamp: Date.now(),
-      promise: undefined,
     });
   }
 

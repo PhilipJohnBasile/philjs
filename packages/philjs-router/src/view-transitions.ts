@@ -293,7 +293,7 @@ export class ViewTransitionManager {
   };
 
   constructor(config: ViewTransitionConfig = {}) {
-    this.config = {
+    const cfg: ViewTransitionConfig = {
       defaultAnimation: config.defaultAnimation ?? "fade",
       duration: config.duration ?? 300,
       easing: config.easing ?? "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -301,8 +301,11 @@ export class ViewTransitionManager {
       respectReducedMotion: config.respectReducedMotion ?? true,
       directionAware: config.directionAware ?? true,
       historyBehavior: config.historyBehavior ?? "push",
-      customCSS: config.customCSS,
     };
+    if (config.customCSS !== undefined) {
+      cfg.customCSS = config.customCSS;
+    }
+    this.config = cfg;
 
     this.injectStyles();
     this.setupNavigationListeners();
@@ -1308,11 +1311,16 @@ export function ViewTransitionLink(props: ViewTransitionLinkProps): HTMLAnchorEl
       manager.updateConfig({ historyBehavior: "replace" });
     }
 
-    await manager.navigate(href, {
+    const navOptions: ViewTransitionOptions = {
       type: transition,
-      duration,
-      easing,
-    });
+    };
+    if (duration !== undefined) {
+      navOptions.duration = duration;
+    }
+    if (easing !== undefined) {
+      navOptions.easing = easing;
+    }
+    await manager.navigate(href, navOptions);
 
     // Reset config
     if (replace) {
@@ -1408,11 +1416,16 @@ export function createViewTransitionLink(
       manager.updateConfig({ historyBehavior: "replace" });
     }
 
-    await manager.navigate(href, {
+    const navOptions: ViewTransitionOptions = {
       type: transition,
-      duration,
-      easing,
-    });
+    };
+    if (duration !== undefined) {
+      navOptions.duration = duration;
+    }
+    if (easing !== undefined) {
+      navOptions.easing = easing;
+    }
+    await manager.navigate(href, navOptions);
 
     if (replace) {
       manager.updateConfig({ historyBehavior: "push" });

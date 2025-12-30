@@ -9,7 +9,7 @@
  * - Multi-region deployments
  */
 
-import { detectEdgePlatform, type EdgePlatform, type EdgeRegion } from './edge-runtime';
+import { detectEdgePlatform, type EdgePlatform, type EdgeRegion } from './edge-runtime.js';
 
 // ============================================================================
 // Types
@@ -156,7 +156,8 @@ export function getGeoLocation(request: Request, platformContext?: unknown): Geo
   const geo: GeoLocation = {};
 
   // Try to get IP address
-  geo.ip = getClientIP(request);
+  const clientIP = getClientIP(request);
+  if (clientIP !== undefined) geo.ip = clientIP;
 
   switch (platform) {
     case 'cloudflare':
@@ -196,7 +197,7 @@ export function getClientIP(request: Request): string | undefined {
     const value = headers.get(header);
     if (value) {
       // x-forwarded-for can contain multiple IPs, use the first
-      const ip = value.split(',')[0].trim();
+      const ip = value.split(',')[0]!.trim();
       if (ip && isValidIP(ip)) {
         return ip;
       }
@@ -217,16 +218,16 @@ function extractCloudflareGeo(request: Request, geo: GeoLocation): GeoLocation {
   const cf = (request as any).cf;
 
   if (cf) {
-    geo.country = cf.country;
-    geo.region = cf.region;
-    geo.city = cf.city;
-    geo.postalCode = cf.postalCode;
-    geo.latitude = cf.latitude ? parseFloat(cf.latitude) : undefined;
-    geo.longitude = cf.longitude ? parseFloat(cf.longitude) : undefined;
-    geo.timezone = cf.timezone;
-    geo.continent = cf.continent;
-    geo.colo = cf.colo;
-    geo.metroCode = cf.metroCode;
+    if (cf.country !== undefined) geo.country = cf.country;
+    if (cf.region !== undefined) geo.region = cf.region;
+    if (cf.city !== undefined) geo.city = cf.city;
+    if (cf.postalCode !== undefined) geo.postalCode = cf.postalCode;
+    if (cf.latitude) geo.latitude = parseFloat(cf.latitude);
+    if (cf.longitude) geo.longitude = parseFloat(cf.longitude);
+    if (cf.timezone !== undefined) geo.timezone = cf.timezone;
+    if (cf.continent !== undefined) geo.continent = cf.continent;
+    if (cf.colo !== undefined) geo.colo = cf.colo;
+    if (cf.metroCode !== undefined) geo.metroCode = cf.metroCode;
 
     if (cf.asOrganization) {
       geo.asn = {
@@ -239,8 +240,12 @@ function extractCloudflareGeo(request: Request, geo: GeoLocation): GeoLocation {
   // Add derived data
   if (geo.country) {
     geo.isEU = EU_COUNTRIES.has(geo.country);
-    geo.continent = geo.continent || getContinentForCountry(geo.country);
-    geo.continentName = geo.continent ? CONTINENT_NAMES[geo.continent] : undefined;
+    const continent = geo.continent || getContinentForCountry(geo.country);
+    if (continent !== undefined) geo.continent = continent;
+    if (geo.continent) {
+      const continentName = CONTINENT_NAMES[geo.continent];
+      if (continentName !== undefined) geo.continentName = continentName;
+    }
   }
 
   return geo;
@@ -249,16 +254,20 @@ function extractCloudflareGeo(request: Request, geo: GeoLocation): GeoLocation {
 function extractVercelGeo(request: Request, geo: GeoLocation): GeoLocation {
   const headers = request.headers;
 
-  geo.country = headers.get('x-vercel-ip-country') || undefined;
-  geo.region = headers.get('x-vercel-ip-country-region') || undefined;
-  geo.city = headers.get('x-vercel-ip-city') || undefined;
+  const country = headers.get('x-vercel-ip-country');
+  if (country) geo.country = country;
+  const region = headers.get('x-vercel-ip-country-region');
+  if (region) geo.region = region;
+  const city = headers.get('x-vercel-ip-city');
+  if (city) geo.city = city;
 
   const lat = headers.get('x-vercel-ip-latitude');
   const lon = headers.get('x-vercel-ip-longitude');
-  geo.latitude = lat ? parseFloat(lat) : undefined;
-  geo.longitude = lon ? parseFloat(lon) : undefined;
+  if (lat) geo.latitude = parseFloat(lat);
+  if (lon) geo.longitude = parseFloat(lon);
 
-  geo.timezone = headers.get('x-vercel-ip-timezone') || undefined;
+  const timezone = headers.get('x-vercel-ip-timezone');
+  if (timezone) geo.timezone = timezone;
 
   // Decode URL-encoded city name
   if (geo.city) {
@@ -272,8 +281,12 @@ function extractVercelGeo(request: Request, geo: GeoLocation): GeoLocation {
   // Add derived data
   if (geo.country) {
     geo.isEU = EU_COUNTRIES.has(geo.country);
-    geo.continent = getContinentForCountry(geo.country);
-    geo.continentName = geo.continent ? CONTINENT_NAMES[geo.continent] : undefined;
+    const continent = getContinentForCountry(geo.country);
+    if (continent !== undefined) geo.continent = continent;
+    if (geo.continent) {
+      const continentName = CONTINENT_NAMES[geo.continent];
+      if (continentName !== undefined) geo.continentName = continentName;
+    }
   }
 
   return geo;
@@ -283,20 +296,24 @@ function extractNetlifyGeo(request: Request, context: unknown, geo: GeoLocation)
   const netlifyGeo = (context as any)?.geo;
 
   if (netlifyGeo) {
-    geo.country = netlifyGeo.country?.code;
-    geo.countryName = netlifyGeo.country?.name;
-    geo.city = netlifyGeo.city;
-    geo.region = netlifyGeo.subdivision?.code;
-    geo.latitude = netlifyGeo.latitude;
-    geo.longitude = netlifyGeo.longitude;
-    geo.timezone = netlifyGeo.timezone;
+    if (netlifyGeo.country?.code !== undefined) geo.country = netlifyGeo.country.code;
+    if (netlifyGeo.country?.name !== undefined) geo.countryName = netlifyGeo.country.name;
+    if (netlifyGeo.city !== undefined) geo.city = netlifyGeo.city;
+    if (netlifyGeo.subdivision?.code !== undefined) geo.region = netlifyGeo.subdivision.code;
+    if (netlifyGeo.latitude !== undefined) geo.latitude = netlifyGeo.latitude;
+    if (netlifyGeo.longitude !== undefined) geo.longitude = netlifyGeo.longitude;
+    if (netlifyGeo.timezone !== undefined) geo.timezone = netlifyGeo.timezone;
   }
 
   // Add derived data
   if (geo.country) {
     geo.isEU = EU_COUNTRIES.has(geo.country);
-    geo.continent = getContinentForCountry(geo.country);
-    geo.continentName = geo.continent ? CONTINENT_NAMES[geo.continent] : undefined;
+    const continent = getContinentForCountry(geo.country);
+    if (continent !== undefined) geo.continent = continent;
+    if (geo.continent) {
+      const continentName = CONTINENT_NAMES[geo.continent];
+      if (continentName !== undefined) geo.continentName = continentName;
+    }
   }
 
   return geo;
@@ -306,15 +323,22 @@ function extractDenoGeo(request: Request, geo: GeoLocation): GeoLocation {
   // Deno Deploy provides limited geo info through headers
   const headers = request.headers;
 
-  geo.country = headers.get('x-deno-country') || undefined;
-  geo.region = headers.get('x-deno-region') || undefined;
-  geo.city = headers.get('x-deno-city') || undefined;
+  const country = headers.get('x-deno-country');
+  if (country) geo.country = country;
+  const region = headers.get('x-deno-region');
+  if (region) geo.region = region;
+  const city = headers.get('x-deno-city');
+  if (city) geo.city = city;
 
   // Add derived data
   if (geo.country) {
     geo.isEU = EU_COUNTRIES.has(geo.country);
-    geo.continent = getContinentForCountry(geo.country);
-    geo.continentName = geo.continent ? CONTINENT_NAMES[geo.continent] : undefined;
+    const continent = getContinentForCountry(geo.country);
+    if (continent !== undefined) geo.continent = continent;
+    if (geo.continent) {
+      const continentName = CONTINENT_NAMES[geo.continent];
+      if (continentName !== undefined) geo.continentName = continentName;
+    }
   }
 
   return geo;
@@ -324,24 +348,28 @@ function extractGenericGeo(request: Request, geo: GeoLocation): GeoLocation {
   // Try to extract from common headers
   const headers = request.headers;
 
-  geo.country = headers.get('cf-ipcountry') ||
-                headers.get('x-country-code') ||
-                headers.get('x-geo-country') ||
-                undefined;
+  const country = headers.get('cf-ipcountry') ||
+                  headers.get('x-country-code') ||
+                  headers.get('x-geo-country');
+  if (country) geo.country = country;
 
-  geo.city = headers.get('x-city') ||
-             headers.get('x-geo-city') ||
-             undefined;
+  const city = headers.get('x-city') ||
+               headers.get('x-geo-city');
+  if (city) geo.city = city;
 
-  geo.region = headers.get('x-region') ||
-               headers.get('x-geo-region') ||
-               undefined;
+  const region = headers.get('x-region') ||
+                 headers.get('x-geo-region');
+  if (region) geo.region = region;
 
   // Add derived data
   if (geo.country) {
     geo.isEU = EU_COUNTRIES.has(geo.country);
-    geo.continent = getContinentForCountry(geo.country);
-    geo.continentName = geo.continent ? CONTINENT_NAMES[geo.continent] : undefined;
+    const continent = getContinentForCountry(geo.country);
+    if (continent !== undefined) geo.continent = continent;
+    if (geo.continent) {
+      const continentName = CONTINENT_NAMES[geo.continent];
+      if (continentName !== undefined) geo.continentName = continentName;
+    }
   }
 
   return geo;
@@ -493,7 +521,7 @@ export function findBestRegion(
   }
 
   // Return region with highest weight
-  return healthyRegions.sort((a, b) => (b.weight ?? 1) - (a.weight ?? 1))[0];
+  return healthyRegions.sort((a, b) => (b.weight ?? 1) - (a.weight ?? 1))[0]!;
 }
 
 /**
@@ -521,12 +549,12 @@ export function createLatencyRouter(config: LatencyRoutingConfig): {
       if (healthyRegions.length === 0) {
         // All regions unhealthy, try fallback
         const fallback = config.regions.find(r => r.id === config.fallbackRegion);
-        return fallback || config.regions[0];
+        return fallback || config.regions[0]!;
       }
 
       // Find best region
       const best = findBestRegion(geo, healthyRegions);
-      return best || healthyRegions[0];
+      return best || healthyRegions[0]!;
     },
 
     getRegionHealth(): Map<string, boolean> {
@@ -599,12 +627,12 @@ export function selectGeoVariant(
     }
   }
 
-  return { variant: config.variants[0].id, isNew: true };
+  return { variant: config.variants[0]!.id, isNew: true };
 }
 
 function parseCookie(cookies: string, name: string): string | undefined {
   const match = cookies.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : undefined;
+  return match ? decodeURIComponent(match[1]!) : undefined;
 }
 
 /**
@@ -660,11 +688,11 @@ export function findNearestLocation<T extends { latitude: number; longitude: num
 ): T | undefined {
   if (locations.length === 0) return undefined;
 
-  let nearest = locations[0];
+  let nearest = locations[0]!;
   let minDistance = calculateDistance(userLat, userLon, nearest.latitude, nearest.longitude);
 
   for (let i = 1; i < locations.length; i++) {
-    const loc = locations[i];
+    const loc = locations[i]!;
     const distance = calculateDistance(userLat, userLon, loc.latitude, loc.longitude);
     if (distance < minDistance) {
       minDistance = distance;

@@ -5,21 +5,24 @@
  * Interactive CLI for scaffolding PhilJS plugins
  */
 
-import * as fs from 'fs/promises';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import prompts from 'prompts';
 import * as pc from 'picocolors';
 import { createPlugin, type PluginOptions } from './generator.js';
 
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+type PluginType = 'basic' | 'vite' | 'transform' | 'ui-addon' | 'api' | 'database' | 'auth';
+type LicenseType = 'MIT' | 'Apache-2.0' | 'BSD-3-Clause' | 'ISC' | 'GPL-3.0';
 
 interface CliAnswers {
   pluginName: string;
-  pluginType: 'basic' | 'vite' | 'transform' | 'ui-addon' | 'api' | 'database' | 'auth';
+  pluginType: PluginType;
   description: string;
   author: string;
-  license: 'MIT' | 'Apache-2.0' | 'BSD-3-Clause' | 'ISC' | 'GPL-3.0';
+  license: LicenseType;
   features: string[];
   typescript: boolean;
   testing: boolean;
@@ -123,17 +126,26 @@ const LICENSES = [
   { title: 'GPL 3.0', value: 'GPL-3.0' },
 ];
 
-async function main() {
+async function main(): Promise<void> {
   console.log(pc.cyan('\n🔌 Create PhilJS Plugin\n'));
 
   const args = process.argv.slice(2);
-  const targetDir = args[0] || '.';
+  const targetDir = args[0] ?? '.';
 
   try {
-    const answers = await prompts([
+    // Define feature choices callback with proper typing
+    const getFeatureChoices = (_prev: unknown, answers: Record<string, unknown>): Array<{ title: string; value: string; selected?: boolean }> => {
+      const pluginType = String(answers['pluginType'] ?? '');
+      if (pluginType && pluginType in FEATURES_BY_TYPE) {
+        return FEATURES_BY_TYPE[pluginType] ?? [];
+      }
+      return [];
+    };
+
+    const questions = [
       {
-        type: 'text',
-        name: 'pluginName',
+        type: 'text' as const,
+        name: 'pluginName' as const,
         message: 'Plugin name:',
         initial: 'philjs-plugin-awesome',
         validate: (value: string) => {
@@ -148,93 +160,94 @@ async function main() {
         },
       },
       {
-        type: 'select',
-        name: 'pluginType',
+        type: 'select' as const,
+        name: 'pluginType' as const,
         message: 'Select plugin type:',
         choices: PLUGIN_TYPES,
         initial: 0,
       },
       {
-        type: 'text',
-        name: 'description',
+        type: 'text' as const,
+        name: 'description' as const,
         message: 'Plugin description:',
         initial: 'A PhilJS plugin',
       },
       {
-        type: 'text',
-        name: 'author',
+        type: 'text' as const,
+        name: 'author' as const,
         message: 'Author name:',
         initial: '',
       },
       {
-        type: 'select',
-        name: 'license',
+        type: 'select' as const,
+        name: 'license' as const,
         message: 'License:',
         choices: LICENSES,
         initial: 0,
       },
       {
-        type: 'multiselect',
-        name: 'features',
+        type: 'multiselect' as const,
+        name: 'features' as const,
         message: 'Select features to include:',
-        choices: (prev: string) => FEATURES_BY_TYPE[prev] || [],
+        choices: getFeatureChoices as never,
         instructions: false,
         hint: '- Space to select. Return to submit',
       },
       {
-        type: 'confirm',
-        name: 'typescript',
+        type: 'confirm' as const,
+        name: 'typescript' as const,
         message: 'Use TypeScript?',
         initial: true,
       },
       {
-        type: 'confirm',
-        name: 'testing',
+        type: 'confirm' as const,
+        name: 'testing' as const,
         message: 'Include testing setup?',
         initial: true,
       },
       {
-        type: 'confirm',
-        name: 'gitInit',
+        type: 'confirm' as const,
+        name: 'gitInit' as const,
         message: 'Initialize git repository?',
         initial: true,
       },
-    ]);
+    ];
+
+    const answers = await prompts(questions) as CliAnswers;
 
     if (!answers.pluginName) {
       console.log(pc.red('\n❌ Plugin creation cancelled'));
       process.exit(1);
     }
 
+    const pluginName = answers.pluginName;
+    const pluginDescription = answers.description ?? 'A PhilJS plugin';
+    const pluginAuthor = answers.author ?? '';
+    const pluginLicense = answers.license ?? 'MIT';
+
     const options: PluginOptions = {
-      name: answers.pluginName,
-      type: answers.pluginType,
-      description: answers.description,
-      author: answers.author,
-      license: answers.license,
-      features: answers.features || [],
-      typescript: answers.typescript,
-      testing: answers.testing,
-      gitInit: answers.gitInit,
-      targetDir,
+      name: pluginName,
+      ...(pluginDescription ? { description: pluginDescription } : {}),
+      ...(pluginAuthor ? { author: pluginAuthor } : {}),
+      ...(pluginLicense ? { license: pluginLicense } : {}),
     };
 
     console.log(pc.cyan('\n📦 Creating plugin...\n'));
 
-    await createPlugin(options);
+    createPlugin(options);
 
-    const pluginPath = path.resolve(process.cwd(), targetDir, answers.pluginName);
-    
+    const pluginPath = path.resolve(process.cwd(), targetDir, pluginName);
+
     console.log(pc.green('\n✅ Plugin created successfully!\n'));
     console.log('Next steps:');
-    console.log(pc.cyan(`  cd ${path.relative(process.cwd(), pluginPath) || answers.pluginName}`));
+    console.log(pc.cyan(`  cd ${path.relative(process.cwd(), pluginPath) || pluginName}`));
     console.log(pc.cyan('  npm install'));
     if (answers.testing) {
       console.log(pc.cyan('  npm test'));
     }
     console.log(pc.cyan('  npm run build'));
     console.log();
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(pc.red('\n❌ Error creating plugin:'), error);
     process.exit(1);
   }

@@ -110,8 +110,17 @@ export interface SensorOptions {
   };
 }
 
+export interface SensorHandlers {
+  onStart(position: Position): void;
+  onMove(position: Position): void;
+  onEnd(position: Position): void;
+  onCancel(): void;
+}
+
 export interface Sensor {
-  activate(element: HTMLElement, item: DragItem): void;
+  type: string;
+  options: SensorOptions;
+  activate(event: Event, handlers: SensorHandlers): void;
   deactivate(): void;
 }
 
@@ -144,4 +153,24 @@ export interface DndConfig {
   onDragOver?: (event: DragOverEvent) => void;
   onDragEnd?: (event: DragEndEvent) => void;
   onDragCancel?: (event: DragCancelEvent) => void;
+}
+
+// ============================================================================
+// Animation Types
+// ============================================================================
+
+export interface AnimationConfig {
+  duration: number;
+  easing: string;
+}
+
+export interface DropAnimationSideEffects {
+  active: { id: string; type: string };
+  dragOverlay: HTMLElement;
+}
+
+export interface DropAnimation {
+  duration: number;
+  easing: string;
+  sideEffects?: (args: DropAnimationSideEffects) => void;
 }

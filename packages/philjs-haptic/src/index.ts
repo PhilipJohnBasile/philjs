@@ -807,16 +807,8 @@ export function useXRHaptics(): {
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  HapticEngine,
-  GamepadHaptics,
-  XRHaptics,
-  HapticComposer,
-  HAPTIC_PATTERNS
-};
 
 export default {
   HapticEngine,

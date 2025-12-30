@@ -44,15 +44,15 @@ export class MixpanelProvider implements IAnalyticsProvider {
     };
 
     if (config.privacy?.cookieDomain) {
-      initConfig.cookie_domain = config.privacy.cookieDomain;
+      initConfig['cookie_domain'] = config.privacy.cookieDomain;
     }
 
     if (config.privacy?.cookieExpires) {
-      initConfig.cookie_expiration = config.privacy.cookieExpires;
+      initConfig['cookie_expiration'] = config.privacy.cookieExpires;
     }
 
     if (config.privacy?.anonymizeIp) {
-      initConfig.ip = false;
+      initConfig['ip'] = false;
     }
 
     // Wait for Mixpanel to load, then initialize
@@ -219,18 +219,18 @@ export class MixpanelProvider implements IAnalyticsProvider {
           a._i.push([b, d, g]);
         };
         a.__SV = 1.2;
-        let b = c.createElement("script");
-        b.type = "text/javascript";
-        b.async = !0;
-        b.src =
+        let scriptEl = c.createElement("script");
+        scriptEl.type = "text/javascript";
+        scriptEl.async = !0;
+        scriptEl.src =
           "undefined" !== typeof (window as any).MIXPANEL_CUSTOM_LIB_URL
             ? (window as any).MIXPANEL_CUSTOM_LIB_URL
             : "file:" === c.location.protocol &&
               "//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)
             ? "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"
             : "//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
-        let d = c.getElementsByTagName("script")[0];
-        d.parentNode!.insertBefore(b, d);
+        let firstScript = c.getElementsByTagName("script")[0];
+        firstScript!.parentNode!.insertBefore(scriptEl, firstScript!);
       }
     })(document, window.mixpanel || []);
 

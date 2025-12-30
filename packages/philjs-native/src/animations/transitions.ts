@@ -549,12 +549,15 @@ export function createScreenTransition(
     gestureConfig?: ScreenTransitionConfig['gestureConfig'];
   }
 ): ScreenTransitionConfig {
-  return {
+  const config: ScreenTransitionConfig = {
     enter,
     exit,
     parallel: options?.parallel ?? true,
-    gestureConfig: options?.gestureConfig,
   };
+  if (options?.gestureConfig !== undefined) {
+    config.gestureConfig = options.gestureConfig;
+  }
+  return config;
 }
 
 /**

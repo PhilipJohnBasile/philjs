@@ -59,7 +59,7 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
 
   // Handle Fragment
   if (type === Fragment) {
-    hydrateNode(props.children, ctx);
+    hydrateNode(props['children'], ctx);
     return;
   }
 
@@ -83,12 +83,12 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
     attachEventHandlers(element, props);
 
     // Hydrate children
-    if (props.children) {
+    if (props['children']) {
       const childCtx: HydrationContext = {
         currentNode: element.firstChild,
         parentElement: element,
       };
-      hydrateNode(props.children, childCtx);
+      hydrateNode(props['children'], childCtx);
     }
 
     // Move to next sibling
@@ -205,7 +205,7 @@ function createDOMElement(vnode: VNode): Node | null {
 
   // Handle Fragment
   if (type === Fragment) {
-    return createDOMElement(props.children);
+    return createDOMElement(props['children']);
   }
 
   // Handle function components
@@ -302,8 +302,8 @@ function createDOMElement(vnode: VNode): Node | null {
     }
 
     // Append children
-    if (props.children) {
-      const children = Array.isArray(props.children) ? props.children : [props.children];
+    if (props['children']) {
+      const children = Array.isArray(props['children']) ? props['children'] : [props['children']];
       children.forEach((child: any) => {
         // Handle functions (signals/computations) as children
         if (typeof child === "function") {

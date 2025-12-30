@@ -78,7 +78,7 @@ export class SessionManager {
   setSession(user: User, token?: string, expiresIn?: number): void {
     const expiresAt = expiresIn
       ? Date.now() + expiresIn
-      : Date.now() + this.config.sessionExpiry;
+      : Date.now() + this.config.sessionExpiry!;
 
     const session: AuthSession = {
       user,
@@ -123,7 +123,7 @@ export class SessionManager {
 
     const expiresAt = expiresIn
       ? Date.now() + expiresIn
-      : Date.now() + this.config.sessionExpiry;
+      : Date.now() + this.config.sessionExpiry!;
 
     const updatedSession: AuthSession = {
       ...currentSession,
@@ -153,7 +153,7 @@ export class SessionManager {
 
     try {
       // Try localStorage first
-      const stored = localStorage.getItem(this.config.sessionKey);
+      const stored = localStorage.getItem(this.config.sessionKey!);
       if (stored) {
         const session: AuthSession = JSON.parse(stored);
 
@@ -167,7 +167,7 @@ export class SessionManager {
       }
 
       // Try cookie fallback
-      const cookieValue = this.getCookie(this.config.cookieName);
+      const cookieValue = this.getCookie(this.config.cookieName!);
       if (cookieValue) {
         const session: AuthSession = JSON.parse(decodeURIComponent(cookieValue));
 
@@ -204,11 +204,11 @@ export class SessionManager {
       const serialized = JSON.stringify(sessionToStore);
 
       // Save to localStorage
-      localStorage.setItem(this.config.sessionKey, serialized);
+      localStorage.setItem(this.config.sessionKey!, serialized);
 
       // Save to cookie for SSR (user info only, not tokens)
       const cookieSession = { ...session, token: undefined };
-      this.setCookie(this.config.cookieName, JSON.stringify(cookieSession), session.expiresAt);
+      this.setCookie(this.config.cookieName!, JSON.stringify(cookieSession), session.expiresAt);
     } catch (error) {
       console.error('Failed to save session:', error);
     }
@@ -221,8 +221,8 @@ export class SessionManager {
     if (typeof window === 'undefined') return;
 
     try {
-      localStorage.removeItem(this.config.sessionKey);
-      this.deleteCookie(this.config.cookieName);
+      localStorage.removeItem(this.config.sessionKey!);
+      this.deleteCookie(this.config.cookieName!);
     } catch (error) {
       console.error('Failed to remove session:', error);
     }
@@ -252,7 +252,7 @@ export class SessionManager {
     const matches = document.cookie.match(new RegExp(
       `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`
     ));
-    return matches ? decodeURIComponent(matches[1]) : null;
+    return matches ? decodeURIComponent(matches[1]!) : null;
   }
 
   /**

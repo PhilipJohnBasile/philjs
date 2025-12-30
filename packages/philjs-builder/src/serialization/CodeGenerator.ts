@@ -285,7 +285,7 @@ function generateTailwindClasses(styles: NodeStyles): string {
     'space-evenly': 'justify-evenly',
   };
   if (styles.justifyContent && justifyMap[styles.justifyContent]) {
-    classes.push(justifyMap[styles.justifyContent]);
+    classes.push(justifyMap[styles.justifyContent]!);
   }
 
   // Align items
@@ -297,7 +297,7 @@ function generateTailwindClasses(styles: NodeStyles): string {
     'baseline': 'items-baseline',
   };
   if (styles.alignItems && alignMap[styles.alignItems]) {
-    classes.push(alignMap[styles.alignItems]);
+    classes.push(alignMap[styles.alignItems]!);
   }
 
   // Width and height percentages
@@ -326,7 +326,7 @@ function generateTailwindClasses(styles: NodeStyles): string {
     900: 'font-black',
   };
   if (typeof styles.fontWeight === 'number' && weightMap[styles.fontWeight]) {
-    classes.push(weightMap[styles.fontWeight]);
+    classes.push(weightMap[styles.fontWeight]!);
   }
 
   // Position
@@ -434,7 +434,7 @@ function generateNodeJSX(
 
   // Handle text content
   if (node.type === 'Text' || node.type === 'Heading' || node.type === 'Paragraph') {
-    const content = node.props.content as string || '';
+    const content = (node.props['content'] as string) || '';
     if (isVoid || node.children.length === 0) {
       return `${indent}<${tag}${props ? ' ' + props : ''}>${content}</${tag}>`;
     }

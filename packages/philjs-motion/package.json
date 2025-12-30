@@ -1,6 +1,7 @@
 {
   "name": "@philjs/motion",
   "version": "0.1.0",
+  "type": "module",
   "description": "Spring physics animation system for PhilJS - gesture-driven, FLIP, scroll-linked animations",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

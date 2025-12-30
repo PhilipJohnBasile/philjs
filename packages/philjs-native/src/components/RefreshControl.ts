@@ -151,7 +151,10 @@ export function usePullToRefresh(config: PullToRefreshConfig): {
   const onTouchStart = (e: TouchEvent) => {
     if (refreshState() !== 'idle') return;
 
-    startY = e.touches[0].clientY;
+    const touch = e.touches[0];
+    if (touch) {
+      startY = touch.clientY;
+    }
     scrollTop = (e.currentTarget as HTMLElement)?.scrollTop ?? 0;
   };
 
@@ -161,7 +164,9 @@ export function usePullToRefresh(config: PullToRefreshConfig): {
     // Only allow pull-to-refresh when at top of scroll
     if (scrollTop > 0) return;
 
-    const currentY = e.touches[0].clientY;
+    const touch = e.touches[0];
+    if (!touch) return;
+    const currentY = touch.clientY;
     const diff = currentY - startY;
 
     if (diff > 0) {

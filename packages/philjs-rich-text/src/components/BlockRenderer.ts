@@ -3,7 +3,7 @@
  * Renders individual blocks based on their type - vanilla JS
  */
 
-import type { Block, EditorInstance, TextNode } from '../types';
+import type { Block, EditorInstance, TextNode } from '../types.js';
 
 export class BlockRenderer {
   render(block: Block, editor: EditorInstance | null, readOnly: boolean): HTMLElement {
@@ -107,17 +107,17 @@ export class BlockRenderer {
         break;
       case 'link':
         el = document.createElement('a');
-        (el as HTMLAnchorElement).href = mark.attrs?.href as string || '#';
+        (el as HTMLAnchorElement).href = mark.attrs?.['href'] as string || '#';
         (el as HTMLAnchorElement).target = '_blank';
         (el as HTMLAnchorElement).rel = 'noopener noreferrer';
         break;
       case 'highlight':
         el = document.createElement('mark');
-        el.style.backgroundColor = mark.attrs?.color as string || '#fef08a';
+        el.style.backgroundColor = mark.attrs?.['color'] as string || '#fef08a';
         break;
       case 'textColor':
         el = document.createElement('span');
-        el.style.color = mark.attrs?.color as string || 'inherit';
+        el.style.color = mark.attrs?.['color'] as string || 'inherit';
         break;
       default:
         el = document.createElement('span');
@@ -160,7 +160,7 @@ export class BlockRenderer {
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.checked = child.attrs?.checked as boolean || false;
+      checkbox.checked = child.attrs?.['checked'] as boolean || false;
       checkbox.disabled = readOnly;
 
       item.appendChild(checkbox);
@@ -178,7 +178,7 @@ export class BlockRenderer {
 
   private createCodeBlock(block: Block): HTMLPreElement {
     const pre = document.createElement('pre');
-    pre.setAttribute('data-language', block.attrs?.language as string || 'plaintext');
+    pre.setAttribute('data-language', block.attrs?.['language'] as string || 'plaintext');
     const code = document.createElement('code');
     code.appendChild(this.renderContent(block.content as TextNode[]));
     pre.appendChild(code);
@@ -188,15 +188,15 @@ export class BlockRenderer {
   private createImage(block: Block): HTMLElement {
     const figure = document.createElement('figure');
     const img = document.createElement('img');
-    img.src = block.attrs?.src as string || '';
-    img.alt = block.attrs?.alt as string || '';
+    img.src = block.attrs?.['src'] as string || '';
+    img.alt = block.attrs?.['alt'] as string || '';
     img.style.maxWidth = '100%';
-    if (block.attrs?.width) img.style.width = block.attrs.width as string;
+    if (block.attrs?.['width']) img.style.width = block.attrs['width'] as string;
     figure.appendChild(img);
 
-    if (block.attrs?.caption) {
+    if (block.attrs?.['caption']) {
       const caption = document.createElement('figcaption');
-      caption.textContent = block.attrs.caption as string;
+      caption.textContent = block.attrs['caption'] as string;
       figure.appendChild(caption);
     }
 
@@ -206,14 +206,14 @@ export class BlockRenderer {
   private createVideo(block: Block): HTMLElement {
     const figure = document.createElement('figure');
     const video = document.createElement('video');
-    video.src = block.attrs?.src as string || '';
+    video.src = block.attrs?.['src'] as string || '';
     video.controls = true;
     video.style.maxWidth = '100%';
     figure.appendChild(video);
 
-    if (block.attrs?.caption) {
+    if (block.attrs?.['caption']) {
       const caption = document.createElement('figcaption');
-      caption.textContent = block.attrs.caption as string;
+      caption.textContent = block.attrs['caption'] as string;
       figure.appendChild(caption);
     }
 
@@ -224,8 +224,8 @@ export class BlockRenderer {
     const div = document.createElement('div');
     div.className = 'philjs-embed';
     const iframe = document.createElement('iframe');
-    iframe.src = block.attrs?.src as string || '';
-    iframe.title = block.attrs?.title as string || 'Embedded content';
+    iframe.src = block.attrs?.['src'] as string || '';
+    iframe.title = block.attrs?.['title'] as string || 'Embedded content';
     iframe.style.width = '100%';
     iframe.style.border = 'none';
     div.appendChild(iframe);
@@ -234,16 +234,16 @@ export class BlockRenderer {
 
   private createCallout(block: Block): HTMLDivElement {
     const div = document.createElement('div');
-    div.style.backgroundColor = block.attrs?.backgroundColor as string || '#f3f4f6';
+    div.style.backgroundColor = block.attrs?.['backgroundColor'] as string || '#f3f4f6';
     div.style.padding = '1rem';
     div.style.borderRadius = '0.375rem';
     div.style.display = 'flex';
     div.style.gap = '0.75rem';
 
-    if (block.attrs?.icon) {
+    if (block.attrs?.['icon']) {
       const icon = document.createElement('span');
       icon.className = 'philjs-callout-icon';
-      icon.textContent = block.attrs.icon as string;
+      icon.textContent = block.attrs['icon'] as string;
       div.appendChild(icon);
     }
 
@@ -270,7 +270,7 @@ export class BlockRenderer {
   private createColumns(block: Block, editor: EditorInstance | null, readOnly: boolean): HTMLDivElement {
     const div = document.createElement('div');
     div.style.display = 'grid';
-    div.style.gridTemplateColumns = `repeat(${block.attrs?.columns || 2}, 1fr)`;
+    div.style.gridTemplateColumns = `repeat(${block.attrs?.['columns'] || 2}, 1fr)`;
     div.style.gap = '1rem';
 
     for (const child of block.children || []) {

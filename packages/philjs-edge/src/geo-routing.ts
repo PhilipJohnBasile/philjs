@@ -123,12 +123,17 @@ export class GeoRouter {
       return latencyA - latencyB;
     });
 
-    return {
-      node: sorted[0],
-      reason: `Lowest latency: ${this.healthStatus.get(sorted[0].id)?.latency}ms`,
-      latency: this.healthStatus.get(sorted[0].id)?.latency,
+    const best = sorted[0]!;
+    const bestLatency = this.healthStatus.get(best.id)?.latency;
+    const result: RoutingDecision = {
+      node: best,
+      reason: `Lowest latency: ${bestLatency}ms`,
       alternatives: sorted.slice(1, 4),
     };
+    if (bestLatency !== undefined) {
+      result.latency = bestLatency;
+    }
+    return result;
   }
 
   private routeByGeography(nodes: EdgeNode[], clientLocation: GeoLocation): RoutingDecision {
@@ -154,10 +159,11 @@ export class GeoRouter {
 
     const sorted = filtered.sort((a, b) => a.distance - b.distance);
 
+    const best = sorted[0]!;
     return {
-      node: sorted[0].node,
-      reason: `Nearest: ${sorted[0].distance.toFixed(0)}km away`,
-      distance: sorted[0].distance,
+      node: best.node,
+      reason: `Nearest: ${best.distance.toFixed(0)}km away`,
+      distance: best.distance,
       alternatives: sorted.slice(1, 4).map(s => s.node),
     };
   }
@@ -178,7 +184,7 @@ export class GeoRouter {
     }
 
     return {
-      node: nodes[0],
+      node: nodes[0]!,
       reason: 'Weighted fallback',
       alternatives: nodes.slice(1, 4),
     };
@@ -190,7 +196,7 @@ export class GeoRouter {
     const sorted = nodes.toSorted((a, b) => b.weight - a.weight);
 
     return {
-      node: sorted[0],
+      node: sorted[0]!,
       reason: `Primary node (failover ready with ${sorted.length - 1} alternatives)`,
       alternatives: sorted.slice(1, 4),
     };
@@ -224,7 +230,7 @@ export class GeoRouter {
     });
 
     const sorted = scored.sort((a, b) => b.score - a.score);
-    const best = sorted[0];
+    const best = sorted[0]!;
 
     return {
       node: best.node,
@@ -346,25 +352,32 @@ export function getClientLocation(request: Request): GeoLocation | null {
   const cfLat = request.headers.get('cf-iplatitude');
   const cfLon = request.headers.get('cf-iplongitude');
   if (cfLat && cfLon) {
-    return {
+    const loc: GeoLocation = {
       latitude: parseFloat(cfLat),
       longitude: parseFloat(cfLon),
-      country: request.headers.get('cf-ipcountry') || undefined,
-      city: request.headers.get('cf-ipcity') || undefined,
-      continent: request.headers.get('cf-ipcontinent') || undefined,
     };
+    const cfCountry = request.headers.get('cf-ipcountry');
+    if (cfCountry) loc.country = cfCountry;
+    const cfCity = request.headers.get('cf-ipcity');
+    if (cfCity) loc.city = cfCity;
+    const cfContinent = request.headers.get('cf-ipcontinent');
+    if (cfContinent) loc.continent = cfContinent;
+    return loc;
   }
 
   // Try Vercel headers
   const vercelLat = request.headers.get('x-vercel-ip-latitude');
   const vercelLon = request.headers.get('x-vercel-ip-longitude');
   if (vercelLat && vercelLon) {
-    return {
+    const loc: GeoLocation = {
       latitude: parseFloat(vercelLat),
       longitude: parseFloat(vercelLon),
-      country: request.headers.get('x-vercel-ip-country') || undefined,
-      city: request.headers.get('x-vercel-ip-city') || undefined,
     };
+    const vercelCountry = request.headers.get('x-vercel-ip-country');
+    if (vercelCountry) loc.country = vercelCountry;
+    const vercelCity = request.headers.get('x-vercel-ip-city');
+    if (vercelCity) loc.city = vercelCity;
+    return loc;
   }
 
   // Try Fastly headers

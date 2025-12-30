@@ -2,7 +2,7 @@
  * Style Panel - Display and edit element styles
  */
 
-import type { ComponentNode, StyleInfo, ComputedBox } from './types';
+import type { ComponentNode, StyleInfo, ComputedBox } from './types.js';
 
 export class StylePanel {
   private container: HTMLElement | null = null;
@@ -131,6 +131,7 @@ export class StylePanel {
     const entries: Array<{ property: string; value: string }> = [];
     for (let i = 0; i < styles.length; i++) {
       const property = styles[i];
+      if (!property) continue;
       const value = styles.getPropertyValue(property);
       if (value) {
         entries.push({ property, value });

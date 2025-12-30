@@ -55,7 +55,7 @@ export interface PhotoResult {
   uri: string;
   width: number;
   height: number;
-  base64?: string;
+  base64?: string | undefined;
   exif?: Record<string, any>;
 }
 
@@ -293,7 +293,10 @@ async function takePictureWeb(options: PhotoOptions): Promise<PhotoResult> {
   };
 
   if (options.base64) {
-    result.base64 = dataUrl.split(',')[1];
+    const base64Data = dataUrl.split(',')[1];
+    if (base64Data !== undefined) {
+      result.base64 = base64Data;
+    }
   }
 
   return result;
@@ -410,7 +413,7 @@ async function pickImageWeb(options: {
         }
       }
 
-      resolve(options.allowsMultipleSelection ? results : results[0]);
+      resolve(options.allowsMultipleSelection ? results : results[0]!);
     };
 
     input.click();

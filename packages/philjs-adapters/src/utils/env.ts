@@ -142,7 +142,7 @@ export function loadEnvironment(options: {
   /** Additional env files to load */
   envFiles?: string[];
 } = {}): LoadedEnv {
-  const { cwd = process.cwd(), mode = process.env.NODE_ENV || 'development', envFiles = [] } = options;
+  const { cwd = process.cwd(), mode = process.env['NODE_ENV'] || 'development', envFiles = [] } = options;
 
   const variables: Record<string, string> = {};
   const errors: string[] = [];
@@ -477,21 +477,21 @@ export function getEnv<T = string>(
  * Check if running in production
  */
 export function isProduction(): boolean {
-  return process.env.NODE_ENV === 'production';
+  return process.env['NODE_ENV'] === 'production';
 }
 
 /**
  * Check if running in development
  */
 export function isDevelopment(): boolean {
-  return process.env.NODE_ENV !== 'production';
+  return process.env['NODE_ENV'] !== 'production';
 }
 
 /**
  * Get the current environment mode
  */
 export function getMode(): string {
-  return process.env.NODE_ENV || 'development';
+  return process.env['NODE_ENV'] || 'development';
 }
 
 /**
@@ -502,28 +502,28 @@ export const platformEnv = {
    * Check if running on Vercel
    */
   isVercel(): boolean {
-    return !!process.env.VERCEL;
+    return !!process.env['VERCEL'];
   },
 
   /**
    * Check if running on Netlify
    */
   isNetlify(): boolean {
-    return !!process.env.NETLIFY;
+    return !!process.env['NETLIFY'];
   },
 
   /**
    * Check if running on Cloudflare
    */
   isCloudflare(): boolean {
-    return !!(process.env.CF_PAGES || process.env.CLOUDFLARE_WORKERS);
+    return !!(process.env['CF_PAGES'] || process.env['CLOUDFLARE_WORKERS']);
   },
 
   /**
    * Check if running on AWS Lambda
    */
   isAWSLambda(): boolean {
-    return !!(process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.AWS_EXECUTION_ENV);
+    return !!(process.env['AWS_LAMBDA_FUNCTION_NAME'] || process.env['AWS_EXECUTION_ENV']);
   },
 
   /**
@@ -537,21 +537,21 @@ export const platformEnv = {
    * Check if running on Railway
    */
   isRailway(): boolean {
-    return !!process.env.RAILWAY_ENVIRONMENT;
+    return !!process.env['RAILWAY_ENVIRONMENT'];
   },
 
   /**
    * Check if running on Render
    */
   isRender(): boolean {
-    return !!process.env.RENDER;
+    return !!process.env['RENDER'];
   },
 
   /**
    * Check if running on Fly.io
    */
   isFlyio(): boolean {
-    return !!process.env.FLY_APP_NAME;
+    return !!process.env['FLY_APP_NAME'];
   },
 
   /**

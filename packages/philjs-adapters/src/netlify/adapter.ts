@@ -12,7 +12,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, ServerlessAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, EdgeAdapter, ServerlessAdapter, RequestContext } from '../types.js';
 
 export interface NetlifyConfig extends AdapterConfig {
   /** Use Edge Functions (default: false, uses Netlify Functions) */

@@ -104,11 +104,14 @@ export class PPRBuilder {
             expanded.push({ path, entry });
           }
         } catch (error) {
-          this.errors.push({
+          const buildError: PPRBuildError = {
             path: entry.path,
             message: `Failed to get static paths: ${error instanceof Error ? error.message : String(error)}`,
-            stack: error instanceof Error ? error.stack : undefined,
-          });
+          };
+          if (error instanceof Error && error.stack) {
+            buildError.stack = error.stack;
+          }
+          this.errors.push(buildError);
         }
       } else {
         expanded.push({ path: entry.path, entry });
@@ -171,11 +174,14 @@ export class PPRBuilder {
         `[PPR] Built: ${path} (${shell.boundaries.size} dynamic boundaries)`
       );
     } catch (error) {
-      this.errors.push({
+      const buildError: PPRBuildError = {
         path,
         message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      });
+      };
+      if (error instanceof Error && error.stack) {
+        buildError.stack = error.stack;
+      }
+      this.errors.push(buildError);
       console.error(`[PPR] Error building ${path}:`, error);
     }
   }
@@ -203,7 +209,7 @@ export class PPRBuilder {
     const parts = path.split("/");
 
     for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
+      const part = parts[i]!;
       if (part.startsWith("[") && part.endsWith("]")) {
         const paramName = part.slice(1, -1);
         params[paramName] = parts[i] || "";
@@ -504,12 +510,15 @@ export async function buildPPRRoute(
   outDir: string,
   cache?: PPRCache
 ): Promise<StaticShell | null> {
-  const builder = new PPRBuilder({
+  const builderConfig: PPRBuildConfig = {
     outDir,
     routes: [entry],
     renderFn: async () => "",
-    cache,
-  });
+  };
+  if (cache) {
+    builderConfig.cache = cache;
+  }
+  const builder = new PPRBuilder(builderConfig);
 
   const result = await builder.build();
 
@@ -600,13 +609,18 @@ export function pprVitePlugin(config: Partial<PPRBuildConfig> = {}) {
       const outDir = options.dir || config.outDir || "dist";
 
       try {
-        await buildPPR({
+        const buildConfig: PPRBuildConfig = {
           outDir: `${outDir}/ppr`,
           routes: config.routes || [],
           renderFn: config.renderFn || (async () => ""),
-          cache: config.cache,
-          concurrency: config.concurrency,
-        });
+        };
+        if (config.cache) {
+          buildConfig.cache = config.cache;
+        }
+        if (config.concurrency !== undefined) {
+          buildConfig.concurrency = config.concurrency;
+        }
+        await buildPPR(buildConfig);
       } catch (error) {
         console.error("[PPR] Build failed:", error);
       }

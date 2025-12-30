@@ -64,7 +64,7 @@ export function extractComponentInfo(element: Element): ComponentInfo {
     renderTime: 0,
     updateCount: 0,
     path,
-    source,
+    ...(source !== undefined && { source }),
   };
 
   componentRegistry.set(element, info);
@@ -257,7 +257,7 @@ function extractSourceLocation(element: Element): SourceLocation | undefined {
   const comments = getElementComments(element);
   for (const comment of comments) {
     const match = comment.textContent?.match(/source:(.+):(\d+):(\d+)/);
-    if (match) {
+    if (match && match[1] && match[2] && match[3]) {
       return {
         file: match[1],
         line: parseInt(match[2], 10),

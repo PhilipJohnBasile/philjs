@@ -6,8 +6,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "strict": false
+    "noUnusedParameters": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/edge-mesh",
   "version": "0.1.0",
+  "type": "module",
   "description": "Distributed edge consensus for PhilJS - P2P mesh networking, Raft consensus, gossip protocol",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

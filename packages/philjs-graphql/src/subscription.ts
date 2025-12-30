@@ -148,12 +148,12 @@ export class SubscriptionClient {
     const subscription: Subscription = {
       id,
       query,
-      variables: options.variables,
-      operationName: options.operationName,
-      onData: options.onData,
-      onError: options.onError,
-      onComplete: options.onComplete,
       state: state as Signal<SubscriptionState>,
+      ...(options.variables !== undefined && { variables: options.variables }),
+      ...(options.operationName !== undefined && { operationName: options.operationName }),
+      ...(options.onData !== undefined && { onData: options.onData }),
+      ...(options.onError !== undefined && { onError: options.onError }),
+      ...(options.onComplete !== undefined && { onComplete: options.onComplete }),
     };
 
     this.subscriptions.set(id, subscription);

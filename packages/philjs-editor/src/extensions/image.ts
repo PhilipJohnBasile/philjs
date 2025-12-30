@@ -138,7 +138,7 @@ function createImageUploadPlugin(options: ImageUploadOptions) {
           images.forEach(async (image) => {
             try {
               const url = await upload(image);
-              const node = schema.nodes.image.create({ src: url, alt: image.name });
+              const node = schema.nodes['image']!.create({ src: url, alt: image.name });
               const transaction = view.state.tr.insert(coordinates.pos, node);
               view.dispatch(transaction);
             } catch (error) {
@@ -170,7 +170,7 @@ function createImageUploadPlugin(options: ImageUploadOptions) {
           images.forEach(async (image) => {
             try {
               const url = await upload(image);
-              const node = schema.nodes.image.create({ src: url, alt: image.name });
+              const node = schema.nodes['image']!.create({ src: url, alt: image.name });
               const transaction = view.state.tr.replaceSelectionWith(node);
               view.dispatch(transaction);
             } catch (error) {
@@ -191,12 +191,10 @@ function createImageUploadPlugin(options: ImageUploadOptions) {
 export const ImageUpload = Extension.create<ImageUploadOptions>({
   name: 'imageUpload',
 
-  addOptions() {
+  addOptions(): ImageUploadOptions {
     return {
-      uploadFn: undefined,
       maxSize: 10 * 1024 * 1024,
       allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
-      uploadEndpoint: undefined,
       uploadHeaders: {},
     };
   },

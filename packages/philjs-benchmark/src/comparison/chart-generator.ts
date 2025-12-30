@@ -42,7 +42,7 @@ export function generateComparisonChart(
   frameworkData: Record<string, any>,
   benchmarkName: string
 ): ChartData {
-  const frameworks = frameworkData.frameworks;
+  const frameworks = frameworkData['frameworks'] as Record<string, any> | undefined;
   const labels: string[] = ['PhilJS'];
   const data: number[] = [];
 
@@ -55,10 +55,13 @@ export function generateComparisonChart(
   }
 
   // Add other frameworks
-  for (const [key, framework] of Object.entries(frameworks)) {
-    if (framework.benchmarks && framework.benchmarks[benchmarkName]) {
-      labels.push(framework.name);
-      data.push(framework.benchmarks[benchmarkName].mean);
+  if (frameworks) {
+    for (const [key, framework] of Object.entries(frameworks)) {
+      const fw = framework as Record<string, any>;
+      if (fw['benchmarks'] && fw['benchmarks'][benchmarkName]) {
+        labels.push(fw['name'] as string);
+        data.push(fw['benchmarks'][benchmarkName].mean as number);
+      }
     }
   }
 
@@ -68,18 +71,7 @@ export function generateComparisonChart(
       {
         label: benchmarkName,
         data,
-        backgroundColor: [
-          '#4f46e5', // PhilJS - indigo
-          '#94a3b8', // Vanilla - gray
-          '#61dafb', // React - blue
-          '#42b883', // Vue - green
-          '#ff3e00', // Svelte - red
-          '#2c4f7c', // Solid - blue
-          '#18b6f6', // Qwik - cyan
-          '#673ab8', // Preact - purple
-          '#dd0031', // Angular - red
-          '#00e8ff', // Lit - cyan
-        ],
+        backgroundColor: '#4f46e5',
       },
     ],
   };
@@ -172,7 +164,7 @@ export function generateComparisonHTML(
   philjsResults: BenchmarkResult[],
   frameworkData: Record<string, any>
 ): string {
-  const benchmarkDescriptions = frameworkData.benchmarkDescriptions || {};
+  const benchmarkDescriptions = (frameworkData['benchmarkDescriptions'] as Record<string, string> | undefined) ?? {};
 
   const chartSections = Object.entries(charts)
     .map(([benchmark, chartData]) => {
@@ -390,9 +382,14 @@ export function generateComparisonHTML(
  * Generate stats table for a benchmark.
  */
 function generateStatsTable(benchmark: string, chartData: ChartData): string {
+  const dataset = chartData.datasets[0];
+  if (!dataset) {
+    return '<table><tbody><tr><td>No data available</td></tr></tbody></table>';
+  }
+
   const values = chartData.labels.map((label, i) => ({
     framework: label,
-    value: chartData.datasets[0].data[i],
+    value: dataset.data[i] ?? 0,
   }));
 
   // Sort by value
@@ -485,7 +482,7 @@ export function generateComparisonMarkdown(
   philjsResults: BenchmarkResult[],
   frameworkData: Record<string, any>
 ): string {
-  const frameworks = frameworkData.frameworks;
+  const frameworks = frameworkData['frameworks'] as Record<string, any> | undefined;
   const benchmarks = [
     'create-1000-rows',
     'update-every-10th-row',
@@ -498,24 +495,28 @@ export function generateComparisonMarkdown(
   md += 'PhilJS compared to other popular frameworks (lower is better):\n\n';
 
   for (const benchmark of benchmarks) {
-    const description = frameworkData.benchmarkDescriptions?.[benchmark] || benchmark;
+    const benchmarkDescriptions = frameworkData['benchmarkDescriptions'] as Record<string, string> | undefined;
+    const description = benchmarkDescriptions?.[benchmark] ?? benchmark;
     md += `## ${description}\n\n`;
     md += '| Framework | Time (ms) | vs PhilJS |\n';
     md += '|-----------|-----------|----------|\n';
 
     const philjsResult = philjsResults.find(r => r.name === benchmark);
-    const philjsValue = philjsResult?.mean || 0;
+    const philjsValue = philjsResult?.mean ?? 0;
 
     const results: Array<{ name: string; value: number }> = [
       { name: 'PhilJS', value: philjsValue },
     ];
 
-    for (const [key, framework] of Object.entries(frameworks)) {
-      if (framework.benchmarks && framework.benchmarks[benchmark]) {
-        results.push({
-          name: framework.name,
-          value: framework.benchmarks[benchmark].mean,
-        });
+    if (frameworks) {
+      for (const [key, framework] of Object.entries(frameworks)) {
+        const fw = framework as Record<string, any>;
+        if (fw['benchmarks'] && fw['benchmarks'][benchmark]) {
+          results.push({
+            name: fw['name'] as string,
+            value: fw['benchmarks'][benchmark].mean as number,
+          });
+        }
       }
     }
 
@@ -529,7 +530,7 @@ export function generateComparisonMarkdown(
         ? `+${diff.toFixed(1)}% slower`
         : `${Math.abs(diff).toFixed(1)}% faster`;
 
-      const badge = result === results[0] ? ' 🏆' : '';
+      const badge = result === results[0] ? ' (fastest)' : '';
       md += `| ${result.name}${badge} | ${result.value.toFixed(2)} | ${diffStr} |\n`;
     }
 

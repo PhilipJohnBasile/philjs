@@ -46,6 +46,22 @@ export interface WebSocketConnectionConfig {
   protocols?: string | string[];
 }
 
+interface ResolvedWebSocketConnectionConfig {
+  url: string;
+  reconnect: {
+    enabled: boolean;
+    maxAttempts: number;
+    delay: number;
+    maxDelay: number;
+    backoffMultiplier: number;
+  };
+  connectionTimeout: number;
+  heartbeatInterval: number;
+  WebSocketImpl: typeof WebSocket;
+  headers: Record<string, string>;
+  protocols: string | string[];
+}
+
 export interface WebSocketMessage {
   type: 'subscribe' | 'unsubscribe' | 'data' | 'error' | 'complete' | 'ping' | 'pong';
   id?: string;
@@ -60,7 +76,7 @@ export interface WebSocketMessage {
 
 export class WebSocketConnection {
   private ws: WebSocket | null = null;
-  private config: Required<WebSocketConnectionConfig>;
+  private config: ResolvedWebSocketConnectionConfig;
   private reconnectAttempts = 0;
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;

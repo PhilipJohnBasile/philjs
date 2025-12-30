@@ -12,7 +12,7 @@ import type {
   UseGodotResult,
   SignalHandler,
   GodotEmbedProps,
-} from './types';
+} from './types.js';
 
 declare global {
   interface Window {

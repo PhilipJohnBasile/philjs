@@ -11,7 +11,7 @@
 
 import { signal, batch, type Signal } from 'philjs-core';
 import type { DocumentNode } from 'graphql';
-import type { CacheStore } from './index';
+import type { CacheStore } from './index.js';
 
 export interface OptimisticUpdateConfig {
   /** Enable automatic rollback on error (default: true) */
@@ -42,7 +42,7 @@ export interface OptimisticMutation<TData = any, TVariables = any> {
   /** Timestamp */
   timestamp: number;
   /** Error if failed */
-  error?: Error;
+  error?: Error | undefined;
 }
 
 export interface OptimisticUpdateSnapshot {
@@ -99,11 +99,11 @@ export class OptimisticUpdateManager {
     const optimisticMutation: OptimisticMutation<TData, TVariables> = {
       id,
       mutation,
-      variables,
-      optimisticResponse,
-      update,
       status: 'pending',
       timestamp: Date.now(),
+      ...(variables !== undefined && { variables }),
+      ...(optimisticResponse !== undefined && { optimisticResponse }),
+      ...(update !== undefined && { update }),
     };
 
     this.mutations.set(id, optimisticMutation);

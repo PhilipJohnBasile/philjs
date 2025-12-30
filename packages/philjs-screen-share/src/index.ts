@@ -314,10 +314,10 @@ class AnnotationLayer {
     if (points.length < 2) return;
 
     this.ctx.beginPath();
-    this.ctx.moveTo(points[0].x, points[0].y);
+    this.ctx.moveTo(points[0]!.x, points[0]!.y);
 
     for (let i = 1; i < points.length; i++) {
-      this.ctx.lineTo(points[i].x, points[i].y);
+      this.ctx.lineTo(points[i]!.x, points[i]!.y);
     }
 
     this.ctx.stroke();
@@ -326,8 +326,8 @@ class AnnotationLayer {
   private drawArrow(points: Array<{ x: number; y: number }>): void {
     if (points.length < 2) return;
 
-    const start = points[0];
-    const end = points[points.length - 1];
+    const start = points[0]!;
+    const end = points[points.length - 1]!;
 
     // Draw line
     this.ctx.beginPath();
@@ -356,8 +356,8 @@ class AnnotationLayer {
   private drawRectangle(points: Array<{ x: number; y: number }>): void {
     if (points.length < 2) return;
 
-    const start = points[0];
-    const end = points[points.length - 1];
+    const start = points[0]!;
+    const end = points[points.length - 1]!;
     const width = end.x - start.x;
     const height = end.y - start.y;
 
@@ -367,8 +367,8 @@ class AnnotationLayer {
   private drawEllipse(points: Array<{ x: number; y: number }>): void {
     if (points.length < 2) return;
 
-    const start = points[0];
-    const end = points[points.length - 1];
+    const start = points[0]!;
+    const end = points[points.length - 1]!;
     const centerX = (start.x + end.x) / 2;
     const centerY = (start.y + end.y) / 2;
     const radiusX = Math.abs(end.x - start.x) / 2;
@@ -382,8 +382,8 @@ class AnnotationLayer {
   private drawSpotlight(points: Array<{ x: number; y: number }>): void {
     if (points.length < 2) return;
 
-    const start = points[0];
-    const end = points[points.length - 1];
+    const start = points[0]!;
+    const end = points[points.length - 1]!;
     const centerX = (start.x + end.x) / 2;
     const centerY = (start.y + end.y) / 2;
     const radius = Math.max(
@@ -477,7 +477,7 @@ class PresenterMode {
     this.position = position;
     this.size = size;
 
-    const track = screenStream.getVideoTracks()[0];
+    const track = screenStream.getVideoTracks()[0]!;
     const settings = track.getSettings();
 
     this.mainCanvas = document.createElement('canvas');
@@ -735,10 +735,10 @@ class ScreenShareManager {
       video: {
         displaySurface: this.config.preferredSource,
         frameRate: this.config.frameRate
-      } as any,
+      } as unknown as MediaTrackConstraints,
       audio: this.config.systemAudio ? {
         suppressLocalAudioPlayback: !this.config.selfBrowserAudio
-      } : false
+      } as unknown as MediaTrackConstraints : false
     };
 
     if (this.config.resolution) {
@@ -748,7 +748,7 @@ class ScreenShareManager {
 
     this.screenStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
-    const videoTrack = this.screenStream.getVideoTracks()[0];
+    const videoTrack = this.screenStream.getVideoTracks()[0]!;
     const settings = videoTrack.getSettings();
     const width = settings.width || 1920;
     const height = settings.height || 1080;
@@ -789,10 +789,10 @@ class ScreenShareManager {
     this.startCompositing();
 
     // Handle track ended
-    videoTrack.onended = () => {
+    videoTrack.addEventListener('ended', () => {
       this.stop();
       this.emit('stopped', { reason: 'user' });
-    };
+    });
 
     this.emit('started', { stream: this.outputStream });
     return this.outputStream;

@@ -6,9 +6,10 @@
  * a Rocket server with PhilJS components.
  */
 
-import type { RocketConfig, RocketSSRConfig, RocketLiveViewConfig } from './types';
-import { SSRMiddleware, CORSMiddleware, SecurityMiddleware } from './middleware';
-import { SSRFairing, LiveViewFairing, StateFairing, MetricsFairing, FairingComposer } from './fairing';
+import type { RocketConfig, RocketSSRConfig, RocketLiveViewConfig } from './types.js';
+import { SSRMiddleware, CORSMiddleware, SecurityMiddleware } from './middleware.js';
+import type { SSRFairingConfig, LiveViewFairingConfig } from './fairing.js';
+import { SSRFairing, LiveViewFairing, StateFairing, MetricsFairing, FairingComposer } from './fairing.js';
 
 // ============================================================================
 // Server Configuration
@@ -82,19 +83,19 @@ export class RocketServer {
 
     // Apply default fairings based on config
     if (config.philjs?.ssr?.enabled !== false) {
-      this.fairings.withSSR({
-        streaming: config.philjs?.ssr?.streaming,
-        hydration: config.philjs?.ssr?.hydration,
-        templatePath: config.templateDir,
-      });
+      const ssrConfig: SSRFairingConfig = {};
+      if (config.philjs?.ssr?.streaming !== undefined) ssrConfig.streaming = config.philjs.ssr.streaming;
+      if (config.philjs?.ssr?.hydration !== undefined) ssrConfig.hydration = config.philjs.ssr.hydration;
+      if (config.templateDir !== undefined) ssrConfig.templatePath = config.templateDir;
+      this.fairings.withSSR(ssrConfig);
     }
 
     if (config.philjs?.liveview?.enabled) {
-      this.fairings.withLiveView({
-        heartbeatInterval: config.philjs.liveview.heartbeatInterval,
-        timeout: config.philjs.liveview.timeout,
-        maxConnections: config.philjs.liveview.maxConnections,
-      });
+      const liveViewConfig: LiveViewFairingConfig = {};
+      if (config.philjs.liveview.heartbeatInterval !== undefined) liveViewConfig.heartbeatInterval = config.philjs.liveview.heartbeatInterval;
+      if (config.philjs.liveview.timeout !== undefined) liveViewConfig.timeout = config.philjs.liveview.timeout;
+      if (config.philjs.liveview.maxConnections !== undefined) liveViewConfig.maxConnections = config.philjs.liveview.maxConnections;
+      this.fairings.withLiveView(liveViewConfig);
     }
   }
 
@@ -174,11 +175,11 @@ export class RocketServer {
    * Enable SSR with configuration
    */
   withSSR(config?: Partial<RocketSSRConfig>): this {
-    this.fairings.withSSR({
-      streaming: config?.streaming,
-      hydration: config?.hydration,
-      templatePath: this.config.templateDir,
-    });
+    const ssrFairingConfig: SSRFairingConfig = {};
+    if (config?.streaming !== undefined) ssrFairingConfig.streaming = config.streaming;
+    if (config?.hydration !== undefined) ssrFairingConfig.hydration = config.hydration;
+    if (this.config.templateDir !== undefined) ssrFairingConfig.templatePath = this.config.templateDir;
+    this.fairings.withSSR(ssrFairingConfig);
     return this;
   }
 
@@ -186,12 +187,12 @@ export class RocketServer {
    * Enable LiveView with configuration
    */
   withLiveView(config?: Partial<RocketLiveViewConfig>): this {
-    this.fairings.withLiveView({
-      heartbeatInterval: config?.heartbeatInterval,
-      timeout: config?.timeout,
-      maxConnections: config?.maxConnections,
-      compression: config?.compression,
-    });
+    const liveViewFairingConfig: LiveViewFairingConfig = {};
+    if (config?.heartbeatInterval !== undefined) liveViewFairingConfig.heartbeatInterval = config.heartbeatInterval;
+    if (config?.timeout !== undefined) liveViewFairingConfig.timeout = config.timeout;
+    if (config?.maxConnections !== undefined) liveViewFairingConfig.maxConnections = config.maxConnections;
+    if (config?.compression !== undefined) liveViewFairingConfig.compression = config.compression;
+    this.fairings.withLiveView(liveViewFairingConfig);
     return this;
   }
 
@@ -502,6 +503,10 @@ export function createDevServer(port: number = 8000): RocketServer {
  * Create a production server
  */
 export function createProdServer(config: RocketServerConfig): RocketServer {
+  const liveviewConfig: RocketLiveViewConfig = { enabled: true };
+  if (config.philjs?.liveview?.enabled !== undefined) {
+    liveviewConfig.enabled = config.philjs.liveview.enabled;
+  }
   return new RocketServer({
     host: '0.0.0.0',
     workers: config.workers || 8,
@@ -509,7 +514,7 @@ export function createProdServer(config: RocketServerConfig): RocketServer {
     ...config,
     philjs: {
       ssr: { enabled: true, streaming: true, hydration: true, cacheEnabled: true },
-      liveview: { enabled: config.philjs?.liveview?.enabled },
+      liveview: liveviewConfig,
       security: { enabled: true },
       ...config.philjs,
     },

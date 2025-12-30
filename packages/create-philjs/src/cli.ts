@@ -8,8 +8,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import fs from 'fs-extra';
-import path from 'path';
-import { execSync } from 'child_process';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
 
 const VERSION = '1.0.0';
 
@@ -36,17 +36,18 @@ async function main() {
     .option('-t, --template <name>', 'Template', 'default')
     .option('--no-git', 'Skip git init')
     .option('--no-install', 'Skip install')
-    .action(async (name, opts) => {
+    .action(async (name: string, opts: Record<string, unknown>) => {
       await createProject(name, opts);
     });
     
   program.parse();
 }
 
-async function createProject(name: string, opts: any) {
+async function createProject(name: string, opts: Record<string, unknown>) {
   const projectPath = path.resolve(process.cwd(), name);
-  const template = opts.template || 'default';
-  const features = TEMPLATES[template as keyof typeof TEMPLATES]?.features || ['signals'];
+  const template = (opts['template'] as string) || 'default';
+  const templateConfig = TEMPLATES[template as keyof typeof TEMPLATES];
+  const features = templateConfig?.features ?? ['signals'];
   
   const spinner = ora('Creating project...').start();
   
@@ -58,6 +59,15 @@ async function createProject(name: string, opts: any) {
     fs.ensureDirSync(path.join(projectPath, 'public'));
     
     // package.json
+    const dependencies: Record<string, string> = {
+      '@philjs/core': '^1.0.0',
+      '@philjs/signals': '^1.0.0',
+    };
+
+    if (features.includes('router')) dependencies['@philjs/router'] = '^1.0.0';
+    if (features.includes('ssr')) dependencies['@philjs/ssr'] = '^1.0.0';
+    if (features.includes('htmx')) dependencies['@philjs/htmx'] = '^1.0.0';
+
     const pkg = {
       name,
       version: '0.1.0',
@@ -68,19 +78,12 @@ async function createProject(name: string, opts: any) {
         build: 'philjs build',
         preview: 'philjs preview',
       },
-      dependencies: {
-        '@philjs/core': '^1.0.0',
-        '@philjs/signals': '^1.0.0',
-      },
+      dependencies,
       devDependencies: {
         '@philjs/cli': '^1.0.0',
         typescript: '^5.3.0',
       },
     };
-    
-    if (features.includes('router')) pkg.dependencies['@philjs/router'] = '^1.0.0';
-    if (features.includes('ssr')) pkg.dependencies['@philjs/ssr'] = '^1.0.0';
-    if (features.includes('htmx')) pkg.dependencies['@philjs/htmx'] = '^1.0.0';
     
     fs.writeJsonSync(path.join(projectPath, 'package.json'), pkg, { spaces: 2 });
     
@@ -112,12 +115,14 @@ async function createProject(name: string, opts: any) {
     
     spinner.succeed('Project created!');
     
-    if (opts.git !== false) {
+    if (opts['git'] !== false) {
       try {
         execSync('git init', { cwd: projectPath, stdio: 'ignore' });
         fs.writeFileSync(path.join(projectPath, '.gitignore'), 'node_modules/\ndist/\n.cache/\n');
         console.log(chalk.dim('  Git initialized'));
-      } catch {}
+      } catch (_error: unknown) {
+        // Git init failed silently - user may not have git installed
+      }
     }
     
     console.log(chalk.green.bold('\nSuccess!') + ' Created ' + chalk.cyan(name));
@@ -126,7 +131,7 @@ async function createProject(name: string, opts: any) {
     console.log(chalk.cyan('  npm install'));
     console.log(chalk.cyan('  npm run dev'));
     
-  } catch (err) {
+  } catch (err: unknown) {
     spinner.fail('Failed');
     console.error(err);
     process.exit(1);

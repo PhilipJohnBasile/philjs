@@ -67,13 +67,13 @@ export interface WebSocketClientOptions {
 
 export class WebSocketClient {
   private url: string;
-  private protocols?: string[];
+  private protocols: string[] | undefined;
   private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
   private maxAttempts: number;
   private reconnectDelay: number;
   private maxReconnectDelay: number;
-  private heartbeatTimer?: ReturnType<typeof setInterval>;
+  private heartbeatTimer: ReturnType<typeof setInterval> | undefined;
   private heartbeatInterval: number;
   private shouldReconnect: boolean;
   private messageHandlers = new Map<string, Set<(payload: any) => void>>();
@@ -82,10 +82,10 @@ export class WebSocketClient {
   public lastMessage = signal<RealtimeMessage | null>(null);
 
   private callbacks: {
-    onOpen?: () => void;
-    onClose?: (event: CloseEvent) => void;
-    onError?: (error: Event) => void;
-    onMessage?: (message: RealtimeMessage) => void;
+    onOpen: (() => void) | undefined;
+    onClose: ((event: CloseEvent) => void) | undefined;
+    onError: ((error: Event) => void) | undefined;
+    onMessage: ((message: RealtimeMessage) => void) | undefined;
   };
 
   constructor(options: WebSocketClientOptions) {
@@ -171,9 +171,12 @@ export class WebSocketClient {
     const message: RealtimeMessage = {
       type,
       payload,
-      room,
       timestamp: Date.now(),
     };
+
+    if (room !== undefined) {
+      message.room = room;
+    }
 
     this.ws.send(JSON.stringify(message));
   }

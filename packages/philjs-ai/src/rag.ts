@@ -215,7 +215,7 @@ export class RAGPipeline {
 
     const docsWithEmbeddings = documents.map((doc, i) => ({
       ...doc,
-      embedding: embeddings[i],
+      embedding: embeddings[i]!,
     }));
 
     await this.vectorStore.add(docsWithEmbeddings);
@@ -230,7 +230,7 @@ export class RAGPipeline {
     const [questionEmbedding] = await this.provider.embed([question]);
 
     // Search for relevant documents
-    const results = await this.vectorStore.search(questionEmbedding, this.topK);
+    const results = await this.vectorStore.search(questionEmbedding!, this.topK);
     const relevantResults = results.filter(r => r.score >= this.minScore);
 
     // Build context
@@ -270,15 +270,16 @@ export class TextLoader implements DocumentLoader {
 
   constructor(content: string, metadata?: Record<string, any>) {
     this.content = content;
-    this.metadata = metadata;
+    if (metadata !== undefined) this.metadata = metadata;
   }
 
   async load(): Promise<Document[]> {
-    return [{
+    const doc: Document = {
       id: generateId(),
       content: this.content,
-      metadata: this.metadata,
-    }];
+    };
+    if (this.metadata !== undefined) doc.metadata = this.metadata;
+    return [doc];
   }
 }
 
@@ -351,7 +352,7 @@ export class RecursiveCharacterSplitter implements TextSplitter {
         return [text];
       }
 
-      const separator = this.separators[separatorIndex];
+      const separator = this.separators[separatorIndex]!;
       if (separator === '') {
         // Last resort: split by character
         const result: string[] = [];
@@ -476,9 +477,9 @@ function cosineSimilarity(a: number[], b: number[]): number {
   let normB = 0;
 
   for (let i = 0; i < a.length; i++) {
-    dotProduct += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
+    dotProduct += a[i]! * b[i]!;
+    normA += a[i]! * a[i]!;
+    normB += b[i]! * b[i]!;
   }
 
   const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
@@ -490,7 +491,7 @@ export function euclideanDistance(a: number[], b: number[]): number {
 
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
-    sum += (a[i] - b[i]) ** 2;
+    sum += (a[i]! - b[i]!) ** 2;
   }
   return Math.sqrt(sum);
 }

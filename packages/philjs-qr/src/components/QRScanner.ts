@@ -3,7 +3,7 @@
  * Camera-based QR code and barcode scanning - vanilla JS
  */
 
-import type { ScannerConfig, ScanResult, BarcodeFormat } from '../types';
+import type { ScannerConfig, ScanResult, BarcodeFormat } from '../types.js';
 
 export interface QRScannerConfig extends ScannerConfig {
   container: HTMLElement;
@@ -193,8 +193,7 @@ export class QRScanner {
       const newTorchState = !settings.torch;
 
       await track.applyConstraints({
-        // @ts-ignore - torch is valid but not in types
-        advanced: [{ torch: newTorchState }],
+        advanced: [{ torch: newTorchState }] as unknown as MediaTrackConstraintSet[],
       });
 
       return newTorchState;
@@ -235,8 +234,8 @@ export class QRScanner {
         .then((barcodes) => {
           if (barcodes.length > 0) {
             const result: ScanResult = {
-              text: barcodes[0].rawValue,
-              format: barcodes[0].format.toUpperCase() as BarcodeFormat,
+              text: barcodes[0]!.rawValue,
+              format: barcodes[0]!.format.toUpperCase() as BarcodeFormat,
               timestamp: Date.now(),
             };
 

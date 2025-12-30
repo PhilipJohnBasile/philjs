@@ -117,24 +117,30 @@ export class MemoryStorageClient extends StorageClient {
     }
 
     const now = new Date();
-    this.storage.set(fullKey, {
+    const storedFile: StoredFile = {
       data: buffer,
       contentType,
-      metadata: options.metadata,
       createdAt: existingFile?.createdAt || now,
       updatedAt: now,
-    });
+    };
+    if (options.metadata !== undefined) {
+      storedFile.metadata = options.metadata;
+    }
+    this.storage.set(fullKey, storedFile);
 
     this.currentSize += sizeDelta;
 
-    return {
+    const result: StorageFile = {
       key,
       size: buffer.length,
       contentType,
       lastModified: now,
       etag: crypto.createHash('md5').update(buffer).digest('hex'),
-      metadata: options.metadata,
     };
+    if (options.metadata !== undefined) {
+      result.metadata = options.metadata;
+    }
+    return result;
   }
 
   async download(key: string, options: DownloadOptions = {}): Promise<Buffer> {
@@ -217,14 +223,17 @@ export class MemoryStorageClient extends StorageClient {
         }
       }
 
-      files.push({
+      const storageFile: StorageFile = {
         key,
         size: file.data.length,
         contentType: file.contentType,
         lastModified: file.updatedAt,
         etag: crypto.createHash('md5').update(file.data).digest('hex'),
-        metadata: file.metadata,
-      });
+      };
+      if (file.metadata !== undefined) {
+        storageFile.metadata = file.metadata;
+      }
+      files.push(storageFile);
     }
 
     // Sort by key
@@ -236,12 +245,15 @@ export class MemoryStorageClient extends StorageClient {
     const paginatedFiles = files.slice(startIndex, startIndex + maxResults);
     const hasMore = startIndex + maxResults < files.length;
 
-    return {
+    const listResult: ListResult = {
       files: paginatedFiles,
       prefixes: Array.from(prefixSet).sort(),
-      nextToken: hasMore ? String(startIndex + maxResults) : undefined,
       isTruncated: hasMore,
     };
+    if (hasMore) {
+      listResult.nextToken = String(startIndex + maxResults);
+    }
+    return listResult;
   }
 
   async getMetadata(key: string): Promise<StorageFile | null> {
@@ -252,14 +264,17 @@ export class MemoryStorageClient extends StorageClient {
       return null;
     }
 
-    return {
+    const metadataResult: StorageFile = {
       key,
       size: file.data.length,
       contentType: file.contentType,
       lastModified: file.updatedAt,
       etag: crypto.createHash('md5').update(file.data).digest('hex'),
-      metadata: file.metadata,
     };
+    if (file.metadata !== undefined) {
+      metadataResult.metadata = file.metadata;
+    }
+    return metadataResult;
   }
 
   async exists(key: string): Promise<boolean> {
@@ -312,24 +327,31 @@ export class MemoryStorageClient extends StorageClient {
       );
     }
 
-    this.storage.set(destFullKey, {
+    const copiedFile: StoredFile = {
       data: Buffer.from(file.data),
       contentType: options.contentType || file.contentType,
-      metadata: options.metadata || file.metadata,
       createdAt: now,
       updatedAt: now,
-    });
+    };
+    const resolvedMetadata = options.metadata ?? file.metadata;
+    if (resolvedMetadata !== undefined) {
+      copiedFile.metadata = resolvedMetadata;
+    }
+    this.storage.set(destFullKey, copiedFile);
 
     this.currentSize += file.data.length;
 
-    return {
+    const copyResult: StorageFile = {
       key: destinationKey,
       size: file.data.length,
       contentType: options.contentType || file.contentType,
       lastModified: now,
       etag: crypto.createHash('md5').update(file.data).digest('hex'),
-      metadata: options.metadata || file.metadata,
     };
+    if (resolvedMetadata !== undefined) {
+      copyResult.metadata = resolvedMetadata;
+    }
+    return copyResult;
   }
 
   getPublicUrl(key: string): string {

@@ -3,10 +3,16 @@
  */
 
 import { parse } from '@babel/parser';
-import traverse from '@babel/traverse';
-import generate from '@babel/generator';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
+import type { GeneratorOptions, GeneratorResult } from '@babel/generator';
+import * as _generate from '@babel/generator';
 import * as t from '@babel/types';
 import type { TransformResult, OptimizerOptions } from './types.js';
+
+// Handle both ESM and CJS exports - babel packages export default as the function
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
+const generate: (ast: t.Node, opts?: GeneratorOptions, code?: string) => GeneratorResult = (_generate as unknown as { default: (ast: t.Node, opts?: GeneratorOptions, code?: string) => GeneratorResult }).default;
 import { extractSymbols, generateSymbolId } from './symbols.js';
 
 /**

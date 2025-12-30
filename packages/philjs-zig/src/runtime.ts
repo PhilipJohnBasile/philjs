@@ -234,7 +234,7 @@ export class ZigRuntime {
     const memory = new WebAssembly.Memory({
       initial: this.config.heapSize ? this.config.heapSize / 65536 : 16,
       maximum: 256,
-      shared: this.config.sharedMemory,
+      ...(this.config.sharedMemory !== undefined ? { shared: this.config.sharedMemory } : {}),
     });
 
     const { instance } = await WebAssembly.instantiate(wasmBytes, {

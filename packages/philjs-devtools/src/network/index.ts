@@ -487,10 +487,10 @@ export class NetworkMonitor {
               endTime: resource.startTime + resource.duration,
               duration: resource.duration,
               size: resource.transferSize || resource.encodedBodySize || 0,
-              compressedSize: resource.encodedBodySize || undefined,
+              ...(resource.encodedBodySize ? { compressedSize: resource.encodedBodySize } : {}),
               headers: {},
               responseHeaders: {},
-              timing: this.config.captureTiming ? {
+              ...(this.config.captureTiming ? { timing: {
                 dns: resource.domainLookupEnd - resource.domainLookupStart,
                 connect: resource.connectEnd - resource.connectStart,
                 ssl: resource.secureConnectionStart > 0
@@ -499,7 +499,7 @@ export class NetworkMonitor {
                 ttfb: resource.responseStart - resource.requestStart,
                 download: resource.responseEnd - resource.responseStart,
                 total: resource.duration,
-              } : undefined,
+              } } : {}),
               cached: resource.transferSize === 0,
               priority: 'medium',
             });

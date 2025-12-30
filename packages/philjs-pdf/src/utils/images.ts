@@ -185,14 +185,28 @@ export class ImageManager {
       y = pageHeight - height - (options.y ?? 0);
     }
 
-    page.drawImage(image, {
+    const drawOptions: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      rotate?: ReturnType<typeof degrees>;
+      opacity?: number;
+    } = {
       x,
       y,
       width,
       height,
-      rotate: options.rotation ? degrees(options.rotation) : undefined,
-      opacity: options.opacity,
-    });
+    };
+
+    if (options.rotation !== undefined) {
+      drawOptions.rotate = degrees(options.rotation);
+    }
+    if (options.opacity !== undefined) {
+      drawOptions.opacity = options.opacity;
+    }
+
+    page.drawImage(image, drawOptions);
   }
 
   /**
@@ -330,12 +344,12 @@ export function dataUrlToUint8Array(dataUrl: string): {
   mimeType: string;
 } {
   const matches = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
-  if (!matches) {
+  if (!matches || !matches[1] || !matches[2]) {
     throw new Error('Invalid data URL');
   }
 
-  const mimeType = matches[1];
-  const base64 = matches[2];
+  const mimeType: string = matches[1];
+  const base64: string = matches[2];
   const binaryString = atob(base64);
   const data = new Uint8Array(binaryString.length);
 
@@ -355,7 +369,7 @@ export function uint8ArrayToDataUrl(
 ): string {
   let binary = '';
   for (let i = 0; i < data.length; i++) {
-    binary += String.fromCharCode(data[i]);
+    binary += String.fromCharCode(data[i] as number);
   }
   const base64 = btoa(binary);
   return `data:${mimeType};base64,${base64}`;

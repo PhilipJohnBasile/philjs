@@ -76,9 +76,9 @@ export function registerStorybookCommand(program: Command): void {
     });
 
   // Generate story command
-  storybook
-    .command('generate <component>')
-    .alias('gen')
+  const generateCmd = storybook.command('generate <component>');
+  generateCmd.alias('gen');
+  generateCmd
     .description('Generate a story for a component')
     .option('-d, --directory <dir>', 'Component directory')
     .option('--type <type>', 'Story type: component, route, form, island', 'component')

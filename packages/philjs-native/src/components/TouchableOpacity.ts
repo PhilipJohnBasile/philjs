@@ -271,8 +271,8 @@ export function TouchableOpacity(props: TouchableOpacityProps): any {
 
     // Handle hit slop with padding/margin
     if (props.hitSlop) {
-      baseStyle.padding = `${props.hitSlop.top || 0}px ${props.hitSlop.right || 0}px ${props.hitSlop.bottom || 0}px ${props.hitSlop.left || 0}px`;
-      baseStyle.margin = `-${props.hitSlop.top || 0}px -${props.hitSlop.right || 0}px -${props.hitSlop.bottom || 0}px -${props.hitSlop.left || 0}px`;
+      baseStyle['padding'] = `${props.hitSlop.top || 0}px ${props.hitSlop.right || 0}px ${props.hitSlop.bottom || 0}px ${props.hitSlop.left || 0}px`;
+      baseStyle['margin'] = `-${props.hitSlop.top || 0}px -${props.hitSlop.right || 0}px -${props.hitSlop.bottom || 0}px -${props.hitSlop.left || 0}px`;
     }
 
     return {
@@ -353,8 +353,8 @@ function convertStyle(style: ViewStyle): Record<string, any> {
   }
 
   // Add default display flex
-  if (!result.display) {
-    result.display = 'flex';
+  if (!result['display']) {
+    result['display'] = 'flex';
   }
 
   return result;

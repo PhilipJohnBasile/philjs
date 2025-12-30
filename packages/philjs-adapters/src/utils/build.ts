@@ -148,12 +148,12 @@ export async function createBuildManifest(
   return {
     adapter,
     timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0',
+    version: process.env['npm_package_version'] || '1.0.0',
     outputDir,
     routes,
     assets,
     prerendered,
-    environment: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    environment: process.env['NODE_ENV'] === 'production' ? 'production' : 'development',
     metadata,
   };
 }

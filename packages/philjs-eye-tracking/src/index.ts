@@ -465,9 +465,11 @@ export class GazeAwareElement {
     const event: GazeEvent = {
       type,
       target: this.element,
-      gazePoint: point,
-      dwellTime
+      gazePoint: point
     };
+    if (dwellTime !== undefined) {
+      event.dwellTime = dwellTime;
+    }
 
     const callbacks = this.callbacks.get(type);
     if (callbacks) {
@@ -685,11 +687,11 @@ export class AttentionHeatmap {
     const centerRow = Math.floor(y / resolution);
 
     for (let row = Math.max(0, centerRow - radius); row < Math.min(this.data.length, centerRow + radius); row++) {
-      for (let col = Math.max(0, centerCol - radius); col < Math.min(this.data[0].length, centerCol + radius); col++) {
+      for (let col = Math.max(0, centerCol - radius); col < Math.min(this.data[0]!.length, centerCol + radius); col++) {
         const distance = Math.sqrt((col - centerCol) ** 2 + (row - centerRow) ** 2);
         if (distance < radius) {
           const intensity = 1 - distance / radius;
-          this.data[row][col] = Math.min(this.data[row][col] + intensity * 0.1, 1);
+          this.data[row]![col] = Math.min(this.data[row]![col]! + intensity * 0.1, 1);
         }
       }
     }
@@ -702,8 +704,9 @@ export class AttentionHeatmap {
     const gradient = this.config.gradient!;
 
     for (let row = 0; row < this.data.length; row++) {
-      for (let col = 0; col < this.data[row].length; col++) {
-        const intensity = this.data[row][col];
+      const rowData = this.data[row]!;
+      for (let col = 0; col < rowData.length; col++) {
+        const intensity = rowData[col]!;
         if (intensity > 0) {
           const color = this.getColorForIntensity(intensity, gradient);
           this.ctx.fillStyle = color;
@@ -722,12 +725,12 @@ export class AttentionHeatmap {
     const stops = Object.keys(gradient).map(Number).sort((a, b) => a - b);
 
     for (let i = 0; i < stops.length - 1; i++) {
-      if (intensity >= stops[i] && intensity <= stops[i + 1]) {
-        return gradient[stops[i + 1]];
+      if (intensity >= stops[i]! && intensity <= stops[i + 1]!) {
+        return gradient[stops[i + 1]!]!;
       }
     }
 
-    return gradient[stops[0]];
+    return gradient[stops[0]!]!;
   }
 
   clear(): void {
@@ -740,12 +743,14 @@ export class AttentionHeatmap {
     const resolution = this.config.resolution!;
 
     for (let row = 0; row < this.data.length; row++) {
-      for (let col = 0; col < this.data[row].length; col++) {
-        if (this.data[row][col] >= threshold) {
+      const rowData = this.data[row]!;
+      for (let col = 0; col < rowData.length; col++) {
+        const cellIntensity = rowData[col]!;
+        if (cellIntensity >= threshold) {
           hotspots.push({
             x: col * resolution + resolution / 2,
             y: row * resolution + resolution / 2,
-            intensity: this.data[row][col]
+            intensity: cellIntensity
           });
         }
       }
@@ -866,7 +871,7 @@ export class ReadingAnalyzer {
     for (const fixation of this.fixations) {
       let foundLine = false;
       for (const line of lines) {
-        if (Math.abs(line[0].y - fixation.y) < lineThreshold) {
+        if (Math.abs(line[0]!.y - fixation.y) < lineThreshold) {
           line.push(fixation);
           foundLine = true;
           break;
@@ -882,11 +887,11 @@ export class ReadingAnalyzer {
       line.sort((a, b) => a.x - b.x);
 
       for (let i = 0; i < line.length - 1; i++) {
-        const gap = line[i + 1].x - line[i].x;
+        const gap = line[i + 1]!.x - line[i]!.x;
         if (gap > 200) { // Significant gap
           areas.push({
-            x: line[i].x,
-            y: line[i].y - lineThreshold / 2,
+            x: line[i]!.x,
+            y: line[i]!.y - lineThreshold / 2,
             width: gap,
             height: lineThreshold
           });

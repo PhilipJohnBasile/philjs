@@ -7,7 +7,7 @@ export type VNode = any;
 
 import type { Loader, Action, ActionCtx } from "./types.js";
 import { isResult, isOk, isErr, renderToString } from "philjs-core";
-import type { RouteMatcher } from "philjs-router";
+import type { RouteMatcher } from "@philjs/router";
 
 const defaultRenderToString = async (vnode: VNode): Promise<string> => {
   return renderToString(vnode);
@@ -79,8 +79,10 @@ export async function handleRequest(
       method: request.method,
       headers: request.headers,
       params,
-      formData: request.method === "POST" ? await request.formData() : undefined,
     };
+    if (request.method === "POST") {
+      ctx.formData = await request.formData();
+    }
 
     // Handle POST requests (actions)
     if (request.method === "POST" && module.action) {

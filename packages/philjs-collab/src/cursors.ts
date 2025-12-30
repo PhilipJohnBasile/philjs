@@ -38,7 +38,7 @@ export interface CursorDecoration {
   clientId: string;
   element: HTMLElement;
   labelElement?: HTMLElement;
-  selectionElements?: HTMLElement[];
+  selectionElements?: HTMLElement[] | undefined;
   position: CursorPosition;
   animationFrame?: number;
 }
@@ -218,8 +218,8 @@ export class CursorManager {
     return {
       clientId: cursor.clientId,
       element,
-      labelElement,
       position: cursor,
+      ...(labelElement !== undefined && { labelElement }),
     };
   }
 

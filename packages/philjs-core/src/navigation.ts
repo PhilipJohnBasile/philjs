@@ -212,7 +212,7 @@ function matchRoute(
 
   const params: RouteParams = {};
   keys.forEach((key, i) => {
-    params[key] = match[i + 1];
+    params[key] = match[i + 1] ?? '';
   });
 
   return params;
@@ -273,7 +273,7 @@ export function createRouter<T>(
         return [route.handler, params];
       }
     }
-    return [notFound ?? null, {}];
+    return [(notFound ?? null) as RouteHandler<T> | null, {}];
   }
 
   /**
@@ -651,9 +651,9 @@ export function interceptLinks(options: {
     await onNavigate(href);
   };
 
-  root.addEventListener('click', handleClick as EventListener);
+  root.addEventListener('click', handleClick as unknown as EventListener);
 
   return () => {
-    root.removeEventListener('click', handleClick as EventListener);
+    root.removeEventListener('click', handleClick as unknown as EventListener);
   };
 }

@@ -1,6 +1,7 @@
 {
   "name": "create-philjs",
   "version": "0.1.0",
+  "type": "module",
   "description": "Create PhilJS apps with one command",
   "bin": {
     "create-philjs": "./dist/cli.js"
@@ -16,6 +17,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
+    "@philjs/router": "workspace:*",
     "chalk": "^5.3.0",
     "commander": "^14.0.2",
     "enquirer": "^2.4.1",

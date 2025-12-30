@@ -2,7 +2,7 @@
  * PhilJS Styles - Utilities
  */
 
-import type { CSSProperties } from './types';
+import type { CSSProperties } from './types.js';
 
 const styleElements = new Map<string, HTMLStyleElement>();
 

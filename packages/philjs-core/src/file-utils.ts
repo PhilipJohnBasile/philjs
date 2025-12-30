@@ -59,7 +59,7 @@ class FileCache<T> {
     this.cache.set(path, {
       value,
       timestamp: Date.now(),
-      mtime,
+      ...(mtime !== undefined ? { mtime } : {}),
     });
   }
 
@@ -461,7 +461,7 @@ export async function watchDir(
 
   const fs = await import('fs');
   const pathModule = await import('path');
-  const watcher = fs.watch(path, { recursive: true }, (eventType: string, filename: string) => {
+  const watcher = fs.watch(path, { recursive: true }, (eventType: string, filename: string | null) => {
     if (!filename) return;
 
     const fullPath = pathModule.join(path, filename);

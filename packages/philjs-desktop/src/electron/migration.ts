@@ -2,9 +2,9 @@
  * Migration helpers for Electron to Tauri
  */
 
-import { BrowserWindow } from './browser-window';
-import { ipcMain, ipcRenderer } from './ipc';
-import { app } from './app';
+import { BrowserWindow } from './browser-window.js';
+import { ipcMain, ipcRenderer } from './ipc.js';
+import { app } from './app.js';
 
 // Migration warnings
 const migrationWarnings = new Set<string>();

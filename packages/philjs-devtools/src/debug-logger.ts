@@ -22,7 +22,7 @@ export type LogEntry = {
   timestamp: number;
   context?: string;
   data?: any;
-  stackTrace?: string;
+  stackTrace?: string | undefined;
   duration?: number;
   metadata?: Record<string, any>;
 };
@@ -344,8 +344,8 @@ export class DebugLogger {
     const timeRange =
       this.logs.length > 0
         ? {
-            start: this.logs[0].timestamp,
-            end: this.logs[this.logs.length - 1].timestamp,
+            start: this.logs[0]?.timestamp ?? 0,
+            end: this.logs[this.logs.length - 1]?.timestamp ?? 0,
           }
         : null;
 
@@ -371,14 +371,15 @@ export class DebugLogger {
       return;
     }
 
+    const contextValue = context || this.getCurrentContext();
     const entry: LogEntry = {
       id: `log-${this.idCounter++}`,
       level,
       message,
       timestamp: Date.now(),
-      context: context || this.getCurrentContext(),
       data,
       metadata: {},
+      ...(contextValue !== undefined && { context: contextValue }),
     };
 
     // Capture stack trace for errors

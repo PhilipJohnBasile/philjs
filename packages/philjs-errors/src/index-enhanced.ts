@@ -16,7 +16,7 @@ export {
   getErrorsByCategory,
   createPhilJSError,
   formatError,
-} from './error-codes';
+} from './error-codes.js';
 
 // Re-export stack trace processing
 export {
@@ -31,7 +31,7 @@ export {
   formatErrorForDev,
   loadSourceMap,
   applySourceMap,
-} from './stack-trace';
+} from './stack-trace.js';
 
 // Re-export signal error tracking
 export {
@@ -48,7 +48,7 @@ export {
   clearSignalErrorTracking,
   setSignalErrorTracking,
   isSignalErrorTrackingEnabled,
-} from './signal-errors';
+} from './signal-errors.js';
 
 // Re-export error overlay
 export {
@@ -58,7 +58,7 @@ export {
   isErrorOverlayVisible,
   getCurrentError,
   updateErrorOverlay,
-} from './error-overlay';
+} from './error-overlay.js';
 
 // Re-export SSR/hydration error tracking
 export {
@@ -78,7 +78,7 @@ export {
   hydrationSafe,
   getSSRErrorStats,
   clearSSRErrorTracking,
-} from './ssr-errors';
+} from './ssr-errors.js';
 
 // Re-export router error tracking
 export {
@@ -102,7 +102,7 @@ export {
   getRouterErrorStats,
   clearRouterErrorTracking,
   suggestSimilarRoutes,
-} from './router-errors';
+} from './router-errors.js';
 
 // Re-export compiler error enhancements
 export {
@@ -122,7 +122,7 @@ export {
   clearCompilerWarnings,
   formatCompilerError,
   getCompilerErrorStats,
-} from './compiler-errors';
+} from './compiler-errors.js';
 
 // Re-export original error tracking
 export type {
@@ -133,7 +133,7 @@ export type {
   Breadcrumb,
   Span,
   ErrorEvent,
-} from './index';
+} from './index.js';
 
 export {
   initErrorTracking,
@@ -149,4 +149,4 @@ export {
   createSentryTracker,
   createLogRocketTracker,
   createRollbarTracker,
-} from './index';
+} from './index.js';

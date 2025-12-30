@@ -6,7 +6,7 @@
  * They're triggered by lifecycle events on elements with phx-hook attribute.
  */
 
-import type { HookDefinition, Hooks, ClientHook } from './types';
+import type { HookDefinition, Hooks, ClientHook } from './types.js';
 
 // ============================================================================
 // Hook Registry

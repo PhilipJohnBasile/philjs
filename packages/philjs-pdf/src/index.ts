@@ -175,10 +175,13 @@ export class PDFGenerator {
   private async getBrowser(): Promise<Browser> {
     if (!this.browser) {
       const puppeteer = await import('puppeteer');
-      this.browser = await puppeteer.default.launch({
-        headless: this.options.headless,
+      const launchOptions: Parameters<typeof puppeteer.default.launch>[0] = {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
+      };
+      if (this.options.headless !== undefined) {
+        launchOptions.headless = this.options.headless;
+      }
+      this.browser = await puppeteer.default.launch(launchOptions);
     }
     return this.browser;
   }
@@ -245,17 +248,19 @@ export class PDFGenerator {
       }
 
       const pdfOptions: PDFOptions = {
-        format: options.format || this.options.format,
-        margin: options.margin || this.options.margin,
         printBackground: options.printBackground ?? true,
         landscape: options.landscape ?? false,
         displayHeaderFooter: options.displayHeaderFooter ?? false,
-        headerTemplate: options.headerTemplate,
-        footerTemplate: options.footerTemplate,
         scale: options.scale ?? 1,
         preferCSSPageSize: options.preferCSSPageSize ?? false,
       };
 
+      const format = options.format || this.options.format;
+      if (format !== undefined) pdfOptions.format = format;
+      const margin = options.margin || this.options.margin;
+      if (margin !== undefined) pdfOptions.margin = margin;
+      if (options.headerTemplate !== undefined) pdfOptions.headerTemplate = options.headerTemplate;
+      if (options.footerTemplate !== undefined) pdfOptions.footerTemplate = options.footerTemplate;
       if (options.width) pdfOptions.width = options.width;
       if (options.height) pdfOptions.height = options.height;
 
@@ -303,6 +308,7 @@ export class PDFGenerator {
   ): Promise<Uint8Array> {
     // Dynamic import for client-side rendering
     const { pdf } = await import('@react-pdf/renderer');
+    // @ts-expect-error - React types not available, using dynamic import
     const React = await import('react');
 
     const element = React.createElement(Component, props);
@@ -320,6 +326,7 @@ export class PDFGenerator {
     props: Record<string, unknown> = {}
   ): Promise<Blob> {
     const { pdf } = await import('@react-pdf/renderer');
+    // @ts-expect-error - React types not available, using dynamic import
     const React = await import('react');
 
     const element = React.createElement(Component, props);
@@ -425,7 +432,7 @@ export class PDFGenerator {
       const totalPages = pages.length;
 
       for (let i = 0; i < totalPages; i++) {
-        const page = pages[i];
+        const page = pages[i]!;
         const { width, height } = page.getSize();
         const format = options.pageNumberFormat || 'Page {{page}} of {{total}}';
         const text = format
@@ -692,16 +699,35 @@ export class PDFGenerator {
   }> {
     const pdfDoc = await PDFDocument.load(pdfBytes);
 
-    return {
-      title: pdfDoc.getTitle(),
-      author: pdfDoc.getAuthor(),
-      subject: pdfDoc.getSubject(),
-      keywords: pdfDoc.getKeywords(),
-      creator: pdfDoc.getCreator(),
-      producer: pdfDoc.getProducer(),
-      creationDate: pdfDoc.getCreationDate(),
-      modificationDate: pdfDoc.getModificationDate(),
-    };
+    const result: {
+      title?: string;
+      author?: string;
+      subject?: string;
+      keywords?: string;
+      creator?: string;
+      producer?: string;
+      creationDate?: Date;
+      modificationDate?: Date;
+    } = {};
+
+    const title = pdfDoc.getTitle();
+    if (title !== undefined) result.title = title;
+    const author = pdfDoc.getAuthor();
+    if (author !== undefined) result.author = author;
+    const subject = pdfDoc.getSubject();
+    if (subject !== undefined) result.subject = subject;
+    const keywords = pdfDoc.getKeywords();
+    if (keywords !== undefined) result.keywords = keywords;
+    const creator = pdfDoc.getCreator();
+    if (creator !== undefined) result.creator = creator;
+    const producer = pdfDoc.getProducer();
+    if (producer !== undefined) result.producer = producer;
+    const creationDate = pdfDoc.getCreationDate();
+    if (creationDate !== undefined) result.creationDate = creationDate;
+    const modificationDate = pdfDoc.getModificationDate();
+    if (modificationDate !== undefined) result.modificationDate = modificationDate;
+
+    return result;
   }
 }
 

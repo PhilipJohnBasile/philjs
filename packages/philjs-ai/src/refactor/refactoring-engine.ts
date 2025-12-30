@@ -333,7 +333,7 @@ const REFACTORING_PATTERNS: RefactoringPattern[] = [
     category: 'readability',
     detect: (code) => {
       const maxNesting = code.split('\n').reduce((max, line) => {
-        const indent = line.match(/^(\s*)/)?.[1].length || 0;
+        const indent = line.match(/^(\s*)/)?.[1]?.length ?? 0;
         return Math.max(max, indent);
       }, 0);
       return maxNesting > 20;
@@ -705,9 +705,9 @@ Return JSON array of RefactoringSuggestion objects.`;
           effort: 'easy',
           before: {
             code: matchedCode || '/* pattern detected */',
-            startLine: lineNumber,
-            endLine: lineNumber,
             language: 'typescript',
+            ...(lineNumber !== undefined && { startLine: lineNumber }),
+            ...(lineNumber !== undefined && { endLine: lineNumber }),
           },
           after: {
             code: pattern.transform ? pattern.transform(matchedCode) : '/* refactored */',
@@ -867,7 +867,7 @@ Focus on practical improvements.`,
       const severityOrder: Record<string, number> = { critical: 4, error: 3, warning: 2, info: 1 };
 
       const maxSeverity = categorySuggestions.reduce(
-        (max, s) => severityOrder[s.severity] > severityOrder[max] ? s.severity : max,
+        (max, s) => (severityOrder[s.severity] ?? 0) > (severityOrder[max] ?? 0) ? s.severity : max,
         'info' as RefactoringSuggestion['severity']
       );
 

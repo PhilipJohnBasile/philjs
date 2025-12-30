@@ -162,7 +162,7 @@ export {
   // Components
   WebGLCanvas,
   createWebGLCanvasElement,
-} from './webgl/index';
+} from './webgl/index.js';
 
 // ============================================================================
 // Three.js Integration
@@ -213,7 +213,7 @@ export {
   // Components
   ThreeCanvas,
   createThreeCanvasElement,
-} from './three/index';
+} from './three/index.js';
 
 // ============================================================================
 // Godot Integration
@@ -244,7 +244,7 @@ export {
   GodotEmbed,
   createGodotEmbedElement,
   GodotLoadingIndicator,
-} from './godot/index';
+} from './godot/index.js';
 
 // ============================================================================
 // Unreal Engine Integration
@@ -276,7 +276,7 @@ export {
   UnrealEmbed,
   createUnrealEmbedElement,
   UnrealStatsOverlay,
-} from './unreal/index';
+} from './unreal/index.js';
 
 // ============================================================================
 // Unity Integration
@@ -313,7 +313,7 @@ export {
   createUnityEmbedElement,
   UnityProgressBar,
   UnityFullscreenButton,
-} from './unity/index';
+} from './unity/index.js';
 
 // ============================================================================
 // Bevy Integration (PhilJS Exclusive!)
@@ -433,4 +433,4 @@ export {
   BevyFullscreenButton,
   BevyPauseButton,
   BevyFPSCounter,
-} from './bevy/index';
+} from './bevy/index.js';

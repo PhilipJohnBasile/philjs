@@ -451,7 +451,7 @@ async function runA11yAudit(container: HTMLElement): Promise<A11yReport> {
   const skippedHeadings: HTMLElement[] = [];
 
   headings.forEach(heading => {
-    const level = parseInt(heading.tagName[1]);
+    const level = parseInt(heading.tagName[1]!);
     if (prevLevel > 0 && level > prevLevel + 1) {
       skippedHeadings.push(heading as HTMLElement);
     }
@@ -537,11 +537,11 @@ export async function measureRenderPerformance(
 
   return {
     mean: times.reduce((a, b) => a + b, 0) / times.length,
-    median: times[Math.floor(times.length / 2)],
-    min: times[0],
-    max: times[times.length - 1],
-    p95: times[Math.floor(times.length * 0.95)],
-    p99: times[Math.floor(times.length * 0.99)],
+    median: times[Math.floor(times.length / 2)]!,
+    min: times[0]!,
+    max: times[times.length - 1]!,
+    p95: times[Math.floor(times.length * 0.95)]!,
+    p99: times[Math.floor(times.length * 0.99)]!,
   };
 }
 
@@ -660,12 +660,15 @@ async function compareImages(
 ): Promise<VisualDiff> {
   // Simplified comparison
   const match = current === baseline;
-  return {
+  const result: VisualDiff = {
     match,
     diffPercentage: match ? 0 : 100,
     diffPixels: match ? 0 : 1000,
-    diffImage: match ? undefined : current,
   };
+  if (!match) {
+    result.diffImage = current;
+  }
+  return result;
 }
 
 function storeSnapshot(name: string, data: string): void {

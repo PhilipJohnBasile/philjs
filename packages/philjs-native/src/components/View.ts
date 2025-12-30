@@ -266,8 +266,8 @@ function convertToPlatformStyle(style: ViewStyle, platform: string): NativeStyle
   }
 
   // Add default flexbox behavior
-  if (platform === 'web' && !result.display) {
-    result.display = 'flex';
+  if (platform === 'web' && !result['display']) {
+    result['display'] = 'flex';
     result['flex-direction'] = result['flex-direction'] || 'column';
   }
 

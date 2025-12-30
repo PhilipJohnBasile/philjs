@@ -8,8 +8,8 @@
  * - Navigation errors
  */
 
-import { createPhilJSError, type PhilJSError } from './error-codes';
-import { getPrimaryLocation } from './stack-trace';
+import { createPhilJSError, type PhilJSError } from './error-codes.js';
+import { getPrimaryLocation } from './stack-trace.js';
 
 /**
  * Route pattern validation
@@ -33,7 +33,7 @@ export function validateRoutePattern(pattern: string): RoutePattern {
   let match;
 
   while ((match = paramPattern.exec(pattern)) !== null) {
-    const paramName = match[1];
+    const paramName = match[1]!;
     params.push(paramName);
 
     // Validate parameter name (must be valid identifier)
@@ -126,7 +126,7 @@ export function matchPath(
   // Extract params
   const params: Record<string, string> = {};
   validation.params.forEach((paramName, index) => {
-    params[paramName] = match[index + 1];
+    params[paramName] = match[index + 1]!;
   });
 
   return {
@@ -193,7 +193,7 @@ export function buildPath(
   const validation = validateNavigationParams(pattern, params);
 
   if (!validation.valid) {
-    throwMissingRouteParameter(pattern, validation.missing[0]);
+    throwMissingRouteParameter(pattern, validation.missing[0]!);
   }
 
   let path = pattern;
@@ -297,8 +297,10 @@ export function recordNavigation(
     to,
     timestamp: Date.now(),
     success,
-    error,
   };
+  if (error !== undefined) {
+    event.error = error;
+  }
 
   navigationHistory.push(event);
 
@@ -394,22 +396,22 @@ function levenshteinDistance(a: string, b: string): number {
   }
 
   for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j;
+    matrix[0]![j] = j;
   }
 
   for (let i = 1; i <= b.length; i++) {
     for (let j = 1; j <= a.length; j++) {
       if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
+        matrix[i]![j] = matrix[i - 1]![j - 1]!;
       } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1, // substitution
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j] + 1      // deletion
+        matrix[i]![j] = Math.min(
+          matrix[i - 1]![j - 1]! + 1, // substitution
+          matrix[i]![j - 1]! + 1,     // insertion
+          matrix[i - 1]![j]! + 1      // deletion
         );
       }
     }
   }
 
-  return matrix[b.length][a.length];
+  return matrix[b.length]![a.length]!;
 }

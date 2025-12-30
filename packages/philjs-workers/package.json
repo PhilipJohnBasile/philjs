@@ -1,6 +1,7 @@
 {
   "name": "@philjs/workers",
   "version": "0.1.0",
+  "type": "module",
   "description": "Thread pool Web Workers for PhilJS - parallel computing, shared state, task queuing",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

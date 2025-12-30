@@ -231,13 +231,13 @@ function renderWebKeyboardAvoidingView(
   if (enabled && keyboard.isVisible) {
     switch (behavior) {
       case 'height':
-        containerStyle.height = `calc(100% - ${offset}px)`;
+        containerStyle['height'] = `calc(100% - ${offset}px)`;
         break;
       case 'position':
-        containerStyle.transform = `translateY(-${offset}px)`;
+        containerStyle['transform'] = `translateY(-${offset}px)`;
         break;
       case 'padding':
-        containerStyle.paddingBottom = `${offset}px`;
+        containerStyle['paddingBottom'] = `${offset}px`;
         break;
     }
   }

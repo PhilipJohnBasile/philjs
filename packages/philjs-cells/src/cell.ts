@@ -255,7 +255,7 @@ export function createCell<TData, TVariables = Record<string, unknown>>(
           );
 
           if (result.errors && result.errors.length > 0) {
-            throw new Error(result.errors[0].message);
+            throw new Error(result.errors[0]?.message ?? 'GraphQL error');
           }
 
           data = result.data as TData;
@@ -485,6 +485,7 @@ export function composeCells<
       await Promise.all(
         cellNames.map(async (name) => {
           const cell = cells[name];
+          if (!cell) return;
           const def = cell.__cellDefinition;
 
           if (def.QUERY) {

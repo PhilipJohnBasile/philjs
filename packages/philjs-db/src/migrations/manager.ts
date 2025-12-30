@@ -15,7 +15,7 @@ import type {
   MigrationConflict,
   MigrationError,
   BackupConfig,
-} from './types';
+} from './types.js';
 
 export class MigrationManager {
   private config: Required<MigrationConfig>;
@@ -293,6 +293,7 @@ export class MigrationManager {
       if (!match) continue;
 
       const [, version, name] = match;
+      if (version === undefined || name === undefined) continue;
       migrationFiles.push({
         version,
         name,

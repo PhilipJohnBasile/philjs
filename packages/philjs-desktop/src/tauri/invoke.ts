@@ -2,8 +2,8 @@
  * Tauri command invocation utilities
  */
 
-import type { InvokeArgs, TypedCommand, CommandDefinition } from './types';
-import { getTauriContext, isTauri } from './context';
+import type { InvokeArgs, TypedCommand, CommandDefinition } from './types.js';
+import { getTauriContext, isTauri } from './context.js';
 
 /**
  * Invoke a Tauri command

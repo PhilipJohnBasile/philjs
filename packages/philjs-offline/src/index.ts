@@ -260,7 +260,7 @@ export class OfflineDB {
           id: crypto.randomUUID(),
           type: 'delete',
           store: storeName,
-          data: { key, ...data },
+          data: { key, ...(data as Record<string, unknown>) },
           timestamp: Date.now(),
           retries: 0,
           status: 'pending'
@@ -944,16 +944,8 @@ export function useCache(): {
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  OfflineDB,
-  SyncManager,
-  NetworkMonitor,
-  CacheManager,
-  createOfflineStore
-};
 
 export default {
   OfflineDB,

@@ -80,12 +80,12 @@ function formatDateCustom(date: Date, format: string, options: FormatterOptions)
   }
 
   return format
-    .replace(/YYYY/g, partsMap.year || '')
-    .replace(/MM/g, partsMap.month || '')
-    .replace(/DD/g, partsMap.day || '')
-    .replace(/HH/g, partsMap.hour || '')
-    .replace(/mm/g, partsMap.minute || '')
-    .replace(/ss/g, partsMap.second || '');
+    .replace(/YYYY/g, partsMap['year'] || '')
+    .replace(/MM/g, partsMap['month'] || '')
+    .replace(/DD/g, partsMap['day'] || '')
+    .replace(/HH/g, partsMap['hour'] || '')
+    .replace(/mm/g, partsMap['minute'] || '')
+    .replace(/ss/g, partsMap['second'] || '');
 }
 
 /**

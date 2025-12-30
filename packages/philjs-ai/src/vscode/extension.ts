@@ -155,18 +155,21 @@ export class PhilJSAIExtension {
       const autoContext = this.buildAutocompleteContext(document, position);
       const suggestions = await this.autocompleteEngine.getSuggestions(autoContext);
 
-      return suggestions.map((suggestion, index) => ({
-        label: suggestion.label,
-        kind: this.mapSuggestionKind(suggestion.kind),
-        detail: suggestion.detail,
-        documentation: suggestion.documentation,
-        insertText: suggestion.insertText || suggestion.text,
-        sortText: String(index).padStart(5, '0'),
-      }));
+      return suggestions.map((suggestion, index) => {
+        const item: VSCodeCompletionItem = {
+          label: suggestion.label,
+          kind: this.mapSuggestionKind(suggestion.kind),
+          insertText: suggestion.insertText || suggestion.text,
+          sortText: String(index).padStart(5, '0'),
+        };
+        if (suggestion.detail !== undefined) item.detail = suggestion.detail;
+        if (suggestion.documentation !== undefined) item.documentation = suggestion.documentation;
+        return item;
+      });
     };
 
     // Store for external use
-    (this as Record<string, unknown>).getCompletions = getCompletions;
+    (this as Record<string, unknown>)['getCompletions'] = getCompletions;
   }
 
   /**
@@ -206,7 +209,7 @@ export class PhilJSAIExtension {
       return actions;
     };
 
-    (this as Record<string, unknown>).getCodeActions = getCodeActions;
+    (this as Record<string, unknown>)['getCodeActions'] = getCodeActions;
   }
 
   /**
@@ -224,7 +227,7 @@ export class PhilJSAIExtension {
       return result;
     };
 
-    (this as Record<string, unknown>).getInlineCompletion = getInlineCompletion;
+    (this as Record<string, unknown>)['getInlineCompletion'] = getInlineCompletion;
   }
 
   /**
@@ -242,7 +245,7 @@ export class PhilJSAIExtension {
       'philjs-ai.fixAccessibility': (...args) => this.fixAccessibilityCommand(args[0] as VSCodeTextDocument | undefined),
     };
 
-    (this as Record<string, unknown>).commands = commands;
+    (this as Record<string, unknown>)['commands'] = commands;
   }
 
   /**
@@ -443,12 +446,13 @@ export class PhilJSAIExtension {
     document: VSCodeTextDocument,
     diagnostic: VSCodeDiagnostic
   ): VSCodeCodeAction {
-    return {
+    const action: VSCodeCodeAction = {
       title: fix.description,
       kind: { value: fix.kind === 'quickfix' ? 'quickfix' : 'refactor' },
-      isPreferred: fix.isPreferred,
       // In actual extension, would include WorkspaceEdit
     };
+    if (fix.isPreferred !== undefined) action.isPreferred = fix.isPreferred;
+    return action;
   }
 
   /**

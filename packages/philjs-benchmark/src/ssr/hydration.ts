@@ -363,7 +363,7 @@ export const partialHydration: Benchmark = {
 
     // Simulate interactions on islands
     for (const { count } of islands) {
-      count.set(c => c + 1);
+      count.set((c: number) => c + 1);
     }
 
     // Cleanup

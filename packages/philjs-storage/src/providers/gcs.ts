@@ -4,7 +4,14 @@
  * Full-featured GCS integration with streaming, signed URLs, and multipart uploads.
  */
 
-import { Storage, Bucket, File } from '@google-cloud/storage';
+import {
+  Storage,
+  Bucket,
+  File,
+  type GetFilesOptions,
+  type GetSignedUrlConfig,
+  type CopyOptions as GCSCopyOptions,
+} from '@google-cloud/storage';
 
 import {
   StorageClient,
@@ -196,8 +203,10 @@ export class GCSStorageClient extends StorageClient {
 
     const streamOptions: Parameters<typeof file.createReadStream>[0] = {};
 
-    if (options.rangeStart !== undefined || options.rangeEnd !== undefined) {
+    if (options.rangeStart !== undefined) {
       streamOptions.start = options.rangeStart;
+    }
+    if (options.rangeEnd !== undefined) {
       streamOptions.end = options.rangeEnd;
     }
 
@@ -234,15 +243,23 @@ export class GCSStorageClient extends StorageClient {
   async list(options: ListOptions = {}): Promise<ListResult> {
     const prefix = options.prefix ? this.buildKey(options.prefix) : this.config.basePath;
 
-    const [files, , apiResponse] = await this.bucketRef.getFiles({
-      prefix,
-      delimiter: options.delimiter,
+    const getFilesOptions: GetFilesOptions = {
       maxResults: options.maxResults || 1000,
-      pageToken: options.continuationToken,
       autoPaginate: false,
-    });
+    };
+    if (prefix !== undefined) {
+      getFilesOptions.prefix = prefix;
+    }
+    if (options.delimiter !== undefined) {
+      getFilesOptions.delimiter = options.delimiter;
+    }
+    if (options.continuationToken !== undefined) {
+      getFilesOptions.pageToken = options.continuationToken;
+    }
 
-    const storageFiles: StorageFile[] = files.map((file) => ({
+    const [files, , apiResponse] = await this.bucketRef.getFiles(getFilesOptions);
+
+    const storageFiles: StorageFile[] = files.map((file: File) => ({
       key: this.stripBasePath(file.name),
       size: parseInt(file.metadata.size as string, 10) || 0,
       contentType: (file.metadata.contentType as string) || 'application/octet-stream',
@@ -295,14 +312,22 @@ export class GCSStorageClient extends StorageClient {
     const file = this.file(key);
     const expiresIn = options.expiresIn || 3600;
 
-    const [url] = await file.getSignedUrl({
+    const signedUrlConfig: GetSignedUrlConfig = {
       version: 'v4',
       action: options.method === 'PUT' ? 'write' : 'read',
       expires: Date.now() + expiresIn * 1000,
-      contentType: options.contentType,
-      responseType: options.responseContentType,
-      responseDisposition: options.responseContentDisposition,
-    });
+    };
+    if (options.contentType !== undefined) {
+      signedUrlConfig.contentType = options.contentType;
+    }
+    if (options.responseContentType !== undefined) {
+      signedUrlConfig.responseType = options.responseContentType;
+    }
+    if (options.responseContentDisposition !== undefined) {
+      signedUrlConfig.responseDisposition = options.responseContentDisposition;
+    }
+
+    const [url] = await file.getSignedUrl(signedUrlConfig);
 
     return url;
   }
@@ -318,10 +343,15 @@ export class GCSStorageClient extends StorageClient {
       : this.bucketRef;
     const destFile = destBucket.file(this.buildKey(destinationKey));
 
-    await sourceFile.copy(destFile, {
-      contentType: options.contentType,
-      metadata: options.metadata,
-    });
+    const gcsCopyOptions: GCSCopyOptions = {};
+    if (options.contentType !== undefined) {
+      gcsCopyOptions.contentType = options.contentType;
+    }
+    if (options.metadata !== undefined) {
+      gcsCopyOptions.metadata = options.metadata;
+    }
+
+    await sourceFile.copy(destFile, gcsCopyOptions);
 
     // Handle ACL after copy
     if (options.acl === 'public-read') {

@@ -141,11 +141,12 @@ export const Share = {
       }
 
       try {
-        await navigator.share({
-          title: content.title,
-          text: content.message,
-          url: content.url,
-        });
+        const shareData: ShareData = {};
+        if (content.title !== undefined) shareData.title = content.title;
+        if (content.message !== undefined) shareData.text = content.message;
+        if (content.url !== undefined) shareData.url = content.url;
+
+        await navigator.share(shareData);
 
         return { success: true };
       } catch (error) {
@@ -194,11 +195,9 @@ export const Share = {
           })
         );
 
-        const shareData = {
-          files: fileObjects,
-          title: options?.dialogTitle,
-          text: options?.message,
-        };
+        const shareData: ShareData = { files: fileObjects };
+        if (options?.dialogTitle !== undefined) shareData.title = options.dialogTitle;
+        if (options?.message !== undefined) shareData.text = options.message;
 
         if (!(navigator as any).canShare(shareData)) {
           throw new Error('Cannot share these files');
@@ -250,7 +249,9 @@ export const Share = {
     url: string,
     title?: string
   ): Promise<ShareResult> {
-    return this.share({ url, title });
+    const content: ShareContent = { url };
+    if (title !== undefined) content.title = title;
+    return this.share(content);
   },
 
   /**
@@ -260,7 +261,9 @@ export const Share = {
     message: string,
     title?: string
   ): Promise<ShareResult> {
-    return this.share({ message, title });
+    const content: ShareContent = { message };
+    if (title !== undefined) content.title = title;
+    return this.share(content);
   },
 
   /**

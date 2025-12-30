@@ -44,15 +44,15 @@
  */
 
 // Core exports
-export * from './types';
-export * from './live-view';
-export * from './live-component';
-export * from './live-socket';
-export * from './differ';
-export * from './hooks';
-export * from './forms';
-export * from './navigation';
+export * from './types.js';
+export * from './live-view.js';
+export * from './live-component.js';
+export * from './live-socket.js';
+export * from './differ.js';
+export * from './hooks.js';
+export * from './forms.js';
+export * from './navigation.js';
 
 // Re-export client and server
-export * from './client';
-export * from './server';
+export * from './client.js';
+export * from './server.js';

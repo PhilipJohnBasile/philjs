@@ -137,7 +137,7 @@ export class OAuthManager {
 
     // Add PKCE code_verifier if provided
     if (codeVerifier) {
-      bodyParams.code_verifier = codeVerifier;
+      bodyParams['code_verifier'] = codeVerifier;
     }
 
     const body = new URLSearchParams(bodyParams);
@@ -369,7 +369,7 @@ export function validateState(received: string, expected: string): boolean {
 
   let diff = 0;
   for (let i = 0; i < bufA.length; i++) {
-    diff |= bufA[i] ^ bufB[i];
+    diff |= bufA[i]! ^ bufB[i]!;
   }
 
   return diff === 0;

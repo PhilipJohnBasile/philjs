@@ -9,7 +9,7 @@ import type {
   ViewPatch,
   LiveViewEvent,
   LiveSocket,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Message Types
@@ -73,13 +73,13 @@ export function createChannel(topic: string): Channel {
 
 export interface SocketConnectionOptions {
   url: string;
-  params?: Record<string, any>;
-  heartbeatIntervalMs?: number;
-  reconnectAfterMs?: (tries: number) => number;
-  timeout?: number;
-  onOpen?: () => void;
-  onClose?: () => void;
-  onError?: (error: Event) => void;
+  params?: Record<string, any> | undefined;
+  heartbeatIntervalMs?: number | undefined;
+  reconnectAfterMs?: ((tries: number) => number) | undefined;
+  timeout?: number | undefined;
+  onOpen?: (() => void) | undefined;
+  onClose?: (() => void) | undefined;
+  onError?: ((error: Event) => void) | undefined;
 }
 
 export class SocketConnection {

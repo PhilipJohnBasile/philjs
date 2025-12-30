@@ -2,7 +2,7 @@
  * System Dialog APIs
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 // Dialog types
 export interface OpenDialogOptions {
@@ -84,7 +84,7 @@ export const Dialog = {
           } else if (options.multiple) {
             resolve(files.map(f => f.name));
           } else {
-            resolve(files[0].name);
+            resolve(files[0]!.name);
           }
         };
 
@@ -93,15 +93,15 @@ export const Dialog = {
     }
 
     const { open } = await import('@tauri-apps/plugin-dialog');
-    return open({
-      title: options.title,
-      defaultPath: options.defaultPath,
-      filters: options.filters,
-      multiple: options.multiple,
-      directory: options.directory,
-      canCreateDirectories: options.canCreateDirectories,
-      recursive: options.recursive,
-    });
+    const openOptions: Parameters<typeof open>[0] = {};
+    if (options.title !== undefined) openOptions.title = options.title;
+    if (options.defaultPath !== undefined) openOptions.defaultPath = options.defaultPath;
+    if (options.filters !== undefined) openOptions.filters = options.filters;
+    if (options.multiple !== undefined) openOptions.multiple = options.multiple;
+    if (options.directory !== undefined) openOptions.directory = options.directory;
+    if (options.canCreateDirectories !== undefined) openOptions.canCreateDirectories = options.canCreateDirectories;
+    if (options.recursive !== undefined) openOptions.recursive = options.recursive;
+    return open(openOptions);
   },
 
   /**
@@ -115,12 +115,12 @@ export const Dialog = {
     }
 
     const { save } = await import('@tauri-apps/plugin-dialog');
-    return save({
-      title: options.title,
-      defaultPath: options.defaultPath,
-      filters: options.filters,
-      canCreateDirectories: options.canCreateDirectories,
-    });
+    const saveOptions: Parameters<typeof save>[0] = {};
+    if (options.title !== undefined) saveOptions.title = options.title;
+    if (options.defaultPath !== undefined) saveOptions.defaultPath = options.defaultPath;
+    if (options.filters !== undefined) saveOptions.filters = options.filters;
+    if (options.canCreateDirectories !== undefined) saveOptions.canCreateDirectories = options.canCreateDirectories;
+    return save(saveOptions);
   },
 
   /**
@@ -133,11 +133,11 @@ export const Dialog = {
     }
 
     const { message: showMessage } = await import('@tauri-apps/plugin-dialog');
-    await showMessage(message, {
-      title: options.title,
-      kind: options.type,
-      okLabel: options.okLabel,
-    });
+    const msgOptions: Parameters<typeof showMessage>[1] = {};
+    if (options.title !== undefined) msgOptions.title = options.title;
+    if (options.type !== undefined) msgOptions.kind = options.type;
+    if (options.okLabel !== undefined) msgOptions.okLabel = options.okLabel;
+    await showMessage(message, msgOptions);
   },
 
   /**
@@ -149,12 +149,13 @@ export const Dialog = {
     }
 
     const { confirm: showConfirm } = await import('@tauri-apps/plugin-dialog');
-    return showConfirm(message, {
-      title: options.title,
-      kind: options.type,
-      okLabel: options.confirmLabel || options.okLabel,
-      cancelLabel: options.cancelLabel,
-    });
+    const confirmOptions: Parameters<typeof showConfirm>[1] = {};
+    if (options.title !== undefined) confirmOptions.title = options.title;
+    if (options.type !== undefined) confirmOptions.kind = options.type;
+    const okLabelValue = options.confirmLabel ?? options.okLabel;
+    if (okLabelValue !== undefined) confirmOptions.okLabel = okLabelValue;
+    if (options.cancelLabel !== undefined) confirmOptions.cancelLabel = options.cancelLabel;
+    return showConfirm(message, confirmOptions);
   },
 
   /**
@@ -166,12 +167,12 @@ export const Dialog = {
     }
 
     const { ask } = await import('@tauri-apps/plugin-dialog');
-    return ask(message, {
-      title: options.title,
-      kind: options.type,
-      okLabel: options.okLabel,
-      cancelLabel: options.cancelLabel,
-    });
+    const askOptions: Parameters<typeof ask>[1] = {};
+    if (options.title !== undefined) askOptions.title = options.title;
+    if (options.type !== undefined) askOptions.kind = options.type;
+    if (options.okLabel !== undefined) askOptions.okLabel = options.okLabel;
+    if (options.cancelLabel !== undefined) askOptions.cancelLabel = options.cancelLabel;
+    return ask(message, askOptions);
   },
 };
 

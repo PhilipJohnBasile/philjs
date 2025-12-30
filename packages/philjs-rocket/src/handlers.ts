@@ -5,7 +5,7 @@
  * Provides type-safe request handling and response building.
  */
 
-import type { RouteContext, RouteResponse } from './server';
+import type { RouteContext, RouteResponse } from './server.js';
 
 // ============================================================================
 // Request Types
@@ -361,8 +361,8 @@ export function withMiddleware<TState = Record<string, unknown>>(
 
     const next = async (): Promise<RouteResponse> => {
       if (index < middleware.length) {
-        const mw = middleware[index++];
-        return mw(ctx as any, next);
+        const mw = middleware[index++]!;
+        return mw(ctx as unknown as HandlerContext<TState>, next);
       }
       return handler(ctx);
     };

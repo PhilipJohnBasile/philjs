@@ -12,7 +12,7 @@ import { Node, mergeAttributes } from '@tiptap/core';
  */
 function extractVimeoId(url: string): string | null {
   const match = url?.match(/vimeo\.com\/(\d+)/);
-  return match ? match[1] : null;
+  return match?.[1] ?? null;
 }
 
 export interface VideoOptions {
@@ -87,7 +87,7 @@ export const Vimeo = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const videoId = extractVimeoId(HTMLAttributes.src);
+    const videoId = extractVimeoId(HTMLAttributes['src']);
     const embedUrl = `https://player.vimeo.com/video/${videoId}`;
 
     return [
@@ -100,8 +100,8 @@ export const Vimeo = Node.create({
         'iframe',
         {
           src: embedUrl,
-          width: HTMLAttributes.width,
-          height: HTMLAttributes.height,
+          width: HTMLAttributes['width'],
+          height: HTMLAttributes['height'],
           frameborder: '0',
           allow: 'autoplay; fullscreen; picture-in-picture',
           allowfullscreen: this.options.allowFullscreen,

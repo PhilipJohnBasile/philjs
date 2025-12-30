@@ -758,8 +758,8 @@ export function generateSEOFromEntry(
 ): SEOConfig {
   const data = entry.data as Record<string, unknown>;
   const slug = 'slug' in entry ? entry.slug : entry.id;
-  const title = data.title as string || slug;
-  const description = data.description as string || '';
+  const title = data['title'] as string || slug;
+  const description = data['description'] as string || '';
   const url = `${site}/${slug}`;
 
   const config: SEOConfig = {
@@ -771,18 +771,18 @@ export function generateSEOFromEntry(
       title,
       description,
       url,
-      siteName: options?.siteName,
+      ...(options?.siteName && { siteName: options.siteName }),
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      site: options?.twitterHandle,
+      ...(options?.twitterHandle && { site: options.twitterHandle }),
     },
   };
 
   // Add image if available
-  const image = (data.image as string) || options?.defaultImage;
+  const image = (data['image'] as string) || options?.defaultImage;
   if (image) {
     config.openGraph!.images = [{ url: image }];
     config.twitter!.image = image;
@@ -790,15 +790,15 @@ export function generateSEOFromEntry(
 
   // Add article-specific properties
   if (entry.type === 'content') {
-    const publishedTime = data.date as Date;
-    const updatedTime = data.updatedDate as Date;
-    const author = data.author as string;
-    const tags = data.tags as string[];
+    const publishedTime = data['date'] as Date;
+    const updatedTime = data['updatedDate'] as Date;
+    const author = data['author'] as string;
+    const tags = data['tags'] as string[];
 
     config.openGraph!.article = {
       publishedTime,
       modifiedTime: updatedTime,
-      authors: author ? [author] : undefined,
+      ...(author && { authors: [author] }),
       tags,
     };
   }

@@ -372,7 +372,7 @@ export class PhilDashboard extends HTMLElement {
       }
 
       if (target.classList.contains('tab')) {
-        const tabId = target.dataset.tab;
+        const tabId = target.dataset['tab'];
         if (tabId) {
           this.activeTab = tabId;
           this.render();

@@ -371,12 +371,11 @@ export function generateSitemapFromCollection(options: SitemapFromCollectionOpti
       ? mapping.priority
       : undefined;
 
-    return {
-      loc,
-      lastmod,
-      changefreq: mapping.changefreq,
-      priority,
-    };
+    const result: SitemapUrl = { loc };
+    if (lastmod !== undefined) result.lastmod = lastmod;
+    if (mapping.changefreq !== undefined) result.changefreq = mapping.changefreq;
+    if (priority !== undefined) result.priority = priority;
+    return result;
   });
 
   return generateSitemap({ site, urls });
@@ -407,23 +406,21 @@ export function generateUrlsFromRoutes(routes: RouteInfo[], site: string): Sitem
       for (const combo of combinations) {
         let path = route.path;
         for (const key of paramKeys) {
-          path = path.replace(`[${key}]`, combo[key]);
+          path = path.replace(`[${key}]`, combo[key]!);
         }
 
-        urls.push({
-          loc: path,
-          lastmod: route.lastmod,
-          changefreq: route.changefreq,
-          priority: route.priority,
-        });
+        const entry: SitemapUrl = { loc: path };
+        if (route.lastmod !== undefined) entry.lastmod = route.lastmod;
+        if (route.changefreq !== undefined) entry.changefreq = route.changefreq;
+        if (route.priority !== undefined) entry.priority = route.priority;
+        urls.push(entry);
       }
     } else {
-      urls.push({
-        loc: route.path,
-        lastmod: route.lastmod,
-        changefreq: route.changefreq,
-        priority: route.priority,
-      });
+      const entry: SitemapUrl = { loc: route.path };
+      if (route.lastmod !== undefined) entry.lastmod = route.lastmod;
+      if (route.changefreq !== undefined) entry.changefreq = route.changefreq;
+      if (route.priority !== undefined) entry.priority = route.priority;
+      urls.push(entry);
     }
   }
 
@@ -440,14 +437,17 @@ function generateParamCombinations(
   if (keys.length === 0) return [{}];
 
   const [firstKey, ...restKeys] = keys;
-  const restParams = Object.fromEntries(
-    restKeys.map(k => [k, params[k]])
-  );
+  if (firstKey === undefined) return [{}];
+
+  const restParams: Record<string, string[]> = {};
+  for (const k of restKeys) {
+    restParams[k] = params[k]!;
+  }
 
   const restCombinations = generateParamCombinations(restParams);
   const combinations: Record<string, string>[] = [];
 
-  for (const value of params[firstKey]) {
+  for (const value of params[firstKey]!) {
     for (const restCombo of restCombinations) {
       combinations.push({ [firstKey]: value, ...restCombo });
     }

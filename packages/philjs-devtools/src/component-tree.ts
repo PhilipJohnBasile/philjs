@@ -9,7 +9,7 @@
  */
 
 import type { JSXElement } from "philjs-core";
-import { getSignalInspector } from "./signal-inspector";
+import { getSignalInspector } from "./signal-inspector.js";
 
 // ============================================================================
 // Types
@@ -102,10 +102,8 @@ export class EffectTracker {
     const id = `effect-${this.idCounter++}`;
     const now = Date.now();
 
-    this.effects.set(id, {
+    const metadata: EffectMetadata = {
       id,
-      name,
-      componentId,
       createdAt: now,
       lastRun: 0,
       runCount: 0,
@@ -114,7 +112,14 @@ export class EffectTracker {
       status: "pending",
       averageRunTime: 0,
       totalRunTime: 0,
-    });
+    };
+    if (name !== undefined) {
+      metadata.name = name;
+    }
+    if (componentId !== undefined) {
+      metadata.componentId = componentId;
+    }
+    this.effects.set(id, metadata);
 
     this.recordEvent({
       id: `event-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -140,14 +145,17 @@ export class EffectTracker {
     effect.averageRunTime = effect.totalRunTime / effect.runCount;
     effect.status = "active";
 
-    this.recordEvent({
+    const event: EffectEvent = {
       id: `event-${now}-${Math.random().toString(36).slice(2, 7)}`,
       effectId,
       type: "run",
       timestamp: now,
       duration,
-      error,
-    });
+    };
+    if (error !== undefined) {
+      event.error = error;
+    }
+    this.recordEvent(event);
   }
 
   /**
@@ -160,13 +168,16 @@ export class EffectTracker {
     const now = Date.now();
     effect.cleanupCount++;
 
-    this.recordEvent({
+    const event: EffectEvent = {
       id: `event-${now}-${Math.random().toString(36).slice(2, 7)}`,
       effectId,
       type: "cleanup",
       timestamp: now,
-      duration,
-    });
+    };
+    if (duration !== undefined) {
+      event.duration = duration;
+    }
+    this.recordEvent(event);
   }
 
   /**
@@ -499,7 +510,7 @@ export class ComponentTreeInspector {
     let output = prefix + connector + this.formatNodeName(node) + "\n";
 
     for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
+      const child = node.children[i]!;
       const childIsLast = i === node.children.length - 1;
       output += this.printTree(child, childPrefix, childIsLast);
     }
@@ -568,9 +579,11 @@ export class ComponentTreeInspector {
         type: "text",
         props: { textContent: element.textContent },
         children: [],
-        parent,
         domNode: element,
       };
+      if (parent !== undefined) {
+        node.parent = parent;
+      }
     } else if (element.nodeType === Node.ELEMENT_NODE) {
       const el = element as Element;
       const isIsland = el.hasAttribute("island");
@@ -582,19 +595,22 @@ export class ComponentTreeInspector {
         type: "element",
         props: this.extractProps(el),
         children: [],
-        parent,
         domNode: el,
         isIsland,
         isHydrated,
         updateCount: 0,
       };
+      if (parent !== undefined) {
+        node.parent = parent;
+      }
 
       // Recursively traverse children
       for (let i = 0; i < el.childNodes.length; i++) {
         const childNode = el.childNodes[i];
         if (
-          childNode.nodeType === Node.ELEMENT_NODE ||
-          childNode.nodeType === Node.TEXT_NODE
+          childNode &&
+          (childNode.nodeType === Node.ELEMENT_NODE ||
+           childNode.nodeType === Node.TEXT_NODE)
         ) {
           const child = this.traverseDOM(childNode as Element | Text, node);
           node.children.push(child);
@@ -607,8 +623,10 @@ export class ComponentTreeInspector {
         type: "element",
         props: {},
         children: [],
-        parent,
       };
+      if (parent !== undefined) {
+        node.parent = parent;
+      }
     }
 
     this.nodeMap.set(id, node);
@@ -624,7 +642,7 @@ export class ComponentTreeInspector {
 
     // Extract attributes
     for (let i = 0; i < element.attributes.length; i++) {
-      const attr = element.attributes[i];
+      const attr = element.attributes[i]!;
       props[attr.name] = attr.value;
     }
 
@@ -887,12 +905,12 @@ export class ComponentTreeInspector {
       name += " [hydrated]";
     }
 
-    if (node.props.id) {
-      name += ` #${node.props.id}`;
+    if (node.props['id']) {
+      name += ` #${node.props['id']}`;
     }
 
-    if (node.props.class || node.props.className) {
-      name += ` .${node.props.class || node.props.className}`;
+    if (node.props['class'] || node.props['className']) {
+      name += ` .${node.props['class'] || node.props['className']}`;
     }
 
     return name;

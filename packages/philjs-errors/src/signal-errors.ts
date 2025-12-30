@@ -8,8 +8,8 @@
  * - Excessive re-computations
  */
 
-import { createPhilJSError, type PhilJSError } from './error-codes';
-import { getPrimaryLocation } from './stack-trace';
+import { createPhilJSError, type PhilJSError } from './error-codes.js';
+import { getPrimaryLocation } from './stack-trace.js';
 
 /**
  * Dependency tracking for circular dependency detection

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/haptic",
   "version": "0.1.0",
+  "type": "module",
   "description": "Haptic feedback system for PhilJS - vibration patterns, gamepad haptics, XR haptics",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

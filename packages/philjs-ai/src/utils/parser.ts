@@ -13,7 +13,7 @@ export function extractCodeBlocks(text: string): Array<{ language: string; code:
   while ((match = regex.exec(text)) !== null) {
     blocks.push({
       language: match[1] || 'text',
-      code: match[2].trim(),
+      code: match[2]!.trim(),
     });
   }
 
@@ -90,7 +90,7 @@ export function extractImports(code: string): string[] {
   let match;
 
   while ((match = importRegex.exec(code)) !== null) {
-    imports.push(match[1]);
+    imports.push(match[1]!);
   }
 
   return imports;
@@ -103,13 +103,13 @@ export function extractComponentName(code: string): string | null {
   // Try function declarations
   const functionMatch = code.match(/export\s+(?:default\s+)?function\s+(\w+)/);
   if (functionMatch) {
-    return functionMatch[1];
+    return functionMatch[1] ?? null;
   }
 
   // Try arrow functions
   const arrowMatch = code.match(/export\s+(?:default\s+)?const\s+(\w+)\s*=\s*\(/);
   if (arrowMatch) {
-    return arrowMatch[1];
+    return arrowMatch[1] ?? null;
   }
 
   return null;
@@ -143,8 +143,8 @@ export function parseSections(text: string): Record<string, string> {
   let match;
 
   while ((match = sectionRegex.exec(text)) !== null) {
-    const title = match[1].trim().toLowerCase();
-    const content = match[2].trim();
+    const title = match[1]!.trim().toLowerCase();
+    const content = match[2]!.trim();
     sections[title] = content;
   }
 
@@ -166,22 +166,27 @@ export function extractMetadata(text: string): {
     notes?: string[];
   } = {};
 
-  if (sections.explanation || sections.description) {
-    metadata.explanation = sections.explanation || sections.description;
+  const explanation = sections['explanation'] ?? sections['description'];
+  if (explanation) {
+    metadata.explanation = explanation;
   }
 
-  if (sections.warnings || sections.warning) {
-    const warningText = sections.warnings || sections.warning;
-    metadata.warnings = warningText.split('\n')
-      .filter(line => line.trim())
-      .map(line => line.replace(/^[-*]\s*/, ''));
+  if (sections['warnings'] || sections['warning']) {
+    const warningText = sections['warnings'] ?? sections['warning'];
+    if (warningText) {
+      metadata.warnings = warningText.split('\n')
+        .filter(line => line.trim())
+        .map(line => line.replace(/^[-*]\s*/, ''));
+    }
   }
 
-  if (sections.notes || sections.note) {
-    const noteText = sections.notes || sections.note;
-    metadata.notes = noteText.split('\n')
-      .filter(line => line.trim())
-      .map(line => line.replace(/^[-*]\s*/, ''));
+  if (sections['notes'] || sections['note']) {
+    const noteText = sections['notes'] ?? sections['note'];
+    if (noteText) {
+      metadata.notes = noteText.split('\n')
+        .filter(line => line.trim())
+        .map(line => line.replace(/^[-*]\s*/, ''));
+    }
   }
 
   return metadata;

@@ -3,6 +3,7 @@
   "displayName": "PhilJS for VS Code",
   "description": "Official VS Code extension for PhilJS - snippets, IntelliSense, and tooling",
   "version": "0.1.0",
+  "type": "module",
   "publisher": "philjs",
   "engines": {
     "vscode": "^1.85.0",

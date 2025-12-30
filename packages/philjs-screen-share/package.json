@@ -1,6 +1,7 @@
 {
   "name": "@philjs/screen-share",
   "version": "0.1.0",
+  "type": "module",
   "description": "Advanced screen sharing for PhilJS - annotations, presenter mode, region selection, recording",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

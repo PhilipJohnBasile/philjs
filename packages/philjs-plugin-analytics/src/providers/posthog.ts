@@ -234,49 +234,46 @@ export class PostHogProvider implements IAnalyticsProvider {
     if (typeof document === "undefined") return;
 
     // PostHog snippet
-    !function(t: Window, e: Document) {
+    (function(t: Window, e: Document & { __SV?: number }) {
       let o: any, n: any, p: any, r: any;
-      e.__SV ||
-        ((window.posthog = t.posthog = t.posthog || []),
-        (t.posthog._i = []),
-        (t.posthog.init = function(i: string, s: any, a?: string) {
-          function g(t: any, e: any) {
-            const o = e.split(".");
-            2 == o.length && ((t = t[o[0]]), (e = o[1]));
-            t[e] = function (...args: any[]) {
-              t.push([e].concat(Array.prototype.slice.call(args, 0)));
-            };
-          }
-          ((p = e.createElement("script")).type = "text/javascript"),
-            (p.async = !0),
-            (p.src =
-              s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") +
-              "/static/array.js"),
-            (r = e.getElementsByTagName("script")[0]).parentNode!.insertBefore(p, r);
-          const u: any = t.posthog;
-          for (
-            void 0 !== a ? (u = t.posthog[a] = []) : (a = "posthog"),
-              u.people = u.people || [],
-              u.toString = function (t: any) {
-                let e = "posthog";
-                return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e;
-              },
-              u.people.toString = function () {
-                return u.toString(1) + ".people (stub)";
-              },
-              o =
-                "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(
-                  " "
-                ),
-              n = 0;
-            n < o.length;
-            n++
-          )
-            g(u, o[n]);
-          t.posthog._i.push([i, s, a]);
-        }),
-        (e.__SV = 1));
-    }(window, document);
+      if (e["__SV"]) return;
+      (window.posthog = t.posthog = t.posthog || []),
+      (t.posthog._i = []),
+      (t.posthog.init = function(i: string, s: any, a?: string) {
+        function g(t: any, e: any) {
+          const o = e.split(".");
+          2 == o.length && ((t = t[o[0]]), (e = o[1]));
+          t[e] = function (...args: any[]) {
+            t.push([e].concat(Array.prototype.slice.call(args, 0)));
+          };
+        }
+        ((p = e.createElement("script")).type = "text/javascript"),
+          (p.async = !0),
+          (p.src =
+            s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") +
+            "/static/array.js"),
+          (r = e.getElementsByTagName("script")[0]!).parentNode!.insertBefore(p, r);
+        let u: any = t.posthog;
+        if (void 0 !== a) { u = t.posthog[a] = []; } else { a = "posthog"; }
+        u.people = u.people || [];
+        u.toString = function (t: any) {
+          let e = "posthog";
+          return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e;
+        };
+        u.people.toString = function () {
+          return u.toString(1) + ".people (stub)";
+        };
+        o =
+          "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(
+            " "
+          );
+        for (n = 0; n < o.length; n++) {
+          g(u, o[n]);
+        }
+        t.posthog._i.push([i, s, a]);
+      }),
+      (e["__SV"] = 1);
+    })(window, document);
 
     // Initialize PostHog
     const posthogConfig: Record<string, any> = {
@@ -293,17 +290,17 @@ export class PostHogProvider implements IAnalyticsProvider {
 
     // Privacy settings
     if (this.config.privacy?.anonymizeIp) {
-      posthogConfig.property_blacklist = ["$ip"];
+      posthogConfig["property_blacklist"] = ["$ip"];
     }
 
     // Session recording settings
-    if (this.config.options?.sessionRecording !== false) {
-      posthogConfig.disable_session_recording = false;
+    if (this.config.options?.["sessionRecording"] !== false) {
+      posthogConfig["disable_session_recording"] = false;
     }
 
     // Autocapture settings
-    if (this.config.options?.autocapture !== undefined) {
-      posthogConfig.autocapture = this.config.options.autocapture;
+    if (this.config.options?.["autocapture"] !== undefined) {
+      posthogConfig["autocapture"] = this.config.options["autocapture"];
     }
 
     window.posthog.init(this.config.trackingId, posthogConfig);

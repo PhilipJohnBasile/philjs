@@ -1,6 +1,7 @@
 {
   "name": "@philjs/ai-agents",
   "version": "0.1.0",
+  "type": "module",
   "description": "Multi-agent AI orchestration for PhilJS - agents, tools, memory, workflows, supervisor patterns",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -10,7 +10,7 @@
  * - Svelte template → JSX
  */
 
-import type { MigrationWarning, ManualReviewItem } from '../migrate';
+import type { MigrationWarning, ManualReviewItem } from '../migrate.js';
 
 export interface TransformResult {
   code: string;
@@ -183,11 +183,14 @@ ${style ? `/* Styles - consider using CSS modules or Tailwind */\n/*\n${style}\n
     const props: { name: string; type?: string; defaultValue?: string }[] = [];
 
     for (const match of propMatches) {
-      props.push({
-        name: match[1],
-        type: match[2]?.trim(),
-        defaultValue: match[3]?.trim(),
-      });
+      const name = match[1];
+      if (name === undefined) continue;
+      const prop: { name: string; type?: string; defaultValue?: string } = { name };
+      const type = match[2]?.trim();
+      const defaultValue = match[3]?.trim();
+      if (type !== undefined) prop.type = type;
+      if (defaultValue !== undefined) prop.defaultValue = defaultValue;
+      props.push(prop);
     }
 
     if (props.length === 0) {

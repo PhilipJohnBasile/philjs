@@ -241,4 +241,4 @@ export function getProvider<T>(key: string | symbol): T | undefined {
 }
 
 // Re-export registry
-export { PluginRegistry, fetchPluginInfo, searchPlugins } from './registry';
+export { PluginRegistry, fetchPluginInfo, searchPlugins } from './registry.js';

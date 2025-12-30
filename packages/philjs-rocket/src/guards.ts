@@ -9,7 +9,7 @@ import type {
   GuardContext,
   GuardOutcome,
   GuardDefinition,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Base Guard
@@ -39,7 +39,11 @@ export abstract class RequestGuard<T> {
    * Create a failed outcome
    */
   protected failure(error: string, status?: number): GuardOutcome<T> {
-    return { success: false, error, status };
+    const outcome: GuardOutcome<T> = { success: false, error };
+    if (status !== undefined) {
+      outcome.status = status;
+    }
+    return outcome;
   }
 }
 
@@ -108,7 +112,7 @@ export class SSRContextGuard extends RequestGuard<SSRContextData> {
     if (!header) return ['en'];
     return header
       .split(',')
-      .map(lang => lang.split(';')[0].trim())
+      .map(lang => lang.split(';')[0]!.trim())
       .filter(Boolean);
   }
 
@@ -296,7 +300,7 @@ export class AuthGuard extends RequestGuard<AuthUser> {
       const parts = cleanToken.split('.');
       if (parts.length !== 3) return null;
 
-      const payload = JSON.parse(atob(parts[1]));
+      const payload = JSON.parse(atob(parts[1]!));
       return {
         id: payload.sub || payload.id,
         email: payload.email,
@@ -539,7 +543,9 @@ export class JsonBodyGuard<T> extends RequestGuard<T> {
       strictContentType: true,
       ...config,
     };
-    this.schema = schema;
+    if (schema !== undefined) {
+      this.schema = schema;
+    }
   }
 
   validate(ctx: GuardContext): GuardOutcome<T> {
@@ -723,7 +729,7 @@ export class QueryGuard<T extends Record<string, string>> extends RequestGuard<T
 
     // Copy all query parameters
     for (const [key, value] of Object.entries(ctx.query)) {
-      result[key] = value;
+      result[key] = value as string;
     }
 
     return this.success(result as T);

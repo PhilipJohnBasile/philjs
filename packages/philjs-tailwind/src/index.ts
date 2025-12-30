@@ -9,16 +9,16 @@
  */
 
 // Preset
-export { philjsPreset, createPhilJSPreset } from './preset';
-export type { PhilJSPresetOptions } from './preset';
+export { philjsPreset, createPhilJSPreset } from './preset.js';
+export type { PhilJSPresetOptions } from './preset.js';
 
 // Plugin
-export { philjsTailwindPlugin, createPhilJSPlugin } from './plugin';
-export type { PhilJSPluginOptions } from './plugin';
+export { philjsTailwindPlugin, createPhilJSPlugin } from './plugin.js';
+export type { PhilJSPluginOptions } from './plugin.js';
 
 // Vite plugin
-export { philjsTailwindVite } from './vite-plugin';
-export type { PhilJSTailwindViteOptions } from './vite-plugin';
+export { philjsTailwindVite } from './vite-plugin.js';
+export type { PhilJSTailwindViteOptions } from './vite-plugin.js';
 
 // Utilities
 export {
@@ -28,13 +28,13 @@ export {
   cva,
   twMerge,
   twJoin,
-} from './utils';
+} from './utils.js';
 
 // Types
 export type {
   ClassValue,
   VariantProps,
-} from './types';
+} from './types.js';
 
 /**
  * Quick setup for PhilJS + Tailwind

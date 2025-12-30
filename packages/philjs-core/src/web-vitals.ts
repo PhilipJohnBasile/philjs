@@ -11,7 +11,7 @@
  * - Custom metrics
  */
 
-import { signal, type Signal } from './signals';
+import { signal, type Signal } from './signals.js';
 
 // ============================================================================
 // Types
@@ -381,7 +381,7 @@ export class WebVitalsMonitor {
       id: metric.id || this.generateId(name),
       timestamp: Date.now(),
       navigationType,
-      metadata: metric.metadata,
+      ...(metric.metadata !== undefined && { metadata: metric.metadata }),
     };
 
     // Store metric

@@ -5,13 +5,13 @@
  * with browser fallbacks when running outside Tauri context.
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 /**
  * Error thrown when notification operations fail
  */
 export class NotificationError extends Error {
-  constructor(message: string, public readonly cause?: unknown) {
+  constructor(message: string, public override readonly cause?: unknown) {
     super(message);
     this.name = 'NotificationError';
   }
@@ -112,11 +112,11 @@ export const Notification = {
     if (!isTauri()) {
       // Browser fallback
       try {
-        new window.Notification(options.title, {
-          body: options.body,
-          icon: options.icon,
-          silent: options.silent,
-        });
+        const notificationOptions: globalThis.NotificationOptions = {};
+        if (options.body !== undefined) notificationOptions.body = options.body;
+        if (options.icon !== undefined) notificationOptions.icon = options.icon;
+        if (options.silent !== undefined) notificationOptions.silent = options.silent;
+        new window.Notification(options.title, notificationOptions);
         return;
       } catch (error) {
         throw new NotificationError('Failed to show notification in browser context', error);
@@ -125,13 +125,12 @@ export const Notification = {
 
     try {
       const { sendNotification } = await import('@tauri-apps/plugin-notification');
-      await sendNotification({
-        title: options.title,
-        body: options.body,
-        icon: options.icon,
-        sound: options.sound,
-        largeBody: options.largeBody,
-      });
+      const tauriOptions: Parameters<typeof sendNotification>[0] = { title: options.title };
+      if (options.body !== undefined) tauriOptions.body = options.body;
+      if (options.icon !== undefined) tauriOptions.icon = options.icon;
+      if (options.sound !== undefined) tauriOptions.sound = options.sound;
+      if (options.largeBody !== undefined) tauriOptions.largeBody = options.largeBody;
+      await sendNotification(tauriOptions);
     } catch (error) {
       throw new NotificationError(
         'Failed to show notification. Ensure @tauri-apps/plugin-notification is installed and configured.',
@@ -144,7 +143,9 @@ export const Notification = {
    * Show a simple notification
    */
   async notify(title: string, body?: string): Promise<void> {
-    return this.show({ title, body });
+    const options: NotificationOptions = { title };
+    if (body !== undefined) options.body = body;
+    return this.show(options);
   },
 
   /**
@@ -169,12 +170,13 @@ export const Notification = {
       const notificationId = Math.floor(Math.random() * 2147483647);
 
       // Tauri v2 uses Schedule.at() for scheduling
-      sendNotification({
+      const tauriOptions: Parameters<typeof sendNotification>[0] = {
         id: notificationId,
         title: options.title,
-        body: options.body,
         schedule: Schedule.at(options.at, options.repeating ?? false),
-      });
+      };
+      if (options.body !== undefined) tauriOptions.body = options.body;
+      sendNotification(tauriOptions);
 
       return notificationId;
     } catch (error) {
@@ -255,10 +257,11 @@ export const Notification = {
     try {
       const { pending } = await import('@tauri-apps/plugin-notification');
       const notifications = await pending();
-      return notifications.map((n) => ({
-        id: n.id,
-        title: n.title,
-      }));
+      return notifications.map((n) => {
+        const result: { id: number; title?: string } = { id: n.id };
+        if (n.title !== undefined) result.title = n.title;
+        return result;
+      });
     } catch (error) {
       throw new NotificationError(
         'Failed to get pending notifications. Ensure @tauri-apps/plugin-notification is installed and configured.',
@@ -300,12 +303,13 @@ export const Notification = {
     try {
       const { onAction } = await import('@tauri-apps/plugin-notification');
       const listener = await onAction((notification) => {
-        callback({
-          id: notification.id,
-          actionTypeId: notification.actionTypeId,
+        const result: { id?: number; actionTypeId?: string; title: string; body?: string } = {
           title: notification.title,
-          body: notification.body,
-        });
+        };
+        if (notification.id !== undefined) result.id = notification.id;
+        if (notification.actionTypeId !== undefined) result.actionTypeId = notification.actionTypeId;
+        if (notification.body !== undefined) result.body = notification.body;
+        callback(result);
       });
       return () => listener.unregister();
     } catch (error) {
@@ -327,11 +331,12 @@ export const Notification = {
     try {
       const { onNotificationReceived } = await import('@tauri-apps/plugin-notification');
       const listener = await onNotificationReceived((notification) => {
-        callback({
-          id: notification.id,
+        const result: { id?: number; title: string; body?: string } = {
           title: notification.title,
-          body: notification.body,
-        });
+        };
+        if (notification.id !== undefined) result.id = notification.id;
+        if (notification.body !== undefined) result.body = notification.body;
+        callback(result);
       });
       return () => listener.unregister();
     } catch (error) {

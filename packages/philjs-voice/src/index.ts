@@ -294,7 +294,8 @@ export class SpeechSynthesisEngine {
         if (voice) utterance.voice = voice;
       } else {
         // Default to first voice matching language
-        const voice = this.voices.find(v => v.lang.startsWith(config.language!.split('-')[0]));
+        const langPrefix = config.language!.split('-')[0]!;
+        const voice = this.voices.find(v => v.lang.startsWith(langPrefix));
         if (voice) utterance.voice = voice;
       }
 
@@ -341,7 +342,7 @@ export class SpeechSynthesisEngine {
   }
 
   getVoicesForLanguage(language: string): SpeechSynthesisVoice[] {
-    const langPrefix = language.split('-')[0];
+    const langPrefix = language.split('-')[0]!;
     return this.voices.filter(v => v.lang.startsWith(langPrefix));
   }
 
@@ -437,9 +438,11 @@ export class VoiceCommandSystem {
         const voiceMatch: VoiceMatch = {
           transcript: original,
           confidence: 1,
-          matches,
-          intent: command.description
+          matches
         };
+        if (command.description !== undefined) {
+          voiceMatch.intent = command.description;
+        }
 
         command.handler(voiceMatch);
         return;
@@ -538,8 +541,9 @@ export class IntentParser {
           const extractedEntities: Record<string, string> = {};
 
           entities.forEach((entity, index) => {
-            if (match[index + 1]) {
-              extractedEntities[entity] = match[index + 1].trim();
+            const matchValue = match[index + 1];
+            if (matchValue) {
+              extractedEntities[entity] = matchValue.trim();
             }
           });
 
@@ -611,7 +615,7 @@ export class VoiceAssistant {
     });
 
     this.recognition.on('result', (results: SpeechResult[]) => {
-      const latest = results[results.length - 1];
+      const latest = results[results.length - 1]!;
       this.updateState({ transcript: latest.transcript });
     });
 
@@ -657,12 +661,12 @@ export class VoiceAssistant {
   private async handleIntent(parsed: VoiceMatch): Promise<string | null> {
     switch (parsed.intent) {
       case 'navigation':
-        this.emit('navigate', parsed.entities?.destination);
-        return `Navigating to ${parsed.entities?.destination}`;
+        this.emit('navigate', parsed.entities?.['destination']);
+        return `Navigating to ${parsed.entities?.['destination']}`;
 
       case 'search':
-        this.emit('search', parsed.entities?.query);
-        return `Searching for ${parsed.entities?.query}`;
+        this.emit('search', parsed.entities?.['query']);
+        return `Searching for ${parsed.entities?.['query']}`;
 
       case 'control':
         if (parsed.transcript.match(/stop|cancel|quit/i)) {
@@ -788,7 +792,7 @@ export class VoiceNavigation {
     this.commands.registerCommand({
       pattern: /(?:go to|navigate to|open|show)\s+(.+)/i,
       handler: (match) => {
-        const destination = match.matches[1]?.toLowerCase();
+        const destination = match.matches[1]?.toLowerCase() ?? '';
         this.navigateTo(destination);
       },
       description: 'Navigate to a page'
@@ -898,7 +902,7 @@ export function useSpeechRecognition(config?: VoiceConfig): {
   const engine = new SpeechRecognitionEngine(config);
 
   engine.on('result', (results: SpeechResult[]) => {
-    const latest = results[results.length - 1];
+    const latest = results[results.length - 1]!;
     setTranscript(latest.transcript);
   });
 
@@ -1038,17 +1042,8 @@ export function useVoiceNavigation(
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  SpeechRecognitionEngine,
-  SpeechSynthesisEngine,
-  VoiceCommandSystem,
-  IntentParser,
-  VoiceAssistant,
-  VoiceNavigation
-};
 
 export default {
   SpeechRecognitionEngine,

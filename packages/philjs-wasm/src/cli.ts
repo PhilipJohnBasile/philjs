@@ -56,13 +56,15 @@ function parseArgs(args: string[]): ParsedArgs {
     // Commands
     if (arg === 'generate' || arg === 'gen' || arg === 'g') {
       parsed.command = 'generate';
-      if (args[i + 1] && !args[i + 1].startsWith('-')) {
-        parsed.input = args[++i];
+      if (args[i + 1] && !args[i + 1]!.startsWith('-')) {
+        const value = args[++i];
+        if (value !== undefined) parsed.input = value;
       }
     } else if (arg === 'watch' || arg === 'w') {
       parsed.command = 'watch';
-      if (args[i + 1] && !args[i + 1].startsWith('-')) {
-        parsed.input = args[++i];
+      if (args[i + 1] && !args[i + 1]!.startsWith('-')) {
+        const value = args[++i];
+        if (value !== undefined) parsed.input = value;
       }
     } else if (arg === 'help' || arg === '-h' || arg === '--help') {
       parsed.command = 'help';
@@ -72,7 +74,8 @@ function parseArgs(args: string[]): ParsedArgs {
 
     // Options
     else if (arg === '-o' || arg === '--output') {
-      parsed.output = args[++i];
+      const value = args[++i];
+      if (value !== undefined) parsed.output = value;
     } else if (arg === '-t' || arg === '--typescript') {
       parsed.typescript = true;
     } else if (arg === '--no-typescript') {
@@ -90,7 +93,7 @@ function parseArgs(args: string[]): ParsedArgs {
     }
 
     // Input file (if not already set)
-    else if (!parsed.input && !arg.startsWith('-')) {
+    else if (!parsed.input && arg && !arg.startsWith('-')) {
       parsed.input = arg;
     }
 

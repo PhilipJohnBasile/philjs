@@ -50,25 +50,25 @@ export class GoServer {
     };
 
     if (this.config.static) {
-      env.PHILJS_STATIC = resolve(this.config.static);
+      env['PHILJS_STATIC'] = resolve(this.config.static);
     }
 
     if (this.config.apiDir) {
-      env.PHILJS_API_DIR = resolve(this.config.apiDir);
+      env['PHILJS_API_DIR'] = resolve(this.config.apiDir);
     }
 
     if (this.config.edge) {
-      env.PHILJS_EDGE = 'true';
+      env['PHILJS_EDGE'] = 'true';
     }
 
     if (this.config.cors) {
       if (typeof this.config.cors === 'boolean') {
-        env.PHILJS_CORS = 'true';
+        env['PHILJS_CORS'] = 'true';
       } else {
-        env.PHILJS_CORS_ORIGINS = this.config.cors.origins?.join(',') || '*';
-        env.PHILJS_CORS_METHODS = this.config.cors.methods?.join(',') || 'GET,POST,PUT,DELETE';
-        env.PHILJS_CORS_HEADERS = this.config.cors.headers?.join(',') || '*';
-        env.PHILJS_CORS_CREDENTIALS = String(this.config.cors.credentials ?? false);
+        env['PHILJS_CORS_ORIGINS'] = this.config.cors.origins?.join(',') || '*';
+        env['PHILJS_CORS_METHODS'] = this.config.cors.methods?.join(',') || 'GET,POST,PUT,DELETE';
+        env['PHILJS_CORS_HEADERS'] = this.config.cors.headers?.join(',') || '*';
+        env['PHILJS_CORS_CREDENTIALS'] = String(this.config.cors.credentials ?? false);
       }
     }
 
@@ -285,7 +285,7 @@ func main() {
 /**
  * Check if Go is installed
  */
-export async function checkGoInstalled(): Promise<{ installed: boolean; version?: string }> {
+export async function checkGoInstalled(): Promise<{ installed: boolean; version?: string | undefined }> {
   try {
     const { stdout } = await execa('go', ['version']);
     const match = stdout.match(/go(\d+\.\d+(\.\d+)?)/);

@@ -458,12 +458,15 @@ export async function loadParallelSlots(
   for (const result of results) {
     const slot = loadedSlots.get(result.slotName);
     if (slot) {
-      loadedSlots.set(result.slotName, {
+      const updatedSlot: MatchedSlot = {
         ...slot,
         data: result.data,
-        error: result.error,
         loading: result.loading,
-      });
+      };
+      if (result.error !== undefined) {
+        updatedSlot.error = result.error;
+      }
+      loadedSlots.set(result.slotName, updatedSlot);
 
       // Set route data for useLoaderData hook
       setCurrentRouteData(slot.id, result.data, result.error);
@@ -660,20 +663,30 @@ export function renderParallelSlots(
     }
 
     // Set slot context for hooks
-    slotContextSignal.set({
+    const slotContext: {
+      slotName: SlotName;
+      data: unknown;
+      error?: Error;
+      loading?: boolean;
+    } = {
       slotName,
       data: slot.data,
-      error: slot.error,
       loading: slot.loading || false,
-    });
+    };
+    if (slot.error !== undefined) {
+      slotContext.error = slot.error;
+    }
+    slotContextSignal.set(slotContext);
 
     const props: SlotComponentProps = {
       params: slot.params,
       searchParams,
       data: slot.data,
-      error: slot.error,
       slotName,
     };
+    if (slot.error !== undefined) {
+      props.error = slot.error;
+    }
 
     rendered[slotName] = Component(props);
   }
@@ -711,12 +724,20 @@ export function useSlot(): {
     );
   }
 
-  return {
+  const result: {
+    slotName: SlotName;
+    data: unknown;
+    error?: Error;
+    loading: boolean;
+  } = {
     slotName: context.slotName,
     data: context.data,
-    error: context.error,
     loading: context.loading || false,
   };
+  if (context.error !== undefined) {
+    result.error = context.error;
+  }
+  return result;
 }
 
 /**
@@ -814,8 +835,8 @@ function matchPath(
   const params: Record<string, string> = {};
 
   for (let i = 0; i < patternSegments.length; i++) {
-    const patternSeg = patternSegments[i];
-    const pathSeg = pathSegments[i];
+    const patternSeg = patternSegments[i]!;
+    const pathSeg = pathSegments[i]!;
 
     if (patternSeg.startsWith(":")) {
       const paramName = patternSeg.slice(1);
@@ -837,13 +858,16 @@ function matchPath(
 export function createParallelRouteConfig(
   config: ParallelRouteConfig
 ): ParallelRouteConfig {
-  return {
+  const result: ParallelRouteConfig = {
     basePath: config.basePath || "",
     slots: config.slots,
     mainSlot: config.mainSlot || "children",
     softNavigation: config.softNavigation !== false,
-    defaultErrorBoundary: config.defaultErrorBoundary,
   };
+  if (config.defaultErrorBoundary !== undefined) {
+    result.defaultErrorBoundary = config.defaultErrorBoundary;
+  }
+  return result;
 }
 
 /**

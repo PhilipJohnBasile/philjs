@@ -510,7 +510,7 @@ export function createGraphQLMock(endpoint: string = '/graphql'): GraphQLMock & 
 
 function extractOperationName(query: string): string {
   const match = query.match(/(?:query|mutation|subscription)\s+(\w+)/);
-  return match ? match[1] : 'unknown';
+  return match?.[1] ?? 'unknown';
 }
 
 // =============================================================================

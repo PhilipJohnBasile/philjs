@@ -26,7 +26,7 @@ export function registerPluginCommands(program: Command): void {
     .description("Install a plugin")
     .option("-D, --dev", "Install as dev dependency", false)
     .option("-v, --version <version>", "Specific version to install")
-    .action(async (pluginName, options) => {
+    .action(async (pluginName: string | undefined, options: { dev: boolean; version?: string }) => {
       const manager = new CLIPluginManager();
 
       // Interactive mode if no plugin name provided
@@ -39,16 +39,16 @@ export function registerPluginCommands(program: Command): void {
           },
         ]);
 
-        if (!response.search) {
+        if (!response['search']) {
           console.log(pc.yellow("Cancelled"));
           return;
         }
 
         // Search for plugins
-        const results = await manager.search(response.search);
+        const results = await manager.search(response['search']);
 
         if (results.length === 0) {
-          console.log(pc.yellow(`No plugins found for "${response.search}"`));
+          console.log(pc.yellow(`No plugins found for "${response['search']}"`));
           return;
         }
 
@@ -65,30 +65,33 @@ export function registerPluginCommands(program: Command): void {
           },
         ]);
 
-        if (!selected.plugin) {
+        if (!selected['plugin']) {
           console.log(pc.yellow("Cancelled"));
           return;
         }
 
-        pluginName = selected.plugin;
+        pluginName = selected['plugin'];
       }
 
       try {
-        await manager.install(pluginName, {
+        const installOptions: { dev?: boolean; version?: string } = {
           dev: options.dev,
-          version: options.version,
-        });
+        };
+        if (options.version) {
+          installOptions.version = options.version;
+        }
+        await manager.install(pluginName as string, installOptions);
       } catch (error) {
         process.exit(1);
       }
     });
 
   // Remove plugin command
-  plugin
-    .command("remove <plugin-name>")
-    .alias("rm")
+  const removeCmd = plugin.command("remove <plugin-name>");
+  removeCmd.alias("rm");
+  removeCmd
     .description("Remove a plugin")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       // Confirm removal
@@ -101,7 +104,7 @@ export function registerPluginCommands(program: Command): void {
         },
       ]);
 
-      if (!response.confirm) {
+      if (!response['confirm']) {
         console.log(pc.yellow("Cancelled"));
         return;
       }
@@ -114,9 +117,9 @@ export function registerPluginCommands(program: Command): void {
     });
 
   // List plugins command
-  plugin
-    .command("list")
-    .alias("ls")
+  const listCmd = plugin.command("list");
+  listCmd.alias("ls");
+  listCmd
     .description("List installed plugins")
     .action(async () => {
       const manager = new CLIPluginManager();
@@ -139,14 +142,17 @@ export function registerPluginCommands(program: Command): void {
     .description("Search for plugins in the registry")
     .option("-l, --limit <number>", "Limit number of results", "20")
     .option("-t, --tags <tags>", "Filter by tags (comma-separated)")
-    .action(async (query, options) => {
+    .action(async (query: string, options: { limit: string; tags?: string }) => {
       const manager = new CLIPluginManager();
 
       try {
-        const results = await manager.search(query, {
+        const searchOptions: { limit: number; tags?: string[] } = {
           limit: parseInt(options.limit),
-          tags: options.tags ? options.tags.split(",") : undefined,
-        });
+        };
+        if (options.tags) {
+          searchOptions.tags = options.tags.split(",");
+        }
+        const results = await manager.search(query, searchOptions);
 
         console.log(pc.cyan(`\nSearch results for "${query}":`));
         console.log(formatSearchResults(results));
@@ -161,7 +167,7 @@ export function registerPluginCommands(program: Command): void {
   plugin
     .command("info <plugin-name>")
     .description("Show plugin information")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       try {
@@ -206,7 +212,7 @@ export function registerPluginCommands(program: Command): void {
   plugin
     .command("enable <plugin-name>")
     .description("Enable a plugin")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       try {
@@ -221,7 +227,7 @@ export function registerPluginCommands(program: Command): void {
   plugin
     .command("disable <plugin-name>")
     .description("Disable a plugin")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       try {
@@ -236,7 +242,7 @@ export function registerPluginCommands(program: Command): void {
   plugin
     .command("config <plugin-name>")
     .description("Configure a plugin")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       try {
@@ -263,7 +269,7 @@ export function registerPluginCommands(program: Command): void {
           },
         ]);
 
-        if (!response.edit) {
+        if (!response['edit']) {
           return;
         }
 
@@ -284,8 +290,8 @@ export function registerPluginCommands(program: Command): void {
           },
         ]);
 
-        if (newConfig.json) {
-          const parsed = JSON.parse(newConfig.json);
+        if (newConfig['json']) {
+          const parsed = JSON.parse(newConfig['json']);
           await manager.configure(pluginName, parsed);
         }
       } catch (error) {
@@ -313,7 +319,7 @@ export function registerPluginCommands(program: Command): void {
   plugin
     .command("verify <plugin-name>")
     .description("Verify plugin integrity and compatibility")
-    .action(async (pluginName) => {
+    .action(async (pluginName: string) => {
       const manager = new CLIPluginManager();
 
       try {
@@ -350,7 +356,7 @@ export function registerPluginCommands(program: Command): void {
         },
       ]);
 
-      if (!response.category) {
+      if (!response['category']) {
         console.log(pc.yellow("Cancelled"));
         return;
       }
@@ -358,8 +364,11 @@ export function registerPluginCommands(program: Command): void {
       const manager = new CLIPluginManager();
 
       // Search by category
-      const tags = response.category !== "all" ? [response.category] : undefined;
-      const results = await manager.search("", { limit: 50, tags });
+      const setupSearchOptions: { limit: number; tags?: string[] } = { limit: 50 };
+      if (response['category'] !== "all") {
+        setupSearchOptions.tags = [response['category']];
+      }
+      const results = await manager.search("", setupSearchOptions);
 
       if (results.length === 0) {
         console.log(pc.yellow("No plugins found in this category"));
@@ -380,13 +389,13 @@ export function registerPluginCommands(program: Command): void {
         },
       ]);
 
-      if (!selected.plugins || selected.plugins.length === 0) {
+      if (!selected['plugins'] || selected['plugins'].length === 0) {
         console.log(pc.yellow("No plugins selected"));
         return;
       }
 
       // Install selected plugins
-      for (const pluginName of selected.plugins) {
+      for (const pluginName of selected['plugins']) {
         try {
           await manager.install(pluginName);
         } catch (error) {

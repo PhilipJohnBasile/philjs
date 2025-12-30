@@ -37,7 +37,7 @@ export type {
   ToolbarConfig,
   ExportOptions,
   ImportOptions,
-} from './types';
+} from './types.js';
 
 // Components
 export {
@@ -49,46 +49,52 @@ export {
   type SlashCommandMenuOptions,
   FloatingToolbar,
   type FloatingToolbarOptions,
-} from './components';
+} from './components/index.js';
 
 // Core
-export { createEditor } from './core/editor';
+export { createEditor } from './core/editor.js';
 
 // Extensions
-export { defaultSlashCommands } from './extensions/defaultCommands';
+export { defaultSlashCommands } from './extensions/defaultCommands.js';
 
 // Utility functions
 export function createBlock(
-  type: import('./types').BlockType,
-  content: import('./types').TextNode[] = [],
+  type: import('./types.js').BlockType,
+  content: import('./types.js').TextNode[] = [],
   attrs?: Record<string, unknown>
-): import('./types').Block {
-  return {
+): import('./types.js').Block {
+  const block: import('./types.js').Block = {
     id: Math.random().toString(36).substring(2, 11),
     type,
     content,
-    attrs,
   };
+  if (attrs !== undefined) {
+    block.attrs = attrs;
+  }
+  return block;
 }
 
 export function createTextNode(
   text: string,
-  marks?: import('./types').TextMark[]
-): import('./types').TextNode {
-  return {
+  marks?: import('./types.js').TextMark[]
+): import('./types.js').TextNode {
+  const node: import('./types.js').TextNode = {
     type: 'text',
     text,
-    marks,
   };
+  if (marks !== undefined) {
+    node.marks = marks;
+  }
+  return node;
 }
 
 /**
  * Parse HTML string to blocks
  */
-export function parseHTML(html: string): import('./types').Block[] {
+export function parseHTML(html: string): import('./types.js').Block[] {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-  const blocks: import('./types').Block[] = [];
+  const blocks: import('./types.js').Block[] = [];
 
   doc.body.childNodes.forEach((node) => {
     if (node.nodeType === Node.ELEMENT_NODE) {
@@ -103,7 +109,7 @@ export function parseHTML(html: string): import('./types').Block[] {
   return blocks;
 }
 
-function elementToBlock(element: Element): import('./types').Block | null {
+function elementToBlock(element: Element): import('./types.js').Block | null {
   const tag = element.tagName.toLowerCase();
   const text = element.textContent || '';
 
@@ -141,12 +147,12 @@ function elementToBlock(element: Element): import('./types').Block | null {
 /**
  * Serialize blocks to HTML
  */
-export function serializeToHTML(blocks: import('./types').Block[]): string {
+export function serializeToHTML(blocks: import('./types.js').Block[]): string {
   return blocks.map((block) => blockToHTML(block)).join('\n');
 }
 
-function blockToHTML(block: import('./types').Block): string {
-  const content = renderTextContent(block.content as import('./types').TextNode[]);
+function blockToHTML(block: import('./types.js').Block): string {
+  const content = renderTextContent(block.content as import('./types.js').TextNode[]);
 
   switch (block.type) {
     case 'heading1':
@@ -160,21 +166,21 @@ function blockToHTML(block: import('./types').Block): string {
     case 'quote':
       return `<blockquote>${content}</blockquote>`;
     case 'code':
-      return `<pre data-language="${block.attrs?.language || 'plaintext'}"><code>${content}</code></pre>`;
+      return `<pre data-language="${block.attrs?.['language'] || 'plaintext'}"><code>${content}</code></pre>`;
     case 'divider':
       return '<hr />';
     case 'image':
-      return `<img src="${block.attrs?.src}" alt="${block.attrs?.alt || ''}" />`;
+      return `<img src="${block.attrs?.['src']}" alt="${block.attrs?.['alt'] || ''}" />`;
     case 'bulletList':
-      return `<ul>${block.children?.map((c) => `<li>${blockToHTML(c)}</li>`).join('') || ''}</ul>`;
+      return `<ul>${block.children?.map((c: import('./types.js').Block) => `<li>${blockToHTML(c)}</li>`).join('') || ''}</ul>`;
     case 'numberedList':
-      return `<ol>${block.children?.map((c) => `<li>${blockToHTML(c)}</li>`).join('') || ''}</ol>`;
+      return `<ol>${block.children?.map((c: import('./types.js').Block) => `<li>${blockToHTML(c)}</li>`).join('') || ''}</ol>`;
     default:
       return `<div>${content}</div>`;
   }
 }
 
-function renderTextContent(nodes: import('./types').TextNode[]): string {
+function renderTextContent(nodes: import('./types.js').TextNode[]): string {
   if (!nodes) return '';
   return nodes.map((node) => {
     if (!('text' in node)) return '';
@@ -199,7 +205,7 @@ function renderTextContent(nodes: import('./types').TextNode[]): string {
             html = `<code>${html}</code>`;
             break;
           case 'link':
-            html = `<a href="${mark.attrs?.href}">${html}</a>`;
+            html = `<a href="${mark.attrs?.['href']}">${html}</a>`;
             break;
         }
       }
@@ -217,13 +223,13 @@ function escapeHtml(text: string): string {
     '"': '&quot;',
     "'": '&#039;',
   };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+  return text.replace(/[&<>"']/g, (m) => map[m]!);
 }
 
 /**
  * Serialize blocks to Markdown
  */
-export function serializeToMarkdown(blocks: import('./types').Block[]): string {
+export function serializeToMarkdown(blocks: import('./types.js').Block[]): string {
   return blocks.map((block) => {
     const text = getBlockText(block);
 
@@ -235,29 +241,29 @@ export function serializeToMarkdown(blocks: import('./types').Block[]): string {
       case 'heading3':
         return `### ${text}`;
       case 'bulletList':
-        return block.children?.map((c) => `- ${getBlockText(c)}`).join('\n') || '';
+        return block.children?.map((c: import('./types.js').Block) => `- ${getBlockText(c)}`).join('\n') || '';
       case 'numberedList':
-        return block.children?.map((c, i) => `${i + 1}. ${getBlockText(c)}`).join('\n') || '';
+        return block.children?.map((c: import('./types.js').Block, i: number) => `${i + 1}. ${getBlockText(c)}`).join('\n') || '';
       case 'quote':
         return `> ${text}`;
       case 'code':
-        return `\`\`\`${block.attrs?.language || ''}\n${text}\n\`\`\``;
+        return `\`\`\`${block.attrs?.['language'] || ''}\n${text}\n\`\`\``;
       case 'divider':
         return '---';
       case 'image':
-        return `![${block.attrs?.alt || ''}](${block.attrs?.src})`;
+        return `![${block.attrs?.['alt'] || ''}](${block.attrs?.['src']})`;
       default:
         return text;
     }
   }).join('\n\n');
 }
 
-function getBlockText(block: import('./types').Block): string {
+function getBlockText(block: import('./types.js').Block): string {
   if (!block.content) return '';
   if (Array.isArray(block.content)) {
     return block.content
-      .filter((node): node is { type: 'text'; text: string } => 'text' in node)
-      .map((node) => node.text)
+      .filter((node: import('./types.js').TextNode | import('./types.js').Block): node is { type: 'text'; text: string } => 'text' in node)
+      .map((node: { type: 'text'; text: string }) => node.text)
       .join('');
   }
   return '';

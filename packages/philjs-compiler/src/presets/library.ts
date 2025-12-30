@@ -11,7 +11,7 @@
  * - Size optimization
  */
 
-import type { CompilerConfig } from '../types';
+import type { CompilerConfig } from '../types.js';
 import type { BuildOptions, UserConfig } from 'vite';
 
 export interface LibraryPresetOptions {
@@ -141,7 +141,7 @@ export function createLibraryViteConfig(
     // Library mode
     lib: {
       entry: options.entry,
-      name: options.name,
+      ...(options.name !== undefined && { name: options.name }),
       formats: config.formats,
       fileName: (format) => {
         const ext = format === 'es' ? 'js' : format === 'cjs' ? 'cjs' : 'umd.js';
@@ -188,28 +188,30 @@ export function createLibraryViteConfig(
     // Minification
     minify: config.minify ? 'terser' : false,
 
-    terserOptions: config.minify ? {
-      compress: {
-        // Keep function names for better debugging
-        keep_fnames: true,
-        keep_classnames: true,
-        // Remove dead code
-        dead_code: true,
-        // Don't drop console/debugger in libraries
-        drop_console: false,
-        drop_debugger: false,
+    ...(config.minify && {
+      terserOptions: {
+        compress: {
+          // Keep function names for better debugging
+          keep_fnames: true,
+          keep_classnames: true,
+          // Remove dead code
+          dead_code: true,
+          // Don't drop console/debugger in libraries
+          drop_console: false,
+          drop_debugger: false,
+        },
+        mangle: {
+          // Don't mangle exported names
+          keep_fnames: true,
+          keep_classnames: true,
+          properties: false,
+        },
+        format: {
+          // Keep comments (licenses, etc.)
+          comments: /^!/,
+        },
       },
-      mangle: {
-        // Don't mangle exported names
-        keep_fnames: true,
-        keep_classnames: true,
-        properties: false,
-      },
-      format: {
-        // Keep comments (licenses, etc.)
-        comments: /^!/,
-      },
-    } : undefined,
+    }),
 
     // Source maps
     sourcemap: config.sourceMaps,
@@ -255,16 +257,16 @@ export function generatePackageJsonFields(
 
   // Main entry points
   if (hasCJS) {
-    fields.main = './dist/index.cjs';
+    fields['main'] = './dist/index.cjs';
   }
 
   if (hasESM) {
-    fields.module = './dist/index.js';
+    fields['module'] = './dist/index.js';
   }
 
   // Exports field (modern)
   if (hasESM || hasCJS) {
-    fields.exports = {
+    fields['exports'] = {
       '.': {
         ...(hasESM && { import: './dist/index.js' }),
         ...(hasCJS && { require: './dist/index.cjs' }),
@@ -275,17 +277,17 @@ export function generatePackageJsonFields(
 
   // UMD global
   if (hasUMD && options.name) {
-    fields.unpkg = './dist/index.umd.js';
-    fields.jsdelivr = './dist/index.umd.js';
+    fields['unpkg'] = './dist/index.umd.js';
+    fields['jsdelivr'] = './dist/index.umd.js';
   }
 
   // TypeScript types
   if (config.dts) {
-    fields.types = './dist/index.d.ts';
+    fields['types'] = './dist/index.d.ts';
   }
 
   // Files to include in package
-  fields.files = [
+  fields['files'] = [
     'dist',
     'src',
     'README.md',

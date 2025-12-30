@@ -4,27 +4,27 @@
 
 export interface User {
   id: string;
-  email?: string;
-  name?: string;
-  avatar?: string;
-  metadata?: Record<string, unknown>;
+  email?: string | undefined;
+  name?: string | undefined;
+  avatar?: string | undefined;
+  metadata?: Record<string, unknown> | undefined;
 }
 
 export interface AuthSession {
   user: User | null;
-  token?: string;
-  expiresAt?: number;
-  refreshToken?: string;
+  token?: string | undefined;
+  expiresAt?: number | undefined;
+  refreshToken?: string | undefined;
 }
 
 export interface AuthConfig {
-  sessionKey?: string;
-  tokenKey?: string;
-  cookieName?: string;
-  cookieDomain?: string;
-  cookieSecure?: boolean;
-  cookieSameSite?: 'strict' | 'lax' | 'none';
-  sessionExpiry?: number; // in milliseconds
+  sessionKey?: string | undefined;
+  tokenKey?: string | undefined;
+  cookieName?: string | undefined;
+  cookieDomain?: string | undefined;
+  cookieSecure?: boolean | undefined;
+  cookieSameSite?: 'strict' | 'lax' | 'none' | undefined;
+  sessionExpiry?: number | undefined; // in milliseconds
 }
 
 export interface OAuthProvider {
@@ -44,21 +44,21 @@ export interface OAuthConfig {
 
 export interface JWTPayload {
   sub: string;
-  iat?: number;
-  exp?: number;
+  iat?: number | undefined;
+  exp?: number | undefined;
   [key: string]: unknown;
 }
 
 export interface JWTConfig {
   secret: string;
-  algorithm?: 'HS256' | 'HS384' | 'HS512';
-  expiresIn?: number; // in seconds
-  issuer?: string;
-  audience?: string;
+  algorithm?: 'HS256' | 'HS384' | 'HS512' | undefined;
+  expiresIn?: number | undefined; // in seconds
+  issuer?: string | undefined;
+  audience?: string | undefined;
 }
 
 export interface ProtectedRouteConfig {
-  redirectTo?: string;
-  checkAuth?: () => boolean | Promise<boolean>;
-  onUnauthorized?: () => void;
+  redirectTo?: string | undefined;
+  checkAuth?: (() => boolean | Promise<boolean>) | undefined;
+  onUnauthorized?: (() => void) | undefined;
 }

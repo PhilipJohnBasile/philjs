@@ -339,13 +339,19 @@ export async function* mergeStreams<T>(
         yield result.value;
 
         // Replace the promise for this reader
-        promises[result.index] = readers[result.index].read().then(
-          ({ done, value }) => ({ done, value, index: result.index })
-        );
+        const reader = readers[result.index];
+        if (reader) {
+          promises[result.index] = reader.read().then(
+            ({ done, value }) => ({ done, value, index: result.index })
+          );
+        }
       } else {
         // Remove completed reader
+        const reader = readers[result.index];
+        if (reader) {
+          reader.releaseLock();
+        }
         promises.splice(result.index, 1);
-        readers[result.index].releaseLock();
         readers.splice(result.index, 1);
       }
     }

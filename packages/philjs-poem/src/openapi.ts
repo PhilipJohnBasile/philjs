@@ -11,7 +11,7 @@ import type {
   OpenAPIResponse,
   OpenAPISecurity,
   PoemOpenAPIConfig,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // OpenAPI Schema Types
@@ -162,17 +162,18 @@ export class OpenAPIBuilder {
   private spec: OpenAPISpec;
 
   constructor(config: PoemOpenAPIConfig = {}) {
-    this.spec = {
+    const info: OpenAPISpec['info'] = {
+      title: config.title || 'PhilJS API',
+      version: config.version || '1.0.0',
+    };
+    if (config.description !== undefined) info.description = config.description;
+    if (config.termsOfService !== undefined) info.termsOfService = config.termsOfService;
+    if (config.contact !== undefined) info.contact = config.contact;
+    if (config.license !== undefined) info.license = config.license;
+
+    const spec: OpenAPISpec = {
       openapi: '3.1.0',
-      info: {
-        title: config.title || 'PhilJS API',
-        description: config.description,
-        version: config.version || '1.0.0',
-        termsOfService: config.termsOfService,
-        contact: config.contact,
-        license: config.license,
-      },
-      servers: config.servers,
+      info,
       paths: {},
       components: {
         schemas: {},
@@ -180,6 +181,8 @@ export class OpenAPIBuilder {
       },
       tags: [],
     };
+    if (config.servers !== undefined) spec.servers = config.servers;
+    this.spec = spec;
   }
 
   /**
@@ -187,7 +190,9 @@ export class OpenAPIBuilder {
    */
   server(url: string, description?: string): this {
     if (!this.spec.servers) this.spec.servers = [];
-    this.spec.servers.push({ url, description });
+    const server: { url: string; description?: string } = { url };
+    if (description !== undefined) server.description = description;
+    this.spec.servers.push(server);
     return this;
   }
 
@@ -196,7 +201,9 @@ export class OpenAPIBuilder {
    */
   tag(name: string, description?: string): this {
     if (!this.spec.tags) this.spec.tags = [];
-    this.spec.tags.push({ name, description });
+    const tag: { name: string; description?: string } = { name };
+    if (description !== undefined) tag.description = description;
+    this.spec.tags.push(tag);
     return this;
   }
 
@@ -1034,9 +1041,9 @@ export function generateRustHandler(
       name: nameOrOptions,
       method: method!,
       path: path!,
-      inputSchema: inputType ? { type: 'object', description: inputType } : undefined,
-      outputSchema: outputType ? { type: 'object', description: outputType } : undefined,
     };
+    if (inputType) options.inputSchema = { type: 'object', description: inputType };
+    if (outputType) options.outputSchema = { type: 'object', description: outputType };
     const result = generateFullRustHandler(options);
     return `${result.requestStruct || ''}\n\n${result.responseEnum}\n\n${result.handler}`.trim();
   }
@@ -1177,13 +1184,14 @@ async fn ${handlerName}(${params.join(', ')}) -> ${responseName} {
 ${handlerBody}
 }`;
 
-  return {
-    requestStruct,
+  const result: GeneratedRustCode = {
     responseEnum,
     handler,
     imports,
     errorTypes,
   };
+  if (requestStruct !== undefined) result.requestStruct = requestStruct;
+  return result;
 }
 
 /**

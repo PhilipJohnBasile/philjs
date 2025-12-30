@@ -14,7 +14,7 @@ import type {
   TouchInputData,
   GamepadInputData,
   UnrealEmbedProps,
-} from './types';
+} from './types.js';
 
 /**
  * Global Unreal states
@@ -59,8 +59,8 @@ function createRTCConfig(config: PixelStreamingConfig): RTCConfiguration {
   if (config.turnServerUrl) {
     iceServers.push({
       urls: config.turnServerUrl,
-      username: config.turnUsername,
-      credential: config.turnCredential,
+      ...(config.turnUsername !== undefined ? { username: config.turnUsername } : {}),
+      ...(config.turnCredential !== undefined ? { credential: config.turnCredential } : {}),
     });
   }
 
@@ -569,11 +569,13 @@ export function setupInputForwarding(
     const touches: Array<{ id: number; x: number; y: number }> = [];
     for (let i = 0; i < e.touches.length; i++) {
       const touch = e.touches[i];
-      touches.push({
-        id: touch.identifier,
-        x: (touch.clientX - rect.left) / rect.width,
-        y: (touch.clientY - rect.top) / rect.height,
-      });
+      if (touch) {
+        touches.push({
+          id: touch.identifier,
+          x: (touch.clientX - rect.left) / rect.width,
+          y: (touch.clientY - rect.top) / rect.height,
+        });
+      }
     }
     return touches;
   };

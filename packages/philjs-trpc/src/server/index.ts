@@ -3,7 +3,7 @@
  * Type-safe RPC server - framework agnostic
  */
 
-import type { BaseContext, AuthContext, RouterConfig, MiddlewareFunction } from '../types';
+import type { BaseContext, AuthContext, RouterConfig, MiddlewareFunction } from '../types.js';
 
 /**
  * RPC Error class
@@ -33,18 +33,18 @@ export const ErrorCodes = {
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
 
+export interface ProcedureDefinition<T> {
+  type: 'query' | 'mutation' | 'subscription';
+  middleware: MiddlewareFunction<T>[];
+  handler: (opts: { ctx: T; input: unknown }) => Promise<unknown>;
+  inputValidator?: (input: unknown) => unknown;
+}
+
 /**
  * Create an RPC router
  */
 export function createRouter<TContext extends BaseContext = BaseContext>() {
   const procedures = new Map<string, ProcedureDefinition<TContext>>();
-
-  interface ProcedureDefinition<T> {
-    type: 'query' | 'mutation' | 'subscription';
-    middleware: MiddlewareFunction<T>[];
-    handler: (opts: { ctx: T; input: unknown }) => Promise<unknown>;
-    inputValidator?: (input: unknown) => unknown;
-  }
 
   const createProcedure = (type: 'query' | 'mutation' | 'subscription') => {
     let middleware: MiddlewareFunction<TContext>[] = [];
@@ -63,12 +63,13 @@ export function createRouter<TContext extends BaseContext = BaseContext>() {
 
       handler(fn: (opts: { ctx: TContext; input: unknown }) => Promise<unknown>) {
         return (name: string) => {
-          procedures.set(name, {
+          const definition: ProcedureDefinition<TContext> = {
             type,
             middleware,
             handler: fn,
-            inputValidator,
-          });
+          };
+          if (inputValidator !== undefined) definition.inputValidator = inputValidator;
+          procedures.set(name, definition);
         };
       },
     };
@@ -144,7 +145,7 @@ export function createRouter<TContext extends BaseContext = BaseContext>() {
  * Authentication middleware factory
  */
 export function createAuthMiddleware<TContext extends AuthContext>(): MiddlewareFunction<TContext> {
-  return async (ctx, next) => {
+  return async (ctx: TContext, next: () => Promise<unknown>) => {
     if (!ctx.user) {
       throw new RPCError({
         code: ErrorCodes.UNAUTHORIZED,
@@ -162,7 +163,7 @@ export function createAuthMiddleware<TContext extends AuthContext>(): Middleware
 export function createRoleMiddleware<TContext extends AuthContext>(
   allowedRoles: string[]
 ): MiddlewareFunction<TContext> {
-  return async (ctx, next) => {
+  return async (ctx: TContext, next: () => Promise<unknown>) => {
     if (!ctx.user) {
       throw new RPCError({
         code: ErrorCodes.UNAUTHORIZED,
@@ -194,7 +195,7 @@ export function createRateLimitMiddleware<TContext extends BaseContext>(options:
   const { windowMs, max, keyGenerator } = options;
   const requests = new Map<string, { count: number; resetTime: number }>();
 
-  return async (ctx, next) => {
+  return async (ctx: TContext, next: () => Promise<unknown>) => {
     const key = keyGenerator?.(ctx) || 'global';
     const now = Date.now();
     const record = requests.get(key);
@@ -224,7 +225,7 @@ export function createLoggingMiddleware<TContext extends BaseContext>(options?: 
 }): MiddlewareFunction<TContext> {
   const logger = options?.logger || console;
 
-  return async (ctx, next) => {
+  return async (ctx: TContext, next: () => Promise<unknown>) => {
     const start = Date.now();
     try {
       await next();
@@ -246,7 +247,7 @@ export function createCacheMiddleware<TContext extends BaseContext>(options: {
   const { ttl, keyGenerator } = options;
   const cache = new Map<string, { data: unknown; expiresAt: number }>();
 
-  return async (ctx, next) => {
+  return async (ctx: TContext, next: () => Promise<unknown>) => {
     const key = keyGenerator?.(ctx) || 'default';
     const now = Date.now();
     const cached = cache.get(key);

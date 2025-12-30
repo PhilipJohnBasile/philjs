@@ -1,6 +1,7 @@
 {
   "name": "@philjs/a11y-ai",
   "version": "0.1.0",
+  "type": "module",
   "description": "AI-powered accessibility for PhilJS - automatic alt text, ARIA labels, and contrast fixes",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

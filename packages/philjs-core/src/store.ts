@@ -173,13 +173,13 @@ export function createStore<T extends StoreNode>(
     // Update state
     let current = state as any;
     for (let i = 0; i < path.length - 1; i++) {
-      const key = path[i];
+      const key = path[i]!;
       if (current[key] === undefined || current[key] === null) {
         current[key] = typeof path[i + 1] === 'number' ? [] : {};
       }
       current = current[key];
     }
-    current[path[path.length - 1]] = newValue;
+    current[path[path.length - 1]!] = newValue;
 
     // Call middleware
     if (options.middleware) {
@@ -385,11 +385,14 @@ export function createStore<T extends StoreNode>(
       history.splice(historyIndex + 1);
     }
 
-    history.push({
+    const snapshot: StoreSnapshot<T> = {
       timestamp: Date.now(),
       state: structuredClone(state),
-      action,
-    });
+    };
+    if (action !== undefined) {
+      snapshot.action = action;
+    }
+    history.push(snapshot);
 
     // Trim history if needed
     if (history.length > historyLimit) {
@@ -492,12 +495,13 @@ function setNestedValue(obj: any, path: string, value: any): void {
   const parts = path.split('.');
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
-    if (!(parts[i] in current)) {
-      current[parts[i]] = {};
+    const part = parts[i]!;
+    if (!(part in current)) {
+      current[part] = {};
     }
-    current = current[parts[i]];
+    current = current[part];
   }
-  current[parts[parts.length - 1]] = value;
+  current[parts[parts.length - 1]!] = value;
 }
 
 /**

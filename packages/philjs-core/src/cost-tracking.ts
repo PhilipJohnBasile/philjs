@@ -229,18 +229,17 @@ export class CostTracker {
     );
 
     const count = metrics.length;
-    return {
+    const result: CostMetrics = {
       computeTime: sum.computeTime / count,
       memoryUsed: sum.memoryUsed / count,
       dataTransfer: sum.dataTransfer / count,
       invocations: sum.invocations / count,
-      dbQueries: sum.dbQueries ? sum.dbQueries / count : undefined,
-      cacheHits: sum.cacheHits ? sum.cacheHits / count : undefined,
-      cacheMisses: sum.cacheMisses ? sum.cacheMisses / count : undefined,
-      externalApiCalls: sum.externalApiCalls
-        ? sum.externalApiCalls / count
-        : undefined,
     };
+    if (sum.dbQueries) result.dbQueries = sum.dbQueries / count;
+    if (sum.cacheHits) result.cacheHits = sum.cacheHits / count;
+    if (sum.cacheMisses) result.cacheMisses = sum.cacheMisses / count;
+    if (sum.externalApiCalls) result.externalApiCalls = sum.externalApiCalls / count;
+    return result;
   }
 
   /**
@@ -316,7 +315,7 @@ export class CostTracker {
     if (metrics.computeTime > 1000) {
       optimizations.push({
         category: "compute",
-        potentialSavings: costs.compute * 0.3,
+        potentialSavings: costs['compute']! * 0.3,
         suggestion: "Consider optimizing algorithm complexity or using caching",
         difficulty: "medium",
       });
@@ -326,7 +325,7 @@ export class CostTracker {
     if (metrics.memoryUsed > 512) {
       optimizations.push({
         category: "memory",
-        potentialSavings: costs.memory * 0.2,
+        potentialSavings: costs['memory']! * 0.2,
         suggestion: "Reduce memory usage by streaming data or using smaller data structures",
         difficulty: "medium",
       });
@@ -336,7 +335,7 @@ export class CostTracker {
     if (metrics.dataTransfer > 100 * 1024) {
       optimizations.push({
         category: "dataTransfer",
-        potentialSavings: costs.dataTransfer * 0.4,
+        potentialSavings: costs['dataTransfer']! * 0.4,
         suggestion: "Enable compression, use CDN, or reduce payload size",
         difficulty: "easy",
       });
@@ -346,7 +345,7 @@ export class CostTracker {
     if (metrics.dbQueries && metrics.dbQueries > 10) {
       optimizations.push({
         category: "database",
-        potentialSavings: costs.database * 0.5,
+        potentialSavings: costs['database']! * 0.5,
         suggestion: "Batch queries, use caching, or denormalize data",
         difficulty: "medium",
       });
@@ -358,7 +357,7 @@ export class CostTracker {
       if (hitRate < 0.8) {
         optimizations.push({
           category: "cache",
-          potentialSavings: costs.cache * 0.3,
+          potentialSavings: costs['cache']! * 0.3,
           suggestion: `Improve cache hit rate (currently ${(hitRate * 100).toFixed(1)}%)`,
           difficulty: "easy",
         });
@@ -389,7 +388,7 @@ export class CostTracker {
       const timestamp = now; // Placeholder
       if (timestamp < cutoff) continue;
 
-      const date = new Date(timestamp).toISOString().split("T")[0];
+      const date = new Date(timestamp).toISOString().split("T")[0]!;
       const dayMetrics = dailyMetrics.get(date) || [];
       dayMetrics.push(metric);
       dailyMetrics.set(date, dayMetrics);

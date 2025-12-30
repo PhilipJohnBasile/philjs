@@ -276,7 +276,12 @@ export function combineStreams(streams: ReadableStream<Uint8Array>[]): ReadableS
     async pull(controller) {
       while (currentIndex < streams.length) {
         if (!currentReader) {
-          currentReader = streams[currentIndex].getReader();
+          const stream = streams[currentIndex];
+          if (!stream) {
+            currentIndex++;
+            continue;
+          }
+          currentReader = stream.getReader();
         }
 
         const { done, value } = await currentReader.read();

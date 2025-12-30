@@ -2,7 +2,7 @@
  * Performance Panel - Display component render performance metrics
  */
 
-import type { ComponentNode, PerformanceInfo, RenderProfile } from './types';
+import type { ComponentNode, PerformanceInfo, RenderProfile } from './types.js';
 
 export class PerformancePanel {
   private container: HTMLElement | null = null;

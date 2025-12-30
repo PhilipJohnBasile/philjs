@@ -3,8 +3,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["node"]
+    "types": ["node"],
+    "typeRoots": ["./src/types", "../../node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@philjs/router": ["./src/types/philjs-router.d.ts"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

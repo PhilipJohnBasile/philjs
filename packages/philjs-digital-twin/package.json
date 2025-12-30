@@ -1,6 +1,7 @@
 {
   "name": "@philjs/digital-twin",
   "version": "0.1.0",
+  "type": "module",
   "description": "IoT device synchronization for PhilJS - device shadows, telemetry, predictive maintenance",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

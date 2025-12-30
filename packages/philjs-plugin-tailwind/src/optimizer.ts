@@ -128,8 +128,8 @@ export class CSSOptimizer {
 
     // Extract all rules
     while ((match = ruleRegex.exec(css)) !== null) {
-      const selector = match[1].trim();
-      const properties = match[2].trim();
+      const selector = match[1]!.trim();
+      const properties = match[2]!.trim();
 
       // Merge properties for same selector
       if (rules.has(selector)) {
@@ -166,8 +166,8 @@ export class CSSOptimizer {
 
     // Extract media queries
     while ((match = mediaRegex.exec(css)) !== null) {
-      const condition = match[1].trim();
-      const content = match[2].trim();
+      const condition = match[1]!.trim();
+      const content = match[2]!.trim();
 
       if (mediaQueries.has(condition)) {
         mediaQueries.get(condition)!.push(content);
@@ -287,7 +287,7 @@ export class CriticalCSSExtractor {
     let match;
 
     while ((match = classRegex.exec(html)) !== null) {
-      match[1].split(/\s+/).forEach((cls) => usedClasses.add(cls));
+      match[1]!.split(/\s+/).forEach((cls) => usedClasses.add(cls));
     }
 
     // Also extract IDs
@@ -295,7 +295,7 @@ export class CriticalCSSExtractor {
     const usedIds = new Set<string>();
 
     while ((match = idRegex.exec(html)) !== null) {
-      usedIds.add(match[1]);
+      usedIds.add(match[1]!);
     }
 
     // Extract tag names
@@ -303,7 +303,7 @@ export class CriticalCSSExtractor {
     const usedTags = new Set<string>();
 
     while ((match = tagRegex.exec(html)) !== null) {
-      usedTags.add(match[1].toLowerCase());
+      usedTags.add(match[1]!.toLowerCase());
     }
 
     const critical: string[] = [];
@@ -313,8 +313,8 @@ export class CriticalCSSExtractor {
     const ruleRegex = /([^{}]+)\{([^{}]+)\}/g;
 
     while ((match = ruleRegex.exec(css)) !== null) {
-      const selector = match[1].trim();
-      const body = match[2];
+      const selector = match[1]!.trim();
+      const body = match[2]!;
       const rule = `${selector}{${body}}`;
 
       // Check if selector is used
@@ -432,8 +432,8 @@ export function purgeUnusedCSS(
   let match;
 
   while ((match = ruleRegex.exec(css)) !== null) {
-    const selector = match[1].trim();
-    const body = match[2];
+    const selector = match[1]!.trim();
+    const body = match[2]!;
 
     // Keep rule if any class in selector is used
     const classesInSelector = selector.match(/\.([a-z0-9_-]+)/gi) || [];
@@ -490,7 +490,7 @@ export function analyzeCSSStats(css: string): CSSStats {
     ruleCount++;
 
     // Count selectors
-    const selectors = match[1].split(",");
+    const selectors = match[1]!.split(",");
     selectorCount += selectors.length;
 
     // Calculate specificity for each selector
@@ -499,7 +499,7 @@ export function analyzeCSSStats(css: string): CSSStats {
     }
 
     // Count declarations and extract properties
-    const declarations = match[2].split(";");
+    const declarations = match[2]!.split(";");
     for (const decl of declarations) {
       if (decl.trim()) {
         declarationCount++;

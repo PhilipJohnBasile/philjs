@@ -13,10 +13,10 @@
 
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import { MigrationManager } from './manager';
-import { SchemaDiffGenerator } from './schema-diff';
-import { AutoMigrationGenerator } from './auto-migration';
-import type { MigrationConfig, DatabaseType } from './types';
+import { MigrationManager } from './manager.js';
+import { SchemaDiffGenerator } from './schema-diff.js';
+import { AutoMigrationGenerator } from './auto-migration.js';
+import type { MigrationConfig, DatabaseType, MigrationFile, MigrationRecord, MigrationConflict, MigrationError, DryRunResult } from './types.js';
 
 interface CLIOptions {
   config?: string;
@@ -131,13 +131,13 @@ class MigrationCLI {
     if (options.dryRun) {
       const status = await this.manager.getStatus();
       console.log('Pending migrations (dry run):');
-      status.pending.forEach((m) => console.log(`  - ${m.version}_${m.name}`));
+      status.pending.forEach((m: MigrationFile) => console.log(`  - ${m.version}_${m.name}`));
       return;
     }
 
     const result = await this.manager.migrate({
-      to: options.to,
-      step: options.step,
+      ...(options.to !== undefined && { to: options.to }),
+      ...(options.step !== undefined && { step: options.step }),
     });
 
     if (result.success) {
@@ -147,11 +147,11 @@ class MigrationCLI {
 
       if (result.migrations.length > 0) {
         console.log('\nMigrations:');
-        result.migrations.forEach((m) => console.log(`  ✓ ${m}`));
+        result.migrations.forEach((m: string) => console.log(`  ✓ ${m}`));
       }
     } else {
       console.error('✗ Migration failed\n');
-      result.errors.forEach((err) => {
+      result.errors.forEach((err: MigrationError) => {
         console.error(`  ✗ ${err.migration}: ${err.error.message}`);
       });
       process.exit(1);
@@ -167,7 +167,7 @@ class MigrationCLI {
     }
 
     const filepath = await this.manager.create(name, {
-      template: options.template,
+      ...(options.template !== undefined && { template: options.template }),
     });
 
     console.log(`✓ Created migration: ${filepath}`);
@@ -180,18 +180,18 @@ class MigrationCLI {
 
     if (options.dryRun) {
       const status = await this.manager.getStatus();
-      const lastBatch = Math.max(...status.executed.map((m) => m.batch), 0);
-      const toRollback = status.executed.filter((m) => m.batch === lastBatch);
+      const lastBatch = Math.max(...status.executed.map((m: MigrationRecord) => m.batch), 0);
+      const toRollback = status.executed.filter((m: MigrationRecord) => m.batch === lastBatch);
 
       console.log('Migrations to rollback (dry run):');
-      toRollback.forEach((m) => console.log(`  - ${m.version}_${m.name}`));
+      toRollback.forEach((m: MigrationRecord) => console.log(`  - ${m.version}_${m.name}`));
       return;
     }
 
     const result = await this.manager.rollback({
-      to: options.to,
-      step: options.step,
-      batch: options.batch,
+      ...(options.to !== undefined && { to: options.to }),
+      ...(options.step !== undefined && { step: options.step }),
+      ...(options.batch !== undefined && { batch: options.batch }),
     });
 
     if (result.success) {
@@ -201,11 +201,11 @@ class MigrationCLI {
 
       if (result.migrations.length > 0) {
         console.log('\nMigrations:');
-        result.migrations.forEach((m) => console.log(`  ✓ ${m}`));
+        result.migrations.forEach((m: string) => console.log(`  ✓ ${m}`));
       }
     } else {
       console.error('✗ Rollback failed\n');
-      result.errors.forEach((err) => {
+      result.errors.forEach((err: MigrationError) => {
         console.error(`  ✗ ${err.migration}: ${err.error.message}`);
       });
       process.exit(1);
@@ -221,7 +221,7 @@ class MigrationCLI {
 
     if (status.conflicts.length > 0) {
       console.log('⚠ Conflicts:\n');
-      status.conflicts.forEach((c) => {
+      status.conflicts.forEach((c: MigrationConflict) => {
         console.log(`  ${c.type.toUpperCase()}: ${c.message}`);
       });
       console.log();
@@ -229,13 +229,13 @@ class MigrationCLI {
 
     console.log(`Executed Migrations: ${status.executed.length}`);
     if (status.executed.length > 0) {
-      const batches = new Set(status.executed.map((m) => m.batch));
+      const batches = new Set(status.executed.map((m: MigrationRecord) => m.batch));
       console.log(`Batches: ${batches.size}`);
       console.log();
 
       if (options.verbose) {
         console.log('Executed:');
-        status.executed.forEach((m) => {
+        status.executed.forEach((m: MigrationRecord) => {
           console.log(
             `  ✓ ${m.version}_${m.name} (batch ${m.batch}, ${m.execution_time}ms)`
           );
@@ -247,7 +247,7 @@ class MigrationCLI {
     console.log(`Pending Migrations: ${status.pending.length}`);
     if (status.pending.length > 0) {
       console.log('\nPending:');
-      status.pending.forEach((m) => {
+      status.pending.forEach((m: MigrationFile) => {
         console.log(`  - ${m.version}_${m.name}`);
       });
     }
@@ -328,17 +328,17 @@ class MigrationCLI {
     const generator = new AutoMigrationGenerator(this.config);
     const migration = await generator.generate({
       compare: true,
-      name: options.name,
-      dryRun: options.dryRun,
+      ...(options.name !== undefined ? { name: options.name } : {}),
+      ...(options.dryRun !== undefined ? { dryRun: options.dryRun } : {}),
     });
 
     if (options.dryRun) {
       console.log('Generated SQL (dry run):');
-      migration.sql.forEach((sql) => console.log(`  ${sql}`));
+      migration.sql.forEach((sql: string) => console.log(`  ${sql}`));
 
       if (migration.warnings.length > 0) {
         console.log('\n⚠ Warnings:');
-        migration.warnings.forEach((w) => console.log(`  ${w}`));
+        migration.warnings.forEach((w: string) => console.log(`  ${w}`));
       }
     } else {
       const filepath = await this.manager.create(options.name || 'auto_migration');
@@ -353,19 +353,26 @@ class MigrationCLI {
       const arg = args[i];
 
       if (arg === '--config' || arg === '-c') {
-        options.config = args[++i];
+        const value = args[++i];
+        if (value !== undefined) options.config = value;
       } else if (arg === '--env' || arg === '-e') {
-        options.env = args[++i];
+        const value = args[++i];
+        if (value !== undefined) options.env = value;
       } else if (arg === '--step' || arg === '-s') {
-        options.step = parseInt(args[++i], 10);
+        const value = args[++i];
+        if (value !== undefined) options.step = parseInt(value, 10);
       } else if (arg === '--to' || arg === '-t') {
-        options.to = args[++i];
+        const value = args[++i];
+        if (value !== undefined) options.to = value;
       } else if (arg === '--batch' || arg === '-b') {
-        options.batch = parseInt(args[++i], 10);
+        const value = args[++i];
+        if (value !== undefined) options.batch = parseInt(value, 10);
       } else if (arg === '--name' || arg === '-n') {
-        options.name = args[++i];
+        const value = args[++i];
+        if (value !== undefined) options.name = value;
       } else if (arg === '--template') {
-        options.template = args[++i];
+        const value = args[++i];
+        if (value !== undefined) options.template = value;
       } else if (arg === '--dry-run' || arg === '-d') {
         options.dryRun = true;
       } else if (arg === '--verbose' || arg === '-v') {
@@ -378,12 +385,12 @@ class MigrationCLI {
 
   private promptMigrationName(): string {
     // In a real CLI, this would use readline or inquirer
-    return process.argv[process.argv.length - 1];
+    return process.argv[process.argv.length - 1] ?? '';
   }
 
   private async confirm(message: string): Promise<boolean> {
     // In a real CLI, this would use readline
-    return process.env.CI === 'true' || process.argv.includes('--yes');
+    return process.env['CI'] === 'true' || process.argv.includes('--yes');
   }
 
   private printSchemaDiff(diff: any): void {

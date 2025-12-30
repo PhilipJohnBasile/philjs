@@ -199,13 +199,15 @@ export class BiometricManager {
         requireResidentKey: this.config.requireResidentKey
       },
       timeout: this.config.timeout,
-      attestation: this.config.attestation,
-      excludeCredentials: options.excludeCredentials?.map(cred => ({
+      attestation: this.config.attestation
+    };
+    if (options.excludeCredentials) {
+      publicKeyCredentialCreationOptions.excludeCredentials = options.excludeCredentials.map(cred => ({
         id: cred.rawId,
         type: 'public-key' as const,
         transports: ['internal', 'hybrid'] as AuthenticatorTransport[]
-      }))
-    };
+      }));
+    }
 
     const credential = await navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
@@ -228,14 +230,24 @@ export class BiometricManager {
 
     this.credentials.set(credential.id, biometricCredential);
 
-    return {
+    const result: RegistrationResult = {
       credential: biometricCredential,
       attestationObject: response.attestationObject,
-      clientDataJSON: response.clientDataJSON,
-      publicKey: response.getPublicKey?.() ?? undefined,
-      publicKeyAlgorithm: response.getPublicKeyAlgorithm?.(),
-      transports: response.getTransports?.() as AuthenticatorTransport[] | undefined
+      clientDataJSON: response.clientDataJSON
     };
+    const publicKey = response.getPublicKey?.();
+    if (publicKey) {
+      result.publicKey = publicKey;
+    }
+    const publicKeyAlgorithm = response.getPublicKeyAlgorithm?.();
+    if (publicKeyAlgorithm !== undefined) {
+      result.publicKeyAlgorithm = publicKeyAlgorithm;
+    }
+    const transports = response.getTransports?.() as AuthenticatorTransport[] | undefined;
+    if (transports) {
+      result.transports = transports;
+    }
+    return result;
   }
 
   async authenticate(options: AuthenticationOptions = {}): Promise<AuthenticationResult> {
@@ -249,18 +261,22 @@ export class BiometricManager {
       challenge,
       rpId: this.config.rpId,
       timeout: this.config.timeout,
-      userVerification: this.config.userVerification,
-      allowCredentials: options.allowCredentials?.map(cred => ({
+      userVerification: this.config.userVerification
+    };
+    if (options.allowCredentials) {
+      publicKeyCredentialRequestOptions.allowCredentials = options.allowCredentials.map(cred => ({
         id: cred.rawId,
         type: 'public-key' as const,
         transports: ['internal', 'hybrid'] as AuthenticatorTransport[]
-      }))
-    };
+      }));
+    }
 
     const credentialRequestOptions: CredentialRequestOptions = {
-      publicKey: publicKeyCredentialRequestOptions,
-      mediation: options.conditional ? 'conditional' : undefined
+      publicKey: publicKeyCredentialRequestOptions
     };
+    if (options.conditional) {
+      credentialRequestOptions.mediation = 'conditional';
+    }
 
     const credential = await navigator.credentials.get(credentialRequestOptions) as PublicKeyCredential;
 
@@ -276,13 +292,16 @@ export class BiometricManager {
       storedCred.lastUsed = Date.now();
     }
 
-    return {
+    const authResult: AuthenticationResult = {
       credentialId: credential.id,
       authenticatorData: response.authenticatorData,
       clientDataJSON: response.clientDataJSON,
-      signature: response.signature,
-      userHandle: response.userHandle ?? undefined
+      signature: response.signature
     };
+    if (response.userHandle) {
+      authResult.userHandle = response.userHandle;
+    }
+    return authResult;
   }
 
   async conditionalAuthenticate(
@@ -303,11 +322,15 @@ export class BiometricManager {
       userVerification: this.config.userVerification
     };
 
-    const credential = await navigator.credentials.get({
+    const credRequestOptions: CredentialRequestOptions = {
       publicKey: publicKeyCredentialRequestOptions,
-      mediation: 'conditional',
-      signal: abortController?.signal
-    }) as PublicKeyCredential;
+      mediation: 'conditional'
+    };
+    if (abortController?.signal) {
+      credRequestOptions.signal = abortController.signal;
+    }
+
+    const credential = await navigator.credentials.get(credRequestOptions) as PublicKeyCredential;
 
     if (!credential) {
       throw new Error('Conditional authentication failed');
@@ -315,13 +338,16 @@ export class BiometricManager {
 
     const response = credential.response as AuthenticatorAssertionResponse;
 
-    return {
+    const condAuthResult: AuthenticationResult = {
       credentialId: credential.id,
       authenticatorData: response.authenticatorData,
       clientDataJSON: response.clientDataJSON,
-      signature: response.signature,
-      userHandle: response.userHandle ?? undefined
+      signature: response.signature
     };
+    if (response.userHandle) {
+      condAuthResult.userHandle = response.userHandle;
+    }
+    return condAuthResult;
   }
 
   addCredential(credential: BiometricCredential): void {
@@ -413,12 +439,15 @@ export class PasskeyManager {
     userName: string,
     displayName?: string
   ): Promise<RegistrationResult> {
-    const result = await this.biometricManager.register({
+    const registerOptions: RegistrationOptions = {
       userId,
       userName,
-      userDisplayName: displayName,
       excludeCredentials: this.biometricManager.getCredentials()
-    });
+    };
+    if (displayName) {
+      registerOptions.userDisplayName = displayName;
+    }
+    const result = await this.biometricManager.register(registerOptions);
 
     this.saveCredentials();
     return result;
@@ -711,17 +740,8 @@ export function useBiometricPrompt(config: BiometricConfig): {
 }
 
 // ============================================================================
-// Exports
+// Default Export
 // ============================================================================
-
-export {
-  BiometricManager,
-  PasskeyManager,
-  BiometricPrompt,
-  arrayBufferToBase64Url,
-  base64UrlToArrayBuffer,
-  generateChallenge
-};
 
 export default {
   BiometricManager,

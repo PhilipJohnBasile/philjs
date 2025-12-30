@@ -254,7 +254,7 @@ function parseRouteFile(content: string, route: GoRoute): ParsedRoute {
  */
 function extractPathParams(path: string): string[] {
   const matches = path.matchAll(/:(\w+)/g);
-  return Array.from(matches, m => m[1]);
+  return Array.from(matches, m => m[1]!).filter((p): p is string => p !== undefined);
 }
 
 /**
@@ -285,14 +285,14 @@ function extractRequestFields(content: string, method: string): FieldInfo[] {
   );
 
   if (bodyMatch) {
-    const bodyContent = bodyMatch[1];
+    const bodyContent = bodyMatch[1]!;
     const fieldMatches = bodyContent.matchAll(
       /(\w+)(\?)?:\s*([^;,\n]+)/g
     );
 
     for (const match of fieldMatches) {
       const [, name, optional, tsType] = match;
-      fields.push(createFieldInfo(name, tsType.trim(), !!optional));
+      fields.push(createFieldInfo(name!, tsType!.trim(), !!optional));
     }
   } else if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
     // Default fields for write operations
@@ -317,14 +317,14 @@ function extractQueryFields(content: string): FieldInfo[] {
   );
 
   if (queryMatch) {
-    const queryContent = queryMatch[1];
+    const queryContent = queryMatch[1]!;
     const fieldMatches = queryContent.matchAll(
       /(\w+)(\?)?:\s*([^;,\n]+)/g
     );
 
     for (const match of fieldMatches) {
       const [, name, optional, tsType] = match;
-      fields.push(createFieldInfo(name, tsType.trim(), !!optional));
+      fields.push(createFieldInfo(name!, tsType!.trim(), !!optional));
     }
   } else {
     // Default query fields for list endpoints
@@ -350,14 +350,14 @@ function extractResponseFields(content: string, method: string, resourceName: st
   );
 
   if (responseMatch) {
-    const responseContent = responseMatch[1];
+    const responseContent = responseMatch[1]!;
     const fieldMatches = responseContent.matchAll(
       /(\w+)(\?)?:\s*([^;,\n]+)/g
     );
 
     for (const match of fieldMatches) {
       const [, name, optional, tsType] = match;
-      fields.push(createFieldInfo(name, tsType.trim(), !!optional));
+      fields.push(createFieldInfo(name!, tsType!.trim(), !!optional));
     }
   } else {
     // Default response fields
@@ -421,7 +421,7 @@ function tsTypeToGoType(tsType: string, fieldName: string, isOptional: boolean):
   // Handle Array<T>
   const arrayMatch = cleanType.match(/^Array<(.+)>$/);
   if (arrayMatch) {
-    const goElementType = tsTypeToGoType(arrayMatch[1], fieldName, false);
+    const goElementType = tsTypeToGoType(arrayMatch[1]!, fieldName, false);
     return `[]${goElementType}`;
   }
 
@@ -458,8 +458,8 @@ function tsTypeToGoType(tsType: string, fieldName: string, isOptional: boolean):
   // Handle Record<K, V>
   const recordMatch = baseType.match(/^Record<(\w+),\s*(\w+)>$/);
   if (recordMatch) {
-    const keyType = tsTypeToGoType(recordMatch[1], '', false);
-    const valueType = tsTypeToGoType(recordMatch[2], '', false);
+    const keyType = tsTypeToGoType(recordMatch[1]!, '', false);
+    const valueType = tsTypeToGoType(recordMatch[2]!, '', false);
     return `map[${keyType}]${valueType}`;
   }
 

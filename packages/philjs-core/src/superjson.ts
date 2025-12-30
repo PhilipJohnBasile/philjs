@@ -529,10 +529,12 @@ export function deserialize<T = unknown>(
 
     // Check for reference
     if (metaData.referenceMap?.[pathStr]) {
-      const [refPathStr] = metaData.referenceMap[pathStr];
-      const cached = referenceCache.get(refPathStr);
-      if (cached !== undefined) {
-        return cached;
+      const refPathStr = metaData.referenceMap[pathStr][0];
+      if (refPathStr !== undefined) {
+        const cached = referenceCache.get(refPathStr);
+        if (cached !== undefined) {
+          return cached;
+        }
       }
     }
 

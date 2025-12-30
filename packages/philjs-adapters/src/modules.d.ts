@@ -74,29 +74,84 @@ declare module '@netlify/blobs' {
 
 // AWS optional dependencies
 declare module '@aws-sdk/client-s3' {
+  export interface S3ClientConfig {
+    region?: string;
+    endpoint?: string;
+    forcePathStyle?: boolean;
+    credentials?: {
+      accessKeyId: string;
+      secretAccessKey: string;
+      sessionToken?: string;
+    };
+  }
+
   export class S3Client {
-    constructor(config: { region?: string; credentials?: any });
-    send(command: any): Promise<any>;
+    constructor(config: S3ClientConfig);
+    send(command: any, options?: { abortSignal?: AbortSignal }): Promise<any>;
     destroy(): void;
   }
 
   export class GetObjectCommand {
-    constructor(input: { Bucket: string; Key: string });
+    constructor(input: {
+      Bucket: string;
+      Key: string;
+      Range?: string;
+      ResponseContentType?: string;
+      ResponseContentDisposition?: string;
+    });
   }
 
   export class PutObjectCommand {
-    constructor(input: { Bucket: string; Key: string; Body: any; ContentType?: string; Metadata?: Record<string, string> });
+    constructor(input: {
+      Bucket: string;
+      Key: string;
+      Body?: any;
+      ContentType?: string;
+      ContentLength?: number;
+      CacheControl?: string;
+      ContentDisposition?: string;
+      ACL?: string;
+      Metadata?: Record<string, string>;
+    });
   }
 
   export class DeleteObjectCommand {
     constructor(input: { Bucket: string; Key: string });
   }
 
+  export class DeleteObjectsCommand {
+    constructor(input: {
+      Bucket: string;
+      Delete: {
+        Objects: Array<{ Key: string }>;
+        Quiet?: boolean;
+      };
+    });
+  }
+
   export class ListObjectsV2Command {
-    constructor(input: { Bucket: string; Prefix?: string; MaxKeys?: number; ContinuationToken?: string });
+    constructor(input: {
+      Bucket: string;
+      Prefix?: string;
+      Delimiter?: string;
+      MaxKeys?: number;
+      ContinuationToken?: string;
+    });
   }
 
   export class HeadObjectCommand {
     constructor(input: { Bucket: string; Key: string });
+  }
+
+  export class CopyObjectCommand {
+    constructor(input: {
+      Bucket: string;
+      Key: string;
+      CopySource: string;
+      ContentType?: string;
+      Metadata?: Record<string, string>;
+      MetadataDirective?: 'COPY' | 'REPLACE';
+      ACL?: string;
+    });
   }
 }

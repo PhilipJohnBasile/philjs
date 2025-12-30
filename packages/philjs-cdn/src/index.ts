@@ -279,7 +279,7 @@ function morphDOM(target: Element, html: string): void {
   target.querySelectorAll('[onclick]').forEach(el => {
     const onclick = el.getAttribute('onclick');
     const match = onclick?.match(/__handler_(\d+)__/);
-    if (match) {
+    if (match && match[1] !== undefined) {
       const id = parseInt(match[1], 10);
       const handler = handlers.get(id);
       if (handler) {
@@ -460,7 +460,10 @@ function processDirectives(root: Element, data: ComponentData): void {
         const expr = attr.value;
 
         // Handle modifiers
-        const [event, ...modifiers] = eventName.split('.');
+        const parts = eventName.split('.');
+        const event = parts[0];
+        if (!event) return;
+        const modifiers = parts.slice(1);
         const hasPrevent = modifiers.includes('prevent');
         const hasStop = modifiers.includes('stop');
         const hasOnce = modifiers.includes('once');
@@ -506,9 +509,10 @@ function processDirectives(root: Element, data: ComponentData): void {
   root.querySelectorAll('template[x-for]').forEach((template) => {
     const expr = template.getAttribute('x-for')!;
     const match = expr.match(/(\w+)\s+in\s+(.+)/);
-    if (!match) return;
+    if (!match || match[1] === undefined || match[2] === undefined) return;
 
-    const [, itemName, listExpr] = match;
+    const itemName = match[1];
+    const listExpr = match[2];
     const parent = template.parentElement;
     if (!parent) return;
 

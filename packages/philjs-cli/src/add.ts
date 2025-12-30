@@ -87,13 +87,14 @@ export async function addFeature(featureName?: string): Promise<void> {
         title: `${name} - ${description}`,
         value: key,
       })),
-    }, {
-      onCancel: () => {
-        console.log(pc.red('\n✖ Cancelled\n'));
-        process.exit(1);
-      }
     });
-    feature = response.feature;
+
+    // Handle cancellation
+    if (!response['feature']) {
+      console.log(pc.red('\n✖ Cancelled\n'));
+      process.exit(1);
+    }
+    feature = response['feature'];
   }
 
   console.log(pc.cyan(`\n📦 Adding ${FEATURES[feature].name}...\n`));

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
     "jsxImportSource": "philjs-core",
     "noUnusedLocals": false,

@@ -1,4 +1,4 @@
-import type { CSSStyleObject, CSSResult, CSSProperties } from './types';
+import type { CSSStyleObject, CSSResult, CSSProperties } from './types.js';
 
 /**
  * Global stylesheet registry

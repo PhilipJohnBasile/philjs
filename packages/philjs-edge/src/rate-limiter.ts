@@ -9,7 +9,7 @@
  * - Distributed coordination via KV/Durable Objects
  */
 
-import type { KVStore } from './index';
+import type { KVStore } from './index.js';
 
 export interface RateLimitConfig {
   /** Maximum requests allowed */
@@ -209,7 +209,7 @@ export class EdgeRateLimiter {
 
     // Check limit
     if (state.requests.length >= this.config.limit) {
-      const oldestRequest = state.requests[0];
+      const oldestRequest = state.requests[0]!;
       const retryAfter = Math.ceil((oldestRequest + windowMs - now) / 1000);
 
       return {
@@ -471,9 +471,9 @@ export class TieredRateLimiter {
         limit: config.limit ?? 100,
         window: config.window ?? 60,
         algorithm: config.algorithm ?? 'sliding-window',
-        keyGenerator: config.keyGenerator,
-        skip: config.skip,
-        onRateLimited: config.onRateLimited,
+        ...(config.keyGenerator !== undefined ? { keyGenerator: config.keyGenerator } : {}),
+        ...(config.skip !== undefined ? { skip: config.skip } : {}),
+        ...(config.onRateLimited !== undefined ? { onRateLimited: config.onRateLimited } : {}),
         headers: config.headers ?? true,
       });
     }

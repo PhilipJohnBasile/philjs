@@ -100,11 +100,11 @@ export function createPlural(
     const rule = rules[locale];
     if (!rule) {
       // Default to simple singular/plural
-      return n === 1 ? forms[0] : forms[1] || forms[0];
+      return n === 1 ? (forms[0] ?? '') : (forms[1] ?? forms[0] ?? '');
     }
     const key = rule(n);
     const index = ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key);
-    return forms[index] || forms[forms.length - 1];
+    return forms[index] ?? forms[forms.length - 1] ?? '';
   };
 }
 

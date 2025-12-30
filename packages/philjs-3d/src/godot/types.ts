@@ -86,6 +86,10 @@ export interface GodotEmbedProps {
   width?: number;
   /** Height of the canvas */
   height?: number;
+  /** Canvas element ID */
+  canvasId?: string;
+  /** Device pixel ratio */
+  pixelRatio?: number;
   /** Auto-start the game */
   autoStart?: boolean;
   /** Focus canvas on start */

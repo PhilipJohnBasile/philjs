@@ -113,7 +113,6 @@ export class MemoryProfiler {
     const snapshot: MemorySnapshot = {
       id: `snapshot-${++this.snapshotCounter}`,
       timestamp: Date.now(),
-      label,
       heapSize: memory.totalJSHeapSize || 0,
       heapUsed: memory.usedJSHeapSize || 0,
       heapLimit: memory.jsHeapSizeLimit || 0,
@@ -123,6 +122,7 @@ export class MemoryProfiler {
       eventListeners: this.countEventListeners(),
       detachedNodes: this.countDetachedNodes(),
     };
+    if (label !== undefined) snapshot.label = label;
 
     // Add to snapshots
     this.snapshots.push(snapshot);
@@ -169,8 +169,8 @@ export class MemoryProfiler {
     const trends: MemoryTrend[] = [];
 
     for (let i = 1; i < this.snapshots.length; i++) {
-      const prev = this.snapshots[i - 1];
-      const curr = this.snapshots[i];
+      const prev = this.snapshots[i - 1]!;
+      const curr = this.snapshots[i]!;
       const timeDiff = (curr.timestamp - prev.timestamp) / 1000; // seconds
       const memDiff = curr.heapUsed - prev.heapUsed;
       const rate = memDiff / timeDiff;
@@ -239,15 +239,15 @@ export class MemoryProfiler {
       const recent = this.snapshots.slice(-5);
       let growing = true;
       for (let i = 1; i < recent.length; i++) {
-        if (recent[i].heapUsed <= recent[i - 1].heapUsed) {
+        if (recent[i]!.heapUsed <= recent[i - 1]!.heapUsed) {
           growing = false;
           break;
         }
       }
 
       if (growing) {
-        const growthRate = (recent[recent.length - 1].heapUsed - recent[0].heapUsed) /
-          ((recent[recent.length - 1].timestamp - recent[0].timestamp) / 1000);
+        const growthRate = (recent[recent.length - 1]!.heapUsed - recent[0]!.heapUsed) /
+          ((recent[recent.length - 1]!.timestamp - recent[0]!.timestamp) / 1000);
 
         leaks.push({
           type: 'growing-array',
@@ -295,7 +295,7 @@ export class MemoryProfiler {
       };
     }
 
-    const currentUsage = snapshots[snapshots.length - 1].heapUsed;
+    const currentUsage = snapshots[snapshots.length - 1]!.heapUsed;
     const peakUsage = Math.max(...snapshots.map(s => s.heapUsed));
     const averageUsage = snapshots.reduce((sum, s) => sum + s.heapUsed, 0) / snapshots.length;
 

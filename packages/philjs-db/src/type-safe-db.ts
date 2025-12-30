@@ -93,12 +93,12 @@ export class TypeSafeQueryBuilder<T extends Record<string, any>> {
 
   build(): QueryOptions<T> {
     return {
-      select: this._select,
-      where: this._where,
-      orderBy: this._orderBy,
-      limit: this._limit,
-      offset: this._offset,
-      include: this._include,
+      ...(this._select !== undefined && { select: this._select }),
+      ...(this._where !== undefined && { where: this._where }),
+      ...(this._orderBy !== undefined && { orderBy: this._orderBy }),
+      ...(this._limit !== undefined && { limit: this._limit }),
+      ...(this._offset !== undefined && { offset: this._offset }),
+      ...(this._include !== undefined && { include: this._include }),
     };
   }
 }

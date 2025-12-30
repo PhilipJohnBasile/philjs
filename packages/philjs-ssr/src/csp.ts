@@ -216,11 +216,14 @@ export function buildCSP(options: CSPOptions = {}): CSPResult {
     ? 'Content-Security-Policy-Report-Only'
     : 'Content-Security-Policy';
 
-  return {
+  const result: CSPResult = {
     value: cspValue,
     header: headerName,
-    nonce: generatedNonce,
   };
+  if (generatedNonce !== undefined) {
+    result.nonce = generatedNonce;
+  }
+  return result;
 }
 
 /**

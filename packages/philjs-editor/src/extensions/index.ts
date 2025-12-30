@@ -12,8 +12,8 @@ export {
   registerLanguage,
   codeBlockShortcuts,
   lowlight,
-} from './code-block';
-export type { CodeBlockOptions } from './code-block';
+} from './code-block.js';
+export type { CodeBlockOptions } from './code-block.js';
 
 // Image upload and embed
 export {
@@ -22,8 +22,8 @@ export {
   createImageExtension,
   insertImageByUrl,
   pickAndUploadImage,
-} from './image';
-export type { ImageUploadOptions, ImageExtensionOptions } from './image';
+} from './image.js';
+export type { ImageUploadOptions, ImageExtensionOptions } from './image.js';
 
 // Video embed (YouTube, Vimeo, custom)
 export {
@@ -33,8 +33,8 @@ export {
   createVideoExtensions,
   detectVideoPlatform,
   insertVideo,
-} from './video';
-export type { VideoOptions } from './video';
+} from './video.js';
+export type { VideoOptions } from './video.js';
 
 // Table support
 export {
@@ -47,17 +47,8 @@ export {
   tableCommands,
   isInTable,
   getTableInfo,
-} from './table';
-export type { TableOptions } from './table';
-
-// @mentions
-export {
-  Mention,
-  MentionList,
-  createMentionExtension,
-  mentionStyles,
-} from './mention.jsx';
-export type { MentionItem, MentionOptions } from './mention.jsx';
+} from './table.js';
+export type { TableOptions } from './table.js';
 
 // Emoji picker and shortcodes
 export {
@@ -70,8 +61,8 @@ export {
   replaceShortcodes,
   emojiToShortcode,
   emojiPickerStyles,
-} from './emoji';
-export type { EmojiOptions } from './emoji';
+} from './emoji.js';
+export type { EmojiOptions } from './emoji.js';
 
 // Smart links
 export {
@@ -86,8 +77,8 @@ export {
   getLinkAtSelection,
   linkShortcuts,
   linkStyles,
-} from './link';
-export type { LinkOptions, LinkPreviewData } from './link';
+} from './link.js';
+export type { LinkOptions, LinkPreviewData } from './link.js';
 
 // Task/todo lists
 export {
@@ -104,8 +95,8 @@ export {
   bulletListToTaskList,
   taskListToBulletList,
   taskListStyles,
-} from './task-list';
-export type { TaskListOptions } from './task-list';
+} from './task-list.js';
+export type { TaskListOptions } from './task-list.js';
 
 // LaTeX math equations
 export {
@@ -118,5 +109,5 @@ export {
   mathTemplates,
   mathShortcuts,
   mathStyles,
-} from './math';
-export type { MathOptions } from './math';
+} from './math.js';
+export type { MathOptions } from './math.js';

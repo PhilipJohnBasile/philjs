@@ -357,12 +357,12 @@ export function registerElement(
     id,
     handlers: options.handlers || [],
     bindings: options.bindings || {},
-    state: options.state
-      ? Object.fromEntries(
-          Object.entries(options.state).map(([k, v]) => [k, serializeValue(v)])
-        )
-      : undefined,
   };
+  if (options.state) {
+    element.state = Object.fromEntries(
+      Object.entries(options.state).map(([k, v]) => [k, serializeValue(v)])
+    );
+  }
 
   context.elements.set(id, element);
 }

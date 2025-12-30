@@ -10,8 +10,9 @@ import type {
   InspectorEvent,
   FilterOptions,
   PropInfo,
-  StateInfo
-} from './types';
+  StateInfo,
+  SignalInfo
+} from './types.js';
 
 // Default configuration
 const defaultConfig: InspectorConfig = {
@@ -230,7 +231,7 @@ export class ComponentInspector {
     // Tabs
     this.panelElement.querySelectorAll('.inspector-tab').forEach(tab => {
       tab.addEventListener('click', (e) => {
-        const tabName = (e.target as HTMLElement).dataset.tab;
+        const tabName = (e.target as HTMLElement).dataset['tab'];
         this.switchTab(tabName || 'tree');
       });
     });
@@ -241,7 +242,7 @@ export class ComponentInspector {
 
     // Update tab buttons
     this.panelElement.querySelectorAll('.inspector-tab').forEach(tab => {
-      const isActive = (tab as HTMLElement).dataset.tab === tabName;
+      const isActive = (tab as HTMLElement).dataset['tab'] === tabName;
       (tab as HTMLElement).style.borderBottom = isActive ? '2px solid #3b82f6' : '2px solid transparent';
       (tab as HTMLElement).style.opacity = isActive ? '1' : '0.6';
     });
@@ -331,6 +332,7 @@ export class ComponentInspector {
     const isIsland = element.hasAttribute('island');
     const isHydrated = element.hasAttribute('data-hydrated');
 
+    const keyValue = element.getAttribute('data-key');
     const node: ComponentNode = {
       id: this.generateNodeId(),
       name: componentName,
@@ -346,7 +348,7 @@ export class ComponentInspector {
       lastRenderTime: parseFloat(element.getAttribute('data-render-time') || '0'),
       averageRenderTime: 0,
       isHydrated,
-      key: element.getAttribute('data-key') || undefined
+      ...(keyValue && { key: keyValue })
     };
 
     // Build children
@@ -395,7 +397,7 @@ export class ComponentInspector {
     if (this.filter.hideEmpty && node.children.length === 0 && Object.keys(node.props).length === 0) return false;
     if (this.filter.searchQuery && !node.name.toLowerCase().includes(this.filter.searchQuery.toLowerCase())) {
       // Check if any child matches
-      const hasMatchingChild = node.children.some(child =>
+      const hasMatchingChild = node.children.some((child: ComponentNode) =>
         child.name.toLowerCase().includes(this.filter.searchQuery.toLowerCase())
       );
       if (!hasMatchingChild) return false;
@@ -418,7 +420,7 @@ export class ComponentInspector {
 
     // Attach node event listeners
     treeContainer.querySelectorAll('.inspector-node').forEach(nodeEl => {
-      const nodeId = (nodeEl as HTMLElement).dataset.nodeId;
+      const nodeId = (nodeEl as HTMLElement).dataset['nodeId'];
 
       nodeEl.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -476,7 +478,7 @@ export class ComponentInspector {
     `;
 
     // Render children
-    node.children.forEach(child => {
+    node.children.forEach((child: ComponentNode) => {
       html += this.renderNode(child, depth + 1);
     });
 
@@ -485,7 +487,7 @@ export class ComponentInspector {
 
   private countNodes(node: ComponentNode): number {
     let count = 1;
-    node.children.forEach(child => {
+    node.children.forEach((child: ComponentNode) => {
       count += this.countNodes(child);
     });
     return count;
@@ -618,7 +620,7 @@ export class ComponentInspector {
     // Render signals
     if (signals.length > 0) {
       html += `<div style="margin-bottom: 12px;"><strong>Signals</strong></div>`;
-      signals.forEach(signal => {
+      signals.forEach((signal: SignalInfo) => {
         html += `
           <div style="padding: 4px 0; border-bottom: 1px solid ${isDark ? '#333' : '#e5e7eb'};">
             <span style="color: #f59e0b;">${signal.name}</span>

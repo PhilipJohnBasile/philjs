@@ -66,7 +66,7 @@ export {
   mergeAPIs,
   securitySchemes,
   errorResponses,
-} from './openapi';
+} from './openapi.js';
 
 // Swagger UI and documentation endpoints
 export {
@@ -75,7 +75,7 @@ export {
   specHandler,
   redoc,
   createDocsRoutes,
-} from './swagger-ui';
+} from './swagger-ui.js';
 
 // Zod to JSON Schema conversion
 export {
@@ -83,10 +83,10 @@ export {
   isZodSchema,
   extractExample,
   getSchemaDescription,
-} from './zod-to-schema';
+} from './zod-to-schema.js';
 
 // CLI utilities (for programmatic use)
-export { generateTypes, main as runCLI } from './cli';
+export { generateTypes, main as runCLI } from './cli.js';
 
 // Type exports
 export type {
@@ -126,4 +126,4 @@ export type {
   // Type generation types
   TypeGenerationOptions,
   GeneratedTypes,
-} from './types';
+} from './types.js';

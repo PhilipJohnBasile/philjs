@@ -27,7 +27,7 @@ program
 program
   .command("create [project-name]")
   .description("Create a new PhilJS project with interactive setup")
-  .action(async (projectName) => {
+  .action(async (projectName: string | undefined) => {
     try {
       await createProject(projectName);
     } catch (error) {
@@ -40,7 +40,7 @@ program
 program
   .command("add [feature]")
   .description("Add features to an existing PhilJS project")
-  .action(async (feature) => {
+  .action(async (feature: string | undefined) => {
     try {
       await addFeature(feature);
     } catch (error) {
@@ -53,7 +53,7 @@ program
 program
   .command("migrate [framework]")
   .description("Migrate from React, Vue, or Svelte to PhilJS")
-  .action(async (framework) => {
+  .action(async (framework: string | undefined) => {
     try {
       await migrateProject(framework);
     } catch (error) {
@@ -68,7 +68,7 @@ program
   .option("-p, --port <port>", "Port to run dev server on", "3000")
   .option("--host <host>", "Host to bind to", "localhost")
   .option("--open", "Open browser automatically", false)
-  .action(async (options) => {
+  .action(async (options: { port: string; host: string; open: boolean }) => {
     console.log(pc.cyan("\nPhilJS Dev Server\n"));
 
     try {
@@ -90,7 +90,7 @@ program
   .option("--ssg", "Generate static site (SSG)", false)
   .option("--analyze", "Analyze bundle size", false)
   .option("--outDir <dir>", "Output directory", "dist")
-  .action(async (options) => {
+  .action(async (options: { ssg: boolean; analyze: boolean; outDir: string }) => {
     console.log(pc.cyan("\nBuilding PhilJS app...\n"));
 
     try {
@@ -144,7 +144,7 @@ program
   .description("Run tests with Vitest")
   .option("--watch", "Watch mode", false)
   .option("--coverage", "Generate coverage report", false)
-  .action(async (options) => {
+  .action(async (options: { watch: boolean; coverage: boolean }) => {
     const { spawn } = await import("child_process");
 
     const args = ["vitest"];
@@ -153,8 +153,8 @@ program
 
     const test = spawn("npx", args, { stdio: "inherit" });
 
-    test.on("exit", (code) => {
-      process.exit(code || 0);
+    test.on("exit", (code: number | null) => {
+      process.exit(code ?? 0);
     });
   });
 
@@ -163,7 +163,7 @@ program
   .command("preview")
   .description("Preview production build locally")
   .option("-p, --port <port>", "Port to run preview server on", "4173")
-  .action(async (options) => {
+  .action(async (options: { port: string }) => {
     console.log(pc.cyan("\nStarting preview server...\n"));
 
     const { createServer } = await import("vite");

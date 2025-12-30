@@ -104,6 +104,8 @@ export interface UnityEmbedProps {
   width?: number;
   /** Height of the canvas */
   height?: number;
+  /** Canvas element ID */
+  canvasId?: string;
   /** Device pixel ratio */
   pixelRatio?: number;
   /** Company name (for data caching) */

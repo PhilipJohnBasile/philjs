@@ -8,9 +8,10 @@
  * - Idempotency support
  */
 
+// @ts-expect-error - PayPal SDK lacks TypeScript declarations
 import * as paypal from '@paypal/checkout-server-sdk';
 import { createHmac } from 'crypto';
-import {
+import type {
   PaymentProvider,
   CreateCheckoutRequest,
   CheckoutSession,
@@ -23,14 +24,15 @@ import {
   PaymentMethod,
   CreateInvoiceRequest,
   Invoice,
+  InvoiceLineItem,
+  LineItem,
   RefundRequest,
   Refund,
   WebhookRequest,
   WebhookEvent,
-  PaymentError,
-  WebhookVerificationError,
   SubscriptionStatus,
-} from '../index';
+} from '../index.js';
+import { PaymentError, WebhookVerificationError } from '../index.js';
 
 export interface PayPalConfig {
   clientId: string;
@@ -107,7 +109,7 @@ export class PayPalProvider implements PaymentProvider {
                 },
               },
             },
-            items: request.lineItems.map((item) => ({
+            items: request.lineItems.map((item: LineItem) => ({
               name: item.name,
               description: item.description || '',
               quantity: item.quantity.toString(),
@@ -136,17 +138,18 @@ export class PayPalProvider implements PaymentProvider {
 
       const approveLink = order.links.find((link) => link.rel === 'approve');
 
-      return {
+      const session: CheckoutSession = {
         id: order.id,
         url: approveLink?.href || '',
         status: this.mapOrderStatus(order.status),
-        customerId: request.customerId,
         lineItems: request.lineItems,
         successUrl: request.successUrl,
         cancelUrl: request.cancelUrl,
         expiresAt: new Date(Date.now() + 3 * 60 * 60 * 1000), // 3 hours
-        metadata: request.metadata,
       };
+      if (request.customerId !== undefined) session.customerId = request.customerId;
+      if (request.metadata !== undefined) session.metadata = request.metadata;
+      return session;
     } catch (error) {
       throw this.handlePayPalError(error);
     }
@@ -282,15 +285,16 @@ export class PayPalProvider implements PaymentProvider {
     // PayPal doesn't have a separate customer API like Stripe
     // Customers are created implicitly when they make payments
     // We'll create a reference record
-    return {
+    const customer: Customer = {
       id: `pp_cust_${Date.now()}`,
       email: request.email,
-      name: request.name,
-      phone: request.phone,
-      address: request.address,
-      metadata: request.metadata,
       createdAt: new Date(),
     };
+    if (request.name !== undefined) customer.name = request.name;
+    if (request.phone !== undefined) customer.phone = request.phone;
+    if (request.address !== undefined) customer.address = request.address;
+    if (request.metadata !== undefined) customer.metadata = request.metadata;
+    return customer;
   }
 
   async retrieveCustomer(customerId: string): Promise<Customer> {
@@ -373,7 +377,7 @@ export class PayPalProvider implements PaymentProvider {
             },
           },
         ],
-        items: request.lineItems.map((item) => ({
+        items: request.lineItems.map((item: InvoiceLineItem) => ({
           name: item.description,
           quantity: item.quantity.toString(),
           unit_amount: {
@@ -469,7 +473,7 @@ export class PayPalProvider implements PaymentProvider {
         create_time: string;
       };
 
-      return {
+      const refund: Refund = {
         id: refundResult.id,
         paymentId: request.paymentId,
         amount: {
@@ -477,9 +481,10 @@ export class PayPalProvider implements PaymentProvider {
           currency: refundResult.amount.currency_code.toLowerCase(),
         },
         status: this.mapRefundStatus(refundResult.status),
-        reason: request.reason,
         createdAt: new Date(refundResult.create_time),
       };
+      if (request.reason !== undefined) refund.reason = request.reason;
+      return refund;
     } catch (error) {
       throw this.handlePayPalError(error);
     }
@@ -569,7 +574,7 @@ export class PayPalProvider implements PaymentProvider {
   }
 
   private calculateTotal(lineItems: CreateCheckoutRequest['lineItems']): string {
-    const total = lineItems.reduce((sum, item) => sum + item.amount.amount * item.quantity, 0);
+    const total = lineItems.reduce((sum: number, item: LineItem) => sum + item.amount.amount * item.quantity, 0);
     return (total / 100).toFixed(2);
   }
 

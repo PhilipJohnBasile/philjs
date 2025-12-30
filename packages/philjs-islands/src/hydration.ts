@@ -117,5 +117,5 @@ export function waitForAllHydration(
   root: HTMLElement | Document = document
 ): Promise<void[]> {
   const islands = root.querySelectorAll('phil-island:not([data-hydrated])');
-  return Promise.all(Array.from(islands).map(waitForHydration));
+  return Promise.all(Array.from(islands).map((el) => waitForHydration(el as HTMLElement)));
 }

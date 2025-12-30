@@ -252,30 +252,30 @@ class SceneNode {
   }
 
   private multiplyMatrices(a: Matrix4, b: Matrix4, result: Matrix4): void {
-    const a00 = a[0], a01 = a[4], a02 = a[8], a03 = a[12];
-    const a10 = a[1], a11 = a[5], a12 = a[9], a13 = a[13];
-    const a20 = a[2], a21 = a[6], a22 = a[10], a23 = a[14];
-    const a30 = a[3], a31 = a[7], a32 = a[11], a33 = a[15];
+    const a00 = a[0]!, a01 = a[4]!, a02 = a[8]!, a03 = a[12]!;
+    const a10 = a[1]!, a11 = a[5]!, a12 = a[9]!, a13 = a[13]!;
+    const a20 = a[2]!, a21 = a[6]!, a22 = a[10]!, a23 = a[14]!;
+    const a30 = a[3]!, a31 = a[7]!, a32 = a[11]!, a33 = a[15]!;
 
-    const b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+    const b0 = b[0]!, b1 = b[1]!, b2 = b[2]!, b3 = b[3]!;
     result[0] = b0 * a00 + b1 * a01 + b2 * a02 + b3 * a03;
     result[1] = b0 * a10 + b1 * a11 + b2 * a12 + b3 * a13;
     result[2] = b0 * a20 + b1 * a21 + b2 * a22 + b3 * a23;
     result[3] = b0 * a30 + b1 * a31 + b2 * a32 + b3 * a33;
 
-    const b4 = b[4], b5 = b[5], b6 = b[6], b7 = b[7];
+    const b4 = b[4]!, b5 = b[5]!, b6 = b[6]!, b7 = b[7]!;
     result[4] = b4 * a00 + b5 * a01 + b6 * a02 + b7 * a03;
     result[5] = b4 * a10 + b5 * a11 + b6 * a12 + b7 * a13;
     result[6] = b4 * a20 + b5 * a21 + b6 * a22 + b7 * a23;
     result[7] = b4 * a30 + b5 * a31 + b6 * a32 + b7 * a33;
 
-    const b8 = b[8], b9 = b[9], b10 = b[10], b11 = b[11];
+    const b8 = b[8]!, b9 = b[9]!, b10 = b[10]!, b11 = b[11]!;
     result[8] = b8 * a00 + b9 * a01 + b10 * a02 + b11 * a03;
     result[9] = b8 * a10 + b9 * a11 + b10 * a12 + b11 * a13;
     result[10] = b8 * a20 + b9 * a21 + b10 * a22 + b11 * a23;
     result[11] = b8 * a30 + b9 * a31 + b10 * a32 + b11 * a33;
 
-    const b12 = b[12], b13 = b[13], b14 = b[14], b15 = b[15];
+    const b12 = b[12]!, b13 = b[13]!, b14 = b[14]!, b15 = b[15]!;
     result[12] = b12 * a00 + b13 * a01 + b14 * a02 + b15 * a03;
     result[13] = b12 * a10 + b13 * a11 + b14 * a12 + b15 * a13;
     result[14] = b12 * a20 + b13 * a21 + b14 * a22 + b15 * a23;
@@ -768,10 +768,10 @@ class Camera extends SceneNode {
   }
 
   private invertMatrix(m: Matrix4, result: Matrix4): void {
-    const n11 = m[0], n21 = m[1], n31 = m[2], n41 = m[3];
-    const n12 = m[4], n22 = m[5], n32 = m[6], n42 = m[7];
-    const n13 = m[8], n23 = m[9], n33 = m[10], n43 = m[11];
-    const n14 = m[12], n24 = m[13], n34 = m[14], n44 = m[15];
+    const n11 = m[0]!, n21 = m[1]!, n31 = m[2]!, n41 = m[3]!;
+    const n12 = m[4]!, n22 = m[5]!, n32 = m[6]!, n42 = m[7]!;
+    const n13 = m[8]!, n23 = m[9]!, n33 = m[10]!, n43 = m[11]!;
+    const n14 = m[12]!, n24 = m[13]!, n34 = m[14]!, n44 = m[15]!;
 
     const t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
     const t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
@@ -997,17 +997,17 @@ class AnimationMixer {
   }
 
   private interpolateKeyframes<T>(keyframes: Keyframe<T>[], time: number): T {
-    if (keyframes.length === 0) return undefined as any;
-    if (keyframes.length === 1) return keyframes[0].value;
+    if (keyframes.length === 0) return undefined as T;
+    if (keyframes.length === 1) return keyframes[0]!.value;
 
     // Find surrounding keyframes
-    let prevFrame = keyframes[0];
-    let nextFrame = keyframes[keyframes.length - 1];
+    let prevFrame = keyframes[0]!;
+    let nextFrame = keyframes[keyframes.length - 1]!;
 
     for (let i = 0; i < keyframes.length - 1; i++) {
-      if (keyframes[i].time <= time && keyframes[i + 1].time >= time) {
-        prevFrame = keyframes[i];
-        nextFrame = keyframes[i + 1];
+      if (keyframes[i]!.time <= time && keyframes[i + 1]!.time >= time) {
+        prevFrame = keyframes[i]!;
+        nextFrame = keyframes[i + 1]!;
         break;
       }
     }
@@ -1051,10 +1051,10 @@ class AnimationMixer {
     let obj = target;
 
     for (let i = 0; i < parts.length - 1; i++) {
-      obj = obj[parts[i]];
+      obj = obj[parts[i]!];
     }
 
-    obj[parts[parts.length - 1]] = value;
+    obj[parts[parts.length - 1]!] = value;
   }
 }
 
@@ -1139,7 +1139,7 @@ class ParticleSystem extends SceneNode {
     const gravity = this.config.gravity!;
 
     for (let i = this.particles.length - 1; i >= 0; i--) {
-      const p = this.particles[i];
+      const p = this.particles[i]!;
 
       // Apply gravity
       p.velocity[0] += gravity[0] * deltaTime;
@@ -1161,7 +1161,7 @@ class ParticleSystem extends SceneNode {
           Math.floor(t * this.config.sizeOverLifetime.length),
           this.config.sizeOverLifetime.length - 1
         );
-        p.size = this.config.sizeOverLifetime[idx];
+        p.size = this.config.sizeOverLifetime[idx]!;
       }
 
       // Update color over lifetime
@@ -1171,7 +1171,7 @@ class ParticleSystem extends SceneNode {
           Math.floor(t * this.config.colorOverLifetime.length),
           this.config.colorOverLifetime.length - 1
         );
-        p.color = this.config.colorOverLifetime[idx];
+        p.color = this.config.colorOverLifetime[idx]!;
       }
 
       // Remove dead particles
@@ -1211,12 +1211,12 @@ class GLTFLoader {
 
     if (isBinary) {
       const version = new Uint32Array(buffer, 4, 1)[0];
-      const length = new Uint32Array(buffer, 8, 1)[0];
+      const length = new Uint32Array(buffer, 8, 1)[0]!;
 
       let offset = 12;
 
       // JSON chunk
-      const jsonChunkLength = new Uint32Array(buffer, offset, 1)[0];
+      const jsonChunkLength = new Uint32Array(buffer, offset, 1)[0]!;
       const jsonChunkType = new Uint32Array(buffer, offset + 4, 1)[0];
       offset += 8;
 
@@ -1226,7 +1226,7 @@ class GLTFLoader {
 
       // Binary chunk (if present)
       if (offset < length) {
-        const binChunkLength = new Uint32Array(buffer, offset, 1)[0];
+        const binChunkLength = new Uint32Array(buffer, offset, 1)[0]!;
         offset += 8;
         binaryChunk = buffer.slice(offset, offset + binChunkLength);
       }

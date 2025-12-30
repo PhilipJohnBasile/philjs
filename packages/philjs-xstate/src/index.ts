@@ -428,8 +428,8 @@ export function visualize<TContext = any, TEvent extends EventObject = EventObje
       id: stateId,
       label: stateId,
       type: stateNode.type || 'atomic',
-      initial: stateNode.initial,
       transitions: [],
+      ...(stateNode.initial !== undefined && { initial: stateNode.initial }),
     };
 
     // Process transitions
@@ -444,7 +444,7 @@ export function visualize<TContext = any, TEvent extends EventObject = EventObje
           node.transitions.push({
             event,
             target: transition.target,
-            guard: transition.cond ? 'has guard' : undefined,
+            ...(transition.cond ? { guard: 'has guard' } : {}),
           });
 
           edges.push({

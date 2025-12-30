@@ -4,8 +4,9 @@ import type {
   ResponsiveStyles,
   EventHandler,
   Bounds,
-} from '../state/EditorStore';
-import type { StudioSchema, SerializedComponent, FigmaNode } from './export';
+  TypographyStyle,
+} from '../state/EditorStore.js';
+import type { StudioSchema, SerializedComponent, FigmaNode } from './export.js';
 
 // ============================================================================
 // Types
@@ -55,7 +56,7 @@ const remapIds = (
     ...comp,
     id: idMap.get(comp.id) || comp.id,
     parentId: comp.parentId ? idMap.get(comp.parentId) || comp.parentId : null,
-    children: comp.children.map((childId) => idMap.get(childId) || childId),
+    children: comp.children.map((childId: string) => idMap.get(childId) || childId),
   }));
 
   return { mapped, idMap };
@@ -86,19 +87,19 @@ export const validateSchema = (data: unknown): data is StudioSchema => {
 
   const schema = data as Record<string, unknown>;
 
-  if (typeof schema.version !== 'string') return false;
-  if (!Array.isArray(schema.components)) return false;
-  if (!Array.isArray(schema.rootIds)) return false;
+  if (typeof schema['version'] !== 'string') return false;
+  if (!Array.isArray(schema['components'])) return false;
+  if (!Array.isArray(schema['rootIds'])) return false;
 
   // Validate each component
-  for (const comp of schema.components) {
+  for (const comp of schema['components']) {
     if (!comp || typeof comp !== 'object') return false;
     const c = comp as Record<string, unknown>;
-    if (typeof c.id !== 'string') return false;
-    if (typeof c.type !== 'string') return false;
-    if (typeof c.name !== 'string') return false;
-    if (!Array.isArray(c.children)) return false;
-    if (!c.bounds || typeof c.bounds !== 'object') return false;
+    if (typeof c['id'] !== 'string') return false;
+    if (typeof c['type'] !== 'string') return false;
+    if (typeof c['name'] !== 'string') return false;
+    if (!Array.isArray(c['children'])) return false;
+    if (!c['bounds'] || typeof c['bounds'] !== 'object') return false;
   }
 
   return true;
@@ -142,7 +143,7 @@ export const importFromJSON = (
       name: comp.name,
       props: comp.props || {},
       styles: comp.styles || { base: {} },
-      events: comp.events || [],
+      events: (comp.events || []) as EventHandler[],
       children: comp.children,
       parentId: comp.parentId,
       isLocked: comp.isLocked || false,
@@ -151,12 +152,12 @@ export const importFromJSON = (
     };
   }
 
-  const rootIds = data.rootIds.map((id) => idMap.get(id) || id);
+  const rootIds = data.rootIds.map((id: string) => idMap.get(id) || id);
 
   return {
     components,
     rootIds,
-    errors: errors.length > 0 ? errors : undefined,
+    ...(errors.length > 0 && { errors }),
   };
 };
 
@@ -214,7 +215,7 @@ const extractStyles = (node: FigmaNode): ComponentStyle => {
 
   // Extract fills (background)
   if (node.fills && node.fills.length > 0) {
-    const fill = node.fills[0];
+    const fill = node.fills[0]!;
     if (fill.type === 'SOLID' && fill.color) {
       styles.backgroundColor = figmaColorToHex(fill.color);
     }
@@ -222,7 +223,7 @@ const extractStyles = (node: FigmaNode): ComponentStyle => {
 
   // Extract strokes (border)
   if (node.strokes && node.strokes.length > 0) {
-    const stroke = node.strokes[0];
+    const stroke = node.strokes[0]!;
     if (stroke.type === 'SOLID' && stroke.color) {
       styles.borderColor = figmaColorToHex(stroke.color);
       styles.borderWidth = 1;
@@ -238,11 +239,11 @@ const extractStyles = (node: FigmaNode): ComponentStyle => {
   // Extract effects (shadows)
   if (node.effects && node.effects.length > 0) {
     const shadowEffects = node.effects.filter(
-      (e) => e.type === 'DROP_SHADOW' || e.type === 'INNER_SHADOW'
+      (e: { type: string; offset?: { x: number; y: number }; radius?: number; color?: { r: number; g: number; b: number; a?: number } }) => e.type === 'DROP_SHADOW' || e.type === 'INNER_SHADOW'
     );
     if (shadowEffects.length > 0) {
-      const shadow = shadowEffects[0];
-      if (shadow.offset && shadow.radius && shadow.color) {
+      const shadow = shadowEffects[0]!;
+      if (shadow.offset && shadow.radius !== undefined && shadow.color) {
         const color = figmaColorToHex(shadow.color);
         const isInner = shadow.type === 'INNER_SHADOW' ? 'inset ' : '';
         styles.boxShadow = `${isInner}${shadow.offset.x}px ${shadow.offset.y}px ${shadow.radius}px ${color}`;
@@ -252,11 +253,14 @@ const extractStyles = (node: FigmaNode): ComponentStyle => {
 
   // Extract typography for text nodes
   if (node.type === 'TEXT' && node.style) {
-    styles.typography = {
-      fontFamily: node.style.fontFamily as string | undefined,
-      fontSize: node.style.fontSize as number | undefined,
-      fontWeight: node.style.fontWeight as number | undefined,
-    };
+    const typography: TypographyStyle = {};
+    const fontFamily = node.style['fontFamily'];
+    const fontSize = node.style['fontSize'];
+    const fontWeight = node.style['fontWeight'];
+    if (typeof fontFamily === 'string') typography.fontFamily = fontFamily;
+    if (typeof fontSize === 'number') typography.fontSize = fontSize;
+    if (typeof fontWeight === 'number') typography.fontWeight = fontWeight;
+    styles.typography = typography;
   }
 
   return styles;
@@ -288,7 +292,7 @@ const processFigmaNode = (
 
   // Extract text content
   if (node.type === 'TEXT' && node.characters) {
-    props.children = node.characters;
+    props['children'] = node.characters;
   }
 
   // Process children
@@ -360,7 +364,7 @@ export const importFromFigma = (
   return {
     components: context.components,
     rootIds,
-    errors: context.errors.length > 0 ? context.errors : undefined,
+    ...(context.errors.length > 0 && { errors: context.errors }),
   };
 };
 

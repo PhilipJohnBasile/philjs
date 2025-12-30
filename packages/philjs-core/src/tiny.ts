@@ -64,7 +64,7 @@ export function computed<T>(fn: () => T): Getter<T> {
   let value: T;
   let dirty = true;
   const subs = new Set<() => void>();
-  let deps: Set<Set<() => void>>[] = [];
+  let deps: Set<() => void>[] = [];
 
   const invalidate = () => {
     if (!dirty) {
@@ -79,7 +79,7 @@ export function computed<T>(fn: () => T): Getter<T> {
       deps.forEach(d => d.delete(invalidate));
       deps = [];
       const prev = tracking;
-      tracking = new Set();
+      tracking = new Set<Set<() => void>>();
       value = fn();
       deps = Array.from(tracking);
       deps.forEach(d => d.add(invalidate));
@@ -95,14 +95,14 @@ export function computed<T>(fn: () => T): Getter<T> {
  */
 export function effect(fn: EffectFn): () => void {
   let cleanup: Cleanup;
-  let deps: Set<Set<() => void>>[] = [];
+  let deps: Set<() => void>[] = [];
 
   const run = () => {
     if (typeof cleanup === 'function') cleanup();
     deps.forEach(d => d.delete(run));
     deps = [];
     const prev = tracking;
-    tracking = new Set();
+    tracking = new Set<Set<() => void>>();
     cleanup = fn();
     deps = Array.from(tracking);
     deps.forEach(d => d.add(run));
@@ -153,7 +153,7 @@ export function untrack<T>(fn: () => T): T {
 export interface TinyElement {
   type: string | ((props: any) => TinyElement | TinyElement[]);
   props: Record<string, unknown>;
-  children: (TinyElement | string | number | null | undefined)[];
+  children: (TinyElement | string | number | null | undefined | (() => unknown))[];
 }
 
 /**
@@ -162,9 +162,9 @@ export interface TinyElement {
 export function h(
   type: string | ((props: any) => TinyElement | TinyElement[]),
   props: Record<string, unknown> | null,
-  ...children: (TinyElement | string | number | null | undefined)[]
+  ...children: (TinyElement | string | number | null | undefined | (() => unknown))[]
 ): TinyElement {
-  return { type, props: props || {}, children: children.flat(Infinity) };
+  return { type, props: props ?? {}, children: children.flat(Infinity) as TinyElement['children'] };
 }
 
 /**
@@ -189,7 +189,7 @@ type DOMNode = Element | Text | DocumentFragment;
 export function render(element: TinyElement | string | number | null | undefined, container: Element): () => void {
   const cleanups: (() => void)[] = [];
 
-  const mount = (el: TinyElement | string | number | null | undefined, parent: DOMNode): DOMNode | null => {
+  const mount = (el: TinyElement | string | number | null | undefined | false, parent: DOMNode): DOMNode | null => {
     if (el == null || el === false) return null;
 
     if (typeof el === 'string' || typeof el === 'number') {
@@ -321,18 +321,18 @@ export function For<T>(props: {
  * Create a store (object with reactive properties)
  */
 export function store<T extends object>(initial: T): T {
-  const signals = new Map<keyof T, TinySignal<T[keyof T]>>();
+  const signals = new Map<string | symbol, TinySignal<unknown>>();
 
   return new Proxy(initial, {
-    get(target, prop: keyof T) {
+    get(target, prop: string | symbol) {
       let s = signals.get(prop);
       if (!s) {
-        s = signal(target[prop]);
+        s = signal((target as Record<string | symbol, unknown>)[prop]);
         signals.set(prop, s);
       }
       return s();
     },
-    set(target, prop: keyof T, value) {
+    set(target, prop: string | symbol, value: unknown) {
       let s = signals.get(prop);
       if (!s) {
         s = signal(value);
@@ -340,7 +340,7 @@ export function store<T extends object>(initial: T): T {
       } else {
         s.set(value);
       }
-      target[prop] = value;
+      (target as Record<string | symbol, unknown>)[prop] = value;
       return true;
     },
   }) as T;

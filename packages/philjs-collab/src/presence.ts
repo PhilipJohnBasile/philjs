@@ -61,12 +61,12 @@ export class PresenceManager {
 
     this.localPresence = {
       clientId: config.clientId,
-      userId: config.user.userId,
       name: config.user.name,
-      avatar: config.user.avatar,
       color: config.user.color || this.generateColor(config.clientId),
       status: 'online',
       lastSeen: Date.now(),
+      ...(config.user.userId !== undefined && { userId: config.user.userId }),
+      ...(config.user.avatar !== undefined && { avatar: config.user.avatar }),
     };
   }
 
@@ -293,5 +293,5 @@ export const PRESENCE_COLORS = [
  * Get a color by index
  */
 export function getPresenceColor(index: number): string {
-  return PRESENCE_COLORS[index % PRESENCE_COLORS.length];
+  return PRESENCE_COLORS[index % PRESENCE_COLORS.length] ?? PRESENCE_COLORS[0];
 }

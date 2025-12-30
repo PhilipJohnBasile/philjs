@@ -2,7 +2,7 @@
  * Shell APIs
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 // Shell types
 export interface CommandOptions {
@@ -77,9 +77,9 @@ export const Shell = {
 
     const { Command } = await import('@tauri-apps/plugin-shell');
     const command = Command.create(program, args, {
-      cwd: options.cwd,
-      env: options.env,
-      encoding: options.encoding,
+      ...(options.cwd && { cwd: options.cwd }),
+      ...(options.env && { env: options.env }),
+      ...(options.encoding && { encoding: options.encoding }),
     });
 
     const output = await command.execute();
@@ -111,9 +111,9 @@ export const Shell = {
 
     const { Command } = await import('@tauri-apps/plugin-shell');
     const command = Command.create(program, args, {
-      cwd: options.cwd,
-      env: options.env,
-      encoding: options.encoding,
+      ...(options.cwd && { cwd: options.cwd }),
+      ...(options.env && { env: options.env }),
+      ...(options.encoding && { encoding: options.encoding }),
     });
 
     // Set up event handlers
@@ -180,9 +180,9 @@ export const Shell = {
 
     const { Command } = await import('@tauri-apps/plugin-shell');
     const command = Command.sidecar(name, args, {
-      cwd: options.cwd,
-      env: options.env,
-      encoding: options.encoding,
+      ...(options.cwd && { cwd: options.cwd }),
+      ...(options.env && { env: options.env }),
+      ...(options.encoding && { encoding: options.encoding }),
     });
 
     const output = await command.execute();

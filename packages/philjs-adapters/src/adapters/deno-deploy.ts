@@ -13,9 +13,9 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets } from '../utils/build';
-import { loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets } from '../utils/build.js';
+import { loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the Deno Deploy adapter
@@ -652,45 +652,45 @@ await start(manifest, config);
     };
 
     if (freshConfig?.enabled) {
-      defaultTasks.start = 'deno run -A main.ts';
-      defaultTasks.dev = 'deno run -A --watch=static/,routes/ dev.ts';
-      defaultTasks.build = 'deno run -A dev.ts build';
-      defaultTasks.preview = 'deno run -A main.ts';
+      defaultTasks['start'] = 'deno run -A main.ts';
+      defaultTasks['dev'] = 'deno run -A --watch=static/,routes/ dev.ts';
+      defaultTasks['build'] = 'deno run -A dev.ts build';
+      defaultTasks['preview'] = 'deno run -A main.ts';
     }
 
-    config.tasks = { ...defaultTasks, ...tasks };
+    config['tasks'] = { ...defaultTasks, ...tasks };
 
     // Import map
     if (importMap) {
-      config.importMap = typeof importMap === 'string' ? importMap : './import_map.json';
+      config['importMap'] = typeof importMap === 'string' ? importMap : './import_map.json';
     }
 
     // Compiler options
     if (compilerOptions) {
-      config.compilerOptions = compilerOptions;
+      config['compilerOptions'] = compilerOptions;
     } else {
-      config.compilerOptions = {
+      config['compilerOptions'] = {
         allowJs: true,
         lib: ['deno.window'],
         strict: true,
       };
 
       if (freshConfig?.enabled) {
-        (config.compilerOptions as Record<string, unknown>).jsx = 'react-jsx';
-        (config.compilerOptions as Record<string, unknown>).jsxImportSource = 'preact';
+        (config['compilerOptions'] as Record<string, unknown>)['jsx'] = 'react-jsx';
+        (config['compilerOptions'] as Record<string, unknown>)['jsxImportSource'] = 'preact';
       }
     }
 
     // Lock file
     if (lock) {
-      config.lock = typeof lock === 'string' ? lock : './deno.lock';
+      config['lock'] = typeof lock === 'string' ? lock : './deno.lock';
     }
 
     // Lint configuration
     if (lint) {
-      config.lint = lint;
+      config['lint'] = lint;
     } else {
-      config.lint = {
+      config['lint'] = {
         include: ['src/', 'routes/', 'islands/'],
         exclude: ['static/', '_fresh/'],
       };
@@ -698,9 +698,9 @@ await start(manifest, config);
 
     // Format configuration
     if (fmt) {
-      config.fmt = fmt;
+      config['fmt'] = fmt;
     } else {
-      config.fmt = {
+      config['fmt'] = {
         useTabs: false,
         lineWidth: 100,
         indentWidth: 2,
@@ -712,19 +712,19 @@ await start(manifest, config);
 
     // Node modules directory
     if (nodeModulesDir) {
-      config.nodeModulesDir = true;
+      config['nodeModulesDir'] = true;
     }
 
     // Unstable features
     if (unstable.length > 0) {
-      config.unstable = unstable;
+      config['unstable'] = unstable;
     } else if (kvConfig?.enabled) {
-      config.unstable = ['kv'];
+      config['unstable'] = ['kv'];
     }
 
     // Fresh-specific imports
     if (freshConfig?.enabled) {
-      config.imports = {
+      config['imports'] = {
         '$fresh/': `https://deno.land/x/fresh@${freshConfig.version || '1.6.0'}/`,
         'preact': 'https://esm.sh/preact@10.19.2',
         'preact/': 'https://esm.sh/preact@10.19.2/',
@@ -733,7 +733,7 @@ await start(manifest, config);
         '@philjs/core': 'npm:@philjs/core@latest',
       };
     } else {
-      config.imports = {
+      config['imports'] = {
         '@philjs/ssr': 'npm:@philjs/ssr@latest',
         '@philjs/core': 'npm:@philjs/core@latest',
       };

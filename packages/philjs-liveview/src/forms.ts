@@ -10,7 +10,7 @@ import type {
   FormValidation,
   UploadConfig,
   UploadEntry,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Form State Management

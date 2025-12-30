@@ -3,7 +3,7 @@
  * Pure TypeScript QR code generation
  */
 
-import type { QRCodeOptions, QRStyle, QRLogo, QRGradient, ErrorCorrectionLevel } from './types';
+import type { QRCodeOptions, QRStyle, QRLogo, QRGradient, ErrorCorrectionLevel } from './types.js';
 
 // QR code generation constants
 const EC_LEVELS: Record<ErrorCorrectionLevel, number> = {
@@ -37,7 +37,8 @@ export function generateQRCode(options: QRCodeOptions): string {
   } = style;
 
   // Generate QR code matrix
-  const matrix = generateMatrix(data, EC_LEVELS[errorCorrectionLevel]);
+  const ecLevel = EC_LEVELS[errorCorrectionLevel] ?? EC_LEVELS['M'];
+  const matrix = generateMatrix(data, ecLevel);
   const moduleCount = matrix.length;
   const moduleSize = (width - margin * 2) / moduleCount;
 
@@ -57,7 +58,7 @@ export function generateQRCode(options: QRCodeOptions): string {
   // Draw modules
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
-      if (matrix[row][col]) {
+      if (matrix[row]![col]) {
         const x = margin + col * moduleSize;
         const y = margin + row * moduleSize;
 
@@ -108,8 +109,8 @@ function generateMatrix(data: string, ecLevel: number): boolean[][] {
 
   // Add timing patterns
   for (let i = 8; i < size - 8; i++) {
-    matrix[6][i] = i % 2 === 0;
-    matrix[i][6] = i % 2 === 0;
+    matrix[6]![i] = i % 2 === 0;
+    matrix[i]![6] = i % 2 === 0;
   }
 
   // Add alignment patterns for version >= 2
@@ -135,7 +136,7 @@ function generateMatrix(data: string, ecLevel: number): boolean[][] {
         const currentCol = col - c;
         if (!isReserved(matrix, row, currentCol, size)) {
           if (bitIndex < encoded.length) {
-            matrix[row][currentCol] = encoded[bitIndex] === '1';
+            matrix[row]![currentCol] = encoded[bitIndex] === '1';
             bitIndex++;
           }
         }
@@ -166,7 +167,7 @@ function addFinderPattern(matrix: boolean[][], row: number, col: number): void {
     for (let c = 0; c < 7; c++) {
       const isOuter = r === 0 || r === 6 || c === 0 || c === 6;
       const isInner = r >= 2 && r <= 4 && c >= 2 && c <= 4;
-      matrix[row + r][col + c] = isOuter || isInner;
+      matrix[row + r]![col + c] = isOuter || isInner;
     }
   }
 }
@@ -176,7 +177,7 @@ function addAlignmentPattern(matrix: boolean[][], row: number, col: number): voi
     for (let c = -2; c <= 2; c++) {
       const isOuter = r === -2 || r === 2 || c === -2 || c === 2;
       const isCenter = r === 0 && c === 0;
-      matrix[row + r][col + c] = isOuter || isCenter;
+      matrix[row + r]![col + c] = isOuter || isCenter;
     }
   }
 }
@@ -226,7 +227,7 @@ function applyMask(matrix: boolean[][]): void {
       if (!isReserved(matrix, row, col, size)) {
         // Mask pattern 0: (row + col) % 2 === 0
         if ((row + col) % 2 === 0) {
-          matrix[row][col] = !matrix[row][col];
+          matrix[row]![col] = !matrix[row]![col];
         }
       }
     }

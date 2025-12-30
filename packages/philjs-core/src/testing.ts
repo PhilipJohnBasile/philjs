@@ -3,9 +3,9 @@
  * Makes it easy to test PhilJS components and applications
  */
 
-import { createRoot, signal, type Signal } from './signals';
-import { jsx, type VNode } from './jsx-runtime';
-import { renderToString } from './render-to-string';
+import { createRoot, signal, type Signal } from './signals.js';
+import { jsx, type VNode } from './jsx-runtime.js';
+import { renderToString } from './render-to-string.js';
 
 export interface RenderResult {
   /** The rendered HTML */
@@ -34,7 +34,7 @@ export function render(component: VNode): RenderResult {
     }
 
     let html = '';
-    dispose = createRoot(d => {
+    dispose = createRoot((d: () => void) => {
       html = renderToString(component);
       return d;
     });
@@ -58,7 +58,7 @@ export function render(component: VNode): RenderResult {
     getByTestId: (testId: string) => {
       const regex = new RegExp(`data-testid="${testId}"[^>]*>([^<]*)<`, 'i');
       const match = html.match(regex);
-      return match ? match[1] : null;
+      return match ? match[1]! : null;
     },
     queryAll: (selector: string) => {
       // Simple selector matching for testing
@@ -70,7 +70,7 @@ export function render(component: VNode): RenderResult {
         const regex = new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`, 'gi');
         let match;
         while ((match = regex.exec(html)) !== null) {
-          matches.push(match[1]);
+          matches.push(match[1]!);
         }
       }
 

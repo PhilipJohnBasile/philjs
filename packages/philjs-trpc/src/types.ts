@@ -3,8 +3,43 @@
  * Type-safe API layer types
  */
 
-import type { TRPCClientErrorLike } from '@trpc/client';
-import type { AnyRouter } from '@trpc/server';
+// Define router types inline to avoid dependency on @trpc packages
+// These are compatible with @trpc/server and @trpc/client when they are installed
+
+/**
+ * Any router type - represents a tRPC router of any shape
+ */
+export interface AnyRouter {
+  _def: {
+    procedures: Record<string, unknown>;
+    record: Record<string, unknown>;
+  };
+  createCaller: (ctx: unknown) => unknown;
+}
+
+/**
+ * tRPC client error type - compatible with @trpc/client TRPCClientErrorLike
+ */
+export interface TRPCClientErrorLike<TRouter extends AnyRouter> {
+  message: string;
+  data?: {
+    code: string;
+    httpStatus: number;
+    path?: string;
+    stack?: string;
+  };
+  shape?: {
+    message: string;
+    code: number;
+    data: {
+      code: string;
+      httpStatus: number;
+      path?: string;
+    };
+  };
+  meta?: Record<string, unknown>;
+  cause?: Error;
+}
 
 // Context types
 export interface BaseContext {

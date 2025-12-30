@@ -87,14 +87,14 @@ function createDeletableTable(mockDOM: ReturnType<typeof createMockDOM>) {
   const deleteFirst = () => {
     const current = rows();
     if (current.length > 0) {
-      deleteRow(current[0].id);
+      deleteRow(current[0]!.id);
     }
   };
 
   const deleteLast = () => {
     const current = rows();
     if (current.length > 0) {
-      deleteRow(current[current.length - 1].id);
+      deleteRow(current[current.length - 1]!.id);
     }
   };
 
@@ -102,7 +102,7 @@ function createDeletableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     const current = rows();
     if (current.length > 0) {
       const midIdx = Math.floor(current.length / 2);
-      deleteRow(current[midIdx].id);
+      deleteRow(current[midIdx]!.id);
     }
   };
 
@@ -110,7 +110,7 @@ function createDeletableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     const current = rows();
     if (current.length > 0) {
       const randomIdx = Math.floor(Math.random() * current.length);
-      deleteRow(current[randomIdx].id);
+      deleteRow(current[randomIdx]!.id);
     }
   };
 
@@ -121,7 +121,7 @@ function createDeletableTable(mockDOM: ReturnType<typeof createMockDOM>) {
       while (indices.size < Math.min(count, current.length)) {
         indices.add(Math.floor(Math.random() * current.length));
       }
-      const idsToDelete = new Set([...indices].map(i => current[i].id));
+      const idsToDelete = new Set([...indices].map(i => current[i]!.id));
       rows.set(current.filter(r => !idsToDelete.has(r.id)));
     });
   };
@@ -190,7 +190,7 @@ function createKeyedDeletableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     const current = rows();
     if (current.length > 0) {
       const randomIdx = Math.floor(Math.random() * current.length);
-      deleteRow(current[randomIdx].id);
+      deleteRow(current[randomIdx]!.id);
     }
   };
 

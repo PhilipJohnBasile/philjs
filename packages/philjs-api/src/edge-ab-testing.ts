@@ -100,7 +100,7 @@ function selectVariantByWeight(variants: Variant[]): Variant {
     }
   }
 
-  return variants[0];
+  return variants[0]!;
 }
 
 /**
@@ -129,7 +129,7 @@ export function selectVariantDeterministic(
     }
   }
 
-  return variants[0];
+  return variants[0]!;
 }
 
 // ============================================================================
@@ -240,13 +240,14 @@ export function abTestingMiddleware(options: ABTestingOptions): EdgeMiddleware {
         isNew = true;
 
         // Set cookie
-        context.cookies.set(cookieName, variantId, {
+        const cookieOptions: import('./edge-middleware.js').CookieOptions = {
           maxAge: experiment.cookieMaxAge || 30 * 24 * 60 * 60, // 30 days
           path: cookiePath,
-          domain: cookieDomain,
           secure: cookieSecure,
           sameSite: 'lax',
-        });
+        };
+        if (cookieDomain !== undefined) cookieOptions.domain = cookieDomain;
+        context.cookies.set(cookieName, variantId, cookieOptions);
       }
 
       // Find variant
@@ -555,13 +556,14 @@ export function multivariateTestingMiddleware(
         isNew = true;
         hasNewAssignment = true;
 
-        context.cookies.set(cookieName, variantId, {
+        const mvtCookieOptions: import('./edge-middleware.js').CookieOptions = {
           maxAge: experiment.cookieMaxAge || 30 * 24 * 60 * 60,
           path: cookiePath,
-          domain: cookieDomain,
           secure: cookieSecure,
           sameSite: 'lax',
-        });
+        };
+        if (cookieDomain !== undefined) mvtCookieOptions.domain = cookieDomain;
+        context.cookies.set(cookieName, variantId, mvtCookieOptions);
       }
 
       const variant = factor.variants.find((v) => v.id === variantId);

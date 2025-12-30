@@ -39,7 +39,7 @@ export function composeMiddleware(...middlewares: Middleware[]): Middleware {
       }
 
       const middleware = middlewares[index++];
-      return middleware(context, dispatch);
+      return middleware!(context, dispatch);
     };
 
     return dispatch();
@@ -136,18 +136,21 @@ export function geolocationMiddleware(
         };
       } else if (context.request.headers.has('x-vercel-ip-country')) {
         // Vercel Edge
+        const country = context.request.headers.get('x-vercel-ip-country') || undefined;
+        const region = context.request.headers.get('x-vercel-ip-country-region') || undefined;
+        const city = context.request.headers.get('x-vercel-ip-city') || undefined;
         geo = {
-          country: context.request.headers.get('x-vercel-ip-country') || undefined,
-          region: context.request.headers.get('x-vercel-ip-country-region') || undefined,
-          city: context.request.headers.get('x-vercel-ip-city') || undefined,
           latitude: parseFloat(context.request.headers.get('x-vercel-ip-latitude') || ''),
           longitude: parseFloat(context.request.headers.get('x-vercel-ip-longitude') || ''),
         };
+        if (country !== undefined) geo.country = country;
+        if (region !== undefined) geo.region = region;
+        if (city !== undefined) geo.city = city;
       } else if (context.request.headers.has('cf-ipcountry')) {
         // Generic Cloudflare proxy
-        geo = {
-          country: context.request.headers.get('cf-ipcountry') || undefined,
-        };
+        const country = context.request.headers.get('cf-ipcountry') || undefined;
+        geo = {};
+        if (country !== undefined) geo.country = country;
       }
     }
 
@@ -284,7 +287,7 @@ function selectVariantByWeight(variants: ABTestVariant[]): string {
     }
   }
 
-  return variants[0].name;
+  return variants[0]?.name ?? '';
 }
 
 // ============================================================================
@@ -394,7 +397,7 @@ export function rateLimitMiddleware(options: RateLimitOptions): Middleware {
 
 function defaultKeyGenerator(context: APIContext): string {
   return (
-    context.request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    context.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     context.request.headers.get('x-real-ip') ||
     'anonymous'
   );

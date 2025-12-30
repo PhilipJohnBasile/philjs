@@ -80,7 +80,6 @@ export class Island extends HTMLElement {
       name: this.name,
       element: this,
       get state() { return state; },
-      get component() { return component; },
       props,
 
       async hydrate(): Promise<void> {
@@ -208,17 +207,17 @@ export class Island extends HTMLElement {
   private _setupIdleTrigger(): void {
     const timeout = parseInt(this.getAttribute('timeout') || '2000', 10);
 
-    if ('requestIdleCallback' in window) {
+    if (typeof requestIdleCallback === 'function') {
       this._idleCallback = requestIdleCallback(
         () => this._instance?.hydrate(),
         { timeout }
       );
     } else {
       // Fallback to setTimeout
-      this._idleCallback = window.setTimeout(
+      this._idleCallback = setTimeout(
         () => this._instance?.hydrate(),
         timeout
-      );
+      ) as unknown as number;
     }
   }
 

@@ -223,10 +223,16 @@ ${style.darkMode ? 'Include dark mode support.' : ''}`,
 
     const extractedCode = extractCode(response);
 
-    return {
+    const result: { code: string; styles?: string } = {
       code: extractedCode || code,
-      styles: style.approach === 'css-modules' ? this.extractCSSFromResponse(response) : undefined,
     };
+    if (style.approach === 'css-modules') {
+      const extractedStyles = this.extractCSSFromResponse(response);
+      if (extractedStyles !== undefined) {
+        result.styles = extractedStyles;
+      }
+    }
+    return result;
   }
 
   /**
@@ -410,16 +416,21 @@ Always:
     const imports = this.extractImportsFromCode(code);
     const propsInterface = this.extractPropsInterface(code);
 
-    return {
+    const result: GeneratedComponent = {
       code,
       name: config.name,
-      propsInterface,
       explanation: this.extractExplanation(response),
-      accessibilityNotes: config.accessibility ? this.extractAccessibilityNotes(response) : undefined,
       examples: this.extractExamples(response),
       imports,
       dependencies: this.inferDependencies(code),
     };
+    if (propsInterface !== undefined) {
+      result.propsInterface = propsInterface;
+    }
+    if (config.accessibility) {
+      result.accessibilityNotes = this.extractAccessibilityNotes(response);
+    }
+    return result;
   }
 
   /**
@@ -431,7 +442,7 @@ Always:
     let match;
 
     while ((match = importRegex.exec(code)) !== null) {
-      imports.push(match[1]);
+      imports.push(match[1]!);
     }
 
     return imports;
@@ -452,11 +463,11 @@ Always:
     // Look for explanation sections
     const explanationMatch = response.match(/(?:explanation|description):\s*([^\n]+(?:\n(?![#`])[^\n]*)*)/i);
     if (explanationMatch) {
-      return explanationMatch[1].trim();
+      return explanationMatch[1]!.trim();
     }
 
     // Extract text before code blocks as explanation
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]!.trim();
     return beforeCode || 'Component generated successfully';
   }
 
@@ -468,7 +479,7 @@ Always:
     const a11yMatch = response.match(/accessibility[:\s]*\n?([\s\S]*?)(?=\n\n|```|$)/i);
 
     if (a11yMatch) {
-      const lines = a11yMatch[1].split('\n');
+      const lines = a11yMatch[1]!.split('\n');
       for (const line of lines) {
         const cleaned = line.replace(/^[-*]\s*/, '').trim();
         if (cleaned) {
@@ -488,7 +499,7 @@ Always:
     const exampleMatch = response.match(/(?:example|usage)[s]?[:\s]*\n?([\s\S]*?)(?=\n\n(?![^\n]*```)|$)/i);
 
     if (exampleMatch) {
-      const codeBlocks = exampleMatch[1].match(/```[\s\S]*?```/g);
+      const codeBlocks = exampleMatch[1]!.match(/```[\s\S]*?```/g);
       if (codeBlocks) {
         examples.push(...codeBlocks.map(b => b.replace(/```\w*\n?/g, '').trim()));
       }
@@ -524,7 +535,7 @@ Always:
    */
   private extractCSSFromResponse(response: string): string | undefined {
     const cssMatch = response.match(/```css\n([\s\S]*?)```/);
-    return cssMatch?.[1].trim();
+    return cssMatch?.[1]?.trim();
   }
 }
 

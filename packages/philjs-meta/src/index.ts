@@ -26,7 +26,7 @@ export {
   type RouteMetadata,
   type RouteSegment,
   type RouteSegmentType,
-} from './router/file-based';
+} from './router/file-based.js';
 
 export {
   createLayoutTree,
@@ -48,7 +48,7 @@ export {
   type LoadingConfig,
   type ParallelRouteSlot,
   type InterceptedRoute,
-} from './router/layouts';
+} from './router/layouts.js';
 
 // ==========================================
 // Data Loading
@@ -84,7 +84,7 @@ export {
   type CookieStore,
   type CookieOptions,
   type FormActionHandler,
-} from './data/loaders';
+} from './data/loaders.js';
 
 // ==========================================
 // Caching
@@ -106,7 +106,7 @@ export {
   type SWRConfig,
   type SWRState,
   type ISRConfig,
-} from './data/cache';
+} from './data/cache.js';
 
 // ==========================================
 // Server & Middleware
@@ -136,7 +136,7 @@ export {
   type LoggerOptions,
   type CompressionOptions,
   type BodyParserOptions,
-} from './server/middleware';
+} from './server/middleware.js';
 
 // ==========================================
 // API Routes
@@ -159,7 +159,7 @@ export {
   type SSEStream,
   type SSEEvent,
   type ExtractParams,
-} from './server/api-routes';
+} from './server/api-routes.js';
 
 // ==========================================
 // Build System
@@ -179,7 +179,7 @@ export {
   type RouteBundle,
   type StaticPageInfo,
   type StaticExportOptions,
-} from './build/compiler';
+} from './build/compiler.js';
 
 // ==========================================
 // Configuration
@@ -203,7 +203,7 @@ export {
   type ExperimentalConfig,
   type BundlerConfig,
   type LoadConfigOptions,
-} from './config';
+} from './config/index.js';
 
 // ==========================================
 // CLI (for programmatic access)
@@ -219,12 +219,12 @@ export {
   type BuildCLIOptions,
   type StartServerOptions,
   type GenerateOptions,
-} from './cli';
+} from './cli/index.js';
 
 // ==========================================
 // SEO (Legacy exports - moved to seo submodule)
 // ==========================================
-export { HeadProvider, Head, Meta, Link, Title, useHead } from './Head';
+export { HeadProvider, Head, Meta, Link, Title, useHead } from './Head.js';
 
 export {
   SEO,
@@ -236,7 +236,7 @@ export {
   AlternateLanguages,
   Preconnect,
   DNSPrefetch,
-} from './seo';
+} from './seo.js';
 
 export {
   generateSitemap,
@@ -245,7 +245,7 @@ export {
   createSitemapEntry,
   splitSitemap,
   generateSitemapFromRoutes,
-} from './sitemap';
+} from './sitemap.js';
 
 export type {
   MetaTag,
@@ -257,4 +257,4 @@ export type {
   JSONLDConfig,
   SitemapEntry,
   RobotsConfig,
-} from './types';
+} from './types.js';

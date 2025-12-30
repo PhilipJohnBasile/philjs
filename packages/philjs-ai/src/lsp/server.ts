@@ -504,7 +504,7 @@ export function startStdioServer(
       // Parse content length
       const header = buffer.slice(0, headerEnd);
       const contentLengthMatch = header.match(/Content-Length: (\d+)/i);
-      if (!contentLengthMatch) {
+      if (!contentLengthMatch || contentLengthMatch[1] === undefined) {
         buffer = buffer.slice(headerEnd + 4);
         continue;
       }

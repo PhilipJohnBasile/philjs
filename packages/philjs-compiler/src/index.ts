@@ -5,10 +5,10 @@
  * Exports all public APIs for use in build tools.
  */
 
-import { Optimizer } from './optimizer';
-import { Analyzer } from './analyzer';
-import { DeadCodeEliminator } from './dead-code-eliminator';
-import { CodeSplitter } from './code-splitter';
+import { Optimizer } from './optimizer.js';
+import { Analyzer } from './analyzer.js';
+import { DeadCodeEliminator } from './dead-code-eliminator.js';
+import { CodeSplitter } from './code-splitter.js';
 import type {
   CompilerConfig,
   TransformResult,
@@ -17,9 +17,9 @@ import type {
   ReactiveBinding,
   CompilerPlugin,
   OptimizationOpportunity
-} from './types';
-import type { DeadCodeReport } from './dead-code-eliminator';
-import type { CodeSplitReport, CodeSplitBoundary } from './code-splitter';
+} from './types.js';
+import type { DeadCodeReport } from './dead-code-eliminator.js';
+import type { CodeSplitReport, CodeSplitBoundary } from './code-splitter.js';
 
 // Re-export types
 export type {
@@ -40,13 +40,13 @@ export type {
   BundleMetrics,
   DependencyGraph,
   ChunkCandidate,
-} from './analyzer';
+} from './analyzer.js';
 
 // Re-export main classes
 export { Optimizer, Analyzer, DeadCodeEliminator, CodeSplitter };
 
 // Re-export presets
-export * from './presets';
+export * from './presets/index.js';
 
 /**
  * Creates a new PhilJS compiler instance with the given configuration
@@ -173,13 +173,22 @@ export const defaultConfig: CompilerConfig = {
  * ```
  */
 export function getDefaultConfig(overrides: Partial<CompilerConfig> = {}): CompilerConfig {
-  return {
+  const result: CompilerConfig = {
     ...defaultConfig,
     ...overrides,
-    include: overrides.include || defaultConfig.include,
-    exclude: overrides.exclude || defaultConfig.exclude,
     plugins: [...(defaultConfig.plugins || []), ...(overrides.plugins || [])]
   };
+  if (overrides.include !== undefined) {
+    result.include = overrides.include;
+  } else if (defaultConfig.include !== undefined) {
+    result.include = defaultConfig.include;
+  }
+  if (overrides.exclude !== undefined) {
+    result.exclude = overrides.exclude;
+  } else if (defaultConfig.exclude !== undefined) {
+    result.exclude = defaultConfig.exclude;
+  }
+  return result;
 }
 
 /**
@@ -230,7 +239,7 @@ export function validateConfig(config: CompilerConfig): string[] {
   // Validate plugins
   if (config.plugins) {
     for (let i = 0; i < config.plugins.length; i++) {
-      const plugin = config.plugins[i];
+      const plugin = config.plugins[i]!;
       if (!plugin.name) {
         errors.push(`Plugin at index ${i} is missing required 'name' field`);
       }
@@ -256,7 +265,7 @@ export {
   setupHMRClient,
   getHMRClientStats,
   resetHMRClientStats,
-} from './hmr-client';
+} from './hmr-client.js';
 
 export {
   showHMRErrorOverlay,
@@ -264,4 +273,4 @@ export {
   getHMRErrorHistory,
   clearHMRErrorHistory,
   type HMRErrorType,
-} from './hmr-overlay';
+} from './hmr-overlay.js';

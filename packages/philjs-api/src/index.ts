@@ -18,7 +18,7 @@ export {
   unauthorized,
   forbidden,
   serverError,
-} from './server';
+} from './server.js';
 
 export type {
   APIHandler,
@@ -26,7 +26,7 @@ export type {
   APIRequest,
   APIResponse,
   RouteHandler,
-} from './server';
+} from './server.js';
 
 // Cookie utilities
 export {
@@ -37,9 +37,9 @@ export {
   serializeCookie,
   createSignedCookie,
   verifySignedCookie,
-} from './cookies';
+} from './cookies.js';
 
-export type { CookieOptions, CookieSerializeOptions } from './cookies';
+export type { CookieOptions, CookieSerializeOptions } from './cookies.js';
 
 // Session management
 export {
@@ -49,14 +49,14 @@ export {
   destroySession,
   createCookieSessionStorage,
   createMemorySessionStorage,
-} from './session';
+} from './session.js';
 
 export type {
   Session,
   SessionStorage,
   SessionData,
   SessionOptions,
-} from './session';
+} from './session.js';
 
 // Client utilities
 export {
@@ -64,16 +64,16 @@ export {
   createAPIClient,
   useFetch,
   useMutation,
-} from './client';
+} from './client.js';
 
-export type { APIClientOptions, FetchOptions } from './client';
+export type { APIClientOptions, FetchOptions } from './client.js';
 
 // Environment variables
-export { getEnv, getPublicEnv, requireEnv } from './env';
+export { getEnv, getPublicEnv, requireEnv } from './env.js';
 
 // Validation
-export { validate, createValidator, ValidationError } from './validation';
-export type { ValidationSchema, ValidationResult } from './validation';
+export { validate, createValidator, ValidationError } from './validation.js';
+export type { ValidationSchema, ValidationResult } from './validation.js';
 
 // Middleware
 export {
@@ -86,7 +86,7 @@ export {
   securityHeadersMiddleware,
   requestIDMiddleware,
   compressionMiddleware,
-} from './middleware';
+} from './middleware.js';
 
 export type {
   Middleware,
@@ -101,7 +101,7 @@ export type {
   SecurityHeadersOptions,
   RequestIDOptions,
   CompressionOptions,
-} from './middleware';
+} from './middleware.js';
 
 // Flash Messages
 export {
@@ -119,7 +119,7 @@ export {
   serializeFlashMessages,
   deserializeFlashMessages,
   flashMiddleware,
-} from './flash';
+} from './flash.js';
 
 export type {
   FlashCategory,
@@ -127,19 +127,19 @@ export type {
   FlashSessionData,
   ToastOptions,
   FlashMessageWithToast,
-} from './flash';
+} from './flash.js';
 
 // Enhanced Cookie Sessions
 export {
   createCookieSessionStorage as createEnhancedCookieSessionStorage,
   csrfMiddleware,
   sessionRotationMiddleware,
-} from './cookie-session';
+} from './cookie-session.js';
 
 export type {
   CookieSessionOptions,
   CookieSessionStorage,
-} from './cookie-session';
+} from './cookie-session.js';
 
 // Session Utilities
 export {
@@ -157,13 +157,13 @@ export {
   sessionTimeoutMiddleware,
   sessionValidatorMiddleware,
   regenerateSession,
-} from './session-utils';
+} from './session-utils.js';
 
 export type {
   SessionMiddlewareOptions,
   RequestWithSession,
   TypedSession,
-} from './session-utils';
+} from './session-utils.js';
 
 // Edge Middleware
 export {
@@ -176,7 +176,7 @@ export {
   removeHeadersMiddleware,
   securityHeadersMiddleware as edgeSecurityHeadersMiddleware,
   matchesPattern,
-} from './edge-middleware';
+} from './edge-middleware.js';
 
 export type {
   EdgeMiddleware,
@@ -184,7 +184,7 @@ export type {
   EdgeRequest,
   EdgeMiddlewareConfig,
   CookieStore,
-} from './edge-middleware';
+} from './edge-middleware.js';
 
 // Geolocation
 export {
@@ -206,14 +206,14 @@ export {
   useGeolocation,
   injectGeolocationData,
   DEFAULT_LANGUAGE_MAP,
-} from './geolocation';
+} from './geolocation.js';
 
 export type {
   GeoLocationProvider,
   GeoRedirectRule,
   GeoLanguageMapping,
   GeolocationOptions,
-} from './geolocation';
+} from './geolocation.js';
 
 // Edge A/B Testing
 export {
@@ -230,7 +230,7 @@ export {
   useVariant,
   isVariant,
   getActiveExperiments,
-} from './edge-ab-testing';
+} from './edge-ab-testing.js';
 
 export type {
   Variant,
@@ -241,7 +241,7 @@ export type {
   MultivariateExperiment,
   AnalyticsProvider,
   VariantStats,
-} from './edge-ab-testing';
+} from './edge-ab-testing.js';
 
 // Edge Cache
 export {
@@ -259,7 +259,7 @@ export {
   staticAssetCache,
   apiCache,
   pageCache,
-} from './edge-cache';
+} from './edge-cache.js';
 
 export type {
   CacheOptions,
@@ -267,7 +267,7 @@ export type {
   CacheEntry,
   CacheStore,
   CloudflareCacheOptions,
-} from './edge-cache';
+} from './edge-cache.js';
 
 // Server Actions (React 19 / Next.js 14 style)
 export {
@@ -313,7 +313,7 @@ export {
 
   // Errors
   ServerActionError,
-} from './server-actions';
+} from './server-actions.js';
 
 export type {
   ServerAction,
@@ -329,4 +329,4 @@ export type {
   SerializableValue,
   ServerActionReturnType,
   ServerActionInputType,
-} from './server-actions';
+} from './server-actions.js';

@@ -465,13 +465,16 @@ export class IntentResolver {
             }
           }
 
-          return {
+          const result: ResolvedIntent = {
             intent,
             implementation,
             explanation: `Matched template: ${template.name}`,
-            confidence: 0.85,
-            warnings: warnings.length > 0 ? warnings : undefined
+            confidence: 0.85
           };
+          if (warnings.length > 0) {
+            result.warnings = warnings;
+          }
+          return result;
         } catch (error) {
           continue; // Try next template
         }
@@ -571,7 +574,7 @@ export class IntentResolver {
   private extractCode(response: string): string {
     const codeMatch = response.match(/```(?:typescript|tsx|jsx|javascript)?\n([\s\S]*?)```/);
     if (codeMatch) {
-      return codeMatch[1].trim();
+      return codeMatch[1]!.trim();
     }
     return response.trim();
   }
@@ -620,19 +623,25 @@ class IntentBuilder {
 
   must(constraint: string, validate?: (result: unknown) => boolean): IntentBuilder {
     this._intent.constraints = this._intent.constraints || [];
-    this._intent.constraints.push({ type: 'must', description: constraint, validate });
+    const c: Constraint = { type: 'must', description: constraint };
+    if (validate) c.validate = validate;
+    this._intent.constraints.push(c);
     return this;
   }
 
   should(constraint: string, validate?: (result: unknown) => boolean): IntentBuilder {
     this._intent.constraints = this._intent.constraints || [];
-    this._intent.constraints.push({ type: 'should', description: constraint, validate });
+    const c: Constraint = { type: 'should', description: constraint };
+    if (validate) c.validate = validate;
+    this._intent.constraints.push(c);
     return this;
   }
 
   mustNot(constraint: string, validate?: (result: unknown) => boolean): IntentBuilder {
     this._intent.constraints = this._intent.constraints || [];
-    this._intent.constraints.push({ type: 'must-not', description: constraint, validate });
+    const c: Constraint = { type: 'must-not', description: constraint };
+    if (validate) c.validate = validate;
+    this._intent.constraints.push(c);
     return this;
   }
 
@@ -694,8 +703,4 @@ export function useIntent(description: string): {
 // Exports
 // ============================================================================
 
-export {
-  IntentResolver,
-  IntentBuilder,
-  builtInTemplates
-};
+export { builtInTemplates };

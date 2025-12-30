@@ -29,7 +29,7 @@
 // Types
 // ============================================================================
 
-export interface VirtualizerOptions<TScrollElement extends Element = Element> {
+export interface VirtualizerOptions<TScrollElement extends Element | Window = Element> {
   /** Total number of items */
   count: number;
   /** Function to get the scroll container element */
@@ -75,7 +75,7 @@ export interface VirtualItem {
   lane: number;
 }
 
-export interface Virtualizer<TScrollElement extends Element = Element> {
+export interface Virtualizer<TScrollElement extends Element | Window = Element> {
   /** Get visible virtual items */
   getVirtualItems: () => VirtualItem[];
   /** Get all virtual items (including overscan) */
@@ -166,7 +166,7 @@ export interface VirtualGridProps<T> {
 /**
  * Create a virtualizer instance for imperative control
  */
-export function createVirtualizer<TScrollElement extends Element = Element>(
+export function createVirtualizer<TScrollElement extends Element | Window = Element>(
   options: VirtualizerOptions<TScrollElement>
 ): Virtualizer<TScrollElement> {
   const {
@@ -215,7 +215,7 @@ export function createVirtualizer<TScrollElement extends Element = Element>(
     const element = getScrollElement();
     if (!element) return { start: 0, end: 0 };
 
-    const scrollSize = horizontal ? element.clientWidth : element.clientHeight;
+    const scrollSize = horizontal ? (element as any).clientWidth : (element as any).clientHeight;
     let start = 0;
     let end = 0;
     let offset = paddingStart;
@@ -283,7 +283,7 @@ export function createVirtualizer<TScrollElement extends Element = Element>(
 
     const itemOffset = getItemOffset(index);
     const itemSize = getItemSize(index);
-    const scrollSize = horizontal ? element.clientWidth : element.clientHeight;
+    const scrollSize = horizontal ? (element as any).clientWidth : (element as any).clientHeight;
 
     let targetOffset: number;
     switch (align) {
@@ -344,7 +344,7 @@ export function createVirtualizer<TScrollElement extends Element = Element>(
     if (!element || scrollListener) return;
 
     scrollListener = () => {
-      const newOffset = horizontal ? element.scrollLeft : element.scrollTop;
+      const newOffset = horizontal ? (element as any).scrollLeft : (element as any).scrollTop;
       if (newOffset !== scrollOffset) {
         scrollOffset = newOffset;
         onChange?.(virtualizer);
@@ -653,7 +653,7 @@ export function createSmoothScroller(options: {
 /**
  * Hook-style API for frameworks that support hooks
  */
-export function useVirtualizer<TScrollElement extends Element = Element>(
+export function useVirtualizer<TScrollElement extends Element | Window = Element>(
   options: VirtualizerOptions<TScrollElement>
 ): Virtualizer<TScrollElement> {
   // In actual implementation, this would integrate with PhilJS signals
@@ -678,5 +678,3 @@ export function useWindowVirtualizer(options: {
 export const DEFAULT_OVERSCAN = 3;
 export const DEFAULT_SCROLL_DEBOUNCE = 16; // ~60fps
 
-// Export type helpers
-export type { VirtualizerOptions, VirtualItem, VirtualListProps, VirtualGridProps };

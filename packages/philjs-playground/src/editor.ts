@@ -2,7 +2,7 @@
  * PhilJS Playground Editor
  */
 
-import type { EditorConfig } from './types';
+import type { EditorConfig } from './types.js';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';

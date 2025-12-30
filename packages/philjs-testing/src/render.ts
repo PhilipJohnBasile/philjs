@@ -2,8 +2,8 @@
  * PhilJS Testing - Render Utilities
  */
 
-import { queries } from './queries';
-import { debug } from './debug';
+import { queries } from './queries.js';
+import { debug } from './debug.js';
 
 export interface RenderOptions {
   container?: HTMLElement;
@@ -227,6 +227,7 @@ function bindQueries(container: HTMLElement) {
 }
 
 // Auto-cleanup after each test if vitest/jest is detected
+declare const afterEach: ((fn: () => void) => void) | undefined;
 if (typeof afterEach !== 'undefined') {
   afterEach(() => {
     cleanup();

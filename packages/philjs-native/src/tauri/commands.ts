@@ -293,8 +293,8 @@ export class CommandBuilder<T = unknown> {
   ): CommandBuilder<R> {
     this.commands.push({
       name,
-      args: typeof args === 'function' ? {} : args, // Will be resolved at execution
-      transform,
+      ...(typeof args === 'function' ? { args: {} } : args !== undefined ? { args } : {}),
+      ...(transform !== undefined ? { transform } : {}),
     });
     return this as unknown as CommandBuilder<R>;
   }
@@ -312,8 +312,8 @@ export class CommandBuilder<T = unknown> {
       // Condition will be evaluated at execution
       this.commands.push({
         name: `__conditional__${name}`,
-        args: { condition, actualArgs: args },
-        transform,
+        args: { condition, ...(args !== undefined ? { actualArgs: args } : {}) },
+        ...(transform !== undefined ? { transform } : {}),
       });
     } else if (condition) {
       this.add(name, args, transform);

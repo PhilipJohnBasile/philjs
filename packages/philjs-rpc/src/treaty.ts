@@ -159,8 +159,8 @@ export interface TreatyRequestConfig {
  */
 export class TreatyError extends Error {
   public readonly code: string;
-  public readonly status?: number;
-  public readonly response?: unknown;
+  public readonly status: number | undefined;
+  public readonly response: unknown | undefined;
   public readonly config: TreatyRequestConfig;
 
   constructor(opts: {
@@ -173,8 +173,8 @@ export class TreatyError extends Error {
     super(opts.message);
     this.name = 'TreatyError';
     this.code = opts.code;
-    this.status = opts.status;
-    this.response = opts.response;
+    this.status = opts.status ?? undefined;
+    this.response = opts.response ?? undefined;
     this.config = opts.config;
   }
 }
@@ -421,8 +421,8 @@ async function makeRequest<T>(
         'Content-Type': 'application/json',
         ...finalConfig.headers,
       },
-      body: finalConfig.body ? JSON.stringify(finalConfig.body) : undefined,
-      signal: finalConfig.signal,
+      body: finalConfig.body ? JSON.stringify(finalConfig.body) : null,
+      ...(finalConfig.signal && { signal: finalConfig.signal }),
     });
 
     if (!response.ok) {
@@ -551,11 +551,20 @@ export function treaty<TApi extends APIDefinition>(
         url: `${globalConfig.baseUrl}/${path}`,
         method: method.toUpperCase(),
         headers: mergedOptions.headers ?? {},
-        body: input,
-        signal: mergedOptions.signal,
-        timeout: mergedOptions.timeout,
-        fetch: mergedOptions.fetch,
       };
+
+      if (input !== undefined) {
+        requestConfig.body = input;
+      }
+      if (mergedOptions.signal !== undefined) {
+        requestConfig.signal = mergedOptions.signal;
+      }
+      if (mergedOptions.timeout !== undefined) {
+        requestConfig.timeout = mergedOptions.timeout;
+      }
+      if (mergedOptions.fetch !== undefined) {
+        requestConfig.fetch = mergedOptions.fetch;
+      }
 
       const executeRequest = async () => {
         return createTimeoutRequest(
@@ -741,11 +750,20 @@ export function createTreatyClient<TApi extends APIDefinition>(config: TreatyCon
           url: `${config.baseUrl}/${path}`,
           method: options?.method ?? 'GET',
           headers: options?.headers ?? {},
-          body: options?.body,
-          signal: options?.signal,
-          timeout: options?.timeout,
-          fetch: options?.fetch,
         };
+
+        if (options?.body !== undefined) {
+          requestConfig.body = options.body;
+        }
+        if (options?.signal !== undefined) {
+          requestConfig.signal = options.signal;
+        }
+        if (options?.timeout !== undefined) {
+          requestConfig.timeout = options.timeout;
+        }
+        if (options?.fetch !== undefined) {
+          requestConfig.fetch = options.fetch;
+        }
 
         return makeRequest<TResponse>(requestConfig, config);
       },

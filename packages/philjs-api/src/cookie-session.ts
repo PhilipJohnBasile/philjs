@@ -5,8 +5,8 @@
  */
 
 import { createHmac, randomBytes, createCipheriv, createDecipheriv } from 'crypto';
-import type { SessionData, Session, SessionStorage } from './session';
-import { serializeCookie, parseCookies } from './cookies';
+import type { SessionData, Session, SessionStorage } from './session.js';
+import { serializeCookie, parseCookies } from './cookies.js';
 
 /**
  * Cookie session options
@@ -271,8 +271,10 @@ export function createCookieSessionStorage<T extends SessionData = SessionData>(
         data: session.data,
         createdAt: Date.now(),
         rotatedAt: Date.now(),
-        csrfToken: csrf ? generateCSRFToken() : undefined,
       };
+      if (csrf) {
+        sessionData.csrfToken = generateCSRFToken();
+      }
 
       // Rotate if needed
       if (needsRotation(sessionData)) {
@@ -281,14 +283,20 @@ export function createCookieSessionStorage<T extends SessionData = SessionData>(
 
       const serialized = serialize(sessionData);
 
-      return serializeCookie(name, serialized, {
+      const cookieOpts: Parameters<typeof serializeCookie>[2] = {
         path,
-        domain,
         secure,
         httpOnly,
         sameSite,
-        maxAge,
-      });
+      };
+      if (domain !== undefined) {
+        cookieOpts.domain = domain;
+      }
+      if (maxAge !== undefined) {
+        cookieOpts.maxAge = maxAge;
+      }
+
+      return serializeCookie(name, serialized, cookieOpts);
     },
 
     async destroySession(): Promise<string> {

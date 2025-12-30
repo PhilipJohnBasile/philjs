@@ -70,7 +70,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'signal',
     title: 'Signal Read During Update',
     message: (ctx) =>
-      `Cannot read signal '${ctx?.signalName || 'unknown'}' during its own update. This creates an infinite loop.`,
+      `Cannot read signal '${ctx?.['signalName'] || 'unknown'}' during its own update. This creates an infinite loop.`,
     suggestions: [
       {
         description: 'Use signal.peek() to read the current value without tracking dependencies',
@@ -100,7 +100,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'signal',
     title: 'Circular Signal Dependency',
     message: (ctx) =>
-      `Circular dependency detected in signal graph: ${ctx?.cycle?.join(' -> ') || 'unknown cycle'}`,
+      `Circular dependency detected in signal graph: ${ctx?.['cycle']?.join(' -> ') || 'unknown cycle'}`,
     suggestions: [
       {
         description: 'Break the circular dependency by using untrack() for one of the reads',
@@ -126,7 +126,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'signal',
     title: 'Signal Updated Outside Batch',
     message: (ctx) =>
-      `${ctx?.count || 'Multiple'} signals updated consecutively without batching. This may cause unnecessary re-renders.`,
+      `${ctx?.['count'] || 'Multiple'} signals updated consecutively without batching. This may cause unnecessary re-renders.`,
     suggestions: [
       {
         description: 'Wrap multiple signal updates in batch() to prevent unnecessary re-computations',
@@ -147,7 +147,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'signal',
     title: 'Effect Missing Cleanup',
     message: (ctx) =>
-      `Effect at ${ctx?.location || 'unknown location'} does not return a cleanup function. This may cause memory leaks.`,
+      `Effect at ${ctx?.['location'] || 'unknown location'} does not return a cleanup function. This may cause memory leaks.`,
     suggestions: [
       {
         description: 'Return a cleanup function from your effect to prevent memory leaks',
@@ -176,7 +176,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'signal',
     title: 'Memo Returning Undefined',
     message: (ctx) =>
-      `Memo computation at ${ctx?.location || 'unknown location'} returns undefined. Ensure your memo function returns a value.`,
+      `Memo computation at ${ctx?.['location'] || 'unknown location'} returns undefined. Ensure your memo function returns a value.`,
     suggestions: [
       {
         description: 'Make sure your memo function explicitly returns a value',
@@ -201,7 +201,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'hydration',
     title: 'Hydration Mismatch',
     message: (ctx) =>
-      `Hydration mismatch detected at ${ctx?.path || 'unknown'}. Server HTML does not match client render.`,
+      `Hydration mismatch detected at ${ctx?.['path'] || 'unknown'}. Server HTML does not match client render.`,
     suggestions: [
       {
         description: 'Ensure the initial state matches between server and client',
@@ -234,7 +234,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'ssr',
     title: 'Browser API Called During SSR',
     message: (ctx) =>
-      `Browser API '${ctx?.api || 'unknown'}' called during server-side rendering. This API is not available on the server.`,
+      `Browser API '${ctx?.['api'] || 'unknown'}' called during server-side rendering. This API is not available on the server.`,
     suggestions: [
       {
         description: 'Guard browser API usage with environment checks',
@@ -263,7 +263,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'ssr',
     title: 'Missing SSR Data',
     message: (ctx) =>
-      `Required data for SSR not available. Expected '${ctx?.dataKey || 'data'}' to be present.`,
+      `Required data for SSR not available. Expected '${ctx?.['dataKey'] || 'data'}' to be present.`,
     suggestions: [
       {
         description: 'Ensure data is fetched before rendering on the server',
@@ -287,7 +287,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'router',
     title: 'Invalid Route Pattern',
     message: (ctx) =>
-      `Invalid route pattern: '${ctx?.pattern || 'unknown'}'. ${ctx?.reason || 'Check syntax'}.`,
+      `Invalid route pattern: '${ctx?.['pattern'] || 'unknown'}'. ${ctx?.['reason'] || 'Check syntax'}.`,
     suggestions: [
       {
         description: 'Use valid route pattern syntax',
@@ -316,7 +316,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'router',
     title: 'Missing Route Parameter',
     message: (ctx) =>
-      `Route parameter '${ctx?.paramName || 'unknown'}' is required but not provided in navigation.`,
+      `Route parameter '${ctx?.['paramName'] || 'unknown'}' is required but not provided in navigation.`,
     suggestions: [
       {
         description: 'Provide all required route parameters when navigating',
@@ -344,7 +344,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'router',
     title: 'Route Not Found',
     message: (ctx) =>
-      `No route matches path '${ctx?.path || 'unknown'}'. Did you forget to add a catch-all route?`,
+      `No route matches path '${ctx?.['path'] || 'unknown'}'. Did you forget to add a catch-all route?`,
     suggestions: [
       {
         description: 'Add a catch-all route to handle unmatched paths',
@@ -368,7 +368,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'compiler',
     title: 'Invalid JSX Syntax',
     message: (ctx) =>
-      `Invalid JSX syntax at ${ctx?.location || 'unknown location'}: ${ctx?.details || 'syntax error'}`,
+      `Invalid JSX syntax at ${ctx?.['location'] || 'unknown location'}: ${ctx?.['details'] || 'syntax error'}`,
     suggestions: [
       {
         description: 'Ensure all JSX tags are properly closed',
@@ -396,7 +396,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'compiler',
     title: 'Unsupported Feature',
     message: (ctx) =>
-      `Unsupported feature: ${ctx?.feature || 'unknown'}. ${ctx?.reason || 'This feature is not yet supported by PhilJS'}.`,
+      `Unsupported feature: ${ctx?.['feature'] || 'unknown'}. ${ctx?.['reason'] || 'This feature is not yet supported by PhilJS'}.`,
     suggestions: [
       {
         description: 'Use an alternative supported pattern',
@@ -413,7 +413,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'compiler',
     title: 'Optimization Warning',
     message: (ctx) =>
-      `Potential optimization issue detected: ${ctx?.issue || 'unknown'}`,
+      `Potential optimization issue detected: ${ctx?.['issue'] || 'unknown'}`,
     suggestions: [
       {
         description: 'Consider the suggested optimization for better performance',
@@ -433,7 +433,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'component',
     title: 'Component Render Error',
     message: (ctx) =>
-      `Error rendering component '${ctx?.componentName || 'Unknown'}': ${ctx?.error || 'unknown error'}`,
+      `Error rendering component '${ctx?.['componentName'] || 'Unknown'}': ${ctx?.['error'] || 'unknown error'}`,
     suggestions: [
       {
         description: 'Check component props and ensure all required props are provided',
@@ -457,7 +457,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'component',
     title: 'Invalid Props',
     message: (ctx) =>
-      `Invalid props passed to component '${ctx?.componentName || 'Unknown'}': ${ctx?.invalidProps?.join(', ') || 'unknown'}`,
+      `Invalid props passed to component '${ctx?.['componentName'] || 'Unknown'}': ${ctx?.['invalidProps']?.join(', ') || 'unknown'}`,
     suggestions: [
       {
         description: 'Check the component\'s prop types and ensure you\'re passing the correct values',
@@ -482,7 +482,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'runtime',
     title: 'Null Reference Error',
     message: (ctx) =>
-      `Cannot read property '${ctx?.property || 'unknown'}' of ${ctx?.valueType || 'null/undefined'}`,
+      `Cannot read property '${ctx?.['property'] || 'unknown'}' of ${ctx?.['valueType'] || 'null/undefined'}`,
     suggestions: [
       {
         description: 'Use optional chaining to safely access properties',
@@ -511,7 +511,7 @@ export const ERROR_CATALOG: Record<string, ErrorDefinition> = {
     category: 'runtime',
     title: 'Async Operation Error',
     message: (ctx) =>
-      `Async operation failed: ${ctx?.operation || 'unknown'}. ${ctx?.error || 'Check error details'}`,
+      `Async operation failed: ${ctx?.['operation'] || 'unknown'}. ${ctx?.['error'] || 'Check error details'}`,
     suggestions: [
       {
         description: 'Add proper error handling for async operations',
@@ -578,8 +578,8 @@ export function createPhilJSError(
   error.suggestions = definition.suggestions;
   error.documentationUrl = `${DOCS_BASE}${definition.documentationPath}`;
 
-  if (context?.sourceLocation) {
-    error.sourceLocation = context.sourceLocation;
+  if (context?.['sourceLocation']) {
+    error.sourceLocation = context['sourceLocation'];
   }
 
   return error;

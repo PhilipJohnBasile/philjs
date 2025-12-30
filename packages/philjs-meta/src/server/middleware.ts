@@ -103,7 +103,7 @@ export class NextResponse extends Response {
   /**
    * Create a redirect response
    */
-  static redirect(url: string | URL, status: number = 307): NextResponse {
+  static override redirect(url: string | URL, status: number = 307): NextResponse {
     const response = new NextResponse(null, { status });
     response._redirect = {
       url: typeof url === 'string' ? new URL(url) : url,
@@ -124,7 +124,7 @@ export class NextResponse extends Response {
   /**
    * Create a JSON response
    */
-  static json<T>(data: T, init?: ResponseInit): NextResponse {
+  static override json<T>(data: T, init?: ResponseInit): NextResponse {
     return new NextResponse(JSON.stringify(data), {
       ...init,
       headers: {
@@ -177,7 +177,7 @@ export class NextResponse extends Response {
 
 interface CookieValue {
   value: string;
-  options?: CookieOptions;
+  options?: CookieOptions | undefined;
 }
 
 interface CookieOptions {
@@ -215,7 +215,7 @@ export class MiddlewareChain {
 
     const next = async (): Promise<Response> => {
       if (index < this.middlewares.length) {
-        const middleware = this.middlewares[index++];
+        const middleware = this.middlewares[index++]!;
         return middleware(context, next);
       }
       return handler();
@@ -266,7 +266,7 @@ function getClientIP(request: Request): string {
   // Check common headers for proxied requests
   const forwardedFor = request.headers.get('x-forwarded-for');
   if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
+    return forwardedFor.split(',')[0]!.trim();
   }
 
   const realIP = request.headers.get('x-real-ip');
@@ -806,8 +806,8 @@ function parseSize(size: string): number {
   const match = size.toLowerCase().match(/^(\d+(?:\.\d+)?)\s*(b|kb|mb|gb)?$/);
   if (!match) return 1024 * 1024; // Default 1mb
 
-  const value = parseFloat(match[1]);
+  const value = parseFloat(match[1]!);
   const unit = match[2] || 'b';
 
-  return value * units[unit];
+  return value * units[unit]!;
 }

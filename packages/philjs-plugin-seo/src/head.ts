@@ -471,7 +471,7 @@ export function createWebSite(site: {
   };
 
   if (site.searchUrl) {
-    (data as Record<string, unknown>).potentialAction = {
+    (data as Record<string, unknown>)['potentialAction'] = {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',

@@ -3,7 +3,7 @@
  * Run A/B tests directly in your app with zero external dependencies
  */
 
-import { signal, memo, effect, type Signal } from './signals';
+import { signal, memo, effect, type Signal } from './signals.js';
 
 // ============================================================================
 // Types
@@ -293,10 +293,10 @@ export class ABTestEngine {
       experimentId,
       variantId,
       eventName,
-      value: options.value,
-      userId: options.userId,
       timestamp: Date.now(),
     };
+    if (options.value !== undefined) event.value = options.value;
+    if (options.userId !== undefined) event.userId = options.userId;
 
     this.events.push(event);
     this.config.onEvent(event);
@@ -323,16 +323,16 @@ export class ABTestEngine {
       const conversionRate = impressions > 0 ? conversions / impressions : 0;
 
       const totalValue = variantEvents.reduce((sum, e) => sum + (e.value || 0), 0);
-      const averageValue = conversions > 0 ? totalValue / conversions : undefined;
 
-      return {
+      const result: VariantResults = {
         variantId: variant.id,
         impressions,
         conversions,
         conversionRate,
-        averageValue,
         revenue: totalValue,
       };
+      if (conversions > 0) result.averageValue = totalValue / conversions;
+      return result;
     });
 
     // Calculate winner (highest conversion rate with enough sample size)
@@ -347,24 +347,25 @@ export class ABTestEngine {
         (a, b) => b.conversionRate - a.conversionRate
       );
 
-      winner = sorted[0].variantId;
+      winner = sorted[0]!.variantId;
 
       // Simple confidence calculation (would use proper stats in production)
-      const bestRate = sorted[0].conversionRate;
-      const secondRate = sorted[1].conversionRate;
+      const bestRate = sorted[0]!.conversionRate;
+      const secondRate = sorted[1]!.conversionRate;
       const difference = bestRate - secondRate;
       confidence = Math.min(0.99, difference * 10); // Simplified
     }
 
     const totalImpressions = variantResults.reduce((sum, v) => sum + v.impressions, 0);
 
-    return {
+    const results: ExperimentResults = {
       experimentId,
       variants: variantResults,
-      winner,
-      confidence,
       sampleSize: totalImpressions,
     };
+    if (winner !== undefined) results.winner = winner;
+    if (confidence !== undefined) results.confidence = confidence;
+    return results;
   }
 
   /**
@@ -415,7 +416,7 @@ export class ABTestEngine {
       }
     }
 
-    return experiment.variants[0];
+    return experiment.variants[0]!;
   }
 
   private matchesTargeting(experiment: Experiment, user: User): boolean {

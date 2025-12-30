@@ -618,18 +618,6 @@ export function resolveAccessor<T>(value: MaybeAccessor<T>): T {
 declare global {
   namespace JSX {
     /**
-     * The JSX element type
-     */
-    type Element = JSXElement;
-
-    /**
-     * The type of the children prop
-     */
-    type ElementChildrenAttribute = {
-      children: JSXChild;
-    };
-
-    /**
      * Intrinsic attributes available on all elements
      */
     interface IntrinsicAttributes {

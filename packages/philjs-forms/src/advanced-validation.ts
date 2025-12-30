@@ -229,7 +229,7 @@ export const advancedValidators = {
 
       if (options.itemValidator) {
         for (const item of value) {
-          if (!options.itemValidator.validate(item)) return false;
+          if (!options.itemValidator.validate(item as FieldValue)) return false;
         }
       }
 
@@ -252,7 +252,7 @@ export const advancedValidators = {
       let isEven = false;
 
       for (let i = digits.length - 1; i >= 0; i--) {
-        let digit = parseInt(digits[i], 10);
+        let digit = parseInt(digits[i]!, 10);
 
         if (isEven) {
           digit *= 2;
@@ -334,8 +334,8 @@ export const advancedValidators = {
         4: /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       };
 
-      const pattern = version ? patterns[version] : patterns.default;
-      return pattern.test(value);
+      const pattern = version ? patterns[version] : patterns['default'];
+      return pattern!.test(value);
     },
     message,
   }),
@@ -431,9 +431,7 @@ export class SchemaValidator<T extends FormValues = FormValues> {
       for (const { when, rule } of conditionalRules) {
         if (when(allValues) && !rule.validate(value, allValues)) {
           result.valid = false;
-          result.error = typeof rule.message === 'function'
-            ? rule.message(value)
-            : rule.message;
+          result.error = rule.message;
           return result;
         }
       }
@@ -550,7 +548,11 @@ export function crossField(
   message: string,
   target?: string
 ): CrossFieldRule {
-  return { fields, validate, message, target };
+  const result: CrossFieldRule = { fields, validate, message };
+  if (target !== undefined) {
+    result.target = target;
+  }
+  return result;
 }
 
 /**

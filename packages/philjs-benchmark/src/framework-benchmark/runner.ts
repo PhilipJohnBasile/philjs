@@ -110,8 +110,8 @@ async function measureStartupTime(): Promise<BenchmarkResult> {
   const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
   const mid = Math.floor(sorted.length / 2);
   const median = sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
+    ? ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2
+    : (sorted[mid] ?? 0);
 
   const squaredDiffs = samples.map(x => Math.pow(x - mean, 2));
   const stddev = Math.sqrt(squaredDiffs.reduce((a, b) => a + b, 0) / samples.length);
@@ -120,8 +120,8 @@ async function measureStartupTime(): Promise<BenchmarkResult> {
     name: 'startup-time',
     mean,
     median,
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
+    min: sorted[0] ?? 0,
+    max: sorted[sorted.length - 1] ?? 0,
     stddev,
     samples: iterations,
     ops: 1000 / mean,

@@ -112,7 +112,7 @@ export function setCache<T>(key: string, data: T, ttl?: number): void {
   const entry: CacheEntry<T> = {
     data,
     timestamp: Date.now(),
-    staleAt: ttl ? Date.now() + ttl : undefined,
+    ...(ttl !== undefined && { staleAt: Date.now() + ttl }),
   };
   cache.set(key, entry);
   notifySubscribers(key);

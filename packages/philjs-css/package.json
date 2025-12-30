@@ -1,6 +1,7 @@
 {
   "name": "@philjs/css",
   "version": "0.1.0",
+  "type": "module",
   "description": "Type-safe CSS-in-TS solution for PhilJS with zero runtime overhead",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

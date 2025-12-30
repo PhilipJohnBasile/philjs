@@ -54,18 +54,6 @@ export {
   redirectAfterLogin,
 } from './protected-route.js';
 
-export {
-  withRole,
-  withAnyRole,
-  AuthGuard,
-  ShowForAuth,
-  ShowForGuest,
-  ShowForRole,
-  type AuthGuardProps,
-  type ShowForAuthProps,
-  type ShowForRoleProps,
-} from './protected-routes.js';
-
 // Session Management (Original)
 export {
   SessionManager,

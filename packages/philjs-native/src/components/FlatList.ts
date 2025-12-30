@@ -348,7 +348,7 @@ export function FlatList<T>(props: FlatListProps<T>): any {
 
       // Render visible items
       for (let i = startIndex; i <= endIndex && i < data.length; i++) {
-        const item = data[i];
+        const item = data[i] as T;
         const key = getKey(item, i);
 
         const separators = {
@@ -514,7 +514,7 @@ export function createFlatListRef<T>(): FlatListRef<T> {
     scrollToItem(params) {
       const index = state.data.indexOf(params.item);
       if (index >= 0) {
-        this.scrollToIndex({ index, animated: params.animated });
+        this.scrollToIndex({ index, ...(params.animated !== undefined ? { animated: params.animated } : {}) });
       }
     },
 

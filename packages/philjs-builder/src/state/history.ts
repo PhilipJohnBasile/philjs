@@ -176,9 +176,12 @@ export function createHistoryManager(options: HistoryManagerOptions = {}): Histo
       currentIdx >= 0
     ) {
       // Update the last entry instead of adding a new one
-      const lastEntry = currentEntries[currentIdx];
+      const lastEntry = currentEntries[currentIdx]!;
       const updatedEntry: HistoryEntry = {
-        ...lastEntry,
+        id: lastEntry.id,
+        type: lastEntry.type,
+        description: lastEntry.description,
+        before: lastEntry.before,
         after: entry.after,
         timestamp: now,
       };
@@ -361,8 +364,8 @@ export function createHistoryManager(options: HistoryManagerOptions = {}): Histo
 
     if (transactionEntries.length > 0) {
       // Combine all transaction entries into one
-      const firstEntry = transactionEntries[0];
-      const lastEntry = transactionEntries[transactionEntries.length - 1];
+      const firstEntry = transactionEntries[0]!;
+      const lastEntry = transactionEntries[transactionEntries.length - 1]!;
 
       const combinedEntry: HistoryEntry = {
         id: firstEntry.id,

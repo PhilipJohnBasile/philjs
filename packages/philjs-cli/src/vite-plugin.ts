@@ -36,7 +36,7 @@ export function philJSPlugin(): Plugin {
       // Transform PhilJS-specific syntax
       if (id.endsWith(".tsx") || id.endsWith(".jsx")) {
         // Add automatic signal tracking for dev mode
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env["NODE_ENV"] !== "production") {
           // Inject dev-only helpers
           return {
             code: `import { __DEV__ } from 'philjs-core';\n${code}`,

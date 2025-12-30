@@ -14,7 +14,7 @@ export class SymbolLoader {
   private loadingChunks = new Map<string, Promise<void>>();
   private symbols = new Map<string, any>();
   private prefetching = new Set<string>();
-  private customLoader?: (symbolId: string) => Promise<any>;
+  private customLoader?: ((symbolId: string) => Promise<any>) | undefined;
 
   constructor(config: RuntimeConfig) {
     this.manifest = config.manifest;

@@ -8,7 +8,7 @@
  * - Edge-Side Includes (ESI)
  */
 
-import { detectEdgePlatform, type EdgePlatform } from './edge-runtime';
+import { detectEdgePlatform, type EdgePlatform } from './edge-runtime.js';
 
 // ============================================================================
 // Types
@@ -280,7 +280,7 @@ export function createHTMLStream(options: HTMLStreamOptions): {
   const initStream = async () => {
     if (!initialized) {
       initialized = true;
-      await writer.write(shellParts[0]);
+      await writer.write(shellParts[0]!);
     }
   };
 
@@ -336,8 +336,8 @@ export function createHTMLStream(options: HTMLStreamOptions): {
       await initStream();
 
       // Write any remaining shell content and footer
-      if (shellParts[1]) {
-        await writer.write(shellParts[1]);
+      if (shellParts[1] !== undefined) {
+        await writer.write(shellParts[1]!);
       }
       await writer.write(options.footer);
       await writer.close();
@@ -358,18 +358,23 @@ export function parseESITags(html: string): ESIFragment[] {
 
   let match;
   while ((match = esiRegex.exec(html)) !== null) {
-    const attrs = match[1];
+    const attrs = match[1] ?? '';
     const srcMatch = attrs.match(/src=["']([^"']+)["']/);
     const altMatch = attrs.match(/alt=["']([^"']+)["']/);
     const ttlMatch = attrs.match(/ttl=["'](\d+)["']/);
 
-    if (srcMatch) {
-      fragments.push({
+    if (srcMatch && srcMatch[1] !== undefined) {
+      const fragment: ESIFragment = {
         src: srcMatch[1],
-        alt: altMatch?.[1],
-        ttl: ttlMatch ? parseInt(ttlMatch[1], 10) : undefined,
         parallel: true,
-      });
+      };
+      if (altMatch?.[1] !== undefined) {
+        fragment.alt = altMatch[1];
+      }
+      if (ttlMatch !== null && ttlMatch[1] !== undefined) {
+        fragment.ttl = parseInt(ttlMatch[1]!, 10);
+      }
+      fragments.push(fragment);
     }
   }
 
@@ -503,11 +508,14 @@ export function createESIMiddleware(options: {
       }
     }
 
-    const processed = await processESI(html, {
-      baseUrl: options.baseUrl,
-      timeout: options.timeout,
-      cache,
-    });
+    const processOptions: Parameters<typeof processESI>[1] = { cache };
+    if (options.baseUrl !== undefined) {
+      processOptions.baseUrl = options.baseUrl;
+    }
+    if (options.timeout !== undefined) {
+      processOptions.timeout = options.timeout;
+    }
+    const processed = await processESI(html, processOptions);
 
     return new Response(processed, {
       status: response.status,

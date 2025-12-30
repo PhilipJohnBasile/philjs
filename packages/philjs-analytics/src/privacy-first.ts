@@ -329,8 +329,8 @@ export class PrivacyFirstAnalytics {
     // Error counts
     const errorCounts = new Map<string, number>();
     for (const event of relevantEvents) {
-      if (event.type === 'error' && event.data?.type) {
-        const type = String(event.data.type);
+      if (event.type === 'error' && event.data?.['type']) {
+        const type = String(event.data['type']);
         errorCounts.set(type, (errorCounts.get(type) || 0) + 1);
       }
     }
@@ -698,7 +698,7 @@ export class PrivacyFirstAnalytics {
     if (events.length < 2) return 0;
     // ES2023+: toSorted() for non-mutating sort
     const sorted = events.toSorted((a, b) => a.timestamp - b.timestamp);
-    return sorted[sorted.length - 1].timestamp - sorted[0].timestamp;
+    return sorted[sorted.length - 1]!.timestamp - sorted[0]!.timestamp;
   }
 
   private calculateAverage(values: number[]): number {
@@ -773,7 +773,7 @@ class HyperLogLog {
     const hash = this.hash(value);
     const index = hash & (this.m - 1);
     const rank = this.countLeadingZeros(hash >> Math.log2(this.m)) + 1;
-    this.registers[index] = Math.max(this.registers[index], rank);
+    this.registers[index] = Math.max(this.registers[index]!, rank);
   }
 
   count(): number {
@@ -782,7 +782,7 @@ class HyperLogLog {
     let zeros = 0;
 
     for (let i = 0; i < this.m; i++) {
-      harmonicMean += 1 / (1 << this.registers[i]);
+      harmonicMean += 1 / (1 << this.registers[i]!);
       if (this.registers[i] === 0) zeros++;
     }
 

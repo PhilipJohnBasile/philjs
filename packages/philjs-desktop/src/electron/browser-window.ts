@@ -3,9 +3,9 @@
  * Provides Electron-like API on top of Tauri
  */
 
-import { createWindow, WindowHandle, WindowOptions } from '../window';
-import { listen, emit } from '../tauri/events';
-import type { UnlistenFn } from '../tauri/types';
+import { createWindow, type WindowHandle, type WindowOptions } from '../window.js';
+import { listen, emit } from '../tauri/events.js';
+import type { UnlistenFn } from '../tauri/types.js';
 
 // Electron-style window options
 export interface BrowserWindowOptions {
@@ -72,7 +72,7 @@ export class BrowserWindow {
   private handle: WindowHandle | null = null;
   private eventHandlers = new Map<BrowserWindowEvent, Set<Function>>();
   private unlisteners: UnlistenFn[] = [];
-  private isDestroyed = false;
+  private _isDestroyed = false;
   private options: BrowserWindowOptions;
 
   constructor(options: BrowserWindowOptions = {}) {
@@ -88,23 +88,23 @@ export class BrowserWindow {
   private async initWindow(options: BrowserWindowOptions): Promise<void> {
     const tauriOptions: WindowOptions = {
       label: `window-${this.id}`,
-      title: options.title,
-      width: options.width,
-      height: options.height,
-      x: options.x,
-      y: options.y,
-      minWidth: options.minWidth,
-      minHeight: options.minHeight,
-      maxWidth: options.maxWidth,
-      maxHeight: options.maxHeight,
-      resizable: options.resizable,
-      alwaysOnTop: options.alwaysOnTop,
-      fullscreen: options.fullscreen,
       visible: options.show !== false,
       focus: options.focusable !== false,
-      transparent: options.transparent,
       decorations: options.frame !== false,
-      skipTaskbar: options.skipTaskbar,
+      ...(options.title !== undefined && { title: options.title }),
+      ...(options.width !== undefined && { width: options.width }),
+      ...(options.height !== undefined && { height: options.height }),
+      ...(options.x !== undefined && { x: options.x }),
+      ...(options.y !== undefined && { y: options.y }),
+      ...(options.minWidth !== undefined && { minWidth: options.minWidth }),
+      ...(options.minHeight !== undefined && { minHeight: options.minHeight }),
+      ...(options.maxWidth !== undefined && { maxWidth: options.maxWidth }),
+      ...(options.maxHeight !== undefined && { maxHeight: options.maxHeight }),
+      ...(options.resizable !== undefined && { resizable: options.resizable }),
+      ...(options.alwaysOnTop !== undefined && { alwaysOnTop: options.alwaysOnTop }),
+      ...(options.fullscreen !== undefined && { fullscreen: options.fullscreen }),
+      ...(options.transparent !== undefined && { transparent: options.transparent }),
+      ...(options.skipTaskbar !== undefined && { skipTaskbar: options.skipTaskbar }),
     };
 
     try {
@@ -193,7 +193,7 @@ export class BrowserWindow {
   private emit(event: BrowserWindowEvent, ...args: any[]): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
-      for (const handler of handlers) {
+      for (const handler of Array.from(handlers)) {
         handler(...args);
       }
     }
@@ -208,10 +208,10 @@ export class BrowserWindow {
   }
 
   destroy(): void {
-    if (this.isDestroyed) return;
+    if (this._isDestroyed) return;
 
-    this.isDestroyed = true;
-    this.unlisteners.forEach(fn => fn());
+    this._isDestroyed = true;
+    this.unlisteners.forEach((fn: UnlistenFn) => fn());
     this.unlisteners = [];
     this.eventHandlers.clear();
     BrowserWindow.instances.delete(this.id);
@@ -283,7 +283,7 @@ export class BrowserWindow {
   }
 
   isDestroyed(): boolean {
-    return this.isDestroyed;
+    return this._isDestroyed;
   }
 
   async setTitle(title: string): Promise<void> {

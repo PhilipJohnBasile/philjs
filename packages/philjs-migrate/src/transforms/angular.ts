@@ -10,7 +10,7 @@
  * - RxJS patterns → signals/effects
  */
 
-import type { MigrationWarning, ManualReviewItem } from '../migrate';
+import type { MigrationWarning, ManualReviewItem } from '../migrate.js';
 
 export interface TransformResult {
   code: string;
@@ -196,8 +196,8 @@ export class AngularTransform {
     const componentMatch = code.match(/@Component\(\{([\s\S]*?)\}\)\s*export\s+class\s+(\w+)/);
 
     if (componentMatch) {
-      const metadata = componentMatch[1];
-      const className = componentMatch[2];
+      const metadata = componentMatch[1] ?? '';
+      const className = componentMatch[2] ?? 'Component';
 
       // Extract selector, template, styles
       const selectorMatch = metadata.match(/selector:\s*['"]([^'"]+)['"]/);

@@ -501,7 +501,7 @@ export class DependencyScanner {
     const cleanActual = actual.replace(/[\^~]/, '');
     const match = vulnerable.match(/<([\d.]+)/);
     if (match) {
-      return cleanActual < match[1];
+      return cleanActual < match[1]!;
     }
     return false;
   }
@@ -805,7 +805,7 @@ function useRef<T>(initial: T): { current: T } {
   return { current: initial };
 }
 
-function useCallback<T extends (...args: unknown[]) => unknown>(fn: T, _deps: unknown[]): T {
+function useCallback<T extends (...args: never[]) => unknown>(fn: T, _deps: unknown[]): T {
   return fn;
 }
 

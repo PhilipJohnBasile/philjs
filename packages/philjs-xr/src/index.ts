@@ -13,6 +13,25 @@
  */
 
 // ============================================================================
+// WebXR Type Declarations
+// ============================================================================
+// Note: Most WebXR types come from @types/webxr.
+// We only extend/augment types that are not fully covered there.
+
+// Reference XRSessionMode and XRReferenceSpaceType from DOM types
+type XRSessionModeType = 'inline' | 'immersive-vr' | 'immersive-ar';
+type XRReferenceSpaceTypeType = 'viewer' | 'local' | 'local-floor' | 'bounded-floor' | 'unbounded';
+
+// XRHandJoint type alias for joint names
+type XRHandJointName =
+  | 'wrist'
+  | 'thumb-metacarpal' | 'thumb-phalanx-proximal' | 'thumb-phalanx-distal' | 'thumb-tip'
+  | 'index-finger-metacarpal' | 'index-finger-phalanx-proximal' | 'index-finger-phalanx-intermediate' | 'index-finger-phalanx-distal' | 'index-finger-tip'
+  | 'middle-finger-metacarpal' | 'middle-finger-phalanx-proximal' | 'middle-finger-phalanx-intermediate' | 'middle-finger-phalanx-distal' | 'middle-finger-tip'
+  | 'ring-finger-metacarpal' | 'ring-finger-phalanx-proximal' | 'ring-finger-phalanx-intermediate' | 'ring-finger-phalanx-distal' | 'ring-finger-tip'
+  | 'pinky-finger-metacarpal' | 'pinky-finger-phalanx-proximal' | 'pinky-finger-phalanx-intermediate' | 'pinky-finger-phalanx-distal' | 'pinky-finger-tip';
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -97,7 +116,7 @@ export interface Quaternion {
   w: number;
 }
 
-export interface XRHitTestResult {
+export interface XRHitTestResultData {
   position: Vector3;
   rotation: Quaternion;
   plane?: {
@@ -177,8 +196,11 @@ export const Vec3 = {
     };
   },
 
-  fromArray(arr: Float32Array | number[], offset = 0): Vector3 {
-    return { x: arr[offset], y: arr[offset + 1], z: arr[offset + 2] };
+  fromArray(arr: Float32Array | number[] | DOMPointReadOnly, offset = 0): Vector3 {
+    if ('x' in arr) {
+      return { x: arr.x, y: arr.y, z: arr.z };
+    }
+    return { x: arr[offset]!, y: arr[offset + 1]!, z: arr[offset + 2]! };
   },
 
   toArray(v: Vector3): number[] {
@@ -248,8 +270,11 @@ export const Quat = {
     };
   },
 
-  fromArray(arr: Float32Array | number[], offset = 0): Quaternion {
-    return { x: arr[offset], y: arr[offset + 1], z: arr[offset + 2], w: arr[offset + 3] };
+  fromArray(arr: Float32Array | number[] | DOMPointReadOnly, offset = 0): Quaternion {
+    if ('x' in arr) {
+      return { x: arr.x, y: arr.y, z: arr.z, w: arr.w };
+    }
+    return { x: arr[offset]!, y: arr[offset + 1]!, z: arr[offset + 2]!, w: arr[offset + 3]! };
   },
 
   toArray(q: Quaternion): number[] {
@@ -270,18 +295,17 @@ export class XRSessionManager {
   private hitTestSource: XRHitTestSource | null = null;
   private anchors: Map<string, XRAnchor> = new Map();
   private frameCallback: ((time: number, frame: XRFrame) => void) | null = null;
-  private animationFrameId: number | null = null;
 
   constructor(config: XRConfig = {}) {
     this.config = {
-      mode: config.mode || 'immersive-vr',
-      referenceSpace: config.referenceSpace || 'local-floor',
-      requiredFeatures: config.requiredFeatures || [],
-      optionalFeatures: config.optionalFeatures || [],
+      mode: config.mode ?? 'immersive-vr',
+      referenceSpace: config.referenceSpace ?? 'local-floor',
+      requiredFeatures: config.requiredFeatures ?? [],
+      optionalFeatures: config.optionalFeatures ?? [],
       handTracking: config.handTracking ?? true,
       hitTest: config.hitTest ?? false,
       anchors: config.anchors ?? false,
-      frameRate: config.frameRate || 72
+      frameRate: config.frameRate ?? 72
     };
   }
 
@@ -289,7 +313,7 @@ export class XRSessionManager {
     if (typeof navigator === 'undefined' || !('xr' in navigator)) {
       return false;
     }
-    return navigator.xr!.isSessionSupported(mode || this.config.mode);
+    return navigator.xr!.isSessionSupported(mode ?? this.config.mode);
   }
 
   async startSession(): Promise<XRSession | null> {
@@ -312,10 +336,15 @@ export class XRSessionManager {
     }
 
     try {
-      this.session = await navigator.xr!.requestSession(this.config.mode, {
-        requiredFeatures: features.length > 0 ? features : undefined,
-        optionalFeatures: optionalFeatures.length > 0 ? optionalFeatures : undefined
-      });
+      const sessionInit: XRSessionInit = {};
+      if (features.length > 0) {
+        sessionInit.requiredFeatures = features;
+      }
+      if (optionalFeatures.length > 0) {
+        sessionInit.optionalFeatures = optionalFeatures;
+      }
+
+      this.session = await navigator.xr!.requestSession(this.config.mode, sessionInit);
 
       this.referenceSpace = await this.session.requestReferenceSpace(
         this.config.referenceSpace
@@ -331,11 +360,11 @@ export class XRSessionManager {
         const viewerSpace = await this.session.requestReferenceSpace('viewer');
         this.hitTestSource = await this.session.requestHitTestSource({
           space: viewerSpace
-        });
+        }) ?? null;
       }
 
       // Start render loop
-      this.session.requestAnimationFrame((time, frame) => this.onFrame(time, frame));
+      this.session.requestAnimationFrame((time, frame) => this.handleFrame(time, frame));
 
       return this.session;
     } catch (error) {
@@ -356,15 +385,15 @@ export class XRSessionManager {
     }
   }
 
-  onFrame(callback: (time: number, frame: XRFrame) => void): void {
+  setFrameCallback(callback: (time: number, frame: XRFrame) => void): void {
     this.frameCallback = callback;
   }
 
-  private onFrame(time: number, frame: XRFrame): void {
+  private handleFrame(time: number, frame: XRFrame): void {
     if (!this.session) return;
 
     // Update controller states
-    for (const source of this.session.inputSources) {
+    for (const source of Array.from(this.session.inputSources)) {
       this.updateInputSource(source, frame);
     }
 
@@ -372,12 +401,12 @@ export class XRSessionManager {
     this.frameCallback?.(time, frame);
 
     // Request next frame
-    this.session.requestAnimationFrame((t, f) => this.onFrame(t, f));
+    this.session.requestAnimationFrame((t, f) => this.handleFrame(t, f));
   }
 
   private handleInputSourcesChange(event: XRInputSourcesChangeEvent): void {
     for (const source of event.added) {
-      const index = this.session!.inputSources.indexOf(source);
+      const index = Array.from(this.session!.inputSources).indexOf(source);
       if (source.hand) {
         this.hands.set(source.handedness, this.createHandState(source.handedness as 'left' | 'right'));
       } else {
@@ -386,7 +415,7 @@ export class XRSessionManager {
     }
 
     for (const source of event.removed) {
-      const index = this.session!.inputSources.indexOf(source);
+      const index = Array.from(this.session!.inputSources).indexOf(source);
       if (source.hand) {
         this.hands.delete(source.handedness);
       } else {
@@ -428,13 +457,13 @@ export class XRSessionManager {
       }
     } else if (source.gripSpace) {
       // Update controller
-      const index = this.session!.inputSources.indexOf(source);
+      const index = Array.from(this.session!.inputSources).indexOf(source);
       const controllerState = this.controllers.get(index);
       if (controllerState) {
         const pose = frame.getPose(source.gripSpace, this.referenceSpace);
         if (pose) {
-          controllerState.position = Vec3.fromArray(pose.transform.position as unknown as number[]);
-          controllerState.rotation = Quat.fromArray(pose.transform.orientation as unknown as number[]);
+          controllerState.position = Vec3.fromArray(pose.transform.position);
+          controllerState.rotation = Quat.fromArray(pose.transform.orientation);
         }
 
         if (source.gamepad) {
@@ -444,7 +473,9 @@ export class XRSessionManager {
             value: b.value
           }));
           controllerState.axes = [...source.gamepad.axes];
-          controllerState.hapticActuators = source.gamepad.hapticActuators ? [...source.gamepad.hapticActuators] : [];
+          controllerState.hapticActuators = source.gamepad.hapticActuators
+            ? [...(source.gamepad.hapticActuators as unknown as GamepadHapticActuator[])]
+            : [];
         }
       }
     }
@@ -463,14 +494,14 @@ export class XRSessionManager {
     ];
 
     for (const jointName of jointNames) {
-      const joint = hand.get(jointName as XRHandJoint);
+      const joint = hand.get(jointName as XRHandJointName);
       if (joint) {
         const pose = frame.getJointPose?.(joint, this.referenceSpace);
         if (pose) {
           state.joints.set(jointName, {
-            position: Vec3.fromArray(pose.transform.position as unknown as number[]),
-            rotation: Quat.fromArray(pose.transform.orientation as unknown as number[]),
-            radius: pose.radius || 0.01
+            position: Vec3.fromArray(pose.transform.position),
+            rotation: Quat.fromArray(pose.transform.orientation),
+            radius: pose.radius ?? 0.01
           });
         }
       }
@@ -511,15 +542,15 @@ export class XRSessionManager {
     return this.hands.get(handedness);
   }
 
-  async performHitTest(frame: XRFrame): Promise<XRHitTestResult[]> {
+  async performHitTest(frame: XRFrame): Promise<XRHitTestResultData[]> {
     if (!this.hitTestSource || !this.referenceSpace) return [];
 
     const results = frame.getHitTestResults(this.hitTestSource);
     return results.map(result => {
       const pose = result.getPose(this.referenceSpace!);
       return {
-        position: pose ? Vec3.fromArray(pose.transform.position as unknown as number[]) : Vec3.create(),
-        rotation: pose ? Quat.fromArray(pose.transform.orientation as unknown as number[]) : Quat.identity()
+        position: pose ? Vec3.fromArray(pose.transform.position) : Vec3.create(),
+        rotation: pose ? Quat.fromArray(pose.transform.orientation) : Quat.identity()
       };
     });
   }
@@ -554,8 +585,8 @@ export class XRSessionManager {
     duration: number = 100
   ): void {
     const controller = this.controllers.get(controllerIndex);
-    if (controller?.hapticActuators.length > 0) {
-      controller.hapticActuators[0].pulse(intensity, duration);
+    if (controller && controller.hapticActuators.length > 0) {
+      controller.hapticActuators[0]!.pulse(intensity, duration);
     }
   }
 }
@@ -609,15 +640,15 @@ export function createXRPanel(props: XRPanelProps): object {
     type: 'xr-panel',
     props: {
       position: props.position,
-      rotation: props.rotation || Quat.identity(),
-      scale: props.scale || Vec3.create(1, 1, 1),
+      rotation: props.rotation ?? Quat.identity(),
+      scale: props.scale ?? Vec3.create(1, 1, 1),
       width: props.width,
       height: props.height,
-      backgroundColor: props.backgroundColor || '#ffffff',
-      borderRadius: props.borderRadius || 0,
-      billboard: props.billboard || false,
-      followGaze: props.followGaze || false,
-      interactionDistance: props.interactionDistance || 2
+      backgroundColor: props.backgroundColor ?? '#ffffff',
+      borderRadius: props.borderRadius ?? 0,
+      billboard: props.billboard ?? false,
+      followGaze: props.followGaze ?? false,
+      interactionDistance: props.interactionDistance ?? 2
     }
   };
 }
@@ -627,8 +658,8 @@ export function createXRButton(props: XRButtonProps): object {
     type: 'xr-button',
     props: {
       position: props.position,
-      rotation: props.rotation || Quat.identity(),
-      scale: props.scale || Vec3.create(1, 1, 1),
+      rotation: props.rotation ?? Quat.identity(),
+      scale: props.scale ?? Vec3.create(1, 1, 1),
       label: props.label,
       onClick: props.onClick,
       onHover: props.onHover,
@@ -643,12 +674,12 @@ export function createXRSlider(props: XRSliderProps): object {
     type: 'xr-slider',
     props: {
       position: props.position,
-      rotation: props.rotation || Quat.identity(),
+      rotation: props.rotation ?? Quat.identity(),
       min: props.min,
       max: props.max,
       value: props.value,
       onChange: props.onChange,
-      orientation: props.orientation || 'horizontal'
+      orientation: props.orientation ?? 'horizontal'
     }
   };
 }
@@ -658,12 +689,12 @@ export function createXRText(props: XRTextProps): object {
     type: 'xr-text',
     props: {
       position: props.position,
-      rotation: props.rotation || Quat.identity(),
+      rotation: props.rotation ?? Quat.identity(),
       text: props.text,
-      fontSize: props.fontSize || 0.05,
-      color: props.color || '#000000',
-      align: props.align || 'center',
-      billboard: props.billboard || false
+      fontSize: props.fontSize ?? 0.05,
+      color: props.color ?? '#000000',
+      align: props.align ?? 'center',
+      billboard: props.billboard ?? false
     }
   };
 }
@@ -673,12 +704,12 @@ export function createXRModel(props: XRModelProps): object {
     type: 'xr-model',
     props: {
       position: props.position,
-      rotation: props.rotation || Quat.identity(),
-      scale: props.scale || Vec3.create(1, 1, 1),
+      rotation: props.rotation ?? Quat.identity(),
+      scale: props.scale ?? Vec3.create(1, 1, 1),
       src: props.src,
       onLoad: props.onLoad,
       onError: props.onError,
-      animations: props.animations || [],
+      animations: props.animations ?? [],
       currentAnimation: props.currentAnimation
     }
   };
@@ -714,11 +745,11 @@ export class GestureRecognizer {
         gesture,
         hand: handState.handedness,
         confidence: this.calculateConfidence(handState, gesture),
-        position: wrist?.position || Vec3.create()
+        position: wrist?.position ?? Vec3.create()
       };
 
       // Trigger callbacks
-      const callbacks = this.gestureCallbacks.get(gesture) || [];
+      const callbacks = this.gestureCallbacks.get(gesture) ?? [];
       for (const cb of callbacks) {
         cb(event);
       }
@@ -802,12 +833,12 @@ export class GestureRecognizer {
   }
 
   onGesture(gesture: GestureType, callback: (event: GestureEvent) => void): () => void {
-    const callbacks = this.gestureCallbacks.get(gesture) || [];
+    const callbacks = this.gestureCallbacks.get(gesture) ?? [];
     callbacks.push(callback);
     this.gestureCallbacks.set(gesture, callbacks);
 
     return () => {
-      const cbs = this.gestureCallbacks.get(gesture) || [];
+      const cbs = this.gestureCallbacks.get(gesture) ?? [];
       const index = cbs.indexOf(callback);
       if (index > -1) cbs.splice(index, 1);
     };
@@ -841,28 +872,28 @@ export function useXR(): {
   const manager = globalXRManager;
 
   return {
-    isSupported: () => manager?.isSupported() || Promise.resolve(false),
-    startSession: () => manager?.startSession() || Promise.resolve(null),
-    endSession: () => manager?.endSession() || Promise.resolve(),
-    session: manager?.getSession() || null,
-    referenceSpace: manager?.getReferenceSpace() || null
+    isSupported: () => manager?.isSupported() ?? Promise.resolve(false),
+    startSession: () => manager?.startSession() ?? Promise.resolve(null),
+    endSession: () => manager?.endSession() ?? Promise.resolve(),
+    session: manager?.getSession() ?? null,
+    referenceSpace: manager?.getReferenceSpace() ?? null
   };
 }
 
 export function useXRControllers(): Map<number, XRControllerState> {
-  return globalXRManager?.getControllers() || new Map();
+  return globalXRManager?.getControllers() ?? new Map();
 }
 
 export function useXRController(index: number): XRControllerState | null {
-  return globalXRManager?.getController(index) || null;
+  return globalXRManager?.getController(index) ?? null;
 }
 
 export function useXRHands(): Map<string, XRHandState> {
-  return globalXRManager?.getHands() || new Map();
+  return globalXRManager?.getHands() ?? new Map();
 }
 
 export function useXRHand(handedness: 'left' | 'right'): XRHandState | null {
-  return globalXRManager?.getHand(handedness) || null;
+  return globalXRManager?.getHand(handedness) ?? null;
 }
 
 export function useGesture(
@@ -873,11 +904,11 @@ export function useGesture(
 }
 
 export function useXRFrame(callback: (time: number, frame: XRFrame) => void): void {
-  globalXRManager?.onFrame(callback);
+  globalXRManager?.setFrameCallback(callback);
 }
 
-export function useHitTest(): (frame: XRFrame) => Promise<XRHitTestResult[]> {
-  return (frame) => globalXRManager?.performHitTest(frame) || Promise.resolve([]);
+export function useHitTest(): (frame: XRFrame) => Promise<XRHitTestResultData[]> {
+  return (frame) => globalXRManager?.performHitTest(frame) ?? Promise.resolve([]);
 }
 
 export function useAnchors(): {
@@ -885,18 +916,7 @@ export function useAnchors(): {
   getAll: () => Map<string, XRAnchor>;
 } {
   return {
-    create: (pos, rot) => globalXRManager?.createAnchor(pos, rot) || Promise.resolve(null),
-    getAll: () => globalXRManager?.getAnchors() || new Map()
+    create: (pos, rot) => globalXRManager?.createAnchor(pos, rot) ?? Promise.resolve(null),
+    getAll: () => globalXRManager?.getAnchors() ?? new Map()
   };
 }
-
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  XRSessionManager,
-  GestureRecognizer,
-  Vec3,
-  Quat
-};

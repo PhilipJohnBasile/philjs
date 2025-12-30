@@ -211,15 +211,18 @@ export function ErrorBoundary(props: ErrorBoundaryProps) {
       return props.fallback(currentError, retry);
     }
 
-    return DefaultErrorFallback({
+    const fallbackProps: Parameters<typeof DefaultErrorFallback>[0] = {
       error: currentError,
       retry: retry,
-      boundaryName: props.name,
       pattern: props.fallbackPattern || "default",
       isRetrying: isRetrying(),
       retryCount: retryCount(),
       maxRetries,
-    });
+    };
+    if (props.name !== undefined) {
+      fallbackProps.boundaryName = props.name;
+    }
+    return DefaultErrorFallback(fallbackProps);
   }
 
   try {
@@ -253,16 +256,21 @@ function analyzeError(error: Error, componentStack?: string, occurrences = 1): E
   const source = extractErrorSource(error);
   const recoverable = isRecoverable(error, category);
 
-  return {
+  const result: ErrorInfo = {
     error,
-    componentStack,
-    source,
     category,
     suggestions,
     timestamp: Date.now(),
     occurrences,
     recoverable,
   };
+  if (componentStack !== undefined) {
+    result.componentStack = componentStack;
+  }
+  if (source !== undefined) {
+    result.source = source;
+  }
+  return result;
 }
 
 /**
@@ -414,9 +422,9 @@ function extractErrorSource(error: Error): { file: string; line: number; column:
     const match = line.match(/at\s+(?:.*\s+)?\(?(.+):(\d+):(\d+)\)?/);
     if (match) {
       return {
-        file: match[1],
-        line: parseInt(match[2], 10),
-        column: parseInt(match[3], 10),
+        file: match[1]!,
+        line: parseInt(match[2]!, 10),
+        column: parseInt(match[3]!, 10),
       };
     }
   }
@@ -657,7 +665,7 @@ function DefaultErrorFallback(props: {
       },
       "🔄 Retry"
     ),
-    process.env.NODE_ENV === "development" &&
+    process.env["NODE_ENV"] === "development" &&
       error.componentStack &&
       createElement(
         "details",

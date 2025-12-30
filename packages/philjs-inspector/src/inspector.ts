@@ -270,7 +270,7 @@ class PhilJSInspector {
     // Highlight selected element
     highlightElement(element, componentInfo, {
       showLabel: true,
-      showMetrics: this.config.showMetrics,
+      ...(this.config.showMetrics !== undefined && { showMetrics: this.config.showMetrics }),
     });
 
     // Show tooltip

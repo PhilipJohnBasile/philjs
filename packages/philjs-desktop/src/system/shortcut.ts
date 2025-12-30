@@ -2,7 +2,7 @@
  * Global Shortcut APIs
  */
 
-import { isTauri } from '../tauri/context';
+import { isTauri } from '../tauri/context.js';
 
 // Shortcut types
 export interface ShortcutHandler {

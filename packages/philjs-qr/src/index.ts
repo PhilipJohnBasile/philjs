@@ -30,18 +30,16 @@ export type {
   BatchQRResult,
   QRAnalytics,
   DynamicQRConfig,
-} from './types';
+} from './types.js';
 
 // Components
-export { QRCode, createQRCode, type QRCodeConfig } from './components/QRCode';
-export { QRScanner, createQRScanner, type QRScannerConfig } from './components/QRScanner';
+export { QRCode, createQRCode, type QRCodeConfig } from './components/QRCode.js';
+export { QRScanner, createQRScanner, type QRScannerConfig } from './components/QRScanner.js';
 
 // Generator functions
-export {
-  generateQRCode,
-  generateQRCodeDataURL,
-  generateQRCodeCanvas,
-} from './generator';
+import { generateQRCode, generateQRCodeDataURL, generateQRCodeCanvas } from './generator.js';
+
+export { generateQRCode, generateQRCodeDataURL, generateQRCodeCanvas };
 
 // Utility functions
 
@@ -196,14 +194,14 @@ export function createEventQR(options: {
  * Batch generate QR codes
  */
 export async function batchGenerateQR(
-  items: Array<{ id: string; data: string; options?: Partial<import('./types').QRCodeOptions> }>,
-  defaultOptions?: Partial<import('./types').QRCodeOptions>
+  items: Array<{ id: string; data: string; options?: Partial<import('./types.js').QRCodeOptions> }>,
+  defaultOptions?: Partial<import('./types.js').QRCodeOptions>
 ): Promise<Map<string, string>> {
   const results = new Map<string, string>();
 
   for (const item of items) {
     try {
-      const options: import('./types').QRCodeOptions = {
+      const options: import('./types.js').QRCodeOptions = {
         data: item.data,
         ...defaultOptions,
         ...item.options,

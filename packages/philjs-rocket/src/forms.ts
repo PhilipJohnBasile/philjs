@@ -296,7 +296,7 @@ export function parseFormData(body: string): Record<string, string | string[]> {
       const existing = result[key];
       if (Array.isArray(existing)) {
         existing.push(value);
-      } else {
+      } else if (existing !== undefined) {
         result[key] = [existing, value];
       }
     } else {

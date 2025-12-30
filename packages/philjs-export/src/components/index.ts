@@ -2,5 +2,6 @@
  * Component Exports
  */
 
-export * from './ExportButton';
-export * from './ExportMenu';
+export * from './ExportButton.js';
+export * from './ExportMenu.js';
+

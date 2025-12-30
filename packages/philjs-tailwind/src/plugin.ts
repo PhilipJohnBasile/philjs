@@ -4,7 +4,8 @@
  * Custom utilities and components for PhilJS applications.
  */
 
-import plugin from 'tailwindcss/plugin';
+import plugin from 'tailwindcss/plugin.js';
+import type { PluginAPI } from 'tailwindcss/types/config.js';
 
 export interface PhilJSPluginOptions {
   /** Add signal-related utilities */
@@ -29,7 +30,7 @@ export function philjsTailwindPlugin(options: PhilJSPluginOptions = {}) {
   } = options;
 
   return plugin(
-    function ({ addUtilities, addComponents, addBase, matchUtilities, theme }) {
+    function ({ addUtilities, addComponents, addBase, matchUtilities, theme }: PluginAPI) {
       // Base styles
       addBase({
         ':root': {
@@ -300,15 +301,15 @@ export function philjsTailwindPlugin(options: PhilJSPluginOptions = {}) {
       // Dynamic utilities
       matchUtilities(
         {
-          'animate-delay': (value) => ({
+          'animate-delay': (value: string) => ({
             animationDelay: value,
           }),
-          'animate-duration': (value) => ({
+          'animate-duration': (value: string) => ({
             animationDuration: value,
           }),
         },
         {
-          values: theme('transitionDelay'),
+          values: theme('transitionDelay') ?? undefined,
         }
       );
     },

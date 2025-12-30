@@ -50,9 +50,9 @@ function createProgram(): Command {
     .description('Generate code with AI');
 
   // Generate component
-  generate
-    .command('component <description>')
-    .alias('c')
+  const componentCmd = generate.command('component <description>');
+  componentCmd.alias('c');
+  componentCmd
     .description('Generate a PhilJS component from description')
     .option('-n, --name <name>', 'Component name')
     .option('-o, --output <path>', 'Output file path')
@@ -71,13 +71,14 @@ function createProgram(): Command {
         const generator = new ComponentGenerator(provider);
 
         const name = options.name || inferComponentName(description);
-        const result = await generator.generateFromDescription({
+        const config: Parameters<typeof generator.generateFromDescription>[0] = {
           name,
           description,
           useSignals: options.signals !== false,
-          includeTests: options.tests,
-          style: options.styles ? { approach: options.styles as 'tailwind' | 'css-modules' | 'inline' } : undefined,
-        });
+        };
+        if (options.tests !== undefined) config.includeTests = options.tests;
+        if (options.styles) config.style = { approach: options.styles as 'tailwind' | 'css-modules' | 'inline' };
+        const result = await generator.generateFromDescription(config);
 
         if (options.output) {
           writeFileSync(options.output, result.code);
@@ -98,9 +99,9 @@ function createProgram(): Command {
     });
 
   // Generate page
-  generate
-    .command('page <description>')
-    .alias('p')
+  const pageCmd = generate.command('page <description>');
+  pageCmd.alias('p');
+  pageCmd
     .description('Generate a full page from description')
     .option('-n, --name <name>', 'Page name')
     .option('-p, --path <route>', 'Route path', '/')
@@ -121,14 +122,15 @@ function createProgram(): Command {
         const generator = new PageGenerator(provider);
 
         const name = options.name || inferPageName(description);
-        const result = await generator.generatePage({
+        const pageConfig: Parameters<typeof generator.generatePage>[0] = {
           name,
           path: options.path || '/',
           description,
-          type: options.type as 'landing' | 'dashboard' | 'list' | 'detail' | 'form' | undefined,
-          dataLoading: options.loader ? { source: 'api', loadingStates: true } : undefined,
-          includeActions: options.action,
-        });
+        };
+        if (options.type) pageConfig.type = options.type as 'landing' | 'dashboard' | 'list' | 'detail' | 'form';
+        if (options.loader) pageConfig.dataLoading = { source: 'api', loadingStates: true };
+        if (options.action !== undefined) pageConfig.includeActions = options.action;
+        const result = await generator.generatePage(pageConfig);
 
         if (options.output) {
           writeFileSync(options.output, result.code);
@@ -149,9 +151,9 @@ function createProgram(): Command {
     });
 
   // Generate API
-  generate
-    .command('api <resource>')
-    .alias('a')
+  const apiCmd = generate.command('api <resource>');
+  apiCmd.alias('a');
+  apiCmd
     .description('Generate API routes for a resource')
     .option('-o, --output <path>', 'Output file path')
     .option('--crud', 'Generate full CRUD operations')
@@ -169,13 +171,14 @@ function createProgram(): Command {
         const provider = getProvider();
         const generator = new APIGenerator(provider);
 
-        const result = await generator.generateCRUD({
+        const apiConfig: Parameters<typeof generator.generateCRUD>[0] = {
           resource,
           operations: options.crud ? ['create', 'read', 'update', 'delete', 'list'] : ['read', 'list'],
-          database: options.database as 'postgresql' | 'mysql' | 'prisma' | undefined,
           validation: options.validation as 'zod' | 'yup',
-          openapi: options.openapi,
-        });
+        };
+        if (options.database) apiConfig.database = options.database as 'postgresql' | 'mysql' | 'prisma';
+        if (options.openapi !== undefined) apiConfig.openapi = options.openapi;
+        const result = await generator.generateCRUD(apiConfig);
 
         if (options.output) {
           writeFileSync(options.output, result.routes.map(r => r.code).join('\n\n'));
@@ -198,9 +201,9 @@ function createProgram(): Command {
     });
 
   // Refactor command
-  program
-    .command('refactor <path>')
-    .alias('r')
+  const refactorCmd = program.command('refactor <path>');
+  refactorCmd.alias('r');
+  refactorCmd
     .description('AI-powered code refactoring')
     .option('-f, --focus <areas>', 'Focus areas (signals,performance,accessibility,patterns)', 'performance,patterns')
     .option('-l, --level <level>', 'Refactoring level (conservative, moderate, aggressive)', 'moderate')
@@ -249,9 +252,9 @@ function createProgram(): Command {
     });
 
   // Test command
-  program
-    .command('test <path>')
-    .alias('t')
+  const testCmd = program.command('test <path>');
+  testCmd.alias('t');
+  testCmd
     .description('Generate tests for code')
     .option('-t, --type <type>', 'Test type (unit, integration, e2e, component)', 'unit')
     .option('-f, --framework <framework>', 'Test framework (vitest, jest)', 'vitest')
@@ -305,9 +308,9 @@ function createProgram(): Command {
     });
 
   // Docs command
-  program
-    .command('docs <path>')
-    .alias('d')
+  const docsCmd = program.command('docs <path>');
+  docsCmd.alias('d');
+  docsCmd
     .description('Generate documentation')
     .option('-s, --style <style>', 'Documentation style (jsdoc, tsdoc, markdown)', 'jsdoc')
     .option('-o, --output <path>', 'Output path')
@@ -435,9 +438,12 @@ function createProgram(): Command {
     }) => {
       if (options.show) {
         console.log('Current Configuration:');
-        console.log(`  OPENAI_API_KEY: ${process.env.OPENAI_API_KEY ? '***' + process.env.OPENAI_API_KEY.slice(-4) : 'Not set'}`);
-        console.log(`  ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '***' + process.env.ANTHROPIC_API_KEY.slice(-4) : 'Not set'}`);
-        console.log(`  OLLAMA_URL: ${process.env.OLLAMA_URL || 'Not set (default: http://localhost:11434)'}`);
+        const openaiKey = process.env['OPENAI_API_KEY'];
+        const anthropicKey = process.env['ANTHROPIC_API_KEY'];
+        const ollamaUrl = process.env['OLLAMA_URL'];
+        console.log(`  OPENAI_API_KEY: ${openaiKey ? '***' + openaiKey.slice(-4) : 'Not set'}`);
+        console.log(`  ANTHROPIC_API_KEY: ${anthropicKey ? '***' + anthropicKey.slice(-4) : 'Not set'}`);
+        console.log(`  OLLAMA_URL: ${ollamaUrl || 'Not set (default: http://localhost:11434)'}`);
         return;
       }
 

@@ -19,4 +19,4 @@ export {
   type RouteBundle,
   type StaticPageInfo,
   type StaticExportOptions,
-} from './compiler';
+} from './compiler.js';

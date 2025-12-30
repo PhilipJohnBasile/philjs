@@ -13,7 +13,7 @@ export type {
   GodotEmbedProps,
   UseGodotResult,
   SignalHandler,
-} from './types';
+} from './types.js';
 
 // Hooks
 export {
@@ -25,11 +25,11 @@ export {
   syncToGodot,
   syncFromGodot,
   createGodotBridge,
-} from './hooks';
+} from './hooks.js';
 
 // Components
 export {
   GodotEmbed,
   createGodotEmbedElement,
   GodotLoadingIndicator,
-} from './GodotEmbed';
+} from './GodotEmbed.js';

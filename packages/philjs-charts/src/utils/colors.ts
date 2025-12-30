@@ -150,6 +150,6 @@ export function createColorScale(
   return (value: number) => {
     const normalized = Math.max(0, Math.min(1, (value - min) / range));
     const index = Math.floor(normalized * (palette.length - 1));
-    return palette[index];
+    return palette[index] ?? palette[0] ?? '#000000';
   };
 }

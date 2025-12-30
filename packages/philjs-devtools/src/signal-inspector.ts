@@ -31,7 +31,7 @@ export type SignalUpdate = {
   timestamp: number;
   oldValue: any;
   newValue: any;
-  stackTrace?: string;
+  stackTrace?: string | undefined;
 };
 
 export type SignalDependencyGraph = {
@@ -219,7 +219,11 @@ export class SignalInspector {
     if (updates.length > 1) {
       const intervals = [];
       for (let i = 1; i < updates.length; i++) {
-        intervals.push(updates[i].timestamp - updates[i - 1].timestamp);
+        const current = updates[i];
+        const prev = updates[i - 1];
+        if (current && prev) {
+          intervals.push(current.timestamp - prev.timestamp);
+        }
       }
       averageUpdateInterval =
         intervals.reduce((a, b) => a + b, 0) / intervals.length;

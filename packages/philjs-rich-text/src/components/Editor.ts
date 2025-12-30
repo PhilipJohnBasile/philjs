@@ -10,11 +10,11 @@ import type {
   Block,
   Selection,
   SlashCommand,
-} from '../types';
-import { createEditor } from '../core/editor';
-import { SlashCommandMenu } from './SlashCommandMenu';
-import { FloatingToolbar } from './FloatingToolbar';
-import { BlockRenderer } from './BlockRenderer';
+} from '../types.js';
+import { createEditor } from '../core/editor.js';
+import { SlashCommandMenu } from './SlashCommandMenu.js';
+import { FloatingToolbar } from './FloatingToolbar.js';
+import { BlockRenderer } from './BlockRenderer.js';
 
 export interface EditorOptions extends EditorConfig {
   container: HTMLElement;
@@ -49,29 +49,32 @@ export class Editor {
     this.container.style.minHeight = '100px';
 
     // Create editor instance
-    this.editorInstance = createEditor({
+    const editorOptions: Parameters<typeof createEditor>[0] = {
       container: this.container,
       initialContent: this.state.blocks,
       extensions: this.config.extensions || [],
       readOnly: this.config.readOnly || false,
-      collaborationConfig: this.config.collaborationConfig,
-      onUpdate: (newState) => {
+      onUpdate: (newState: EditorState) => {
         this.state = newState;
         this.render();
         this.config.onUpdate?.(newState);
       },
-      onSelectionChange: (selection) => {
+      onSelectionChange: (selection: Selection | null) => {
         this.state.selection = selection;
         this.updateFloatingToolbar(selection);
         this.config.onSelectionChange?.(selection);
       },
-    });
+    };
+    if (this.config.collaborationConfig !== undefined) {
+      editorOptions.collaborationConfig = this.config.collaborationConfig;
+    }
+    this.editorInstance = createEditor(editorOptions);
 
     // Set up slash commands
     if (this.config.slashCommands && this.config.slashCommands.length > 0) {
       this.slashMenu = new SlashCommandMenu({
         commands: this.config.slashCommands,
-        onSelect: (cmd) => {
+        onSelect: (cmd: SlashCommand) => {
           if (this.editorInstance) {
             cmd.execute(this.editorInstance);
           }

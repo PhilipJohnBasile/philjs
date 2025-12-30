@@ -15,7 +15,8 @@ import type {
   LoaderResult,
   ThreeTexture,
   ThreeGLTF,
-} from './types';
+  ThreeObject3D,
+} from './types.js';
 
 /**
  * Cache for loaded Three.js module
@@ -293,9 +294,9 @@ export async function loadTextureAsync(url: string): Promise<ThreeTexture> {
   return new Promise((resolve, reject) => {
     loader.load(
       url,
-      (texture) => resolve(texture),
+      (texture: ThreeTexture) => resolve(texture),
       undefined,
-      (error) => reject(error)
+      (error: Error) => reject(error)
     );
   });
 }
@@ -315,9 +316,9 @@ export async function loadGLTFAsync(url: string): Promise<ThreeGLTF> {
   return new Promise((resolve, reject) => {
     loader.load(
       url,
-      (gltf) => resolve(gltf),
+      (gltf: ThreeGLTF) => resolve(gltf),
       undefined,
-      (error) => reject(error)
+      (error: Error) => reject(error)
     );
   });
 }
@@ -353,8 +354,8 @@ export function disposeThree(canvas: HTMLCanvasElement): void {
   const { scene, renderer } = state;
 
   // Dispose of scene objects
-  scene.traverse((object) => {
-    const mesh = object as {
+  scene.traverse((object: ThreeObject3D) => {
+    const mesh = object as ThreeObject3D & {
       geometry?: { dispose: () => void };
       material?: { dispose: () => void } | Array<{ dispose: () => void }>;
     };

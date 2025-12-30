@@ -3,7 +3,7 @@
  * @description requestAnimationFrame-based animation loop management
  */
 
-import type { AnimationFrameInfo, AnimationLoop } from './types';
+import type { AnimationFrameInfo, AnimationLoop } from './types.js';
 
 /**
  * Callback type for animation frame
@@ -330,9 +330,9 @@ export function lerpVec3(
   t: number
 ): Float32Array {
   return new Float32Array([
-    lerp(a[0], b[0], t),
-    lerp(a[1], b[1], t),
-    lerp(a[2], b[2], t),
+    lerp(a[0]!, b[0]!, t),
+    lerp(a[1]!, b[1]!, t),
+    lerp(a[2]!, b[2]!, t),
   ]);
 }
 
@@ -345,7 +345,7 @@ export function slerp(
   t: number
 ): Float32Array {
   // Assuming a and b are unit quaternions [x, y, z, w]
-  let dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+  let dot = a[0]! * b[0]! + a[1]! * b[1]! + a[2]! * b[2]! + a[3]! * b[3]!;
 
   // If dot is negative, negate one quaternion
   const negateB = dot < 0;
@@ -372,9 +372,9 @@ export function slerp(
   }
 
   return new Float32Array([
-    scale0 * a[0] + scale1 * b[0],
-    scale0 * a[1] + scale1 * b[1],
-    scale0 * a[2] + scale1 * b[2],
-    scale0 * a[3] + scale1 * b[3],
+    scale0 * a[0]! + scale1 * b[0]!,
+    scale0 * a[1]! + scale1 * b[1]!,
+    scale0 * a[2]! + scale1 * b[2]!,
+    scale0 * a[3]! + scale1 * b[3]!,
   ]);
 }

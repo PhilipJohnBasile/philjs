@@ -29,7 +29,7 @@ export type {
   LinkConfig,
   AdapterType,
   AdapterConfig,
-} from './types';
+} from './types.js';
 
 // Server utilities
 export {
@@ -42,7 +42,7 @@ export {
   validateInput,
   RPCError,
   ErrorCodes,
-} from './server';
+} from './server/index.js';
 
 // Client utilities
 export {
@@ -50,7 +50,7 @@ export {
   createBatchedClient,
   createQueryCache,
   createCachedQuery,
-} from './client';
+} from './client/index.js';
 
 // Adapters
 export {
@@ -60,4 +60,4 @@ export {
   createCloudflareAdapter,
   createLambdaAdapter,
   createStandaloneServer,
-} from './adapters';
+} from './adapters/index.js';

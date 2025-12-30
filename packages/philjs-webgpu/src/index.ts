@@ -12,6 +12,373 @@
  * NO OTHER FRAMEWORK HAS THIS.
  */
 
+// Ensure this is treated as an ES module
+export type {};
+
+// ============================================================================
+// WebGPU Type Declarations
+// ============================================================================
+
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
+// Core GPU types
+declare global {
+  interface Navigator {
+    readonly gpu: GPU;
+  }
+
+  interface GPU {
+    requestAdapter(options?: GPURequestAdapterOptions): Promise<GPUAdapter | null>;
+    getPreferredCanvasFormat(): GPUTextureFormat;
+  }
+
+  interface GPURequestAdapterOptions {
+    powerPreference?: 'low-power' | 'high-performance' | undefined;
+  }
+
+  interface GPUAdapter {
+    requestDevice(descriptor?: GPUDeviceDescriptor): Promise<GPUDevice>;
+    readonly features: GPUSupportedFeatures;
+    readonly limits: GPUSupportedLimits;
+  }
+
+  interface GPUDeviceDescriptor {
+    requiredFeatures?: GPUFeatureName[] | undefined;
+    requiredLimits?: Record<string, number> | undefined;
+  }
+
+  interface GPUSupportedFeatures extends Set<string> {}
+
+  interface GPUSupportedLimits {
+    readonly maxBufferSize: number;
+    readonly maxTextureDimension1D: number;
+    readonly maxTextureDimension2D: number;
+    readonly maxTextureDimension3D: number;
+  }
+
+  interface GPUDevice {
+    readonly features: GPUSupportedFeatures;
+    readonly limits: GPUSupportedLimits;
+    readonly queue: GPUQueue;
+    readonly lost: Promise<GPUDeviceLostInfo>;
+    createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer;
+    createTexture(descriptor: GPUTextureDescriptor): GPUTexture;
+    createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule;
+    createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline;
+    createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
+    createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup;
+    createCommandEncoder(descriptor?: GPUCommandEncoderDescriptor): GPUCommandEncoder;
+    destroy(): void;
+  }
+
+  interface GPUDeviceLostInfo {
+    readonly reason: 'destroyed' | 'unknown';
+    readonly message: string;
+  }
+
+  interface GPUQueue {
+    submit(commandBuffers: GPUCommandBuffer[]): void;
+    writeBuffer(buffer: GPUBuffer, bufferOffset: number, data: ArrayBuffer | ArrayBufferView): void;
+  }
+
+  interface GPUBuffer {
+    readonly size: number;
+    readonly usage: GPUBufferUsageFlags;
+    getMappedRange(offset?: number, size?: number): ArrayBuffer;
+    unmap(): void;
+    destroy(): void;
+  }
+
+  interface GPUBufferDescriptor {
+    label?: string | undefined;
+    size: number;
+    usage: GPUBufferUsageFlags;
+    mappedAtCreation?: boolean | undefined;
+  }
+
+  interface GPUTexture {
+    readonly width: number;
+    readonly height: number;
+    readonly format: GPUTextureFormat;
+    createView(descriptor?: GPUTextureViewDescriptor): GPUTextureView;
+    destroy(): void;
+  }
+
+  interface GPUTextureDescriptor {
+    label?: string | undefined;
+    size: GPUExtent3DStrict;
+    format: GPUTextureFormat;
+    usage: GPUTextureUsageFlags;
+    mipLevelCount?: number | undefined;
+    sampleCount?: number | undefined;
+    dimension?: GPUTextureDimension | undefined;
+  }
+
+  interface GPUExtent3DStrict {
+    width: number;
+    height?: number | undefined;
+    depthOrArrayLayers?: number | undefined;
+  }
+
+  interface GPUTextureView {}
+
+  interface GPUTextureViewDescriptor {
+    format?: GPUTextureFormat | undefined;
+    dimension?: GPUTextureViewDimension | undefined;
+  }
+
+  interface GPUShaderModule {}
+
+  interface GPUShaderModuleDescriptor {
+    label?: string | undefined;
+    code: string;
+  }
+
+  interface GPURenderPipeline {
+    getBindGroupLayout(index: number): GPUBindGroupLayout;
+  }
+
+  interface GPURenderPipelineDescriptor {
+    label?: string | undefined;
+    layout: GPUPipelineLayout | 'auto';
+    vertex: GPUVertexState;
+    primitive?: GPUPrimitiveState | undefined;
+    depthStencil?: GPUDepthStencilState | undefined;
+    multisample?: GPUMultisampleState | undefined;
+    fragment?: GPUFragmentState | undefined;
+  }
+
+  interface GPUComputePipeline {
+    getBindGroupLayout(index: number): GPUBindGroupLayout;
+  }
+
+  interface GPUComputePipelineDescriptor {
+    label?: string | undefined;
+    layout: GPUPipelineLayout | 'auto';
+    compute: GPUProgrammableStage;
+  }
+
+  interface GPUProgrammableStage {
+    module: GPUShaderModule;
+    entryPoint: string;
+    constants?: Record<string, number> | undefined;
+  }
+
+  interface GPUVertexState extends GPUProgrammableStage {
+    buffers?: GPUVertexBufferLayout[] | undefined;
+  }
+
+  interface GPUVertexBufferLayout {
+    arrayStride: number;
+    stepMode?: 'vertex' | 'instance' | undefined;
+    attributes: GPUVertexAttribute[];
+  }
+
+  interface GPUVertexAttribute {
+    format: GPUVertexFormat;
+    offset: number;
+    shaderLocation: number;
+  }
+
+  interface GPUPrimitiveState {
+    topology?: GPUPrimitiveTopology | undefined;
+    stripIndexFormat?: GPUIndexFormat | undefined;
+    frontFace?: 'ccw' | 'cw' | undefined;
+    cullMode?: 'none' | 'front' | 'back' | undefined;
+  }
+
+  interface GPUDepthStencilState {
+    format: GPUTextureFormat;
+    depthWriteEnabled: boolean;
+    depthCompare: GPUCompareFunction;
+  }
+
+  interface GPUMultisampleState {
+    count?: number | undefined;
+    mask?: number | undefined;
+    alphaToCoverageEnabled?: boolean | undefined;
+  }
+
+  interface GPUFragmentState extends GPUProgrammableStage {
+    targets: (GPUColorTargetState | null)[];
+  }
+
+  interface GPUColorTargetState {
+    format: GPUTextureFormat;
+    blend?: GPUBlendState | undefined;
+    writeMask?: GPUColorWriteFlags | undefined;
+  }
+
+  interface GPUBlendState {
+    color: GPUBlendComponent;
+    alpha: GPUBlendComponent;
+  }
+
+  interface GPUBlendComponent {
+    operation?: GPUBlendOperation | undefined;
+    srcFactor?: GPUBlendFactor | undefined;
+    dstFactor?: GPUBlendFactor | undefined;
+  }
+
+  interface GPUBindGroup {}
+
+  interface GPUBindGroupDescriptor {
+    label?: string | undefined;
+    layout: GPUBindGroupLayout;
+    entries: GPUBindGroupEntry[];
+  }
+
+  interface GPUBindGroupEntry {
+    binding: number;
+    resource: GPUBindingResource;
+  }
+
+  interface GPUBindGroupLayout {}
+
+  interface GPUPipelineLayout {}
+
+  interface GPUCommandEncoder {
+    beginRenderPass(descriptor: GPURenderPassDescriptor): GPURenderPassEncoder;
+    beginComputePass(descriptor?: GPUComputePassDescriptor): GPUComputePassEncoder;
+    copyBufferToBuffer(source: GPUBuffer, sourceOffset: number, destination: GPUBuffer, destinationOffset: number, size: number): void;
+    finish(descriptor?: GPUCommandBufferDescriptor): GPUCommandBuffer;
+  }
+
+  interface GPUCommandEncoderDescriptor {
+    label?: string | undefined;
+  }
+
+  interface GPUCommandBuffer {}
+
+  interface GPUCommandBufferDescriptor {
+    label?: string | undefined;
+  }
+
+  interface GPURenderPassEncoder {
+    setPipeline(pipeline: GPURenderPipeline): void;
+    setBindGroup(index: number, bindGroup: GPUBindGroup): void;
+    setVertexBuffer(slot: number, buffer: GPUBuffer): void;
+    setIndexBuffer(buffer: GPUBuffer, indexFormat: GPUIndexFormat): void;
+    draw(vertexCount: number, instanceCount?: number, firstVertex?: number, firstInstance?: number): void;
+    drawIndexed(indexCount: number, instanceCount?: number, firstIndex?: number, baseVertex?: number, firstInstance?: number): void;
+    end(): void;
+  }
+
+  interface GPURenderPassDescriptor {
+    label?: string | undefined;
+    colorAttachments: (GPURenderPassColorAttachment | null)[];
+    depthStencilAttachment?: GPURenderPassDepthStencilAttachment | undefined;
+  }
+
+  interface GPURenderPassColorAttachment {
+    view: GPUTextureView;
+    resolveTarget?: GPUTextureView | undefined;
+    clearValue?: GPUColor | undefined;
+    loadOp: GPULoadOp;
+    storeOp: GPUStoreOp;
+  }
+
+  interface GPURenderPassDepthStencilAttachment {
+    view: GPUTextureView;
+    depthClearValue?: number | undefined;
+    depthLoadOp?: GPULoadOp | undefined;
+    depthStoreOp?: GPUStoreOp | undefined;
+    depthReadOnly?: boolean | undefined;
+    stencilClearValue?: number | undefined;
+    stencilLoadOp?: GPULoadOp | undefined;
+    stencilStoreOp?: GPUStoreOp | undefined;
+    stencilReadOnly?: boolean | undefined;
+  }
+
+  interface GPUColor {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  }
+
+  interface GPUComputePassEncoder {
+    setPipeline(pipeline: GPUComputePipeline): void;
+    setBindGroup(index: number, bindGroup: GPUBindGroup): void;
+    dispatchWorkgroups(workgroupCountX: number, workgroupCountY?: number, workgroupCountZ?: number): void;
+    end(): void;
+  }
+
+  interface GPUComputePassDescriptor {
+    label?: string | undefined;
+  }
+
+  interface GPUCanvasContext {
+    configure(configuration: GPUCanvasConfiguration): void;
+    unconfigure(): void;
+    getCurrentTexture(): GPUTexture;
+  }
+
+  interface GPUCanvasConfiguration {
+    device: GPUDevice;
+    format: GPUTextureFormat;
+    usage?: GPUTextureUsageFlags | undefined;
+    viewFormats?: GPUTextureFormat[] | undefined;
+    colorSpace?: 'srgb' | 'display-p3' | undefined;
+    alphaMode?: GPUCanvasAlphaMode | undefined;
+  }
+
+  interface HTMLCanvasElement {
+    getContext(contextId: 'webgpu'): GPUCanvasContext | null;
+  }
+
+  // Type aliases
+  type GPUTextureFormat = 'bgra8unorm' | 'rgba8unorm' | 'rgba16float' | 'rgba32float' | 'depth24plus' | 'depth24plus-stencil8' | 'depth32float' | string;
+  type GPUTextureDimension = '1d' | '2d' | '3d';
+  type GPUTextureViewDimension = '1d' | '2d' | '2d-array' | 'cube' | 'cube-array' | '3d';
+  type GPUBufferUsageFlags = number;
+  type GPUTextureUsageFlags = number;
+  type GPUColorWriteFlags = number;
+  type GPUFeatureName = string;
+  type GPUVertexFormat = 'float32' | 'float32x2' | 'float32x3' | 'float32x4' | 'uint32' | 'sint32' | string;
+  type GPUPrimitiveTopology = 'point-list' | 'line-list' | 'line-strip' | 'triangle-list' | 'triangle-strip';
+  type GPUIndexFormat = 'uint16' | 'uint32';
+  type GPUCompareFunction = 'never' | 'less' | 'equal' | 'less-equal' | 'greater' | 'not-equal' | 'greater-equal' | 'always';
+  type GPUBlendOperation = 'add' | 'subtract' | 'reverse-subtract' | 'min' | 'max';
+  type GPUBlendFactor = 'zero' | 'one' | 'src' | 'one-minus-src' | 'src-alpha' | 'one-minus-src-alpha' | 'dst' | 'one-minus-dst' | 'dst-alpha' | 'one-minus-dst-alpha' | 'constant' | 'one-minus-constant';
+  type GPULoadOp = 'load' | 'clear';
+  type GPUStoreOp = 'store' | 'discard';
+  type GPUCanvasAlphaMode = 'opaque' | 'premultiplied';
+  type GPUBindingResource = GPUTextureView | GPUSampler | GPUBufferBinding | GPUExternalTexture;
+
+  interface GPUSampler {}
+  interface GPUBufferBinding {
+    buffer: GPUBuffer;
+    offset?: number | undefined;
+    size?: number | undefined;
+  }
+  interface GPUExternalTexture {}
+
+  // GPU usage constants
+  const GPUBufferUsage: {
+    readonly MAP_READ: number;
+    readonly MAP_WRITE: number;
+    readonly COPY_SRC: number;
+    readonly COPY_DST: number;
+    readonly INDEX: number;
+    readonly VERTEX: number;
+    readonly UNIFORM: number;
+    readonly STORAGE: number;
+    readonly INDIRECT: number;
+    readonly QUERY_RESOLVE: number;
+  };
+
+  const GPUTextureUsage: {
+    readonly COPY_SRC: number;
+    readonly COPY_DST: number;
+    readonly TEXTURE_BINDING: number;
+    readonly STORAGE_BINDING: number;
+    readonly RENDER_ATTACHMENT: number;
+  };
+}
+
+/* eslint-enable @typescript-eslint/no-empty-object-type */
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -837,16 +1204,3 @@ export function useGPUAnimator(): GPUAnimator | null {
   if (!globalWebGPUContext) return null;
   return new GPUAnimator(globalWebGPUContext);
 }
-
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  WebGPUContext,
-  GPUCanvas,
-  GPUEffects,
-  GPUAnimator,
-  GPUDiffer,
-  BuiltInShaders
-};

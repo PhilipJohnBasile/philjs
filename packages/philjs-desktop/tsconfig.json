@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "Bundler"
+    "rootDir": "./src"
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts", "src/test-setup.ts", "src/electron/*", "src/electron/**/*", "src/system/notification.ts", "src/system/clipboard.ts"]

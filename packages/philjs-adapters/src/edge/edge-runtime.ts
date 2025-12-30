@@ -386,15 +386,16 @@ export function getRegion(request: Request, platformContext?: unknown): EdgeRegi
       // Cloudflare provides CF object with request
       const cf = (request as any).cf;
       if (cf) {
-        return {
+        const region: EdgeRegion = {
           code: cf.colo || 'unknown',
           name: cf.city || cf.colo || 'unknown',
-          continent: cf.continent,
-          country: cf.country,
-          city: cf.city,
-          latitude: cf.latitude ? parseFloat(cf.latitude) : undefined,
-          longitude: cf.longitude ? parseFloat(cf.longitude) : undefined,
         };
+        if (cf.continent !== undefined) region.continent = cf.continent;
+        if (cf.country !== undefined) region.country = cf.country;
+        if (cf.city !== undefined) region.city = cf.city;
+        if (cf.latitude !== undefined) region.latitude = parseFloat(cf.latitude);
+        if (cf.longitude !== undefined) region.longitude = parseFloat(cf.longitude);
+        return region;
       }
       break;
     }
@@ -525,19 +526,30 @@ export function createEdgeHandler(options: EdgeHandlerOptions) {
     const requestStart = Date.now();
     const wasColdStart = isColdStart();
 
+    // Build timing info
+    const timing: EdgeTiming = {
+      requestStart,
+      isColdStart: wasColdStart,
+    };
+    const coldStartDur = getColdStartDuration();
+    if (coldStartDur !== undefined) {
+      timing.coldStartDuration = coldStartDur;
+    }
+
     // Build context
     const context: EdgeContext = {
       platform: detectEdgePlatform(),
       request,
       env: createEdgeEnv(platformEnv),
       executionContext: createExecutionContext(platformContext),
-      region: getRegion(request, platformContext),
-      timing: {
-        requestStart,
-        isColdStart: wasColdStart,
-        coldStartDuration: getColdStartDuration(),
-      },
+      timing,
     };
+
+    // Only add region if available
+    const region = getRegion(request, platformContext);
+    if (region !== undefined) {
+      context.region = region;
+    }
 
     // Mark as warm after first request
     if (wasColdStart) {

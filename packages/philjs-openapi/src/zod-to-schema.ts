@@ -5,7 +5,7 @@
  * Inspired by Elysia's automatic schema inference.
  */
 
-import type { JSONSchema } from './types';
+import type { JSONSchema } from './types.js';
 
 // Zod type detection utilities
 type ZodTypeName =

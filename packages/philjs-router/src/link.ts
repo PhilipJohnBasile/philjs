@@ -114,10 +114,10 @@ function createHoverHandlers(
 
     hoverTimer = setTimeout(() => {
       if (options.withData || options.preload) {
-        prefetchRouteWithData(href, {
-          preload: options.preload,
-          params: options.params,
-        });
+        const prefetchOpts: { preload?: boolean; params?: Record<string, string> } = {};
+        if (options.preload !== undefined) prefetchOpts.preload = options.preload;
+        if (options.params !== undefined) prefetchOpts.params = options.params;
+        prefetchRouteWithData(href, prefetchOpts);
       } else {
         prefetchRoute(href, options.mode);
       }
@@ -157,10 +157,10 @@ function createIntentHandlers(
     intentTimer = setTimeout(() => {
       hasPrefetched = true;
       if (options.withData || options.preload) {
-        prefetchRouteWithData(href, {
-          preload: options.preload,
-          params: options.params,
-        });
+        const prefetchOpts: { preload?: boolean; params?: Record<string, string> } = {};
+        if (options.preload !== undefined) prefetchOpts.preload = options.preload;
+        if (options.params !== undefined) prefetchOpts.params = options.params;
+        prefetchRouteWithData(href, prefetchOpts);
       } else {
         prefetchRoute(href, 'intent');
       }
@@ -196,10 +196,10 @@ function setupVisibilityPrefetch(
     onIntersect: (entry) => {
       if (entry.isIntersecting) {
         if (options.withData || options.preload) {
-          prefetchRouteWithData(href, {
-            preload: options.preload,
-            params: options.params,
-          });
+          const prefetchOpts: { preload?: boolean; params?: Record<string, string> } = {};
+          if (options.preload !== undefined) prefetchOpts.preload = options.preload;
+          if (options.params !== undefined) prefetchOpts.params = options.params;
+          prefetchRouteWithData(href, prefetchOpts);
         } else {
           prefetchRoute(href, 'visible');
         }
@@ -223,10 +223,9 @@ function triggerRenderPrefetch(href: string, options: LinkPrefetchOptions): void
 
   schedule(() => {
     if (options.withData || options.preload) {
-      prefetchRouteWithData(href, {
-        preload: true,
-        params: options.params,
-      });
+      const prefetchOpts: { preload?: boolean; params?: Record<string, string> } = { preload: true };
+      if (options.params !== undefined) prefetchOpts.params = options.params;
+      prefetchRouteWithData(href, prefetchOpts);
     } else {
       prefetchRoute(href, 'render');
     }
@@ -271,21 +270,21 @@ export function EnhancedLink(props: EnhancedLinkProps): VNode {
 
   if (prefetchOptions.mode === 'hover') {
     const { onMouseEnter, onMouseLeave } = createHoverHandlers(href, prefetchOptions);
-    eventHandlers.onMouseEnter = onMouseEnter;
-    eventHandlers.onMouseLeave = onMouseLeave;
+    eventHandlers['onMouseEnter'] = onMouseEnter;
+    eventHandlers['onMouseLeave'] = onMouseLeave;
   } else if (prefetchOptions.mode === 'intent') {
     const handlers = createIntentHandlers(href, prefetchOptions);
-    eventHandlers.onMouseEnter = handlers.onMouseEnter;
-    eventHandlers.onMouseLeave = handlers.onMouseLeave;
-    eventHandlers.onFocus = handlers.onFocus;
-    eventHandlers.onBlur = handlers.onBlur;
+    eventHandlers['onMouseEnter'] = handlers.onMouseEnter;
+    eventHandlers['onMouseLeave'] = handlers.onMouseLeave;
+    eventHandlers['onFocus'] = handlers.onFocus;
+    eventHandlers['onBlur'] = handlers.onBlur;
   }
 
   // Handle click for internal navigation
   const handleClick = (event: MouseEvent) => {
     // Call original onClick if provided
-    if (rest.onClick) {
-      rest.onClick(event);
+    if (rest['onClick']) {
+      rest['onClick'](event);
     }
 
     // Skip if:
@@ -333,7 +332,7 @@ export function EnhancedLink(props: EnhancedLinkProps): VNode {
 
   // Handle visibility and render modes via ref callback
   if (prefetchOptions.mode === 'visible' || prefetchOptions.mode === 'render') {
-    linkProps.ref = (element: HTMLAnchorElement | null) => {
+    linkProps['ref'] = (element: HTMLAnchorElement | null) => {
       if (!element) {
         cleanupFn?.();
         return;
@@ -420,10 +419,10 @@ export function usePrefetchLink(
   // Manual prefetch trigger
   const triggerPrefetch = async () => {
     if (options.withData || options.preload) {
-      await prefetchRouteWithData(href, {
-        preload: options.preload,
-        params: options.params,
-      });
+      const prefetchOpts: { preload?: boolean; params?: Record<string, string> } = {};
+      if (options.preload !== undefined) prefetchOpts.preload = options.preload;
+      if (options.params !== undefined) prefetchOpts.params = options.params;
+      await prefetchRouteWithData(href, prefetchOpts);
     } else {
       await prefetchRoute(href, options.mode);
     }

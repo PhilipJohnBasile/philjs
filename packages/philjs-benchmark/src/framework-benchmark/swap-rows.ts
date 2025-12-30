@@ -71,8 +71,8 @@ function createSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
   const swapFirstLast = () => {
     const currentRows = [...rows()];
     if (currentRows.length < 2) return;
-    const temp = currentRows[0];
-    currentRows[0] = currentRows[currentRows.length - 1];
+    const temp = currentRows[0]!;
+    currentRows[0] = currentRows[currentRows.length - 1]!;
     currentRows[currentRows.length - 1] = temp;
     rows.set(currentRows);
   };
@@ -81,8 +81,8 @@ function createSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
   const swap1And998 = () => {
     const currentRows = [...rows()];
     if (currentRows.length < 999) return;
-    const temp = currentRows[1];
-    currentRows[1] = currentRows[998];
+    const temp = currentRows[1]!;
+    currentRows[1] = currentRows[998]!;
     currentRows[998] = temp;
     rows.set(currentRows);
   };
@@ -96,8 +96,8 @@ function createSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     while (j === i) {
       j = Math.floor(Math.random() * currentRows.length);
     }
-    const temp = currentRows[i];
-    currentRows[i] = currentRows[j];
+    const temp = currentRows[i]!;
+    currentRows[i] = currentRows[j]!;
     currentRows[j] = temp;
     rows.set(currentRows);
   };
@@ -112,7 +112,7 @@ function createSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     const currentRows = [...rows()];
     for (let i = currentRows.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [currentRows[i], currentRows[j]] = [currentRows[j], currentRows[i]];
+      [currentRows[i], currentRows[j]] = [currentRows[j]!, currentRows[i]!];
     }
     rows.set(currentRows);
   };
@@ -177,7 +177,7 @@ function createKeyedSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     // Reorder elements to match new order
     let lastElement: any = null;
     for (let i = currentRows.length - 1; i >= 0; i--) {
-      const row = currentRows[i];
+      const row = currentRows[i]!;
       const el = rowElements.get(row.id);
       if (lastElement) {
         tbody.insertBefore(el, lastElement);
@@ -195,8 +195,8 @@ function createKeyedSwappableTable(mockDOM: ReturnType<typeof createMockDOM>) {
     swap1And998: () => {
       const currentRows = [...rows()];
       if (currentRows.length >= 999) {
-        const temp = currentRows[1];
-        currentRows[1] = currentRows[998];
+        const temp = currentRows[1]!;
+        currentRows[1] = currentRows[998]!;
         currentRows[998] = temp;
         rows.set(currentRows);
       }

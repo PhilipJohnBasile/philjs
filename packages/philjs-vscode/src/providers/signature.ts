@@ -158,6 +158,8 @@ export class PhilJSSignatureHelpProvider implements vscode.SignatureHelpProvider
     if (!functionMatch) return null;
 
     const functionName = functionMatch[1];
+    if (!functionName) return null;
+
     const info = signatureHelp[functionName];
 
     if (!info) return null;

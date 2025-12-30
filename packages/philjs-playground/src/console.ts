@@ -2,7 +2,7 @@
  * PhilJS Playground Console
  */
 
-import type { ConsoleMessage } from './types';
+import type { ConsoleMessage } from './types.js';
 
 export function createConsole(container: HTMLElement) {
   const messages: ConsoleMessage[] = [];

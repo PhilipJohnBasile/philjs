@@ -219,10 +219,10 @@ function createVitePlugin(config: SEOPluginConfig): VitePlugin {
         } = require('./head.js') as typeof import('./head.js');
 
         const seoHtml = generateSEOHead({
-          meta: config.defaults,
-          openGraph: config.openGraph,
-          twitter: config.twitter,
-          jsonLd: config.jsonLd,
+          ...(config.defaults !== undefined ? { meta: config.defaults } : {}),
+          ...(config.openGraph !== undefined ? { openGraph: config.openGraph } : {}),
+          ...(config.twitter !== undefined ? { twitter: config.twitter } : {}),
+          ...(config.jsonLd !== undefined ? { jsonLd: config.jsonLd } : {}),
         });
 
         // Insert before </head>

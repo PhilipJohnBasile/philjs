@@ -142,7 +142,7 @@ export class FragmentRegistry {
     let match;
 
     while ((match = spreadRegex.exec(document)) !== null) {
-      matches.push(match[1]);
+      matches.push(match[1]!);
     }
 
     return matches;
@@ -297,7 +297,7 @@ export function buildQueryWithFragments(
   let match;
 
   while ((match = spreadRegex.exec(query)) !== null) {
-    fragmentNames.add(match[1]);
+    fragmentNames.add(match[1]!);
   }
 
   if (fragmentNames.size === 0) {
@@ -435,7 +435,7 @@ export const FragmentUtils = {
     let match;
 
     while ((match = fragmentDefRegex.exec(document)) !== null) {
-      fragmentDefs.set(match[1], match[0]);
+      fragmentDefs.set(match[1]!, match[0]);
     }
 
     // Find which fragments are actually used
@@ -467,7 +467,7 @@ export const FragmentUtils = {
 
     let match;
     while ((match = fragmentDefRegex.exec(document)) !== null) {
-      const fragmentName = match[1];
+      const fragmentName = match[1]!;
       if (seenFragments.has(fragmentName)) {
         // Remove duplicate
         deduplicated = deduplicated.replace(match[0], '').trim();

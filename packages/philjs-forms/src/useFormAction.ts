@@ -322,9 +322,9 @@ export function useFormAction<TData = any, TError = Error>(
     state,
     isIdle,
     formProps: {
-      action: typeof action === 'string' ? action : undefined,
+      ...(typeof action === 'string' && { action }),
       method: method.toUpperCase(),
-      encType,
+      ...(encType !== undefined && { encType }),
       onSubmit: handleSubmit,
     },
     submit,

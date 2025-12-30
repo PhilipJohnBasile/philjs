@@ -4,7 +4,7 @@
  * Import and use CSS Modules with type safety.
  */
 
-import type { CSSModuleConfig } from './types';
+import type { CSSModuleConfig } from './types.js';
 
 // CSS Module class mapping type
 export type CSSModuleClasses = {

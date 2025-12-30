@@ -285,13 +285,17 @@ export function createLoaderDataSerializer(options?: SSRSuperJSONOptions) {
     toHTML(htmlOptions?: Parameters<typeof injectLoaderData>[2]): string {
       let scripts = '';
       for (const [id, data] of Object.entries(loaderData)) {
-        scripts += generateHydrationScript(id, data, {
-          globalName: htmlOptions?.globalName,
-        });
+        const scriptOptions: { globalName?: string } = {};
+        if (htmlOptions?.globalName) {
+          scriptOptions.globalName = htmlOptions.globalName;
+        }
+        scripts += generateHydrationScript(id, data, scriptOptions);
       }
-      scripts += generateHydrationRestoreScript({
-        globalName: htmlOptions?.globalName,
-      });
+      const restoreOptions: { globalName?: string } = {};
+      if (htmlOptions?.globalName) {
+        restoreOptions.globalName = htmlOptions.globalName;
+      }
+      scripts += generateHydrationRestoreScript(restoreOptions);
       return scripts;
     },
 

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/ambient",
   "version": "0.1.0",
+  "type": "module",
   "description": "Environment-adaptive UI for PhilJS - light sensing, motion adaptation, attention tracking",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

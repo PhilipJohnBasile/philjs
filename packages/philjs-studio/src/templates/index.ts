@@ -1,4 +1,4 @@
-import type { StudioSchema, SerializedComponent } from '../serialization/export';
+import type { StudioSchema, SerializedComponent } from '../serialization/export.js';
 
 // ============================================================================
 // Types
@@ -623,7 +623,7 @@ export const cloneTemplateSchema = (template: Template): StudioSchema => {
   // Deep clone and generate new IDs
   const idMap = new Map<string, string>();
 
-  const clonedComponents = template.schema.components.map((comp) => {
+  const clonedComponents = template.schema.components.map((comp: SerializedComponent) => {
     const newId = `comp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     idMap.set(comp.id, newId);
     return { ...comp, id: newId };
@@ -634,10 +634,10 @@ export const cloneTemplateSchema = (template: Template): StudioSchema => {
     if (comp.parentId) {
       comp.parentId = idMap.get(comp.parentId) || comp.parentId;
     }
-    comp.children = comp.children.map((childId) => idMap.get(childId) || childId);
+    comp.children = comp.children.map((childId: string) => idMap.get(childId) || childId);
   }
 
-  const clonedRootIds = template.schema.rootIds.map((id) => idMap.get(id) || id);
+  const clonedRootIds = template.schema.rootIds.map((id: string) => idMap.get(id) || id);
 
   return {
     ...template.schema,

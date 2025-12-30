@@ -148,7 +148,12 @@ directive('for', (el, expression, context) => {
   }
 
   const [, itemName1, indexName, itemName2, listExpr] = match;
-  const itemName = itemName1 || itemName2;
+  const itemName = itemName1 ?? itemName2;
+
+  if (!itemName || !listExpr) {
+    console.error('Invalid x-for expression:', expression);
+    return;
+  }
 
   const placeholder = document.createComment('x-for');
   const template = el.cloneNode(true) as HTMLElement;
@@ -192,9 +197,11 @@ directive('for', (el, expression, context) => {
  */
 directive('bind', (el, expression, context) => {
   // x-bind:class="..." or :class="..."
-  const [attr, expr] = expression.includes('=')
+  const parts = expression.includes('=')
     ? expression.split('=').map(s => s.trim())
     : [expression, expression];
+  const attr = parts[0]!;
+  const expr = parts[1]!;
 
   return effect(() => {
     const value = evaluateExpression(expr, context);
@@ -228,9 +235,11 @@ directive('bind', (el, expression, context) => {
  */
 directive('on', (el, expression, context) => {
   // x-on:click="handler" or @click="handler"
-  const [event, handler] = expression.split('=').map(s => s.trim());
+  const splitParts = expression.split('=').map(s => s.trim());
+  const event = splitParts[0]!;
+  const handler = splitParts[1]!;
   const modifiers = event.split('.').slice(1);
-  const eventName = event.split('.')[0];
+  const eventName = event.split('.')[0]!;
 
   const listener = (e: Event) => {
     // Handle modifiers
@@ -381,7 +390,7 @@ export function processElement(el: HTMLElement, context: DirectiveContext): void
     }
 
     if (directiveName) {
-      const handler = getDirective(directiveName.split(':')[0]);
+      const handler = getDirective(directiveName.split(':')[0]!);
       if (handler) {
         const cleanup = handler(el, expression, context);
         if (cleanup) cleanups.push(cleanup);

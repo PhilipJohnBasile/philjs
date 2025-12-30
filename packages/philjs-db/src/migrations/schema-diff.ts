@@ -12,7 +12,7 @@ import type {
   ForeignKeyDiff,
   ColumnDefinition,
   TableModification,
-} from './types';
+} from './types.js';
 
 export class SchemaDiffGenerator {
   constructor(private config: MigrationConfig) {}
@@ -194,8 +194,8 @@ export class SchemaDiffGenerator {
           name,
           column: fk.column,
           references: fk.references,
-          onDelete: fk.onDelete,
-          onUpdate: fk.onUpdate,
+          ...(fk.onDelete !== undefined ? { onDelete: fk.onDelete } : {}),
+          ...(fk.onUpdate !== undefined ? { onUpdate: fk.onUpdate } : {}),
         });
       }
     }
@@ -208,8 +208,8 @@ export class SchemaDiffGenerator {
           name,
           column: fk.column,
           references: fk.references,
-          onDelete: fk.onDelete,
-          onUpdate: fk.onUpdate,
+          ...(fk.onDelete !== undefined ? { onDelete: fk.onDelete } : {}),
+          ...(fk.onUpdate !== undefined ? { onUpdate: fk.onUpdate } : {}),
         });
       }
     }

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/analytics",
   "version": "0.1.0",
+  "type": "module",
   "description": "Privacy-First Analytics - GDPR/CCPA compliant, no third-party scripts, client-side processing",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

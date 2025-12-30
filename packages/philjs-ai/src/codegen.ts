@@ -249,15 +249,18 @@ Also provide a brief explanation of the component's functionality.`;
     const validation = validateCode(code);
     const propsInterface = this.extractPropsInterface(code);
 
-    return {
+    const result: GeneratedComponentResult = {
       code,
       name,
-      propsInterface,
       explanation: this.extractExplanation(response),
       imports: this.extractImports(code),
       examples: this.extractExamples(response),
       validation,
     };
+    if (propsInterface !== undefined) {
+      result.propsInterface = propsInterface;
+    }
+    return result;
   }
 
   /**
@@ -716,7 +719,7 @@ Always return valid JSON with the specified structure.`;
     );
 
     if (nouns.length > 0) {
-      const noun = nouns[0].charAt(0).toUpperCase() + nouns[0].slice(1);
+      const noun = nouns[0]!.charAt(0).toUpperCase() + nouns[0]!.slice(1);
       return `${verb}${noun}`;
     }
 
@@ -726,10 +729,10 @@ Always return valid JSON with the specified structure.`;
   private inferName(code: string): string {
     // Try to find function/component name
     const funcMatch = code.match(/(?:export\s+)?(?:async\s+)?function\s+(\w+)/);
-    if (funcMatch) return funcMatch[1];
+    if (funcMatch?.[1]) return funcMatch[1];
 
     const constMatch = code.match(/(?:export\s+)?const\s+(\w+)\s*=/);
-    if (constMatch) return constMatch[1];
+    if (constMatch?.[1]) return constMatch[1];
 
     return 'code';
   }
@@ -753,10 +756,12 @@ Always return valid JSON with the specified structure.`;
 
     // Extract parameters
     const paramsMatch = signature.match(/\(([^)]*)\)/);
-    if (paramsMatch && paramsMatch[1].trim()) {
+    if (paramsMatch?.[1]?.trim()) {
       const params = paramsMatch[1].split(',');
       for (const param of params) {
-        const [namePart, typePart] = param.split(':').map(s => s.trim());
+        const parts = param.split(':').map(s => s.trim());
+        const namePart = parts[0];
+        const typePart = parts[1];
         if (namePart) {
           parameters.push({
             name: namePart.replace(/[?=].*/, ''),
@@ -768,16 +773,16 @@ Always return valid JSON with the specified structure.`;
 
     // Extract return type
     const returnMatch = signature.match(/\):\s*(.+)$/);
-    const returnType = returnMatch?.[1].trim() || 'void';
+    const returnType = returnMatch?.[1]?.trim() || 'void';
 
     return { parameters, returnType };
   }
 
   private extractExplanation(response: string): string {
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]?.trim();
     if (beforeCode) return beforeCode;
 
-    const afterCode = response.split('```').slice(-1)[0].trim();
+    const afterCode = response.split('```').slice(-1)[0]?.trim();
     if (afterCode && !afterCode.startsWith('{')) return afterCode;
 
     return 'Code generated successfully';
@@ -789,7 +794,7 @@ Always return valid JSON with the specified structure.`;
     let match;
 
     while ((match = regex.exec(code)) !== null) {
-      imports.push(match[1]);
+      imports.push(match[1]!);
     }
 
     return imports;
@@ -799,7 +804,7 @@ Always return valid JSON with the specified structure.`;
     const examples: string[] = [];
     const exampleMatch = response.match(/(?:example|usage)[s]?[:\s]*\n?([\s\S]*?)(?=\n\n(?![^\n]*```)|$)/i);
 
-    if (exampleMatch) {
+    if (exampleMatch?.[1]) {
       const codeBlocks = exampleMatch[1].match(/```[\s\S]*?```/g);
       if (codeBlocks) {
         examples.push(...codeBlocks.map(b => b.replace(/```\w*\n?/g, '').trim()));
@@ -815,7 +820,7 @@ Always return valid JSON with the specified structure.`;
     let match;
 
     while ((match = regex.exec(code)) !== null) {
-      const name = match[1];
+      const name = match[1]!;
       testCases.push({
         name,
         description: name,

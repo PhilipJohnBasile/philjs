@@ -208,9 +208,13 @@ export function createTailwindPlugin(userConfig: TailwindPluginConfig = {}): Plu
 
       let needsInstall = false;
       for (const [dep, version] of Object.entries(requiredDeps)) {
-        if (!pkg.devDependencies?.[dep] && !pkg.dependencies?.[dep]) {
-          pkg.devDependencies = pkg.devDependencies || {};
-          pkg.devDependencies[dep] = version;
+        const devDeps = pkg['devDependencies'] as Record<string, string> | undefined;
+        const deps = pkg['dependencies'] as Record<string, string> | undefined;
+        if (!devDeps?.[dep] && !deps?.[dep]) {
+          if (!pkg['devDependencies']) {
+            pkg['devDependencies'] = {};
+          }
+          (pkg['devDependencies'] as Record<string, string>)[dep] = version;
           needsInstall = true;
         }
       }
@@ -333,15 +337,15 @@ export const tailwindUtils = {
 
     for (const [key, value] of Object.entries(cssVars)) {
       // Convert --primary-color to primary.color
-      const path = key.replace(/^--/, "").split("-");
+      const pathParts = key.replace(/^--/, "").split("-");
       let current = theme;
 
-      for (let i = 0; i < path.length - 1; i++) {
-        current[path[i]] = current[path[i]] || {};
-        current = current[path[i]];
+      for (let i = 0; i < pathParts.length - 1; i++) {
+        current[pathParts[i]!] = current[pathParts[i]!] || {};
+        current = current[pathParts[i]!];
       }
 
-      current[path[path.length - 1]] = value;
+      current[pathParts[pathParts.length - 1]!] = value;
     }
 
     return theme;

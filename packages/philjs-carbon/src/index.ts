@@ -81,13 +81,23 @@ export interface CarbonReport {
 }
 
 export interface CarbonConfig {
-  region?: string;
-  apiKey?: string; // For carbon intensity APIs
-  enableScheduling?: boolean;
-  maxQueueSize?: number;
-  defaultPriority?: TaskSchedule['priority'];
-  carbonBudget?: Partial<CarbonBudget>;
-  greenThreshold?: number; // gCO2eq/kWh below which is considered "green"
+  region?: string | undefined;
+  apiKey?: string | undefined; // For carbon intensity APIs
+  enableScheduling?: boolean | undefined;
+  maxQueueSize?: number | undefined;
+  defaultPriority?: TaskSchedule['priority'] | undefined;
+  carbonBudget?: Partial<CarbonBudget> | undefined;
+  greenThreshold?: number | undefined; // gCO2eq/kWh below which is considered "green"
+}
+
+interface ResolvedCarbonConfig {
+  region: string;
+  apiKey: string | undefined;
+  enableScheduling: boolean;
+  maxQueueSize: number;
+  defaultPriority: TaskSchedule['priority'];
+  carbonBudget: Partial<CarbonBudget>;
+  greenThreshold: number;
 }
 
 // ============================================================================
@@ -96,10 +106,10 @@ export interface CarbonConfig {
 
 export class CarbonIntensityProvider {
   private region: string;
-  private apiKey?: string;
+  private apiKey?: string | undefined;
   private cache: Map<string, { data: CarbonIntensity; expires: number }> = new Map();
   private listeners: Set<(intensity: CarbonIntensity) => void> = new Set();
-  private pollInterval?: ReturnType<typeof setInterval>;
+  private pollInterval?: ReturnType<typeof setInterval> | undefined;
 
   constructor(region: string = 'global', apiKey?: string) {
     this.region = region;
@@ -192,7 +202,7 @@ export class CarbonIntensityProvider {
   private stopPolling(): void {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
-      this.pollInterval = undefined;
+      this.pollInterval = undefined as ReturnType<typeof setInterval> | undefined;
     }
   }
 
@@ -332,11 +342,11 @@ export class DeviceEnergyMonitor {
 export class CarbonTaskScheduler {
   private intensityProvider: CarbonIntensityProvider;
   private energyMonitor: DeviceEnergyMonitor;
-  private config: Required<CarbonConfig>;
+  private config: ResolvedCarbonConfig;
   private taskQueue: Map<string, TaskSchedule> = new Map();
   private budget: CarbonBudget;
   private executionHistory: TaskSchedule[] = [];
-  private schedulerInterval?: ReturnType<typeof setInterval>;
+  private schedulerInterval?: ReturnType<typeof setInterval> | undefined;
 
   constructor(config: CarbonConfig = {}) {
     this.config = {
@@ -632,7 +642,7 @@ export class NetworkCarbonEstimator {
 
       // Estimate carbon from transfer
       const requestSize = init?.body
-        ? new Blob([init.body]).size
+        ? new Blob([init.body as BlobPart]).size
         : 0;
 
       const contentLength = response.headers.get('content-length');
@@ -893,15 +903,8 @@ export function useCarbonBudget(): {
 }
 
 // ============================================================================
-// Export All
+// Export Default
 // ============================================================================
-
-export {
-  CarbonIntensityProvider,
-  DeviceEnergyMonitor,
-  CarbonTaskScheduler,
-  NetworkCarbonEstimator
-};
 
 export default {
   CarbonIntensityProvider,

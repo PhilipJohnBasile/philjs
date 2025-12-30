@@ -4,10 +4,10 @@
  * Main entry point that combines all features.
  */
 
-import { initDirectives } from './directives';
-import { initHtmx, configure as configureHtmx, type HtmxConfig } from './htmx';
-import { initAlpine, store, data, bind, Alpine } from './alpine';
-import { initMinimal } from './minimal';
+import { initDirectives } from './directives.js';
+import { initHtmx, configure as configureHtmx, type HtmxConfig } from './htmx.js';
+import { initAlpine, store, data, bind, Alpine } from './alpine.js';
+import { initMinimal } from './minimal.js';
 
 export interface PhilJSHTMLConfig {
   /** Enable Alpine.js directives */

@@ -154,7 +154,9 @@ export class CookieJarImpl implements CookieJar {
   private secretKey?: string;
 
   constructor(cookieHeader?: string, secretKey?: string) {
-    this.secretKey = secretKey;
+    if (secretKey !== undefined) {
+      this.secretKey = secretKey;
+    }
 
     if (cookieHeader) {
       const parsed = parseCookies(cookieHeader);
@@ -302,7 +304,7 @@ export class CookieJarImpl implements CookieJar {
     const result = new Uint8Array(encoded.length);
 
     for (let i = 0; i < encoded.length; i++) {
-      result[i] = encoded[i] ^ keyBytes[i % keyBytes.length];
+      result[i] = encoded[i]! ^ keyBytes[i % keyBytes.length]!;
     }
 
     return btoa(String.fromCharCode(...result));
@@ -317,7 +319,7 @@ export class CookieJarImpl implements CookieJar {
       const result = new Uint8Array(decoded.length);
 
       for (let i = 0; i < decoded.length; i++) {
-        result[i] = decoded[i] ^ keyBytes[i % keyBytes.length];
+        result[i] = decoded[i]! ^ keyBytes[i % keyBytes.length]!;
       }
 
       return new TextDecoder().decode(result);
@@ -335,7 +337,11 @@ export class CookieJarImpl implements CookieJar {
  * Create a cookie
  */
 export function cookie(name: string, value: string, options?: CookieOptions): Cookie {
-  return { name, value, options };
+  const result: Cookie = { name, value };
+  if (options !== undefined) {
+    result.options = options;
+  }
+  return result;
 }
 
 /**
@@ -423,8 +429,11 @@ export async function verifyCookie(signedValue: string, secret: string): Promise
   if (parts.length !== 2) return null;
 
   const [value, signature] = parts;
+  if (value === undefined || signature === undefined) return null;
+
   const expectedSigned = await signCookie(value, secret);
   const [, expectedSignature] = expectedSigned.split('.');
+  if (expectedSignature === undefined) return null;
 
   // Timing-safe comparison
   if (signature.length !== expectedSignature.length) return null;

@@ -50,25 +50,39 @@ export function createRoute<
 ): RouteDefinition<TPath, TSearchSchema, TLoaderData> {
   const routeId = generateRouteId(options.path);
 
-  const route: RouteDefinition<TPath, TSearchSchema, TLoaderData> = {
+  const route = {
     id: routeId,
     path: options.path,
     fullPath: options.path,
     validateSearch: options.validateSearch as TSearchSchema,
-    loader: options.loader,
-    component: options.component,
-    errorComponent: options.errorComponent,
-    pendingComponent: options.pendingComponent,
-    beforeLoad: options.beforeLoad,
-    meta: options.meta,
     parent: undefined,
     children: [],
 
     // Attached hooks for convenient usage in components
-    useParams: () => useRouteParams<TPath>(route),
-    useSearch: () => useRouteSearch<TPath, TSearchSchema>(route),
-    useLoaderData: () => useRouteLoaderData<TPath, TSearchSchema, TLoaderData>(route),
-  };
+    useParams: () => useRouteParams<TPath>(route as RouteDefinition<TPath, z.ZodType | undefined, unknown>),
+    useSearch: () => useRouteSearch<TPath, TSearchSchema>(route as RouteDefinition<TPath, TSearchSchema, unknown>),
+    useLoaderData: () => useRouteLoaderData<TPath, TSearchSchema, TLoaderData>(route as RouteDefinition<TPath, TSearchSchema, TLoaderData>),
+  } as unknown as RouteDefinition<TPath, TSearchSchema, TLoaderData>;
+
+  // Use conditional assignment for optional properties (TS2375/exactOptionalPropertyTypes)
+  if (options.loader !== undefined) {
+    (route as { loader?: typeof options.loader }).loader = options.loader;
+  }
+  if (options.component !== undefined) {
+    (route as { component?: typeof options.component }).component = options.component;
+  }
+  if (options.errorComponent !== undefined) {
+    (route as { errorComponent?: typeof options.errorComponent }).errorComponent = options.errorComponent;
+  }
+  if (options.pendingComponent !== undefined) {
+    (route as { pendingComponent?: typeof options.pendingComponent }).pendingComponent = options.pendingComponent;
+  }
+  if (options.beforeLoad !== undefined) {
+    (route as { beforeLoad?: typeof options.beforeLoad }).beforeLoad = options.beforeLoad;
+  }
+  if (options.meta !== undefined) {
+    (route as { meta?: typeof options.meta }).meta = options.meta;
+  }
 
   return route;
 }
@@ -97,18 +111,24 @@ export function createRootRoute(options: RootRouteOptions = {}): RouteDefinition
     path: "/" as const,
     fullPath: "/",
     validateSearch: undefined,
-    loader: undefined,
-    component: options.component as any,
-    errorComponent: options.errorComponent,
-    pendingComponent: options.pendingComponent,
-    meta: undefined,
     parent: undefined,
     children: [],
 
     useParams: () => ({}) as PathParams<"/">,
     useSearch: () => ({}) as Record<string, unknown>,
     useLoaderData: () => undefined as never,
-  } as RouteDefinition<"/", undefined, never>;
+  } as unknown as RouteDefinition<"/", undefined, never>;
+
+  // Use conditional assignment for optional properties (TS2352/exactOptionalPropertyTypes)
+  if (options.component !== undefined) {
+    (route as unknown as { component: unknown }).component = options.component;
+  }
+  if (options.errorComponent !== undefined) {
+    (route as unknown as { errorComponent: unknown }).errorComponent = options.errorComponent;
+  }
+  if (options.pendingComponent !== undefined) {
+    (route as unknown as { pendingComponent: unknown }).pendingComponent = options.pendingComponent;
+  }
 
   return route;
 }
@@ -172,7 +192,8 @@ export function createRouteWithChildren<
   children: TChildren
 ): RouteDefinition<TPath, TSearchSchema, TLoaderData> & { children: TChildren } {
   const route = createRoute(options);
-  return addChildren(route, children) as RouteDefinition<TPath, TSearchSchema, TLoaderData> & { children: TChildren };
+  // Cast route to compatible type for addChildren (TS2379/exactOptionalPropertyTypes)
+  return addChildren(route as RouteDefinition<string, z.ZodType | undefined, unknown>, children) as RouteDefinition<TPath, TSearchSchema, TLoaderData> & { children: TChildren };
 }
 
 /**

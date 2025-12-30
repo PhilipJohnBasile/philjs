@@ -26,7 +26,7 @@ export type {
   ThreeState,
   FrameInfo,
   LoaderResult,
-} from './types';
+} from './types.js';
 
 // Hooks
 export {
@@ -46,7 +46,7 @@ export {
   removeFromScene,
   setCameraPosition,
   setCameraLookAt,
-} from './hooks';
+} from './hooks.js';
 
 // Components
-export { ThreeCanvas, createThreeCanvasElement } from './ThreeCanvas';
+export { ThreeCanvas, createThreeCanvasElement } from './ThreeCanvas.js';

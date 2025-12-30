@@ -1,6 +1,7 @@
 {
   "name": "@philjs/offline",
   "version": "0.1.0",
+  "type": "module",
   "description": "Offline-first architecture for PhilJS - IndexedDB, sync, caching strategies",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

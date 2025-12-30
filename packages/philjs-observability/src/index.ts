@@ -124,7 +124,7 @@ export class Tracer {
     const span: Span = {
       traceId: parentSpan?.traceId || this.generateId(),
       spanId: this.generateId(),
-      parentSpanId: parentSpan?.spanId,
+      ...(parentSpan?.spanId !== undefined ? { parentSpanId: parentSpan.spanId } : {}),
       name,
       startTime: Date.now(),
       status: 'unset',
@@ -161,7 +161,7 @@ export class Tracer {
     span.events.push({
       name,
       timestamp: Date.now(),
-      attributes,
+      ...(attributes !== undefined ? { attributes } : {}),
     });
   }
 
@@ -390,8 +390,8 @@ export class Logger {
       message,
       timestamp: new Date(),
       context: { ...this.context, ...context },
-      traceId: currentSpan?.traceId,
-      spanId: currentSpan?.spanId,
+      ...(currentSpan?.traceId !== undefined ? { traceId: currentSpan.traceId } : {}),
+      ...(currentSpan?.spanId !== undefined ? { spanId: currentSpan.spanId } : {}),
     };
 
     this.transports.forEach(transport => transport.log(entry));
@@ -462,7 +462,7 @@ export function usePerformance() {
     // Observe LCP
     const lcpObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      const lastEntry = entries[entries.length - 1];
+      const lastEntry = entries[entries.length - 1]!;
       metrics.set({ ...metrics(), lcp: lastEntry.startTime });
     });
     lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
@@ -579,19 +579,19 @@ export class ErrorTracker {
 // Chart Components
 // ============================================================================
 
-export * from './charts';
+export * from './charts/index.js';
 
 // ============================================================================
 // Widget Components
 // ============================================================================
 
-export * from './widgets';
+export * from './widgets/index.js';
 
 // ============================================================================
 // Dashboard Components
 // ============================================================================
 
-export * from './dashboard';
+export * from './dashboard/index.js';
 
 // ============================================================================
 // Alerting Engine
@@ -603,7 +603,7 @@ export {
   getAlertManager,
   useAlerts,
   presetRules,
-} from './alerting';
+} from './alerting.js';
 
 export type {
   AlertSeverity,
@@ -614,4 +614,4 @@ export type {
   Alert,
   NotificationChannel,
   AlertManagerConfig,
-} from './alerting';
+} from './alerting.js';

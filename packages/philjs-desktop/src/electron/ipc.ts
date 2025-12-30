@@ -3,9 +3,9 @@
  * Provides ipcMain and ipcRenderer APIs on top of Tauri
  */
 
-import { listen, emit } from '../tauri/events';
-import { invoke } from '../tauri/invoke';
-import type { UnlistenFn } from '../tauri/types';
+import { listen, emit } from '../tauri/events.js';
+import { invoke } from '../tauri/invoke.js';
+import type { UnlistenFn, Event } from '../tauri/types.js';
 
 // IPC event handler type
 type IpcHandler = (event: IpcEvent, ...args: any[]) => any;
@@ -24,6 +24,31 @@ export interface IpcEvent {
   reply: (channel: string, ...args: any[]) => void;
   /** Return value for sync handlers */
   returnValue?: any;
+}
+
+/** IpcMain interface for type-safe return types */
+interface IpcMain {
+  handle(channel: string, handler: IpcHandler): void;
+  handleOnce(channel: string, handler: IpcHandler): void;
+  removeHandler(channel: string): void;
+  on(channel: string, listener: IpcListener): IpcMain;
+  once(channel: string, listener: IpcListener): IpcMain;
+  removeListener(channel: string, listener: IpcListener): IpcMain;
+  removeAllListeners(channel?: string): IpcMain;
+}
+
+/** IpcRenderer interface for type-safe return types */
+interface IpcRenderer {
+  send(channel: string, ...args: any[]): void;
+  sendSync(channel: string, ...args: any[]): any;
+  invoke(channel: string, ...args: any[]): Promise<any>;
+  sendTo(webContentsId: number, channel: string, ...args: any[]): void;
+  sendToHost(channel: string, ...args: any[]): void;
+  on(channel: string, listener: IpcListener): IpcRenderer;
+  once(channel: string, listener: IpcListener): IpcRenderer;
+  removeListener(channel: string, listener: IpcListener): IpcRenderer;
+  removeAllListeners(channel?: string): IpcRenderer;
+  postMessage(channel: string, message: any, transfer?: Transferable[]): void;
 }
 
 // Handler storage
@@ -60,7 +85,7 @@ function createEvent(channel: string): IpcEvent {
  * ipcMain - Main process IPC (Electron compatibility)
  * In Tauri, this runs in the webview but emulates main process behavior
  */
-export const ipcMain = {
+export const ipcMain: IpcMain = {
   /**
    * Handle an IPC request (async)
    */
@@ -68,7 +93,7 @@ export const ipcMain = {
     mainHandlers.set(channel, handler);
 
     // Set up Tauri listener
-    listen<any[]>(`ipc:${channel}:invoke`, async (e) => {
+    listen<any[]>(`ipc:${channel}:invoke`, async (e: Event<any[]>) => {
       const [requestId, ...args] = e.payload;
       const event = createEvent(channel);
 
@@ -94,10 +119,10 @@ export const ipcMain = {
    */
   handleOnce(channel: string, handler: IpcHandler): void {
     const wrappedHandler: IpcHandler = async (event, ...args) => {
-      this.removeHandler(channel);
+      ipcMain.removeHandler(channel);
       return handler(event, ...args);
     };
-    this.handle(channel, wrappedHandler);
+    ipcMain.handle(channel, wrappedHandler);
   },
 
   /**
@@ -115,12 +140,12 @@ export const ipcMain = {
   /**
    * Listen for an event
    */
-  on(channel: string, listener: IpcListener): this {
+  on(channel: string, listener: IpcListener): IpcMain {
     if (!mainListeners.has(channel)) {
       mainListeners.set(channel, new Set());
 
       // Set up Tauri listener
-      listen<any[]>(`ipc:${channel}`, (e) => {
+      listen<any[]>(`ipc:${channel}`, (e: Event<any[]>) => {
         const event = createEvent(channel);
         mainListeners.get(channel)?.forEach(l => l(event, ...e.payload));
       }).then(unlisten => {
@@ -132,32 +157,32 @@ export const ipcMain = {
     }
 
     mainListeners.get(channel)!.add(listener);
-    return this;
+    return ipcMain;
   },
 
   /**
    * Listen for an event once
    */
-  once(channel: string, listener: IpcListener): this {
+  once(channel: string, listener: IpcListener): IpcMain {
     const wrapper: IpcListener = (event, ...args) => {
-      this.removeListener(channel, wrapper);
+      ipcMain.removeListener(channel, wrapper);
       listener(event, ...args);
     };
-    return this.on(channel, wrapper);
+    return ipcMain.on(channel, wrapper);
   },
 
   /**
    * Remove a listener
    */
-  removeListener(channel: string, listener: IpcListener): this {
+  removeListener(channel: string, listener: IpcListener): IpcMain {
     mainListeners.get(channel)?.delete(listener);
-    return this;
+    return ipcMain;
   },
 
   /**
    * Remove all listeners for a channel
    */
-  removeAllListeners(channel?: string): this {
+  removeAllListeners(channel?: string): IpcMain {
     if (channel) {
       mainListeners.delete(channel);
       const unlisteners = unlistenerMap.get(channel);
@@ -170,14 +195,14 @@ export const ipcMain = {
       unlistenerMap.forEach(unlisteners => unlisteners.forEach(fn => fn()));
       unlistenerMap.clear();
     }
-    return this;
+    return ipcMain;
   },
 };
 
 /**
  * ipcRenderer - Renderer process IPC (Electron compatibility)
  */
-export const ipcRenderer = {
+export const ipcRenderer: IpcRenderer = {
   /**
    * Send a message to main process
    */
@@ -190,7 +215,7 @@ export const ipcRenderer = {
    */
   sendSync(channel: string, ...args: any[]): any {
     console.warn('[IPC] sendSync is not supported in Tauri, use invoke instead');
-    this.send(channel, ...args);
+    ipcRenderer.send(channel, ...args);
     return undefined;
   },
 
@@ -204,7 +229,7 @@ export const ipcRenderer = {
       // Listen for response
       const responseChannel = `ipc:${channel}:response:${requestId}`;
 
-      listen<{ success: boolean; result?: any; error?: string }>(responseChannel, (e) => {
+      listen<{ success: boolean; result?: any; error?: string }>(responseChannel, (e: Event<{ success: boolean; result?: any; error?: string }>) => {
         if (e.payload.success) {
           resolve(e.payload.result);
         } else {
@@ -237,11 +262,11 @@ export const ipcRenderer = {
   /**
    * Listen for messages from main process
    */
-  on(channel: string, listener: IpcListener): this {
+  on(channel: string, listener: IpcListener): IpcRenderer {
     if (!rendererListeners.has(channel)) {
       rendererListeners.set(channel, new Set());
 
-      listen<any[]>(`ipc:${channel}`, (e) => {
+      listen<any[]>(`ipc:${channel}`, (e: Event<any[]>) => {
         const event = createEvent(channel);
         rendererListeners.get(channel)?.forEach(l => l(event, ...e.payload));
       }).then(unlisten => {
@@ -253,32 +278,32 @@ export const ipcRenderer = {
     }
 
     rendererListeners.get(channel)!.add(listener);
-    return this;
+    return ipcRenderer;
   },
 
   /**
    * Listen once
    */
-  once(channel: string, listener: IpcListener): this {
+  once(channel: string, listener: IpcListener): IpcRenderer {
     const wrapper: IpcListener = (event, ...args) => {
-      this.removeListener(channel, wrapper);
+      ipcRenderer.removeListener(channel, wrapper);
       listener(event, ...args);
     };
-    return this.on(channel, wrapper);
+    return ipcRenderer.on(channel, wrapper);
   },
 
   /**
    * Remove a listener
    */
-  removeListener(channel: string, listener: IpcListener): this {
+  removeListener(channel: string, listener: IpcListener): IpcRenderer {
     rendererListeners.get(channel)?.delete(listener);
-    return this;
+    return ipcRenderer;
   },
 
   /**
    * Remove all listeners
    */
-  removeAllListeners(channel?: string): this {
+  removeAllListeners(channel?: string): IpcRenderer {
     if (channel) {
       rendererListeners.delete(channel);
       const unlisteners = unlistenerMap.get(`renderer:${channel}`);
@@ -294,14 +319,14 @@ export const ipcRenderer = {
         }
       });
     }
-    return this;
+    return ipcRenderer;
   },
 
   /**
    * Post a message (Web API compatible)
    */
   postMessage(channel: string, message: any, transfer?: Transferable[]): void {
-    this.send(channel, message);
+    ipcRenderer.send(channel, message);
   },
 };
 

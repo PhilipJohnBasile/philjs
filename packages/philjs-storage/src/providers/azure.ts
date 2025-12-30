@@ -94,24 +94,42 @@ export class AzureStorageClient extends StorageClient {
       buffer = Buffer.concat(chunks);
     }
 
-    const uploadOptions = {
+    const uploadOptions: {
+      blobHTTPHeaders: {
+        blobContentType: string;
+        blobCacheControl?: string;
+        blobContentDisposition?: string;
+      };
+      metadata?: Record<string, string>;
+      onProgress?: (progress: { loadedBytes: number }) => void;
+      abortSignal?: AbortSignal;
+    } = {
       blobHTTPHeaders: {
         blobContentType: contentType,
-        blobCacheControl: options.cacheControl,
-        blobContentDisposition: options.contentDisposition,
       },
-      metadata: options.metadata,
-      onProgress: options.onProgress
-        ? (progress: { loadedBytes: number }) => {
-            options.onProgress!({
-              loaded: progress.loadedBytes,
-              total: buffer.length,
-              percentage: Math.round((progress.loadedBytes / buffer.length) * 100),
-            });
-          }
-        : undefined,
-      abortSignal: options.signal,
     };
+
+    if (options.cacheControl) {
+      uploadOptions.blobHTTPHeaders.blobCacheControl = options.cacheControl;
+    }
+    if (options.contentDisposition) {
+      uploadOptions.blobHTTPHeaders.blobContentDisposition = options.contentDisposition;
+    }
+    if (options.metadata) {
+      uploadOptions.metadata = options.metadata;
+    }
+    if (options.onProgress) {
+      uploadOptions.onProgress = (progress: { loadedBytes: number }) => {
+        options.onProgress!({
+          loaded: progress.loadedBytes,
+          total: buffer.length,
+          percentage: Math.round((progress.loadedBytes / buffer.length) * 100),
+        });
+      };
+    }
+    if (options.signal) {
+      uploadOptions.abortSignal = options.signal;
+    }
 
     // Use block blob upload for large files
     if (options.multipart || buffer.length > 4 * 1024 * 1024) {
@@ -132,18 +150,20 @@ export class AzureStorageClient extends StorageClient {
   async download(key: string, options: DownloadOptions = {}): Promise<Buffer> {
     const blobClient = this.getBlobClient(key);
 
-    const downloadOptions: Parameters<typeof blobClient.download>[2] = {
-      abortSignal: options.signal,
-      onProgress: options.onProgress
-        ? (progress: { loadedBytes: number }) => {
-            options.onProgress!({
-              loaded: progress.loadedBytes,
-              total: -1,
-              percentage: -1,
-            });
-          }
-        : undefined,
-    };
+    const downloadOptions: Parameters<typeof blobClient.download>[2] = {};
+
+    if (options.signal) {
+      downloadOptions.abortSignal = options.signal;
+    }
+    if (options.onProgress) {
+      downloadOptions.onProgress = (progress: { loadedBytes: number }) => {
+        options.onProgress!({
+          loaded: progress.loadedBytes,
+          total: -1,
+          percentage: -1,
+        });
+      };
+    }
 
     const response = await blobClient.download(
       options.rangeStart || 0,
@@ -170,10 +190,15 @@ export class AzureStorageClient extends StorageClient {
   ): Promise<ReadableStream<Uint8Array>> {
     const blobClient = this.getBlobClient(key);
 
+    const streamDownloadOptions: Parameters<typeof blobClient.download>[2] = {};
+    if (options.signal) {
+      streamDownloadOptions.abortSignal = options.signal;
+    }
+
     const response = await blobClient.download(
       options.rangeStart || 0,
       options.rangeEnd !== undefined ? options.rangeEnd - (options.rangeStart || 0) + 1 : undefined,
-      { abortSignal: options.signal }
+      streamDownloadOptions
     );
 
     if (!response.readableStreamBody) {
@@ -215,15 +240,22 @@ export class AzureStorageClient extends StorageClient {
       includeMetadata: true,
     };
 
+    const pageSettings: { maxPageSize: number; continuationToken?: string } = {
+      maxPageSize: options.maxResults || 1000,
+    };
+    if (options.continuationToken) {
+      pageSettings.continuationToken = options.continuationToken;
+    }
+
     let iterator;
     if (options.delimiter) {
       iterator = this.containerClient
         .listBlobsByHierarchy(options.delimiter, listOptions)
-        .byPage({ maxPageSize: options.maxResults || 1000, continuationToken: options.continuationToken });
+        .byPage(pageSettings);
     } else {
       iterator = this.containerClient
         .listBlobsFlat(listOptions)
-        .byPage({ maxPageSize: options.maxResults || 1000, continuationToken: options.continuationToken });
+        .byPage(pageSettings);
     }
 
     const page = await iterator.next();
@@ -231,14 +263,19 @@ export class AzureStorageClient extends StorageClient {
 
     if (segment.segment?.blobItems) {
       for (const blob of segment.segment.blobItems) {
-        files.push({
+        const file: StorageFile = {
           key: this.stripBasePath(blob.name),
           size: blob.properties.contentLength || 0,
           contentType: blob.properties.contentType || 'application/octet-stream',
           lastModified: blob.properties.lastModified || new Date(),
-          etag: blob.properties.etag?.replace(/"/g, ''),
-          metadata: blob.metadata,
-        });
+        };
+        if (blob.properties.etag) {
+          file.etag = blob.properties.etag.replace(/"/g, '');
+        }
+        if (blob.metadata) {
+          file.metadata = blob.metadata;
+        }
+        files.push(file);
       }
     }
 
@@ -262,14 +299,19 @@ export class AzureStorageClient extends StorageClient {
     try {
       const properties = await blobClient.getProperties();
 
-      return {
+      const file: StorageFile = {
         key,
         size: properties.contentLength || 0,
         contentType: properties.contentType || 'application/octet-stream',
         lastModified: properties.lastModified || new Date(),
-        etag: properties.etag?.replace(/"/g, ''),
-        metadata: properties.metadata,
       };
+      if (properties.etag) {
+        file.etag = properties.etag.replace(/"/g, '');
+      }
+      if (properties.metadata) {
+        file.metadata = properties.metadata;
+      }
+      return file;
     } catch (error: any) {
       if (error.statusCode === 404) {
         return null;
@@ -297,17 +339,32 @@ export class AzureStorageClient extends StorageClient {
         permissions.read = true;
       }
 
+      const sasOptions: {
+        containerName: string;
+        blobName: string;
+        permissions: BlobSASPermissions;
+        startsOn: Date;
+        expiresOn: Date;
+        contentType?: string;
+        contentDisposition?: string;
+        protocol: SASProtocol;
+      } = {
+        containerName: this.config.bucket,
+        blobName: this.buildKey(key),
+        permissions,
+        startsOn: new Date(),
+        expiresOn: new Date(Date.now() + expiresIn * 1000),
+        protocol: SASProtocol.Https,
+      };
+      if (options.contentType) {
+        sasOptions.contentType = options.contentType;
+      }
+      if (options.responseContentDisposition) {
+        sasOptions.contentDisposition = options.responseContentDisposition;
+      }
+
       const sasToken = generateBlobSASQueryParameters(
-        {
-          containerName: this.config.bucket,
-          blobName: this.buildKey(key),
-          permissions,
-          startsOn: new Date(),
-          expiresOn: new Date(Date.now() + expiresIn * 1000),
-          contentType: options.contentType,
-          contentDisposition: options.responseContentDisposition,
-          protocol: SASProtocol.Https,
-        },
+        sasOptions,
         this.sharedKeyCredential
       ).toString();
 

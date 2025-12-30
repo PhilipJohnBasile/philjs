@@ -142,7 +142,7 @@ export function matchPath(
   }
 
   // Remove query string and hash
-  normalizedUrl = normalizedUrl.split('?')[0].split('#')[0];
+  normalizedUrl = normalizedUrl.split('?')[0]!.split('#')[0]!;
 
   // Remove trailing slash for matching
   const cleanPattern = pattern.replace(/\/$/, '');
@@ -167,7 +167,7 @@ export function matchPath(
   // Extract parameters
   const params: Record<string, string> = {};
   paramNames.forEach((name, index) => {
-    params[name] = decodeURIComponent(match[index + 1]);
+    params[name] = decodeURIComponent(match[index + 1]!);
   });
 
   return params;
@@ -333,7 +333,7 @@ export function sanitizePath(path: string): string {
  */
 export function getExtension(path: string): string {
   const match = path.match(/\.([^./]+)$/);
-  return match ? match[1] : '';
+  return match ? match[1]! : '';
 }
 
 /**
@@ -341,7 +341,7 @@ export function getExtension(path: string): string {
  */
 export function getFilename(path: string, includeExtension = true): string {
   const parts = path.split('/');
-  const filename = parts[parts.length - 1];
+  const filename = parts[parts.length - 1]!;
 
   if (!includeExtension) {
     return filename.replace(/\.[^.]+$/, '');

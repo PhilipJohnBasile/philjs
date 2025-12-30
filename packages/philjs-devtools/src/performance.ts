@@ -120,7 +120,7 @@ export class PerformanceMonitor {
     const mark: PerformanceMark = {
       name,
       timestamp: performance.now(),
-      metadata,
+      ...(metadata !== undefined && { metadata }),
     };
 
     this.marks.push(mark);
@@ -169,7 +169,7 @@ export class PerformanceMonitor {
       endMark: end.name,
       duration: end.timestamp - start.timestamp,
       timestamp: Date.now(),
-      metadata,
+      ...(metadata !== undefined && { metadata }),
     };
 
     this.measures.push(measure);

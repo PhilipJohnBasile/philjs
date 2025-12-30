@@ -177,7 +177,7 @@ export function parseRouteGroup(
     if (match) {
       // This is a group - don't include in path, but remember it
       if (!group) {
-        group = match[1];
+        group = match[1] ?? null;
       }
     } else {
       cleanParts.push(part);
@@ -204,17 +204,18 @@ export function createRouteGroup(
     lazy?: boolean;
   } = {}
 ): RouteGroup {
-  return {
+  const result: RouteGroup = {
     name,
-    layout: options.layout,
-    loader: options.loader,
-    action: options.action,
     middleware: options.middleware || [],
     routes: options.routes || [],
-    meta: options.meta,
-    errorBoundary: options.errorBoundary,
-    lazy: options.lazy,
   };
+  if (options.layout !== undefined) result.layout = options.layout;
+  if (options.loader !== undefined) result.loader = options.loader;
+  if (options.action !== undefined) result.action = options.action;
+  if (options.meta !== undefined) result.meta = options.meta;
+  if (options.errorBoundary !== undefined) result.errorBoundary = options.errorBoundary;
+  if (options.lazy !== undefined) result.lazy = options.lazy;
+  return result;
 }
 
 /**
@@ -295,13 +296,13 @@ function processGroupRoute(
   const processed: ProcessedGroupRoute = {
     path: cleanPath,
     component: wrappedComponent,
-    loader: combinedLoader,
-    action: combinedAction,
     group: group.name,
     middleware: group.middleware || [],
     id: route.id || `${group.name}:${cleanPath}`,
-    errorBoundary: group.errorBoundary,
   };
+  if (combinedLoader !== undefined) processed.loader = combinedLoader;
+  if (combinedAction !== undefined) processed.action = combinedAction;
+  if (group.errorBoundary !== undefined) processed.errorBoundary = group.errorBoundary;
 
   const results: ProcessedGroupRoute[] = [processed];
 
@@ -600,19 +601,26 @@ export function mergeRouteGroups(...groups: RouteGroup[]): RouteGroup {
   }
 
   const [first, ...rest] = groups;
-  let merged = { ...first };
+  let merged: RouteGroup = { ...first! };
 
   for (const group of rest) {
-    merged = {
-      ...merged,
+    const newMerged: RouteGroup = {
+      name: merged.name,
       routes: [...merged.routes, ...group.routes],
       middleware: [...(merged.middleware || []), ...(group.middleware || [])],
-      meta: { ...merged.meta, ...group.meta },
-      // Layout and loaders from the last group take precedence
-      layout: group.layout || merged.layout,
-      loader: group.loader || merged.loader,
-      action: group.action || merged.action,
     };
+    const combinedMeta = { ...merged.meta, ...group.meta };
+    if (Object.keys(combinedMeta).length > 0) newMerged.meta = combinedMeta;
+    // Layout and loaders from the last group take precedence
+    const layout = group.layout || merged.layout;
+    const loader = group.loader || merged.loader;
+    const action = group.action || merged.action;
+    if (layout !== undefined) newMerged.layout = layout;
+    if (loader !== undefined) newMerged.loader = loader;
+    if (action !== undefined) newMerged.action = action;
+    if (merged.errorBoundary !== undefined) newMerged.errorBoundary = merged.errorBoundary;
+    if (merged.lazy !== undefined) newMerged.lazy = merged.lazy;
+    merged = newMerged;
   }
 
   return merged;

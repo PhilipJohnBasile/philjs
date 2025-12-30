@@ -12,8 +12,8 @@ import type {
   LiveViewEvent,
   LiveSocket,
   ViewPatch,
-} from './types';
-import { createDiffer } from './differ';
+} from './types.js';
+import { createDiffer } from './differ.js';
 
 // ============================================================================
 // LiveComponent Factory

@@ -254,7 +254,7 @@ export class AlertManager {
         return values.length;
       case 'last':
       default:
-        return values[values.length - 1];
+        return values[values.length - 1]!;
     }
   }
 
@@ -413,14 +413,14 @@ export class AlertManager {
   }
 
   private async sendWebhookNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
-    const url = channel.config.url as string;
+    const url = channel.config['url'] as string;
     if (!url) return;
 
     await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(channel.config.headers as Record<string, string> || {}),
+        ...(channel.config['headers'] as Record<string, string> || {}),
       },
       body: JSON.stringify({
         alert,
@@ -430,7 +430,7 @@ export class AlertManager {
   }
 
   private async sendSlackNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
-    const webhookUrl = channel.config.webhookUrl as string;
+    const webhookUrl = channel.config['webhookUrl'] as string;
     if (!webhookUrl) return;
 
     const color = {
@@ -465,7 +465,7 @@ export class AlertManager {
   }
 
   private async sendPagerDutyNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
-    const routingKey = channel.config.routingKey as string;
+    const routingKey = channel.config['routingKey'] as string;
     if (!routingKey) return;
 
     const eventAction = alert.state === 'resolved' ? 'resolve' : 'trigger';
@@ -559,7 +559,9 @@ export class AlertManager {
 
     alert.state = 'acknowledged';
     alert.acknowledgedAt = Date.now();
-    alert.acknowledgedBy = acknowledgedBy;
+    if (acknowledgedBy !== undefined) {
+      alert.acknowledgedBy = acknowledgedBy;
+    }
 
     return true;
   }

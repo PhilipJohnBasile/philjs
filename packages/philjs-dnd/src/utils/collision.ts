@@ -1,4 +1,4 @@
-import type { CollisionDetection, DragItem, Rect } from '../types';
+import type { CollisionDetection, DragItem, Rect } from '../types.js';
 
 // ============================================================================
 // Utility Functions
@@ -86,9 +86,11 @@ export const rectIntersection: CollisionDetection = ({ active, activeRect, dropp
  */
 export const pointerWithin: CollisionDetection = ({ active, activeRect, droppables }) => {
   const center = getCenter(activeRect);
+  let result: { id: string; rect: Rect; data?: Record<string, unknown> } | null = null;
 
-  for (const [, droppable] of droppables) {
-    if (droppable.id === active.id) continue;
+  droppables.forEach((droppable) => {
+    if (result !== null) return;
+    if (droppable.id === active.id) return;
 
     const { rect } = droppable;
     if (
@@ -97,11 +99,11 @@ export const pointerWithin: CollisionDetection = ({ active, activeRect, droppabl
       center.y >= rect.top &&
       center.y <= rect.bottom
     ) {
-      return droppable;
+      result = droppable;
     }
-  }
+  });
 
-  return null;
+  return result;
 };
 
 /**
@@ -247,10 +249,10 @@ export function createTypeFilter(
   collisionDetection: CollisionDetection = rectIntersection
 ): CollisionDetection {
   return (args) => {
-    const filteredDroppables = new Map<string, { id: string; rect: Rect; data?: Record<string, unknown> }>();
+    const filteredDroppables = new Map<string, { id: string; rect: Rect; node: HTMLElement; data?: Record<string, unknown> }>();
 
     args.droppables.forEach((droppable, id) => {
-      const type = droppable.data?.type as string | undefined;
+      const type = droppable.data?.['type'] as string | undefined;
       if (!type || allowedTypes.includes(type)) {
         filteredDroppables.set(id, droppable);
       }

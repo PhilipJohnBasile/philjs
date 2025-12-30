@@ -147,7 +147,7 @@ export function defineAPIRoute<
     const next = async (): Promise<Response> => {
       if (index < middleware.length) {
         const mw = middleware[index++];
-        return mw(context, next);
+        return mw!(context, next);
       }
       return handler(context as any);
     };

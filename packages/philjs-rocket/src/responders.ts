@@ -12,7 +12,7 @@ import type {
   StreamResponderOptions,
   MetaTag,
   Script,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // HTML Responder

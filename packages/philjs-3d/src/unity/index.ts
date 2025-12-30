@@ -17,7 +17,7 @@ export type {
   UseUnityResult,
   UnityMessage,
   UnityCallback,
-} from './types';
+} from './types.js';
 
 // Hooks
 export {
@@ -30,7 +30,7 @@ export {
   createPhilJSSignalBridge,
   disposeUnity,
   getLoadingProgress,
-} from './hooks';
+} from './hooks.js';
 
 // Components
 export {
@@ -38,4 +38,4 @@ export {
   createUnityEmbedElement,
   UnityProgressBar,
   UnityFullscreenButton,
-} from './UnityEmbed';
+} from './UnityEmbed.js';

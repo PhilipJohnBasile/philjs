@@ -1,4 +1,4 @@
-import type { Modifier, Position, Rect, DragItem } from '../types';
+import type { Modifier, Position, Rect, DragItem } from '../types.js';
 
 // ============================================================================
 // Basic Modifiers
@@ -232,7 +232,8 @@ export function typeBasedModifier(
   modifier: Modifier
 ): Modifier {
   return (args) => {
-    if (types.includes(args.active.type)) {
+    const activeType = args.active.data?.['type'] as string | undefined;
+    if (activeType && types.includes(activeType)) {
       return modifier(args);
     }
     return args.transform;

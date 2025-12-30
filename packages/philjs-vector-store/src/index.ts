@@ -509,9 +509,9 @@ export function cosineSimilarity(a: number[] | Float32Array, b: number[] | Float
   let normB = 0;
 
   for (let i = 0; i < a.length; i++) {
-    dotProduct += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
+    dotProduct += a[i]! * b[i]!;
+    normA += a[i]! * a[i]!;
+    normB += b[i]! * b[i]!;
   }
 
   const denominator = Math.sqrt(normA) * Math.sqrt(normB);
@@ -528,7 +528,7 @@ export function euclideanDistance(a: number[] | Float32Array, b: number[] | Floa
 
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
-    const diff = a[i] - b[i];
+    const diff = a[i]! - b[i]!;
     sum += diff * diff;
   }
 
@@ -539,12 +539,16 @@ export function euclideanDistance(a: number[] | Float32Array, b: number[] | Floa
  * Normalize a vector to unit length
  */
 export function normalizeVector(vector: number[] | Float32Array): Float32Array {
-  const norm = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
+  let sumSquares = 0;
+  for (let i = 0; i < vector.length; i++) {
+    sumSquares += vector[i]! * vector[i]!;
+  }
+  const norm = Math.sqrt(sumSquares);
   const normalized = new Float32Array(vector.length);
 
   if (norm > 0) {
     for (let i = 0; i < vector.length; i++) {
-      normalized[i] = vector[i] / norm;
+      normalized[i] = vector[i]! / norm;
     }
   }
 

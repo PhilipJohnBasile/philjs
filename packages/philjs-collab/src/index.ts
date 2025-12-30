@@ -21,7 +21,7 @@ export {
   type CollabMessage,
   type TransportConfig,
   type TransportEvents,
-} from './transport';
+} from './transport.js';
 
 // Presence
 export {
@@ -32,7 +32,7 @@ export {
   type UserPresence,
   type PresenceConfig,
   type PresenceUpdate,
-} from './presence';
+} from './presence.js';
 
 // CRDTs
 export {
@@ -49,7 +49,7 @@ export {
   type TextDelta,
   type ArrayEvent,
   type MapEvent,
-} from './crdt';
+} from './crdt.js';
 
 // Cursors
 export {
@@ -60,7 +60,7 @@ export {
   type CursorPosition,
   type CursorConfig,
   type CursorDecoration,
-} from './cursors';
+} from './cursors.js';
 
 // Awareness
 export {
@@ -71,7 +71,7 @@ export {
   type AwarenessUpdate,
   type AwarenessConfig,
   type StandardAwarenessState,
-} from './awareness';
+} from './awareness.js';
 
 // Operational Transforms
 export {
@@ -90,15 +90,15 @@ export {
   type DeleteOp,
   type RetainOp,
   type OperationWithMeta,
-} from './ot';
+} from './ot.js';
 
 // Convenience functions
 
-import { WebSocketTransport, createWebSocketTransport, generateClientId } from './transport';
-import { PresenceManager, createPresenceManager } from './presence';
-import { Awareness, createAwareness } from './awareness';
-import { CursorManager, createCursorManager, injectCursorStyles } from './cursors';
-import { YDoc, createYDoc } from './crdt';
+import { WebSocketTransport, createWebSocketTransport, generateClientId } from './transport.js';
+import { PresenceManager, createPresenceManager, type PresenceUpdate, type UserPresence } from './presence.js';
+import { Awareness, createAwareness, type AwarenessUpdate, type AwarenessState } from './awareness.js';
+import { CursorManager, createCursorManager, injectCursorStyles, type CursorPosition } from './cursors.js';
+import { YDoc, createYDoc, type Update } from './crdt.js';
 
 /**
  * Full collaboration room configuration
@@ -176,12 +176,12 @@ export class CollabRoom {
     await this.transport.connect();
 
     // Start presence
-    this.presence.start((update) => {
+    this.presence.start((update: PresenceUpdate) => {
       this.transport.send('presence', update);
     });
 
     // Start awareness
-    this.awareness.start((state) => {
+    this.awareness.start((state: AwarenessState) => {
       this.transport.send('awareness', state);
     });
 
@@ -237,16 +237,16 @@ export class CollabRoom {
       this.config.onConnect?.();
     });
 
-    this.transport.on('disconnect', (reason) => {
+    this.transport.on('disconnect', (reason: string) => {
       this.config.onDisconnect?.(reason);
     });
 
-    this.transport.on('error', (error) => {
+    this.transport.on('error', (error: Error) => {
       this.config.onError?.(error);
     });
 
     // Message handling
-    this.transport.on('message', (message) => {
+    this.transport.on('message', (message: { type: string; clientId: string; payload: unknown }) => {
       switch (message.type) {
         case 'presence':
           this.presence.handleRemoteUpdate(message.payload as any);
@@ -272,12 +272,12 @@ export class CollabRoom {
     });
 
     // Document updates
-    this.doc.onUpdate((update) => {
+    this.doc.onUpdate((update: Update) => {
       this.transport.send('operation', update);
     });
 
     // Awareness changes -> cursor updates
-    this.awareness.subscribe((update) => {
+    this.awareness.subscribe((update: AwarenessUpdate) => {
       for (const clientId of [...update.added, ...update.updated]) {
         this.updateRemoteCursor(clientId);
       }
@@ -291,19 +291,22 @@ export class CollabRoom {
     const state = this.awareness.getRemoteState(clientId) as any;
     if (!state?.cursor) return;
 
-    const presence = Array.from(this.presence.getAll().values()).find(p => p.clientId === clientId);
+    const presence = Array.from(this.presence.getAll().values()).find((p: UserPresence) => p.clientId === clientId);
 
-    this.cursors.updateCursor({
+    const cursorUpdate: CursorPosition = {
       clientId,
       name: presence?.name || 'Anonymous',
       color: presence?.color || '#888',
       position: state.cursor,
-      selection: state.selection ? {
+      timestamp: Date.now(),
+    };
+    if (state.selection) {
+      cursorUpdate.selection = {
         start: state.selection.anchor || state.selection.start,
         end: state.selection.head || state.selection.end,
-      } : undefined,
-      timestamp: Date.now(),
-    });
+      };
+    }
+    this.cursors.updateCursor(cursorUpdate);
   }
 
   private handleSync(data: any): void {
@@ -338,4 +341,4 @@ export {
   type CommentReaction,
   type CommentsConfig,
   type CommentEventHandlers,
-} from './comments';
+} from './comments.js';

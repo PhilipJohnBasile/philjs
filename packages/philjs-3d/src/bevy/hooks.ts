@@ -27,7 +27,7 @@ import type {
   Vec3,
   Quat,
   BevyWorld,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // State Management
@@ -272,10 +272,10 @@ function createBevyApp(
 
   // Get exported functions from WASM
   const exports = instance.instance.exports as Record<string, Function>;
-  const bevyInit = exports.bevy_init || exports._start || (() => {});
-  const bevyUpdate = exports.bevy_update || (() => {});
-  const bevyRender = exports.bevy_render || (() => {});
-  const bevyShutdown = exports.bevy_shutdown || (() => {});
+  const bevyInit = exports['bevy_init'] || exports['_start'] || (() => {});
+  const bevyUpdate = exports['bevy_update'] || (() => {});
+  const bevyRender = exports['bevy_render'] || (() => {});
+  const bevyShutdown = exports['bevy_shutdown'] || (() => {});
 
   // Create world interface
   const world = createBevyWorld(instance);
@@ -432,13 +432,13 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
       generation: 0 as any,
       isValid: () => entities.has(id),
       getComponents: () => Array.from(components.values()),
-      hasComponent: (type) => components.has(type.componentName),
-      getComponent: (type) => components.get(type.componentName) as any,
-      insertComponent: (component) => {
+      hasComponent: <T extends BevyComponent>(type: ComponentType<T>) => components.has(type.componentName),
+      getComponent: <T extends BevyComponent>(type: ComponentType<T>) => components.get(type.componentName) as T | undefined,
+      insertComponent: <T extends BevyComponent>(component: T) => {
         components.set(component.componentName, component);
         emitEvent('component-added', { entity, component: component.componentName });
       },
-      removeComponent: (type) => {
+      removeComponent: <T extends BevyComponent>(type: ComponentType<T>) => {
         if (components.has(type.componentName)) {
           components.delete(type.componentName);
           emitEvent('component-removed', { entity, component: type.componentName });
@@ -464,7 +464,7 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
       return entity;
     },
 
-    spawnBundle: (...components) => {
+    spawnBundle: (...components: BevyComponent[]) => {
       const id = nextEntityId++;
       const entity = createEntity(id);
       for (const component of components) {
@@ -475,9 +475,9 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
       return entity;
     },
 
-    getEntity: (id) => entities.get(id as number),
+    getEntity: (id: EntityId) => entities.get(id as number),
 
-    despawn: (entity) => {
+    despawn: (entity: BevyEntity) => {
       entities.delete(entity.id as number);
       emitEvent('entity-despawned', { entityId: entity.id });
     },
@@ -490,7 +490,7 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
 
         // Check required components
         for (const componentName of query.components) {
-          if (!entity.getComponents().some((c) => c.componentName === componentName)) {
+          if (!entity.getComponents().some((c: BevyComponent) => c.componentName === componentName)) {
             matches = false;
             break;
           }
@@ -500,12 +500,12 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
         if (matches && query.filters) {
           for (const filter of query.filters) {
             if (filter.type === 'with') {
-              if (!entity.getComponents().some((c) => c.componentName === filter.component)) {
+              if (!entity.getComponents().some((c: BevyComponent) => c.componentName === filter.component)) {
                 matches = false;
                 break;
               }
             } else if (filter.type === 'without') {
-              if (entity.getComponents().some((c) => c.componentName === filter.component)) {
+              if (entity.getComponents().some((c: BevyComponent) => c.componentName === filter.component)) {
                 matches = false;
                 break;
               }
@@ -522,27 +522,27 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
         entities: matchingEntities,
         iter: function* () {
           for (const entity of matchingEntities) {
-            const components = query.components.map((name) =>
-              entity.getComponents().find((c) => c.componentName === name)
+            const components = query.components.map((name: string) =>
+              entity.getComponents().find((c: BevyComponent) => c.componentName === name)
             ) as T;
             yield [entity, ...components] as [BevyEntity, ...T];
           }
         },
         single: () => {
           if (matchingEntities.length === 0) return undefined;
-          const entity = matchingEntities[0];
-          const components = query.components.map((name) =>
-            entity.getComponents().find((c) => c.componentName === name)
+          const entity = matchingEntities[0]!;
+          const components = query.components.map((name: string) =>
+            entity.getComponents().find((c: BevyComponent) => c.componentName === name)
           ) as T;
           return [entity, ...components] as [BevyEntity, ...T];
         },
         count: () => matchingEntities.length,
         isEmpty: () => matchingEntities.length === 0,
-        map: (fn) => {
-          const results: any[] = [];
+        map: <R>(fn: (entity: BevyEntity, ...components: T) => R) => {
+          const results: R[] = [];
           for (const entity of matchingEntities) {
-            const components = query.components.map((name) =>
-              entity.getComponents().find((c) => c.componentName === name)
+            const components = query.components.map((name: string) =>
+              entity.getComponents().find((c: BevyComponent) => c.componentName === name)
             ) as T;
             results.push(fn(entity, ...components));
           }
@@ -550,17 +550,17 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
         },
         filter: function(this: QueryResult<T>, fn: (entity: BevyEntity, ...components: T) => boolean): QueryResult<T> {
           const filtered = matchingEntities.filter((entity) => {
-            const components = query.components.map((name) =>
-              entity.getComponents().find((c) => c.componentName === name)
+            const components = query.components.map((name: string) =>
+              entity.getComponents().find((c: BevyComponent) => c.componentName === name)
             ) as T;
             return fn(entity, ...components);
           });
           return { ...this, entities: filtered } as QueryResult<T>;
         },
-        forEach: (fn) => {
+        forEach: (fn: (entity: BevyEntity, ...components: T) => void) => {
           for (const entity of matchingEntities) {
-            const components = query.components.map((name) =>
-              entity.getComponents().find((c) => c.componentName === name)
+            const components = query.components.map((name: string) =>
+              entity.getComponents().find((c: BevyComponent) => c.componentName === name)
             ) as T;
             fn(entity, ...components);
           }
@@ -568,10 +568,10 @@ function createBevyWorld(instance: BevyInstance): BevyWorld {
       } as QueryResult<T>;
     },
 
-    getResource: (type) => resources.get(type.resourceName) as any,
-    insertResource: (resource) => resources.set(resource.resourceName, resource),
-    removeResource: (type) => resources.delete(type.resourceName),
-    hasResource: (type) => resources.has(type.resourceName),
+    getResource: <T extends BevyResource>(type: ResourceType<T>) => resources.get(type.resourceName) as T | undefined,
+    insertResource: <T extends BevyResource>(resource: T) => resources.set(resource.resourceName, resource),
+    removeResource: <T extends BevyResource>(type: ResourceType<T>) => resources.delete(type.resourceName),
+    hasResource: <T extends BevyResource>(type: ResourceType<T>) => resources.has(type.resourceName),
     clear: () => entities.clear(),
     entityCount: () => entities.size,
   };
@@ -607,8 +607,10 @@ function emitEvent<T extends BevyEventType>(type: T, data?: BevyEventData<T>): v
   const event: BevyEvent<T> = {
     type,
     timestamp: performance.now(),
-    data,
   };
+  if (data !== undefined) {
+    event.data = data;
+  }
 
   const listeners = eventListeners.get(type);
   if (listeners) {
@@ -710,10 +712,10 @@ export function useBevyEntity(
   return {
     entity,
     isValid: entity?.isValid() || false,
-    getComponent: (type) => entity?.getComponent(type),
-    hasComponent: (type) => entity?.hasComponent(type) || false,
-    insertComponent: (component) => entity?.insertComponent(component),
-    removeComponent: (type) => entity?.removeComponent(type),
+    getComponent: <T extends BevyComponent>(type: ComponentType<T>) => entity?.getComponent(type),
+    hasComponent: <T extends BevyComponent>(type: ComponentType<T>) => entity?.hasComponent(type) || false,
+    insertComponent: <T extends BevyComponent>(component: T) => entity?.insertComponent(component),
+    removeComponent: <T extends BevyComponent>(type: ComponentType<T>) => entity?.removeComponent(type),
     despawn: () => entity?.despawn(),
   };
 }
@@ -745,7 +747,7 @@ export function useBevyResource<T extends BevyResource>(
   return {
     resource,
     isAvailable: resource !== null,
-    update: (updates) => {
+    update: (updates: Partial<T>) => {
       if (resource && world) {
         const updated = { ...resource, ...updates } as T;
         world.insertResource(updated);

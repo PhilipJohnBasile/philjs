@@ -234,9 +234,9 @@ class CanvasRenderer implements Renderer {
       this.ctx.setLineDash(options.dash);
     }
 
-    this.ctx.moveTo(points[0].x, points[0].y);
+    this.ctx.moveTo(points[0]!.x, points[0]!.y);
     for (let i = 1; i < points.length; i++) {
-      this.ctx.lineTo(points[i].x, points[i].y);
+      this.ctx.lineTo(points[i]!.x, points[i]!.y);
     }
 
     this.ctx.stroke();
@@ -587,9 +587,9 @@ class Chart {
 
     const step = (currentTime: number) => {
       const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min(elapsed / duration!, 1);
 
-      this.animationProgress = this.applyEasing(progress, this.config.animation.easing);
+      this.animationProgress = this.applyEasing(progress, this.config.animation.easing ?? 'easeOut');
       this.draw();
 
       if (progress < 1) {
@@ -758,7 +758,7 @@ class Chart {
     this.series.forEach((series, seriesIndex) => {
       if (series.hidden) return;
 
-      const color = series.color || this.colors[seriesIndex % this.colors.length];
+      const color = series.color ?? this.colors[seriesIndex % this.colors.length]!;
       const points = series.data.map((d, i) => ({
         x: this.plotArea.x + (i / (series.data.length - 1 || 1)) * this.plotArea.width,
         y: yScale.scale(d.y * this.animationProgress)
@@ -788,7 +788,7 @@ class Chart {
     this.series.forEach((series, seriesIndex) => {
       if (series.hidden) return;
 
-      const color = series.color || this.colors[seriesIndex % this.colors.length];
+      const color = series.color ?? this.colors[seriesIndex % this.colors.length]!;
 
       series.data.forEach((d, i) => {
         const x = this.plotArea.x + i * groupWidth + groupPadding + seriesIndex * barWidth;
@@ -813,18 +813,18 @@ class Chart {
     this.series.forEach((series, seriesIndex) => {
       if (series.hidden) return;
 
-      const color = series.color || this.colors[seriesIndex % this.colors.length];
+      const color = series.color ?? this.colors[seriesIndex % this.colors.length]!;
       const points = series.data.map((d, i) => ({
         x: this.plotArea.x + (i / (series.data.length - 1 || 1)) * this.plotArea.width,
         y: yScale.scale(d.y * this.animationProgress)
       }));
 
       // Build area path
-      let pathD = `M ${points[0].x} ${baseline}`;
+      let pathD = `M ${points[0]!.x} ${baseline}`;
       points.forEach(p => {
         pathD += ` L ${p.x} ${p.y}`;
       });
-      pathD += ` L ${points[points.length - 1].x} ${baseline} Z`;
+      pathD += ` L ${points[points.length - 1]!.x} ${baseline} Z`;
 
       this.renderer.path(pathD, { fill: color + '40' });
       this.renderer.line(points, { color, width: 2 });
@@ -846,7 +846,7 @@ class Chart {
     series.data.forEach((d, i) => {
       const sliceAngle = (d.y / total) * Math.PI * 2 * this.animationProgress;
       const endAngle = startAngle + sliceAngle;
-      const color = d.color || this.colors[i % this.colors.length];
+      const color = d.color ?? this.colors[i % this.colors.length]!;
 
       this.renderer.arc(centerX, centerY, radius, startAngle, endAngle, { fill: color });
 
@@ -874,12 +874,12 @@ class Chart {
     this.series.forEach((series, seriesIndex) => {
       if (series.hidden) return;
 
-      const color = series.color || this.colors[seriesIndex % this.colors.length];
+      const color = series.color ?? this.colors[seriesIndex % this.colors.length]!;
 
       series.data.forEach(d => {
         const x = xScale.scale(typeof d.x === 'number' ? d.x : 0);
         const y = yScale.scale(d.y);
-        const size = (d.size || 6) * this.animationProgress;
+        const size = (d.size ?? 6) * this.animationProgress;
 
         this.renderer.circle(x, y, size, { fill: color });
       });
@@ -891,7 +891,7 @@ class Chart {
 
     const legendItems = this.series.map((s, i) => ({
       name: s.name,
-      color: s.color || this.colors[i % this.colors.length],
+      color: s.color ?? this.colors[i % this.colors.length]!,
       hidden: s.hidden
     }));
 
@@ -904,14 +904,15 @@ class Chart {
 
     legendItems.forEach((item, i) => {
       const x = startX + (i * itemWidth);
+      const fillColor = item.hidden === true ? this.theme.gridLines : item.color;
 
       this.renderer.rect(x, startY, 12, 12, {
-        fill: item.hidden ? this.theme.gridLines : item.color,
+        fill: fillColor,
         radius: 2
       });
 
       this.renderer.text(x + 18, startY + 6, item.name, {
-        color: item.hidden ? this.theme.axis : this.theme.text,
+        color: item.hidden === true ? this.theme.axis : this.theme.text,
         size: 11,
         baseline: 'middle'
       });

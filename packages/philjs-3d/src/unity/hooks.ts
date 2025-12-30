@@ -13,7 +13,7 @@ import type {
   UnityEventType,
   UnityEventHandler,
   UnityEmbedProps,
-} from './types';
+} from './types.js';
 
 declare global {
   interface Window {
@@ -167,7 +167,7 @@ export async function createUnityInstance(
             queue = [];
             messageQueues.set(canvas, queue);
           }
-          queue.push({ gameObject, method, param });
+          queue.push({ gameObject, method, ...(param !== undefined ? { param } : {}) });
         }
       },
 

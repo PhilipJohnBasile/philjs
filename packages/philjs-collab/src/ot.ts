@@ -425,7 +425,10 @@ export class OTServer {
     let transformedOps = op.ops;
 
     for (let i = op.revision; i < this.operations.length; i++) {
-      transformedOps = transformOperations(transformedOps, this.operations[i].ops, 'right');
+      const serverOp = this.operations[i];
+      if (serverOp) {
+        transformedOps = transformOperations(transformedOps, serverOp.ops, 'right');
+      }
     }
 
     // Apply to server document

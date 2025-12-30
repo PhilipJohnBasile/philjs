@@ -5,17 +5,13 @@
  * similar to React DevTools and Vue DevTools
  */
 
-export { ComponentInspector, createInspector, getInspector } from './component-inspector';
-export { PropsPanel } from './props-panel';
-export { StatePanel } from './state-panel';
-export { StylePanel } from './style-panel';
-export { PerformancePanel } from './performance-panel';
-export { ElementHighlighter } from './element-highlighter';
-export { SearchBar } from './search-bar';
-
-// New panels
-export { HooksPanel, createHooksPanel } from './hooks-panel';
-export { ProfilerPanel, createProfilerPanel } from './profiler-panel';
+export { ComponentInspector, createInspector, getInspector } from './component-inspector.js';
+export { PropsPanel } from './props-panel.js';
+export { StatePanel } from './state-panel.js';
+export { StylePanel } from './style-panel.js';
+export { PerformancePanel } from './performance-panel.js';
+export { ElementHighlighter } from './element-highlighter.js';
+export { SearchBar } from './search-bar.js';
 
 export type {
   InspectorConfig,
@@ -25,7 +21,4 @@ export type {
   StyleInfo,
   PerformanceInfo,
   InspectorEvent
-} from './types';
-
-export type { HookInfo, HooksPanelProps } from './hooks-panel';
-export type { RenderInfo, CommitInfo, ProfilerPanelProps } from './profiler-panel';
+} from './types.js';

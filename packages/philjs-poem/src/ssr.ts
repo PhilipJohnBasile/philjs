@@ -10,7 +10,7 @@ import type {
   HtmlResponseOptions,
   MetaTag,
   Script,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // SSR Types
@@ -618,7 +618,9 @@ export class HeadManager {
    * Add preload link
    */
   preload(href: string, as: string, type?: string): this {
-    this.head.links.push({ rel: 'preload', href, as, type });
+    const link: SSRLink = { rel: 'preload', href, as };
+    if (type !== undefined) link.type = type;
+    this.head.links.push(link);
     return this;
   }
 
@@ -845,6 +847,8 @@ export async function renderDocument(
     doc.getHead().meta(meta);
   }
 
-  const result = await renderer.render(component, props, { head, hydration: true });
+  const renderOptions: SSRRenderOptions = { hydration: true };
+  if (head !== undefined) renderOptions.head = head;
+  const result = await renderer.render(component, props, renderOptions);
   return doc.body(result.html).hydration(result.hydrationData).render();
 }

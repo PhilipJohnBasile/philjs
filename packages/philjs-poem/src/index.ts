@@ -25,33 +25,59 @@
  */
 
 // Types
-export * from './types';
+export * from './types.js';
 
 // Core exports
-export * from './middleware';
-export * from './extractors';
-export * from './endpoints';
-export * from './responses';
-export * from './websocket';
-export * from './openapi';
-export * from './ssr';
-
-// Re-export common types
-export type {
-  PoemConfig,
-  PoemSSRConfig,
-  PoemOpenAPIConfig,
-  PoemCORSConfig,
-  PoemSecurityConfig,
-  ExtractorContext,
-  EndpointOptions,
-  ResponseOptions,
-  WebSocketOptions,
-  OpenAPISchema,
-  OpenAPIOperation,
-  OpenAPIResponse,
-  OpenAPISecurity,
-} from './types';
+export * from './middleware.js';
+export {
+  // from extractors - excluding json to avoid conflict
+  Extractor,
+  SSRContextExtractor,
+  JsonExtractor,
+  QueryExtractor,
+  PathExtractor,
+  AuthExtractor,
+  FormExtractor,
+  MultipartExtractor,
+  CookieExtractor,
+  HeaderExtractor,
+  DataExtractor,
+  createExtractor,
+  ssrContext,
+  query,
+  auth,
+  optionalAuth,
+  json as extractorJson,
+  type SSRContextData,
+  type JsonExtractorConfig,
+  type QueryExtractorConfig,
+  type AuthUser,
+  type AuthExtractorConfig,
+  type MultipartFile,
+} from './extractors.js';
+export {
+  // from endpoints - excluding openapi to avoid conflict
+  EndpointBuilder,
+  RouteGroup,
+  OpenAPIEndpointBuilder,
+  endpoint,
+  group,
+  crud,
+  ssrPage,
+  ssrPages,
+  apiEndpoint,
+  healthCheck,
+  readinessProbe,
+  openapi as endpointsOpenapi,
+  type HttpMethod,
+  type EndpointDefinition,
+  type CRUDOptions,
+  type SSRPageOptions,
+} from './endpoints.js';
+export * from './responses.js';
+export * from './websocket.js';
+export * from './openapi.js';
+export * from './ssr.js';
 
 // Re-export Rust code generation utilities
 export {
@@ -69,7 +95,7 @@ export {
   type RustHandlerOptions,
   type RustTypeMapping,
   type GeneratedRustCode,
-} from './openapi';
+} from './openapi.js';
 
 /**
  * Create a PhilJS-enabled Poem application configuration
@@ -155,79 +181,11 @@ let config = PhilJsConfig::builder()
   }
 }
 
-/**
- * Configuration interface for PhilJS Poem integration
- */
-export interface PoemConfig {
-  ssr?: PoemSSRConfig;
-  openapi?: PoemOpenAPIConfig;
-  cors?: PoemCORSConfig;
-  security?: PoemSecurityConfig;
-  session?: PoemSessionConfig;
-  rateLimit?: PoemRateLimitConfig;
-}
-
-export interface PoemSSRConfig {
-  enabled?: boolean;
-  streaming?: boolean;
-  hydration?: boolean;
-  cacheEnabled?: boolean;
-  cacheTTL?: number;
-}
-
-export interface PoemOpenAPIConfig {
-  enabled?: boolean;
-  title?: string;
-  description?: string;
-  version?: string;
-  termsOfService?: string;
-  contact?: {
-    name?: string;
-    email?: string;
-    url?: string;
-  };
-  license?: {
-    name: string;
-    url?: string;
-  };
-  servers?: Array<{
-    url: string;
-    description?: string;
-  }>;
-}
-
-export interface PoemCORSConfig {
-  enabled?: boolean;
-  origins?: string[];
-  methods?: string[];
-  headers?: string[];
-  credentials?: boolean;
-  maxAge?: number;
-  exposeHeaders?: string[];
-}
-
-export interface PoemSecurityConfig {
-  enabled?: boolean;
-  csp?: string;
-  frameOptions?: string;
-  contentTypeOptions?: string;
-  referrerPolicy?: string;
-  hsts?: string;
-}
-
-export interface PoemSessionConfig {
-  enabled?: boolean;
-  cookieName?: string;
-  secret?: string;
-  ttl?: number;
-  secure?: boolean;
-  httpOnly?: boolean;
-  sameSite?: 'strict' | 'lax' | 'none';
-}
-
-export interface PoemRateLimitConfig {
-  enabled?: boolean;
-  limit?: number;
-  window?: number;
-  keyBy?: 'ip' | 'user' | 'apiKey';
-}
+// Types re-exported from './types.js'
+import type {
+  PoemConfig,
+  PoemSSRConfig,
+  PoemOpenAPIConfig,
+  PoemCORSConfig,
+  PoemSecurityConfig,
+} from './types.js';

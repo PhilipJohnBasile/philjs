@@ -495,19 +495,27 @@ ${config.type ? `Optimize for ${config.type} page patterns.` : ''}`;
       console.warn('Generated page code has validation issues:', validation.errors);
     }
 
-    return {
+    const result: GeneratedPage = {
       code: mainCode,
       path: config.path,
-      loader: codeBlocks.find(b => b.label?.includes('loader'))?.code,
-      action: codeBlocks.find(b => b.label?.includes('action'))?.code,
-      layout: codeBlocks.find(b => b.label?.includes('layout'))?.code,
-      metadata: codeBlocks.find(b => b.label?.includes('metadata') || b.label?.includes('seo'))?.code,
       components: this.extractComponents(codeBlocks),
       imports: this.extractImports(mainCode),
       explanation: this.extractExplanation(response),
-      responsiveNotes: config.responsive ? this.extractResponsiveNotes(response) : undefined,
-      tests: config.includeTests ? codeBlocks.find(b => b.label?.includes('test'))?.code : undefined,
     };
+    const loaderCode = codeBlocks.find(b => b.label?.includes('loader'))?.code;
+    if (loaderCode) result.loader = loaderCode;
+    const actionCode = codeBlocks.find(b => b.label?.includes('action'))?.code;
+    if (actionCode) result.action = actionCode;
+    const layoutCode = codeBlocks.find(b => b.label?.includes('layout'))?.code;
+    if (layoutCode) result.layout = layoutCode;
+    const metadataCode = codeBlocks.find(b => b.label?.includes('metadata') || b.label?.includes('seo'))?.code;
+    if (metadataCode) result.metadata = metadataCode;
+    if (config.responsive) result.responsiveNotes = this.extractResponsiveNotes(response);
+    if (config.includeTests) {
+      const testCode = codeBlocks.find(b => b.label?.includes('test'))?.code;
+      if (testCode) result.tests = testCode;
+    }
+    return result;
   }
 
   /**
@@ -519,10 +527,12 @@ ${config.type ? `Optimize for ${config.type} page patterns.` : ''}`;
     let match;
 
     while ((match = regex.exec(response)) !== null) {
-      blocks.push({
-        label: match[1]?.trim().toLowerCase(),
-        code: match[2].trim(),
-      });
+      const block: { label?: string; code: string } = {
+        code: match[2]!.trim(),
+      };
+      const labelText = match[1]?.trim().toLowerCase();
+      if (labelText) block.label = labelText;
+      blocks.push(block);
     }
 
     return blocks;
@@ -577,7 +587,7 @@ ${config.type ? `Optimize for ${config.type} page patterns.` : ''}`;
     let match;
 
     while ((match = importRegex.exec(code)) !== null) {
-      imports.push(match[1]);
+      imports.push(match[1]!);
     }
 
     return imports;
@@ -587,13 +597,13 @@ ${config.type ? `Optimize for ${config.type} page patterns.` : ''}`;
    * Extract explanation from response
    */
   private extractExplanation(response: string): string {
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]!.trim();
     if (beforeCode.length > 50) {
       return beforeCode;
     }
 
     const explanationMatch = response.match(/(?:explanation|overview|description)[:\s]*\n?([\s\S]*?)(?=\n\n|```|$)/i);
-    return explanationMatch?.[1].trim() || 'Page generated successfully';
+    return explanationMatch?.[1]!.trim() || 'Page generated successfully';
   }
 
   /**
@@ -604,7 +614,7 @@ ${config.type ? `Optimize for ${config.type} page patterns.` : ''}`;
     const responsiveMatch = response.match(/(?:responsive|mobile|breakpoint)[s]?[:\s]*\n?([\s\S]*?)(?=\n\n(?![^\n]*```)|$)/i);
 
     if (responsiveMatch) {
-      const lines = responsiveMatch[1].split('\n');
+      const lines = responsiveMatch[1]!.split('\n');
       for (const line of lines) {
         const cleaned = line.replace(/^[-*]\s*/, '').trim();
         if (cleaned && !cleaned.startsWith('```')) {

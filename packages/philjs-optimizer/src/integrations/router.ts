@@ -28,7 +28,7 @@ export function lazyRoute(config: {
 }): LazyRoute {
   const route: LazyRoute = {
     path: config.path,
-    children: config.children,
+    ...(config.children !== undefined && { children: config.children }),
   };
 
   // Wrap loaders with lazy loading

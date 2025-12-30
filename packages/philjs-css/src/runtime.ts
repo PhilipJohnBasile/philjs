@@ -8,9 +8,9 @@
  * - CSS-in-JS to CSS extraction
  */
 
-import type { CSSStyleObject, Theme, CSSResult } from './types';
-import { css, styleRegistry } from './css';
-import { getTheme, generateThemeCSS, createThemeVariant } from './theme';
+import type { CSSStyleObject, Theme, CSSResult } from './types.js';
+import { css, styleRegistry } from './css.js';
+import { getTheme, generateThemeCSS, createThemeVariant } from './theme.js';
 
 // ============================================================================
 // Style Sheet Manager
@@ -120,8 +120,8 @@ export function hydrateStyles(): void {
     let match;
 
     while ((match = classRegex.exec(cssText)) !== null) {
-      const className = match[1];
-      const rules = match[2];
+      const className = match[1]!;
+      const rules = match[2]!;
       sheetManager.rules.set(className, `.${className} { ${rules} }`);
     }
   }
@@ -564,15 +564,15 @@ export function getStyleDebugInfo(): {
 
   for (const rule of rules) {
     if (rule.includes('@keyframes')) {
-      rulesByType.animation++;
+      rulesByType['animation']!++;
     } else if (rule.includes('@media')) {
-      rulesByType.media++;
+      rulesByType['media']!++;
     } else if (rule.includes('--')) {
-      rulesByType.theme++;
+      rulesByType['theme']!++;
     } else if (rule.match(/\.(m|p|w|h|text|bg|flex|grid)[0-9a-z]+/i)) {
-      rulesByType.atomic++;
+      rulesByType['atomic']!++;
     } else {
-      rulesByType.component++;
+      rulesByType['component']!++;
     }
   }
 

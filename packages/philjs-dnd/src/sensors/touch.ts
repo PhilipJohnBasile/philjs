@@ -1,4 +1,4 @@
-import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types';
+import type { Sensor, SensorOptions, SensorHandlers, Position } from '../types.js';
 
 // ============================================================================
 // Touch Sensor
@@ -26,13 +26,15 @@ export function TouchSensor(options: TouchSensorOptions = {}): Sensor {
 
   function getTouchById(event: TouchEvent, id: number): Touch | null {
     for (let i = 0; i < event.changedTouches.length; i++) {
-      if (event.changedTouches[i].identifier === id) {
-        return event.changedTouches[i];
+      const touch = event.changedTouches[i];
+      if (touch && touch.identifier === id) {
+        return touch;
       }
     }
     for (let i = 0; i < event.touches.length; i++) {
-      if (event.touches[i].identifier === id) {
-        return event.touches[i];
+      const touch = event.touches[i];
+      if (touch && touch.identifier === id) {
+        return touch;
       }
     }
     return null;
@@ -134,7 +136,7 @@ export function TouchSensor(options: TouchSensorOptions = {}): Sensor {
       if (!(event instanceof TouchEvent)) return;
       if (event.touches.length !== 1) return; // Only single touch
 
-      const touch = event.touches[0];
+      const touch = event.touches[0]!;
       touchId = touch.identifier;
 
       startPosition = {

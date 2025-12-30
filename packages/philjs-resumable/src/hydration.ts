@@ -447,12 +447,15 @@ export function setupHydration(
   }
 
   // Register
-  hydrationRegistry.set(id, {
+  const entry: HydrationEntry = {
     element,
     options,
-    cleanup,
     hydrated: false,
-  });
+  };
+  if (cleanup !== undefined) {
+    entry.cleanup = cleanup;
+  }
+  hydrationRegistry.set(id, entry);
 
   return id;
 }
@@ -582,16 +585,28 @@ export function createHydrateComponent(): {
 
     // Add strategy-specific options
     if (props.when === 'visible') {
-      (options as VisibleOptions).root = props.root;
-      (options as VisibleOptions).rootMargin = props.rootMargin;
-      (options as VisibleOptions).threshold = props.threshold;
+      if (props.root !== undefined) {
+        (options as VisibleOptions).root = props.root;
+      }
+      if (props.rootMargin !== undefined) {
+        (options as VisibleOptions).rootMargin = props.rootMargin;
+      }
+      if (props.threshold !== undefined) {
+        (options as VisibleOptions).threshold = props.threshold;
+      }
     } else if (props.when === 'interaction') {
-      (options as InteractionOptions).events = props.events;
-      (options as InteractionOptions).event = props.event;
+      if (props.events !== undefined) {
+        (options as InteractionOptions).events = props.events;
+      }
+      if (props.event !== undefined) {
+        (options as InteractionOptions).event = props.event;
+      }
     } else if (props.when === 'media') {
       (options as MediaOptions).query = props.query!;
     } else if (props.when === 'idle') {
-      (options as IdleOptions).timeout = props.timeout;
+      if (props.timeout !== undefined) {
+        (options as IdleOptions).timeout = props.timeout;
+      }
     } else if (props.when === 'custom') {
       (options as CustomOptions).trigger = props.trigger!;
     }

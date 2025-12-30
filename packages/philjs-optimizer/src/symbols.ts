@@ -3,7 +3,8 @@
  */
 
 import { parse } from '@babel/parser';
-import traverse from '@babel/traverse';
+import type { NodePath, TraverseOptions } from '@babel/traverse';
+import * as _traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import { createHash } from 'crypto';
 import type {
@@ -13,6 +14,9 @@ import type {
   SymbolPattern,
   OptimizerOptions,
 } from './types.js';
+
+// Handle both ESM and CJS exports - babel packages export default as the function
+const traverse: (ast: t.Node, opts?: TraverseOptions) => void = (_traverse as unknown as { default: (ast: t.Node, opts?: TraverseOptions) => void }).default;
 
 /**
  * Extract symbols from source code
@@ -40,7 +44,7 @@ export function extractSymbols(
   // Traverse the AST and extract symbols
   traverse(ast, {
     // Extract function declarations
-    FunctionDeclaration(path) {
+    FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
       const symbol = extractFunctionSymbol(path.node, context);
       if (symbol) {
         symbols.push(symbol);
@@ -48,7 +52,7 @@ export function extractSymbols(
     },
 
     // Extract arrow functions and function expressions assigned to variables
-    VariableDeclarator(path) {
+    VariableDeclarator(path: NodePath<t.VariableDeclarator>) {
       if (
         t.isArrowFunctionExpression(path.node.init) ||
         t.isFunctionExpression(path.node.init)
@@ -61,7 +65,7 @@ export function extractSymbols(
     },
 
     // Extract component declarations (capitalized functions)
-    CallExpression(path) {
+    CallExpression(path: NodePath<t.CallExpression>) {
       // Look for $() wrapped functions (lazy handlers)
       if (
         t.isIdentifier(path.node.callee) &&
@@ -80,7 +84,7 @@ export function extractSymbols(
   if (options.patterns) {
     for (const pattern of options.patterns) {
       traverse(ast, {
-        enter(path) {
+        enter(path: NodePath<t.Node>) {
           if (pattern.test(path.node)) {
             const symbol = pattern.extract(path.node, context);
             if (symbol) {
@@ -233,16 +237,14 @@ function extractDependencies(node: unknown): string[] {
     traverse(
       t.file(t.program(programBody)),
       {
-        Identifier(path) {
+        Identifier(path: NodePath<t.Identifier>) {
           // Skip if it's a binding (local variable)
           if (path.scope.hasBinding(path.node.name)) {
             return;
           }
           identifiers.add(path.node.name);
         },
-      },
-      undefined,
-      {}
+      }
     );
   } catch {
     // Return empty array if traversal fails

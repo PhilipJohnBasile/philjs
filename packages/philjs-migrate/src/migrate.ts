@@ -6,11 +6,11 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
 import * as pc from 'picocolors';
-import { ReactTransform } from './transforms/react';
-import { VueTransform } from './transforms/vue';
-import { SvelteTransform } from './transforms/svelte';
-import { analyzeProject } from './analyze';
-import { generateReport } from './report';
+import { ReactTransform } from './transforms/react.js';
+import { VueTransform } from './transforms/vue.js';
+import { SvelteTransform } from './transforms/svelte.js';
+import { analyzeProject } from './analyze.js';
+import { generateReport } from './report.js';
 
 export interface MigrationOptions {
   source: string;
@@ -121,8 +121,8 @@ export async function migrate(options: MigrationOptions): Promise<MigrationResul
       }
 
       // Collect warnings and manual review items
-      result.warnings.push(...transformResult.warnings.map(w => ({ ...w, file })));
-      result.manualReviewNeeded.push(...transformResult.manualReview.map(m => ({ ...m, file })));
+      result.warnings.push(...transformResult.warnings.map((w: Omit<MigrationWarning, 'file'>) => ({ ...w, file })));
+      result.manualReviewNeeded.push(...transformResult.manualReview.map((m: Omit<ManualReviewItem, 'file'>) => ({ ...m, file })));
 
     } catch (error) {
       result.errors.push({

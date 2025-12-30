@@ -199,7 +199,10 @@ export function extractClasses(content: string): string[] {
   let match;
 
   while ((match = classRegex.exec(content)) !== null) {
-    classes.push(...match[1].split(" ").filter(Boolean));
+    const matchedClasses = match[1];
+    if (matchedClasses) {
+      classes.push(...matchedClasses.split(" ").filter(Boolean));
+    }
   }
 
   return [...new Set(classes)];

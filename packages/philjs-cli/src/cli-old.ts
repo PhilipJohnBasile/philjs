@@ -27,7 +27,7 @@ program
   .option("-p, --port <port>", "Port to run dev server on", "3000")
   .option("--host <host>", "Host to bind to", "localhost")
   .option("--open", "Open browser automatically", false)
-  .action(async (options) => {
+  .action(async (options: { port: string; host: string; open: boolean }) => {
     console.log(pc.cyan("\n⚡ PhilJS Dev Server\n"));
 
     try {
@@ -49,7 +49,7 @@ program
   .option("--ssg", "Generate static site (SSG)", false)
   .option("--analyze", "Analyze bundle size", false)
   .option("--outDir <dir>", "Output directory", "dist")
-  .action(async (options) => {
+  .action(async (options: { ssg: boolean; analyze: boolean; outDir: string }) => {
     console.log(pc.cyan("\n🔨 Building PhilJS app...\n"));
 
     try {
@@ -103,7 +103,7 @@ program
   .description("Run tests with Vitest")
   .option("--watch", "Watch mode", false)
   .option("--coverage", "Generate coverage report", false)
-  .action(async (options) => {
+  .action(async (options: { watch: boolean; coverage: boolean }) => {
     const { spawn } = await import("child_process");
 
     const args = ["vitest"];
@@ -112,8 +112,8 @@ program
 
     const test = spawn("npx", args, { stdio: "inherit" });
 
-    test.on("exit", (code) => {
-      process.exit(code || 0);
+    test.on("exit", (code: number | null) => {
+      process.exit(code ?? 0);
     });
   });
 
@@ -122,7 +122,7 @@ program
   .command("preview")
   .description("Preview production build locally")
   .option("-p, --port <port>", "Port to run preview server on", "4173")
-  .action(async (options) => {
+  .action(async (options: { port: string }) => {
     console.log(pc.cyan("\n👀 Starting preview server...\n"));
 
     const { createServer } = await import("vite");
@@ -141,21 +141,20 @@ program
   });
 
 // Generate command group
-const generate = program
-  .command("generate")
-  .alias("g")
-  .description("Generate components, routes, pages, hooks, and stores");
+const generateCmd = program.command("generate");
+generateCmd.alias("g");
+generateCmd.description("Generate components, routes, pages, hooks, and stores");
 
 // Generate component
-generate
-  .command("component <name>")
-  .alias("c")
+const componentCmd = generateCmd.command("component <name>");
+componentCmd.alias("c");
+componentCmd
   .description("Generate a new component")
   .option("-d, --directory <dir>", "Target directory", "src/components")
   .option("--no-test", "Skip test file generation")
   .option("--with-styles", "Generate CSS module file")
   .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
+  .action(async (name: string, options: { directory: string; test: boolean; withStyles: boolean; js: boolean }) => {
     console.log(pc.cyan(`\n📦 Generating component: ${name}\n`));
     try {
       await generateComponent({
@@ -173,14 +172,14 @@ generate
   });
 
 // Generate route
-generate
-  .command("route <name>")
-  .alias("r")
+const routeCmd = generateCmd.command("route <name>");
+routeCmd.alias("r");
+routeCmd
   .description("Generate a new route with loader")
   .option("-d, --directory <dir>", "Target directory", "src/routes")
   .option("--no-test", "Skip test file generation")
   .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
+  .action(async (name: string, options: { directory: string; test: boolean; js: boolean }) => {
     console.log(pc.cyan(`\n🛤️  Generating route: ${name}\n`));
     try {
       await generateRoute({
@@ -197,14 +196,14 @@ generate
   });
 
 // Generate page
-generate
-  .command("page <name>")
-  .alias("p")
+const pageCmd = generateCmd.command("page <name>");
+pageCmd.alias("p");
+pageCmd
   .description("Generate a new page component with SEO")
   .option("-d, --directory <dir>", "Target directory", "src/pages")
   .option("--no-test", "Skip test file generation")
   .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
+  .action(async (name: string, options: { directory: string; test: boolean; js: boolean }) => {
     console.log(pc.cyan(`\n📄 Generating page: ${name}\n`));
     try {
       await generatePage({
@@ -221,14 +220,14 @@ generate
   });
 
 // Generate hook
-generate
-  .command("hook <name>")
-  .alias("h")
+const hookCmd = generateCmd.command("hook <name>");
+hookCmd.alias("h");
+hookCmd
   .description("Generate a custom hook")
   .option("-d, --directory <dir>", "Target directory", "src/hooks")
   .option("--no-test", "Skip test file generation")
   .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
+  .action(async (name: string, options: { directory: string; test: boolean; js: boolean }) => {
     console.log(pc.cyan(`\n🪝 Generating hook: ${name}\n`));
     try {
       await generateHook({
@@ -245,14 +244,14 @@ generate
   });
 
 // Generate store
-generate
-  .command("store <name>")
-  .alias("s")
+const storeCmd = generateCmd.command("store <name>");
+storeCmd.alias("s");
+storeCmd
   .description("Generate a state store")
   .option("-d, --directory <dir>", "Target directory", "src/stores")
   .option("--no-test", "Skip test file generation")
   .option("--js", "Use JavaScript instead of TypeScript")
-  .action(async (name, options) => {
+  .action(async (name: string, options: { directory: string; test: boolean; js: boolean }) => {
     console.log(pc.cyan(`\n🗃️  Generating store: ${name}\n`));
     try {
       await generateStore({

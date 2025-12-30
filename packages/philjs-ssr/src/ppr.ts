@@ -46,14 +46,17 @@ export function createPPRContext(
     requestData?: RequestTimeData;
   } = {}
 ): PPRContext {
-  return {
+  const ctx: PPRContext = {
     mode,
     boundaries: new Map(),
     boundaryId: 0,
     placeholderPrefix: options.placeholderPrefix || "ppr-",
     insideDynamicBoundary: false,
-    requestData: options.requestData,
   };
+  if (options.requestData !== undefined) {
+    ctx.requestData = options.requestData;
+  }
+  return ctx;
 }
 
 // ============================================================================
@@ -132,28 +135,28 @@ async function renderWithPPR(vnode: VNode, ctx: PPRContext): Promise<string> {
   const { type, props } = vnode;
 
   // Handle dynamic boundaries
-  if (isDynamic(vnode) || (props && props.__dynamicType)) {
+  if (isDynamic(vnode) || (props && props['__dynamicType'])) {
     return await renderDynamicBoundary(vnode, ctx);
   }
 
   // Handle Suspense with dynamic prop
   if (type === Suspense) {
-    const isDynamicSuspense = props.dynamic === true;
+    const isDynamicSuspense = props['dynamic'] === true;
     if (isDynamicSuspense) {
       return await renderDynamicBoundary(
         {
           type: "dynamic" as any,
           props: {
-            children: props.children,
-            fallback: props.fallback,
-            priority: props.priority,
+            children: props['children'],
+            fallback: props['fallback'],
+            priority: props['priority'],
           },
         } as any,
         ctx
       );
     }
     // Regular Suspense - try to render synchronously
-    return await renderWithPPR(props.children, ctx);
+    return await renderWithPPR(props['children'] as VNode, ctx);
   }
 
   // Function components
@@ -286,7 +289,7 @@ async function renderStaticContent(vnode: VNode): Promise<string> {
       return openTag;
     }
 
-    const childrenHtml = children ? await renderStaticContent(children) : "";
+    const childrenHtml = children ? await renderStaticContent(children as VNode) : "";
     return `${openTag}${childrenHtml}</${type}>`;
   }
 
@@ -630,20 +633,20 @@ async function extractAssets(html: string): Promise<ShellAssets> {
     /<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["'][^>]*>/g
   );
   for (const match of cssMatches) {
-    assets.css.push(match[1]);
+    assets.css.push(match[1]!);
   }
 
   // Extract JS scripts
   const jsMatches = html.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/g);
   for (const match of jsMatches) {
-    assets.js.push(match[1]);
+    assets.js.push(match[1]!);
   }
 
   // Extract inline critical CSS
   const inlineStyleMatch = html.match(
     /<style[^>]*data-critical[^>]*>([\s\S]*?)<\/style>/
   );
-  if (inlineStyleMatch) {
+  if (inlineStyleMatch && inlineStyleMatch[1] !== undefined) {
     assets.inlineCss = inlineStyleMatch[1];
   }
 

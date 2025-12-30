@@ -1,5 +1,5 @@
-import type { AtomicConfig, CSSStyleObject, CSSResult } from './types';
-import { css } from './css';
+import type { AtomicConfig, CSSStyleObject, CSSResult } from './types.js';
+import { css } from './css.js';
 
 /**
  * Atomic CSS class registry

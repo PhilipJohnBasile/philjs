@@ -14,9 +14,9 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets } from '../utils/build';
-import { loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets } from '../utils/build.js';
+import { loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the Netlify adapter
@@ -243,12 +243,9 @@ export function netlifyAdapter(config: NetlifyAdapterConfig = {}): Adapter & Par
     scheduledFunctions = [],
   } = config;
 
-  return {
+  const adapter: Adapter & Partial<EdgeAdapter> = {
     name: 'netlify',
     edge,
-    edgeConfig: edge ? {
-      regions: regions as string[],
-    } : undefined,
 
     async adapt() {
       console.log(`Building for Netlify (${edge ? 'Edge' : 'Serverless'})...`);
@@ -340,6 +337,15 @@ export function netlifyAdapter(config: NetlifyAdapterConfig = {}): Adapter & Par
       };
     },
   };
+
+  // Add edgeConfig only if edge is true
+  if (edge) {
+    adapter.edgeConfig = {
+      regions: regions as string[],
+    };
+  }
+
+  return adapter;
 
   /**
    * Generate Edge Function handler

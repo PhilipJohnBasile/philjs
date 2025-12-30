@@ -3,7 +3,7 @@
  * Type-safe RPC client - framework agnostic
  */
 
-import type { ClientConfig, BatchConfig, SubscriptionConfig, SubscriptionCallbacks } from '../types';
+import type { ClientConfig, BatchConfig, SubscriptionConfig, SubscriptionCallbacks } from '../types.js';
 
 /**
  * Create a type-safe RPC client
@@ -277,7 +277,7 @@ export function createCachedQuery<TInput, TOutput>(
   queryFn: (input: TInput) => Promise<TOutput>,
   options?: { ttl?: number; keyFn?: (input: TInput) => string }
 ) {
-  const cache = createQueryCache({ ttl: options?.ttl });
+  const cache = createQueryCache({ ...(options?.ttl !== undefined ? { ttl: options.ttl } : {}) });
   const keyFn = options?.keyFn || ((input: TInput) => JSON.stringify(input));
 
   return async (input: TInput): Promise<TOutput> => {

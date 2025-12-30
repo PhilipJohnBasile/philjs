@@ -32,6 +32,7 @@ const handlers: Record<string, MinimalHandler> = {
   // x-on: Event handling (shorthand: @click)
   on: (el, expr, data) => {
     const [event, handler] = expr.split('=');
+    if (!event || !handler) return;
     const listener = (e: Event) => {
       const fn = new Function('$event', ...Object.keys(data), handler);
       const values = Object.values(data).map((s: any) => s());
@@ -63,6 +64,7 @@ const handlers: Record<string, MinimalHandler> = {
   // x-bind: Bind attribute (shorthand: :attr)
   bind: (el, expr, data) => {
     const [attr, value] = expr.split('=');
+    if (!attr || !value) return;
     return effect(() => {
       const result = evaluate(value, data);
       if (result === false || result === null) {
@@ -140,7 +142,7 @@ function processMinimal(el: HTMLElement, data: Record<string, any>): void {
     }
 
     if (name && handlers[name]) {
-      handlers[name](el, expr, data);
+      handlers[name]!(el, expr, data);
     }
   }
 

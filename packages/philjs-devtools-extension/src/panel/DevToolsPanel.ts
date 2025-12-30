@@ -2,7 +2,7 @@
  * PhilJS DevTools - Main Panel Component
  */
 
-import type { DevToolsState, DevToolsMessage, ComponentNode, SignalData } from '../types';
+import type { DevToolsState, DevToolsMessage, ComponentNode, SignalData, RenderMetrics, NetworkRequest } from '../types.js';
 
 export class DevToolsPanel {
   private state: DevToolsState;
@@ -167,7 +167,7 @@ export class DevToolsPanel {
         <span class="component-name">${node.name}</span>
         ${node.renderCount > 1 ? `<span class="render-count">${node.renderCount}</span>` : ''}
       </div>
-      ${node.children.map(child => this.renderComponentNode(child, depth + 1)).join('')}
+      ${node.children.map((child: ComponentNode) => this.renderComponentNode(child, depth + 1)).join('')}
     `;
   }
 
@@ -196,7 +196,7 @@ export class DevToolsPanel {
         <section class="inspector-section">
           <h4>Signals</h4>
           <ul>
-            ${node.signals.map(id => {
+            ${node.signals.map((id: string) => {
               const signal = this.state.signals.get(id);
               return `<li>${signal?.name || id}: ${JSON.stringify(signal?.value)}</li>`;
             }).join('')}
@@ -231,7 +231,7 @@ export class DevToolsPanel {
             </tr>
           </thead>
           <tbody>
-            ${signals.map(signal => `
+            ${signals.map((signal: SignalData) => `
               <tr data-signal-id="${signal.id}">
                 <td>${signal.name}</td>
                 <td class="signal-value">${JSON.stringify(signal.value)}</td>
@@ -272,7 +272,7 @@ export class DevToolsPanel {
         <div class="render-timeline">
           <h4>Recent Renders</h4>
           <ul>
-            ${renders.slice(-10).reverse().map(r => `
+            ${renders.slice(-10).reverse().map((r: RenderMetrics) => `
               <li>
                 <span class="render-name">${r.componentName}</span>
                 <span class="render-duration">${r.duration.toFixed(2)}ms</span>
@@ -305,7 +305,7 @@ export class DevToolsPanel {
             </tr>
           </thead>
           <tbody>
-            ${requests.map(req => `
+            ${requests.map((req: NetworkRequest) => `
               <tr class="${req.status >= 400 ? 'error' : ''}">
                 <td>${req.status}</td>
                 <td>${req.method}</td>
@@ -336,7 +336,7 @@ export class DevToolsPanel {
     // Tab switching
     this.container.querySelectorAll('.devtools-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        this.activeTab = (tab as HTMLElement).dataset.tab || 'components';
+        this.activeTab = (tab as HTMLElement).dataset['tab'] || 'components';
         this.render();
       });
     });
@@ -344,7 +344,7 @@ export class DevToolsPanel {
     // Component selection
     this.container.querySelectorAll('.component-node').forEach(node => {
       node.addEventListener('click', () => {
-        const id = (node as HTMLElement).dataset.componentId;
+        const id = (node as HTMLElement).dataset['componentId'];
         if (id) {
           this.state.selectedNode = id;
           this.sendMessage({ type: 'SELECT_COMPONENT', payload: id });
@@ -353,7 +353,7 @@ export class DevToolsPanel {
       });
 
       node.addEventListener('mouseenter', () => {
-        const id = (node as HTMLElement).dataset.componentId;
+        const id = (node as HTMLElement).dataset['componentId'];
         if (id) {
           this.sendMessage({ type: 'HIGHLIGHT_COMPONENT', payload: id });
         }
@@ -367,7 +367,7 @@ export class DevToolsPanel {
     // Signal inspection
     this.container.querySelectorAll('[data-signal-id]').forEach(row => {
       row.addEventListener('click', () => {
-        const id = (row as HTMLElement).dataset.signalId;
+        const id = (row as HTMLElement).dataset['signalId'];
         if (id) {
           this.sendMessage({ type: 'INSPECT_SIGNAL', payload: id });
         }
@@ -377,7 +377,7 @@ export class DevToolsPanel {
 }
 
 // Exports for individual panel sections
-export { SignalInspector } from './SignalInspector';
-export { ComponentTree } from './ComponentTree';
-export { PerformanceProfiler } from './PerformanceProfiler';
-export { NetworkInspector } from './NetworkInspector';
+export { SignalInspector } from './SignalInspector.js';
+export { ComponentTree } from './ComponentTree.js';
+export { PerformanceProfiler } from './PerformanceProfiler.js';
+export { NetworkInspector } from './NetworkInspector.js';

@@ -339,7 +339,7 @@ Generate complete OpenAPI specification in YAML format.`;
 
     // Extract YAML from response
     const yamlMatch = response.match(/```(?:yaml|yml)\n([\s\S]*?)```/);
-    return yamlMatch?.[1].trim() || response;
+    return yamlMatch?.[1]!.trim() || response;
   }
 
   /**
@@ -374,13 +374,16 @@ Return the handler code.`;
       systemPrompt: 'You are a PhilJS API development expert.',
     });
 
-    return {
+    const route: GeneratedRoute = {
       method: operationDetails.method,
       path: operationDetails.path.replace(':resource', resource),
       code: extractCode(response) || '',
       description: operationDetails.description,
-      auth: config.auth?.protected?.includes(operation),
     };
+    if (config.auth?.protected?.includes(operation) !== undefined) {
+      route.auth = config.auth?.protected?.includes(operation);
+    }
+    return route;
   }
 
   /**
@@ -502,22 +505,32 @@ ${config.auth ? `Implement ${config.auth.type} authentication.` : ''}`;
 
     const codeBlocks = this.extractLabeledCodeBlocks(response);
 
-    return {
+    const result: GeneratedAPI = {
       routes: this.extractRoutes(codeBlocks, config),
       validationSchema: codeBlocks.find(b => b.label?.includes('validation'))?.code || '',
-      databaseSchema: codeBlocks.find(b =>
-        b.label?.includes('database') ||
-        b.label?.includes('model') ||
-        b.label?.includes('schema')
-      )?.code,
       types: codeBlocks.find(b => b.label?.includes('type'))?.code || '',
-      openapi: config.openapi
-        ? codeBlocks.find(b => b.label?.includes('openapi'))?.code
-        : undefined,
-      middleware: codeBlocks.find(b => b.label?.includes('middleware'))?.code,
       explanation: this.extractExplanation(response),
       dependencies: this.inferDependencies(config),
     };
+    const databaseSchemaBlock = codeBlocks.find(b =>
+      b.label?.includes('database') ||
+      b.label?.includes('model') ||
+      b.label?.includes('schema')
+    )?.code;
+    if (databaseSchemaBlock !== undefined) {
+      result.databaseSchema = databaseSchemaBlock;
+    }
+    if (config.openapi) {
+      const openapiBlock = codeBlocks.find(b => b.label?.includes('openapi'))?.code;
+      if (openapiBlock !== undefined) {
+        result.openapi = openapiBlock;
+      }
+    }
+    const middlewareBlock = codeBlocks.find(b => b.label?.includes('middleware'))?.code;
+    if (middlewareBlock !== undefined) {
+      result.middleware = middlewareBlock;
+    }
+    return result;
   }
 
   /**
@@ -529,10 +542,14 @@ ${config.auth ? `Implement ${config.auth.type} authentication.` : ''}`;
     let match;
 
     while ((match = regex.exec(response)) !== null) {
-      blocks.push({
-        label: match[1]?.trim().toLowerCase(),
-        code: match[2].trim(),
-      });
+      const block: { label?: string; code: string } = {
+        code: match[2]!.trim(),
+      };
+      const labelValue = match[1]?.trim().toLowerCase();
+      if (labelValue !== undefined) {
+        block.label = labelValue;
+      }
+      blocks.push(block);
     }
 
     return blocks;
@@ -556,29 +573,37 @@ ${config.auth ? `Implement ${config.auth.type} authentication.` : ''}`;
       );
 
       if (block) {
-        routes.push({
+        const route: GeneratedRoute = {
           method: details.method,
           path: details.path.replace(':resource', config.resource),
           code: block.code,
           description: details.description,
-          auth: config.auth?.protected?.includes(op),
-        });
+        };
+        const authValue = config.auth?.protected?.includes(op);
+        if (authValue !== undefined) {
+          route.auth = authValue;
+        }
+        routes.push(route);
       }
     }
 
     // If no routes found in blocks, use first block's code as main code
     if (routes.length === 0 && blocks.length > 0) {
-      const mainCode = blocks[0].code;
+      const mainCode = blocks[0]!.code;
       if (mainCode) {
         for (const op of operations) {
           const details = this.getOperationDetails(op);
-          routes.push({
+          const route: GeneratedRoute = {
             method: details.method,
             path: details.path.replace(':resource', config.resource),
             code: mainCode,
             description: details.description,
-            auth: config.auth?.protected?.includes(op),
-          });
+          };
+          const authValue = config.auth?.protected?.includes(op);
+          if (authValue !== undefined) {
+            route.auth = authValue;
+          }
+          routes.push(route);
         }
       }
     }
@@ -609,7 +634,7 @@ ${config.auth ? `Implement ${config.auth.type} authentication.` : ''}`;
    * Extract explanation from response
    */
   private extractExplanation(response: string): string {
-    const beforeCode = response.split('```')[0].trim();
+    const beforeCode = response.split('```')[0]!.trim();
     return beforeCode || 'API generated successfully';
   }
 
@@ -652,10 +677,13 @@ export async function generateCRUD(
   options?: Partial<APIGenerationConfig>
 ): Promise<GeneratedAPI> {
   const generator = new APIGenerator(provider);
-  return generator.generateCRUD({
+  const config: APIGenerationConfig = {
     resource,
-    schema,
     validation: 'zod',
     ...options,
-  });
+  };
+  if (schema !== undefined) {
+    config.schema = schema;
+  }
+  return generator.generateCRUD(config);
 }

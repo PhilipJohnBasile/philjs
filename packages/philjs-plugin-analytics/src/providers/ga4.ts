@@ -49,15 +49,15 @@ export class GA4Provider implements IAnalyticsProvider {
     };
 
     if (config.privacy?.anonymizeIp) {
-      gtagConfig.anonymize_ip = true;
+      gtagConfig['anonymize_ip'] = true;
     }
 
     if (config.privacy?.cookieDomain) {
-      gtagConfig.cookie_domain = config.privacy.cookieDomain;
+      gtagConfig['cookie_domain'] = config.privacy.cookieDomain;
     }
 
     if (config.privacy?.cookieExpires) {
-      gtagConfig.cookie_expires = config.privacy.cookieExpires * 24 * 60 * 60;
+      gtagConfig['cookie_expires'] = config.privacy.cookieExpires * 24 * 60 * 60;
     }
 
     window.gtag("config", config.trackingId, gtagConfig);
@@ -85,8 +85,8 @@ export class GA4Provider implements IAnalyticsProvider {
 
     const properties: Record<string, any> = {};
 
-    if (url) properties.page_path = url;
-    if (title) properties.page_title = title;
+    if (url) properties['page_path'] = url;
+    if (title) properties['page_title'] = title;
 
     window.gtag("event", "page_view", properties);
 

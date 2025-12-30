@@ -212,7 +212,7 @@ export function attachGestures(
       // Start long press timer
       longPressTimer = setTimeout(() => {
         const distance = getDistance(state.startPoint, state.currentPoint);
-        if (distance <= mergedConfig.longPress.maxDistance) {
+        if (distance <= mergedConfig.longPress.maxDistance!) {
           handlers.onLongPress?.(createGestureEvent('longpress', state, element, e));
         }
       }, mergedConfig.longPress.duration);
@@ -235,7 +235,7 @@ export function attachGestures(
     // Cancel long press if moved too far
     if (longPressTimer) {
       const distance = getDistance(state.startPoint, state.currentPoint);
-      if (distance > mergedConfig.longPress.maxDistance) {
+      if (distance > mergedConfig.longPress.maxDistance!) {
         clearTimeout(longPressTimer);
         longPressTimer = null;
       }
@@ -260,26 +260,26 @@ export function attachGestures(
     // Handle multi-touch gestures
     if (pointers.size >= 2) {
       const points = Array.from(pointers.values());
-      const [p1, p2] = points;
+      const [p1, p2] = points as [Point, Point];
 
       // Pinch detection
       const currentDistance = getDistance(p1, p2);
       const initialDistance = state.scale === 1 ? currentDistance : currentDistance / state.scale;
       const newScale = currentDistance / initialDistance;
 
-      if (Math.abs(newScale - state.scale) > mergedConfig.pinch.threshold) {
+      if (Math.abs(newScale - state.scale) > mergedConfig.pinch.threshold!) {
         state.scale = Math.max(
-          mergedConfig.pinch.minScale,
-          Math.min(mergedConfig.pinch.maxScale, newScale)
+          mergedConfig.pinch.minScale!,
+          Math.min(mergedConfig.pinch.maxScale!, newScale)
         );
         const center = getCenter(p1, p2);
         handlers.onPinch?.(createPinchEvent(state, center, element, e));
       }
 
       // Rotation detection
-      const angle = getAngle(p1, p2);
+      const angle = getAngle(p1!, p2!);
       const rotationDelta = angle - state.rotation;
-      if (Math.abs(rotationDelta) > mergedConfig.rotate.threshold) {
+      if (Math.abs(rotationDelta) > mergedConfig.rotate.threshold!) {
         state.rotation = angle;
         const center = getCenter(p1, p2);
         handlers.onRotate?.(createRotateEvent(state, center, element, e));
@@ -288,7 +288,7 @@ export function attachGestures(
 
     // Pan detection
     const totalDistance = getDistance(state.startPoint, state.currentPoint);
-    if (totalDistance > mergedConfig.pan.threshold) {
+    if (totalDistance > mergedConfig.pan.threshold!) {
       const delta = {
         x: state.currentPoint.x - state.previousPoint.x,
         y: state.currentPoint.y - state.previousPoint.y,
@@ -314,13 +314,13 @@ export function attachGestures(
     const velocity = Math.sqrt(state.velocity.x ** 2 + state.velocity.y ** 2);
 
     // Tap detection
-    if (distance <= mergedConfig.tap.maxDistance && state.duration <= mergedConfig.tap.maxDuration) {
+    if (distance <= mergedConfig.tap.maxDistance! && state.duration <= mergedConfig.tap.maxDuration!) {
       const now = Date.now();
 
       // Double tap detection
-      if (lastTapPoint && lastTapTime && now - lastTapTime < mergedConfig.tap.doubleTapDelay) {
+      if (lastTapPoint && lastTapTime && now - lastTapTime < mergedConfig.tap.doubleTapDelay!) {
         const tapDistance = getDistance(lastTapPoint, state.currentPoint);
-        if (tapDistance <= mergedConfig.tap.maxDistance * 2) {
+        if (tapDistance <= mergedConfig.tap.maxDistance! * 2) {
           handlers.onDoubleTap?.(createGestureEvent('doubletap', state, element, e));
           lastTapTime = 0;
           lastTapPoint = null;
@@ -334,8 +334,8 @@ export function attachGestures(
 
     // Swipe detection
     if (
-      distance >= mergedConfig.swipe.threshold &&
-      velocity >= mergedConfig.swipe.velocity &&
+      distance >= mergedConfig.swipe.threshold! &&
+      velocity >= mergedConfig.swipe.velocity! &&
       state.direction
     ) {
       const allowedDirections = mergedConfig.swipe.direction === 'all'
@@ -359,7 +359,7 @@ export function attachGestures(
     }
 
     // Pan end
-    if (distance > mergedConfig.pan.threshold) {
+    if (distance > mergedConfig.pan.threshold!) {
       handlers.onPanEnd?.(createPanEvent(state, state.velocity, state.distance, element, e));
     }
 

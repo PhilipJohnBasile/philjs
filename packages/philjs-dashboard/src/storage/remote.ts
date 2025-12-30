@@ -4,9 +4,9 @@
  */
 
 import pako from 'pako';
-import type { MetricsSnapshot } from '../collector/metrics';
-import type { Span } from '../collector/tracing';
-import type { CapturedError } from '../collector/errors';
+import type { MetricsSnapshot } from '../collector/metrics.js';
+import type { Span } from '../collector/tracing.js';
+import type { CapturedError } from '../collector/errors.js';
 
 // ============================================================================
 // Types
@@ -93,9 +93,8 @@ export class RemoteStorageManager {
   private isDestroyed = false;
 
   constructor(config: RemoteStorageConfig) {
-    this.config = {
+    const baseConfig = {
       endpoint: config.endpoint,
-      apiKey: config.apiKey,
       headers: config.headers ?? {},
       batchSize: config.batchSize ?? 50,
       flushInterval: config.flushInterval ?? 10000,
@@ -110,8 +109,14 @@ export class RemoteStorageManager {
       clientId: config.clientId ?? this.generateClientId(),
       sessionId: config.sessionId ?? this.generateSessionId(),
       environment: config.environment ?? 'production',
-      release: config.release,
-    };
+    } as typeof this.config;
+    if (config.apiKey !== undefined) {
+      baseConfig.apiKey = config.apiKey;
+    }
+    if (config.release !== undefined) {
+      baseConfig.release = config.release;
+    }
+    this.config = baseConfig;
 
     this.startFlushTimer();
     this.startRetryTimer();
@@ -268,16 +273,19 @@ export class RemoteStorageManager {
   }
 
   private createBatch(items: BatchItem[]): BatchPayload {
+    const metadata: BatchPayload['metadata'] = {
+      clientId: this.config.clientId,
+      sessionId: this.config.sessionId,
+      environment: this.config.environment,
+    };
+    if (this.config.release !== undefined) {
+      metadata.release = this.config.release;
+    }
     return {
       batchId: this.generateBatchId(),
       timestamp: Date.now(),
       items,
-      metadata: {
-        clientId: this.config.clientId,
-        sessionId: this.config.sessionId,
-        environment: this.config.environment,
-        release: this.config.release,
-      },
+      metadata,
     };
   }
 
@@ -416,7 +424,9 @@ export class BeaconSender {
 
   constructor(endpoint: string, apiKey?: string) {
     this.endpoint = endpoint;
-    this.apiKey = apiKey;
+    if (apiKey !== undefined) {
+      this.apiKey = apiKey;
+    }
 
     if (typeof window !== 'undefined') {
       window.addEventListener('visibilitychange', () => {

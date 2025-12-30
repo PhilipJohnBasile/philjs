@@ -9,7 +9,41 @@
  * - Route parameter testing
  */
 
-import { signal, type Signal } from 'philjs-core/signals';
+import type { Signal } from 'philjs-core/signals';
+
+// Expect function type for testing utilities
+// These functions are designed to be used in test files where expect is a global
+declare const expect: {
+  (value: unknown): {
+    toBe(expected: unknown): void;
+    toEqual(expected: unknown): void;
+    rejects: {
+      toThrow(expected?: string | RegExp | Error): Promise<void>;
+    };
+  };
+};
+
+// Signal factory (inline implementation to avoid runtime import issues)
+function signal<T>(value: T): Signal<T> {
+  let current = value;
+  const listeners = new Set<(value: T) => void>();
+
+  const getter = (() => current) as Signal<T>;
+  getter.set = (valueOrFn: T | ((prev: T) => T)) => {
+    const newValue = typeof valueOrFn === 'function'
+      ? (valueOrFn as (prev: T) => T)(current)
+      : valueOrFn;
+    current = newValue;
+    listeners.forEach(fn => fn(newValue));
+  };
+  getter.subscribe = (fn: (value: T) => void) => {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  };
+  getter.peek = () => current;
+
+  return getter;
+}
 
 // ============================================================================
 // Types

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/neural",
   "version": "0.1.0",
+  "type": "module",
   "description": "Neural Rendering Engine - AI-powered rendering optimization with predictive frames, adaptive quality, and neural layout",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

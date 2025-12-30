@@ -13,9 +13,9 @@
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Adapter, AdapterConfig, RequestContext } from '../types';
-import { createBuildManifest, copyStaticAssets, MIME_TYPES } from '../utils/build';
-import { loadEnvFile } from '../utils/env';
+import type { Adapter, AdapterConfig, RequestContext } from '../types.js';
+import { createBuildManifest, copyStaticAssets, MIME_TYPES } from '../utils/build.js';
+import { loadEnvFile } from '../utils/env.js';
 
 /**
  * Configuration options for the Bun adapter
@@ -144,7 +144,7 @@ export function bunAdapter(config: BunAdapterConfig = {}): Adapter {
     outDir = '.bun',
     port = 3000,
     hostname = '0.0.0.0',
-    development = process.env.NODE_ENV !== 'production',
+    development = process.env['NODE_ENV'] !== 'production',
     staticDir = 'public',
     compression = true,
     sqlite,

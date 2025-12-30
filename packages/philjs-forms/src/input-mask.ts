@@ -67,7 +67,7 @@ export function parseMaskPattern(pattern: string): MaskChar[] {
     } else if (char === '\\') {
       escaped = true;
     } else if (char in maskChars) {
-      result.push(maskChars[char]);
+      result.push(maskChars[char]!);
     } else {
       result.push(char);
     }
@@ -92,7 +92,7 @@ export function applyMask(value: string, pattern: string | MaskChar[]): MaskResu
     if (maskChar instanceof RegExp) {
       // Find the next matching character in the value
       while (valueIndex < value.length) {
-        const inputChar = value[valueIndex];
+        const inputChar = value[valueIndex]!;
         valueIndex++;
 
         if (maskChar.test(inputChar)) {
@@ -281,7 +281,7 @@ export function luhnCheck(number: string): boolean {
   let isEven = false;
 
   for (let i = digits.length - 1; i >= 0; i--) {
-    let digit = parseInt(digits[i], 10);
+    let digit = parseInt(digits[i]!, 10);
 
     if (isEven) {
       digit *= 2;

@@ -9,7 +9,7 @@
  * - Resolution tracking
  */
 
-import type { YDoc, YMap, YArray } from './crdt';
+import type { YDoc, YMap, YArray } from './crdt.js';
 
 export interface Comment {
   id: string;
@@ -188,10 +188,12 @@ export class CommentsManager {
       author: this.config.user,
       content,
       createdAt: Date.now(),
-      parentId,
       mentions: this.extractMentions(content),
       reactions: [],
     };
+    if (parentId !== undefined) {
+      comment.parentId = parentId;
+    }
 
     thread.comments.push(comment);
     this.syncThread(thread);
@@ -239,7 +241,7 @@ export class CommentsManager {
     const commentIndex = thread.comments.findIndex(c => c.id === commentId);
     if (commentIndex === -1) return false;
 
-    const comment = thread.comments[commentIndex];
+    const comment = thread.comments[commentIndex]!;
 
     // Only author can delete
     if (comment.author.id !== this.config.user.id) {
@@ -307,8 +309,8 @@ export class CommentsManager {
     if (!thread) return false;
 
     thread.resolved = false;
-    thread.resolvedAt = undefined;
-    thread.resolvedBy = undefined;
+    delete thread.resolvedAt;
+    delete thread.resolvedBy;
 
     this.syncThread(thread);
     return true;
@@ -463,7 +465,7 @@ export class CommentsManager {
     let match;
 
     while ((match = mentionRegex.exec(content)) !== null) {
-      mentions.push(match[1]);
+      mentions.push(match[1]!);
     }
 
     return mentions;

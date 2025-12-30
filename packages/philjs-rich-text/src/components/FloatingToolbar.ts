@@ -3,7 +3,7 @@
  * Context-aware formatting toolbar - vanilla JS
  */
 
-import type { EditorInstance } from '../types';
+import type { EditorInstance } from '../types.js';
 
 export interface FloatingToolbarOptions {
   editor: EditorInstance | null;

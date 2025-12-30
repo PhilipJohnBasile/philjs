@@ -2,8 +2,8 @@
  * Prisma Migration Integration
  */
 
-import type { MigrationConfig, Migration, MigrationContext } from '../types';
-import { MigrationManager } from '../manager';
+import type { MigrationConfig, Migration, MigrationContext } from '../types.js';
+import { MigrationManager } from '../manager.js';
 
 export class PrismaMigrationIntegration {
   /**

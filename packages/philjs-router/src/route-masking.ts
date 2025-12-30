@@ -164,13 +164,16 @@ export function createRouteMask(
     preserve?: boolean;
   }
 ): RouteMask {
-  return {
+  const result: RouteMask = {
     actualRoute,
     maskedUrl,
-    state: options?.state,
     preserve: options?.preserve ?? maskConfigSignal().defaultPreserve,
     timestamp: Date.now(),
   };
+  if (options?.state !== undefined) {
+    result.state = options.state;
+  }
+  return result;
 }
 
 /**
@@ -209,8 +212,10 @@ export function applyRouteMask(
     const entry: MaskStackEntry = {
       id: generateMaskId(),
       mask,
-      parentId,
     };
+    if (parentId !== undefined) {
+      entry.parentId = parentId;
+    }
 
     maskStackSignal.set([...stack, entry]);
   }
@@ -261,7 +266,7 @@ export function removeRouteMask(options?: {
 
       // Restore parent mask if exists
       if (newStack.length > 0) {
-        const parentMask = newStack[newStack.length - 1].mask;
+        const parentMask = newStack[newStack.length - 1]!.mask;
         currentMaskSignal.set(parentMask);
 
         if (options?.restoreUrl && typeof window !== "undefined") {
@@ -326,10 +331,15 @@ export function navigateWithMask(
 ): void {
   const maskedUrl = options?.maskAs || actualRoute;
 
-  const mask = createRouteMask(actualRoute, maskedUrl, {
-    state: options?.state,
-    preserve: options?.preserveMask,
-  });
+  const maskOptions: { state?: Record<string, unknown>; preserve?: boolean } = {};
+  if (options?.state !== undefined) {
+    maskOptions.state = options.state;
+  }
+  if (options?.preserveMask !== undefined) {
+    maskOptions.preserve = options.preserveMask;
+  }
+
+  const mask = createRouteMask(actualRoute, maskedUrl, maskOptions);
 
   applyRouteMask(mask, {
     push: !options?.replace,
@@ -441,7 +451,7 @@ export function popMask(): RouteMask | null {
 
   if (stack.length === 0) return null;
 
-  const popped = stack[stack.length - 1];
+  const popped = stack[stack.length - 1]!;
   removeRouteMask({
     restoreUrl: true,
     pop: true,
@@ -489,7 +499,7 @@ function storeMaskInHistory(mask: RouteMask): void {
   if (history.size > config.maxHistorySize) {
     const entries = Array.from(history.entries());
     // Sort by timestamp and keep most recent
-    entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+    entries.sort((a, b) => b[1]!.timestamp - a[1]!.timestamp);
     const trimmed = new Map(entries.slice(0, config.maxHistorySize));
     maskHistorySignal.set(trimmed);
   }
@@ -571,13 +581,18 @@ export function matchesMask(
 export function detectMaskFromHistory(): RouteMask | null {
   if (typeof window === "undefined") return null;
 
-  const state = window.history.state;
+  const state = window.history.state as Record<string, unknown> | null;
 
-  if (state?.__routeMask__) {
+  if (state?.['__routeMask__']) {
+    const routeMask = state['__routeMask__'] as {
+      actualRoute: string;
+      maskedUrl: string;
+      timestamp: number;
+    };
     return {
-      actualRoute: state.__routeMask__.actualRoute,
-      maskedUrl: state.__routeMask__.maskedUrl,
-      timestamp: state.__routeMask__.timestamp,
+      actualRoute: routeMask.actualRoute,
+      maskedUrl: routeMask.maskedUrl,
+      timestamp: routeMask.timestamp,
       state,
     };
   }
@@ -588,7 +603,7 @@ export function detectMaskFromHistory(): RouteMask | null {
 /**
  * Restore mask on popstate.
  */
-function handlePopState(event: PopStateEvent): void {
+function handlePopState(_event: PopStateEvent): void {
   const config = maskConfigSignal();
 
   if (!config.restoreOptions.onPopState) return;

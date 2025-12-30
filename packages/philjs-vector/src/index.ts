@@ -150,10 +150,10 @@ class OpenAIEmbeddings implements EmbeddingProvider {
     const data = await response.json();
 
     data.data.forEach((item: any, i: number) => {
-      const { text, index } = uncached[i];
+      const uncachedItem = uncached[i]!;
       const vector = item.embedding;
-      this.cache.set(text, vector);
-      results[index] = { vector, dimensions: this.dimensions };
+      this.cache.set(uncachedItem.text, vector);
+      results[uncachedItem.index] = { vector, dimensions: this.dimensions };
     });
 
     return results;
@@ -328,9 +328,9 @@ class MemoryVectorStore implements VectorStore {
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dotProduct += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
@@ -470,9 +470,9 @@ class IndexedDBVectorStore implements VectorStore {
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dotProduct += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
@@ -711,11 +711,11 @@ class TextChunker {
     const result: string[] = [];
 
     for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i];
+      let chunk = chunks[i]!;
 
       // Add end of previous chunk to beginning
       if (i > 0) {
-        const prevEnd = chunks[i - 1].slice(-overlap);
+        const prevEnd = chunks[i - 1]!.slice(-overlap);
         chunk = prevEnd + chunk;
       }
 
@@ -895,24 +895,29 @@ class RAGPipeline {
 
     // Initialize embedding provider
     switch (config.embedding.provider) {
-      case 'openai':
-        this.embeddings = new OpenAIEmbeddings({
-          apiKey: config.embedding.apiKey!,
-          model: config.embedding.model,
-          dimensions: config.embedding.dimensions
-        });
+      case 'openai': {
+        const openaiConfig: { apiKey: string; model?: string; dimensions?: number } = {
+          apiKey: config.embedding.apiKey!
+        };
+        if (config.embedding.model !== undefined) openaiConfig.model = config.embedding.model;
+        if (config.embedding.dimensions !== undefined) openaiConfig.dimensions = config.embedding.dimensions;
+        this.embeddings = new OpenAIEmbeddings(openaiConfig);
         break;
-      case 'cohere':
-        this.embeddings = new CohereEmbeddings({
-          apiKey: config.embedding.apiKey!,
-          model: config.embedding.model
-        });
+      }
+      case 'cohere': {
+        const cohereConfig: { apiKey: string; model?: string } = {
+          apiKey: config.embedding.apiKey!
+        };
+        if (config.embedding.model !== undefined) cohereConfig.model = config.embedding.model;
+        this.embeddings = new CohereEmbeddings(cohereConfig);
         break;
+      }
       case 'local':
-      default:
-        this.embeddings = new LocalEmbeddings({
-          dimensions: config.embedding.dimensions
-        });
+      default: {
+        const localConfig: { modelPath?: string; dimensions?: number } = {};
+        if (config.embedding.dimensions !== undefined) localConfig.dimensions = config.embedding.dimensions;
+        this.embeddings = new LocalEmbeddings(localConfig);
+      }
     }
 
     // Initialize vector store
@@ -940,7 +945,7 @@ class RAGPipeline {
       for (let i = 0; i < chunks.length; i++) {
         processedDocs.push({
           id: `${doc.id}_chunk_${i}`,
-          content: chunks[i],
+          content: chunks[i]!,
           metadata: {
             ...doc.metadata,
             parentId: doc.id,
@@ -958,7 +963,7 @@ class RAGPipeline {
 
     // Add embeddings to documents
     for (let i = 0; i < processedDocs.length; i++) {
-      processedDocs[i].embedding = embeddings[i].vector;
+      processedDocs[i]!.embedding = embeddings[i]!.vector;
     }
 
     // Store in vector store
@@ -977,11 +982,16 @@ class RAGPipeline {
     const queryEmbedding = await this.embeddings.embed(query);
 
     // Search vector store
-    let results = await this.vectorStore.search(queryEmbedding.vector, {
-      topK: topK || this.config.topK || 5,
-      filter,
-      minScore: minScore || this.config.minScore
-    });
+    const searchOptions: { topK?: number; filter?: Record<string, any>; minScore?: number } = {
+      topK: topK || this.config.topK || 5
+    };
+    if (filter !== undefined) searchOptions.filter = filter;
+    if (minScore !== undefined) {
+      searchOptions.minScore = minScore;
+    } else if (this.config.minScore !== undefined) {
+      searchOptions.minScore = this.config.minScore;
+    }
+    let results = await this.vectorStore.search(queryEmbedding.vector, searchOptions);
 
     // Rerank if enabled
     if (this.config.rerank && results.length > 0) {
@@ -1027,7 +1037,9 @@ class RAGPipeline {
     const topK = options?.topK || 10;
 
     // Vector search
-    const vectorResults = await this.query({ query, topK, filter: options?.filter });
+    const queryOptions: RAGQuery = { query, topK };
+    if (options?.filter !== undefined) queryOptions.filter = options.filter;
+    const vectorResults = await this.query(queryOptions);
 
     // Keyword search
     const keywordResults = await this.keywordSearch(query, topK);
@@ -1179,29 +1191,36 @@ function useEmbeddings(config: EmbeddingProviderConfig): {
   let provider: EmbeddingProvider;
 
   switch (config.provider) {
-    case 'openai':
-      provider = new OpenAIEmbeddings({
-        apiKey: config.apiKey!,
-        model: config.model,
-        dimensions: config.dimensions
-      });
+    case 'openai': {
+      const openaiConfig: { apiKey: string; model?: string; dimensions?: number } = {
+        apiKey: config.apiKey!
+      };
+      if (config.model !== undefined) openaiConfig.model = config.model;
+      if (config.dimensions !== undefined) openaiConfig.dimensions = config.dimensions;
+      provider = new OpenAIEmbeddings(openaiConfig);
       break;
-    case 'cohere':
-      provider = new CohereEmbeddings({
-        apiKey: config.apiKey!,
-        model: config.model
-      });
+    }
+    case 'cohere': {
+      const cohereConfig: { apiKey: string; model?: string } = {
+        apiKey: config.apiKey!
+      };
+      if (config.model !== undefined) cohereConfig.model = config.model;
+      provider = new CohereEmbeddings(cohereConfig);
       break;
-    default:
-      provider = new LocalEmbeddings({ dimensions: config.dimensions });
+    }
+    default: {
+      const localConfig: { modelPath?: string; dimensions?: number } = {};
+      if (config.dimensions !== undefined) localConfig.dimensions = config.dimensions;
+      provider = new LocalEmbeddings(localConfig);
+    }
   }
 
   const cosineSimilarity = (a: number[], b: number[]): number => {
     let dot = 0, normA = 0, normB = 0;
     for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      dot += a[i]! * b[i]!;
+      normA += a[i]! * a[i]!;
+      normB += b[i]! * b[i]!;
     }
     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   };
@@ -1211,7 +1230,7 @@ function useEmbeddings(config: EmbeddingProviderConfig): {
     embedBatch: async (texts: string[]) => (await provider.embedBatch(texts)).map(e => e.vector),
     similarity: async (a: string, b: string) => {
       const [embA, embB] = await provider.embedBatch([a, b]);
-      return cosineSimilarity(embA.vector, embB.vector);
+      return cosineSimilarity(embA!.vector, embB!.vector);
     }
   };
 }

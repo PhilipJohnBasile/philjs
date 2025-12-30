@@ -1,5 +1,30 @@
-import type { TrackingEvent, TrackingWebhook } from './types';
 import { createHmac } from 'crypto';
+
+/**
+ * Tracking event types
+ */
+export interface TrackingEvent {
+  type: 'open' | 'click' | 'bounce' | 'complaint' | 'unsubscribe';
+  messageId: string;
+  recipient: string;
+  timestamp: Date;
+  url?: string;
+  userAgent?: string;
+  ip?: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Tracking webhook interface
+ */
+export interface TrackingWebhook {
+  on(
+    type: TrackingEvent['type'],
+    handler: (event: TrackingEvent) => Promise<void>
+  ): void;
+  handle(event: TrackingEvent): Promise<void>;
+  verify(payload: unknown, signature: string): boolean;
+}
 
 /**
  * Tracking event handler callback
@@ -15,7 +40,9 @@ export class GenericTrackingWebhook implements TrackingWebhook {
   private secret?: string;
 
   constructor(options: { secret?: string } = {}) {
-    this.secret = options.secret;
+    if (options.secret !== undefined) {
+      this.secret = options.secret;
+    }
   }
 
   /**
@@ -75,15 +102,22 @@ export class GenericTrackingWebhook implements TrackingWebhook {
     query: Record<string, string>,
     headers?: Record<string, string>
   ): TrackingEvent {
-    return {
+    const userAgent = headers?.['user-agent'];
+    const ip = headers?.['x-forwarded-for'] || headers?.['x-real-ip'];
+    const metadata = query['meta'] ? JSON.parse(query['meta']) : undefined;
+
+    const event: TrackingEvent = {
       type: 'open',
-      messageId: query.id || '',
-      recipient: query.recipient || '',
+      messageId: query['id'] || '',
+      recipient: query['recipient'] || '',
       timestamp: new Date(),
-      userAgent: headers?.['user-agent'],
-      ip: headers?.['x-forwarded-for'] || headers?.['x-real-ip'],
-      metadata: query.meta ? JSON.parse(query.meta) : undefined,
     };
+
+    if (userAgent !== undefined) event.userAgent = userAgent;
+    if (ip !== undefined) event.ip = ip;
+    if (metadata !== undefined) event.metadata = metadata;
+
+    return event;
   }
 
   /**
@@ -93,17 +127,25 @@ export class GenericTrackingWebhook implements TrackingWebhook {
     query: Record<string, string>,
     headers?: Record<string, string>
   ): TrackingEvent & { redirectUrl: string } {
-    return {
+    const url = query['url'];
+    const userAgent = headers?.['user-agent'];
+    const ip = headers?.['x-forwarded-for'] || headers?.['x-real-ip'];
+    const metadata = query['meta'] ? JSON.parse(query['meta']) : undefined;
+
+    const event: TrackingEvent & { redirectUrl: string } = {
       type: 'click',
-      messageId: query.id || '',
-      recipient: query.recipient || '',
+      messageId: query['id'] || '',
+      recipient: query['recipient'] || '',
       timestamp: new Date(),
-      url: query.url,
-      userAgent: headers?.['user-agent'],
-      ip: headers?.['x-forwarded-for'] || headers?.['x-real-ip'],
-      metadata: query.meta ? JSON.parse(query.meta) : undefined,
-      redirectUrl: query.url || '',
+      redirectUrl: url || '',
     };
+
+    if (url !== undefined) event.url = url;
+    if (userAgent !== undefined) event.userAgent = userAgent;
+    if (ip !== undefined) event.ip = ip;
+    if (metadata !== undefined) event.metadata = metadata;
+
+    return event;
   }
 }
 
@@ -116,7 +158,9 @@ export class SendGridWebhook implements TrackingWebhook {
   private verificationKey?: string;
 
   constructor(options: { verificationKey?: string } = {}) {
-    this.verificationKey = options.verificationKey;
+    if (options.verificationKey !== undefined) {
+      this.verificationKey = options.verificationKey;
+    }
   }
 
   on(type: TrackingEvent['type'], handler: TrackingEventHandler): void {
@@ -183,7 +227,9 @@ export class MailgunWebhook implements TrackingWebhook {
   private signingKey?: string;
 
   constructor(options: { signingKey?: string } = {}) {
-    this.signingKey = options.signingKey;
+    if (options.signingKey !== undefined) {
+      this.signingKey = options.signingKey;
+    }
   }
 
   on(type: TrackingEvent['type'], handler: TrackingEventHandler): void {
@@ -244,15 +290,22 @@ export class MailgunWebhook implements TrackingWebhook {
       unsubscribed: 'unsubscribe',
     };
 
-    return {
+    const url = eventData.url;
+    const userAgent = eventData['client-info']?.['user-agent'];
+    const ip = eventData.ip;
+
+    const event: TrackingEvent = {
       type: typeMap[eventData.event || ''] || 'open',
       messageId: eventData.message?.headers?.['message-id'] || '',
       recipient: eventData.recipient || '',
       timestamp: new Date((eventData.timestamp || 0) * 1000),
-      url: eventData.url,
-      userAgent: eventData['client-info']?.['user-agent'],
-      ip: eventData.ip,
     };
+
+    if (url !== undefined) event.url = url;
+    if (userAgent !== undefined) event.userAgent = userAgent;
+    if (ip !== undefined) event.ip = ip;
+
+    return event;
   }
 }
 
@@ -324,15 +377,18 @@ export class SesWebhook implements TrackingWebhook {
       ip = data.click.ipAddress;
     }
 
-    return {
+    const event: TrackingEvent = {
       type,
       messageId: data.mail?.messageId || '',
       recipient: data.mail?.destination?.[0] || '',
       timestamp,
-      url,
-      userAgent,
-      ip,
     };
+
+    if (url !== undefined) event.url = url;
+    if (userAgent !== undefined) event.userAgent = userAgent;
+    if (ip !== undefined) event.ip = ip;
+
+    return event;
   }
 }
 
@@ -345,15 +401,23 @@ export function createTrackingWebhook(
 ): TrackingWebhook {
   switch (provider) {
     case 'sendgrid':
-      return new SendGridWebhook({
-        verificationKey: options.verificationKey,
-      });
+      return new SendGridWebhook(
+        options.verificationKey !== undefined
+          ? { verificationKey: options.verificationKey }
+          : {}
+      );
     case 'mailgun':
-      return new MailgunWebhook({ signingKey: options.signingKey });
+      return new MailgunWebhook(
+        options.signingKey !== undefined
+          ? { signingKey: options.signingKey }
+          : {}
+      );
     case 'ses':
       return new SesWebhook();
     case 'generic':
     default:
-      return new GenericTrackingWebhook({ secret: options.secret });
+      return new GenericTrackingWebhook(
+        options.secret !== undefined ? { secret: options.secret } : {}
+      );
   }
 }

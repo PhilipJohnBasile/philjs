@@ -353,7 +353,7 @@ export function Link(props: LinkProps): VNode {
   const state = useRouter();
 
   const handleClick = (event: MouseEvent) => {
-    if (rest.onClick) rest.onClick(event);
+    if (rest["onClick"]) rest["onClick"](event);
     if (
       event.defaultPrevented ||
       event.button !== 0 ||
@@ -365,7 +365,7 @@ export function Link(props: LinkProps): VNode {
       return;
     }
     event.preventDefault();
-    return state.navigate(to, { replace });
+    return state.navigate(to, replace !== undefined ? { replace } : {});
   };
 
   const linkProps: Record<string, any> = {
@@ -436,21 +436,21 @@ function addRoutes(
     const routeId = route.id || path;
 
     const module: RouteModule = {
-      loader: route.loader,
-      action: route.action,
       default: composeComponent(layouts, route.component),
-      config: route.config,
+      ...(route.loader !== undefined && { loader: route.loader }),
+      ...(route.action !== undefined && { action: route.action }),
+      ...(route.config !== undefined && { config: route.config }),
     };
 
     manifest[path] = module;
     routeMap.set(path, {
       definition: route,
       module,
-      parent: parentPath,
       layouts,
       id: routeId,
-      errorBoundary: route.errorBoundary,
-      handle: route.handle,
+      ...(parentPath !== null && { parent: parentPath }),
+      ...(route.errorBoundary !== undefined && { errorBoundary: route.errorBoundary }),
+      ...(route.handle !== undefined && { handle: route.handle }),
     });
 
     if (route.children?.length) {
@@ -519,7 +519,7 @@ function composeComponent(
   return (props: RouteComponentProps) => {
     let output = component(props);
     for (let i = layouts.length - 1; i >= 0; i--) {
-      const layout = layouts[i];
+      const layout = layouts[i]!;
       output = layout({ ...props, children: output });
     }
     return output;
@@ -586,7 +586,7 @@ async function renderCurrentRoute(
   const nestedMatches: NestedMatchedRoute[] = loadedMatches.map((m, i) => ({
     ...m.match,
     id: m.entry.id,
-    parentId: i > 0 ? loadedMatches[i - 1].entry.id : undefined,
+    ...(i > 0 && { parentId: loadedMatches[i - 1]!.entry.id }),
     loaderData: m.loaderData,
     error: m.error,
     handle: m.entry.handle,
@@ -797,8 +797,8 @@ function matchPath(pattern: string, pathname: string): Record<string, string> | 
   const params: Record<string, string> = {};
 
   for (let i = 0; i < patternParts.length; i++) {
-    const segment = patternParts[i];
-    const value = pathParts[i];
+    const segment = patternParts[i]!;
+    const value = pathParts[i]!;
 
     if (segment.startsWith(":")) {
       params[segment.slice(1)] = decodeURIComponent(value);

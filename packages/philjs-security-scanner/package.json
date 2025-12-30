@@ -1,6 +1,7 @@
 {
   "name": "@philjs/security-scanner",
   "version": "0.1.0",
+  "type": "module",
   "description": "Automated vulnerability detection for PhilJS - static analysis, dependency scanning, runtime monitoring",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

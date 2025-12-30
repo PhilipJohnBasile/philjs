@@ -260,9 +260,9 @@ export class TenantManager {
 
     // Skip 'www' subdomain
     const subdomain = parts[0];
-    if (subdomain === 'www') return parts[1];
+    if (subdomain === 'www') return parts[1] ?? null;
 
-    return subdomain;
+    return subdomain ?? null;
   }
 
   private extractPathSegment(path?: string): string | null {

@@ -57,7 +57,7 @@ export {
   preloadModule,
   getPreloadedModule,
   initializeColdStart,
-} from './edge-runtime';
+} from './edge-runtime.js';
 
 // Streaming
 export {
@@ -88,7 +88,7 @@ export {
   streamThrough,
   mergeStreams,
   createStreamTee,
-} from './streaming';
+} from './streaming.js';
 
 // Caching
 export {
@@ -116,7 +116,7 @@ export {
   // Default cache
   getDefaultCache,
   resetDefaultCache,
-} from './cache';
+} from './cache.js';
 
 // Geolocation
 export {
@@ -150,10 +150,10 @@ export {
 
   // Utilities
   addGeoHeaders,
-} from './geo';
+} from './geo.js';
 
 // Re-export default objects for convenience
-export { default as edgeRuntime } from './edge-runtime';
-export { default as streaming } from './streaming';
-export { default as cache } from './cache';
-export { default as geo } from './geo';
+export { default as edgeRuntime } from './edge-runtime.js';
+export { default as streaming } from './streaming.js';
+export { default as cache } from './cache.js';
+export { default as geo } from './geo.js';

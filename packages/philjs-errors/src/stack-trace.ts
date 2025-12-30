@@ -5,7 +5,7 @@
  * Integrates with source maps for accurate error locations.
  */
 
-import type { SourceLocation } from './error-codes';
+import type { SourceLocation } from './error-codes.js';
 
 export interface StackFrame {
   functionName?: string;
@@ -80,11 +80,15 @@ function parseStackLine(line: string): StackFrame | null {
 
   const [, functionName, fileName, lineNumber, columnNumber] = match;
 
+  if (lineNumber === undefined || columnNumber === undefined) return null;
+
+  const fnName = functionName?.trim();
+  const fName = fileName?.trim();
   const frame: StackFrame = {
-    functionName: functionName?.trim(),
-    fileName: fileName?.trim(),
     lineNumber: parseInt(lineNumber, 10),
     columnNumber: parseInt(columnNumber, 10),
+    ...(fnName !== undefined && { functionName: fnName }),
+    ...(fName !== undefined && { fileName: fName }),
   };
 
   // Classify the frame

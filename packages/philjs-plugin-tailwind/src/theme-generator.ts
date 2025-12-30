@@ -87,15 +87,15 @@ export function generateBrandTheme(colors: {
   };
 
   if (colors.secondary) {
-    theme.colors!.secondary = generateColorPalette(colors.secondary);
+    theme.colors!['secondary'] = generateColorPalette(colors.secondary);
   }
 
   if (colors.accent) {
-    theme.colors!.accent = generateColorPalette(colors.accent);
+    theme.colors!['accent'] = generateColorPalette(colors.accent);
   }
 
   if (colors.neutral) {
-    theme.colors!.neutral = generateColorPalette(colors.neutral);
+    theme.colors!['neutral'] = generateColorPalette(colors.neutral);
   }
 
   return theme;
@@ -113,7 +113,7 @@ export function generateTypographyScale(
   const baseIndex = 2; // "base" is at index 2
 
   for (let i = 0; i < sizes.length; i++) {
-    const size = sizes[i];
+    const size = sizes[i]!;
     const factor = Math.pow(ratio, i - baseIndex);
     const fontSize = `${(baseSize * factor) / 16}rem`;
     const lineHeight = i < baseIndex ? "1.5" : i === baseIndex ? "1.5" : "1.2";
@@ -143,7 +143,7 @@ export function generateSpacingScale(baseUnit: number = 4): ThemeConfig["spacing
   scale["3.5"] = `${baseUnit * 3.5 / 16}rem`;
 
   // Add px value
-  scale.px = "1px";
+  scale['px'] = "1px";
 
   return scale;
 }
@@ -273,25 +273,28 @@ export function generateCompleteTheme(options?: {
   // Add brand colors
   if (options?.brandColors) {
     const brandTheme = generateBrandTheme(options.brandColors);
-    theme.colors = brandTheme.colors;
+    if (brandTheme.colors !== undefined) theme.colors = brandTheme.colors;
   }
 
   // Add typography
   if (options?.typography) {
-    theme.fontSize = generateTypographyScale(
+    const fontSize = generateTypographyScale(
       options.typography.baseSize,
       options.typography.ratio
     );
+    if (fontSize !== undefined) theme.fontSize = fontSize;
   }
 
   // Add spacing
   if (options?.spacing) {
-    theme.spacing = generateSpacingScale(options.spacing.baseUnit);
+    const spacing = generateSpacingScale(options.spacing.baseUnit);
+    if (spacing !== undefined) theme.spacing = spacing;
   }
 
   // Add font families
   if (options?.fonts) {
-    theme.fontFamily = generateFontFamilies(options.fonts);
+    const fontFamily = generateFontFamilies(options.fonts);
+    if (fontFamily !== undefined) theme.fontFamily = fontFamily;
   }
 
   // Add defaults
@@ -320,7 +323,7 @@ export function cssVarsToTheme(cssVars: Record<string, string>): ThemeConfig {
     const parts = cleanKey.split("-");
 
     // Categorize based on first part
-    const category = parts[0];
+    const category = parts[0]!;
     const path = parts.slice(1);
 
     if (!theme.extend![category]) {
@@ -330,15 +333,15 @@ export function cssVarsToTheme(cssVars: Record<string, string>): ThemeConfig {
     // Build nested structure
     let current = theme.extend![category];
     for (let i = 0; i < path.length - 1; i++) {
-      if (!current[path[i]]) {
-        current[path[i]] = {};
+      if (!current[path[i]!]) {
+        current[path[i]!] = {};
       }
-      current = current[path[i]];
+      current = current[path[i]!];
     }
 
     // Set final value
     if (path.length > 0) {
-      current[path[path.length - 1]] = value;
+      current[path[path.length - 1]!] = value;
     } else {
       theme.extend![category] = value;
     }

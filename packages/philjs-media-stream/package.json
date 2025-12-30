@@ -1,6 +1,7 @@
 {
   "name": "@philjs/media-stream",
   "version": "0.1.0",
+  "type": "module",
   "description": "Advanced media stream processing for PhilJS - video filters, audio processing, face detection, recording, mixing",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

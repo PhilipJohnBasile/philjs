@@ -99,13 +99,13 @@ export function CellProvider(props: CellProviderProps) {
 
   // Create context value
   const contextValue: CellContextValue = {
-    graphqlClient,
-    fetch: customFetch,
-    defaultCacheTTL,
-    retry,
-    streaming,
-    onError,
-    onSuccess,
+    ...(defaultCacheTTL != null && { defaultCacheTTL }),
+    ...(retry != null && { retry }),
+    ...(streaming != null && { streaming }),
+    ...(graphqlClient != null && { graphqlClient }),
+    ...(customFetch != null && { fetch: customFetch }),
+    ...(onError != null && { onError }),
+    ...(onSuccess != null && { onSuccess }),
 
     executeQuery: async <T,>(query: string, variables?: Record<string, unknown>): Promise<T> => {
       if (!graphqlClient) {
@@ -367,8 +367,8 @@ export function getCellHydrationScript(ssrContext: CellSSRContextType): string {
  * Initialize cells from window data (call on client)
  */
 export function initializeCellsFromWindow(): void {
-  if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).__PHILJS_CELL_DATA__) {
-    const data = (window as unknown as Record<string, unknown>).__PHILJS_CELL_DATA__;
+  if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>)['__PHILJS_CELL_DATA__']) {
+    const data = (window as unknown as Record<string, unknown>)['__PHILJS_CELL_DATA__'];
     if (typeof data === 'object' && data !== null) {
       for (const [key, value] of Object.entries(data)) {
         cellCache.set(key, value);

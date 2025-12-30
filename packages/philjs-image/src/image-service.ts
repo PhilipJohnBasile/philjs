@@ -5,7 +5,7 @@
  * Astro-style service adapter interface
  */
 
-import type { ImageFormat, ImageTransformOptions } from './types';
+import type { ImageFormat, ImageTransformOptions } from './types.js';
 
 /**
  * Image Service Interface
@@ -154,14 +154,17 @@ export class SharpImageService implements ImageService {
       dominantColor = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
     }
 
-    return {
+    const result: ImageServiceMetadata = {
       width,
       height,
       format: metadata.format || 'unknown',
       size: metadata.size,
       aspectRatio: width / height,
-      dominantColor,
     };
+    if (dominantColor !== undefined) {
+      result.dominantColor = dominantColor;
+    }
+    return result;
   }
 
   getSupportedFormats(): ImageFormat[] {
@@ -257,7 +260,9 @@ export class ImgixImageService implements ImageService {
 
   constructor(config: { domain: string; secureUrlToken?: string }) {
     this.domain = config.domain;
-    this.secureUrlToken = config.secureUrlToken;
+    if (config.secureUrlToken !== undefined) {
+      this.secureUrlToken = config.secureUrlToken;
+    }
   }
 
   getUrl(src: string, options: ImageServiceTransformOptions): string {

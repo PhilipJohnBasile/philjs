@@ -28,9 +28,9 @@ export interface PoolOptions<T> {
   /** Factory function */
   create: () => T;
   /** Reset function for recycling */
-  reset?: (obj: T) => void;
+  reset?: ((obj: T) => void) | undefined;
   /** Validation before reuse */
-  validate?: (obj: T) => boolean;
+  validate?: ((obj: T) => boolean) | undefined;
 }
 
 export interface LazyOptions {

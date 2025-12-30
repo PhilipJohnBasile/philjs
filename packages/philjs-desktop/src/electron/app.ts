@@ -3,9 +3,9 @@
  * Provides app module API on top of Tauri
  */
 
-import { getAppName, getAppVersion } from '../tauri/app';
-import { onAppReady, onBeforeQuit, onWillQuit, quitApp } from '../lifecycle';
-import { isTauri } from '../tauri/context';
+import { getAppName, getAppVersion } from '../tauri/app.js';
+import { onAppReady, onBeforeQuit, onWillQuit, quitApp } from '../lifecycle.js';
+import { isTauri } from '../tauri/context.js';
 
 // App event handlers
 type AppEventHandler = (...args: any[]) => void;
@@ -16,9 +16,47 @@ let appIsReady = false;
 let appIsQuitting = false;
 
 /**
+ * Electron App interface
+ */
+export interface ElectronApp {
+  isReady(): boolean;
+  whenReady(): Promise<void>;
+  getName(): string;
+  getNameAsync(): Promise<string>;
+  setName(name: string): void;
+  getVersion(): string;
+  getVersionAsync(): Promise<string>;
+  getPath(name: string): string;
+  getPathAsync(name: string): Promise<string>;
+  setPath(name: string, path: string): void;
+  getLocale(): string;
+  quit(): void;
+  exit(exitCode?: number): void;
+  relaunch(): Promise<void>;
+  isQuitting(): boolean;
+  focus(): void;
+  hide(): void;
+  show(): void;
+  setAboutPanelOptions(options: Record<string, string>): void;
+  showAboutPanel(): void;
+  setBadgeCount(count: number): boolean;
+  getBadgeCount(): number;
+  requestSingleInstanceLock(): boolean;
+  releaseSingleInstanceLock(): void;
+  setLoginItemSettings(settings: { openAtLogin: boolean }): void;
+  getLoginItemSettings(): { openAtLogin: boolean };
+  on(event: string, handler: AppEventHandler): ElectronApp;
+  once(event: string, handler: AppEventHandler): ElectronApp;
+  removeListener(event: string, handler: AppEventHandler): ElectronApp;
+  removeAllListeners(event?: string): ElectronApp;
+  emit(event: string, ...args: any[]): boolean;
+  listenerCount(event: string): number;
+}
+
+/**
  * app - Electron app module compatibility
  */
-export const app = {
+export const app: ElectronApp = {
   /**
    * Check if app is ready
    */
@@ -254,7 +292,7 @@ export const app = {
   },
 
   // Event emitter methods
-  on(event: string, handler: AppEventHandler): typeof app {
+  on(event: string, handler: AppEventHandler): ElectronApp {
     if (!appEventHandlers.has(event)) {
       appEventHandlers.set(event, new Set());
 
@@ -276,7 +314,7 @@ export const app = {
     return this;
   },
 
-  once(event: string, handler: AppEventHandler): typeof app {
+  once(event: string, handler: AppEventHandler): ElectronApp {
     const wrapper: AppEventHandler = (...args) => {
       this.removeListener(event, wrapper);
       handler(...args);
@@ -284,12 +322,12 @@ export const app = {
     return this.on(event, wrapper);
   },
 
-  removeListener(event: string, handler: AppEventHandler): typeof app {
+  removeListener(event: string, handler: AppEventHandler): ElectronApp {
     appEventHandlers.get(event)?.delete(handler);
     return this;
   },
 
-  removeAllListeners(event?: string): typeof app {
+  removeAllListeners(event?: string): ElectronApp {
     if (event) {
       appEventHandlers.delete(event);
     } else {

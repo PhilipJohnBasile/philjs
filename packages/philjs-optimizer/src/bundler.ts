@@ -296,14 +296,14 @@ function extractRoute(filePath: string): string {
 
   for (const pattern of patterns) {
     const match = filePath.match(pattern);
-    if (match) {
+    if (match?.[1]) {
       return match[1].replace(/\\/g, '/');
     }
   }
 
   // Fallback: use the file name
   const segments = filePath.split(/[/\\]/);
-  return segments[segments.length - 1].replace(/\.[^.]+$/, '');
+  return (segments[segments.length - 1] ?? '').replace(/\.[^.]+$/, '');
 }
 
 /**

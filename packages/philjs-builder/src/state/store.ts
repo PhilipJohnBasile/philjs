@@ -510,7 +510,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
 
             // Remove from parent's children
             if (node.parentId && currentNodes[node.parentId]) {
-              const parent = currentNodes[node.parentId];
+              const parent = currentNodes[node.parentId]!;
               currentNodes = {
                 ...currentNodes,
                 [node.parentId]: {
@@ -655,7 +655,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
         const record = recordHistory(`Duplicate node`, 'duplicate');
 
         const { clonedNode, clonedNodes } = cloneNodeWithNewIds(node, currentNodes, node.parentId);
-        const parent = currentNodes[node.parentId];
+        const parent = currentNodes[node.parentId]!;
         const nodeIndex = parent.children.indexOf(nodeId);
 
         batch(() => {
@@ -666,7 +666,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
             ...currentNodes,
             ...clonedNodes,
             [node.parentId!]: { ...parent, children: newChildren },
-          });
+          } as Record<NodeId, ComponentNode>);
 
           selection.set({
             ...selection(),
@@ -692,7 +692,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
             if (!node || !node.parentId) continue;
 
             const { clonedNode, clonedNodes } = cloneNodeWithNewIds(node, updatedNodes, node.parentId);
-            const parent = updatedNodes[node.parentId];
+            const parent = updatedNodes[node.parentId]!;
             const nodeIndex = parent.children.indexOf(nodeId);
 
             const newChildren = [...parent.children];
@@ -702,7 +702,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
               ...updatedNodes,
               ...clonedNodes,
               [node.parentId]: { ...parent, children: newChildren },
-            };
+            } as Record<NodeId, ComponentNode>;
 
             newSelectedIds.push(clonedNode.id);
           }
@@ -911,7 +911,7 @@ export function createBuilderStore(initialState?: Partial<BuilderState>): Builde
           // Apply resize to selected nodes
           const sel = selection();
           if (sel.selectedIds.length > 0) {
-            const nodeId = sel.selectedIds[0];
+            const nodeId = sel.selectedIds[0]!;
             const bounds = currentResize.currentBounds;
 
             dispatch({

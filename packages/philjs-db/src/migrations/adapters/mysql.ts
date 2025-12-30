@@ -9,7 +9,7 @@ import type {
   ColumnBuilder,
   ForeignKeyBuilder,
   DataMigrationHelpers,
-} from '../types';
+} from '../types.js';
 
 export class MySQLMigrationAdapter {
   private queries: string[] = [];
@@ -77,7 +77,8 @@ export class MySQLMigrationAdapter {
         const rows = Array.isArray(data) ? data : [data];
         if (rows.length === 0) return;
 
-        const columns = Object.keys(rows[0]);
+        const firstRow = rows[0]!;
+        const columns = Object.keys(firstRow);
         const placeholders = rows.map(() => `(${columns.map(() => '?').join(', ')})`).join(', ');
         const values = rows.flatMap((row) => columns.map((col) => row[col]));
 

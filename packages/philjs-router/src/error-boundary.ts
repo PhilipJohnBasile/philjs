@@ -392,11 +392,14 @@ export function RouteErrorBoundary(
     markErrorHandled(routeId);
 
     if (errorElement) {
-      return errorElement({
+      const props: ErrorBoundaryProps = {
         error: context.error,
         reset: () => clearRouteError(routeId),
-        params,
-      });
+      };
+      if (params !== undefined) {
+        props.params = params;
+      }
+      return errorElement(props);
     }
 
     if (fallback) {
@@ -527,7 +530,7 @@ export function handleRouteError(
 
   // Find the closest error boundary (walking up from leaf to root)
   for (let i = matches.length - 1; i >= 0; i--) {
-    const match = matches[i];
+    const match = matches[i]!;
     if (match.route.errorElement) {
       setRouteError(match.id, routeError);
       return { routeId: match.id, error: routeError };
@@ -536,7 +539,7 @@ export function handleRouteError(
 
   // No error boundary found, use root
   if (matches.length > 0) {
-    const rootMatch = matches[0];
+    const rootMatch = matches[0]!;
     setRouteError(rootMatch.id, routeError);
     return { routeId: rootMatch.id, error: routeError };
   }

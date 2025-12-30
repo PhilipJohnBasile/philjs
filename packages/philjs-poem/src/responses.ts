@@ -11,7 +11,7 @@ import type {
   StreamResponseOptions,
   MetaTag,
   Script,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // HTML Response

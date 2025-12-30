@@ -107,7 +107,7 @@ export class DndManager {
 
   registerDroppable(id: string, node: HTMLElement, data?: Record<string, unknown>): void {
     const rect = node.getBoundingClientRect();
-    this.droppables.set(id, {
+    const droppableEntry: { id: string; rect: Rect; node: HTMLElement; data?: Record<string, unknown> } = {
       id,
       rect: {
         left: rect.left,
@@ -118,8 +118,11 @@ export class DndManager {
         height: rect.height,
       },
       node,
-      data,
-    });
+    };
+    if (data !== undefined) {
+      droppableEntry.data = data;
+    }
+    this.droppables.set(id, droppableEntry);
   }
 
   unregisterDroppable(id: string): void {
@@ -247,11 +250,17 @@ export class DndManager {
 
     this.announce(this.announcements.onDragEnd(this.state.activeItem.id, this.state.overId));
 
+    let overTarget: DropTarget | null = null;
+    if (collision) {
+      overTarget = { id: collision.id, rect: collision.rect };
+      if (collision.data !== undefined) {
+        overTarget.data = collision.data;
+      }
+    }
+
     this.config.onDragEnd?.({
       active: this.state.activeItem,
-      over: collision
-        ? { id: collision.id, rect: collision.rect, data: collision.data }
-        : null,
+      over: overTarget,
       delta: this.state.delta,
     });
 

@@ -6,7 +6,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname, relative } from 'path';
-import type { Adapter, AdapterConfig, RouteEntry } from '../types';
+import type { Adapter, AdapterConfig, RouteEntry } from '../types.js';
 
 export interface StaticConfig extends AdapterConfig {
   /** Pages to prerender */

@@ -284,7 +284,7 @@ export function createBatchLink(options: BatchLinkOptions): Link {
 
     // If only one operation, send it directly
     if (operations.length === 1) {
-      const { op, resolve, reject } = operations[0];
+      const { op, resolve, reject } = operations[0]!;
       try {
         const result = await httpLink({ op, next: async () => ({ data: undefined }) });
         resolve(result);
@@ -315,7 +315,7 @@ export function createBatchLink(options: BatchLinkOptions): Link {
       if (result.data && Array.isArray((result.data as any).responses)) {
         const responses = (result.data as any).responses as OperationResult[];
         for (let i = 0; i < operations.length; i++) {
-          operations[i].resolve(responses[i]);
+          operations[i]!.resolve(responses[i]!);
         }
       } else {
         throw new Error('Invalid batch response');
@@ -363,7 +363,7 @@ export interface DeduplicationLinkOptions {
  * ```
  */
 export function createDeduplicationLink(options?: DeduplicationLinkOptions): Link {
-  const { getKey = (op) => `${op.path}:${JSON.stringify(op.input)}` } = options ?? {};
+  const { getKey = (op: Operation) => `${op.path}:${JSON.stringify(op.input)}` } = options ?? {};
 
   const inflightRequests = new Map<string, Promise<OperationResult>>();
 
@@ -425,7 +425,7 @@ export function createRetryLink(options?: RetryLinkOptions): Link {
     retryDelay = 1000,
     backoffMultiplier = 1.5,
     maxDelay = 30000,
-    shouldRetry = (error) => {
+    shouldRetry = (error: OperationResult['error']) => {
       // Retry on network errors and specific error codes
       return error?.code === 'TIMEOUT' || error?.code === 'INTERNAL_SERVER_ERROR';
     },
@@ -480,7 +480,7 @@ export function createRetryLink(options?: RetryLinkOptions): Link {
       }
     }
 
-    return { error: lastError };
+    return { error: lastError! };
   };
 }
 
@@ -587,7 +587,7 @@ export function createLinkChain(links: Link[]): Link {
         throw new Error('Link chain ended without returning a result');
       }
 
-      const link = links[index];
+      const link = links[index]!;
       return link({
         op,
         next: (nextOp) => executeChain(index + 1),

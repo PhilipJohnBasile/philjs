@@ -250,7 +250,7 @@ function getPath(element: Element, verb: string): string {
     PATCH: 'hx-patch',
     DELETE: 'hx-delete',
   };
-  return element.getAttribute(attrMap[verb]) || '';
+  return element.getAttribute(attrMap[verb]!) || '';
 }
 
 function getDefaultTrigger(element: Element): string {
@@ -270,7 +270,7 @@ function parseTrigger(triggerStr: string): TriggerSpec {
   const modifiers: TriggerModifier[] = [];
 
   for (let i = 1; i < parts.length; i++) {
-    const part = parts[i];
+    const part = parts[i]!;
     if (part.startsWith('delay:')) {
       modifiers.push({ type: 'delay', value: parseInt(part.slice(6), 10) });
     } else if (part.startsWith('throttle:')) {
@@ -295,13 +295,15 @@ function parseTrigger(triggerStr: string): TriggerSpec {
   if (event === 'every') {
     const match = triggerStr.match(/every\s+(\d+)(s|ms)?/);
     if (match) {
-      const value = parseInt(match[1], 10);
+      const value = parseInt(match[1]!, 10);
       const unit = match[2] || 's';
       pollInterval = unit === 'ms' ? value : value * 1000;
     }
   }
 
-  return { event, modifiers, pollInterval };
+  const result: TriggerSpec = { event, modifiers };
+  if (pollInterval !== undefined) result.pollInterval = pollInterval;
+  return result;
 }
 
 function setupTrigger(
@@ -313,7 +315,7 @@ function setupTrigger(
   const throttleMod = trigger.modifiers.find(m => m.type === 'throttle');
   const onceMod = trigger.modifiers.find(m => m.type === 'once');
 
-  let handler = () => executeRequest(element, verb);
+  let handler: () => void | Promise<void> = () => executeRequest(element, verb);
 
   // Apply delay
   if (delayMod && typeof delayMod.value === 'number') {
@@ -322,7 +324,7 @@ function setupTrigger(
     let timeoutId: ReturnType<typeof setTimeout>;
     handler = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(originalHandler, delay);
+      timeoutId = setTimeout(() => { originalHandler(); }, delay);
     };
   }
 
@@ -464,12 +466,13 @@ async function executeRequest(
   }));
 
   try {
-    const response = await fetch(path, {
+    const fetchOptions: RequestInit = {
       method: verb,
       headers,
-      body,
       credentials: config.withCredentials ? 'include' : 'same-origin',
-    });
+    };
+    if (body !== undefined) fetchOptions.body = body;
+    const response = await fetch(path, fetchOptions);
 
     let html = await response.text();
 
@@ -660,12 +663,13 @@ export const htmx = {
     }
 
     try {
-      const response = await fetch(path, {
+      const fetchOptions: RequestInit = {
         method: verb,
         headers: requestHeaders,
-        body,
         credentials: config.withCredentials ? 'include' : 'same-origin',
-      });
+      };
+      if (body !== undefined) fetchOptions.body = body;
+      const response = await fetch(path, fetchOptions);
 
       let html = await response.text();
 
@@ -807,9 +811,9 @@ defineExtension({
         const operations = classes.split(',').map(s => s.trim());
         operations.forEach(op => {
           const [action, className] = op.split(/\s+/);
-          if (action === 'add') target.classList.add(className);
-          if (action === 'remove') target.classList.remove(className);
-          if (action === 'toggle') target.classList.toggle(className);
+          if (action === 'add' && className) target.classList.add(className);
+          if (action === 'remove' && className) target.classList.remove(className);
+          if (action === 'toggle' && className) target.classList.toggle(className);
         });
       }
     }
@@ -895,15 +899,36 @@ export function getHTMXInfo(request: Request): {
   currentUrl?: string;
   boosted?: boolean;
 } {
-  return {
+  const result: {
+    isHTMX: boolean;
+    target?: string;
+    trigger?: string;
+    triggerName?: string;
+    prompt?: string;
+    currentUrl?: string;
+    boosted?: boolean;
+  } = {
     isHTMX: request.headers.get('HX-Request') === 'true',
-    target: request.headers.get('HX-Target') || undefined,
-    trigger: request.headers.get('HX-Trigger') || undefined,
-    triggerName: request.headers.get('HX-Trigger-Name') || undefined,
-    prompt: request.headers.get('HX-Prompt') || undefined,
-    currentUrl: request.headers.get('HX-Current-URL') || undefined,
-    boosted: request.headers.get('HX-Boosted') === 'true',
   };
+
+  const target = request.headers.get('HX-Target');
+  if (target) result.target = target;
+
+  const trigger = request.headers.get('HX-Trigger');
+  if (trigger) result.trigger = trigger;
+
+  const triggerName = request.headers.get('HX-Trigger-Name');
+  if (triggerName) result.triggerName = triggerName;
+
+  const prompt = request.headers.get('HX-Prompt');
+  if (prompt) result.prompt = prompt;
+
+  const currentUrl = request.headers.get('HX-Current-URL');
+  if (currentUrl) result.currentUrl = currentUrl;
+
+  if (request.headers.get('HX-Boosted') === 'true') result.boosted = true;
+
+  return result;
 }
 
 // ============================================================================
@@ -950,16 +975,3 @@ export function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-// Export types
-export type {
-  HTMXConfig,
-  SwapStyle,
-  TriggerEvent,
-  TriggerSpec,
-  HTMXRequestEvent,
-  HTMXResponseEvent,
-  HTMXSwapEvent,
-  HTMXError,
-  AjaxOptions,
-  HTMXExtension,
-};

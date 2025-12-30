@@ -7,7 +7,13 @@ import { program } from 'commander';
 import prompts from 'prompts';
 import ora from 'ora';
 import pc from 'picocolors';
-import { migrate, analyzeProject } from './index.js';
+import { migrate, analyzeProject, type MigrationError } from './index.js';
+
+interface RunOptions {
+  source?: string;
+  dryRun?: boolean;
+  typescript?: boolean;
+}
 
 program
   .name('philjs-migrate')
@@ -18,13 +24,13 @@ program
   .command('analyze')
   .description('Analyze your project before migration')
   .argument('[dir]', 'Project directory', '.')
-  .action(async (dir) => {
+  .action(async (dir: string) => {
     const spinner = ora('Analyzing project...').start();
-    
+
     try {
       const result = analyzeProject(dir);
       spinner.succeed('Analysis complete');
-      
+
       console.log('\n' + pc.bold('Project Analysis:'));
       console.log(`  Framework: ${pc.cyan(result.framework)}`);
       console.log(`  Files: ${pc.cyan(String(result.files))}`);
@@ -42,9 +48,10 @@ program
   .option('-s, --source <framework>', 'Source framework (react, vue, angular, svelte)')
   .option('-d, --dry-run', 'Show changes without applying them')
   .option('--no-typescript', 'Convert to JavaScript instead of TypeScript')
-  .action(async (dir, options) => {
-    let source = options.source;
-    
+  .action(async (dir: string, options: RunOptions) => {
+    let source: 'react' | 'vue' | 'angular' | 'svelte' | 'solid' | undefined = 
+      options.source as 'react' | 'vue' | 'angular' | 'svelte' | 'solid' | undefined;
+
     if (!source) {
       const response = await prompts({
         type: 'select',
@@ -58,7 +65,7 @@ program
           { title: 'SolidJS', value: 'solid' },
         ],
       });
-      source = response.source;
+      source = response['source'] as 'react' | 'vue' | 'angular' | 'svelte' | 'solid';
     }
 
     const spinner = ora('Migrating project...').start();
@@ -67,7 +74,7 @@ program
       const result = await migrate({
         source,
         targetDir: dir,
-        dryRun: options.dryRun,
+        dryRun: options.dryRun ?? false,
         typescript: options.typescript !== false,
       });
 
@@ -76,15 +83,15 @@ program
         console.log('\n' + pc.bold('Summary:'));
         console.log(`  Files processed: ${pc.green(String(result.filesProcessed))}`);
         console.log(`  Files modified: ${pc.green(String(result.filesModified))}`);
-        
+
         if (result.warnings.length > 0) {
           console.log('\n' + pc.yellow('Warnings:'));
-          result.warnings.forEach(w => console.log(`  - ${w}`));
+          result.warnings.forEach((w: string) => console.log(`  - ${w}`));
         }
       } else {
         spinner.fail('Migration had errors');
-        result.errors.forEach(e => {
-          console.log(pc.red(`  ${e.file}:${e.line}: ${e.message}`));
+        result.errors.forEach((e: MigrationError) => {
+          console.log(pc.red(`  ${e.file}:${e.line ?? 'unknown'}: ${e.message}`));
           if (e.suggestion) {
             console.log(pc.dim(`    Suggestion: ${e.suggestion}`));
           }

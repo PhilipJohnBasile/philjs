@@ -11,6 +11,10 @@
 import { Client, Environment, ApiError } from 'square';
 import { createHmac } from 'crypto';
 import {
+  PaymentError,
+  WebhookVerificationError,
+} from '../index.js';
+import type {
   PaymentProvider,
   CreateCheckoutRequest,
   CheckoutSession,
@@ -27,10 +31,8 @@ import {
   Refund,
   WebhookRequest,
   WebhookEvent,
-  PaymentError,
-  WebhookVerificationError,
   SubscriptionStatus,
-} from '../index';
+} from '../index.js';
 
 export interface SquareConfig {
   accessToken: string;
@@ -61,7 +63,7 @@ export class SquareProvider implements PaymentProvider {
 
   async createCheckout(request: CreateCheckoutRequest): Promise<CheckoutSession> {
     try {
-      const { result } = await this.client.checkoutApi.createPaymentLink({
+      const paymentLinkRequest: Parameters<typeof this.client.checkoutApi.createPaymentLink>[0] = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         quickPay: {
           name: request.lineItems[0]?.name || 'Order',
@@ -75,24 +77,30 @@ export class SquareProvider implements PaymentProvider {
           redirectUrl: request.successUrl,
           askForShippingAddress: false,
         },
-        prePopulatedData: request.customerEmail
-          ? { buyerEmail: request.customerEmail }
-          : undefined,
-      });
+      };
+      if (request.customerEmail) {
+        paymentLinkRequest.prePopulatedData = { buyerEmail: request.customerEmail };
+      }
+      const { result } = await this.client.checkoutApi.createPaymentLink(paymentLinkRequest);
 
       const paymentLink = result.paymentLink!;
 
-      return {
+      const checkoutSession: CheckoutSession = {
         id: paymentLink.id!,
         url: paymentLink.url!,
         status: 'open',
-        customerId: request.customerId,
         lineItems: request.lineItems,
         successUrl: request.successUrl,
         cancelUrl: request.cancelUrl,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-        metadata: request.metadata,
       };
+      if (request.customerId) {
+        checkoutSession.customerId = request.customerId;
+      }
+      if (request.metadata) {
+        checkoutSession.metadata = request.metadata;
+      }
+      return checkoutSession;
     } catch (error) {
       throw this.handleSquareError(error);
     }
@@ -123,14 +131,17 @@ export class SquareProvider implements PaymentProvider {
 
   async createSubscription(request: CreateSubscriptionRequest): Promise<Subscription> {
     try {
-      const { result } = await this.client.subscriptionsApi.createSubscription({
+      const subscriptionRequest: Parameters<typeof this.client.subscriptionsApi.createSubscription>[0] = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         locationId: this.locationId,
         planVariationId: request.priceId,
         customerId: request.customerId,
-        cardId: request.paymentMethodId,
-        startDate: new Date().toISOString().split('T')[0],
-      });
+        startDate: new Date().toISOString().split('T')[0]!,
+      };
+      if (request.paymentMethodId) {
+        subscriptionRequest.cardId = request.paymentMethodId;
+      }
+      const { result } = await this.client.subscriptionsApi.createSubscription(subscriptionRequest);
 
       return this.mapSubscription(result.subscription!);
     } catch (error) {
@@ -152,11 +163,15 @@ export class SquareProvider implements PaymentProvider {
     updates: Partial<CreateSubscriptionRequest>
   ): Promise<Subscription> {
     try {
+      const subscription: Record<string, string> = {};
+      if (updates.priceId) {
+        subscription['planVariationId'] = updates.priceId;
+      }
+      if (updates.paymentMethodId) {
+        subscription['cardId'] = updates.paymentMethodId;
+      }
       const { result } = await this.client.subscriptionsApi.updateSubscription(subscriptionId, {
-        subscription: {
-          planVariationId: updates.priceId,
-          cardId: updates.paymentMethodId,
-        },
+        subscription,
       });
 
       return this.mapSubscription(result.subscription!);
@@ -200,24 +215,35 @@ export class SquareProvider implements PaymentProvider {
 
   async createCustomer(request: CreateCustomerRequest): Promise<Customer> {
     try {
-      const { result } = await this.client.customersApi.createCustomer({
+      const customerRequest: Parameters<typeof this.client.customersApi.createCustomer>[0] = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         emailAddress: request.email,
-        givenName: request.name?.split(' ')[0],
-        familyName: request.name?.split(' ').slice(1).join(' '),
-        phoneNumber: request.phone,
-        address: request.address
-          ? {
-              addressLine1: request.address.line1,
-              addressLine2: request.address.line2,
-              locality: request.address.city,
-              administrativeDistrictLevel1: request.address.state,
-              postalCode: request.address.postalCode,
-              country: request.address.country,
-            }
-          : undefined,
-        referenceId: request.metadata?.referenceId,
-      });
+      };
+      if (request.name) {
+        customerRequest.givenName = request.name.split(' ')[0]!;
+        customerRequest.familyName = request.name.split(' ').slice(1).join(' ');
+      }
+      if (request.phone) {
+        customerRequest.phoneNumber = request.phone;
+      }
+      if (request.address) {
+        customerRequest.address = {
+          addressLine1: request.address.line1,
+          locality: request.address.city,
+          postalCode: request.address.postalCode,
+          country: request.address.country,
+        };
+        if (request.address.line2) {
+          customerRequest.address.addressLine2 = request.address.line2;
+        }
+        if (request.address.state) {
+          customerRequest.address.administrativeDistrictLevel1 = request.address.state;
+        }
+      }
+      if (request.metadata?.['referenceId']) {
+        customerRequest.referenceId = request.metadata['referenceId'];
+      }
+      const { result } = await this.client.customersApi.createCustomer(customerRequest);
 
       return this.mapCustomer(result.customer!);
     } catch (error) {
@@ -239,22 +265,32 @@ export class SquareProvider implements PaymentProvider {
     updates: Partial<CreateCustomerRequest>
   ): Promise<Customer> {
     try {
-      const { result } = await this.client.customersApi.updateCustomer(customerId, {
-        emailAddress: updates.email,
-        givenName: updates.name?.split(' ')[0],
-        familyName: updates.name?.split(' ').slice(1).join(' '),
-        phoneNumber: updates.phone,
-        address: updates.address
-          ? {
-              addressLine1: updates.address.line1,
-              addressLine2: updates.address.line2,
-              locality: updates.address.city,
-              administrativeDistrictLevel1: updates.address.state,
-              postalCode: updates.address.postalCode,
-              country: updates.address.country,
-            }
-          : undefined,
-      });
+      const updateRequest: Parameters<typeof this.client.customersApi.updateCustomer>[1] = {};
+      if (updates.email) {
+        updateRequest.emailAddress = updates.email;
+      }
+      if (updates.name) {
+        updateRequest.givenName = updates.name.split(' ')[0]!;
+        updateRequest.familyName = updates.name.split(' ').slice(1).join(' ');
+      }
+      if (updates.phone) {
+        updateRequest.phoneNumber = updates.phone;
+      }
+      if (updates.address) {
+        updateRequest.address = {
+          addressLine1: updates.address.line1,
+          locality: updates.address.city,
+          postalCode: updates.address.postalCode,
+          country: updates.address.country,
+        };
+        if (updates.address.line2) {
+          updateRequest.address.addressLine2 = updates.address.line2;
+        }
+        if (updates.address.state) {
+          updateRequest.address.administrativeDistrictLevel1 = updates.address.state;
+        }
+      }
+      const { result } = await this.client.customersApi.updateCustomer(customerId, updateRequest);
 
       return this.mapCustomer(result.customer!);
     } catch (error) {
@@ -319,6 +355,13 @@ export class SquareProvider implements PaymentProvider {
   async createInvoice(request: CreateInvoiceRequest): Promise<Invoice> {
     try {
       // First create the invoice
+      const paymentRequest: { requestType: string; automaticPaymentSource: string; dueDate?: string } = {
+        requestType: 'BALANCE',
+        automaticPaymentSource: 'NONE',
+      };
+      if (request.dueDate) {
+        paymentRequest.dueDate = request.dueDate.toISOString().split('T')[0]!;
+      }
       const { result: createResult } = await this.client.invoicesApi.createInvoice({
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         invoice: {
@@ -326,13 +369,7 @@ export class SquareProvider implements PaymentProvider {
           primaryRecipient: {
             customerId: request.customerId,
           },
-          paymentRequests: [
-            {
-              requestType: 'BALANCE',
-              dueDate: request.dueDate?.toISOString().split('T')[0],
-              automaticPaymentSource: 'NONE',
-            },
-          ],
+          paymentRequests: [paymentRequest],
           deliveryMethod: 'EMAIL',
         },
       });
@@ -416,7 +453,7 @@ export class SquareProvider implements PaymentProvider {
 
   async refund(request: RefundRequest): Promise<Refund> {
     try {
-      const { result } = await this.client.refundsApi.refundPayment({
+      const refundRequest: Parameters<typeof this.client.refundsApi.refundPayment>[0] = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         paymentId: request.paymentId,
         amountMoney: request.amount
@@ -424,9 +461,10 @@ export class SquareProvider implements PaymentProvider {
               amount: BigInt(request.amount.amount),
               currency: request.amount.currency.toUpperCase(),
             }
-          : undefined,
+          : undefined!,
         reason: request.reason || 'Customer requested refund',
-      });
+      };
+      const { result } = await this.client.refundsApi.refundPayment(refundRequest);
 
       return this.mapRefund(result.refund!);
     } catch (error) {
@@ -491,7 +529,7 @@ export class SquareProvider implements PaymentProvider {
   }
 
   private calculateTotal(lineItems: CreateCheckoutRequest['lineItems']): number {
-    return lineItems.reduce((sum, item) => sum + item.amount.amount * item.quantity, 0);
+    return lineItems.reduce((sum: number, item: CreateCheckoutRequest['lineItems'][number]) => sum + item.amount.amount * item.quantity, 0);
   }
 
   private mapSubscription(sub: any): Subscription {
@@ -503,7 +541,7 @@ export class SquareProvider implements PaymentProvider {
       PAUSED: 'paused',
     };
 
-    return {
+    const result: Subscription = {
       id: sub.id,
       customerId: sub.customerId,
       status: statusMap[sub.status] || 'unpaid',
@@ -514,28 +552,42 @@ export class SquareProvider implements PaymentProvider {
         ? new Date(sub.chargedThroughDate)
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       cancelAtPeriodEnd: sub.status === 'CANCELED',
-      canceledAt: sub.canceledDate ? new Date(sub.canceledDate) : undefined,
     };
+    if (sub.canceledDate) {
+      result.canceledAt = new Date(sub.canceledDate);
+    }
+    return result;
   }
 
   private mapCustomer(customer: any): Customer {
-    return {
+    const result: Customer = {
       id: customer.id,
       email: customer.emailAddress || '',
-      name: [customer.givenName, customer.familyName].filter(Boolean).join(' ') || undefined,
-      phone: customer.phoneNumber,
-      address: customer.address
-        ? {
-            line1: customer.address.addressLine1 || '',
-            line2: customer.address.addressLine2,
-            city: customer.address.locality || '',
-            state: customer.address.administrativeDistrictLevel1,
-            postalCode: customer.address.postalCode || '',
-            country: customer.address.country || '',
-          }
-        : undefined,
       createdAt: new Date(customer.createdAt),
     };
+    const fullName = [customer.givenName, customer.familyName].filter(Boolean).join(' ');
+    if (fullName) {
+      result.name = fullName;
+    }
+    if (customer.phoneNumber) {
+      result.phone = customer.phoneNumber;
+    }
+    if (customer.address) {
+      const addr: Customer['address'] = {
+        line1: customer.address.addressLine1 || '',
+        city: customer.address.locality || '',
+        postalCode: customer.address.postalCode || '',
+        country: customer.address.country || '',
+      };
+      if (customer.address.addressLine2) {
+        addr!.line2 = customer.address.addressLine2;
+      }
+      if (customer.address.administrativeDistrictLevel1) {
+        addr!.state = customer.address.administrativeDistrictLevel1;
+      }
+      result.address = addr;
+    }
+    return result;
   }
 
   private mapCard(card: any, isDefault?: boolean): PaymentMethod {
@@ -570,7 +622,7 @@ export class SquareProvider implements PaymentProvider {
     const paymentRequest = invoice.paymentRequests?.[0];
     const totalMoney = paymentRequest?.computedAmountMoney || { amount: '0', currency: 'USD' };
 
-    return {
+    const result: Invoice = {
       id: invoice.id,
       customerId: invoice.primaryRecipient?.customerId || '',
       status: statusMap[invoice.status] || 'draft',
@@ -587,9 +639,12 @@ export class SquareProvider implements PaymentProvider {
         currency: (totalMoney.currency || 'usd').toLowerCase(),
       },
       lineItems: [],
-      dueDate: paymentRequest?.dueDate ? new Date(paymentRequest.dueDate) : undefined,
       createdAt: new Date(invoice.createdAt),
     };
+    if (paymentRequest?.dueDate) {
+      result.dueDate = new Date(paymentRequest.dueDate);
+    }
+    return result;
   }
 
   private mapRefund(refund: any): Refund {

@@ -368,13 +368,13 @@ export function extractBoundaryId(
   comment: string
 ): { type: "start" | "end" | "fallback"; id: string } | null {
   const startMatch = comment.match(/^ppr:start:(.+)$/);
-  if (startMatch) return { type: "start", id: startMatch[1] };
+  if (startMatch && startMatch[1]) return { type: "start", id: startMatch[1] };
 
   const endMatch = comment.match(/^ppr:end:(.+)$/);
-  if (endMatch) return { type: "end", id: endMatch[1] };
+  if (endMatch && endMatch[1]) return { type: "end", id: endMatch[1] };
 
   const fallbackMatch = comment.match(/^ppr:fallback:(.+)$/);
-  if (fallbackMatch) return { type: "fallback", id: fallbackMatch[1] };
+  if (fallbackMatch && fallbackMatch[1]) return { type: "fallback", id: fallbackMatch[1] };
 
   return null;
 }

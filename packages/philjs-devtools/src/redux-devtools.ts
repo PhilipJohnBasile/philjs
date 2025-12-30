@@ -137,7 +137,7 @@ export class ReduxDevTools<T = any> {
   public disconnect(): void {
     if (this.unsubscribe) {
       this.unsubscribe();
-      this.unsubscribe = undefined;
+      delete this.unsubscribe;
     }
 
     if (this.extension) {
@@ -280,7 +280,7 @@ export class ReduxDevTools<T = any> {
   private handleRollback(): void {
     const history = this.timeTravelDebugger.getHistory();
     if (history.length > 0) {
-      const lastCommit = history[0];
+      const lastCommit = history[0]!;
       this.currentState.set(lastCommit.state);
       this.extension.send({ type: 'ROLLBACK' }, lastCommit.state);
     }
@@ -300,7 +300,7 @@ export class ReduxDevTools<T = any> {
         const actionId = message.payload.actionId;
         const history = this.timeTravelDebugger.getHistory();
         if (actionId >= 0 && actionId < history.length) {
-          targetState = history[actionId].state;
+          targetState = history[actionId]!.state;
         } else {
           return;
         }
@@ -373,7 +373,7 @@ export class ReduxDevTools<T = any> {
       return [];
     }
 
-    return diffState(history[fromIndex].state, history[toIndex].state);
+    return diffState(history[fromIndex]!.state, history[toIndex]!.state);
   }
 
   /**

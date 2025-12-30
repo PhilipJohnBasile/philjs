@@ -10,7 +10,7 @@ import type {
   TemplateEngineOptions,
   TemplateHelper,
   FlashMessage,
-} from './types';
+} from './types.js';
 
 // ============================================================================
 // Template Engine
@@ -54,7 +54,7 @@ export class TemplateEngine {
       templateDir: 'templates',
       extension: '.html',
       cache: true,
-      autoReload: process.env.NODE_ENV !== 'production',
+      autoReload: process.env['NODE_ENV'] !== 'production',
       helpers: new Map(),
       globals: {},
       ...options,
@@ -482,7 +482,7 @@ export class ComponentRegistry {
 export const FlashMessages: ComponentTemplate = {
   name: 'flash-messages',
   render: (props: Record<string, unknown>) => {
-    const messages = (props.messages as FlashMessage[]) || [];
+    const messages = (props['messages'] as FlashMessage[]) || [];
     if (messages.length === 0) return '';
 
     return `
@@ -509,7 +509,7 @@ document.querySelectorAll('.flash-close').forEach(btn => {
 export const CSRFField: ComponentTemplate = {
   name: 'csrf-field',
   render: (props: Record<string, unknown>) => {
-    const token = props.token as string || '';
+    const token = props['token'] as string || '';
     return `<input type="hidden" name="_csrf" value="${token}">`;
   },
 };
@@ -520,9 +520,9 @@ export const CSRFField: ComponentTemplate = {
 export const Pagination: ComponentTemplate = {
   name: 'pagination',
   render: (props: Record<string, unknown>) => {
-    const current = (props.current as number) || 1;
-    const total = (props.total as number) || 1;
-    const baseUrl = (props.baseUrl as string) || '?page=';
+    const current = (props['current'] as number) || 1;
+    const total = (props['total'] as number) || 1;
+    const baseUrl = (props['baseUrl'] as string) || '?page=';
 
     if (total <= 1) return '';
 
@@ -551,7 +551,7 @@ export const Pagination: ComponentTemplate = {
 export const FormErrors: ComponentTemplate = {
   name: 'form-errors',
   render: (props: Record<string, unknown>) => {
-    const errors = (props.errors as Record<string, string[]>) || {};
+    const errors = (props['errors'] as Record<string, string[]>) || {};
     const entries = Object.entries(errors);
 
     if (entries.length === 0) return '';

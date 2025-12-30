@@ -3,10 +3,11 @@
  * IndexedDB storage with data retention policies and export functionality
  */
 
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import type { MetricsSnapshot } from '../collector/metrics';
-import type { Span } from '../collector/tracing';
-import type { CapturedError } from '../collector/errors';
+import { openDB } from 'idb';
+import type { DBSchema, IDBPDatabase } from 'idb';
+import type { MetricsSnapshot } from '../collector/metrics.js';
+import type { Span } from '../collector/tracing.js';
+import type { CapturedError } from '../collector/errors.js';
 
 // ============================================================================
 // Types
@@ -525,12 +526,12 @@ export class LocalStorageManager {
 
     const data: ExportedData = {
       exportedAt: Date.now(),
-      startTime,
-      endTime,
       metrics,
       spans,
       errors,
     };
+    if (startTime !== undefined) data.startTime = startTime;
+    if (endTime !== undefined) data.endTime = endTime;
 
     if (format === 'csv') {
       return this.exportToCsv(data);

@@ -704,7 +704,7 @@ export function createSpringChain(
 
     // Link to previous spring
     if (i > 0) {
-      const prevSpring = springs[i - 1];
+      const prevSpring = springs[i - 1]!;
       const stagger = config.stagger || 0;
 
       prevSpring.subscribe((state) => {

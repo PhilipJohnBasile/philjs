@@ -173,8 +173,8 @@ export interface ActionResult<T> {
   data?: T;
   error?: {
     message: string;
-    code?: string;
-    details?: Record<string, unknown>;
+    code?: string | undefined;
+    details?: Record<string, unknown> | undefined;
   };
   meta?: {
     timestamp: number;
@@ -825,8 +825,8 @@ export function useOptimistic<TState, TAction>(
  * Server action error class
  */
 export class ServerActionError extends Error {
-  code?: string;
-  details?: Record<string, unknown>;
+  code?: string | undefined;
+  details?: Record<string, unknown> | undefined;
 
   constructor(message: string, code?: string, details?: Record<string, unknown>) {
     super(message);

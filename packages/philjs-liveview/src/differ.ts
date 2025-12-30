@@ -5,7 +5,7 @@
  * Uses morphdom concepts for efficient updates.
  */
 
-import type { DOMPatch } from './types';
+import type { DOMPatch } from './types.js';
 
 // ============================================================================
 // Differ
@@ -64,11 +64,11 @@ export function createDiffer(): Differ {
 
 interface VNode {
   type: 'element' | 'text' | 'comment';
-  tag?: string;
-  attributes?: Record<string, string>;
-  children?: VNode[];
-  content?: string;
-  key?: string;
+  tag?: string | undefined;
+  attributes?: Record<string, string> | undefined;
+  children?: VNode[] | undefined;
+  content?: string | undefined;
+  key?: string | undefined;
 }
 
 /**
@@ -95,7 +95,7 @@ function parseHtml(html: string): VNode {
       const endComment = trimmed.indexOf('-->', pos);
       if (endComment !== -1) {
         const content = trimmed.slice(pos + 4, endComment);
-        currentParent.children!.push({ type: 'comment', content });
+        currentParent!.children!.push({ type: 'comment', content });
         pos = endComment + 3;
         continue;
       }
@@ -132,9 +132,9 @@ function parseHtml(html: string): VNode {
         };
 
         // Extract key from phx-key or data-phx-key
-        node.key = node.attributes?.['phx-key'] || node.attributes?.['data-phx-key'];
+        node.key = node.attributes?.['phx-key'] ?? node.attributes?.['data-phx-key'];
 
-        currentParent.children!.push(node);
+        currentParent!.children!.push(node);
 
         // Self-closing tags don't go on the stack
         const selfClosingTags = ['br', 'hr', 'img', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr'];
@@ -152,19 +152,19 @@ function parseHtml(html: string): VNode {
     if (nextTag === -1) {
       const text = trimmed.slice(pos).trim();
       if (text) {
-        currentParent.children!.push({ type: 'text', content: text });
+        currentParent!.children!.push({ type: 'text', content: text });
       }
       break;
     } else {
       const text = trimmed.slice(pos, nextTag).trim();
       if (text) {
-        currentParent.children!.push({ type: 'text', content: text });
+        currentParent!.children!.push({ type: 'text', content: text });
       }
       pos = nextTag;
     }
   }
 
-  return root.children!.length === 1 ? root.children![0] : root;
+  return root.children!.length === 1 ? root.children![0]! : root;
 }
 
 /**
@@ -178,7 +178,7 @@ function parseAttributes(attrString: string): Record<string, string> {
   let match;
 
   while ((match = regex.exec(attrString)) !== null) {
-    const name = match[1];
+    const name = match[1]!;
     const value = match[2] ?? match[3] ?? match[4] ?? '';
     attrs[name] = value;
   }
@@ -357,7 +357,7 @@ function diffIndexedChildren(
       patches.push({
         type: 'append',
         target: path,
-        html: vnodeToHtml(newChildren[i]),
+        html: vnodeToHtml(newChildren[i]!),
       });
     } else if (i >= newChildren.length) {
       // Removed child
@@ -367,7 +367,7 @@ function diffIndexedChildren(
       });
     } else {
       // Diff existing child
-      patches.push(...diffVdom(oldChildren[i], newChildren[i], childPath));
+      patches.push(...diffVdom(oldChildren[i]!, newChildren[i]!, childPath));
     }
   }
 
@@ -378,8 +378,8 @@ function diffIndexedChildren(
  * Get CSS selector for a node
  */
 function getSelector(node: VNode, path: string): string {
-  if (node.attributes?.id) {
-    return `#${node.attributes.id}`;
+  if (node.attributes?.['id']) {
+    return `#${node.attributes['id']}`;
   }
   if (node.key) {
     return `[phx-key="${node.key}"]`;

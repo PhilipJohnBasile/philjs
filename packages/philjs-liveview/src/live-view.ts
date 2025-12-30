@@ -11,8 +11,8 @@ import type {
   LiveSocket,
   FlashType,
   ViewPatch,
-} from './types';
-import { createDiffer } from './differ';
+} from './types.js';
+import { createDiffer } from './differ.js';
 
 // ============================================================================
 // LiveView Factory

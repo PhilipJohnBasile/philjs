@@ -1,14 +1,28 @@
 /**
  * PhilJS Detector Script
- * 
+ *
  * Injected into every page to detect PhilJS and set up communication.
  */
+
+// Make this file a module so global augmentation works
+export {};
+
+// Chrome extension API type declarations
+declare const chrome: {
+  runtime: {
+    sendMessage: (message: unknown) => void;
+    getURL: (path: string) => string;
+    onMessage: {
+      addListener: (callback: (message: { type: string }) => void) => void;
+    };
+  };
+};
 
 declare global {
   interface Window {
     __PHILJS_DEVTOOLS__?: {
-      signals: Map<string, any>;
-      components: Map<string, any>;
+      signals: Map<string, unknown>;
+      components: Map<string, unknown>;
       subscribe: (callback: () => void) => () => void;
     };
   }

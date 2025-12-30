@@ -251,7 +251,7 @@ const getDefaultBounds = (type: string): Bounds => {
     Image: { x: 0, y: 0, width: 200, height: 150 },
     default: { x: 0, y: 0, width: 100, height: 100 },
   };
-  return defaults[type] || defaults.default;
+  return defaults[type] ?? defaults['default']!;
 };
 
 const getDefaultProps = (type: string): Record<string, unknown> => {
@@ -264,7 +264,7 @@ const getDefaultProps = (type: string): Record<string, unknown> => {
     Image: { src: '', alt: 'Image' },
     default: {},
   };
-  return defaults[type] || defaults.default;
+  return defaults[type] ?? defaults['default']!;
 };
 
 const cloneComponent = (
@@ -306,7 +306,7 @@ const deepCloneComponents = (
   for (const childId of original.children) {
     const childClones = deepCloneComponents(components, childId, newId, idMap);
     result.push(...childClones);
-    if (childClones.length > 0) {
+    if (childClones.length > 0 && childClones[0]) {
       newChildren.push(childClones[0].id);
     }
   }
@@ -416,7 +416,7 @@ export const useEditorStore = create<EditorState & EditorActions>()(
         set((draft) => {
           // Remove from parent's children
           if (component.parentId && draft.components[component.parentId]) {
-            const parent = draft.components[component.parentId];
+            const parent = draft.components[component.parentId]!;
             parent.children = parent.children.filter((childId) => childId !== id);
           } else {
             draft.rootIds = draft.rootIds.filter((rootId) => rootId !== id);
@@ -451,16 +451,16 @@ export const useEditorStore = create<EditorState & EditorActions>()(
             draft.components[clone.id] = clone;
           }
 
-          const rootClone = clones[0];
+          const rootClone = clones[0]!;
           if (component.parentId && draft.components[component.parentId]) {
-            draft.components[component.parentId].children.push(rootClone.id);
+            draft.components[component.parentId]!.children.push(rootClone.id);
           } else {
             draft.rootIds.push(rootClone.id);
           }
         });
 
         get().pushHistory(`Duplicate ${component.type}`);
-        return clones[0].id;
+        return clones[0]!.id;
       },
 
       moveComponent: (id: string, newParentId: string | null, index?: number) => {
@@ -482,7 +482,7 @@ export const useEditorStore = create<EditorState & EditorActions>()(
 
           // Remove from current parent
           if (component.parentId && state.components[component.parentId]) {
-            const oldParent = state.components[component.parentId];
+            const oldParent = state.components[component.parentId]!;
             oldParent.children = oldParent.children.filter((childId) => childId !== id);
           } else {
             state.rootIds = state.rootIds.filter((rootId) => rootId !== id);
@@ -691,6 +691,7 @@ export const useEditorStore = create<EditorState & EditorActions>()(
 
         const newIndex = state.historyIndex - 1;
         const entry = state.history[newIndex];
+        if (!entry) return;
 
         set((draft) => {
           draft.components = entry.components;
@@ -704,6 +705,7 @@ export const useEditorStore = create<EditorState & EditorActions>()(
 
         const newIndex = state.historyIndex + 1;
         const entry = state.history[newIndex];
+        if (!entry) return;
 
         set((draft) => {
           draft.components = entry.components;

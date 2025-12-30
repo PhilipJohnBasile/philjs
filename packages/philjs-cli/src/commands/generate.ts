@@ -32,9 +32,9 @@ import {
  * Register generate commands on the commander program
  */
 export function registerGenerateCommand(program: Command): void {
-  const generate = program
-    .command('generate')
-    .alias('g')
+  const generateCmd = program.command('generate');
+  generateCmd.alias('g');
+  generateCmd
     .description('Generate components, pages, API routes, models, and more')
     .action(async () => {
       // Interactive mode when no subcommand is provided
@@ -58,16 +58,16 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Component generator
-  generate
-    .command('component <name>')
-    .alias('c')
+  const componentCmd = generateCmd.command('component <name>');
+  componentCmd.alias('c');
+  componentCmd
     .description('Generate a new component')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--with-styles', 'Generate CSS module file')
     .option('--style <type>', 'Style type: css-modules, tailwind, styled, none', 'css-modules')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; withStyles?: boolean; style: string; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating component: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -75,11 +75,11 @@ export function registerGenerateCommand(program: Command): void {
 
         await generateComponent({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
-          withStyles: options.withStyles || genConfig.style !== 'none',
-          styleType: options.style || genConfig.style,
+          withStyles: options.withStyles ?? genConfig.style !== 'none',
+          styleType: (options.style ?? genConfig.style) as 'css-modules' | 'tailwind' | 'styled' | 'none',
         });
 
         console.log(pc.green(`\nComponent ${name} created successfully!\n`));
@@ -90,16 +90,16 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Page generator
-  generate
-    .command('page <name>')
-    .alias('p')
+  const pageCmd = generateCmd.command('page <name>');
+  pageCmd.alias('p');
+  pageCmd
     .description('Generate a page with route (supports dynamic routes like users/[id])')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--no-loader', 'Skip loader file generation')
     .option('--with-styles', 'Generate CSS module file')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; loader: boolean; withStyles?: boolean; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating page: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -107,11 +107,11 @@ export function registerGenerateCommand(program: Command): void {
 
         await generatePage({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
           withLoader: options.loader !== false,
-          withStyles: options.withStyles,
+          ...(options.withStyles !== undefined ? { withStyles: options.withStyles } : {}),
         });
 
         console.log(pc.green(`\nPage ${name} created successfully!\n`));
@@ -122,24 +122,24 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // API route generator
-  generate
-    .command('api <name>')
+  const apiCmd = generateCmd.command('api <name>');
+  apiCmd
     .description('Generate an API route (supports dynamic routes like posts/[id])')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--methods <methods>', 'HTTP methods to generate (comma-separated)', 'GET,POST,PUT,DELETE')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; methods: string; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating API route: ${name}\n`));
       try {
         const config = await loadConfig();
         const genConfig = getGeneratorConfig(config, 'api');
 
-        const methods = options.methods.split(',').map((m: string) => m.trim().toUpperCase());
+        const methods = options.methods.split(',').map((m: string) => m.trim().toUpperCase()) as ('GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE')[];
 
         await generateApi({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
           methods,
@@ -153,14 +153,14 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Model generator
-  generate
-    .command('model <name> [fields...]')
+  const modelCmd = generateCmd.command('model <name> [fields...]');
+  modelCmd
     .description('Generate a database model (e.g., model User name:string email:string:unique)')
     .option('--provider <provider>', 'Database provider: prisma or drizzle', 'prisma')
     .option('--schema <path>', 'Path to schema file')
     .option('--js', 'Use JavaScript instead of TypeScript (Drizzle only)')
     .option('-i, --interactive', 'Interactive field definition')
-    .action(async (name, fields, options) => {
+    .action(async (name: string, fields: string[], options: { provider: string; schema?: string; js?: boolean; interactive?: boolean }) => {
       console.log(pc.cyan(`\nGenerating model: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -180,12 +180,14 @@ export function registerGenerateCommand(program: Command): void {
           });
         }
 
+        const provider = (options.provider ?? config.database?.provider) as 'prisma' | 'drizzle' | undefined;
+        const schemaPath = options.schema ?? config.database?.schema;
         await generateModel({
           name,
           fields: finalFields,
-          provider: options.provider || config.database?.provider,
-          schemaPath: options.schema || config.database?.schema,
           typescript: !options.js,
+          ...(provider !== undefined ? { provider } : {}),
+          ...(schemaPath !== undefined ? { schemaPath } : {}),
         });
 
         console.log(pc.green(`\nModel ${name} created successfully!\n`));
@@ -196,8 +198,8 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Scaffold generator (full CRUD)
-  generate
-    .command('scaffold <name> [fields...]')
+  const scaffoldCmd = generateCmd.command('scaffold <name> [fields...]');
+  scaffoldCmd
     .description('Generate full CRUD: model, API routes, pages, and components')
     .option('--provider <provider>', 'Database provider: prisma or drizzle', 'prisma')
     .option('--no-test', 'Skip test file generation')
@@ -207,7 +209,7 @@ export function registerGenerateCommand(program: Command): void {
     .option('--skip-pages', 'Skip pages generation')
     .option('--skip-components', 'Skip components generation')
     .option('-i, --interactive', 'Interactive field definition')
-    .action(async (name, fields, options) => {
+    .action(async (name: string, fields: string[], options: { provider: string; test: boolean; js?: boolean; skipModel?: boolean; skipApi?: boolean; skipPages?: boolean; skipComponents?: boolean; interactive?: boolean }) => {
       console.log(pc.cyan(`\nGenerating scaffold for: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -228,16 +230,17 @@ export function registerGenerateCommand(program: Command): void {
           });
         }
 
+        const scaffoldProvider = (options.provider ?? config.database?.provider) as 'prisma' | 'drizzle' | undefined;
         await generateScaffold({
           name,
           fields: finalFields,
-          provider: options.provider || config.database?.provider,
           typescript: !options.js,
           withTests: options.test !== false,
-          skipModel: options.skipModel,
-          skipApi: options.skipApi,
-          skipPages: options.skipPages,
-          skipComponents: options.skipComponents,
+          ...(scaffoldProvider !== undefined ? { provider: scaffoldProvider } : {}),
+          ...(options.skipModel !== undefined ? { skipModel: options.skipModel } : {}),
+          ...(options.skipApi !== undefined ? { skipApi: options.skipApi } : {}),
+          ...(options.skipPages !== undefined ? { skipPages: options.skipPages } : {}),
+          ...(options.skipComponents !== undefined ? { skipComponents: options.skipComponents } : {}),
         });
       } catch (error) {
         console.error(pc.red('Failed to generate scaffold:'), error);
@@ -246,14 +249,14 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Hook generator
-  generate
-    .command('hook <name>')
-    .alias('h')
+  const hookCmd = generateCmd.command('hook <name>');
+  hookCmd.alias('h');
+  hookCmd
     .description('Generate a custom hook')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating hook: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -261,7 +264,7 @@ export function registerGenerateCommand(program: Command): void {
 
         await generateHook({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
         });
@@ -274,14 +277,14 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Context generator
-  generate
-    .command('context <name>')
-    .alias('ctx')
+  const contextCmd = generateCmd.command('context <name>');
+  contextCmd.alias('ctx');
+  contextCmd
     .description('Generate a context provider with hook')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating context: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -289,7 +292,7 @@ export function registerGenerateCommand(program: Command): void {
 
         await generateContext({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
         });
@@ -302,14 +305,14 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Route generator
-  generate
-    .command('route <name>')
-    .alias('r')
+  const routeCmd = generateCmd.command('route <name>');
+  routeCmd.alias('r');
+  routeCmd
     .description('Generate a route with loader and action')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating route: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -317,7 +320,7 @@ export function registerGenerateCommand(program: Command): void {
 
         await generateRoute({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
         });
@@ -330,14 +333,14 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Store generator
-  generate
-    .command('store <name>')
-    .alias('s')
+  const storeCmd = generateCmd.command('store <name>');
+  storeCmd.alias('s');
+  storeCmd
     .description('Generate a state store with signals')
     .option('-d, --directory <dir>', 'Target directory')
     .option('--no-test', 'Skip test file generation')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (name, options) => {
+    .action(async (name: string, options: { directory?: string; test: boolean; js?: boolean }) => {
       console.log(pc.cyan(`\nGenerating store: ${name}\n`));
       try {
         const config = await loadConfig();
@@ -345,7 +348,7 @@ export function registerGenerateCommand(program: Command): void {
 
         await generateStore({
           name,
-          directory: options.directory || genConfig.path,
+          directory: options.directory ?? genConfig.path,
           typescript: !options.js && genConfig.typescript !== false,
           withTest: options.test !== false && genConfig.tests !== false,
         });
@@ -358,15 +361,15 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Auth generator
-  generate
-    .command('auth <provider>')
+  const authCmd = generateCmd.command('auth <provider>');
+  authCmd
     .description('Generate authentication setup (clerk, auth0, supabase, nextauth, custom)')
     .option('-d, --directory <dir>', 'Target directory', 'src')
     .option('--no-ui', 'Skip UI components generation')
     .option('--no-middleware', 'Skip middleware generation')
     .option('--no-protected-routes', 'Skip protected route utilities')
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (provider, options) => {
+    .action(async (provider: string, options: { directory: string; ui: boolean; middleware: boolean; protectedRoutes: boolean; js?: boolean }) => {
       const validProviders = ['clerk', 'auth0', 'supabase', 'nextauth', 'custom'];
 
       if (!validProviders.includes(provider.toLowerCase())) {
@@ -377,7 +380,7 @@ export function registerGenerateCommand(program: Command): void {
 
       try {
         await generateAuth({
-          provider: provider.toLowerCase(),
+          provider: provider.toLowerCase() as 'clerk' | 'auth0' | 'supabase' | 'nextauth' | 'custom',
           directory: options.directory,
           typescript: !options.js,
           withUI: options.ui !== false,
@@ -391,8 +394,8 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // RSS feed generator
-  generate
-    .command('rss')
+  const rssCmd = generateCmd.command('rss');
+  rssCmd
     .description('Generate RSS/Atom/JSON feed setup')
     .option('-o, --output <path>', 'Output file path', 'public/feed.xml')
     .option('-f, --format <format>', 'Feed format: rss, atom, or json', 'rss')
@@ -401,12 +404,12 @@ export function registerGenerateCommand(program: Command): void {
     .option('--description <desc>', 'Feed description', 'My blog posts')
     .option('--site <url>', 'Site URL', 'https://example.com')
     .option('--limit <number>', 'Maximum number of items', '20')
-    .action(async (options) => {
+    .action(async (options: { output: string; format: string; collection: string; title: string; description: string; site: string; limit: string }) => {
       console.log(pc.cyan('\nGenerating RSS feed setup...\n'));
       try {
         await generateRSS({
           output: options.output,
-          format: options.format,
+          format: options.format as 'rss' | 'atom' | 'json',
           collection: options.collection,
           title: options.title,
           description: options.description,
@@ -422,22 +425,22 @@ export function registerGenerateCommand(program: Command): void {
     });
 
   // Sitemap generator
-  generate
-    .command('sitemap')
+  const sitemapCmd = generateCmd.command('sitemap');
+  sitemapCmd
     .description('Generate XML sitemap setup')
     .option('-o, --output <path>', 'Output file path', 'public/sitemap.xml')
     .option('-c, --collection <name>', 'Collection name', 'blog')
     .option('--site <url>', 'Site URL', 'https://example.com')
     .option('--changefreq <freq>', 'Change frequency', 'weekly')
     .option('--priority <priority>', 'Priority (0.0 to 1.0)', '0.7')
-    .action(async (options) => {
+    .action(async (options: { output: string; collection: string; site: string; changefreq: string; priority: string }) => {
       console.log(pc.cyan('\nGenerating sitemap setup...\n'));
       try {
         await generateSitemap({
           output: options.output,
           collection: options.collection,
           site: options.site,
-          changefreq: options.changefreq,
+          changefreq: options.changefreq as 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never',
           priority: parseFloat(options.priority),
         });
 
@@ -456,10 +459,10 @@ async function runGenerator(
   type: GeneratorType,
   name: string,
   options: {
-    typescript?: boolean;
-    withTest?: boolean;
-    withStyles?: boolean;
-    fields?: string[];
+    typescript: boolean;
+    withTest: boolean;
+    withStyles: boolean;
+    fields: string[] | undefined;
   }
 ): Promise<void> {
   const config = await loadConfig();
@@ -491,24 +494,28 @@ async function runGenerator(
       });
       break;
 
-    case 'model':
+    case 'model': {
+      const modelProvider = config.database?.provider;
       await generateModel({
         name,
-        fields: options.fields,
+        fields: options.fields ?? [],
         typescript: options.typescript,
-        provider: config.database?.provider,
+        ...(modelProvider !== undefined ? { provider: modelProvider } : {}),
       });
       break;
+    }
 
-    case 'scaffold':
+    case 'scaffold': {
+      const scaffProvider = config.database?.provider;
       await generateScaffold({
         name,
-        fields: options.fields,
+        fields: options.fields ?? [],
         typescript: options.typescript,
         withTests: options.withTest,
-        provider: config.database?.provider,
+        ...(scaffProvider !== undefined ? { provider: scaffProvider } : {}),
       });
       break;
+    }
 
     case 'hook':
       await generateHook({

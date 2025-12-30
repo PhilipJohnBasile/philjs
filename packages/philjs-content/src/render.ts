@@ -31,8 +31,8 @@ function extractHeadings(content: string): ContentHeading[] {
 
   let match;
   while ((match = headingRegex.exec(content)) !== null) {
-    const depth = match[1].length;
-    const text = match[2].trim();
+    const depth = match[1]!.length;
+    const text = match[2]!.trim();
     const slug = slugify(text);
 
     headings.push({ depth, text, slug });
@@ -53,7 +53,7 @@ function extractImages(content: string): ContentImage[] {
 
   while ((match = mdImageRegex.exec(content)) !== null) {
     images.push({
-      src: match[2],
+      src: match[2]!,
       alt: match[1] || '',
     });
   }
@@ -63,7 +63,7 @@ function extractImages(content: string): ContentImage[] {
 
   while ((match = htmlImageRegex.exec(content)) !== null) {
     images.push({
-      src: match[1],
+      src: match[1]!,
       alt: match[2] || '',
     });
   }
@@ -122,7 +122,7 @@ function buildTableOfContents(headings: ContentHeading[]): TOCEntry[] {
     }
 
     // Add to appropriate parent
-    const parent = stack[stack.length - 1];
+    const parent = stack[stack.length - 1]!;
     parent.push(entry);
 
     // Push this entry's children array for potential nested headings

@@ -185,8 +185,8 @@ export async function executeNestedLoaders(
   const url = new URL(request.url);
 
   // Execute all loaders in parallel
-  const results = await Promise.all(
-    routes.map(async (route) => {
+  const results: RouteLoaderData[] = await Promise.all(
+    routes.map(async (route): Promise<RouteLoaderData> => {
       if (!route.loader) {
         return {
           routeId: route.routeId,
@@ -203,12 +203,15 @@ export async function executeNestedLoaders(
 
       const result = await executeLoader(route.loader, context, options);
 
-      return {
+      const loaderData: RouteLoaderData = {
         routeId: route.routeId,
         data: result.data,
-        error: result.error,
         loading: false,
       };
+      if (result.error) {
+        loaderData.error = result.error;
+      }
+      return loaderData;
     })
   );
 
@@ -334,7 +337,11 @@ export function setCurrentRouteData(
   data: unknown,
   error?: Error
 ): void {
-  currentRouteDataSignal.set({ routeId, data, error });
+  const routeData: { routeId: string; data: unknown; error?: Error } = { routeId, data };
+  if (error) {
+    routeData.error = error;
+  }
+  currentRouteDataSignal.set(routeData);
 }
 
 /**

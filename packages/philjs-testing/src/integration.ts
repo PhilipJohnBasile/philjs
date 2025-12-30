@@ -9,7 +9,7 @@
  * - Session and authentication testing
  */
 
-import type { Signal } from 'philjs-core/signals';
+import { expect } from 'vitest';
 
 // ============================================================================
 // Types
@@ -178,8 +178,12 @@ export class IntegrationTestContext implements TestContext {
       const cookies = setCookie.split(',');
       for (const cookie of cookies) {
         const [nameValue] = cookie.split(';');
-        const [name, value] = nameValue.split('=');
-        this.cookies.set(name.trim(), value.trim());
+        if (nameValue) {
+          const [name, value] = nameValue.split('=');
+          if (name && value) {
+            this.cookies.set(name.trim(), value.trim());
+          }
+        }
       }
     }
 
@@ -468,11 +472,13 @@ export async function testRouteFlow(
       assert: assertFn,
     } = route;
 
-    const response = await context.request(url, {
-      method,
-      body: body ? JSON.stringify(body) : undefined,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    });
+    const requestInit: RequestInit = { method };
+    if (body) {
+      requestInit.body = JSON.stringify(body);
+      requestInit.headers = { 'Content-Type': 'application/json' };
+    }
+
+    const response = await context.request(url, requestInit);
 
     expect(response.status).toBe(expectedStatus);
 
@@ -522,10 +528,10 @@ export async function benchmarkRoute(
   times.sort((a, b) => a - b);
 
   return {
-    min: times[0],
-    max: times[times.length - 1],
+    min: times[0]!,
+    max: times[times.length - 1]!,
     avg: times.reduce((sum, t) => sum + t, 0) / times.length,
-    median: times[Math.floor(times.length / 2)],
+    median: times[Math.floor(times.length / 2)]!,
   };
 }
 

@@ -81,7 +81,7 @@ export function trackError(error: Error, context: any = {}) {
   }
 
   // Also log to console in development
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+  if (typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production') {
     console.error('[Error Tracking]', error, context);
   }
 }
@@ -97,11 +97,12 @@ export function parseErrorStack(error: Error): ErrorDiagnostic[] {
   const diagnostics: ErrorDiagnostic[] = [];
 
   // Main error
-  diagnostics.push({
+  const mainDiagnostic: ErrorDiagnostic = {
     type: 'error',
     message: error.message,
-    stack: error.stack,
-  });
+  };
+  if (error.stack) mainDiagnostic.stack = error.stack;
+  diagnostics.push(mainDiagnostic);
 
   // Parse stack trace
   if (error.stack) {
@@ -112,13 +113,14 @@ export function parseErrorStack(error: Error): ErrorDiagnostic[] {
       const match = line.match(filePattern);
       if (match) {
         const [, , file, lineStr, columnStr] = match;
-        diagnostics.push({
+        const frameDiagnostic: ErrorDiagnostic = {
           type: 'info',
           message: line.trim(),
-          file: file || undefined,
-          line: lineStr ? parseInt(lineStr, 10) : undefined,
-          column: columnStr ? parseInt(columnStr, 10) : undefined,
-        });
+        };
+        if (file) frameDiagnostic.file = file;
+        if (lineStr) frameDiagnostic.line = parseInt(lineStr, 10);
+        if (columnStr) frameDiagnostic.column = parseInt(columnStr, 10);
+        diagnostics.push(frameDiagnostic);
       }
     }
   }
@@ -336,7 +338,7 @@ export function InternalErrorPage(props: {
   const { error, config = {}, requestId, timestamp } = props;
   const diagnostics = parseErrorStack(error);
   const suggestions = generateErrorSuggestions(error);
-  const showDetails = config.showDetails ?? (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production');
+  const showDetails = config.showDetails ?? (typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production');
 
   // Track error
   trackError(error, { requestId, timestamp });
@@ -659,7 +661,7 @@ function escapeHtml(text: string): string {
     '"': '&quot;',
     "'": '&#039;',
   };
-  return text.replace(/[&<>"']/g, (char) => map[char]);
+  return text.replace(/[&<>"']/g, (char) => map[char]!);
 }
 
 /**
@@ -680,9 +682,15 @@ export function generateErrorResponse(
   let html: string;
 
   if (statusCode === 404) {
-    html = NotFoundPage({ url, config });
+    const notFoundProps: { url?: string; config?: ErrorPageConfig } = {};
+    if (url) notFoundProps.url = url;
+    if (config) notFoundProps.config = config;
+    html = NotFoundPage(notFoundProps);
   } else {
-    html = InternalErrorPage({ error, config, requestId, timestamp });
+    const errorProps: { error: Error; config?: ErrorPageConfig; requestId?: string; timestamp?: Date } = { error, timestamp };
+    if (config) errorProps.config = config;
+    if (requestId) errorProps.requestId = requestId;
+    html = InternalErrorPage(errorProps);
   }
 
   return new Response(html, {

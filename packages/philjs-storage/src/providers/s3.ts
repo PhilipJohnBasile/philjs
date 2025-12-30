@@ -62,7 +62,7 @@ export class S3StorageClient extends StorageClient {
       clientConfig.credentials = {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,
-        sessionToken: config.sessionToken,
+        ...(config.sessionToken !== undefined && { sessionToken: config.sessionToken }),
       };
     }
 
@@ -146,16 +146,14 @@ export class S3StorageClient extends StorageClient {
         Key: fullKey,
         Body: body as Buffer | string,
         ContentType: contentType,
-        ContentLength: contentLength,
-        CacheControl: options.cacheControl,
-        ContentDisposition: options.contentDisposition,
-        ACL: options.acl,
-        Metadata: options.metadata,
+        ...(contentLength !== undefined && { ContentLength: contentLength }),
+        ...(options.cacheControl !== undefined && { CacheControl: options.cacheControl }),
+        ...(options.contentDisposition !== undefined && { ContentDisposition: options.contentDisposition }),
+        ...(options.acl !== undefined && { ACL: options.acl }),
+        ...(options.metadata !== undefined && { Metadata: options.metadata }),
       });
 
-      await this.client.send(command, {
-        abortSignal: options.signal,
-      });
+      await this.client.send(command, options.signal ? { abortSignal: options.signal } : undefined);
 
       if (options.onProgress && contentLength) {
         options.onProgress({
@@ -174,18 +172,18 @@ export class S3StorageClient extends StorageClient {
   async download(key: string, options: DownloadOptions = {}): Promise<Buffer> {
     const fullKey = this.buildKey(key);
 
+    const rangeValue =
+      options.rangeStart !== undefined || options.rangeEnd !== undefined
+        ? `bytes=${options.rangeStart || 0}-${options.rangeEnd || ''}`
+        : undefined;
+
     const command = new GetObjectCommand({
       Bucket: this.config.bucket,
       Key: fullKey,
-      Range:
-        options.rangeStart !== undefined || options.rangeEnd !== undefined
-          ? `bytes=${options.rangeStart || 0}-${options.rangeEnd || ''}`
-          : undefined,
+      ...(rangeValue !== undefined && { Range: rangeValue }),
     });
 
-    const response = await this.client.send(command, {
-      abortSignal: options.signal,
-    });
+    const response = await this.client.send(command, options.signal ? { abortSignal: options.signal } : undefined);
 
     if (!response.Body) {
       throw new Error(`File not found: ${key}`);
@@ -222,18 +220,18 @@ export class S3StorageClient extends StorageClient {
   ): Promise<ReadableStream<Uint8Array>> {
     const fullKey = this.buildKey(key);
 
+    const rangeValue =
+      options.rangeStart !== undefined || options.rangeEnd !== undefined
+        ? `bytes=${options.rangeStart || 0}-${options.rangeEnd || ''}`
+        : undefined;
+
     const command = new GetObjectCommand({
       Bucket: this.config.bucket,
       Key: fullKey,
-      Range:
-        options.rangeStart !== undefined || options.rangeEnd !== undefined
-          ? `bytes=${options.rangeStart || 0}-${options.rangeEnd || ''}`
-          : undefined,
+      ...(rangeValue !== undefined && { Range: rangeValue }),
     });
 
-    const response = await this.client.send(command, {
-      abortSignal: options.signal,
-    });
+    const response = await this.client.send(command, options.signal ? { abortSignal: options.signal } : undefined);
 
     if (!response.Body) {
       throw new Error(`File not found: ${key}`);
@@ -280,15 +278,15 @@ export class S3StorageClient extends StorageClient {
 
     const command = new ListObjectsV2Command({
       Bucket: this.config.bucket,
-      Prefix: prefix,
-      Delimiter: options.delimiter,
+      ...(prefix !== undefined && { Prefix: prefix }),
+      ...(options.delimiter !== undefined && { Delimiter: options.delimiter }),
       MaxKeys: options.maxResults || 1000,
-      ContinuationToken: options.continuationToken,
+      ...(options.continuationToken !== undefined && { ContinuationToken: options.continuationToken }),
     });
 
     const response = await this.client.send(command);
 
-    const files: StorageFile[] = (response.Contents || []).map((obj) => ({
+    const files: StorageFile[] = (response.Contents || []).map((obj: { Key?: string; Size?: number; LastModified?: Date; ETag?: string }) => ({
       key: this.stripBasePath(obj.Key || ''),
       size: obj.Size || 0,
       contentType: 'application/octet-stream', // S3 doesn't return content type in list
@@ -297,7 +295,7 @@ export class S3StorageClient extends StorageClient {
     }));
 
     const prefixes = (response.CommonPrefixes || []).map(
-      (p) => this.stripBasePath(p.Prefix || '')
+      (p: { Prefix?: string }) => this.stripBasePath(p.Prefix || '')
     );
 
     return {
@@ -349,16 +347,16 @@ export class S3StorageClient extends StorageClient {
         ? new PutObjectCommand({
             Bucket: this.config.bucket,
             Key: fullKey,
-            ContentType: options.contentType,
+            ...(options.contentType !== undefined && { ContentType: options.contentType }),
           })
         : new GetObjectCommand({
             Bucket: this.config.bucket,
             Key: fullKey,
-            ResponseContentType: options.responseContentType,
-            ResponseContentDisposition: options.responseContentDisposition,
+            ...(options.responseContentType !== undefined && { ResponseContentType: options.responseContentType }),
+            ...(options.responseContentDisposition !== undefined && { ResponseContentDisposition: options.responseContentDisposition }),
           });
 
-    return awsGetSignedUrl(this.client, command, { expiresIn });
+    return awsGetSignedUrl(this.client as any, command as any, { expiresIn });
   }
 
   async copy(
@@ -374,10 +372,10 @@ export class S3StorageClient extends StorageClient {
       Bucket: destBucket,
       Key: fullDestKey,
       CopySource: `${this.config.bucket}/${fullSourceKey}`,
-      ContentType: options.contentType,
-      Metadata: options.metadata,
+      ...(options.contentType !== undefined && { ContentType: options.contentType }),
+      ...(options.metadata !== undefined && { Metadata: options.metadata }),
       MetadataDirective: options.metadata ? 'REPLACE' : 'COPY',
-      ACL: options.acl,
+      ...(options.acl !== undefined && { ACL: options.acl }),
     });
 
     await this.client.send(command);

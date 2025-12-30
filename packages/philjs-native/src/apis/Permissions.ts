@@ -192,7 +192,10 @@ export async function checkMultiple(types: PermissionType[]): Promise<Permission
 
   const permissionsResult: Partial<PermissionsResult> = {};
   types.forEach((type, index) => {
-    permissionsResult[type] = results[index];
+    const result = results[index];
+    if (result !== undefined) {
+      permissionsResult[type] = result;
+    }
   });
 
   return permissionsResult as PermissionsResult;
@@ -375,7 +378,10 @@ export async function requestMultiple(
 
   const permissionsResult: Partial<PermissionsResult> = {};
   types.forEach((type, index) => {
-    permissionsResult[type] = results[index];
+    const result = results[index];
+    if (result !== undefined) {
+      permissionsResult[type] = result;
+    }
   });
 
   return permissionsResult as PermissionsResult;

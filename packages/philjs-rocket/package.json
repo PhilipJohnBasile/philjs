@@ -1,6 +1,7 @@
 {
   "name": "@philjs/rocket",
   "version": "0.1.0",
+  "type": "module",
   "description": "Rocket web framework integration for PhilJS - SSR, fairings, guards, and WebSocket support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

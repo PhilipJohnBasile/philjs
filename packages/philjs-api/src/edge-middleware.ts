@@ -121,7 +121,11 @@ class CookieStoreImpl implements CookieStore {
 
   set(name: string, value: string, options?: CookieOptions): void {
     this.cookies.set(name, value);
-    this.setCookies.push({ name, value, options });
+    if (options !== undefined) {
+      this.setCookies.push({ name, value, options });
+    } else {
+      this.setCookies.push({ name, value });
+    }
   }
 
   delete(name: string): void {
@@ -159,16 +163,22 @@ function createEdgeContext(
   let rewriteUrl: URL | null = null;
   let redirectResponse: Response | null = null;
 
+  const ip = extractIP(request);
+  const userAgent = request.headers.get('user-agent') || undefined;
   const edgeRequest: EdgeRequest = {
     url,
     method: request.method,
     headers: request.headers,
     raw: request,
     geo,
-    ip: extractIP(request),
-    userAgent: request.headers.get('user-agent') || undefined,
     cookies: cookieStore.getAll(),
   };
+  if (ip !== undefined) {
+    edgeRequest.ip = ip;
+  }
+  if (userAgent !== undefined) {
+    edgeRequest.userAgent = userAgent;
+  }
 
   const context: EdgeContext & { executeNext: (middleware: EdgeMiddleware[]) => Promise<Response> } = {
     request: edgeRequest,
@@ -205,7 +215,7 @@ function createEdgeContext(
           const oldNext = context.next;
           context.next = dispatch;
 
-          const result = await mw(context);
+          const result = await mw!(context);
           context.next = oldNext;
 
           // If middleware returned a response, use it
@@ -295,7 +305,7 @@ export function composeEdgeMiddleware(...middlewares: EdgeMiddleware[]): EdgeMid
         return result;
       };
 
-      const result = await middleware(context);
+      const result = await middleware!(context);
       context.next = oldNext;
       return result instanceof Response ? result : await dispatch();
     };
@@ -493,7 +503,7 @@ function extractIP(request: Request): string | undefined {
   return (
     request.headers.get('cf-connecting-ip') ||
     request.headers.get('x-real-ip') ||
-    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]!.trim() ||
     undefined
   );
 }
@@ -519,20 +529,33 @@ async function detectGeolocation(request: Request): Promise<GeolocationData> {
 
   // Try Vercel Edge
   if (request.headers.has('x-vercel-ip-country')) {
-    return {
-      country: request.headers.get('x-vercel-ip-country') || undefined,
-      region: request.headers.get('x-vercel-ip-country-region') || undefined,
-      city: request.headers.get('x-vercel-ip-city') || undefined,
+    const country = request.headers.get('x-vercel-ip-country') || undefined;
+    const region = request.headers.get('x-vercel-ip-country-region') || undefined;
+    const city = request.headers.get('x-vercel-ip-city') || undefined;
+    const geo: GeolocationData = {
       latitude: parseFloat(request.headers.get('x-vercel-ip-latitude') || ''),
       longitude: parseFloat(request.headers.get('x-vercel-ip-longitude') || ''),
     };
+    if (country !== undefined) {
+      geo.country = country;
+    }
+    if (region !== undefined) {
+      geo.region = region;
+    }
+    if (city !== undefined) {
+      geo.city = city;
+    }
+    return geo;
   }
 
   // Try generic Cloudflare proxy
   if (request.headers.has('cf-ipcountry')) {
-    return {
-      country: request.headers.get('cf-ipcountry') || undefined,
-    };
+    const country = request.headers.get('cf-ipcountry') || undefined;
+    const geo: GeolocationData = {};
+    if (country !== undefined) {
+      geo.country = country;
+    }
+    return geo;
   }
 
   return {};

@@ -6,7 +6,7 @@
 
 import { writeFileSync, mkdirSync, cpSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
-import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types';
+import type { Adapter, AdapterConfig, EdgeAdapter, RequestContext } from '../types.js';
 
 export interface VercelConfig extends AdapterConfig {
   /** Use Edge Runtime (default: false, uses Node.js) */

@@ -1,6 +1,7 @@
 {
   "name": "@philjs/perf-budget",
   "version": "0.1.0",
+  "type": "module",
   "description": "Performance budget enforcement for PhilJS - Core Web Vitals, bundle size limits, build checks",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

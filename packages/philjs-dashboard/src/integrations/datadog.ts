@@ -3,9 +3,9 @@
  * Export metrics, traces, and logs to Datadog
  */
 
-import type { MetricsSnapshot, WebVitalsMetrics, CustomMetric } from '../collector/metrics';
-import type { Span } from '../collector/tracing';
-import type { CapturedError } from '../collector/errors';
+import type { MetricsSnapshot, WebVitalsMetrics, CustomMetric } from '../collector/metrics.js';
+import type { Span } from '../collector/tracing.js';
+import type { CapturedError } from '../collector/errors.js';
 
 // ============================================================================
 // Types
@@ -285,25 +285,30 @@ export class DatadogExporter {
     if (!this.config.enableApm) return;
     if (Math.random() >= this.config.sampleRate) return;
 
-    const ddSpans: DatadogTrace[] = spans.map((span) => ({
-      trace_id: this.convertTraceId(span.traceId),
-      span_id: this.convertSpanId(span.spanId),
-      parent_id: span.parentSpanId ? this.convertSpanId(span.parentSpanId) : undefined,
-      name: this.mapSpanKindToName(span.kind),
-      resource: span.name,
-      service: span.resource.serviceName || this.config.service,
-      type: this.mapSpanKindToType(span.kind),
-      start: Math.floor(span.startTime * 1000000), // nanoseconds
-      duration: Math.floor((span.duration || 0) * 1000000), // nanoseconds
-      error: span.status.code === 'error' ? 1 : 0,
-      meta: {
-        ...this.stringifyAttributes(span.attributes),
-        env: this.config.env,
-        version: this.config.version || span.resource.serviceVersion || '',
-        'span.kind': span.kind,
-      },
-      metrics: {},
-    }));
+    const ddSpans: DatadogTrace[] = spans.map((span) => {
+      const trace: DatadogTrace = {
+        trace_id: this.convertTraceId(span.traceId),
+        span_id: this.convertSpanId(span.spanId),
+        name: this.mapSpanKindToName(span.kind),
+        resource: span.name,
+        service: span.resource.serviceName || this.config.service,
+        type: this.mapSpanKindToType(span.kind),
+        start: Math.floor(span.startTime * 1000000), // nanoseconds
+        duration: Math.floor((span.duration || 0) * 1000000), // nanoseconds
+        error: span.status.code === 'error' ? 1 : 0,
+        meta: {
+          ...this.stringifyAttributes(span.attributes),
+          env: this.config.env,
+          version: this.config.version || span.resource.serviceVersion || '',
+          'span.kind': span.kind,
+        },
+        metrics: {},
+      };
+      if (span.parentSpanId) {
+        trace.parent_id = this.convertSpanId(span.parentSpanId);
+      }
+      return trace;
+    });
 
     this.tracesQueue.push(ddSpans);
   }
@@ -368,8 +373,10 @@ export class DatadogExporter {
       service: this.config.service,
       source: 'browser',
       tags: this.getBaseTags(),
-      attributes,
     };
+    if (attributes !== undefined) {
+      log.attributes = attributes;
+    }
 
     this.logsQueue.push(log);
   }

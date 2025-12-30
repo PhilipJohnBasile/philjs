@@ -3,7 +3,7 @@
  * Built-in block commands for the slash menu
  */
 
-import type { SlashCommand, EditorInstance } from '../types';
+import type { SlashCommand, EditorInstance } from '../types.js';
 
 export const defaultSlashCommands: SlashCommand[] = [
   // Text blocks

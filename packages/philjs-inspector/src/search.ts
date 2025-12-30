@@ -115,7 +115,10 @@ function handleSearchInput(event: Event): void {
   const resultElements = searchResults.querySelectorAll('.philjs-search-result');
   resultElements.forEach((element, index) => {
     element.addEventListener('click', () => {
-      selectSearchResult(results[index]);
+      const result = results[index];
+      if (result) {
+        selectSearchResult(result);
+      }
     });
 
     // Hover effect
@@ -155,20 +158,26 @@ function handleSearchKeyDown(event: KeyboardEvent): void {
   } else if (event.key === 'Enter') {
     event.preventDefault();
     if (selectedIndex !== -1) {
-      const componentId = resultElements[selectedIndex].getAttribute('data-component-id');
-      if (componentId) {
-        const component = searchComponents('').find((c) => c.id === componentId);
-        if (component) {
-          selectSearchResult(component);
+      const selectedElement = resultElements[selectedIndex];
+      if (selectedElement) {
+        const componentId = selectedElement.getAttribute('data-component-id');
+        if (componentId) {
+          const component = searchComponents('').find((c) => c.id === componentId);
+          if (component) {
+            selectSearchResult(component);
+          }
         }
       }
     } else if (resultElements.length > 0) {
       // Select first result
-      const componentId = resultElements[0].getAttribute('data-component-id');
-      if (componentId) {
-        const component = searchComponents('').find((c) => c.id === componentId);
-        if (component) {
-          selectSearchResult(component);
+      const firstElement = resultElements[0];
+      if (firstElement) {
+        const componentId = firstElement.getAttribute('data-component-id');
+        if (componentId) {
+          const component = searchComponents('').find((c) => c.id === componentId);
+          if (component) {
+            selectSearchResult(component);
+          }
         }
       }
     }
@@ -187,7 +196,10 @@ function selectResultByIndex(elements: HTMLElement[], index: number): void {
   });
 
   // Scroll into view
-  elements[index].scrollIntoView({ block: 'nearest' });
+  const targetElement = elements[index];
+  if (targetElement) {
+    targetElement.scrollIntoView({ block: 'nearest' });
+  }
 }
 
 /**

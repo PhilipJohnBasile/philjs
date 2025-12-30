@@ -287,8 +287,8 @@ export function getVelocity(p1: Point, p2: Point, dt: number): Velocity {
 function getEventPosition(event: TouchEvent | PointerEvent | MouseEvent): Point {
   if ('touches' in event && event.touches.length > 0) {
     return {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY,
+      x: event.touches[0]!.clientX,
+      y: event.touches[0]!.clientY,
     };
   }
   if ('clientX' in event) {
@@ -307,8 +307,8 @@ function getAllTouchPositions(event: TouchEvent): Point[] {
   const positions: Point[] = [];
   for (let i = 0; i < event.touches.length; i++) {
     positions.push({
-      x: event.touches[i].clientX,
-      y: event.touches[i].clientY,
+      x: event.touches[i]!.clientX,
+      y: event.touches[i]!.clientY,
     });
   }
   return positions;
@@ -405,9 +405,9 @@ export function createPanGesture(
     tracker.currentPosition = { ...tracker.startPosition };
 
     for (let i = 0; i < event.touches.length; i++) {
-      tracker.pointers.set(event.touches[i].identifier, {
-        x: event.touches[i].clientX,
-        y: event.touches[i].clientY,
+      tracker.pointers.set(event.touches[i]!.identifier, {
+        x: event.touches[i]!.clientX,
+        y: event.touches[i]!.clientY,
       });
     }
 
@@ -423,9 +423,9 @@ export function createPanGesture(
     tracker.pointers.clear();
 
     for (let i = 0; i < event.touches.length; i++) {
-      tracker.pointers.set(event.touches[i].identifier, {
-        x: event.touches[i].clientX,
-        y: event.touches[i].clientY,
+      tracker.pointers.set(event.touches[i]!.identifier, {
+        x: event.touches[i]!.clientX,
+        y: event.touches[i]!.clientY,
       });
     }
 
@@ -582,7 +582,7 @@ export function createPinchGesture(
     if (event.touches.length === 2) {
       tracker = createTracker();
       const positions = getAllTouchPositions(event);
-      tracker.initialDistance = getDistance(positions[0], positions[1]);
+      tracker.initialDistance = getDistance(positions[0]!, positions[1]!);
       lastScale = 1;
       lastTime = Date.now();
       isActive = false;
@@ -595,7 +595,7 @@ export function createPinchGesture(
     if (tracker.initialDistance === undefined) return;
 
     const positions = getAllTouchPositions(event);
-    const currentDistance = getDistance(positions[0], positions[1]);
+    const currentDistance = getDistance(positions[0]!, positions[1]!);
     const scale = currentDistance / tracker.initialDistance;
 
     if (!isActive && Math.abs(scale - 1) >= minScale) {
@@ -710,7 +710,7 @@ export function createRotationGesture(
     if (event.touches.length === 2) {
       tracker = createTracker();
       const positions = getAllTouchPositions(event);
-      tracker.initialAngle = getAngle(positions[0], positions[1]);
+      tracker.initialAngle = getAngle(positions[0]!, positions[1]!);
       lastRotation = 0;
       lastTime = Date.now();
       isActive = false;
@@ -723,7 +723,7 @@ export function createRotationGesture(
     if (tracker.initialAngle === undefined) return;
 
     const positions = getAllTouchPositions(event);
-    const currentAngle = getAngle(positions[0], positions[1]);
+    const currentAngle = getAngle(positions[0]!, positions[1]!);
     let rotation = currentAngle - tracker.initialAngle;
 
     // Normalize rotation to -PI to PI
@@ -1162,12 +1162,12 @@ export interface GestureHandlerOptions {
   onSwipe?: (event: SwipeGestureEvent) => void;
   onLongPress?: (event: LongPressGestureEvent) => void;
   onTap?: (event: TapGestureEvent) => void;
-  panConfig?: PanGestureConfig;
-  pinchConfig?: PinchGestureConfig;
-  rotationConfig?: GestureConfig;
-  swipeConfig?: SwipeGestureConfig;
-  longPressConfig?: LongPressGestureConfig;
-  tapConfig?: TapGestureConfig;
+  panConfig?: PanGestureConfig | undefined;
+  pinchConfig?: PinchGestureConfig | undefined;
+  rotationConfig?: GestureConfig | undefined;
+  swipeConfig?: SwipeGestureConfig | undefined;
+  longPressConfig?: LongPressGestureConfig | undefined;
+  tapConfig?: TapGestureConfig | undefined;
 }
 
 /**

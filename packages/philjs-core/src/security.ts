@@ -221,7 +221,7 @@ export function sanitizeHtml(
       let attrMatch;
 
       while ((attrMatch = attrPattern.exec(attrs)) !== null) {
-        const attrName = attrMatch[1].toLowerCase();
+        const attrName = attrMatch[1]?.toLowerCase() ?? '';
         const attrValue = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4] ?? '';
 
         // Skip event handlers
@@ -502,7 +502,7 @@ export function constantTimeEqual(a: string, b: string): boolean {
 
   let diff = 0;
   for (let i = 0; i < bufA.length; i++) {
-    diff |= bufA[i] ^ bufB[i];
+    diff |= (bufA[i] ?? 0) ^ (bufB[i] ?? 0);
   }
 
   return diff === 0;

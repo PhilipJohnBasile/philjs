@@ -5,7 +5,7 @@
  */
 
 import { signal, effect, batch, memo } from 'philjs-core';
-import { directive, initDirectives, processElement, type DirectiveContext } from './directives';
+import { directive, initDirectives, processElement, type DirectiveContext } from './directives.js';
 
 // ============================================================================
 // Alpine-specific Directives
@@ -14,7 +14,7 @@ import { directive, initDirectives, processElement, type DirectiveContext } from
 /**
  * x-transition - CSS transitions for show/hide
  */
-directive('transition', (el, expression, context) => {
+directive('transition', (el: HTMLElement, expression: string, context: DirectiveContext) => {
   // Parse transition classes
   const classes = {
     enter: el.getAttribute('x-transition:enter') || 'transition ease-out duration-300',
@@ -59,7 +59,7 @@ directive('transition', (el, expression, context) => {
 /**
  * x-effect - Run side effects
  */
-directive('effect', (el, expression, context) => {
+directive('effect', (el: HTMLElement, expression: string, context: DirectiveContext) => {
   return effect(() => {
     try {
       const fn = new Function(
@@ -86,7 +86,7 @@ directive('ignore', () => {
 /**
  * x-teleport - Move element to another location
  */
-directive('teleport', (el, expression) => {
+directive('teleport', (el: HTMLElement, expression: string) => {
   const target = document.querySelector(expression);
   if (target) {
     const clone = el.cloneNode(true) as HTMLElement;
@@ -223,7 +223,7 @@ export function bind(name: string, bindings: Record<string, any>): void {
 /**
  * x-bind with named definition
  */
-directive('bind', (el, expression, context) => {
+directive('bind', (el: HTMLElement, expression: string, context: DirectiveContext) => {
   // Check if it's a named binding
   if (bindDefs.has(expression)) {
     const bindings = bindDefs.get(expression)!;
@@ -262,7 +262,7 @@ export function initAlpine(root: HTMLElement = document.body): void {
       const componentMatch = dataExpr.match(/^(\w+)(?:\(([^)]*)\))?$/);
       let data: Record<string, any>;
 
-      if (componentMatch && componentDefs.has(componentMatch[1])) {
+      if (componentMatch && componentMatch[1] && componentDefs.has(componentMatch[1])) {
         const factory = componentDefs.get(componentMatch[1])!;
         data = factory();
       } else {

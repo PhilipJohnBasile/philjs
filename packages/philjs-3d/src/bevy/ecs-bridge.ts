@@ -18,8 +18,8 @@ import type {
   Quat,
   QueryResult,
   BevyWorld,
-} from './types';
-import { getBevy, onBevyEvent } from './hooks';
+} from './types.js';
+import { getBevy, onBevyEvent } from './hooks.js';
 
 // ============================================================================
 // Signal Integration Types
@@ -121,7 +121,7 @@ export function createEntityBridge(entity: BevyEntity): EntityBridge {
   }
 
   // Listen for component changes
-  const unsubscribeAdded = onBevyEvent('component-added', (event) => {
+  const unsubscribeAdded = onBevyEvent('component-added', (event: { type: 'component-added'; timestamp: number; data?: { entity: BevyEntity; component: string } }) => {
     if (event.data && event.data.entity.id === entityId) {
       const component = event.data.entity.getComponent({ componentName: event.data.component } as any);
       if (component) {
@@ -137,7 +137,7 @@ export function createEntityBridge(entity: BevyEntity): EntityBridge {
     }
   });
 
-  const unsubscribeRemoved = onBevyEvent('component-removed', (event) => {
+  const unsubscribeRemoved = onBevyEvent('component-removed', (event: { type: 'component-removed'; timestamp: number; data?: { entity: BevyEntity; component: string } }) => {
     if (event.data && event.data.entity.id === entityId) {
       const signal = componentSignals.get(event.data.component);
       if (signal) {
@@ -162,12 +162,12 @@ export function createEntityBridge(entity: BevyEntity): EntityBridge {
       ])
     ),
 
-    subscribe(callback) {
+    subscribe(callback: (entity: BevyEntity) => void) {
       subscribers.add(callback);
       return () => subscribers.delete(callback);
     },
 
-    update(component) {
+    update(component: BevyComponent) {
       entity.insertComponent(component);
       const signal = componentSignals.get(component.componentName);
       if (signal) {
@@ -242,7 +242,7 @@ export function createComponentBridge<T extends BevyComponent>(
   const subscribers = new Set<(component: T | null) => void>();
 
   // Listen for component changes
-  const unsubscribeAdded = onBevyEvent('component-added', (event) => {
+  const unsubscribeAdded = onBevyEvent('component-added', (event: { type: 'component-added'; timestamp: number; data?: { entity: BevyEntity; component: string } }) => {
     if (
       event.data &&
       event.data.entity.id === entityId &&
@@ -254,7 +254,7 @@ export function createComponentBridge<T extends BevyComponent>(
     }
   });
 
-  const unsubscribeRemoved = onBevyEvent('component-removed', (event) => {
+  const unsubscribeRemoved = onBevyEvent('component-removed', (event: { type: 'component-removed'; timestamp: number; data?: { entity: BevyEntity; component: string } }) => {
     if (
       event.data &&
       event.data.entity.id === entityId &&
@@ -280,14 +280,14 @@ export function createComponentBridge<T extends BevyComponent>(
       return signal.value;
     },
 
-    subscribe(callback) {
+    subscribe(callback: (component: T | null) => void) {
       subscribers.add(callback);
       // Immediately call with current value
       callback(signal.value);
       return () => subscribers.delete(callback);
     },
 
-    update(updates) {
+    update(updates: Partial<T>) {
       const current = signal.value;
       if (current && entity) {
         const updated = { ...current, ...updates } as T;
@@ -684,11 +684,11 @@ export function trackEntities<T extends BevyComponent[]>(
   callback(result?.entities || []);
 
   // Track spawns and despawns
-  const unsubscribeSpawned = onBevyEvent('entity-spawned', (event) => {
+  const unsubscribeSpawned = onBevyEvent('entity-spawned', (event: { type: 'entity-spawned'; timestamp: number; data?: { entity: BevyEntity } }) => {
     if (event.data) {
       const entity = event.data.entity;
-      const hasAllComponents = query.components.every((name) =>
-        entity.getComponents().some((c) => c.componentName === name)
+      const hasAllComponents = query.components.every((name: string) =>
+        entity.getComponents().some((c: BevyComponent) => c.componentName === name)
       );
       if (hasAllComponents) {
         const newResult = queryEntities(query, canvasOrKey);
@@ -753,7 +753,7 @@ export function trackEntity(
   // Call callback immediately with current entity state
   callback(bridge.entity);
 
-  const unsubscribeDespawned = onBevyEvent('entity-despawned', (event) => {
+  const unsubscribeDespawned = onBevyEvent('entity-despawned', (event: { type: 'entity-despawned'; timestamp: number; data?: { entityId: EntityId } }) => {
     if (event.data?.entityId === entityId) {
       callback(null);
     }
