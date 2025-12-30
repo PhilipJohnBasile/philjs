@@ -252,7 +252,7 @@ import { awsLambdaAdapter } from 'philjs-adapters/aws-lambda';
 
 export default awsLambdaAdapter({
   region: 'us-east-1',
-  runtime: 'nodejs20.x',
+  runtime: 'nodejs24.x',
   memorySize: 1024,
   timeout: 30,
   integration: 'http-api',
@@ -311,8 +311,8 @@ import { railwayAdapter } from 'philjs-adapters/railway';
 
 export default railwayAdapter({
   docker: {
-    baseImage: 'node:20-alpine',
-    nodeVersion: '20',
+    baseImage: 'node:24-alpine',
+    nodeVersion: '24',
     packages: ['python3', 'make', 'g++'],
     buildArgs: {
       NODE_ENV: 'production'

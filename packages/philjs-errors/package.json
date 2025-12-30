@@ -18,6 +18,9 @@
   "dependencies": {
     "@philjs/core": "workspace:*"
   },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
   "peerDependencies": {
     "@sentry/browser": "^10.32.1",
     "logrocket": "^5.0.0",

@@ -12,37 +12,37 @@ Vite 7.0 was released on June 24, 2025, marking 5 years since the first Vite com
 
 ### 1. Node.js Version Requirements
 
-Vite 7 requires newer Node.js versions:
+Vite 7 requires newer Node.js versions, and PhilJS now requires Node.js 24+:
 
 **Before (Vite 6):**
 - Node.js 18.0+ (or higher)
 
-**After (Vite 7):**
-- Node.js 20.19+ or 22.12+ required
-- Node.js 18 is no longer supported (reached EOL April 2025)
+**After (Vite 7 + PhilJS):**
+- Node.js 24+ required
+- Node.js 18/20/22 are no longer supported
 
-**Why:** These new Node.js version ranges are required so Node.js supports `require(esm)` without a flag, allowing Vite 7.0 to be distributed as ESM-only without preventing the Vite JavaScript API from being required by CJS modules.
+**Why:** PhilJS has standardized on Node.js 24+ to leverage the latest ECMAScript features, improved performance, and modern runtime capabilities. Vite 7 itself requires Node.js 20.19+ or 22.12+, but PhilJS goes further by requiring Node.js 24+.
 
 **Action Required:**
 ```bash
 # Check your Node.js version
 node --version
 
-# If below 20.19, upgrade Node.js
+# If below 24, upgrade Node.js
 # Using nvm:
-nvm install 20.19
-nvm use 20.19
+nvm install 24
+nvm use 24
 
 # Or using nvm-windows:
-nvm install 20.19.0
-nvm use 20.19.0
+nvm install 24.0.0
+nvm use 24.0.0
 ```
 
 Update your project's `package.json` to enforce the minimum version:
 ```json
 {
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=24.0.0"
   }
 }
 ```
@@ -372,7 +372,7 @@ Before starting the migration:
 
 2. **Update Node.js**
    ```bash
-   node --version # Should be 20.19+ or 22.12+
+   node --version # Should be 24+ for PhilJS
    ```
 
 3. **Review the changelog**
@@ -454,7 +454,7 @@ Add Node.js version requirement:
 ```json
 {
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=24.0.0"
   }
 }
 ```
@@ -515,11 +515,10 @@ Look for deprecation warnings in the console during development and build. Addre
 **Upgrade Now If:**
 - You're starting a new project
 - You need the latest features and improvements
-- Your CI/CD environment already uses Node.js 20.19+ or 22.12+
+- Your CI/CD environment already uses Node.js 24+
 - You want better performance and smaller bundles
 
 **Wait If:**
-- You're locked to Node.js 18 (though it's EOL)
 - You have complex custom Vite plugins that need testing
 - You want to wait for more ecosystem adoption
 - You're close to a major release and want to minimize risk
@@ -573,9 +572,9 @@ Vite 8 is expected to introduce even more significant changes:
 
 **Issue: Node.js version error**
 ```
-Error: Vite requires Node.js 20.19+ or 22.12+
+Error: PhilJS requires Node.js 24+
 ```
-**Solution:** Upgrade Node.js to 20.19 or higher
+**Solution:** Upgrade Node.js to 24 or higher
 
 **Issue: Sass compilation fails**
 ```
@@ -617,7 +616,7 @@ Type 'Plugin' is not assignable to type 'Plugin'
 
 Use this checklist when migrating:
 
-- [ ] Node.js version is 20.19+ or 22.12+
+- [ ] Node.js version is 24+
 - [ ] Updated `vite` package to ^7.3.0
 - [ ] Updated `vitest` package to ^3.2 or higher (if using)
 - [ ] Updated Vite plugin packages to latest versions
@@ -662,7 +661,7 @@ Use this checklist when migrating:
 Vite 7 is a solid, stable release that modernizes the ecosystem while maintaining most compatibility with Vite 6. The main breaking changes are:
 
 **Key Changes:**
-- Node.js 20.19+ or 22.12+ required
+- Node.js 24+ required for PhilJS
 - Default browser target changed to 'baseline-widely-available'
 - Sass legacy API removed
 - Deprecated features removed
@@ -670,7 +669,6 @@ Vite 7 is a solid, stable release that modernizes the ecosystem while maintainin
 **Migration Effort:**
 - **Low** for most projects
 - **Medium** if using Sass or custom plugins
-- **High** if locked to Node.js 18
 
 **Benefits:**
 - Better performance

@@ -678,7 +678,7 @@ PhilJS uses Vite by default:
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from '@philjs/vite-plugin';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [philjs()],

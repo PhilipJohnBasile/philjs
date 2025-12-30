@@ -10,7 +10,7 @@ Create `Dockerfile` in your project root:
 
 ```dockerfile
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -68,20 +68,20 @@ Optimize image size with multi-stage builds:
 
 ```dockerfile
 # Stage 1: Dependencies
-FROM node:18-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
 # Stage 2: Builder
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
 # Stage 3: Runner
-FROM node:18-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -398,7 +398,7 @@ services:
 
 ```dockerfile
 # Build-time variables
-ARG NODE_VERSION=18
+ARG NODE_VERSION=24
 ARG BUILD_ENV=production
 
 FROM node:${NODE_VERSION}-alpine
@@ -432,7 +432,7 @@ Build with custom args:
 ```bash
 # Build with custom Node version and environment
 docker build \
-  --build-arg NODE_VERSION=20 \
+  --build-arg NODE_VERSION=24 \
   --build-arg BUILD_ENV=production \
   -t philjs-app:latest \
   .
@@ -614,7 +614,7 @@ server {
 ### SSR with Node
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -633,7 +633,7 @@ CMD ["node", "dist/server.js"]
 Add health check to Dockerfile:
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 COPY . .
@@ -670,12 +670,12 @@ export async function GET() {
 
 ```dockerfile
 # Use alpine base
-FROM node:18-alpine
+FROM node:24-alpine
 
 # Use multi-stage builds
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 # ... build
-FROM node:18-alpine
+FROM node:24-alpine
 # ... copy only needed files
 
 # Remove unnecessary files
@@ -924,7 +924,7 @@ trivy image philjs-app
 
 ```dockerfile
 # Use distroless for minimal attack surface
-FROM gcr.io/distroless/nodejs18-debian11
+FROM gcr.io/distroless/nodejs24-debian12
 
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/node_modules /app/node_modules

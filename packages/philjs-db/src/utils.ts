@@ -939,6 +939,40 @@ function desc(_column: any): any {
 }
 
 /**
+ * Equality comparison for Drizzle columns
+ */
+function eq(column: any, value: any): any {
+  return { __eq: true, column, value };
+}
+
+/**
+ * AND combination for Drizzle conditions
+ */
+function and(...conditions: any[]): any {
+  return { __and: true, conditions: conditions.filter(Boolean) };
+}
+
+/**
+ * Build a Drizzle where clause from a partial object
+ */
+function buildDrizzleWhereFromPartial(where: Record<string, any>, schema: any): any {
+  if (!where || Object.keys(where).length === 0) return undefined;
+
+  const conditions: any[] = [];
+
+  for (const [key, value] of Object.entries(where)) {
+    const column = schema[key];
+    if (column && value !== undefined) {
+      conditions.push(eq(column, value));
+    }
+  }
+
+  if (conditions.length === 0) return undefined;
+  if (conditions.length === 1) return conditions[0];
+  return and(...conditions);
+}
+
+/**
  * Create a database connection based on config
  *
  * Note: Currently only supports Supabase. Prisma and Drizzle support
@@ -985,68 +1019,325 @@ export async function withTransaction<T>(
 }
 
 /**
+ * Repository configuration options
+ */
+export interface RepositoryOptions {
+  /** Drizzle schema object for the table */
+  schema?: Record<string, any>;
+  /** Primary key field name (defaults to 'id') */
+  primaryKey?: string;
+}
+
+/**
  * Create a repository with common CRUD operations
+ * Works with Prisma, Drizzle, and Supabase providers
  */
 export function createRepository<T extends { id: string | number }>(
   db: any,
-  tableName: string
+  tableName: string,
+  options?: RepositoryOptions
 ): Repository<T> {
+  const provider = detectProvider(db);
+  const primaryKey = options?.primaryKey ?? 'id';
+  const schema = options?.schema;
+
   return {
-    async findAll(options?: PaginationOptions): Promise<PaginatedResult<T>> {
-      return paginate(db, tableName, options || {});
+    async findAll(paginationOptions?: PaginationOptions): Promise<PaginatedResult<T>> {
+      return paginate(db, tableName, paginationOptions || {});
     },
 
     async findById(id: string | number): Promise<T | null> {
-      // Implementation depends on ORM
-      if (db[tableName]) {
-        // Prisma
-        return db[tableName].findUnique({ where: { id } });
+      const whereClause = { [primaryKey]: id } as Partial<T>;
+
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].findUnique({ where: whereClause });
+          }
+          return null;
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const pkColumn = tableSchema[primaryKey];
+            if (pkColumn) {
+              const result = await db
+                .select()
+                .from(tableSchema)
+                .where(eq(pkColumn, id))
+                .limit(1);
+              return result[0] ?? null;
+            }
+          }
+          return null;
+        }
+
+        case 'supabase': {
+          const { data, error } = await db
+            .from(tableName)
+            .select('*')
+            .eq(primaryKey, id)
+            .single();
+
+          if (error && error.code !== 'PGRST116') {
+            // PGRST116 is "no rows returned" - not an error for findById
+            throw new Error(`Supabase findById error: ${error.message}`);
+          }
+          return data ?? null;
+        }
+
+        default:
+          return null;
       }
-      // Generic
-      return null;
     },
 
     async findOne(where: Partial<T>): Promise<T | null> {
-      if (db[tableName]) {
-        return db[tableName].findFirst({ where });
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].findFirst({ where });
+          }
+          return null;
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const whereClause = buildDrizzleWhereFromPartial(where, tableSchema);
+            const query = db.select().from(tableSchema);
+            const result = whereClause
+              ? await query.where(whereClause).limit(1)
+              : await query.limit(1);
+            return result[0] ?? null;
+          }
+          return null;
+        }
+
+        case 'supabase': {
+          let query = db.from(tableName).select('*');
+          query = applySupabaseWhere(query, where);
+          const { data, error } = await query.limit(1).single();
+
+          if (error && error.code !== 'PGRST116') {
+            throw new Error(`Supabase findOne error: ${error.message}`);
+          }
+          return data ?? null;
+        }
+
+        default:
+          return null;
       }
-      return null;
     },
 
     async findMany(where: Partial<T>): Promise<T[]> {
-      if (db[tableName]) {
-        return db[tableName].findMany({ where });
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].findMany({ where });
+          }
+          return [];
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const whereClause = buildDrizzleWhereFromPartial(where, tableSchema);
+            const query = db.select().from(tableSchema);
+            return whereClause ? await query.where(whereClause) : await query;
+          }
+          return [];
+        }
+
+        case 'supabase': {
+          let query = db.from(tableName).select('*');
+          query = applySupabaseWhere(query, where);
+          const { data, error } = await query;
+
+          if (error) {
+            throw new Error(`Supabase findMany error: ${error.message}`);
+          }
+          return data ?? [];
+        }
+
+        default:
+          return [];
       }
-      return [];
     },
 
     async create(data: Omit<T, 'id'>): Promise<T> {
-      if (db[tableName]) {
-        return db[tableName].create({ data });
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].create({ data });
+          }
+          throw new Error(`Prisma model '${tableName}' not found`);
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const result = await db
+              .insert(schema[tableName])
+              .values(data)
+              .returning();
+            return result[0];
+          }
+          throw new Error(`Drizzle schema for '${tableName}' not provided. Pass schema in options.`);
+        }
+
+        case 'supabase': {
+          const { data: result, error } = await db
+            .from(tableName)
+            .insert(data)
+            .select('*')
+            .single();
+
+          if (error) {
+            throw new Error(`Supabase create error: ${error.message}`);
+          }
+          return result;
+        }
+
+        default:
+          throw new Error(`Unsupported database provider '${provider}' for create operation`);
       }
-      throw new Error('Create not implemented');
     },
 
     async update(id: string | number, data: Partial<T>): Promise<T> {
-      if (db[tableName]) {
-        return db[tableName].update({ where: { id }, data });
+      const whereClause = { [primaryKey]: id } as Partial<T>;
+
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].update({ where: whereClause, data });
+          }
+          throw new Error(`Prisma model '${tableName}' not found`);
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const pkColumn = tableSchema[primaryKey];
+            if (pkColumn) {
+              const result = await db
+                .update(tableSchema)
+                .set(data)
+                .where(eq(pkColumn, id))
+                .returning();
+              return result[0];
+            }
+            throw new Error(`Primary key '${primaryKey}' not found in schema`);
+          }
+          throw new Error(`Drizzle schema for '${tableName}' not provided. Pass schema in options.`);
+        }
+
+        case 'supabase': {
+          const { data: result, error } = await db
+            .from(tableName)
+            .update(data)
+            .eq(primaryKey, id)
+            .select('*')
+            .single();
+
+          if (error) {
+            throw new Error(`Supabase update error: ${error.message}`);
+          }
+          return result;
+        }
+
+        default:
+          throw new Error(`Unsupported database provider '${provider}' for update operation`);
       }
-      throw new Error('Update not implemented');
     },
 
     async delete(id: string | number): Promise<void> {
-      if (db[tableName]) {
-        await db[tableName].delete({ where: { id } });
-        return;
+      const whereClause = { [primaryKey]: id } as Partial<T>;
+
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            await db[tableName].delete({ where: whereClause });
+            return;
+          }
+          throw new Error(`Prisma model '${tableName}' not found`);
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const pkColumn = tableSchema[primaryKey];
+            if (pkColumn) {
+              await db
+                .delete(tableSchema)
+                .where(eq(pkColumn, id));
+              return;
+            }
+            throw new Error(`Primary key '${primaryKey}' not found in schema`);
+          }
+          throw new Error(`Drizzle schema for '${tableName}' not provided. Pass schema in options.`);
+        }
+
+        case 'supabase': {
+          const { error } = await db
+            .from(tableName)
+            .delete()
+            .eq(primaryKey, id);
+
+          if (error) {
+            throw new Error(`Supabase delete error: ${error.message}`);
+          }
+          return;
+        }
+
+        default:
+          throw new Error(`Unsupported database provider '${provider}' for delete operation`);
       }
-      throw new Error('Delete not implemented');
     },
 
     async count(where?: Partial<T>): Promise<number> {
-      if (db[tableName]) {
-        return db[tableName].count({ where });
+      switch (provider) {
+        case 'prisma': {
+          if (db[tableName]) {
+            return db[tableName].count({ where });
+          }
+          return 0;
+        }
+
+        case 'drizzle': {
+          if (schema?.[tableName]) {
+            const tableSchema = schema[tableName];
+            const query = db.select({ count: sql`count(*)` }).from(tableSchema);
+
+            if (where) {
+              const whereClause = buildDrizzleWhereFromPartial(where, tableSchema);
+              if (whereClause) {
+                const result = await query.where(whereClause);
+                return Number(result[0]?.count ?? 0);
+              }
+            }
+
+            const result = await query;
+            return Number(result[0]?.count ?? 0);
+          }
+          return 0;
+        }
+
+        case 'supabase': {
+          let query = db.from(tableName).select('*', { count: 'exact', head: true });
+          if (where) {
+            query = applySupabaseWhere(query, where);
+          }
+          const { count, error } = await query;
+
+          if (error) {
+            throw new Error(`Supabase count error: ${error.message}`);
+          }
+          return count ?? 0;
+        }
+
+        default:
+          return 0;
       }
-      return 0;
     },
   };
 }

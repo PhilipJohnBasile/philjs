@@ -4,7 +4,6 @@
   "type": "module",
   "description": "PhilJS Runtime with Self-Healing capabilities - automatic error recovery, circuit breakers, hot-patching",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -17,7 +16,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/self-healing/index.ts --format cjs,esm --dts --out-dir dist/self-healing",
+    "build": "tsup src/self-healing/index.ts --format esm --dts --out-dir dist/self-healing",
     "dev": "tsup src/self-healing/index.ts --watch",
     "test": "vitest"
   },

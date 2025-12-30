@@ -1,0 +1,79 @@
+{
+  "name": "@philjs/sqlite",
+  "version": "0.1.0",
+  "description": "SQLite WASM for browser with reactive queries and sync engine",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./db": {
+      "types": "./dist/db/index.d.ts",
+      "import": "./dist/db/index.js"
+    },
+    "./reactive": {
+      "types": "./dist/reactive/index.d.ts",
+      "import": "./dist/reactive/index.js"
+    },
+    "./sync": {
+      "types": "./dist/sync/index.d.ts",
+      "import": "./dist/sync/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    }
+  },
+  "files": [
+    "dist",
+    "wasm"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-sqlite'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "rollup": "^4.54.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "optionalPeerDependencies": {
+    "@philjs/offline": "workspace:*",
+    "@philjs/collab": "workspace:*"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-sqlite"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "sqlite",
+    "wasm",
+    "local-first",
+    "database",
+    "reactive"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}

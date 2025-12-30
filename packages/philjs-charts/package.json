@@ -48,7 +48,7 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0"
+    "@philjs/core": "workspace:*"
   },
   "license": "MIT",
   "author": "PhilJS Team",

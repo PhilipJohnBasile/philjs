@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Type-safe router for PhilJS with fully typed params and Zod validation",
   "type": "module",
-  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -40,7 +39,8 @@
     "zod": "^4.2.1"
   },
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0",
+    "@philjs/core": "workspace:*",
+    "typescript": ">=5.9.3",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {

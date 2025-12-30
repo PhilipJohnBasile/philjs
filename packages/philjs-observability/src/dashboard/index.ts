@@ -14,7 +14,13 @@
  * - Bundle analysis with treemap visualization
  * - Configurable threshold alerts
  *
- * TODO: Implement dashboard components:
+ * @remarks
+ * Dashboard component implementations are currently placeholder stubs.
+ * The type definitions and interfaces are complete and ready for use.
+ * Component implementations will render full dashboard UIs when the
+ * philjs-observability-ui package is available.
+ *
+ * Planned components (backlog):
  * - Dashboard, PerformanceDashboard, WebVitalsDashboard
  * - MetricsPanel, TracesPanel, LogsPanel, ErrorsPanel, PerformancePanel
  * - RealTimeMetricsPanel, NetworkWaterfallPanel, ComponentRenderPanel

@@ -26,8 +26,11 @@ import {
   unwrapResult,
   unwrapOption,
   type WasmModule,
-  type WasmExports
+  type WasmExports,
+  type RustResult,
+  type RustOption,
 } from './index.js';
+import type { Mock } from 'vitest';
 
 // Mock WebAssembly APIs
 const mockMemory = {
@@ -57,7 +60,17 @@ global.fetch = mockFetch;
 
 // Mock WebAssembly.instantiateStreaming
 const mockInstantiateStreaming = vi.fn();
-(global as any).WebAssembly = {
+
+interface MockWebAssembly {
+  instantiateStreaming: typeof mockInstantiateStreaming;
+  compile: Mock;
+  instantiate: Mock;
+  Instance: new () => object;
+  Module: new () => object;
+  Memory: new () => { buffer: ArrayBuffer };
+}
+
+(global as unknown as { WebAssembly: MockWebAssembly }).WebAssembly = {
   instantiateStreaming: mockInstantiateStreaming,
   compile: vi.fn(),
   instantiate: vi.fn(),
@@ -290,7 +303,7 @@ describe('philjs-wasm', () => {
       const module = await loadWasm('/test.wasm');
 
       // Mock malloc to return a valid pointer
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
 
       const signal = createRustSignal({
         module,
@@ -303,7 +316,7 @@ describe('philjs-wasm', () => {
 
     it('should allow setting new values', async () => {
       const module = await loadWasm('/test.wasm');
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
 
       const signal = createRustSignal({
         module,
@@ -317,7 +330,7 @@ describe('philjs-wasm', () => {
 
     it('should support updater functions', async () => {
       const module = await loadWasm('/test.wasm');
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
 
       const signal = createRustSignal({
         module,
@@ -331,7 +344,7 @@ describe('philjs-wasm', () => {
 
     it('should support subscriptions', async () => {
       const module = await loadWasm('/test.wasm');
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
 
       const signal = createRustSignal({
         module,
@@ -349,7 +362,7 @@ describe('philjs-wasm', () => {
 
     it('should provide memory pointer', async () => {
       const module = await loadWasm('/test.wasm');
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
 
       const signal = createRustSignal({
         module,
@@ -363,7 +376,7 @@ describe('philjs-wasm', () => {
 
   describe('specialized signal creators', () => {
     beforeEach(() => {
-      (mockExports.__wbindgen_malloc as any).mockReturnValue(100);
+      vi.mocked(mockExports.__wbindgen_malloc as Mock).mockReturnValue(100);
     });
 
     it('should create i32 signal', async () => {
@@ -447,14 +460,18 @@ describe('philjs-wasm', () => {
         const result = Ok(42);
 
         expect(result.ok).toBe(true);
-        expect((result as any).value).toBe(42);
+        if (result.ok) {
+          expect(result.value).toBe(42);
+        }
       });
 
       it('should create Err result', () => {
         const result = Err('error message');
 
         expect(result.ok).toBe(false);
-        expect((result as any).error).toBe('error message');
+        if (!result.ok) {
+          expect(result.error).toBe('error message');
+        }
       });
 
       it('should unwrap Ok result', () => {
@@ -476,11 +493,13 @@ describe('philjs-wasm', () => {
         const option = Some('hello');
 
         expect(option.some).toBe(true);
-        expect((option as any).value).toBe('hello');
+        if (option.some) {
+          expect(option.value).toBe('hello');
+        }
       });
 
       it('should create None option', () => {
-        const option = None();
+        const option = None<string>();
 
         expect(option.some).toBe(false);
       });
@@ -493,7 +512,7 @@ describe('philjs-wasm', () => {
       });
 
       it('should throw on unwrap None option', () => {
-        const option = None();
+        const option = None<string>();
 
         expect(() => unwrapOption(option)).toThrow('Unwrap failed: None');
       });

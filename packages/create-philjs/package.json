@@ -8,9 +8,15 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": ["dist", "templates"],
   "scripts": {
-    "build": "tsup src/cli.ts --format cjs,esm --dts",
+    "build": "tsup src/cli.ts --format esm --dts",
     "dev": "tsup src/cli.ts --watch"
   },
   "keywords": ["philjs", "create", "cli", "scaffold", "rust", "wasm"],

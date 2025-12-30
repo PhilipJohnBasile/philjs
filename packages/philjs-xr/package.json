@@ -4,7 +4,6 @@
   "type": "module",
   "description": "WebXR Components - VR/AR/MR experiences with hand tracking, spatial UI, gestures, and 3D reactive primitives",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -13,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup src/index.ts --watch",
     "test": "vitest"
   },

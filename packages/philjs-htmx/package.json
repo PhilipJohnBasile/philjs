@@ -15,7 +15,7 @@
   "files": ["dist", "src"],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
@@ -37,7 +37,7 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0"
+    "@philjs/core": "workspace:*"
   },
   "engines": {
     "node": ">=24"

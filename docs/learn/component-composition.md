@@ -606,22 +606,17 @@ function Card({ children }: { children: any }) {
 **PhilJS favors composition over inheritance:**
 
 ```typescript
-// ❌ Inheritance (not recommended)
-class BaseButton extends Component {
-  // ...
-}
-
-class PrimaryButton extends BaseButton {
-  // ...
-}
-
-// ✅ Composition (recommended)
+// ✅ Composition (recommended) - Functional components with signals
 function Button({ children, variant }: ButtonProps) {
   return <button className={`btn btn-${variant}`}>{children}</button>;
 }
 
-function PrimaryButton(props) {
+function PrimaryButton(props: Omit<ButtonProps, 'variant'>) {
   return <Button {...props} variant="primary" />;
+}
+
+function DangerButton(props: Omit<ButtonProps, 'variant'>) {
+  return <Button {...props} variant="danger" />;
 }
 ```
 

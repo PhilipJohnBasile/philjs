@@ -5,7 +5,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createCell, createTypedCell, createCellWithRetry } from './cell';
 import { cellCache } from './cache';
-import type { CellDefinition } from './types';
+import type { CellDefinition, VNode } from './types';
+
+// Test helper: null VNode for test components
+const nullVNode = null as unknown as VNode;
 
 // Mock philjs-core
 vi.mock('philjs-core', () => ({
@@ -63,7 +66,7 @@ describe('createCell', () => {
     it('throws if neither QUERY nor fetch is provided', () => {
       expect(() =>
         createCell({
-          Success: () => null as any,
+          Success: () => nullVNode,
         } as CellDefinition<unknown>)
       ).toThrow('must have either QUERY or fetch defined');
     });
@@ -73,7 +76,7 @@ describe('createCell', () => {
         createCell({
           QUERY: 'query { test }',
           fetch: async () => ({}),
-          Success: () => null as any,
+          Success: () => nullVNode,
         } as CellDefinition<unknown>)
       ).toThrow('cannot have both QUERY and fetch defined');
     });
@@ -103,7 +106,7 @@ describe('createCell', () => {
     it('accepts custom displayName', () => {
       const cell = createCell({
         QUERY: `query { users }`,
-        Success: () => null as any,
+        Success: () => nullVNode,
         displayName: 'UsersCell',
       });
 
@@ -129,7 +132,7 @@ describe('createCell', () => {
     it('uses default Loading component if not provided', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Loading).toBeUndefined();
@@ -141,7 +144,7 @@ describe('createCell', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
         Loading: CustomLoading,
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Loading).toBe(CustomLoading);
@@ -150,7 +153,7 @@ describe('createCell', () => {
     it('uses default Empty component if not provided', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Empty).toBeUndefined();
@@ -162,7 +165,7 @@ describe('createCell', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
         Empty: CustomEmpty,
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Empty).toBe(CustomEmpty);
@@ -171,7 +174,7 @@ describe('createCell', () => {
     it('uses default Failure component if not provided', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Failure).toBeUndefined();
@@ -183,7 +186,7 @@ describe('createCell', () => {
       const cell = createCell({
         fetch: async () => ({ data: 'test' }),
         Failure: CustomFailure,
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.Failure).toBe(CustomFailure);
@@ -194,7 +197,7 @@ describe('createCell', () => {
     it('uses default isEmpty function', () => {
       const cell = createCell({
         fetch: async () => ({ users: [] }),
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.isEmpty).toBeUndefined();
@@ -206,7 +209,7 @@ describe('createCell', () => {
       const cell = createCell({
         fetch: async () => ({ users: [] }),
         isEmpty: customIsEmpty,
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.isEmpty).toBe(customIsEmpty);
@@ -223,7 +226,7 @@ describe('createCell', () => {
       const cell = createCell({
         fetch: async () => ({ users: [] }),
         afterQuery,
-        Success: () => null as any,
+        Success: () => nullVNode,
       });
 
       expect(cell.__cellDefinition.afterQuery).toBe(afterQuery);
@@ -256,7 +259,7 @@ describe('createCellWithRetry', () => {
     const cell = createCellWithRetry(
       {
         fetch: mockFetch,
-        Success: () => null as any,
+        Success: () => nullVNode,
       },
       { maxRetries: 3 }
     );
@@ -269,7 +272,7 @@ describe('createCellWithRetry', () => {
     const cell = createCellWithRetry(
       {
         QUERY: 'query { test }',
-        Success: () => null as any,
+        Success: () => nullVNode,
       },
       { maxRetries: 3 }
     );

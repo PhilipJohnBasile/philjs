@@ -34,9 +34,9 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0",
-    "@philjs/ui": ">=0.1.0",
-    "@philjs/dnd": ">=0.1.0"
+    "@philjs/core": "workspace:*",
+    "@philjs/ui": "workspace:*",
+    "@philjs/dnd": "workspace:*"
   },
   "engines": {
     "node": ">=24"

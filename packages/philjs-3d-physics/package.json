@@ -4,7 +4,6 @@
   "type": "module",
   "description": "High-performance 3D physics engine for PhilJS - rigid bodies, vehicles, ragdolls, character controllers",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -13,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
     "lint": "eslint src/",
     "test": "vitest"
   },
@@ -22,7 +21,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0",
+    "@philjs/core": "workspace:*",
     "@dimforge/rapier3d": ">=0.11.0"
   },
   "devDependencies": {

@@ -324,12 +324,12 @@ function ConditionalEffect() {
 Execute code after the DOM has updated:
 
 ```tsx
-import { effect, onMount } from 'philjs-core';
+import { effect } from 'philjs-core';
 
 function DeferredExecution() {
   let divRef;
 
-  onMount(() => {
+  effect(() => {
     // Runs after component is mounted and DOM is ready
     console.log('Div height:', divRef.offsetHeight);
   });
@@ -544,25 +544,18 @@ effect(() => {
 ### Log Lifecycle Events
 
 ```tsx
-import { effect, onMount, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from 'philjs-core';
 
 function DebugComponent() {
   console.log('Component function called');
 
-  onMount(() => {
-    console.log('Component mounted');
-  });
-
+  // Effect runs on mount and tracks dependencies
   effect(() => {
-    console.log('Effect running');
+    console.log('Component mounted / Effect running');
 
     onCleanup(() => {
-      console.log('Effect cleaning up');
+      console.log('Effect cleaning up / Component unmounting');
     });
-  });
-
-  onCleanup(() => {
-    console.log('Component unmounting');
   });
 
   return <div>Debug Component</div>;

@@ -13,6 +13,67 @@
 import { signal, type Signal } from './signals.js';
 
 // ============================================================================
+// Third-party SDK Type Stubs
+// ============================================================================
+
+/** Sentry SDK interface stub */
+interface SentrySDK {
+  init(options: {
+    dsn?: string;
+    environment?: string;
+    release?: string;
+    sampleRate?: number;
+    ignoreErrors?: (string | RegExp)[];
+    beforeSend?: (event: ErrorEvent) => ErrorEvent | null;
+  }): void;
+  captureException(error: Error, context?: {
+    level?: string;
+    tags?: Record<string, string>;
+    extra?: Record<string, unknown>;
+  }): void;
+  setUser(user: UserContext | null): void;
+  setTag(key: string, value: string): void;
+  setContext(key: string, value: unknown): void;
+  addBreadcrumb(breadcrumb: Breadcrumb): void;
+}
+
+/** Bugsnag SDK interface stub */
+interface BugsnagSDK {
+  start(options: {
+    apiKey?: string;
+    releaseStage?: string;
+    appVersion?: string;
+  }): void;
+  notify(error: Error, onError?: (event: { severity: string; addMetadata: (key: string, value: unknown) => void }) => void): void;
+  setUser(id?: string, email?: string, name?: string): void;
+}
+
+/** Rollbar SDK interface stub */
+interface RollbarSDK {
+  init(options: {
+    accessToken?: string;
+    captureUncaught?: boolean;
+    captureUnhandledRejections?: boolean;
+    payload?: {
+      environment?: string;
+      client?: { javascript?: { code_version?: string } };
+    };
+  }): void;
+  error(message: string, extra?: Record<string, unknown>): void;
+  warning(message: string, extra?: Record<string, unknown>): void;
+  info(message: string, extra?: Record<string, unknown>): void;
+  debug(message: string, extra?: Record<string, unknown>): void;
+  fatal(message: string, extra?: Record<string, unknown>): void;
+}
+
+/** Window with optional error tracking SDKs */
+interface WindowWithErrorTracking extends Window {
+  Sentry?: SentrySDK;
+  Bugsnag?: BugsnagSDK;
+  Rollbar?: RollbarSDK;
+}
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -112,7 +173,7 @@ export interface ErrorEvent {
   /**
    * Extra data
    */
-  extra?: Record<string, any>;
+  extra?: Record<string, unknown>;
 
   /**
    * Breadcrumbs
@@ -140,7 +201,7 @@ export interface UserContext {
   email?: string;
   username?: string;
   ipAddress?: string;
-  [key: string]: any;
+  [key: string]: string | undefined;
 }
 
 export interface Breadcrumb {
@@ -149,14 +210,14 @@ export interface Breadcrumb {
   message: string;
   level: 'fatal' | 'error' | 'warning' | 'info' | 'debug';
   timestamp: number;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 export interface RequestContext {
   url: string;
   method: string;
   headers?: Record<string, string>;
-  data?: any;
+  data?: unknown;
 }
 
 export interface ErrorStats {
@@ -175,7 +236,7 @@ export class ErrorTracker {
   private breadcrumbs: Breadcrumb[] = [];
   private user: UserContext | null = null;
   private tags: Map<string, string> = new Map();
-  private context: Map<string, any> = new Map();
+  private context: Map<string, unknown> = new Map();
   private errors: ErrorEvent[] = [];
 
   public errorCount = signal(0);
@@ -249,17 +310,17 @@ export class ErrorTracker {
    * Initialize Sentry
    */
   private initSentry(): void {
-    if (typeof window === 'undefined' || !(window as any).Sentry) return;
+    if (typeof window === 'undefined') return;
+    const win = window as WindowWithErrorTracking;
+    if (!win.Sentry) return;
 
-    const Sentry = (window as any).Sentry;
-
-    Sentry.init({
+    win.Sentry.init({
       dsn: this.options.dsn,
       environment: this.options.environment,
       release: this.options.release,
       sampleRate: this.options.sampleRate,
       ignoreErrors: this.options.ignoreErrors,
-      beforeSend: this.options.beforeSend as any,
+      beforeSend: this.options.beforeSend,
     });
   }
 
@@ -267,11 +328,11 @@ export class ErrorTracker {
    * Initialize Bugsnag
    */
   private initBugsnag(): void {
-    if (typeof window === 'undefined' || !(window as any).Bugsnag) return;
+    if (typeof window === 'undefined') return;
+    const win = window as WindowWithErrorTracking;
+    if (!win.Bugsnag) return;
 
-    const Bugsnag = (window as any).Bugsnag;
-
-    Bugsnag.start({
+    win.Bugsnag.start({
       apiKey: this.options.dsn,
       releaseStage: this.options.environment,
       appVersion: this.options.release,
@@ -282,11 +343,11 @@ export class ErrorTracker {
    * Initialize Rollbar
    */
   private initRollbar(): void {
-    if (typeof window === 'undefined' || !(window as any).Rollbar) return;
+    if (typeof window === 'undefined') return;
+    const win = window as WindowWithErrorTracking;
+    if (!win.Rollbar) return;
 
-    const Rollbar = (window as any).Rollbar;
-
-    Rollbar.init({
+    win.Rollbar.init({
       accessToken: this.options.dsn,
       captureUncaught: true,
       captureUnhandledRejections: true,
@@ -398,8 +459,11 @@ export class ErrorTracker {
     }
 
     // Send to service
-    if (this.options.service === 'sentry' && (window as any).Sentry) {
-      (window as any).Sentry.addBreadcrumb(fullBreadcrumb);
+    if (typeof window !== 'undefined' && this.options.service === 'sentry') {
+      const win = window as WindowWithErrorTracking;
+      if (win.Sentry) {
+        win.Sentry.addBreadcrumb(fullBreadcrumb);
+      }
     }
   }
 
@@ -409,12 +473,15 @@ export class ErrorTracker {
   public setUser(user: UserContext | null): void {
     this.user = user;
 
-    if (this.options.service === 'sentry' && (window as any).Sentry) {
-      (window as any).Sentry.setUser(user);
+    if (typeof window === 'undefined') return;
+    const win = window as WindowWithErrorTracking;
+
+    if (this.options.service === 'sentry' && win.Sentry) {
+      win.Sentry.setUser(user);
     }
 
-    if (this.options.service === 'bugsnag' && (window as any).Bugsnag) {
-      (window as any).Bugsnag.setUser(user?.id, user?.email, user?.username);
+    if (this.options.service === 'bugsnag' && win.Bugsnag) {
+      win.Bugsnag.setUser(user?.id, user?.email, user?.username);
     }
   }
 
@@ -424,19 +491,25 @@ export class ErrorTracker {
   public setTag(key: string, value: string): void {
     this.tags.set(key, value);
 
-    if (this.options.service === 'sentry' && (window as any).Sentry) {
-      (window as any).Sentry.setTag(key, value);
+    if (typeof window !== 'undefined' && this.options.service === 'sentry') {
+      const win = window as WindowWithErrorTracking;
+      if (win.Sentry) {
+        win.Sentry.setTag(key, value);
+      }
     }
   }
 
   /**
    * Set context
    */
-  public setContext(key: string, value: any): void {
+  public setContext(key: string, value: unknown): void {
     this.context.set(key, value);
 
-    if (this.options.service === 'sentry' && (window as any).Sentry) {
-      (window as any).Sentry.setContext(key, value);
+    if (typeof window !== 'undefined' && this.options.service === 'sentry') {
+      const win = window as WindowWithErrorTracking;
+      if (win.Sentry) {
+        win.Sentry.setContext(key, value);
+      }
     }
   }
 
@@ -460,13 +533,15 @@ export class ErrorTracker {
   private sendToService(errorEvent: ErrorEvent): void {
     const { service } = this.options;
 
-    if (!service) return;
+    if (!service || typeof window === 'undefined') return;
+
+    const win = window as WindowWithErrorTracking;
 
     try {
       switch (service) {
         case 'sentry':
-          if ((window as any).Sentry) {
-            (window as any).Sentry.captureException(new Error(errorEvent.message), {
+          if (win.Sentry) {
+            win.Sentry.captureException(new Error(errorEvent.message), {
               level: errorEvent.level,
               tags: errorEvent.tags,
               extra: errorEvent.extra,
@@ -475,8 +550,8 @@ export class ErrorTracker {
           break;
 
         case 'bugsnag':
-          if ((window as any).Bugsnag) {
-            (window as any).Bugsnag.notify(new Error(errorEvent.message), (event: any) => {
+          if (win.Bugsnag) {
+            win.Bugsnag.notify(new Error(errorEvent.message), (event) => {
               event.severity = errorEvent.level;
               event.addMetadata('custom', errorEvent.extra);
             });
@@ -484,8 +559,9 @@ export class ErrorTracker {
           break;
 
         case 'rollbar':
-          if ((window as any).Rollbar) {
-            (window as any).Rollbar[errorEvent.level](errorEvent.message, {
+          if (win.Rollbar) {
+            const level = errorEvent.level as keyof Pick<RollbarSDK, 'fatal' | 'error' | 'warning' | 'info' | 'debug'>;
+            win.Rollbar[level](errorEvent.message, {
               ...errorEvent.extra,
               tags: errorEvent.tags,
             });
@@ -614,7 +690,7 @@ export function setTag(key: string, value: string): void {
 /**
  * Set context
  */
-export function setContext(key: string, value: any): void {
+export function setContext(key: string, value: unknown): void {
   getErrorTracker().setContext(key, value);
 }
 
@@ -628,13 +704,13 @@ export function getErrorStats(): ErrorStats {
 /**
  * Wrap async function with error tracking
  */
-export function withErrorTracking<T extends (...args: any[]) => any>(
+export function withErrorTracking<T extends (...args: unknown[]) => unknown>(
   fn: T,
   context?: Partial<ErrorEvent>
 ): T {
   return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
     try {
-      return await fn(...args);
+      return await fn(...args) as ReturnType<T>;
     } catch (error) {
       captureException(error as Error, context);
       throw error;
@@ -642,12 +718,17 @@ export function withErrorTracking<T extends (...args: any[]) => any>(
   }) as T;
 }
 
+/** Error info from component error boundaries */
+interface ErrorBoundaryInfo {
+  componentStack?: string;
+}
+
 /**
  * Error boundary hook
  */
 export function useErrorBoundary(componentName: string) {
   return {
-    onError: (error: Error, errorInfo: any) => {
+    onError: (error: Error, errorInfo: ErrorBoundaryInfo) => {
       captureException(error, {
         componentStack: errorInfo.componentStack,
         tags: { component: componentName },

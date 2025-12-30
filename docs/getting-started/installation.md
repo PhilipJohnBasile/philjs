@@ -174,7 +174,7 @@ npm install -D vite @vitejs/plugin-react typescript
 
 ```typescript
 import { defineConfig } from 'vite';
-import philjs from 'philjs/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [philjs()],
@@ -304,7 +304,7 @@ export default function Home() {
 **`vite.config.ts`** - Build configuration
 ```typescript
 import { defineConfig } from 'vite';
-import philjs from 'philjs/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [philjs()],

@@ -33,7 +33,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

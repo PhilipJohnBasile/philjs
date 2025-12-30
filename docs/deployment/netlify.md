@@ -48,7 +48,7 @@ Create `netlify.toml` in your project root:
 
 # Node.js version
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "24"
 
 [[redirects]]
   from = "/*"
@@ -770,7 +770,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24
 
       - name: Install dependencies
         run: npm ci

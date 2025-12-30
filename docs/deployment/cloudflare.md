@@ -746,7 +746,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24
           cache: 'npm'
 
       - name: Install dependencies

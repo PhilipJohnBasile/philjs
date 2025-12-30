@@ -1,0 +1,78 @@
+{
+  "name": "@philjs/genui",
+  "version": "0.1.0",
+  "description": "Runtime AI-driven UI composition with A2UI protocol for PhilJS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol/index.d.ts",
+      "import": "./dist/protocol/index.js"
+    },
+    "./registry": {
+      "types": "./dist/registry/index.d.ts",
+      "import": "./dist/registry/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
+    "./sandbox": {
+      "types": "./dist/sandbox/index.d.ts",
+      "import": "./dist/sandbox/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-genui'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "rollup": "^4.54.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-genui"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "genui",
+    "a2ui",
+    "ai",
+    "generative-ui",
+    "llm"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}

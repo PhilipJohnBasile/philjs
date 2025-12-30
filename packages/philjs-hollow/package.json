@@ -1,0 +1,98 @@
+{
+  "name": "@philjs/hollow",
+  "version": "0.1.0",
+  "description": "Framework-agnostic Web Components with React, Vue, and Svelte wrappers",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/wrappers/react.d.ts",
+      "import": "./dist/wrappers/react.js"
+    },
+    "./vue": {
+      "types": "./dist/wrappers/vue.d.ts",
+      "import": "./dist/wrappers/vue.js"
+    },
+    "./svelte": {
+      "types": "./dist/wrappers/svelte.d.ts",
+      "import": "./dist/wrappers/svelte.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./styles": {
+      "types": "./dist/styles/index.d.ts",
+      "import": "./dist/styles/index.js"
+    },
+    "./philjs": {
+      "types": "./dist/wrappers/philjs.d.ts",
+      "import": "./dist/wrappers/philjs.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "echo 'Lint philjs-hollow'",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "jsdom": "^27.4.0",
+    "rollup": "^4.54.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "vue": ">=3.0.0",
+    "svelte": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/philjs.git",
+    "directory": "packages/philjs-hollow"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/philjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/philjs#readme",
+  "keywords": [
+    "philjs",
+    "web-components",
+    "custom-elements",
+    "react",
+    "vue",
+    "svelte",
+    "framework-agnostic"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}

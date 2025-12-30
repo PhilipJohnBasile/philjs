@@ -16,7 +16,33 @@ import type {
   TransformComponent,
   VisibilityComponent,
   NameComponent,
+  ComponentType,
+  ResourceType,
+  BevyResource,
 } from './types';
+
+// ============================================================================
+// Test Type Helpers
+// ============================================================================
+
+/**
+ * Create a mock ComponentType for testing component checks
+ */
+function mockComponentType<T extends BevyComponent>(name: string): ComponentType<T> {
+  return { componentName: name } as ComponentType<T>;
+}
+
+/**
+ * Create a mock ResourceType for testing resource operations
+ */
+function mockResourceType<T extends BevyResource>(name: string): ResourceType<T> {
+  return { resourceName: name } as ResourceType<T>;
+}
+
+/** HTMLElement with dispose method for BevyEmbed */
+interface BevyEmbedElement extends HTMLElement {
+  dispose?: () => void;
+}
 import {
   createBevyInstance,
   useBevy,
@@ -359,7 +385,7 @@ describe('Bevy Hooks', () => {
   describe('useBevyResource', () => {
     it('should return resource state', async () => {
       await createBevyInstance({ wasmPath: '/game.wasm', canvas });
-      const result = useBevyResource({ resourceName: 'Time' } as any, canvas);
+      const result = useBevyResource(mockResourceType('Time'), canvas);
       expect(typeof result.update).toBe('function');
       expect(typeof result.remove).toBe('function');
     });
@@ -491,7 +517,7 @@ describe('Bevy ECS Bridge', () => {
         max: 100,
       });
       expect(health.componentName).toBe('Health');
-      expect((health as any).current).toBe(100);
+      expect((health as BevyComponent & { current: number }).current).toBe(100);
     });
   });
 
@@ -502,7 +528,7 @@ describe('Bevy ECS Bridge', () => {
         createNameComponent('Test'),
       ], canvas);
       expect(entity).toBeDefined();
-      expect(entity?.hasComponent({ componentName: 'Transform' } as any)).toBe(true);
+      expect(entity?.hasComponent(mockComponentType<TransformComponent>('Transform'))).toBe(true);
     });
 
     it('should despawn entity', () => {
@@ -516,13 +542,13 @@ describe('Bevy ECS Bridge', () => {
     it('should insert component into entity', () => {
       const entity = spawnEntity([], canvas);
       insertComponent(entity!.id, createTransformComponent(), canvas);
-      expect(entity?.hasComponent({ componentName: 'Transform' } as any)).toBe(true);
+      expect(entity?.hasComponent(mockComponentType<TransformComponent>('Transform'))).toBe(true);
     });
 
     it('should remove component from entity', () => {
       const entity = spawnEntity([createTransformComponent()], canvas);
-      removeComponent(entity!.id, { componentName: 'Transform' } as any, canvas);
-      expect(entity?.hasComponent({ componentName: 'Transform' } as any)).toBe(false);
+      removeComponent(entity!.id, mockComponentType<TransformComponent>('Transform'), canvas);
+      expect(entity?.hasComponent(mockComponentType<TransformComponent>('Transform'))).toBe(false);
     });
   });
 
@@ -591,7 +617,7 @@ describe('Bevy ECS Bridge', () => {
     it('should create component bridge', () => {
       const entity = spawnEntity([createTransformComponent()], canvas)!;
       const bridge = createComponentBridge(
-        { componentName: 'Transform' } as any,
+        mockComponentType<TransformComponent>('Transform'),
         entity.id
       );
       expect(bridge.componentType.componentName).toBe('Transform');
@@ -600,7 +626,7 @@ describe('Bevy ECS Bridge', () => {
     it('should subscribe to component changes', () => {
       const entity = spawnEntity([createTransformComponent()], canvas)!;
       const bridge = createComponentBridge(
-        { componentName: 'Transform' } as any,
+        mockComponentType<TransformComponent>('Transform'),
         entity.id
       );
       const callback = vi.fn();
@@ -839,8 +865,8 @@ describe('BevyEmbed Component', () => {
   });
 
   it('should have dispose method', () => {
-    const embed = BevyEmbed({ wasmPath: '/game.wasm' });
-    expect(typeof (embed as any).dispose).toBe('function');
+    const embed = BevyEmbed({ wasmPath: '/game.wasm' }) as BevyEmbedElement;
+    expect(typeof embed.dispose).toBe('function');
   });
 
   describe('Utility components', () => {
@@ -1031,19 +1057,23 @@ describe('Bevy World and ECS', () => {
 
   it('should manage resources', () => {
     const world = instance.app.getWorld();
-    const resource = {
+    interface TestResource extends BevyResource {
+      resourceName: 'TestResource';
+      value: number;
+    }
+    const resource: TestResource = {
       resourceName: 'TestResource',
       value: 42,
       toBytes: () => new Uint8Array([42]),
     };
 
     world.insertResource(resource);
-    expect(world.hasResource({ resourceName: 'TestResource' } as any)).toBe(true);
+    expect(world.hasResource(mockResourceType<TestResource>('TestResource'))).toBe(true);
 
-    const retrieved = world.getResource({ resourceName: 'TestResource' } as any);
+    const retrieved = world.getResource(mockResourceType<TestResource>('TestResource'));
     expect(retrieved?.value).toBe(42);
 
-    world.removeResource({ resourceName: 'TestResource' } as any);
-    expect(world.hasResource({ resourceName: 'TestResource' } as any)).toBe(false);
+    world.removeResource(mockResourceType<TestResource>('TestResource'));
+    expect(world.hasResource(mockResourceType<TestResource>('TestResource'))).toBe(false);
   });
 });

@@ -38,6 +38,7 @@
     "zod": "^4.2.1"
   },
   "peerDependencies": {
+    "typescript": ">=5.9.3",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {

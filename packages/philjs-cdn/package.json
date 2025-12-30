@@ -10,7 +10,6 @@
   "exports": {
     ".": {
       "import": "./dist/philjs.esm.js",
-      "require": "./dist/philjs.cjs.js",
       "script": "./dist/philjs.global.js"
     },
     "./global": "./dist/philjs.global.js",
@@ -24,7 +23,8 @@
   },
   "devDependencies": {
     "esbuild": "^0.27.2",
-    "terser": "^5.26.0"
+    "terser": "^5.26.0",
+    "typescript": "^5.9.3"
   },
   "keywords": ["philjs", "cdn", "umd", "global", "no-build", "alpine-style"],
   "license": "MIT",

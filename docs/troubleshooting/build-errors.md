@@ -482,13 +482,13 @@ Error: Could not resolve plugin
 npm install -D @vitejs/plugin-react
 
 # Or for PhilJS
-npm install -D @philjs/vite-plugin
+npm install -D @philjs/compiler
 ```
 
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from '@philjs/vite-plugin';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [
@@ -549,7 +549,7 @@ npm install
 // vite.config.ts - Complete example
 import { defineConfig } from 'vite';
 import path from 'path';
-import philjs from '@philjs/vite-plugin';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [philjs()],

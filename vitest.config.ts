@@ -1,16 +1,13 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // Use Vite's cacheDir instead of deprecated test.cache.dir
+  cacheDir: 'node_modules/.cache/vitest',
   test: {
-    // Performance optimizations
+    // Performance optimizations - Vitest 4+ uses top-level pool config
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        minThreads: 1,
-        maxThreads: 4,
-      },
-    },
+    minWorkers: 1,
+    maxWorkers: 4,
 
     // Faster test discovery
     include: ['packages/**/src/**/*.test.ts'],
@@ -36,11 +33,6 @@ export default defineConfig({
     // TypeScript
     typecheck: {
       enabled: false, // Let tsc handle this
-    },
-
-    // Caching
-    cache: {
-      dir: 'node_modules/.cache/vitest',
     },
   },
 });

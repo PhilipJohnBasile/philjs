@@ -339,7 +339,7 @@ awsAdapter({
   mode: 'lambda', // or 'lambda-edge' or 'amplify'
 
   // Lambda runtime
-  runtime: 'nodejs20.x',
+  runtime: 'nodejs24.x',
 
   // Memory (MB)
   memory: 1024,

@@ -41,13 +41,13 @@ N/A - Initial stable release
 
 ### 📦 Dependencies
 
-- Minimum Node.js version: 18.0.0
-- Recommended: Node.js 20 LTS
+- Minimum Node.js version: 24+
+- Recommended: Node.js 24 LTS
 
 ### 🔗 Links
 
 - [Full release notes](https://github.com/philjs/philjs/releases/tag/v1.0.0)
-- [Migration guide](/docs/changelog/v1.0.0)
+- [Migration guide](#100---2025-01-15)
 - [GitHub milestone](https://github.com/philjs/philjs/milestone/1)
 
 ---
@@ -74,7 +74,7 @@ N/A - Initial stable release
 - `onMount` renamed to `effect` for consistency
 - Router `<Link>` component now uses `href` instead of `to`
 
-**[Migration guide](/docs/changelog/v0.9.0-beta.2)**
+**[Migration guide](#090-beta2---2024-12-20)**
 
 ---
 
@@ -99,7 +99,7 @@ N/A - Initial stable release
 - Requires Node.js 18+ (previously 16+)
 - Routing API redesigned - see migration guide
 
-**[Migration guide](/docs/changelog/v0.8.0-beta.1)**
+**[Migration guide](#080-beta1---2024-11-15)**
 
 ---
 
@@ -128,7 +128,7 @@ N/A - Initial stable release
 
 Detailed migration guides for major version upgrades:
 
-- **[0.x → 1.0](/docs/changelog/upgrade-to-1.0)** - Migration from beta to stable
+- **[0.x to 1.0](#100---2025-01-15)** - Migration from beta to stable
 - **[React → PhilJS](/docs/migration/from-react)** - Coming from React
 - **[Vue → PhilJS](/docs/migration/from-vue)** - Coming from Vue
 - **[Svelte → PhilJS](/docs/migration/from-svelte)** - Coming from Svelte
@@ -142,9 +142,9 @@ A comprehensive list of breaking changes across versions:
 | Version | Change | Impact | Guide |
 |---------|--------|--------|-------|
 | 1.0.0 | None (initial stable) | - | - |
-| 0.9.0 | `onMount` → `effect` | Medium | [Link](/docs/changelog/v0.9.0-beta.2#onmount-to-effect) |
-| 0.9.0 | `<Link to>` → `<Link href>` | Low | [Link](/docs/changelog/v0.9.0-beta.2#link-prop-rename) |
-| 0.8.0 | Routing API redesign | High | [Link](/docs/changelog/v0.8.0-beta.1#routing) |
+| 0.9.0 | `onMount` to `effect` | Medium | [Link](#090-beta2---2024-12-20) |
+| 0.9.0 | `<Link to>` to `<Link href>` | Low | [Link](#090-beta2---2024-12-20) |
+| 0.8.0 | Routing API redesign | High | [Link](#080-beta1---2024-11-15) |
 | 0.8.0 | Node.js 18+ required | Low | Update Node version |
 
 ---
@@ -155,7 +155,7 @@ Features planned for removal in future versions:
 
 ### No current deprecations
 
-All APIs in 1.0 are stable and will be supported according to our [versioning policy](/docs/changelog/versioning-policy).
+All APIs in 1.0 are stable and will be supported according to our [versioning policy](#versioning-policy).
 
 ---
 

@@ -641,7 +641,7 @@ Automatic reactivity compilation (like Svelte/Solid).
 
 ```typescript
 // Vite config
-import { philjs } from 'philjs/vite';
+import { philjs } from '@philjs/compiler/vite';
 
 export default {
   plugins: [philjs({ compiler: true })]

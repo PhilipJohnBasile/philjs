@@ -4,7 +4,6 @@
   "type": "module",
   "description": "IoT device synchronization for PhilJS - device shadows, telemetry, predictive maintenance",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -13,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
     "lint": "eslint src/",
     "test": "vitest"
   },
@@ -22,7 +21,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0"
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

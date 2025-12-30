@@ -39,7 +39,7 @@ netlify deploy --prod
 ### Docker
 
 ```dockerfile
-FROM node:18-alpine
+FROM node:24-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci

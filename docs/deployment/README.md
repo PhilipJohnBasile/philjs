@@ -251,7 +251,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run build
       - run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -270,7 +270,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run build
       - uses: netlify/actions/cli@master
@@ -294,7 +294,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run build
       - uses: cloudflare/pages-action@v1

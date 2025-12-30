@@ -17,6 +17,24 @@
 import type { EdgeMiddleware, EdgeContext, GeolocationData } from './edge-middleware.js';
 
 // ============================================================================
+// Global Type Extensions
+// ============================================================================
+
+/** Extended EdgeContext with experiment assignments */
+interface EdgeContextWithExperiments extends EdgeContext {
+  experiments?: Record<string, ExperimentAssignment>;
+  multivariateExperiment?: {
+    id: string;
+    assignments: Record<string, ExperimentAssignment>;
+  };
+}
+
+/** Window type with experiments global */
+interface WindowWithExperiments extends Window {
+  __EXPERIMENTS__?: Record<string, ExperimentAssignment>;
+}
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -270,7 +288,7 @@ export function abTestingMiddleware(options: ABTestingOptions): EdgeMiddleware {
     }
 
     // Add assignments to context
-    (context as any).experiments = assignments;
+    (context as EdgeContextWithExperiments).experiments = assignments;
 
     const response = await context.next();
 
@@ -312,7 +330,7 @@ export function injectVariantData(html: string, assignments: Record<string, Expe
 export function variantInjectionMiddleware(): EdgeMiddleware {
   return async (context) => {
     const response = await context.next();
-    const experiments = (context as any).experiments as Record<string, ExperimentAssignment> | undefined;
+    const experiments = (context as EdgeContextWithExperiments).experiments;
 
     if (!experiments || Object.keys(experiments).length === 0) {
       return response;
@@ -348,7 +366,7 @@ export function variantMiddleware(
   handlers: Record<string, EdgeMiddleware>
 ): EdgeMiddleware {
   return async (context): Promise<Response> => {
-    const experiments = (context as any).experiments as Record<string, ExperimentAssignment> | undefined;
+    const experiments = (context as EdgeContextWithExperiments).experiments;
     const assignment = experiments?.[experimentId];
 
     if (!assignment) {
@@ -373,7 +391,7 @@ export function variantRewriteMiddleware(
   rewrites: Record<string, string>
 ): EdgeMiddleware {
   return (context) => {
-    const experiments = (context as any).experiments as Record<string, ExperimentAssignment> | undefined;
+    const experiments = (context as EdgeContextWithExperiments).experiments;
     const assignment = experiments?.[experimentId];
 
     if (!assignment) {
@@ -470,7 +488,7 @@ export function useVariant(experimentId: string): {
     return { variant: null, isLoading: false };
   }
 
-  const experiments = (window as any).__EXPERIMENTS__ as Record<string, ExperimentAssignment> | undefined;
+  const experiments = (window as WindowWithExperiments).__EXPERIMENTS__;
   const assignment = experiments?.[experimentId];
 
   return {
@@ -485,7 +503,7 @@ export function useVariant(experimentId: string): {
 export function isVariant(experimentId: string, variantName: string): boolean {
   if (typeof window === 'undefined') return false;
 
-  const experiments = (window as any).__EXPERIMENTS__ as Record<string, ExperimentAssignment> | undefined;
+  const experiments = (window as WindowWithExperiments).__EXPERIMENTS__;
   const assignment = experiments?.[experimentId];
 
   return assignment?.variantName === variantName;
@@ -496,7 +514,7 @@ export function isVariant(experimentId: string, variantName: string): boolean {
  */
 export function getActiveExperiments(): Record<string, ExperimentAssignment> {
   if (typeof window === 'undefined') return {};
-  return (window as any).__EXPERIMENTS__ || {};
+  return (window as WindowWithExperiments).__EXPERIMENTS__ || {};
 }
 
 // ============================================================================
@@ -578,7 +596,7 @@ export function multivariateTestingMiddleware(
     }
 
     // Add to context
-    (context as any).multivariateExperiment = {
+    (context as EdgeContextWithExperiments).multivariateExperiment = {
       id: experiment.id,
       assignments,
     };

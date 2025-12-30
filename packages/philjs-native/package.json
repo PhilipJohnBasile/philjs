@@ -69,7 +69,7 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@philjs/core": ">=0.1.0",
+    "@philjs/core": "workspace:*",
     "@capacitor/core": ">=5.0.0",
     "@tauri-apps/api": ">=1.5.0"
   },

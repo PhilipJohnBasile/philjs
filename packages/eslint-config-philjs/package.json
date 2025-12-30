@@ -4,6 +4,11 @@
   "description": "ESLint config with a11y and security plugins for PhilJS",
   "type": "module",
   "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  },
   "files": [
     "index.js"
   ],
@@ -13,6 +18,9 @@
   "dependencies": {
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-security": "^3.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   },
   "sideEffects": false,
   "license": "MIT",

@@ -21,6 +21,9 @@
     "lint": "echo 'Lint philjs-webrtc'",
     "typecheck": "tsc --noEmit"
   },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
   "license": "MIT",
   "author": "PhilJS Team",
   "repository": {

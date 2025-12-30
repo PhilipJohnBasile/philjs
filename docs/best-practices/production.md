@@ -567,7 +567,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm ci
@@ -594,7 +594,7 @@ jobs:
 
 ```dockerfile
 # Dockerfile
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 

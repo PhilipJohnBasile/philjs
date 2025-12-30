@@ -66,6 +66,8 @@ export {
   createRepository,
   paginate,
   softDelete,
+  restore,
+  healthCheck,
   // CRUD operations with provider detection
   create,
   update,
@@ -90,6 +92,7 @@ export type {
   UpdateOptions,
   DeleteOptions,
   CascadeRelation,
+  RepositoryOptions,
 } from './utils.js';
 
 export type {

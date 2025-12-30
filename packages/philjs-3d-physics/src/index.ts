@@ -527,6 +527,1443 @@ class RapierBackend extends PhysicsBackend {
 }
 
 // ============================================================================
+// CANNON-ES BACKEND
+// ============================================================================
+
+// cannon-es type definitions
+interface CannonVec3 {
+  x: number;
+  y: number;
+  z: number;
+  set(x: number, y: number, z: number): CannonVec3;
+  copy(v: CannonVec3): CannonVec3;
+  vadd(v: CannonVec3, target?: CannonVec3): CannonVec3;
+  vsub(v: CannonVec3, target?: CannonVec3): CannonVec3;
+  scale(scalar: number, target?: CannonVec3): CannonVec3;
+}
+
+interface CannonQuaternion {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+  set(x: number, y: number, z: number, w: number): CannonQuaternion;
+  copy(q: CannonQuaternion): CannonQuaternion;
+  setFromEuler(x: number, y: number, z: number, order?: string): CannonQuaternion;
+}
+
+interface CannonShape {
+  type: number;
+}
+
+interface CannonBody {
+  id: number;
+  position: CannonVec3;
+  quaternion: CannonQuaternion;
+  velocity: CannonVec3;
+  angularVelocity: CannonVec3;
+  mass: number;
+  type: number;
+  linearDamping: number;
+  angularDamping: number;
+  material: CannonMaterial | null;
+  collisionFilterGroup: number;
+  collisionFilterMask: number;
+  allowSleep: boolean;
+  sleepSpeedLimit: number;
+  sleepTimeLimit: number;
+  addShape(shape: CannonShape, offset?: CannonVec3): void;
+  applyForce(force: CannonVec3, worldPoint?: CannonVec3): void;
+  applyImpulse(impulse: CannonVec3, worldPoint?: CannonVec3): void;
+  applyTorque(torque: CannonVec3): void;
+}
+
+interface CannonMaterial {
+  friction: number;
+  restitution: number;
+}
+
+interface CannonContactMaterial {
+  friction: number;
+  restitution: number;
+}
+
+interface CannonConstraint {
+  bodyA: CannonBody;
+  bodyB: CannonBody;
+  enable(): void;
+  disable(): void;
+}
+
+interface CannonRaycastResult {
+  hasHit: boolean;
+  body: CannonBody | null;
+  hitPointWorld: CannonVec3;
+  hitNormalWorld: CannonVec3;
+  distance: number;
+}
+
+interface CannonWorld {
+  gravity: CannonVec3;
+  broadphase: CannonBroadphase;
+  solver: CannonSolver;
+  allowSleep: boolean;
+  bodies: CannonBody[];
+  addBody(body: CannonBody): void;
+  removeBody(body: CannonBody): void;
+  addConstraint(constraint: CannonConstraint): void;
+  removeConstraint(constraint: CannonConstraint): void;
+  step(dt: number, timeSinceLastCall?: number, maxSubSteps?: number): void;
+  raycastClosest(from: CannonVec3, to: CannonVec3, options: object, result: CannonRaycastResult): boolean;
+  addEventListener(event: string, callback: (e: CannonContactEvent) => void): void;
+}
+
+interface CannonBroadphase {
+  world: CannonWorld | null;
+}
+
+interface CannonSolver {
+  iterations: number;
+}
+
+interface CannonContactEvent {
+  bodyA: CannonBody;
+  bodyB: CannonBody;
+  contact: {
+    getImpactVelocityAlongNormal(): number;
+    ni: CannonVec3;
+    ri: CannonVec3;
+    rj: CannonVec3;
+  };
+}
+
+interface CannonModule {
+  World: new () => CannonWorld;
+  Body: new (options?: object) => CannonBody;
+  Vec3: new (x?: number, y?: number, z?: number) => CannonVec3;
+  Quaternion: new (x?: number, y?: number, z?: number, w?: number) => CannonQuaternion;
+  Box: new (halfExtents: CannonVec3) => CannonShape;
+  Sphere: new (radius: number) => CannonShape;
+  Cylinder: new (radiusTop: number, radiusBottom: number, height: number, numSegments: number) => CannonShape;
+  ConvexPolyhedron: new (options: { vertices: CannonVec3[]; faces: number[][] }) => CannonShape;
+  Trimesh: new (vertices: number[], indices: number[]) => CannonShape;
+  Material: new (options?: object) => CannonMaterial;
+  ContactMaterial: new (m1: CannonMaterial, m2: CannonMaterial, options?: object) => CannonContactMaterial;
+  PointToPointConstraint: new (bodyA: CannonBody, pivotA: CannonVec3, bodyB: CannonBody, pivotB: CannonVec3) => CannonConstraint;
+  LockConstraint: new (bodyA: CannonBody, bodyB: CannonBody, options?: object) => CannonConstraint;
+  HingeConstraint: new (bodyA: CannonBody, bodyB: CannonBody, options?: object) => CannonConstraint & {
+    enableMotor(): void;
+    disableMotor(): void;
+    setMotorSpeed(speed: number): void;
+    setMotorMaxForce(force: number): void;
+  };
+  DistanceConstraint: new (bodyA: CannonBody, bodyB: CannonBody, distance?: number) => CannonConstraint;
+  Spring: new (bodyA: CannonBody, bodyB: CannonBody, options?: object) => {
+    localAnchorA: CannonVec3;
+    localAnchorB: CannonVec3;
+    stiffness: number;
+    damping: number;
+    applyForce(): void;
+  };
+  NaiveBroadphase: new () => CannonBroadphase;
+  SAPBroadphase: new (world: CannonWorld) => CannonBroadphase;
+  RaycastResult: new () => CannonRaycastResult;
+  BODY_TYPES: {
+    DYNAMIC: number;
+    STATIC: number;
+    KINEMATIC: number;
+  };
+}
+
+class CannonBackend extends PhysicsBackend {
+  private world!: CannonWorld;
+  private bodies: Map<string, CannonBody> = new Map();
+  private constraints: Map<string, CannonConstraint> = new Map();
+  private springs: Map<string, { localAnchorA: CannonVec3; localAnchorB: CannonVec3; stiffness: number; damping: number; applyForce(): void }> = new Map();
+  private CANNON!: CannonModule;
+  private contactEvents: ContactEvent[] = [];
+  private defaultMaterial!: CannonMaterial;
+
+  async init(config: PhysicsConfig): Promise<void> {
+    // @ts-ignore - Dynamic import
+    this.CANNON = await import('cannon-es');
+
+    this.world = new this.CANNON.World();
+    const gravity = config.gravity ?? { x: 0, y: -9.81, z: 0 };
+    this.world.gravity.set(gravity.x, gravity.y, gravity.z);
+
+    // Configure broadphase
+    if (config.broadphase === 'sap') {
+      this.world.broadphase = new this.CANNON.SAPBroadphase(this.world);
+    } else {
+      this.world.broadphase = new this.CANNON.NaiveBroadphase();
+    }
+
+    // Configure solver
+    if (config.substeps) {
+      this.world.solver.iterations = config.substeps;
+    }
+
+    // Enable sleeping
+    this.world.allowSleep = config.enableSleeping ?? true;
+
+    // Default material
+    this.defaultMaterial = new this.CANNON.Material({ friction: 0.3, restitution: 0.3 });
+
+    // Setup collision events
+    this.world.addEventListener('beginContact', (event: CannonContactEvent) => {
+      const bodyAId = this.getBodyIdFromBody(event.bodyA);
+      const bodyBId = this.getBodyIdFromBody(event.bodyB);
+
+      if (bodyAId && bodyBId) {
+        const contact = event.contact;
+        this.contactEvents.push({
+          bodyA: bodyAId,
+          bodyB: bodyBId,
+          point: {
+            x: event.bodyA.position.x + contact.ri.x,
+            y: event.bodyA.position.y + contact.ri.y,
+            z: event.bodyA.position.z + contact.ri.z
+          },
+          normal: { x: contact.ni.x, y: contact.ni.y, z: contact.ni.z },
+          impulse: contact.getImpactVelocityAlongNormal(),
+          separation: 0
+        });
+      }
+    });
+  }
+
+  step(dt: number): void {
+    // Apply spring forces
+    for (const spring of this.springs.values()) {
+      spring.applyForce();
+    }
+
+    this.world.step(dt);
+  }
+
+  createRigidBody(id: string, config: RigidBodyConfig, position: Vector3, rotation: Quaternion): void {
+    let bodyType: number;
+    switch (config.type) {
+      case 'dynamic':
+        bodyType = this.CANNON.BODY_TYPES.DYNAMIC;
+        break;
+      case 'static':
+        bodyType = this.CANNON.BODY_TYPES.STATIC;
+        break;
+      case 'kinematic':
+        bodyType = this.CANNON.BODY_TYPES.KINEMATIC;
+        break;
+    }
+
+    const body = new this.CANNON.Body({
+      mass: config.type === 'static' ? 0 : (config.mass ?? 1),
+      type: bodyType,
+      position: new this.CANNON.Vec3(position.x, position.y, position.z),
+      quaternion: new this.CANNON.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w),
+      linearDamping: config.linearDamping ?? 0.01,
+      angularDamping: config.angularDamping ?? 0.01,
+      allowSleep: config.canSleep ?? true,
+      sleepSpeedLimit: 0.1,
+      sleepTimeLimit: 1
+    });
+
+    if (config.collisionGroups !== undefined) {
+      body.collisionFilterGroup = config.collisionGroups;
+    }
+    if (config.collisionMask !== undefined) {
+      body.collisionFilterMask = config.collisionMask;
+    }
+
+    // Create material with friction and restitution
+    const material = new this.CANNON.Material({
+      friction: config.friction ?? 0.3,
+      restitution: config.restitution ?? 0.3
+    });
+    body.material = material;
+
+    this.world.addBody(body);
+    this.bodies.set(id, body);
+  }
+
+  removeRigidBody(id: string): void {
+    const body = this.bodies.get(id);
+    if (body) {
+      this.world.removeBody(body);
+      this.bodies.delete(id);
+    }
+  }
+
+  addCollider(bodyId: string, config: ColliderConfig): void {
+    const body = this.bodies.get(bodyId);
+    if (!body) return;
+
+    let shape: CannonShape | null = null;
+
+    switch (config.shape) {
+      case 'box': {
+        const size = config.size ?? { x: 0.5, y: 0.5, z: 0.5 };
+        shape = new this.CANNON.Box(new this.CANNON.Vec3(size.x, size.y, size.z));
+        break;
+      }
+      case 'sphere': {
+        shape = new this.CANNON.Sphere(config.radius ?? 0.5);
+        break;
+      }
+      case 'cylinder': {
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        shape = new this.CANNON.Cylinder(radius, radius, height, 16);
+        break;
+      }
+      case 'capsule': {
+        // Cannon.js doesn't have native capsule, approximate with cylinder + 2 spheres
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        const cylinderHeight = height - radius * 2;
+        if (cylinderHeight > 0) {
+          const cylinder = new this.CANNON.Cylinder(radius, radius, cylinderHeight, 16);
+          body.addShape(cylinder);
+        }
+        const sphereTop = new this.CANNON.Sphere(radius);
+        const sphereBottom = new this.CANNON.Sphere(radius);
+        const halfHeight = (height - radius * 2) / 2;
+        body.addShape(sphereTop, new this.CANNON.Vec3(0, halfHeight, 0));
+        body.addShape(sphereBottom, new this.CANNON.Vec3(0, -halfHeight, 0));
+        return; // Already added shapes
+      }
+      case 'cone': {
+        // Approximate cone with cylinder (Cannon.js doesn't have native cone)
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        shape = new this.CANNON.Cylinder(0, radius, height, 16);
+        break;
+      }
+      case 'convex': {
+        if (config.vertices) {
+          const vertices: CannonVec3[] = [];
+          for (let i = 0; i < config.vertices.length; i += 3) {
+            vertices.push(new this.CANNON.Vec3(
+              config.vertices[i]!,
+              config.vertices[i + 1]!,
+              config.vertices[i + 2]!
+            ));
+          }
+          // Generate simple convex hull faces (simplified)
+          const faces: number[][] = [];
+          // This is a simplified face generation - real implementation would compute proper convex hull
+          if (vertices.length >= 4) {
+            for (let i = 0; i < vertices.length - 2; i++) {
+              faces.push([0, i + 1, i + 2]);
+            }
+          }
+          shape = new this.CANNON.ConvexPolyhedron({ vertices, faces });
+        }
+        break;
+      }
+      case 'trimesh': {
+        if (config.vertices && config.indices) {
+          const vertices: number[] = Array.from(config.vertices);
+          const indices: number[] = Array.from(config.indices);
+          shape = new this.CANNON.Trimesh(vertices, indices);
+        }
+        break;
+      }
+    }
+
+    if (shape) {
+      body.addShape(shape);
+    }
+
+    // Update material if specified
+    if (config.friction !== undefined || config.restitution !== undefined) {
+      const material = new this.CANNON.Material({
+        friction: config.friction ?? 0.3,
+        restitution: config.restitution ?? 0.3
+      });
+      body.material = material;
+    }
+
+    // Update mass if density specified
+    if (config.density !== undefined && body.mass > 0) {
+      body.mass = config.density * 10; // Simplified mass calculation
+    }
+  }
+
+  createJoint(id: string, config: JointConfig): void {
+    const bodyA = this.bodies.get(config.bodyA);
+    const bodyB = this.bodies.get(config.bodyB);
+    if (!bodyA || !bodyB) return;
+
+    const anchorA = config.anchorA ?? { x: 0, y: 0, z: 0 };
+    const anchorB = config.anchorB ?? { x: 0, y: 0, z: 0 };
+
+    let constraint: CannonConstraint | null = null;
+
+    switch (config.type) {
+      case 'fixed': {
+        constraint = new this.CANNON.LockConstraint(bodyA, bodyB);
+        break;
+      }
+      case 'revolute': {
+        const axis = config.axisA ?? { x: 0, y: 1, z: 0 };
+        constraint = new this.CANNON.HingeConstraint(bodyA, bodyB, {
+          pivotA: new this.CANNON.Vec3(anchorA.x, anchorA.y, anchorA.z),
+          pivotB: new this.CANNON.Vec3(anchorB.x, anchorB.y, anchorB.z),
+          axisA: new this.CANNON.Vec3(axis.x, axis.y, axis.z),
+          axisB: new this.CANNON.Vec3(axis.x, axis.y, axis.z)
+        });
+        if (config.motorEnabled) {
+          const hingeConstraint = constraint as CannonConstraint & {
+            enableMotor(): void;
+            setMotorSpeed(speed: number): void;
+            setMotorMaxForce(force: number): void;
+          };
+          hingeConstraint.enableMotor();
+          hingeConstraint.setMotorSpeed(config.motorVelocity ?? 0);
+          hingeConstraint.setMotorMaxForce(config.motorMaxForce ?? 1000);
+        }
+        break;
+      }
+      case 'prismatic': {
+        // Cannon.js doesn't have prismatic, use point-to-point as fallback
+        constraint = new this.CANNON.PointToPointConstraint(
+          bodyA,
+          new this.CANNON.Vec3(anchorA.x, anchorA.y, anchorA.z),
+          bodyB,
+          new this.CANNON.Vec3(anchorB.x, anchorB.y, anchorB.z)
+        );
+        break;
+      }
+      case 'spherical': {
+        constraint = new this.CANNON.PointToPointConstraint(
+          bodyA,
+          new this.CANNON.Vec3(anchorA.x, anchorA.y, anchorA.z),
+          bodyB,
+          new this.CANNON.Vec3(anchorB.x, anchorB.y, anchorB.z)
+        );
+        break;
+      }
+      case 'rope': {
+        const distance = Math.sqrt(
+          Math.pow(anchorB.x - anchorA.x, 2) +
+          Math.pow(anchorB.y - anchorA.y, 2) +
+          Math.pow(anchorB.z - anchorA.z, 2)
+        );
+        constraint = new this.CANNON.DistanceConstraint(bodyA, bodyB, distance);
+        break;
+      }
+      case 'spring': {
+        const spring = new this.CANNON.Spring(bodyA, bodyB, {
+          localAnchorA: new this.CANNON.Vec3(anchorA.x, anchorA.y, anchorA.z),
+          localAnchorB: new this.CANNON.Vec3(anchorB.x, anchorB.y, anchorB.z),
+          stiffness: config.stiffness ?? 100,
+          damping: config.damping ?? 1,
+          restLength: 0
+        });
+        this.springs.set(id, spring);
+        return; // Springs are not constraints in Cannon.js
+      }
+    }
+
+    if (constraint) {
+      this.world.addConstraint(constraint);
+      this.constraints.set(id, constraint);
+    }
+  }
+
+  removeJoint(id: string): void {
+    const constraint = this.constraints.get(id);
+    if (constraint) {
+      this.world.removeConstraint(constraint);
+      this.constraints.delete(id);
+    }
+    this.springs.delete(id);
+  }
+
+  setPosition(bodyId: string, position: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      body.position.set(position.x, position.y, position.z);
+    }
+  }
+
+  setRotation(bodyId: string, rotation: Quaternion): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      body.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+    }
+  }
+
+  setVelocity(bodyId: string, velocity: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      body.velocity.set(velocity.x, velocity.y, velocity.z);
+    }
+  }
+
+  setAngularVelocity(bodyId: string, velocity: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      body.angularVelocity.set(velocity.x, velocity.y, velocity.z);
+    }
+  }
+
+  applyForce(bodyId: string, force: Vector3, point?: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const forceVec = new this.CANNON.Vec3(force.x, force.y, force.z);
+      if (point) {
+        body.applyForce(forceVec, new this.CANNON.Vec3(point.x, point.y, point.z));
+      } else {
+        body.applyForce(forceVec, body.position);
+      }
+    }
+  }
+
+  applyImpulse(bodyId: string, impulse: Vector3, point?: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const impulseVec = new this.CANNON.Vec3(impulse.x, impulse.y, impulse.z);
+      if (point) {
+        body.applyImpulse(impulseVec, new this.CANNON.Vec3(point.x, point.y, point.z));
+      } else {
+        body.applyImpulse(impulseVec, body.position);
+      }
+    }
+  }
+
+  applyTorque(bodyId: string, torque: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      body.applyTorque(new this.CANNON.Vec3(torque.x, torque.y, torque.z));
+    }
+  }
+
+  getPosition(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      return { x: body.position.x, y: body.position.y, z: body.position.z };
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  getRotation(bodyId: string): Quaternion {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      return { x: body.quaternion.x, y: body.quaternion.y, z: body.quaternion.z, w: body.quaternion.w };
+    }
+    return { x: 0, y: 0, z: 0, w: 1 };
+  }
+
+  getVelocity(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      return { x: body.velocity.x, y: body.velocity.y, z: body.velocity.z };
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  getAngularVelocity(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      return { x: body.angularVelocity.x, y: body.angularVelocity.y, z: body.angularVelocity.z };
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  raycast(origin: Vector3, direction: Vector3, maxDistance: number, _groups?: number): RaycastResult {
+    const from = new this.CANNON.Vec3(origin.x, origin.y, origin.z);
+    const to = new this.CANNON.Vec3(
+      origin.x + direction.x * maxDistance,
+      origin.y + direction.y * maxDistance,
+      origin.z + direction.z * maxDistance
+    );
+
+    const result = new this.CANNON.RaycastResult();
+    const hasHit = this.world.raycastClosest(from, to, {}, result);
+
+    if (hasHit && result.hasHit) {
+      return {
+        hit: true,
+        bodyId: result.body ? this.getBodyIdFromBody(result.body) : undefined,
+        point: { x: result.hitPointWorld.x, y: result.hitPointWorld.y, z: result.hitPointWorld.z },
+        normal: { x: result.hitNormalWorld.x, y: result.hitNormalWorld.y, z: result.hitNormalWorld.z },
+        distance: result.distance
+      };
+    }
+
+    return { hit: false };
+  }
+
+  shapeCast(shape: ColliderConfig, origin: Vector3, direction: Vector3, maxDistance: number): RaycastResult {
+    // Cannon.js doesn't have native shape casting, fall back to raycast
+    return this.raycast(origin, direction, maxDistance);
+  }
+
+  private getBodyIdFromBody(body: CannonBody): string | undefined {
+    for (const [id, b] of this.bodies) {
+      if (b === body) return id;
+    }
+    return undefined;
+  }
+
+  getContacts(): ContactEvent[] {
+    const contacts = [...this.contactEvents];
+    this.contactEvents = [];
+    return contacts;
+  }
+
+  destroy(): void {
+    this.bodies.forEach((body) => {
+      this.world.removeBody(body);
+    });
+    this.bodies.clear();
+    this.constraints.clear();
+    this.springs.clear();
+    this.contactEvents = [];
+  }
+}
+
+// ============================================================================
+// AMMO.JS BACKEND
+// ============================================================================
+
+// Ammo.js type definitions
+interface AmmoVector3 {
+  x(): number;
+  y(): number;
+  z(): number;
+  setValue(x: number, y: number, z: number): void;
+}
+
+interface AmmoQuaternion {
+  x(): number;
+  y(): number;
+  z(): number;
+  w(): number;
+  setValue(x: number, y: number, z: number, w: number): void;
+}
+
+interface AmmoTransform {
+  getOrigin(): AmmoVector3;
+  getRotation(): AmmoQuaternion;
+  setOrigin(origin: AmmoVector3): void;
+  setRotation(rotation: AmmoQuaternion): void;
+  setIdentity(): void;
+}
+
+interface AmmoMotionState {
+  getWorldTransform(transform: AmmoTransform): void;
+  setWorldTransform(transform: AmmoTransform): void;
+}
+
+interface AmmoCollisionShape {
+  calculateLocalInertia(mass: number, inertia: AmmoVector3): void;
+  setLocalScaling(scaling: AmmoVector3): void;
+  setMargin(margin: number): void;
+}
+
+interface AmmoRigidBodyConstructionInfo {
+  set_m_friction(friction: number): void;
+  set_m_restitution(restitution: number): void;
+  set_m_linearDamping(damping: number): void;
+  set_m_angularDamping(damping: number): void;
+}
+
+interface AmmoRigidBody {
+  getMotionState(): AmmoMotionState | null;
+  setMotionState(motionState: AmmoMotionState): void;
+  getWorldTransform(): AmmoTransform;
+  setWorldTransform(transform: AmmoTransform): void;
+  getLinearVelocity(): AmmoVector3;
+  getAngularVelocity(): AmmoVector3;
+  setLinearVelocity(velocity: AmmoVector3): void;
+  setAngularVelocity(velocity: AmmoVector3): void;
+  applyCentralForce(force: AmmoVector3): void;
+  applyForce(force: AmmoVector3, relPos: AmmoVector3): void;
+  applyCentralImpulse(impulse: AmmoVector3): void;
+  applyImpulse(impulse: AmmoVector3, relPos: AmmoVector3): void;
+  applyTorque(torque: AmmoVector3): void;
+  setFriction(friction: number): void;
+  setRestitution(restitution: number): void;
+  setDamping(linear: number, angular: number): void;
+  setActivationState(state: number): void;
+  setCollisionFlags(flags: number): void;
+  getCollisionFlags(): number;
+  getUserIndex(): number;
+  setUserIndex(index: number): void;
+  isActive(): boolean;
+  activate(forceActivation?: boolean): void;
+  setCcdMotionThreshold(threshold: number): void;
+  setCcdSweptSphereRadius(radius: number): void;
+}
+
+interface AmmoTypedConstraint {
+  enableFeedback(enable: boolean): void;
+}
+
+interface AmmoPoint2PointConstraint extends AmmoTypedConstraint {
+  setPivotA(pivot: AmmoVector3): void;
+  setPivotB(pivot: AmmoVector3): void;
+}
+
+interface AmmoHingeConstraint extends AmmoTypedConstraint {
+  setLimit(low: number, high: number, softness?: number, biasFactor?: number, relaxationFactor?: number): void;
+  enableAngularMotor(enable: boolean, targetVelocity: number, maxMotorImpulse: number): void;
+}
+
+interface AmmoSliderConstraint extends AmmoTypedConstraint {
+  setLowerLinLimit(limit: number): void;
+  setUpperLinLimit(limit: number): void;
+}
+
+interface AmmoGeneric6DofConstraint extends AmmoTypedConstraint {
+  setLinearLowerLimit(limit: AmmoVector3): void;
+  setLinearUpperLimit(limit: AmmoVector3): void;
+  setAngularLowerLimit(limit: AmmoVector3): void;
+  setAngularUpperLimit(limit: AmmoVector3): void;
+}
+
+interface AmmoRayResultCallback {
+  hasHit(): boolean;
+  get_m_collisionObject(): AmmoCollisionObject;
+  get_m_hitPointWorld(): AmmoVector3;
+  get_m_hitNormalWorld(): AmmoVector3;
+  get_m_closestHitFraction(): number;
+}
+
+interface AmmoCollisionObject {
+  getUserIndex(): number;
+}
+
+interface AmmoContactManifold {
+  getNumContacts(): number;
+  getContactPoint(index: number): AmmoManifoldPoint;
+  getBody0(): AmmoCollisionObject;
+  getBody1(): AmmoCollisionObject;
+}
+
+interface AmmoManifoldPoint {
+  getPositionWorldOnA(): AmmoVector3;
+  getPositionWorldOnB(): AmmoVector3;
+  get_m_normalWorldOnB(): AmmoVector3;
+  getAppliedImpulse(): number;
+  getDistance(): number;
+}
+
+interface AmmoDispatcher {
+  getNumManifolds(): number;
+  getManifoldByIndexInternal(index: number): AmmoContactManifold;
+}
+
+interface AmmoDynamicsWorld {
+  setGravity(gravity: AmmoVector3): void;
+  addRigidBody(body: AmmoRigidBody, group?: number, mask?: number): void;
+  removeRigidBody(body: AmmoRigidBody): void;
+  addConstraint(constraint: AmmoTypedConstraint, disableCollisionsBetweenLinkedBodies?: boolean): void;
+  removeConstraint(constraint: AmmoTypedConstraint): void;
+  stepSimulation(timeStep: number, maxSubSteps?: number, fixedTimeStep?: number): void;
+  rayTest(rayFromWorld: AmmoVector3, rayToWorld: AmmoVector3, resultCallback: AmmoRayResultCallback): void;
+  getDispatcher(): AmmoDispatcher;
+}
+
+interface AmmoModule {
+  btVector3: new (x?: number, y?: number, z?: number) => AmmoVector3;
+  btQuaternion: new (x?: number, y?: number, z?: number, w?: number) => AmmoQuaternion;
+  btTransform: new () => AmmoTransform;
+  btDefaultMotionState: new (startTrans?: AmmoTransform) => AmmoMotionState;
+  btBoxShape: new (halfExtents: AmmoVector3) => AmmoCollisionShape;
+  btSphereShape: new (radius: number) => AmmoCollisionShape;
+  btCylinderShape: new (halfExtents: AmmoVector3) => AmmoCollisionShape;
+  btCapsuleShape: new (radius: number, height: number) => AmmoCollisionShape;
+  btConeShape: new (radius: number, height: number) => AmmoCollisionShape;
+  btConvexHullShape: new () => AmmoCollisionShape & { addPoint(point: AmmoVector3, recalculateLocalAabb?: boolean): void };
+  btBvhTriangleMeshShape: new (mesh: AmmoTriangleMesh, useQuantizedAabbCompression: boolean, buildBvh?: boolean) => AmmoCollisionShape;
+  btTriangleMesh: new (use32bitIndices?: boolean, use4componentVertices?: boolean) => AmmoTriangleMesh;
+  btRigidBodyConstructionInfo: new (mass: number, motionState: AmmoMotionState, collisionShape: AmmoCollisionShape, localInertia?: AmmoVector3) => AmmoRigidBodyConstructionInfo;
+  btRigidBody: new (constructionInfo: AmmoRigidBodyConstructionInfo) => AmmoRigidBody;
+  btPoint2PointConstraint: new (bodyA: AmmoRigidBody, bodyB: AmmoRigidBody, pivotInA: AmmoVector3, pivotInB: AmmoVector3) => AmmoPoint2PointConstraint;
+  btHingeConstraint: new (bodyA: AmmoRigidBody, bodyB: AmmoRigidBody, pivotInA: AmmoVector3, pivotInB: AmmoVector3, axisInA: AmmoVector3, axisInB: AmmoVector3, useReferenceFrameA?: boolean) => AmmoHingeConstraint;
+  btSliderConstraint: new (bodyA: AmmoRigidBody, bodyB: AmmoRigidBody, frameInA: AmmoTransform, frameInB: AmmoTransform, useLinearReferenceFrameA: boolean) => AmmoSliderConstraint;
+  btGeneric6DofConstraint: new (bodyA: AmmoRigidBody, bodyB: AmmoRigidBody, frameInA: AmmoTransform, frameInB: AmmoTransform, useLinearReferenceFrameA: boolean) => AmmoGeneric6DofConstraint;
+  btFixedConstraint: new (bodyA: AmmoRigidBody, bodyB: AmmoRigidBody, frameInA: AmmoTransform, frameInB: AmmoTransform) => AmmoTypedConstraint;
+  btDefaultCollisionConfiguration: new () => object;
+  btCollisionDispatcher: new (config: object) => object;
+  btDbvtBroadphase: new () => object;
+  btAxisSweep3: new (worldAabbMin: AmmoVector3, worldAabbMax: AmmoVector3) => object;
+  btSequentialImpulseConstraintSolver: new () => object;
+  btDiscreteDynamicsWorld: new (dispatcher: object, broadphase: object, solver: object, collisionConfiguration: object) => AmmoDynamicsWorld;
+  ClosestRayResultCallback: new (rayFromWorld: AmmoVector3, rayToWorld: AmmoVector3) => AmmoRayResultCallback;
+  destroy(obj: object): void;
+  DISABLE_DEACTIVATION: number;
+  ACTIVE_TAG: number;
+  CF_KINEMATIC_OBJECT: number;
+  CF_STATIC_OBJECT: number;
+}
+
+interface AmmoTriangleMesh {
+  addTriangle(v0: AmmoVector3, v1: AmmoVector3, v2: AmmoVector3, removeDuplicateVertices?: boolean): void;
+}
+
+class AmmoBackend extends PhysicsBackend {
+  private world!: AmmoDynamicsWorld;
+  private bodies: Map<string, AmmoRigidBody> = new Map();
+  private shapes: Map<string, AmmoCollisionShape> = new Map();
+  private constraints: Map<string, AmmoTypedConstraint> = new Map();
+  private Ammo!: AmmoModule;
+  private bodyIdCounter = 0;
+  private bodyIndexToId: Map<number, string> = new Map();
+  private tempTransform!: AmmoTransform;
+  private tempVector!: AmmoVector3;
+  private tempQuaternion!: AmmoQuaternion;
+
+  async init(config: PhysicsConfig): Promise<void> {
+    // @ts-ignore - Dynamic import
+    const AmmoLib = await import('ammo.js');
+    this.Ammo = await (AmmoLib.default ? AmmoLib.default() : AmmoLib());
+
+    // Create collision configuration
+    const collisionConfiguration = new this.Ammo.btDefaultCollisionConfiguration();
+    const dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
+
+    // Create broadphase
+    let broadphase: object;
+    if (config.broadphase === 'sap') {
+      const worldMin = new this.Ammo.btVector3(-1000, -1000, -1000);
+      const worldMax = new this.Ammo.btVector3(1000, 1000, 1000);
+      broadphase = new this.Ammo.btAxisSweep3(worldMin, worldMax);
+      this.Ammo.destroy(worldMin);
+      this.Ammo.destroy(worldMax);
+    } else {
+      broadphase = new this.Ammo.btDbvtBroadphase();
+    }
+
+    // Create solver
+    const solver = new this.Ammo.btSequentialImpulseConstraintSolver();
+
+    // Create world
+    this.world = new this.Ammo.btDiscreteDynamicsWorld(
+      dispatcher,
+      broadphase,
+      solver,
+      collisionConfiguration
+    );
+
+    // Set gravity
+    const gravity = config.gravity ?? { x: 0, y: -9.81, z: 0 };
+    const gravityVector = new this.Ammo.btVector3(gravity.x, gravity.y, gravity.z);
+    this.world.setGravity(gravityVector);
+    this.Ammo.destroy(gravityVector);
+
+    // Create temp objects for reuse
+    this.tempTransform = new this.Ammo.btTransform();
+    this.tempVector = new this.Ammo.btVector3();
+    this.tempQuaternion = new this.Ammo.btQuaternion(0, 0, 0, 1);
+  }
+
+  step(dt: number): void {
+    this.world.stepSimulation(dt, 10, 1 / 60);
+  }
+
+  createRigidBody(id: string, config: RigidBodyConfig, position: Vector3, rotation: Quaternion): void {
+    // Create a default shape (will be replaced when addCollider is called)
+    const defaultShape = new this.Ammo.btBoxShape(new this.Ammo.btVector3(0.5, 0.5, 0.5));
+
+    // Create transform
+    const transform = new this.Ammo.btTransform();
+    transform.setIdentity();
+    const origin = new this.Ammo.btVector3(position.x, position.y, position.z);
+    transform.setOrigin(origin);
+    const quat = new this.Ammo.btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+    transform.setRotation(quat);
+
+    // Calculate mass and inertia
+    const mass = config.type === 'static' ? 0 : (config.mass ?? 1);
+    const localInertia = new this.Ammo.btVector3(0, 0, 0);
+    if (mass !== 0) {
+      defaultShape.calculateLocalInertia(mass, localInertia);
+    }
+
+    // Create motion state
+    const motionState = new this.Ammo.btDefaultMotionState(transform);
+
+    // Create rigid body
+    const rbInfo = new this.Ammo.btRigidBodyConstructionInfo(mass, motionState, defaultShape, localInertia);
+
+    if (config.friction !== undefined) {
+      rbInfo.set_m_friction(config.friction);
+    }
+    if (config.restitution !== undefined) {
+      rbInfo.set_m_restitution(config.restitution);
+    }
+    if (config.linearDamping !== undefined || config.angularDamping !== undefined) {
+      rbInfo.set_m_linearDamping(config.linearDamping ?? 0);
+      rbInfo.set_m_angularDamping(config.angularDamping ?? 0);
+    }
+
+    const body = new this.Ammo.btRigidBody(rbInfo);
+
+    // Set body type flags
+    if (config.type === 'kinematic') {
+      body.setCollisionFlags(body.getCollisionFlags() | this.Ammo.CF_KINEMATIC_OBJECT);
+      body.setActivationState(this.Ammo.DISABLE_DEACTIVATION);
+    } else if (config.type === 'static') {
+      body.setCollisionFlags(body.getCollisionFlags() | this.Ammo.CF_STATIC_OBJECT);
+    }
+
+    // Disable sleeping if requested
+    if (config.canSleep === false) {
+      body.setActivationState(this.Ammo.DISABLE_DEACTIVATION);
+    }
+
+    // Enable CCD if requested
+    if (config.ccd) {
+      body.setCcdMotionThreshold(0.1);
+      body.setCcdSweptSphereRadius(0.2);
+    }
+
+    // Set user index for identification
+    const bodyIndex = this.bodyIdCounter++;
+    body.setUserIndex(bodyIndex);
+    this.bodyIndexToId.set(bodyIndex, id);
+
+    // Add to world
+    const group = config.collisionGroups ?? 1;
+    const mask = config.collisionMask ?? -1;
+    this.world.addRigidBody(body, group, mask);
+
+    this.bodies.set(id, body);
+    this.shapes.set(id, defaultShape);
+
+    // Cleanup temp objects
+    this.Ammo.destroy(origin);
+    this.Ammo.destroy(quat);
+    this.Ammo.destroy(localInertia);
+    this.Ammo.destroy(transform);
+    this.Ammo.destroy(rbInfo);
+  }
+
+  removeRigidBody(id: string): void {
+    const body = this.bodies.get(id);
+    if (body) {
+      this.world.removeRigidBody(body);
+      const shape = this.shapes.get(id);
+      if (shape) {
+        this.Ammo.destroy(shape);
+        this.shapes.delete(id);
+      }
+      this.Ammo.destroy(body);
+      this.bodies.delete(id);
+
+      // Remove from index mapping
+      for (const [index, bodyId] of this.bodyIndexToId) {
+        if (bodyId === id) {
+          this.bodyIndexToId.delete(index);
+          break;
+        }
+      }
+    }
+  }
+
+  addCollider(bodyId: string, config: ColliderConfig): void {
+    const body = this.bodies.get(bodyId);
+    if (!body) return;
+
+    let shape: AmmoCollisionShape | null = null;
+
+    switch (config.shape) {
+      case 'box': {
+        const size = config.size ?? { x: 0.5, y: 0.5, z: 0.5 };
+        const halfExtents = new this.Ammo.btVector3(size.x, size.y, size.z);
+        shape = new this.Ammo.btBoxShape(halfExtents);
+        this.Ammo.destroy(halfExtents);
+        break;
+      }
+      case 'sphere': {
+        shape = new this.Ammo.btSphereShape(config.radius ?? 0.5);
+        break;
+      }
+      case 'cylinder': {
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        const halfExtents = new this.Ammo.btVector3(radius, height / 2, radius);
+        shape = new this.Ammo.btCylinderShape(halfExtents);
+        this.Ammo.destroy(halfExtents);
+        break;
+      }
+      case 'capsule': {
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        shape = new this.Ammo.btCapsuleShape(radius, height - radius * 2);
+        break;
+      }
+      case 'cone': {
+        const radius = config.radius ?? 0.5;
+        const height = config.height ?? 1;
+        shape = new this.Ammo.btConeShape(radius, height);
+        break;
+      }
+      case 'convex': {
+        if (config.vertices) {
+          const convexShape = new this.Ammo.btConvexHullShape();
+          for (let i = 0; i < config.vertices.length; i += 3) {
+            const point = new this.Ammo.btVector3(
+              config.vertices[i]!,
+              config.vertices[i + 1]!,
+              config.vertices[i + 2]!
+            );
+            convexShape.addPoint(point, true);
+            this.Ammo.destroy(point);
+          }
+          shape = convexShape;
+        }
+        break;
+      }
+      case 'trimesh': {
+        if (config.vertices && config.indices) {
+          const mesh = new this.Ammo.btTriangleMesh(true, false);
+          for (let i = 0; i < config.indices.length; i += 3) {
+            const i0 = config.indices[i]! * 3;
+            const i1 = config.indices[i + 1]! * 3;
+            const i2 = config.indices[i + 2]! * 3;
+
+            const v0 = new this.Ammo.btVector3(
+              config.vertices[i0]!,
+              config.vertices[i0 + 1]!,
+              config.vertices[i0 + 2]!
+            );
+            const v1 = new this.Ammo.btVector3(
+              config.vertices[i1]!,
+              config.vertices[i1 + 1]!,
+              config.vertices[i1 + 2]!
+            );
+            const v2 = new this.Ammo.btVector3(
+              config.vertices[i2]!,
+              config.vertices[i2 + 1]!,
+              config.vertices[i2 + 2]!
+            );
+
+            mesh.addTriangle(v0, v1, v2, false);
+
+            this.Ammo.destroy(v0);
+            this.Ammo.destroy(v1);
+            this.Ammo.destroy(v2);
+          }
+          shape = new this.Ammo.btBvhTriangleMeshShape(mesh, true, true);
+        }
+        break;
+      }
+    }
+
+    if (!shape) return;
+
+    // Remove old shape and set new one
+    const oldShape = this.shapes.get(bodyId);
+    if (oldShape) {
+      this.Ammo.destroy(oldShape);
+    }
+    this.shapes.set(bodyId, shape);
+
+    // Update material properties
+    if (config.friction !== undefined) {
+      body.setFriction(config.friction);
+    }
+    if (config.restitution !== undefined) {
+      body.setRestitution(config.restitution);
+    }
+  }
+
+  createJoint(id: string, config: JointConfig): void {
+    const bodyA = this.bodies.get(config.bodyA);
+    const bodyB = this.bodies.get(config.bodyB);
+    if (!bodyA || !bodyB) return;
+
+    const anchorA = config.anchorA ?? { x: 0, y: 0, z: 0 };
+    const anchorB = config.anchorB ?? { x: 0, y: 0, z: 0 };
+
+    let constraint: AmmoTypedConstraint | null = null;
+
+    switch (config.type) {
+      case 'fixed': {
+        const frameA = new this.Ammo.btTransform();
+        frameA.setIdentity();
+        const originA = new this.Ammo.btVector3(anchorA.x, anchorA.y, anchorA.z);
+        frameA.setOrigin(originA);
+
+        const frameB = new this.Ammo.btTransform();
+        frameB.setIdentity();
+        const originB = new this.Ammo.btVector3(anchorB.x, anchorB.y, anchorB.z);
+        frameB.setOrigin(originB);
+
+        constraint = new this.Ammo.btFixedConstraint(bodyA, bodyB, frameA, frameB);
+
+        this.Ammo.destroy(originA);
+        this.Ammo.destroy(originB);
+        this.Ammo.destroy(frameA);
+        this.Ammo.destroy(frameB);
+        break;
+      }
+      case 'revolute': {
+        const axis = config.axisA ?? { x: 0, y: 1, z: 0 };
+        const pivotA = new this.Ammo.btVector3(anchorA.x, anchorA.y, anchorA.z);
+        const pivotB = new this.Ammo.btVector3(anchorB.x, anchorB.y, anchorB.z);
+        const axisA = new this.Ammo.btVector3(axis.x, axis.y, axis.z);
+        const axisB = new this.Ammo.btVector3(axis.x, axis.y, axis.z);
+
+        const hinge = new this.Ammo.btHingeConstraint(bodyA, bodyB, pivotA, pivotB, axisA, axisB, true);
+
+        if (config.limitsEnabled) {
+          hinge.setLimit(config.limitsMin ?? -Math.PI, config.limitsMax ?? Math.PI, 0.9, 0.3, 1.0);
+        }
+
+        if (config.motorEnabled) {
+          hinge.enableAngularMotor(true, config.motorVelocity ?? 0, config.motorMaxForce ?? 1000);
+        }
+
+        constraint = hinge;
+
+        this.Ammo.destroy(pivotA);
+        this.Ammo.destroy(pivotB);
+        this.Ammo.destroy(axisA);
+        this.Ammo.destroy(axisB);
+        break;
+      }
+      case 'prismatic': {
+        const frameA = new this.Ammo.btTransform();
+        frameA.setIdentity();
+        const originA = new this.Ammo.btVector3(anchorA.x, anchorA.y, anchorA.z);
+        frameA.setOrigin(originA);
+
+        const frameB = new this.Ammo.btTransform();
+        frameB.setIdentity();
+        const originB = new this.Ammo.btVector3(anchorB.x, anchorB.y, anchorB.z);
+        frameB.setOrigin(originB);
+
+        const slider = new this.Ammo.btSliderConstraint(bodyA, bodyB, frameA, frameB, true);
+
+        if (config.limitsEnabled) {
+          slider.setLowerLinLimit(config.limitsMin ?? -1);
+          slider.setUpperLinLimit(config.limitsMax ?? 1);
+        }
+
+        constraint = slider;
+
+        this.Ammo.destroy(originA);
+        this.Ammo.destroy(originB);
+        this.Ammo.destroy(frameA);
+        this.Ammo.destroy(frameB);
+        break;
+      }
+      case 'spherical': {
+        const pivotA = new this.Ammo.btVector3(anchorA.x, anchorA.y, anchorA.z);
+        const pivotB = new this.Ammo.btVector3(anchorB.x, anchorB.y, anchorB.z);
+
+        constraint = new this.Ammo.btPoint2PointConstraint(bodyA, bodyB, pivotA, pivotB);
+
+        this.Ammo.destroy(pivotA);
+        this.Ammo.destroy(pivotB);
+        break;
+      }
+      case 'rope':
+      case 'spring': {
+        // Ammo.js doesn't have native rope/spring constraints
+        // Fall back to generic 6DOF constraint with limits
+        const frameA = new this.Ammo.btTransform();
+        frameA.setIdentity();
+        const originA = new this.Ammo.btVector3(anchorA.x, anchorA.y, anchorA.z);
+        frameA.setOrigin(originA);
+
+        const frameB = new this.Ammo.btTransform();
+        frameB.setIdentity();
+        const originB = new this.Ammo.btVector3(anchorB.x, anchorB.y, anchorB.z);
+        frameB.setOrigin(originB);
+
+        const generic = new this.Ammo.btGeneric6DofConstraint(bodyA, bodyB, frameA, frameB, true);
+
+        // Allow movement in all directions for spring behavior
+        const lowerLimit = new this.Ammo.btVector3(-10, -10, -10);
+        const upperLimit = new this.Ammo.btVector3(10, 10, 10);
+        generic.setLinearLowerLimit(lowerLimit);
+        generic.setLinearUpperLimit(upperLimit);
+
+        const angularLower = new this.Ammo.btVector3(-Math.PI, -Math.PI, -Math.PI);
+        const angularUpper = new this.Ammo.btVector3(Math.PI, Math.PI, Math.PI);
+        generic.setAngularLowerLimit(angularLower);
+        generic.setAngularUpperLimit(angularUpper);
+
+        constraint = generic;
+
+        this.Ammo.destroy(originA);
+        this.Ammo.destroy(originB);
+        this.Ammo.destroy(frameA);
+        this.Ammo.destroy(frameB);
+        this.Ammo.destroy(lowerLimit);
+        this.Ammo.destroy(upperLimit);
+        this.Ammo.destroy(angularLower);
+        this.Ammo.destroy(angularUpper);
+        break;
+      }
+    }
+
+    if (constraint) {
+      this.world.addConstraint(constraint, true);
+      this.constraints.set(id, constraint);
+    }
+  }
+
+  removeJoint(id: string): void {
+    const constraint = this.constraints.get(id);
+    if (constraint) {
+      this.world.removeConstraint(constraint);
+      this.Ammo.destroy(constraint);
+      this.constraints.delete(id);
+    }
+  }
+
+  setPosition(bodyId: string, position: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const motionState = body.getMotionState();
+      if (motionState) {
+        motionState.getWorldTransform(this.tempTransform);
+        this.tempVector.setValue(position.x, position.y, position.z);
+        this.tempTransform.setOrigin(this.tempVector);
+        motionState.setWorldTransform(this.tempTransform);
+        body.setWorldTransform(this.tempTransform);
+      }
+      body.activate(true);
+    }
+  }
+
+  setRotation(bodyId: string, rotation: Quaternion): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const motionState = body.getMotionState();
+      if (motionState) {
+        motionState.getWorldTransform(this.tempTransform);
+        this.tempQuaternion.setValue(rotation.x, rotation.y, rotation.z, rotation.w);
+        this.tempTransform.setRotation(this.tempQuaternion);
+        motionState.setWorldTransform(this.tempTransform);
+        body.setWorldTransform(this.tempTransform);
+      }
+      body.activate(true);
+    }
+  }
+
+  setVelocity(bodyId: string, velocity: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      this.tempVector.setValue(velocity.x, velocity.y, velocity.z);
+      body.setLinearVelocity(this.tempVector);
+      body.activate(true);
+    }
+  }
+
+  setAngularVelocity(bodyId: string, velocity: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      this.tempVector.setValue(velocity.x, velocity.y, velocity.z);
+      body.setAngularVelocity(this.tempVector);
+      body.activate(true);
+    }
+  }
+
+  applyForce(bodyId: string, force: Vector3, point?: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const forceVec = new this.Ammo.btVector3(force.x, force.y, force.z);
+      if (point) {
+        const relPos = new this.Ammo.btVector3(point.x, point.y, point.z);
+        body.applyForce(forceVec, relPos);
+        this.Ammo.destroy(relPos);
+      } else {
+        body.applyCentralForce(forceVec);
+      }
+      this.Ammo.destroy(forceVec);
+      body.activate(true);
+    }
+  }
+
+  applyImpulse(bodyId: string, impulse: Vector3, point?: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const impulseVec = new this.Ammo.btVector3(impulse.x, impulse.y, impulse.z);
+      if (point) {
+        const relPos = new this.Ammo.btVector3(point.x, point.y, point.z);
+        body.applyImpulse(impulseVec, relPos);
+        this.Ammo.destroy(relPos);
+      } else {
+        body.applyCentralImpulse(impulseVec);
+      }
+      this.Ammo.destroy(impulseVec);
+      body.activate(true);
+    }
+  }
+
+  applyTorque(bodyId: string, torque: Vector3): void {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const torqueVec = new this.Ammo.btVector3(torque.x, torque.y, torque.z);
+      body.applyTorque(torqueVec);
+      this.Ammo.destroy(torqueVec);
+      body.activate(true);
+    }
+  }
+
+  getPosition(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const motionState = body.getMotionState();
+      if (motionState) {
+        motionState.getWorldTransform(this.tempTransform);
+        const origin = this.tempTransform.getOrigin();
+        return { x: origin.x(), y: origin.y(), z: origin.z() };
+      }
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  getRotation(bodyId: string): Quaternion {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const motionState = body.getMotionState();
+      if (motionState) {
+        motionState.getWorldTransform(this.tempTransform);
+        const rotation = this.tempTransform.getRotation();
+        return { x: rotation.x(), y: rotation.y(), z: rotation.z(), w: rotation.w() };
+      }
+    }
+    return { x: 0, y: 0, z: 0, w: 1 };
+  }
+
+  getVelocity(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const vel = body.getLinearVelocity();
+      return { x: vel.x(), y: vel.y(), z: vel.z() };
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  getAngularVelocity(bodyId: string): Vector3 {
+    const body = this.bodies.get(bodyId);
+    if (body) {
+      const vel = body.getAngularVelocity();
+      return { x: vel.x(), y: vel.y(), z: vel.z() };
+    }
+    return { x: 0, y: 0, z: 0 };
+  }
+
+  raycast(origin: Vector3, direction: Vector3, maxDistance: number, _groups?: number): RaycastResult {
+    const from = new this.Ammo.btVector3(origin.x, origin.y, origin.z);
+    const to = new this.Ammo.btVector3(
+      origin.x + direction.x * maxDistance,
+      origin.y + direction.y * maxDistance,
+      origin.z + direction.z * maxDistance
+    );
+
+    const rayCallback = new this.Ammo.ClosestRayResultCallback(from, to);
+    this.world.rayTest(from, to, rayCallback);
+
+    let result: RaycastResult;
+
+    if (rayCallback.hasHit()) {
+      const hitPoint = rayCallback.get_m_hitPointWorld();
+      const hitNormal = rayCallback.get_m_hitNormalWorld();
+      const collisionObject = rayCallback.get_m_collisionObject();
+      const bodyIndex = collisionObject.getUserIndex();
+      const bodyId = this.bodyIndexToId.get(bodyIndex);
+
+      result = {
+        hit: true,
+        bodyId,
+        point: { x: hitPoint.x(), y: hitPoint.y(), z: hitPoint.z() },
+        normal: { x: hitNormal.x(), y: hitNormal.y(), z: hitNormal.z() },
+        distance: rayCallback.get_m_closestHitFraction() * maxDistance
+      };
+    } else {
+      result = { hit: false };
+    }
+
+    this.Ammo.destroy(from);
+    this.Ammo.destroy(to);
+    this.Ammo.destroy(rayCallback);
+
+    return result;
+  }
+
+  shapeCast(_shape: ColliderConfig, origin: Vector3, direction: Vector3, maxDistance: number): RaycastResult {
+    // Ammo.js doesn't have convenient shape casting API, fall back to raycast
+    return this.raycast(origin, direction, maxDistance);
+  }
+
+  getContacts(): ContactEvent[] {
+    const contacts: ContactEvent[] = [];
+    const dispatcher = this.world.getDispatcher();
+    const numManifolds = dispatcher.getNumManifolds();
+
+    for (let i = 0; i < numManifolds; i++) {
+      const manifold = dispatcher.getManifoldByIndexInternal(i);
+      const numContacts = manifold.getNumContacts();
+
+      if (numContacts > 0) {
+        const body0 = manifold.getBody0();
+        const body1 = manifold.getBody1();
+        const bodyAId = this.bodyIndexToId.get(body0.getUserIndex());
+        const bodyBId = this.bodyIndexToId.get(body1.getUserIndex());
+
+        if (bodyAId && bodyBId) {
+          const contact = manifold.getContactPoint(0);
+          const pointWorld = contact.getPositionWorldOnA();
+          const normalWorld = contact.get_m_normalWorldOnB();
+
+          contacts.push({
+            bodyA: bodyAId,
+            bodyB: bodyBId,
+            point: { x: pointWorld.x(), y: pointWorld.y(), z: pointWorld.z() },
+            normal: { x: normalWorld.x(), y: normalWorld.y(), z: normalWorld.z() },
+            impulse: contact.getAppliedImpulse(),
+            separation: contact.getDistance()
+          });
+        }
+      }
+    }
+
+    return contacts;
+  }
+
+  destroy(): void {
+    // Remove all constraints
+    this.constraints.forEach((constraint) => {
+      this.world.removeConstraint(constraint);
+      this.Ammo.destroy(constraint);
+    });
+    this.constraints.clear();
+
+    // Remove all bodies
+    this.bodies.forEach((body) => {
+      this.world.removeRigidBody(body);
+      this.Ammo.destroy(body);
+    });
+    this.bodies.clear();
+
+    // Destroy shapes
+    this.shapes.forEach((shape) => {
+      this.Ammo.destroy(shape);
+    });
+    this.shapes.clear();
+
+    // Destroy temp objects
+    this.Ammo.destroy(this.tempTransform);
+    this.Ammo.destroy(this.tempVector);
+    this.Ammo.destroy(this.tempQuaternion);
+
+    this.bodyIndexToId.clear();
+  }
+}
+
+// ============================================================================
 // PHYSICS WORLD MANAGER
 // ============================================================================
 
@@ -546,6 +1983,12 @@ class PhysicsWorld {
     switch (config.backend) {
       case 'rapier':
         this.backend = new RapierBackend();
+        break;
+      case 'cannon':
+        this.backend = new CannonBackend();
+        break;
+      case 'ammo':
+        this.backend = new AmmoBackend();
         break;
       default:
         this.backend = new RapierBackend();
@@ -1386,6 +2829,8 @@ export {
   PhysicsWorld,
   PhysicsBackend,
   RapierBackend,
+  CannonBackend,
+  AmmoBackend,
   CharacterController,
   VehicleController,
   Ragdoll,

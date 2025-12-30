@@ -31,6 +31,11 @@
     "onLanguage:typescriptreact"
   ],
   "main": "./dist/extension.js",
+  "exports": {
+    ".": {
+      "import": "./dist/extension.js"
+    }
+  },
   "contributes": {
     "languages": [
       {
@@ -125,6 +130,9 @@
     "@types/node": "^24.0.0",
     "@types/vscode": "^1.85.0",
     "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.9.3"
   },
   "files": [
     "dist",

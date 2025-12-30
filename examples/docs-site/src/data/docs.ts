@@ -17,7 +17,7 @@ Get started with PhilJS in seconds.
 
 ## Prerequisites
 
-- Node.js 18+ or Bun
+- Node.js 24+ or Bun
 - npm, pnpm, yarn, or bun
 
 ## Quick Start
