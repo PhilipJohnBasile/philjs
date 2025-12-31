@@ -132,7 +132,7 @@ pnpm tsx scripts/update-version.ts
 **Create RC:**
 ```bash
 # Update to RC version
-pnpm tsx scripts/update-version.ts --version 2.1.0-rc.1
+pnpm tsx scripts/update-version.ts --version 0.1.0-rc.1
 
 # Build and test
 pnpm clean
@@ -141,8 +141,8 @@ pnpm build
 pnpm test
 
 # Create RC tag
-git tag -a v2.1.0-rc.1 -m "Release Candidate 1 for v2.1.0"
-git push origin v2.1.0-rc.1
+git tag -a v0.1.0-rc.1 -m "Release Candidate 1 for v0.1.0"
+git push origin v0.1.0-rc.1
 
 # Publish RC to NPM
 pnpm publish -r --tag next
@@ -217,14 +217,14 @@ pnpm publish -r --tag next
    ```bash
    git checkout main
    git pull origin main
-   git tag -a v2.1.0 -m "PhilJS v2.1.0"
+   git tag -a v0.1.0 -m "PhilJS v0.1.0"
    ```
 
 **Release Time**
 
 4. **Push Tag**
    ```bash
-   git push origin v2.1.0
+   git push origin v0.1.0
    ```
 
 5. **Publish to NPM**
@@ -258,14 +258,14 @@ pnpm publish -r --tag next
    mkdir /tmp/test-philjs
    cd /tmp/test-philjs
    npm init -y
-   npm install @philjs/core@2.1.0
+   npm install @philjs/core@0.1.0
    node -e "console.log(require('@philjs/core'))"
    ```
 
 7. **Create GitHub Release**
    ```bash
-   gh release create v2.1.0 \
-     --title "PhilJS v2.1.0" \
+   gh release create v0.1.0 \
+     --title "PhilJS v0.1.0" \
      --notes-file RELEASE_NOTES_v2.1.md \
      --verify-tag
    ```
@@ -375,7 +375,7 @@ pnpm publish -r --tag next
 1. **Immediate Response (Within 1 hour)**
    ```bash
    # Create hotfix branch from release tag
-   git checkout -b hotfix/v2.1.1 v2.1.0
+   git checkout -b hotfix/v0.1.1 v0.1.0
 
    # Fix the critical issue
    # ... make changes ...
@@ -387,7 +387,7 @@ pnpm publish -r --tag next
 2. **Version Bump**
    ```bash
    # Update version to patch
-pnpm tsx scripts/update-version.ts --version 2.1.1
+pnpm tsx scripts/update-version.ts --version 0.1.1
 
    # Update CHANGELOG
    # Add hotfix entry
@@ -400,18 +400,18 @@ pnpm tsx scripts/update-version.ts --version 2.1.1
    git commit -m "Hotfix: [critical issue description]"
 
    # Create tag
-   git tag -a v2.1.1 -m "Hotfix: [critical issue]"
+   git tag -a v0.1.1 -m "Hotfix: [critical issue]"
 
    # Push
-   git push origin hotfix/v2.1.1
-   git push origin v2.1.1
+   git push origin hotfix/v0.1.1
+   git push origin v0.1.1
 
    # Publish to NPM
    pnpm publish -r
 
    # Create GitHub release
-   gh release create v2.1.1 \
-     --title "PhilJS v2.1.1 (Hotfix)" \
+   gh release create v0.1.1 \
+     --title "PhilJS v0.1.1 (Hotfix)" \
      --notes "Critical fix for [issue]" \
      --verify-tag
    ```
@@ -420,17 +420,17 @@ pnpm tsx scripts/update-version.ts --version 2.1.1
    ```markdown
    # Alert Template
 
-   🚨 HOTFIX RELEASE: PhilJS v2.1.1
+   🚨 HOTFIX RELEASE: PhilJS v0.1.1
 
-   A critical issue was discovered in v2.1.0:
+   A critical issue was discovered in v0.1.0:
    [Description of issue]
 
    Impact: [Who is affected]
 
-   Fix: Update to v2.1.1 immediately
+   Fix: Update to v0.1.1 immediately
 
    ```bash
-   pnpm update @philjs/core@2.1.1
+   pnpm update @philjs/core@0.1.1
    ```
 
    Apologies for any inconvenience.
@@ -440,7 +440,7 @@ pnpm tsx scripts/update-version.ts --version 2.1.1
    ```bash
    # Merge hotfix back to main
    git checkout main
-   git merge hotfix/v2.1.1
+   git merge hotfix/v0.1.1
    git push origin main
    ```
 
@@ -477,17 +477,17 @@ PhilJS follows [Semantic Versioning 2.0.0](https://semver.org/):
 **Alpha** (x.y.z-alpha.n):
 - Very early, unstable
 - For internal testing only
-- Example: 2.1.0-alpha.1
+- Example: 0.1.0-alpha.1
 
 **Beta** (x.y.z-beta.n):
 - Feature complete
 - For community testing
-- Example: 2.1.0-beta.1
+- Example: 0.1.0-beta.1
 
 **Release Candidate** (x.y.z-rc.n):
 - Final testing before release
 - No new features
-- Example: 2.1.0-rc.1
+- Example: 0.1.0-rc.1
 
 ### NPM Dist Tags
 
@@ -513,7 +513,7 @@ npm publish --tag latest  # Stable
 **Version Management:**
 ```bash
 # Update all package versions
-pnpm tsx scripts/update-version.ts --version 2.1.0
+pnpm tsx scripts/update-version.ts --version 0.1.0
 
 # Verify versions are consistent
 pnpm changeset status
@@ -685,17 +685,17 @@ git push --follow-tags
 ### Release Announcement (Twitter)
 
 ```
-🚀 PhilJS v2.1.0 is here!
+🚀 PhilJS v0.1.0 is here!
 
 ✨ New Features:
 - [Feature 1]
 - [Feature 2]
 - [Feature 3]
 
-📦 Install: npm install @philjs/core@2.1.0
+📦 Install: npm install @philjs/core@0.1.0
 
 📖 Docs: https://philjs.dev/docs/v2.1
-📝 Release Notes: https://github.com/[...]/releases/v2.1.0
+📝 Release Notes: https://github.com/[...]/releases/v0.1.0
 
 #JavaScript #WebDev #PhilJS
 ```
@@ -703,12 +703,12 @@ git push --follow-tags
 ### Hotfix Announcement
 
 ```
-🔥 Hotfix: PhilJS v2.1.1
+🔥 Hotfix: PhilJS v0.1.1
 
 Fixed critical issue affecting [affected users]
 
 Please update immediately:
-npm install @philjs/core@2.1.1
+npm install @philjs/core@0.1.1
 
 Details: [GitHub issue link]
 

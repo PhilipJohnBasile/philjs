@@ -1,20 +1,21 @@
 # Local State
 
-Local state is stored in signals inside a component.
+Signals provide local component state.
 
 ```rust
 use philjs::prelude::*;
 
 #[component]
-fn Toggle() -> impl IntoView {
-    let on = signal!(false);
+fn Counter() -> impl IntoView {
+    let count = signal!(0);
 
     view! {
-        <button on:click=move |_| on.update(|v| *v = !*v)>
-            {move || if on.get() { "On" } else { "Off" }}
-        </button>
+        <div>
+            <button on:click=move |_| count.update(|n| *n += 1)>
+                "Add"
+            </button>
+            <span>"Count: " {count}</span>
+        </div>
     }
 }
 ```
-
-Signals are scoped to the component. When the component is dropped, the signal is released.

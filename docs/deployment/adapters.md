@@ -484,10 +484,10 @@ app.listen(3000);
 
 ```bash
 npm run build
-node server.js
+tsx server.ts
 
 # With PM2
-pm2 start server.js -i max
+pm2 start server.ts --interpreter tsx -i max
 
 # With Docker
 docker build -t philjs-app .
@@ -751,7 +751,7 @@ vercel env add API_KEY
 wrangler secret put API_KEY
 
 // Node.js - use .env file
-API_KEY=xxx node server.js
+API_KEY=xxx tsx server.ts
 ```
 
 ## Next Steps

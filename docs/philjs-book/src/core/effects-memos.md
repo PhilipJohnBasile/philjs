@@ -1,35 +1,47 @@
 # Effects and Memos
 
-Effects run when signals they read change. Memos cache derived values.
+Use effects for side effects, and memos for derived values that should update automatically.
 
 ## Effects
 
 ```tsx
-import { effect, signal } from "@philjs/core";
+import { effect, onCleanup, signal } from "@philjs/core";
 
-const count = signal(0);
+const online = signal(true);
 
 const dispose = effect(() => {
-  console.log("count", count());
-});
+  const handler = () => online.set(navigator.onLine);
+  window.addEventListener("online", handler);
+  window.addEventListener("offline", handler);
 
-// Later
-// dispose();
-```
-
-## Cleanup
-
-```tsx
-const stop = effect(() => {
-  const id = setInterval(() => console.log(count()), 1000);
-  return () => clearInterval(id);
+  onCleanup(() => {
+    window.removeEventListener("online", handler);
+    window.removeEventListener("offline", handler);
+  });
 });
 ```
 
 ## Memos
 
 ```tsx
-import { memo } from "@philjs/core";
+import { memo, signal } from "@philjs/core";
 
-const filtered = memo(() => items().filter((item) => item.active));
+const count = signal(1);
+const doubled = memo(() => count() * 2);
+```
+
+## Manage effect lifetimes
+
+```tsx
+import { createRoot, effect, signal } from "@philjs/core";
+
+const count = signal(0);
+
+const dispose = createRoot(() => {
+  effect(() => console.log("count", count()));
+  return () => {};
+});
+
+// Later
+// dispose();
 ```

@@ -1,21 +1,24 @@
 # Building for Production
 
-Production builds include optimized WASM and (optionally) SSR binaries.
+Use the PhilJS CLI to build optimized releases.
 
-## WASM Build
+```bash
+cargo philjs build --release
+```
+
+## SSR builds
+
+```bash
+cargo philjs build --release --ssr
+```
+
+## WASM builds
 
 ```bash
 wasm-pack build --target web --release
 ```
 
-The output lives in `pkg/`. Serve `index.html` and the `pkg/` folder as static assets.
+## Tips
 
-## SSR Build
-
-If you run a Rust SSR server:
-
-```bash
-cargo build --release --features ssr
-```
-
-You can deploy the resulting binary alongside your static assets.
+- Ensure `lto = true` in `Cargo.toml`.
+- Keep assets in `static/` for predictable output.

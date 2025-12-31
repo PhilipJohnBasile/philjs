@@ -1,27 +1,23 @@
 # Lists
 
-Render lists with `For` for keyed updates and stable diffing.
+Render lists by mapping into views and collecting into a `Vec`.
 
 ```rust
 use philjs::prelude::*;
 
 #[derive(Clone)]
-struct Task {
-    id: u32,
-    title: String,
+struct Task { id: String, title: String }
+
+let tasks = vec![
+    Task { id: "1".into(), title: "Ship PhilJS".into() },
+    Task { id: "2".into(), title: "Write docs".into() },
+];
+
+view! {
+    <ul>
+        {tasks.iter().map(|task| view! {
+            <li>{task.title.clone()}</li>
+        }).collect::<Vec<_>>()}
+    </ul>
 }
-
-let tasks = signal!(vec![
-    Task { id: 1, title: "Write docs".into() },
-    Task { id: 2, title: "Ship release".into() },
-]);
-
-let list = For::new(
-    move || tasks.get(),
-    |task| task.id,
-    |task| view! { <li>{task.title}</li> },
-)
-.render();
 ```
-
-Use `tasks.update` to mutate the list and let the UI update efficiently.

@@ -1,27 +1,24 @@
 # Fragments
 
-Fragments group multiple views without an extra wrapper element.
-
-## fragment Function
+Fragments let you return multiple siblings without an extra wrapper.
 
 ```rust
 use philjs::prelude::*;
-use philjs::view::fragment;
 
-let view = fragment(vec![
-    view! { <span>"A"</span> }.into(),
-    view! { <span>"B"</span> }.into(),
-]);
+view! {
+    <header>"Header"</header>
+    <main>"Main"</main>
+    <footer>"Footer"</footer>
+}
 ```
 
-## Multiple Roots in Components
+You can also construct a fragment explicitly:
 
 ```rust
-#[component]
-fn Pair() -> impl IntoView {
-    fragment(vec![
-        view! { <strong>"Left"</strong> }.into(),
-        view! { <em>"Right"</em> }.into(),
-    ])
-}
+use philjs::prelude::*;
+
+let fragment = Fragment::new(vec![
+    Text::new("Header").into_view(),
+    Text::new("Main").into_view(),
+]);
 ```

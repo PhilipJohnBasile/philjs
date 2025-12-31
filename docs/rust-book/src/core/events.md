@@ -1,55 +1,42 @@
 # Events
 
-PhilJS uses `on:event` handlers in RSX to wire DOM events to Rust closures.
-
-## Click Handler
+PhilJS uses `on:event` handlers in `view!`.
 
 ```rust
 use philjs::prelude::*;
 
 #[component]
-fn Counter() -> impl IntoView {
+pub fn Counter() -> impl IntoView {
     let count = signal!(0);
 
     view! {
-        <button on:click=move |_| count.update(|c| *c + 1)>
-            "Count: " {count}
-        </button>
-    }
-}
-```
-
-## Prevent Default
-
-```rust
-use philjs::prelude::*;
-
-#[component]
-fn Link() -> impl IntoView {
-    view! {
-        <a href="https://example.com" on:click=move |event| event.prevent_default()>
-            "Stay on page"
-        </a>
-    }
-}
-```
-
-## Accessing Event Data
-
-Use the event wrappers in `philjs::dom` when you need details:
-
-```rust
-use philjs::prelude::*;
-use philjs::dom::MouseEvent;
-
-#[component]
-fn Tracker() -> impl IntoView {
-    view! {
-        <div on:mousemove=move |event: MouseEvent| {
-            println!("x={} y={}", event.client_x(), event.client_y());
-        }>
-            "Move the mouse"
+        <div>
+            <button on:click=move |_| count.update(|n| *n += 1)>
+                "Increment"
+            </button>
+            <p>"Count: " {count}</p>
         </div>
+    }
+}
+```
+
+Event handlers receive the browser event type when needed:
+
+```rust
+use philjs::prelude::*;
+use web_sys::KeyboardEvent;
+
+#[component]
+pub fn Search() -> impl IntoView {
+    let query = signal!(String::new());
+
+    view! {
+        <input
+            type="search"
+            on:keyup=move |event: KeyboardEvent| {
+                query.set(event.key());
+            }
+        />
     }
 }
 ```

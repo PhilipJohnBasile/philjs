@@ -446,7 +446,7 @@ Now that PhilJS is installed, you're ready to start building:
 
 ## Version Information
 
-**Current Version**: 2.0.0
+**Current Version**: 0.1.0
 
 **Minimum Requirements**:
 - Node.js 24.0+

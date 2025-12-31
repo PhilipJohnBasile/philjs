@@ -103,7 +103,7 @@ USER philjs
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server"]
 ```
 
 ## Docker Compose
@@ -424,7 +424,7 @@ RUN npm run build
 
 EXPOSE ${PORT}
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server"]
 ```
 
 Build with custom args:
@@ -625,7 +625,7 @@ COPY dist ./dist
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server"]
 ```
 
 ## Health Checks
@@ -647,7 +647,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"
 
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/server"]
 ```
 
 Create health endpoint:
@@ -930,7 +930,7 @@ COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/node_modules /app/node_modules
 
 WORKDIR /app
-CMD ["dist/server.js"]
+CMD ["dist/server"]
 ```
 
 ## CI/CD

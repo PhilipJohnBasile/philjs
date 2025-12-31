@@ -1,38 +1,73 @@
 # Signals and Reactivity
 
-Signals are the core primitive in PhilJS. They hold values and trigger precise updates.
+Signals are the core reactive primitive in PhilJS. They are functions you call to read, and they expose a `.set` method to update.
 
-## Creating Signals
+## Basic signal
 
 ```tsx
 import { signal } from "@philjs/core";
 
 const count = signal(0);
-const name = signal("PhilJS");
+
+count();       // 0
+count.set(1);  // update
 ```
 
-## Reading and Writing
+## Derived values with `memo`
 
 ```tsx
-count();
-count.set(count() + 1);
+import { memo, signal } from "@philjs/core";
+
+const price = signal(49);
+const tax = memo(() => price() * 0.0825);
+const total = memo(() => price() + tax());
 ```
 
-## Derived Values
+## Writable computed values
 
 ```tsx
-import { memo } from "@philjs/core";
+import { linkedSignal, signal } from "@philjs/core";
 
-const doubled = memo(() => count() * 2);
+const first = signal("Ada");
+const last = signal("Lovelace");
+const full = linkedSignal(() => `${first()} ${last()}`);
+
+full();            // "Ada Lovelace"
+full.set("A. L."); // override
+full.reset();      // back to computed
 ```
 
-## Batched Updates
+## Batch updates
 
 ```tsx
-import { batch } from "@philjs/core";
+import { batch, signal } from "@philjs/core";
+
+const first = signal("Ada");
+const last = signal("Lovelace");
 
 batch(() => {
-  count.set(1);
-  name.set("Next");
+  first.set("Grace");
+  last.set("Hopper");
+});
+```
+
+## Read without tracking
+
+```tsx
+import { signal, untrack } from "@philjs/core";
+
+const count = signal(0);
+const safeRead = () => untrack(() => count());
+```
+
+## Async data with resources
+
+```tsx
+import { resource, signal } from "@philjs/core";
+
+const userId = signal("u_1");
+const user = resource(async () => {
+  const res = await fetch(`/api/users/${userId()}`);
+  return res.json();
 });
 ```

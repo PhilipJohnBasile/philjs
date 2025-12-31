@@ -1,25 +1,27 @@
 # Project Structure
 
-A typical PhilJS app organizes routes, shared components, and server logic separately.
+PhilJS keeps the frontend predictable. This is the default layout used by the CLI and examples.
 
 ```
 my-app/
+├── public/               # Static assets
 ├── src/
-│   ├── App.tsx
-│   ├── main.tsx
-│   ├── components/
-│   ├── routes/
-│   │   └── index.tsx
-│   ├── server/
-│   │   └── entry-server.ts
-│   └── styles/
-├── public/
-└── vite.config.ts
+│   ├── App.tsx           # Root component
+│   ├── main.tsx          # Client entry
+│   ├── components/       # Reusable UI components
+│   ├── routes/           # Route modules
+│   ├── stores/           # Signals + stores
+│   ├── styles/           # Global styles
+│   └── entry-server.tsx  # SSR entry (optional)
+├── tests/                # Unit + integration tests
+├── philjs.config.ts      # PhilJS configuration
+├── tsconfig.json
+└── package.json
 ```
 
-## Key Folders
+## Why this layout
 
-- `components/`: reusable UI pieces
-- `routes/`: file-based routes
-- `server/`: SSR entry and runtime helpers
-- `styles/`: CSS, tokens, or Tailwind config
+- `components/` keeps UI primitives isolated and reusable.
+- `routes/` pairs views with loaders/actions for local-first data access.
+- `stores/` hosts shared state and domain signals.
+- `entry-server.tsx` exists only when SSR is enabled.

@@ -19,10 +19,10 @@ export async function action({ request }: { request: Request }) {
 In your server entry (e.g., Vite middleware or Cloudflare worker) reuse the manifest:
 
 ```ts
-import { createPhilJSServer } from '@philjs/ssr';
-import { router } from './dist/router-manifest.js';
+import { createFetchHandler } from '@philjs/ssr';
+import { routes } from './routes';
 
-const handleRequest = createPhilJSServer(router);
+const handleRequest = createFetchHandler({ routes });
 export default { fetch: handleRequest };
 ```
 

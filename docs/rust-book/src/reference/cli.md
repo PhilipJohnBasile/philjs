@@ -1,6 +1,6 @@
 # CLI
 
-Use `cargo-philjs` to scaffold and build Rust-based PhilJS projects.
+The Rust CLI is `cargo-philjs`.
 
 ## Install
 
@@ -8,17 +8,12 @@ Use `cargo-philjs` to scaffold and build Rust-based PhilJS projects.
 cargo install cargo-philjs
 ```
 
-## Common Commands
+## Common commands
 
 ```bash
-cargo philjs new my-app
+cargo philjs new my-app --template=spa
 cargo philjs dev
 cargo philjs build --release
+cargo philjs test
+cargo philjs deploy --platform=vercel
 ```
-
-## Templates
-
-- `spa` - client-only WASM app
-- `ssr` - server-side rendered app
-- `fullstack` - SSR plus API routes
-- `static` - static site

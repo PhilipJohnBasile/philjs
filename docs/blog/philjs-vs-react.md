@@ -21,7 +21,7 @@ React has been the dominant force in frontend development for nearly a decade, p
 
 **Choose PhilJS if:** Performance is critical, you want smaller bundles, you need zero hydration, or you're starting fresh.
 
-**Choose React if:** You need the massive ecosystem, your team already knows it well, or you rely on specific third-party libraries.
+**PhilJS path for React teams:** Use the compatibility layer for existing components, then migrate routing and state to PhilJS over time.
 
 ---
 
@@ -659,27 +659,19 @@ effect(() => {
    - Greenfield development
    - Modern stack
 
-### Choose React When:
+### PhilJS Guidance for React Teams
 
-1. **Ecosystem is Critical**
-   - Need Material-UI, Ant Design, etc.
-   - Extensive third-party integrations
-   - Enterprise component libraries
+1. **Incremental migration**
+   - Wrap existing React components behind PhilJS routes
+   - Replace hooks-based state with signals over time
 
-2. **Team Expertise**
-   - Large React-experienced team
-   - Extensive React training materials
-   - Hiring for React developers
+2. **Ecosystem gaps**
+   - Build PhilJS adapters for missing capabilities
+   - Prefer first-party PhilJS packages where available
 
-3. **Stability & Maturity**
-   - Risk-averse organizations
-   - Long-term maintenance (10+ years)
-   - Large existing codebase
-
-4. **Specific Dependencies**
-   - React Native for mobile
-   - React VR/XR
-   - React-specific tools
+3. **Legacy investments**
+   - Keep React-only surfaces isolated
+   - Move new features to PhilJS for consistency
 
 ---
 

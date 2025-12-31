@@ -1,50 +1,39 @@
 # JSX/RSX
 
-PhilJS uses the `view!` macro to provide JSX-like syntax (often called RSX in Rust).
-
-## Basic RSX
+PhilJS Rust uses the `view!` macro to write RSX, a JSX-like syntax that compiles to Rust.
 
 ```rust
 use philjs::prelude::*;
 
-view! {
-    <section class="hero">
-        <h1>"PhilJS Rust"</h1>
-        <p>"Signals meet Rust."</p>
-    </section>
+#[component]
+fn Hero(title: String) -> impl IntoView {
+    view! {
+        <header class="hero">
+            <h1>{title}</h1>
+            <p>"Signals-first UI in Rust."</p>
+        </header>
+    }
 }
 ```
 
-## Dynamic Values
+## Dynamic expressions
 
 ```rust
-let title = signal!("Dashboard".to_string());
+use philjs::prelude::*;
+
+let count = signal!(0);
 
 view! {
-    <h1>{title}</h1>
+    <p>"Count: " {count}</p>
 }
 ```
 
 ## Attributes
 
 ```rust
-let active = signal!(true);
-
 view! {
-    <button class=move || if active.get() { "btn active" } else { "btn" }>
-        "Toggle"
+    <button class="primary" disabled=false>
+        "Save"
     </button>
-}
-```
-
-## Inline Styles
-
-```rust
-let size = signal!(16);
-
-view! {
-    <p style=move || format!("font-size: {}px", size.get())>
-        "Resizable"
-    </p>
 }
 ```

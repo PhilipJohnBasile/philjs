@@ -1,23 +1,37 @@
 # Conditional and Lists
 
-## Conditional Rendering
+Use normal TypeScript control flow. JSX stays a pure expression.
+
+## Conditional rendering
 
 ```tsx
-return (
-  <div>
-    {isLoggedIn() ? <Profile /> : <Login />}
-  </div>
-);
+import { signal } from "@philjs/core";
+
+type User = { name: string };
+const user = signal<User | null>(null);
+
+export function Welcome() {
+  return (
+    <section>
+      {user() ? <p>Welcome, {user()!.name}</p> : <p>Sign in to continue.</p>}
+    </section>
+  );
+}
 ```
 
-## Lists
+## Rendering lists
 
 ```tsx
-const items = signal(["docs", "examples", "book"]);
+type Task = { id: string; title: string };
+const tasks = signal<Task[]>([]);
 
-<ul>
-  {items().map((item) => (
-    <li key={item}>{item}</li>
-  ))}
-</ul>
+export function TaskList() {
+  return (
+    <ul>
+      {tasks().map((task) => (
+        <li key={task.id}>{task.title}</li>
+      ))}
+    </ul>
+  );
+}
 ```

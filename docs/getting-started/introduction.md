@@ -273,10 +273,10 @@ No decision fatigue. No hunting for packages. Everything works together perfectl
 - 🔄 Different mental model (signals vs hooks)
 - 🛠️ Fewer third-party components
 
-**When to choose React:**
-- You need specific React libraries
-- Your team already knows React well
-- You're building a React Native app
+**PhilJS path for React-heavy stacks:**
+- Use the PhilJS compatibility layers while migrating
+- Wrap legacy components behind PhilJS routes
+- Replace hooks-based state with signals over time
 
 ### vs Vue
 
@@ -290,10 +290,10 @@ No decision fatigue. No hunting for packages. Everything works together perfectl
 - 📚 Newer with less documentation
 - 🎨 No template syntax (JSX only)
 
-**When to choose Vue:**
-- You prefer template syntax
-- You need Vue's ecosystem
-- Your team knows Vue well
+**PhilJS path for template-heavy teams:**
+- Keep the core UI in PhilJS and wrap for legacy apps
+- Use PhilJS components as the long-term source of truth
+- Expand the PhilJS ecosystem with targeted adapters
 
 ### vs Svelte
 
@@ -307,10 +307,10 @@ No decision fatigue. No hunting for packages. Everything works together perfectl
 - 🎨 No template syntax (JSX vs Svelte syntax)
 - 📚 Smaller community
 
-**When to choose Svelte:**
-- You love the Svelte syntax
-- You don't need SSR/streaming
-- You're building a SPA
+**PhilJS path for Svelte-style DX:**
+- Use signals and islands for compiler-friendly UI
+- Keep SSR and streaming on by default for performance
+- Adopt PhilJS stores for predictable state
 
 ### vs Next.js
 
@@ -320,10 +320,10 @@ PhilJS includes everything Next.js does plus:
 - 🏝️ Islands architecture
 - 💰 Cost tracking
 
-**When to choose Next.js:**
-- You need the React ecosystem
-- You're migrating an existing React app
-- Your team is React-focused
+**PhilJS path for Next.js migrations:**
+- Use the PhilJS compatibility layer for React components
+- Move routing and data loading into PhilJS modules
+- Replace Next.js-specific APIs with PhilJS SSR/ISR
 
 ## Quick Feature Overview
 

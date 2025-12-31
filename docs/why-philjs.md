@@ -293,7 +293,7 @@ PhilJS ships with everything you need for production applications:
 
 ### Routing & Data
 - File-based routing with nested layouts
-- Loaders and actions (like Remix/Next.js)
+- Loaders and actions (PhilJS-native routing model)
 - SWR-style data fetching with caching
 - Smart preloading from mouse intent
 - SSR streaming with Suspense

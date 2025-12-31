@@ -1,32 +1,32 @@
 # TypeScript Interop
 
-PhilJS Rust apps often pair with TypeScript for tooling, bundling, and external APIs.
+Many PhilJS Rust apps still ship a TypeScript client bundle for hydration or tooling. Keep the contract between Rust and TS explicit.
 
-## Expose Rust to TypeScript
+## Recommended pattern
 
-Use `wasm-bindgen` to export functions and types.
+1. Define shared DTOs in Rust using `serde`.
+2. Serialize data with stable JSON structures.
+3. Mirror those shapes in `src/types.ts` for the frontend.
 
 ```rust
-use wasm_bindgen::prelude::*;
+use serde::{Deserialize, Serialize};
 
-#[wasm_bindgen]
-pub fn format_price(value: f64) -> String {
-    format!("${:.2}", value)
+#[derive(Serialize, Deserialize)]
+pub struct UserDto {
+    pub id: String,
+    pub name: String,
 }
 ```
 
-Run `wasm-pack build --target web`. The generated `pkg/` folder includes TypeScript declarations.
-
-## Use from TypeScript
-
 ```ts
-import init, { format_price } from "./pkg/my_philjs_app.js";
-
-await init();
-console.log(format_price(12.5));
+export type UserDto = {
+  id: string;
+  name: string;
+};
 ```
 
 ## Tips
 
-- Prefer `--target web` for browser builds and `--target bundler` for Vite.
-- Keep exported signatures simple for clean type generation.
+- Keep DTOs flat and versioned.
+- Treat Rust as the source of truth.
+- Use API snapshots in tests to catch drift.

@@ -1,29 +1,30 @@
 # Islands
 
-Islands let you hydrate only the parts of the page that need interactivity.
+Islands let you hydrate only the interactive parts of a page.
 
-## Server Render
-
-```tsx
-import { Island } from "@philjs/islands";
-
-export function Product({ data }) {
-  return (
-    <div>
-      <h1>{data.title}</h1>
-      <Island name="AddToCart" props={{ id: data.id }}>
-        <add-to-cart-island data-id={data.id} />
-      </Island>
-    </div>
-  );
-}
-```
-
-## Client Hydration
+## Mark interactive components
 
 ```tsx
-import { hydrateIslands } from "@philjs/islands";
-import { AddToCart } from "./islands/AddToCart";
+import { renderToStream } from "@philjs/ssr";
+import { Counter } from "./Counter";
 
-hydrateIslands({ AddToCart }, { strategy: "visible" });
+const stream = renderToStream(<App />, {
+  interactiveComponents: new Set([Counter]),
+});
 ```
+
+## Hydrate on the client
+
+```tsx
+import { autoHydrateIslands, HydrationStrategy, registerIsland } from "@philjs/ssr";
+import { Counter } from "./Counter";
+
+registerIsland("Counter", Counter);
+autoHydrateIslands(HydrationStrategy.VISIBLE);
+```
+
+## Common patterns
+
+- Hydrate on visibility for heavy widgets
+- Hydrate on interaction for menus or editors
+- Keep most content static for fast first paint

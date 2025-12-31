@@ -1,39 +1,28 @@
 # SSR with Actix
 
-Actix Web is a production-ready HTTP framework with excellent performance.
-
-## Dependencies
-
-```toml
-[dependencies]
-philjs = "0.1"
-philjs-actix = "0.1"
-actix-web = "4"
-```
-
-## Basic SSR Handler
+PhilJS integrates with Actix via `philjs-actix`.
 
 ```rust
-use actix_web::{get, App, HttpResponse, HttpServer};
-use philjs::prelude::*;
-use philjs::ssr::render_to_string;
+use philjs_actix::prelude::*;
 
-#[component]
-fn App() -> impl IntoView {
-    view! { <h1>"Hello from Actix"</h1> }
-}
-
-#[get("/")]
-async fn index() -> HttpResponse {
-    let html = render_to_string(|| view! { <App /> });
-    HttpResponse::Ok().content_type("text/html").body(html)
+async fn home() -> impl Responder {
+    render_document("Home", || view! {
+        <main>
+            <h1>"PhilJS + Actix"</h1>
+        </main>
+    })
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(index))
-        .bind(("127.0.0.1", 3000))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .configure(PhilJsConfig::default())
+            .service(PhilJsService::new())
+            .route("/", web::get().to(home))
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }
 ```

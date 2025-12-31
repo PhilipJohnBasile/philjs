@@ -1,32 +1,58 @@
 # JSX Basics
 
-PhilJS uses JSX with standard TypeScript tooling.
+PhilJS uses JSX with a custom runtime. Configure TypeScript to use `@philjs/core`.
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@philjs/core"
+  }
+}
+```
+
+## Elements and props
 
 ```tsx
 export function Hero() {
   return (
-    <section class="hero">
-      <h1>PhilJS</h1>
-      <p>Signals-first UI for 2026.</p>
-    </section>
+    <header class="hero" aria-label="Landing hero">
+      <h1>Build faster with PhilJS</h1>
+      <p>Signals-first UI with streaming SSR.</p>
+    </header>
   );
 }
 ```
 
-## Dynamic Attributes
+## Styling with objects
 
 ```tsx
-const active = signal(true);
+import type { CSSProperties } from "@philjs/core";
 
-<button class={active() ? "btn active" : "btn"}>
-  Toggle
-</button>
+const panelStyle: CSSProperties = {
+  padding: "1.5rem",
+  borderRadius: "12px",
+  background: "#0f172a",
+  color: "#e2e8f0",
+};
+
+export function Panel() {
+  return <section style={panelStyle}>Panel content</section>;
+}
 ```
 
-## Inline Styles
+## Reactive attributes
 
 ```tsx
-const size = signal(18);
+import { signal } from "@philjs/core";
 
-<p style={{ fontSize: `${size()}px` }}>Resizable</p>
+const selected = signal(false);
+
+export function Toggle() {
+  return (
+    <button class={() => (selected() ? "on" : "off")} onClick={() => selected.set(!selected())}>
+      {() => (selected() ? "On" : "Off")}
+    </button>
+  );
+}
 ```

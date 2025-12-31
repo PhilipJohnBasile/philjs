@@ -1,21 +1,38 @@
 # SSR Overview
 
-PhilJS ships with SSR and streaming helpers in `@philjs/ssr`.
+PhilJS SSR is streaming-first and designed for islands. You can render routes directly with the server adapters.
 
-## Node Server Example
+## Basic Node server
 
 ```ts
-import http from "node:http";
-import { handleRequest } from "@philjs/ssr";
-import { router } from "./server/router";
+import { createServer } from "node:http";
+import { createNodeHttpHandler } from "@philjs/ssr";
+import { createAppRouter } from "@philjs/router";
 
-const server = http.createServer(async (req, res) => {
-  const response = await handleRequest(req, router);
-  res.writeHead(response.status, Object.fromEntries(response.headers));
-  res.end(await response.text());
+const routes = [
+  { path: "/", component: () => <main>Home</main> },
+  { path: "/about", component: () => <main>About</main> },
+];
+
+const handler = createNodeHttpHandler({ routes });
+
+createServer(handler).listen(3000, () => {
+  console.log("PhilJS SSR running on http://localhost:3000");
 });
-
-server.listen(3000);
 ```
 
-The response includes streamed HTML and any required hydration data.
+## Render to string
+
+```tsx
+import { renderToString } from "@philjs/core";
+
+const html = renderToString(<main>Server render</main>);
+```
+
+## Streaming SSR
+
+```tsx
+import { renderToStream } from "@philjs/ssr";
+
+const stream = renderToStream(<App />);
+```

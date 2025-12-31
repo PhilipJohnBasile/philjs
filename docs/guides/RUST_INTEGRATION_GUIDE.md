@@ -54,8 +54,8 @@ cargo philjs init --template=ssr
 ```toml
 # Cargo.toml
 [dependencies]
-philjs = "2.0"
-@philjs/axum = "2.0"  # or @philjs/actix, @philjs/rocket
+philjs = "0.1.0"
+philjs-axum = "0.1.0"  # or philjs-actix, philjs-rocket
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 
@@ -129,7 +129,7 @@ async fn home() -> impl IntoResponse {
                     <Counter initial=0 />
                 </div>
                 {HydrationScript::new()}
-                <script type="module" src="/static/app.js"></script>
+                <script type="module" src="/static/app.ts"></script>
             </body>
         </html>
     })
@@ -772,7 +772,7 @@ my-app/
 ```toml
 [features]
 default = ["ssr"]
-ssr = ["philjs/ssr", "@philjs/axum"]
+ssr = ["philjs/ssr", "philjs-axum"]
 hydration = ["philjs/hydration", "philjs/wasm"]
 full = ["ssr", "hydration"]
 ```

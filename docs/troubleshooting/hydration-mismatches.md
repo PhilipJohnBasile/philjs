@@ -483,7 +483,7 @@ const page = `
       <script>
         window.__INITIAL_DATA__ = ${JSON.stringify(initialData)};
       </script>
-      <script src="/client.js"></script>
+      <script src="/client.ts"></script>
     </body>
   </html>
 `;

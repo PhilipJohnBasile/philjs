@@ -147,7 +147,7 @@ const page = `
       <script>
         window.__INITIAL_DATA__ = ${JSON.stringify({ user: initialData })};
       </script>
-      <script src="/client.js"></script>
+      <script src="/client.ts"></script>
     </body>
   </html>
 `;
@@ -276,7 +276,7 @@ const html = `
       <script>
         window.__RESUMABLE_STATE__ = ${serialized};
       </script>
-      <script src="/client.js"></script>
+      <script src="/client.ts"></script>
     </body>
   </html>
 `;

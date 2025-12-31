@@ -67,7 +67,7 @@ import { addHeadersMiddleware, securityHeadersMiddleware } from '@philjs/api/edg
 // Add custom headers
 const customHeaders = addHeadersMiddleware({
   'X-Custom-Header': 'value',
-  'X-API-Version': '2.0',
+  'X-API-Version': '0.1.0',
 });
 
 // Security headers

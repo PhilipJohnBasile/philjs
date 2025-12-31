@@ -1,29 +1,24 @@
 # Debugging
 
-Use Rust logging and browser devtools to debug PhilJS applications.
+Use Rust tooling plus browser diagnostics when running in WASM.
 
-## Console Logging
-
-```rust
-use web_sys::console;
-
-console::log_1(&"mounted".into());
-```
-
-## Error Boundaries
-
-Wrap risky sections in error boundaries when rendering:
+## Panic hooks
 
 ```rust
-use philjs::view::ErrorBoundary;
+use console_error_panic_hook;
 
-let view = ErrorBoundary::new(
-    || view! { <p>"Something went wrong"</p> },
-    || view! { <App /> },
-)
-.render();
+console_error_panic_hook::set_once();
 ```
 
-## Server Logs
+## Logging
 
-For SSR, use `tracing` or `log` for structured output. Pair with `RUST_LOG=info` during development.
+```rust
+use tracing::info;
+
+info!("Hydration complete");
+```
+
+## Tips
+
+- Use `RUST_LOG=info` on the server.
+- Inspect rendered HTML for hydration mismatches.

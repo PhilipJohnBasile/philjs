@@ -1,13 +1,24 @@
 # Testing
 
-Use `@philjs/testing` for unit and integration tests.
+PhilJS includes a first-party testing library that mirrors DOM Testing Library with PhilJS-aware utilities.
 
 ```tsx
-import { render, screen } from "@philjs/testing";
-import { App } from "./App";
+import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent } from "@philjs/testing";
+import { Counter } from "../src/Counter";
 
-render(() => <App />);
-expect(screen.getByText("PhilJS Counter")).toBeTruthy();
+describe("Counter", () => {
+  it("increments", () => {
+    render(() => <Counter />);
+    fireEvent.click(screen.getByRole("button", { name: /increment/i }));
+    expect(screen.getByText(/count: 1/i)).toBeInTheDocument();
+  });
+});
 ```
 
-For end-to-end tests, use Playwright with the example app setups.
+## Run tests
+
+```bash
+pnpm test
+pnpm --filter @philjs/core test:coverage
+```

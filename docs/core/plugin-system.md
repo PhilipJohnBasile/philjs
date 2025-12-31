@@ -43,7 +43,7 @@ philjs plugin info @philjs/plugin-seo
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from '@philjs/core';
+import { defineConfig } from 'philjs-cli';
 import tailwind from '@philjs/plugin-tailwind';
 import analytics from '@philjs/plugin-analytics';
 
@@ -152,7 +152,7 @@ export default definePlugin((options = {}) => ({
     name: 'philjs-plugin-awesome',
     version: '0.1.0',
     description: 'An awesome plugin',
-    philjs: '^2.0.0',
+    philjs: '^0.1.0',
   },
 
   async setup(config, ctx) {
@@ -430,7 +430,7 @@ npm test
     "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "@philjs/core": "^2.0.0",
+    "@philjs/core": "^0.1.0",
     "typescript": "^6.0.0"
   }
 }

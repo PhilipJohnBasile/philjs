@@ -262,7 +262,7 @@ Selective hydration for performance.
 import { Island, mountIslands, registerIsland } from '@philjs/islands';
 ```
 
-**Stability:** Stable since v0.2.0
+**Stability:** Stable since v0.1.0
 **Breaking Change Risk:** Low
 
 ---

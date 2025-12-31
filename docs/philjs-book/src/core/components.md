@@ -1,8 +1,8 @@
 # Components
 
-Components are TypeScript functions that return JSX.
+Components are TypeScript functions that return JSX. They are plain functions, easy to test, and trivial to compose.
 
-## Basic Component
+## Typed props
 
 ```tsx
 type GreetingProps = { name: string };
@@ -15,11 +15,11 @@ export function Greeting({ name }: GreetingProps) {
 ## Children
 
 ```tsx
-import type { JSX } from "@philjs/core";
+import type { JSXChild } from "@philjs/core";
 
 type CardProps = {
   title: string;
-  children: JSX.Element;
+  children?: JSXChild;
 };
 
 export function Card({ title, children }: CardProps) {
@@ -38,8 +38,18 @@ export function Card({ title, children }: CardProps) {
 export function Page() {
   return (
     <Card title="Summary">
-      <p>Signals, SSR, and islands.</p>
+      <p>Signals, SSR, and islands in one system.</p>
     </Card>
   );
+}
+```
+
+## Default values
+
+```tsx
+type BadgeProps = { tone?: "primary" | "neutral" };
+
+export function Badge({ tone = "primary" }: BadgeProps) {
+  return <span class={`badge badge-${tone}`}>{tone}</span>;
 }
 ```

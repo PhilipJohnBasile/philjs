@@ -1,32 +1,52 @@
 # Your First App
 
-Create two files: `src/App.tsx` and `src/main.tsx`.
+This chapter builds a minimal PhilJS app with signals and JSX.
 
-## App Component
+## 1. Create the component
+
+`src/App.tsx`
 
 ```tsx
 import { signal } from "@philjs/core";
 
-export function App() {
-  const count = signal(0);
+const count = signal(0);
 
+export function App() {
   return (
     <main>
       <h1>PhilJS Counter</h1>
-      <p>Count: {count()}</p>
-      <button onClick={() => count.set(count() + 1)}>Increment</button>
+      <p>Count: {count}</p>
+      <button onClick={() => count.set((c) => c + 1)}>Increment</button>
+      <button onClick={() => count.set((c) => c - 1)}>Decrement</button>
     </main>
   );
 }
 ```
 
-## Entry Point
+## 2. Create the entry point
+
+`src/main.tsx`
 
 ```tsx
 import { render } from "@philjs/core";
 import { App } from "./App";
 
-render(() => <App />, document.getElementById("app")!);
+const root = document.getElementById("app");
+if (!root) throw new Error("Missing #app root");
+
+render(<App />, root);
 ```
 
-Run `pnpm dev` and open the local URL printed by the dev server.
+## 3. Ensure the HTML shell exists
+
+```html
+<div id="app"></div>
+```
+
+## 4. Run the app
+
+```bash
+pnpm dev
+```
+
+Open the dev server URL to see your counter.

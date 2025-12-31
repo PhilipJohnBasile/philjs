@@ -1,37 +1,29 @@
 # WASM Optimization
 
-WASM output size and runtime performance matter for production apps.
+WASM bundles can be made extremely small with a few settings.
 
-## Release Builds
+## Recommended Cargo settings
+
+```toml
+[profile.release]
+lto = true
+opt-level = "z"
+codegen-units = 1
+```
+
+## wasm-pack
 
 ```bash
 wasm-pack build --target web --release
 ```
 
-## Cargo Settings
-
-In `Cargo.toml`:
-
-```toml
-[profile.release]
-opt-level = "z"
-lto = true
-codegen-units = 1
-panic = "abort"
-```
-
-## Reduce Imports
-
-Only enable the `web-sys` features you need:
-
-```toml
-web-sys = { version = "0.3", features = ["Document", "Window"] }
-```
-
-## Analyze Size
-
-Use `wasm-opt` for further size reduction:
+## wasm-opt
 
 ```bash
-wasm-opt -Oz -o pkg/app_opt.wasm pkg/app_bg.wasm
+wasm-opt -Oz -o pkg/app_bg.wasm pkg/app_bg.wasm
 ```
+
+## Tips
+
+- Avoid large allocations in render loops.
+- Keep feature flags minimal in release builds.

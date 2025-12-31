@@ -1,26 +1,39 @@
-# Routing
+# Routing Basics
 
-PhilJS uses file-based routing by default.
-
-```
-src/routes/
-├── index.tsx
-├── about.tsx
-└── blog/
-    └── [slug].tsx
-```
-
-## Link Component
+PhilJS routes are defined with `createAppRouter`. Routes can include loaders and actions.
 
 ```tsx
-import { Link } from "@philjs/router";
+import { createAppRouter, Link } from "@philjs/router";
 
-export function Nav() {
+export function HomeRoute() {
   return (
-    <nav>
-      <Link href="/">Home</Link>
-      <Link href="/about">About</Link>
-    </nav>
+    <main>
+      <h1>Home</h1>
+      <Link to="/about">About</Link>
+    </main>
   );
+}
+
+export function AboutRoute() {
+  return <main>About PhilJS</main>;
+}
+
+createAppRouter({
+  target: "#app",
+  routes: [
+    { path: "/", component: HomeRoute },
+    { path: "/about", component: AboutRoute },
+  ],
+});
+```
+
+## Navigation in code
+
+```tsx
+import { useRouter } from "@philjs/router";
+
+export function SaveButton() {
+  const { navigate } = useRouter();
+  return <button onClick={() => navigate("/dashboard")}>Go</button>;
 }
 ```

@@ -1,22 +1,29 @@
 # Introduction
 
-PhilJS is a TypeScript-first UI framework that focuses on signals, SSR, and local-first UX patterns. This book covers the core APIs and the modern architecture PhilJS is moving toward in the 0.1.0 preview.
+PhilJS is a TypeScript-first, signals-first framework built for the Nexus era: local-first data, zero-latency UX, and adaptive UI. This book is the canonical guide for PhilJS v0.1.0.
 
-## What Makes PhilJS Different
+## Who this book is for
 
-- Signals-first reactivity with zero VDOM diffing
-- Built-in SSR and streaming primitives
-- Islands for selective hydration
-- TypeScript 6.x support with Node 24+ as the runtime floor
+- Teams shipping product UIs that must feel instant
+- Library authors who want a stable, typed UI foundation
+- Fullstack engineers who need SSR, islands, and streaming without runtime bloat
 
-## Who This Book Is For
+## What you will learn
 
-- Frontend engineers building modern TypeScript apps
-- Teams adopting local-first and agent-driven interfaces
-- Developers who want predictable performance and minimal boilerplate
+1. Tooling setup for Node 24+ and TypeScript 6.x
+2. Core primitives: signals, effects, memos, resources
+3. Routing with loaders/actions and offline-first patterns
+4. SSR + islands with selective hydration
+5. Testing, performance, and deployment
+6. Nexus architecture principles
 
-## Prerequisites
+## Conventions
 
-- Node.js 24+ (Node 25 supported)
-- TypeScript 6.x
-- Comfort with TypeScript and modern tooling
+- All code is TypeScript or TSX.
+- Imports are scoped: `@philjs/core`, `@philjs/router`, `@philjs/ssr`.
+- Versions are pinned to `^0.1.0`.
+- Commands use pnpm 9+.
+
+## Canonical standards
+
+PhilJS standards are derived from the current codebase and documentation. When you see a pattern here, treat it as the canonical PhilJS way.

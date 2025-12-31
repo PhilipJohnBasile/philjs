@@ -1,22 +1,15 @@
 # Deploying to Vercel
 
-Vercel works well for static + WASM deployments.
+PhilJS Rust apps can be deployed with the CLI or a custom build pipeline.
 
-## Static Deployment
-
-1. Build your WASM bundle:
+## CLI deployment
 
 ```bash
-wasm-pack build --target web --release
+cargo philjs deploy --platform=vercel
 ```
 
-2. Ensure `index.html` references the `pkg/` output.
-3. Deploy the project root with the Vercel CLI:
+## Manual flow
 
-```bash
-vercel --prod
-```
-
-## SSR Note
-
-Vercel does not run Rust binaries directly. For Rust SSR, deploy the server separately (for example, on a VM or container platform) and point Vercel to the static assets.
+1. Build the SSR binary and WASM bundle.
+2. Upload the server binary and `static/` assets.
+3. Ensure Node 24+ on the runtime if you use TS tooling.

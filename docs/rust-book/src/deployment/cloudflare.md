@@ -1,18 +1,13 @@
 # Deploying to Cloudflare
 
-Cloudflare Pages is a good fit for static + WASM deployments.
-
-## Cloudflare Pages
-
-1. Build your WASM bundle:
+Use the Cloudflare target for edge deployment.
 
 ```bash
-wasm-pack build --target web --release
+cargo philjs build --target=cloudflare
+wrangler deploy
 ```
 
-2. Push `index.html` and `pkg/` to your Pages project.
-3. Set the output directory to the project root.
+## Notes
 
-## Workers
-
-If you need edge logic, add a Worker for API routes and keep the Rust UI as static assets.
+- Ensure `wrangler.toml` points to the generated worker bundle.
+- Keep WASM size small for faster cold starts.

@@ -171,7 +171,7 @@ import { DevTools } from '@philjs/devtools';
 
 ### Note on CommonJS
 
-PhilJS 2.0+ is **ESM-only**. CommonJS is not supported. If you need to use PhilJS in a CommonJS environment, use dynamic imports:
+PhilJS is **ESM-only**. CommonJS is not supported. If you need to use PhilJS in a CommonJS environment, use dynamic imports:
 
 ```javascript
 // Dynamic import in CommonJS
@@ -182,7 +182,7 @@ We recommend migrating to ESM for better tree-shaking, faster builds, and access
 
 ## Version Compatibility
 
-This documentation covers PhilJS version **2.0.0** and above.
+This documentation covers PhilJS version **0.1.0** and above.
 
 ### Runtime Requirements
 
@@ -344,7 +344,7 @@ res.send(`
   <html>
     <body>
       <div id="app">${html}</div>
-      <script src="/client.js"></script>
+      <script src="/client.ts"></script>
     </body>
   </html>
 `);

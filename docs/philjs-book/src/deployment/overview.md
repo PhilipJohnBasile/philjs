@@ -1,15 +1,40 @@
 # Deployment
 
+PhilJS supports static, SSR, and hybrid deployments.
+
 ## Build
 
 ```bash
 pnpm build
 ```
 
-## Static Hosting
+## Preview
 
-If your app is static or pre-rendered, deploy `dist/client` to any CDN.
+```bash
+pnpm dev
+pnpm build
+philjs preview
+```
 
-## SSR Hosting
+## Configure output
 
-For SSR, deploy the Node server entry from `dist/server` on a Node 24+ runtime.
+`philjs.config.ts`
+
+```ts
+import { defineConfig } from "philjs-cli";
+
+export default defineConfig({
+  build: {
+    outDir: "dist",
+    ssg: false,
+  },
+  dev: {
+    port: 3000,
+  },
+});
+```
+
+## Runtime requirements
+
+- Node 24+ for SSR runtimes
+- Edge targets when using `@philjs/ssr` worker adapters

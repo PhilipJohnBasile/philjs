@@ -745,7 +745,7 @@ app.get('*', async (req, res) => {
         </head>
         <body>
           <div id="app">${html}</div>
-          <script type="module" src="/assets/entry-client.js"></script>
+          <script type="module" src="/assets/entry-client.ts"></script>
         </body>
       </html>
     `;

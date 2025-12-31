@@ -1,10 +1,10 @@
 # Hello World
 
-This chapter walks through your first PhilJS Rust component and a minimal HTML shell.
+This chapter builds a minimal PhilJS Rust component and mounts it in the browser.
 
-## 1. Write the App
+## 1. Create the component
 
-Create `src/lib.rs`:
+`src/lib.rs`
 
 ```rust
 use wasm_bindgen::prelude::*;
@@ -24,36 +24,14 @@ fn App() -> impl IntoView {
 
 #[wasm_bindgen(start)]
 pub fn main() {
-    mount_to_body(|| view! { <App /> });
+    mount(|| view! { <App /> });
 }
 ```
 
-## 2. Add an HTML Shell
-
-Create `index.html` at the project root:
-
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PhilJS Rust Hello</title>
-  </head>
-  <body>
-    <script type="module">
-      import init from "./pkg/my_philjs_app.js";
-      init();
-    </script>
-  </body>
-</html>
-```
-
-## 3. Build and Run
+## 2. Run the dev server
 
 ```bash
-wasm-pack build --target web
-python -m http.server 3000
+cargo philjs dev
 ```
 
-Open http://localhost:3000 to see your app.
+The CLI handles bundling and the HTML shell. Open the local URL printed by the dev server.

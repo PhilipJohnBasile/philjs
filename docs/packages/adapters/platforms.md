@@ -343,7 +343,7 @@ export default railwayAdapter({
 - `.dockerignore` - Docker ignore patterns
 - `railway.toml` - Railway configuration
 - `nixpacks.toml` - Nixpacks configuration
-- `server.js` - Node.js server with health checks
+- `server.ts` - Node.js server with health checks (TypeScript entry)
 - `DEPLOY.md` - Deployment guide
 
 ## Common Features

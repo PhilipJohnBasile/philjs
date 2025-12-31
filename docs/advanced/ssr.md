@@ -51,7 +51,7 @@ export async function render(url: string) {
 ```typescript
 // server.ts
 import express from 'express';
-import { render } from './dist/server/entry-server.js';
+import { render } from './src/entry-server';
 
 const app = express();
 
@@ -77,7 +77,7 @@ app.get('*', async (req, res) => {
         </head>
         <body>
           <div id="app">${html}</div>
-          <script type="module" src="/assets/entry-client.js"></script>
+          <script type="module" src="/assets/entry-client.ts"></script>
         </body>
       </html>
     `;
@@ -215,7 +215,7 @@ app.get('/users/:id', async (req, res) => {
         <script>
           window.__INITIAL_DATA__ = ${JSON.stringify({ user })};
         </script>
-        <script type="module" src="/assets/entry-client.js"></script>
+        <script type="module" src="/assets/entry-client.ts"></script>
       </body>
     </html>
   `;
@@ -284,7 +284,7 @@ app.get('*', async (req, res) => {
   stream.on('end', () => {
     res.write(`
         </div>
-        <script type="module" src="/assets/entry-client.js"></script>
+        <script type="module" src="/assets/entry-client.ts"></script>
       </body>
     </html>
     `);

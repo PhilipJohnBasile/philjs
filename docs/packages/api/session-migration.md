@@ -4,7 +4,7 @@ Guide for migrating from basic session management to enhanced cookie sessions wi
 
 ## Overview
 
-PhilJS 2.0 introduces enhanced session management features:
+PhilJS 0.1.0 introduces enhanced session management features:
 
 - **Flash Messages**: One-time messages with auto-cleanup
 - **Enhanced Cookie Sessions**: Encryption, signing, CSRF protection, rotation

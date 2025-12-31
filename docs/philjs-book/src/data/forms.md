@@ -1,19 +1,49 @@
 # Forms
 
-Forms work with actions or custom handlers.
+PhilJS ships a typed form API. Use it for validation, error tracking, and clean submit handling.
 
 ```tsx
-export function NewPost() {
+import { useForm, createField, validators } from "@philjs/core";
+
+type SignupForm = {
+  email: string;
+  name: string;
+  consent: boolean;
+};
+
+const Fields = createField<SignupForm>();
+
+export function Signup() {
+  const form = useForm<SignupForm>({
+    schema: {
+      email: validators.email().required(),
+      name: validators.string().min(2),
+      consent: validators.boolean().required(),
+    },
+    onSubmit: async (values) => {
+      await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+    },
+  });
+
   return (
-    <form method="post">
-      <label>
-        Title
-        <input name="title" required />
-      </label>
-      <button type="submit">Create</button>
+    <form onSubmit={form.handleSubmit}>
+      <Fields.Input form={form} name="email" label="Email" />
+      <Fields.Input form={form} name="name" label="Name" />
+      <Fields.Checkbox form={form} name="consent" label="I agree" />
+      <button type="submit" disabled={() => !form.isValid()}>
+        Create account
+      </button>
     </form>
   );
 }
 ```
 
-Use `defineAction` on the route to handle the POST request.
+## Why use the form API
+
+- Built-in validation with typed schemas
+- Signals for form state (`isSubmitting`, `isValid`, `errors`)
+- Accessible field helpers with `aria-invalid` and error IDs

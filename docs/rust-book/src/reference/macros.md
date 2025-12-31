@@ -1,30 +1,44 @@
 # Macros
 
-PhilJS provides ergonomic procedural macros to simplify Rust UI code.
+PhilJS Rust uses macros for ergonomic UI.
 
-## Component Macros
+## `view!`
 
-- `#[component]` - turn a function into a component
-- `view!` - RSX syntax for UI
-- `#[derive(Props)]` - props builder with defaults and optional fields
+```rust
+view! { <div>"Hello"</div> }
+```
 
-## Reactivity Macros
+## `component`
 
-- `signal!(value)` - create a signal
-- `memo!(expr)` - create a memo
+```rust
+#[component]
+fn Button(label: String) -> impl IntoView {
+    view! { <button>{label}</button> }
+}
+```
 
-## Server Macros
+## `signal!` and `memo!`
 
-- `#[server]` - server-only functions
-- `#[action]` - form actions (URL encoded)
-- `#[loader]` - data loaders (GET)
+```rust
+let count = signal!(0);
+let doubled = memo!(count.get() * 2);
+```
 
-## Routing Macros
+## `effect!`
 
-- `#[route("/path/:id")]`
-- `#[layout]`
-- `#[api(GET)]`
-- `use_params!()`
-- `use_query!()`
-- `navigate!()`
-- `redirect!()`
+```rust
+let _effect = effect!({ println!("tick"); });
+```
+
+## `resource!`
+
+```rust
+let data = resource!(async { fetch_data().await });
+```
+
+## `Store`
+
+```rust
+#[derive(Store)]
+struct AppState { count: i32 }
+```

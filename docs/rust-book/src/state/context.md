@@ -1,24 +1,24 @@
 # Context
 
-Context lets you share state across a component tree without prop drilling.
+Use context for app-wide state like themes or user sessions.
 
 ```rust
 use philjs::prelude::*;
 
 #[derive(Clone)]
 struct Theme {
-    primary: String,
+    name: String,
 }
 
 #[component]
-fn ThemeProvider(children: Children) -> impl IntoView {
-    provide_context(Theme { primary: "#3b82f6".into() });
-    view! { <div class="theme">{children}</div> }
+fn App() -> impl IntoView {
+    provide_context(Theme { name: "dark".into() });
+    view! { <Dashboard /> }
 }
 
 #[component]
-fn Button() -> impl IntoView {
-    let theme = use_context::<Theme>().expect("theme missing");
-    view! { <button style=move || format!("background: {}", theme.primary)>"OK"</button> }
+fn Dashboard() -> impl IntoView {
+    let theme = use_context::<Theme>();
+    view! { <p>{theme.name}</p> }
 }
 ```

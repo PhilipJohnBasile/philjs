@@ -687,7 +687,7 @@ export default defineConfig({
 
 ### Turbopack
 
-For Next.js-style builds:
+For PhilJS builds:
 
 ```bash
 npm install turbopack

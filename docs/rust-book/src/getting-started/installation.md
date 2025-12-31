@@ -1,32 +1,42 @@
 # Installation
 
+PhilJS Rust projects use Rust for UI and Node tooling for bundling and dev server workflows.
+
 ## Prerequisites
 
-1. Rust (1.70+)
-
 ```bash
+# Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
 
-2. wasm-pack
+# Add the WASM target
+rustup target add wasm32-unknown-unknown
 
-```bash
+# Install wasm-pack
 cargo install wasm-pack
+
+# Install the PhilJS Rust CLI
+cargo install cargo-philjs
 ```
 
-3. Node.js 24+ (Node 25 supported) for dev tooling
-
-## Create a New Project
+## Verify versions
 
 ```bash
-cargo new my-philjs-app
-cd my-philjs-app
+rustc --version
+cargo philjs --version
+node --version
 ```
 
-## Add Dependencies
+## Create a new project
+
+```bash
+cargo philjs new my-philjs-app --template=spa
+cd my-philjs-app
+cargo philjs dev
+```
+
+## Cargo.toml baseline
 
 ```toml
-# Cargo.toml
 [package]
 name = "my-philjs-app"
 version = "0.1.0"
@@ -36,34 +46,11 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-philjs = "0.1"
-philjs-macros = "0.1"
+philjs = "0.1.0"
 wasm-bindgen = "0.2"
-js-sys = "0.3"
-web-sys = { version = "0.3", features = ["Document", "Element", "Window"] }
 
-[profile.release]
-lto = true
-opt-level = "z"
+[features]
+default = ["wasm"]
+wasm = ["philjs/wasm"]
+ssr = ["philjs/ssr"]
 ```
-
-## Project Structure
-
-```
-my-philjs-app/
-├── Cargo.toml
-├── src/
-│   ├── lib.rs          # Main entry
-│   └── components/     # Your components
-├── index.html
-└── pkg/                # WASM output
-```
-
-## Build and Run
-
-```bash
-wasm-pack build --target web
-python -m http.server 3000
-```
-
-Open http://localhost:3000

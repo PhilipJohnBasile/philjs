@@ -225,7 +225,7 @@ export async function handleSSR(request: Request) {
   });
 
   const stream = renderToStream(<App />, {
-    bootstrapScripts: ['/client.js'],
+    bootstrapScripts: ['/client.ts'],
   });
 
   return new Response(stream, {
@@ -248,7 +248,7 @@ const html = `
   <script nonce="${csp.nonce}">
     window.__CSP_NONCE__ = "${csp.nonce}";
   </script>
-  <script nonce="${csp.nonce}" src="/client.js"></script>
+  <script nonce="${csp.nonce}" src="/client.ts"></script>
 `;
 
 // client.ts

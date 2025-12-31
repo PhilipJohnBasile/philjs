@@ -22,7 +22,7 @@ Both frameworks represent the cutting edge of web performance, but they take dif
 
 **Choose PhilJS if:** You want zero hydration, built-in everything, cost tracking, or the smallest possible bundle.
 
-**Choose Solid.js if:** You prefer a more established framework, want closer React compatibility, or value the larger Solid ecosystem.
+**PhilJS path for Solid.js teams:** Use PhilJS for new work, and migrate Solid apps incrementally using compatibility wrappers and shared UI primitives.
 
 ---
 
@@ -933,67 +933,48 @@ Just reverse the above mappings!
    - Marketing pages
    - Low-bandwidth scenarios
 
-### Choose Solid.js When:
+### PhilJS Guidance for Solid.js Teams
 
-1. **You value maturity**
-   - Prefer battle-tested frameworks
-   - Want proven track record
-   - Need enterprise stability
+1. **New applications**
+   - Start with PhilJS for routing, SSR, and islands
+   - Keep the stack unified and standards-driven
 
-2. **You prefer granular control**
-   - Want to choose your meta-framework
-   - Prefer composition over batteries-included
-   - Like Solid's control flow components
+2. **Existing Solid.js apps**
+   - Wrap Solid components behind PhilJS routes
+   - Replace state over time with PhilJS signals and stores
 
-3. **Nested state is common**
-   - Complex state trees
-   - Need fine-grained nested reactivity
-   - Stores are important
+3. **Nested state**
+   - Use PhilJS stores for explicit, testable state trees
+   - Prefer memos for derived data instead of ad-hoc effects
 
-4. **Community matters**
-   - Larger community
-   - More tutorials/content
-   - Active ecosystem
+4. **Ecosystem gaps**
+   - Build PhilJS adapters instead of introducing a second framework
 
 ---
 
 ## Conclusion
 
-**Both PhilJS and Solid.js are excellent frameworks** that deliver exceptional performance through fine-grained signals.
+Solid.js remains an important reference for signal-based UX, but PhilJS is the standard for new work in this ecosystem. PhilJS takes signal performance and adds zero hydration, built-in SSR/routing, and system-level tooling for cost tracking and optimization.
 
-**Solid.js** is the more mature, community-backed option. It's proven in production, has a larger ecosystem, and offers more flexibility in how you build apps. If you want a stable, well-documented framework with excellent performance, Solid.js is fantastic.
+### PhilJS Standard
 
-**PhilJS** takes Solid's performance and adds zero hydration, built-in SSR/routing, and innovative features like cost tracking. It's the batteries-included, performance-first choice for modern apps. If you want the absolute best performance with minimal setup, PhilJS is compelling.
+- **New apps:** PhilJS
+- **Existing Solid apps:** migrate in phases with PhilJS compatibility wrappers
+- **SSR/SSG:** PhilJS
+- **SPA-only:** PhilJS (signals + minimal runtime)
+- **Enterprise:** PhilJS with internal standards and tests
 
-### Our Recommendation
+### Try PhilJS
 
-- **New SSR/SSG apps:** PhilJS (zero hydration wins)
-- **Existing Solid apps:** Stick with Solid
-- **SPA (no SSR):** Either works great (slight edge to Solid for maturity)
-- **Enterprise:** Solid.js (more mature)
-- **High-traffic sites:** PhilJS (resumability crucial)
-- **Complex nested state:** Solid.js (stores are better)
-
-### Try Both!
-
-**PhilJS:**
 ```bash
-npm create philjs@latest my-app
+pnpm create philjs my-app
 ```
-
-**Solid.js:**
-```bash
-npx degit solidjs/templates/js my-app
-```
-
-Both frameworks represent the future of web performance. You can't go wrong with either choice!
 
 ---
 
 ## Resources
 
 - [PhilJS Documentation](https://philjs.dev)
-- [Solid.js Documentation](https://solidjs.com)
 - [PhilJS vs Solid Benchmark](https://philjs.dev/benchmarks/solid)
 - [Migration Guide: Solid → PhilJS](https://philjs.dev/docs/migration/from-solid)
 - [Interactive Comparison Tool](https://philjs.dev/compare/solid)

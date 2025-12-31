@@ -63,7 +63,7 @@ async function buildStatic() {
         </head>
         <body>
           <div id="app">${html}</div>
-          <script type="module" src="/assets/entry-client.js"></script>
+          <script type="module" src="/assets/entry-client.ts"></script>
         </body>
       </html>
     `;
@@ -170,7 +170,7 @@ function writeHtmlFile(filePath: string, html: string, title: string) {
       </head>
       <body>
         <div id="app">${html}</div>
-        <script type="module" src="/assets/entry-client.js"></script>
+        <script type="module" src="/assets/entry-client.ts"></script>
       </body>
     </html>
   `;

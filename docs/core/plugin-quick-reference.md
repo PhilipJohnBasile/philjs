@@ -8,7 +8,7 @@ Fast reference guide for working with PhilJS plugins.
 # Install plugin
 philjs plugin add <plugin-name>
 philjs plugin add @philjs/plugin-tailwind
-philjs plugin add @philjs/plugin-analytics --version 1.2.0
+philjs plugin add @philjs/plugin-analytics --version 0.1.0
 
 # Remove plugin
 philjs plugin remove <plugin-name>
@@ -49,7 +49,7 @@ philjs plugin setup
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from '@philjs/core';
+import { defineConfig } from 'philjs-cli';
 import myPlugin from 'philjs-plugin-name';
 
 export default defineConfig({
@@ -104,7 +104,7 @@ export default createBuilder()
     name: 'philjs-plugin-awesome',
     version: '0.1.0',
     description: 'An awesome plugin',
-    philjs: '^2.0.0',
+    philjs: '^0.1.0',
   })
   .configSchema({
     type: 'object',
@@ -147,7 +147,7 @@ export default function myPlugin(options = {}): Plugin {
     meta: {
       name: 'philjs-plugin-awesome',
       version: '0.1.0',
-      philjs: '^2.0.0',
+      philjs: '^0.1.0',
     },
 
     async setup(config, ctx) {
