@@ -29,7 +29,7 @@ function render(
 #### Basic Rendering
 
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 
 function App() {
   return <h1>Hello, PhilJS!</h1>;
@@ -87,7 +87,7 @@ function hydrate(
 #### Basic Hydration
 
 ```typescript
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 // Server sent HTML
 // <div id="app"><h1>Hello, PhilJS!</h1></div>
@@ -332,7 +332,7 @@ A lazy-loaded component
 #### Basic Lazy Loading
 
 ```typescript
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 

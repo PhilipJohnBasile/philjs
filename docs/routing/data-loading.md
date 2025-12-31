@@ -40,7 +40,7 @@ export function PostsRoute({ data }: { data: Post[] }) {
 Loaders receive the same context object as actions. Use params to tailor fetches:
 
 ```ts
-import { Ok, Err } from 'philjs-core';
+import { Ok, Err } from '@philjs/core';
 
 {
   path: '/posts/:slug',
@@ -59,7 +59,7 @@ export function BlogPostRoute({ params, data, error }: RouteComponentProps) {
   return <ArticleView post={data} />;
 }
 
-> Tip: `Ok`/`Err` come from `philjs-core`'s Rust-inspired `Result` helpers (`import { Ok, Err } from 'philjs-core'`). Use `isResult` if you want to branch manually.
+> Tip: `Ok`/`Err` come from `@philjs/core`'s Rust-inspired `Result` helpers (`import { Ok, Err } from '@philjs/core'`). Use `isResult` if you want to branch manually.
 ```
 
 ## Error Handling

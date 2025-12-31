@@ -1,4 +1,4 @@
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import { CodeBlock } from '../components/CodeBlock';
 import { ExampleButton } from '../components/ExampleButton';
 import { theme, toggleTheme } from '../lib/theme';
@@ -8,7 +8,7 @@ const EXAMPLES_DATA = {
   counter: {
     title: 'Counter (Fine-Grained Reactivity)',
     description: 'See how signals automatically track dependencies without useCallback or useMemo',
-    code: `import { signal } from 'philjs-core';
+    code: `import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -54,7 +54,7 @@ const Counter = memo(() => {
   todo: {
     title: 'Todo List (State Management)',
     description: 'Signals work for all state - no Redux, Zustand, or Context needed',
-    code: `import { signal } from 'philjs-core';
+    code: `import { signal } from '@philjs/core';
 
 function TodoList() {
   const todos = signal([{ id: 1, text: 'Learn PhilJS', done: false }]);
@@ -124,7 +124,7 @@ async function UserPage({ params }) {
   form: {
     title: 'Forms (Built-in Validation)',
     description: 'Type-safe forms with zero boilerplate',
-    code: `import { useForm, v } from 'philjs-core';
+    code: `import { useForm, v } from '@philjs/core';
 
 function SignupForm() {
   const form = useForm({
@@ -165,7 +165,7 @@ function SignupForm() {
   animation: {
     title: 'Animations (Declarative)',
     description: 'Smooth animations without React Spring or Framer Motion',
-    code: `import { createAnimatedValue } from 'philjs-core';
+    code: `import { createAnimatedValue } from '@philjs/core';
 
 function Slider() {
   const x = createAnimatedValue(0);

@@ -12,7 +12,7 @@ import {
   type SerializeOptions,
   type DeserializeOptions,
   type CustomTypeHandler,
-} from 'philjs-core/superjson';
+} from '@philjs/core/superjson';
 
 import type { Loader, Action, LoaderCtx, ActionCtx } from './types.js';
 

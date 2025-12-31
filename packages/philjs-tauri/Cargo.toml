@@ -1,6 +1,6 @@
 [package]
 name = "philjs-tauri"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Tauri integration for PhilJS - build desktop apps with web technologies and Rust"

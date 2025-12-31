@@ -12,7 +12,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "test": "vitest run"
@@ -21,12 +24,20 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
-  "keywords": ["table", "datagrid", "headless", "sorting", "filtering", "pagination", "philjs"],
+  "keywords": [
+    "table",
+    "datagrid",
+    "headless",
+    "sorting",
+    "filtering",
+    "pagination",
+    "philjs"
+  ],
   "license": "MIT",
   "sideEffects": false,
   "engines": {

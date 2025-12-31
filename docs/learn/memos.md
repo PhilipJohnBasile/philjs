@@ -15,7 +15,7 @@ Memos let you compute values from signals efficiently. They only recalculate whe
 A memo is a **computed value** that automatically updates when its dependencies change:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(10);
 

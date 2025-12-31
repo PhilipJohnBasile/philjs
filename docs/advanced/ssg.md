@@ -29,7 +29,7 @@ Static site generation offers unmatched benefits:
 
 ```typescript
 // scripts/build-static.ts
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { App } from '../src/App';
@@ -88,7 +88,7 @@ buildStatic().catch(console.error);
 // package.json
 {
   "scripts": {
-    "build:static": "ts-node scripts/build-static.ts"
+    "build:static": "tsx scripts/build-static.ts"
   }
 }
 ```

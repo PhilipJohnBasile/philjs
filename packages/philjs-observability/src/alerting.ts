@@ -459,10 +459,62 @@ export class AlertManager {
     });
   }
 
-  private async sendEmailNotification(_channel: NotificationChannel, _alert: Alert): Promise<void> {
-    // Email sending would require a backend service
-    console.log('Email notification not implemented (requires backend)');
+  private async sendEmailNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
+    const endpoint = channel.config['endpoint'] as string | undefined;
+    const to = channel.config['to'] as string | string[] | undefined;
+    const from = (channel.config['from'] as string | undefined) ?? 'alerts@philjs.dev';
+
+    if (!endpoint) {
+      throw new Error(`Email channel "${channel.name}" requires config.endpoint`);
+    }
+    if (!to) {
+      throw new Error(`Email channel "${channel.name}" requires config.to`);
+    }
+
+    const subject = (channel.config['subject'] as string | undefined)
+      ?? `[PhilJS] ${alert.state === 'resolved' ? 'Resolved' : 'Alert'}: ${alert.ruleName}`;
+
+    const text = (channel.config['text'] as string | undefined)
+      ?? `${alert.message}\nSeverity: ${alert.severity}\nValue: ${alert.value}\nThreshold: ${alert.threshold}`;
+
+    const html = (channel.config['html'] as string | undefined)
+      ?? `<strong>${escapeHtml(alert.ruleName)}</strong><p>${escapeHtml(alert.message)}</p>`;
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(channel.config['headers'] as Record<string, string> || {}),
+    };
+
+    const apiKey = channel.config['apiKey'] as string | undefined;
+    if (apiKey) {
+      const headerName = (channel.config['authHeader'] as string | undefined) ?? 'Authorization';
+      const prefix = (channel.config['authPrefix'] as string | undefined) ?? 'Bearer';
+      headers[headerName] = `${prefix} ${apiKey}`;
+    }
+
+    await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        to,
+        from,
+        subject,
+        text,
+        html,
+        alert,
+        timestamp: Date.now(),
+      }),
+    });
   }
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
   private async sendPagerDutyNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
     const routingKey = channel.config['routingKey'] as string;

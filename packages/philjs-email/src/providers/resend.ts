@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Resend } from 'resend';
 import type {
   EmailProvider,

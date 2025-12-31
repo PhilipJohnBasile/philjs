@@ -8,7 +8,7 @@ Provide a `layout` function on a route definition. The layout receives the same 
 
 ```tsx
 // routes/_layout.tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function AppLayout({ children }: { children: any }) {
   return (

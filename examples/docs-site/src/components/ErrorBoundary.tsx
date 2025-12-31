@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface ErrorInfo {
   error: Error;

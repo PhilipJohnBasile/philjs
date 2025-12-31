@@ -81,7 +81,7 @@ function UserLink({ url, title }: { url: string; title: string }) {
 PhilJS SSR escapes content before sending HTML to the client:
 
 ```typescript
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 
 const html = renderToString(
   <div>{userInput}</div>
@@ -96,7 +96,7 @@ Different contexts require different escaping strategies. PhilJS provides utilit
 ### HTML Context
 
 ```typescript
-import { escapeHtml } from 'philjs-core';
+import { escapeHtml } from '@philjs/core';
 
 const userComment = '<script>alert("XSS")</script>';
 const safe = escapeHtml(userComment);
@@ -110,7 +110,7 @@ function Comment({ text }: { text: string }) {
 ### Attribute Context
 
 ```typescript
-import { escapeAttr } from 'philjs-core';
+import { escapeAttr } from '@philjs/core';
 
 const userInput = '" onload="alert(\'XSS\')';
 const safe = escapeAttr(userInput);
@@ -123,7 +123,7 @@ function Image({ alt }: { alt: string }) {
 ### JavaScript Context
 
 ```typescript
-import { escapeJs } from 'philjs-core';
+import { escapeJs } from '@philjs/core';
 
 const userName = 'John"; alert("XSS"); var x="';
 const safe = escapeJs(userName);
@@ -140,7 +140,7 @@ function Analytics({ userId }: { userId: string }) {
 ### URL Context
 
 ```typescript
-import { escapeUrl, sanitizeUrl } from 'philjs-core';
+import { escapeUrl, sanitizeUrl } from '@philjs/core';
 
 // For query parameters
 const searchQuery = 'hello world & stuff';
@@ -160,7 +160,7 @@ if (redirectUrl) {
 When you need to render HTML from user input (e.g., blog posts, comments):
 
 ```typescript
-import { sanitizeHtml } from 'philjs-core';
+import { sanitizeHtml } from '@philjs/core';
 
 function BlogPost({ content }: { content: string }) {
   // Sanitize HTML to remove dangerous elements
@@ -201,7 +201,7 @@ function MarkdownContent({ markdown }: { markdown: string }) {
 Validate image URLs to prevent XSS via SVG or data URLs:
 
 ```typescript
-import { sanitizeUrl } from 'philjs-core';
+import { sanitizeUrl } from '@philjs/core';
 
 function Avatar({ imageUrl }: { imageUrl: string }) {
   // Validate URL
@@ -259,7 +259,7 @@ function Link({ href }: { href: string }) {
 }
 
 // SAFE - Validated URLs
-import { sanitizeUrl } from 'philjs-core';
+import { sanitizeUrl } from '@philjs/core';
 
 function Link({ href }: { href: string }) {
   const safeHref = sanitizeUrl(href, ['example.com']) || '#';
@@ -304,7 +304,7 @@ function Icon({ svg }: { svg: string }) {
 }
 
 // SAFE - Sanitized SVG
-import { sanitizeHtml } from 'philjs-core';
+import { sanitizeHtml } from '@philjs/core';
 
 function Icon({ svg }: { svg: string }) {
   const safe = sanitizeHtml(svg, {
@@ -340,7 +340,7 @@ function processInput(input: string): string {
 Combine XSS prevention with CSP headers:
 
 ```typescript
-import { buildCSP } from 'philjs-ssr';
+import { buildCSP } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: {
@@ -366,7 +366,7 @@ Only use when absolutely necessary and always with sanitization:
 <div>{userContent}</div>
 
 // IF REQUIRED, sanitize first
-import { sanitizeHtml } from 'philjs-core';
+import { sanitizeHtml } from '@philjs/core';
 <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(userContent) }} />
 ```
 
@@ -375,7 +375,7 @@ import { sanitizeHtml } from 'philjs-core';
 Always validate URLs before using them:
 
 ```typescript
-import { sanitizeUrl } from 'philjs-core';
+import { sanitizeUrl } from '@philjs/core';
 
 function handleRedirect(url: string) {
   const safe = sanitizeUrl(url, ['example.com', 'trusted-site.com']);
@@ -393,7 +393,7 @@ function handleRedirect(url: string) {
 Different contexts require different escaping:
 
 ```typescript
-import { escapeHtml, escapeAttr, escapeJs, escapeUrl } from 'philjs-core';
+import { escapeHtml, escapeAttr, escapeJs, escapeUrl } from '@philjs/core';
 
 // In HTML
 <div>{escapeHtml(data)}</div>
@@ -447,7 +447,7 @@ Write tests for your sanitization functions:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { escapeHtml, sanitizeHtml } from 'philjs-core';
+import { escapeHtml, sanitizeHtml } from '@philjs/core';
 
 describe('XSS Prevention', () => {
   it('should escape HTML special characters', () => {

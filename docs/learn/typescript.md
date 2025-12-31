@@ -13,7 +13,7 @@ TypeScript with PhilJS gives you:
 - **Safer refactoring**: Change code with confidence
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   // TypeScript knows count is Signal<number>
@@ -98,7 +98,7 @@ interface User {
 ### Component with Children
 
 ```tsx
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 
 interface CardProps {
   title: string;
@@ -127,7 +127,7 @@ function Card({ title, children }: CardProps) {
 ### Basic Signals
 
 ```tsx
-import { signal, Signal } from 'philjs-core';
+import { signal, Signal } from '@philjs/core';
 
 // Explicit type annotation
 const count: Signal<number> = signal(0);
@@ -152,7 +152,7 @@ const user = signal<User | null>(null);
 ### Readonly Signals
 
 ```tsx
-import { signal, Signal, ReadonlySignal } from 'philjs-core';
+import { signal, Signal, ReadonlySignal } from '@philjs/core';
 
 function useCounter() {
   const count = signal(0);
@@ -174,7 +174,7 @@ increment(); // ✅ OK
 ### Array and Object Signals
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Array signal
 const todos = signal<Array<{
@@ -214,7 +214,7 @@ appState.set({
 Memos automatically infer their return type from the computation:
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(10);
 
@@ -247,7 +247,7 @@ const fullName = memo(() => {
 Effects don't return values, so type safety focuses on dependencies:
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const userId = signal<number | null>(null);
 const userData = signal<User | null>(null);
@@ -270,7 +270,7 @@ effect(() => {
 PhilJS provides proper types for all DOM events:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Form() {
   const email = signal('');
@@ -329,7 +329,7 @@ function Counter() {
 Type refs based on the element they reference:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function VideoPlayer() {
   let videoRef: HTMLVideoElement | undefined;
@@ -375,7 +375,7 @@ const inputRef = useRef<HTMLInputElement>();
 Type-safe context with generic helpers:
 
 ```tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 // Define context value type
 interface ThemeContextValue {
@@ -422,7 +422,7 @@ function ThemedButton() {
 Handle async operations with proper typing:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Async data fetching
 async function fetchUsers(): Promise<User[]> {
@@ -469,7 +469,7 @@ function UserList() {
 Type-safe form handling:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface LoginForm {
   email: string;
@@ -524,7 +524,7 @@ function LoginForm() {
 ### Discriminated Unions
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 type LoadingState<T> =
   | { status: 'idle' }
@@ -594,7 +594,7 @@ function UserProfile({ data }: { data: unknown }) {
 ### Utility Types
 
 ```tsx
-import { Signal, Memo } from 'philjs-core';
+import { Signal, Memo } from '@philjs/core';
 
 // Extract signal value type
 type UnwrapSignal<T> = T extends Signal<infer U> ? U : never;
@@ -621,7 +621,7 @@ type ReadonlyUserProps = ReadonlyProps<Props>;
 Type-safe server functions:
 
 ```tsx
-import { serverFn } from 'philjs-ssr';
+import { serverFn } from '@philjs/ssr';
 
 // Server function with full type safety
 export const createUser = serverFn(
@@ -661,7 +661,7 @@ Optimal `tsconfig.json` for PhilJS:
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
 
     "strict": true,
     "esModuleInterop": true,
@@ -683,7 +683,7 @@ Optimal `tsconfig.json` for PhilJS:
 
 ## Common Type Errors
 
-### Error: Cannot find module 'philjs-core'
+### Error: Cannot find module '@philjs/core'
 
 ```json
 // Add to tsconfig.json
@@ -701,7 +701,7 @@ Optimal `tsconfig.json` for PhilJS:
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```

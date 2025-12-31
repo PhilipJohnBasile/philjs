@@ -87,7 +87,7 @@
     "@philjs/liveview": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "tsup": "^8.5.1",
     "vitest": "^4.0.16"
   },

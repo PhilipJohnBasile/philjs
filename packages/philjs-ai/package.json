@@ -51,7 +51,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-ai'",
     "typecheck": "tsc --noEmit"
@@ -67,9 +67,9 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

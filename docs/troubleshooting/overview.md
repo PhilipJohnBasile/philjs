@@ -357,7 +357,7 @@ Chrome DevTools:
 
 ```tsx
 // Enable devtools in development
-import { enableDevTools } from 'philjs-devtools';
+import { enableDevTools } from '@philjs/devtools';
 
 if (import.meta.env.DEV) {
   enableDevTools();

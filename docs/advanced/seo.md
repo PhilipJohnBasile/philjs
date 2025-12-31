@@ -30,7 +30,7 @@ Search engine optimization provides critical benefits:
 Essential meta tags for every page:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function PageHead({ title, description, keywords }: {
   title: string;
@@ -78,7 +78,7 @@ function HomePage() {
 Update meta tags dynamically based on content:
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface SEOProps {
   title: string;
@@ -723,7 +723,7 @@ Configure SSR to ensure search engines can crawl your content:
 ```typescript
 // server.ts
 import express from 'express';
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 import { App } from './App';
 
 const app = express();
@@ -766,7 +766,7 @@ Fetch data on the server and render meta tags:
 
 ```typescript
 // App.tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 async function ProductPage({ productId }: { productId: string }) {
   // Fetch on server during SSR

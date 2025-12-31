@@ -4,7 +4,7 @@
  * Provides consistent page structure across the docs site
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { theme } from '../lib/theme';
@@ -12,6 +12,7 @@ import { theme } from '../lib/theme';
 export interface LayoutProps {
   children: any;
   navigate: (path: string) => void;
+  currentPage?: () => string;
   showSidebar?: boolean;
   sidebar?: any;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
@@ -20,6 +21,7 @@ export interface LayoutProps {
 export function Layout({
   children,
   navigate,
+  currentPage,
   showSidebar = false,
   sidebar,
   maxWidth = 'xl'
@@ -44,7 +46,11 @@ export function Layout({
       color: 'var(--color-text)',
     }}>
       {/* Header */}
-      <Header navigate={navigate} onMenuToggle={() => mobileMenuOpen.set(!mobileMenuOpen())} />
+      <Header
+        navigate={navigate}
+        currentPage={currentPage}
+        onMenuToggle={(open) => mobileMenuOpen.set(open)}
+      />
 
       {/* Main Content */}
       <div style={{
@@ -70,25 +76,16 @@ export function Layout({
 
             {/* Sidebar */}
             <aside
+              class={mobileMenuOpen() ? 'sidebar sidebar-open' : 'sidebar'}
               style={{
                 width: '280px',
                 flexShrink: 0,
                 borderRight: '1px solid var(--color-border)',
                 background: 'var(--color-bg)',
-                position: 'sticky',
                 top: '64px',
                 height: 'calc(100vh - 64px)',
                 overflowY: 'auto',
-                transition: 'transform 0.3s ease',
                 zIndex: 50,
-                ...(mobileMenuOpen() ? {} : {
-                  transform: 'translateX(-100%)',
-                  position: 'fixed',
-                }),
-                '@media (min-width: 1024px)': {
-                  transform: 'translateX(0)',
-                  position: 'sticky',
-                },
               }}
             >
               {sidebar}
@@ -122,6 +119,7 @@ export function Layout({
 export interface DocLayoutProps {
   children: any;
   navigate: (path: string) => void;
+  currentPage?: () => string;
   sidebar: any;
   tableOfContents?: any;
   breadcrumbs?: any;
@@ -130,6 +128,7 @@ export interface DocLayoutProps {
 export function DocLayout({
   children,
   navigate,
+  currentPage,
   sidebar,
   tableOfContents,
   breadcrumbs,
@@ -142,7 +141,7 @@ export function DocLayout({
       background: 'var(--color-bg)',
     }}>
       {/* Header */}
-      <Header navigate={navigate} />
+      <Header navigate={navigate} currentPage={currentPage} />
 
       {/* Main Content Area */}
       <div style={{
@@ -196,12 +195,14 @@ export function DocLayout({
 export interface CenteredLayoutProps {
   children: any;
   navigate: (path: string) => void;
+  currentPage?: () => string;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 export function CenteredLayout({
   children,
   navigate,
+  currentPage,
   maxWidth = 'lg',
 }: CenteredLayoutProps) {
   const maxWidthMap = {
@@ -218,7 +219,7 @@ export function CenteredLayout({
       display: 'flex',
       flexDirection: 'column',
     }}>
-      <Header navigate={navigate} />
+      <Header navigate={navigate} currentPage={currentPage} />
 
       <main style={{
         flex: 1,

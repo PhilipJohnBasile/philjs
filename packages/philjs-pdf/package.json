@@ -20,7 +20,10 @@
       "default": "./dist/utils/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -29,7 +32,13 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "pdf", "pdf-generation", "puppeteer", "pdfkit"],
+  "keywords": [
+    "philjs",
+    "pdf",
+    "pdf-generation",
+    "puppeteer",
+    "pdfkit"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -40,7 +49,7 @@
   "devDependencies": {
     "@types/pdfkit": "^0.13.4",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

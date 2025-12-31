@@ -2,14 +2,14 @@
 
 The framework that thinks ahead.
 
-PhilJS is a modern JavaScript/TypeScript + Rust framework combining fine-grained reactivity, server-side rendering, and WebAssembly support. Build fast, accessible web applications with first-class Rust integration.
+PhilJS is a modern TypeScript + Rust framework combining fine-grained reactivity, server-side rendering, and WebAssembly support. Build fast, accessible web applications with first-class Rust integration.
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](.)
 [![Status](https://img.shields.io/badge/status-alpha-orange)](.)
 [![Docs](https://img.shields.io/badge/docs-in--progress-yellow)](./docs)
 [![Packages](https://img.shields.io/badge/packages-90+-blue)](./packages)
 
-Current release: v0.0.1 (Alpha)
+Current release: v0.1.0 (Alpha)
 
 ## Why PhilJS
 
@@ -22,7 +22,7 @@ Current release: v0.0.1 (Alpha)
 
 ## Quick Start
 
-Prerequisites: Node.js 24+ and a package manager (npm, pnpm, yarn, or bun). See [SUPPORT.md](./SUPPORT.md) for version policy.
+Prerequisites: Node.js 24+ (Node 25 supported), TypeScript 6+, and a package manager (npm, pnpm, yarn, or bun). See [SUPPORT.md](./SUPPORT.md) for version policy.
 
 ```bash
 pnpm create philjs my-app
@@ -44,7 +44,7 @@ bun create philjs my-app
 ## First Component
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -63,6 +63,7 @@ function Counter() {
 ## Documentation
 
 - [Docs Home](./docs/README.md)
+- [PhilJS Standards](./PHILJS_STANDARDS.md)
 - [Getting Started](./docs/getting-started/introduction.md)
 - [Learn](./docs/learn/)
 - [API Reference](./docs/api-reference/)
@@ -72,15 +73,15 @@ function Counter() {
 
 ## Packages
 
-PhilJS is a monorepo with 90+ packages covering JavaScript/TypeScript and Rust. The framework is in active development. See [packages](./packages) for the full list.
+PhilJS is a monorepo with 90+ packages covering TypeScript and Rust. The framework is in active development. See [packages](./packages) for the full list.
 
-### JavaScript/TypeScript Core:
+### TypeScript Core:
 
-- `philjs-core` - Fine-grained reactivity with signals, memos, and effects
-- `philjs-router` - Type-safe routing with nested layouts
-- `philjs-ssr` - Server-side rendering with streaming support
-- `philjs-compiler` - Build-time optimizations and transforms
-- `philjs-islands` - Islands architecture for partial hydration
+- `@philjs/core` - Fine-grained reactivity with signals, memos, and effects
+- `@philjs/router` - Type-safe routing with nested layouts
+- `@philjs/ssr` - Server-side rendering with streaming support
+- `@philjs/compiler` - Build-time optimizations and transforms
+- `@philjs/islands` - Islands architecture for partial hydration
 
 ### Rust Integration:
 
@@ -110,7 +111,7 @@ pnpm typecheck
 
 ## Project Status
 
-**Current Status: Alpha (v0.0.1)**
+**Current Status: Alpha (v0.1.0)**
 
 PhilJS is under active development. Core functionality is implemented but APIs may change.
 

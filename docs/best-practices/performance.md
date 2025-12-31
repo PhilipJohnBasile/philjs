@@ -18,7 +18,7 @@ PhilJS uses fine-grained reactivity, which means:
 - Minimal re-computation
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -160,7 +160,7 @@ const userName = () => user().name;
 ### Batch Related Changes
 
 ```tsx
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 // ✅ Batch multiple signal updates
 function updateUser(updates: Partial<User>) {
@@ -204,7 +204,7 @@ function processItemsBetter(newItems: Item[]) {
 ### Code Splitting with lazy()
 
 ```tsx
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 // ✅ Split large components
 const Dashboard = lazy(() => import('./Dashboard'));
@@ -273,7 +273,7 @@ function DocumentEditor() {
 ### Virtual Scrolling
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface VirtualListProps<T> {
   items: T[];
@@ -506,7 +506,7 @@ async function loadChartData() {
 ### Skip Effects with untrack()
 
 ```tsx
-import { untrack } from 'philjs-core';
+import { untrack } from '@philjs/core';
 
 const userId = signal('123');
 const userName = signal('Alice');

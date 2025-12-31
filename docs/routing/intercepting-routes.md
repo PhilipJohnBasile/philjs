@@ -73,7 +73,7 @@ export default function PhotoPage({ params }) {
 
 ```tsx
 // routes/(.)login/index.tsx
-import { useNavigate } from 'philjs-router';
+import { useNavigate } from '@philjs/router';
 
 export default function LoginModal() {
   const navigate = useNavigate();

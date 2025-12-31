@@ -3,7 +3,7 @@
  * Provides development overlay and production error tracking.
  */
 
-import type { JSXElement } from 'philjs-core/jsx-runtime';
+import type { JSXElement } from '@philjs/core/jsx-runtime';
 
 // ============================================================================
 // Types

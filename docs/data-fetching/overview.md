@@ -26,7 +26,7 @@ PhilJS supports multiple data fetching approaches:
 ### Basic Fetch in Effect
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: string }) {
   const user = signal(null);
@@ -68,7 +68,7 @@ function UserProfile({ userId }: { userId: string }) {
 ### Custom Fetch Hook
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useFetch<T>(url: string) {
   const data = signal<T | null>(null);
@@ -127,7 +127,7 @@ export async function updateUser(id: string, data: Partial<User>) {
 ```typescript
 // src/pages/profile.tsx
 import { getUser, updateUser } from '@/server/users';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function Profile({ userId }: { userId: string }) {
   const user = signal(null);
@@ -157,7 +157,7 @@ export default function Profile({ userId }: { userId: string }) {
 Declarative data fetching with automatic caching:
 
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 const userQuery = createQuery({
   key: (userId: string) => ['user', userId],
@@ -187,7 +187,7 @@ function UserProfile({ userId }: { userId: string }) {
 Update data with optimistic updates:
 
 ```typescript
-import { createMutation, createQuery } from 'philjs-core';
+import { createMutation, createQuery } from '@philjs/core';
 
 const updateUserMutation = createMutation({
   mutationFn: async ({ id, data }: { id: string; data: Partial<User> }) => {
@@ -379,7 +379,7 @@ function ProductList() {
 ### Suspense
 
 ```typescript
-import { Suspense } from 'philjs-core';
+import { Suspense } from '@philjs/core';
 
 export default function Page() {
   return (
@@ -416,7 +416,7 @@ async function fetchWithRetry<T>(
 ### Error Boundaries
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 export default function Page() {
   return (
@@ -440,7 +440,7 @@ export default function Page() {
 ### WebSocket
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useWebSocket<T>(url: string) {
   const data = signal<T | null>(null);
@@ -476,7 +476,7 @@ function LiveDashboard() {
 ### Polling
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function usePolling<T>(url: string, interval = 5000) {
   const data = signal<T | null>(null);

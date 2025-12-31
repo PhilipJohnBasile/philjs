@@ -28,7 +28,7 @@ Comprehensive testing strategies for PhilJS applications.
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 describe('signal()', () => {
   it('creates reactive state', () => {
@@ -62,7 +62,7 @@ describe('signal()', () => {
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 describe('memo()', () => {
   it('computes derived value', () => {
@@ -119,7 +119,7 @@ describe('memo()', () => {
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 describe('effect()', () => {
   it('runs immediately', () => {
@@ -182,7 +182,7 @@ describe('effect()', () => {
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function useCounter(initialValue = 0) {
   const count = signal(initialValue);
@@ -428,7 +428,7 @@ describe('LoginForm', () => {
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/philjs';
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 import { ThemedButton } from './ThemedButton';
 
 const ThemeContext = createContext('light');
@@ -457,7 +457,7 @@ describe('ThemedButton with Context', () => {
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/philjs';
-import { Router, Route } from 'philjs-router';
+import { Router, Route } from '@philjs/router';
 import { App } from './App';
 
 describe('App Routing', () => {

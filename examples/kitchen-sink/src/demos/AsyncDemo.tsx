@@ -1,4 +1,4 @@
-import { signal, memo, effect } from "philjs-core";
+import { signal, memo, effect } from "@philjs/core";
 
 interface User {
   id: number;

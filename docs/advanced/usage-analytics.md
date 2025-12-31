@@ -39,7 +39,7 @@ Most applications accumulate unused code over time. PhilJS analytics helps you:
 ### 1. Import and Use
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 // Usage analytics is automatically enabled in development
 // For production, explicitly enable:
@@ -51,7 +51,7 @@ if (import.meta.env.PROD) {
 ### 2. Detect Dead Code
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 // Get dead code report
 const deadCode = usageAnalytics.detectDeadCode({
@@ -267,7 +267,7 @@ await fs.writeFile(
 Global analytics instance, pre-configured and ready to use.
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 ```
 
 ## Dead Code Detection
@@ -493,7 +493,7 @@ function applyOptimizations() {
 ### Example 1: Automatic Dead Code Removal
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 import fs from 'fs/promises';
 
 async function removeDeadCode() {
@@ -529,8 +529,8 @@ async function removeDeadCode() {
 ### Example 2: Usage Dashboard
 
 ```typescript
-import { signal, effect } from 'philjs-core';
-import { usageAnalytics } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
+import { usageAnalytics } from '@philjs/core';
 
 function UsageDashboard() {
   const components = signal<string[]>([]);
@@ -592,7 +592,7 @@ function UsageDashboard() {
 ### Example 3: Prop Usage Analysis
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 function analyzePropsUsage(component: string) {
   const data = usageAnalytics.exportUsageData();
@@ -643,7 +643,7 @@ analyzePropsUsage('Button');
 ### Example 4: Performance Monitoring
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 class PerformanceMonitor {
   private slowComponents = signal<Array<{ name: string; avgTime: number }>>([]);
@@ -688,7 +688,7 @@ monitor.startMonitoring();
 ### Example 5: Dependency Graph Visualization
 
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 function visualizeDependencies() {
   const graph = usageAnalytics.getDependencyGraph();

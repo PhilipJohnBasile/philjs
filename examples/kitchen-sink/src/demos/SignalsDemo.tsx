@@ -1,4 +1,4 @@
-import { signal, memo, effect, batch, untrack, onCleanup } from "philjs-core";
+import { signal, memo, effect, batch, untrack, onCleanup } from "@philjs/core";
 
 export function SignalsDemo() {
   return (

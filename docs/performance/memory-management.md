@@ -16,7 +16,7 @@ Prevent memory leaks and optimize memory usage in PhilJS applications.
 ### Event Listeners
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 // ❌ Memory leak - listener never removed
 function BadComponent() {
@@ -109,7 +109,7 @@ function GoodObserver() {
 ### Cleanup Pattern
 
 ```typescript
-import { effect, signal } from 'philjs-core';
+import { effect, signal } from '@philjs/core';
 
 function ComponentWithCleanup() {
   const isActive = signal(true);
@@ -290,7 +290,7 @@ setInterval(measureMemory, 5000);
 ### Performance Observer for Memory
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function trackMemoryUsage() {
   effect(() => {

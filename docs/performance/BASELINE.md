@@ -1,14 +1,14 @@
-# PhilJS v2.0 Performance Baseline
+# PhilJS v0.1.0 Performance Baseline
 
-**Official Baseline Document for v2.0 Release**
+**Official Baseline Document for v0.1.0 Release**
 
-This document establishes the official performance baseline for PhilJS v2.0. All metrics were measured on 2025-12-17 and serve as the reference point for performance tracking, regression detection, and optimization efforts.
+This document establishes the official performance baseline for PhilJS v0.1.0. All metrics were measured on 2025-12-17 and serve as the reference point for performance tracking, regression detection, and optimization efforts.
 
 ---
 
 ## Executive Summary
 
-PhilJS v2.0 demonstrates **exceptional performance** across all key metrics:
+PhilJS v0.1.0 demonstrates **exceptional performance** across all key metrics:
 
 | Category | Key Metric | Result | Status |
 |----------|-----------|--------|--------|
@@ -27,7 +27,7 @@ PhilJS v2.0 demonstrates **exceptional performance** across all key metrics:
 
 - **Date**: 2025-12-17
 - **Platform**: Windows x64
-- **Node.js**: v22.x
+- **Node.js**: v24.x
 - **Test Framework**: Vitest 3.2.4
 - **Runs**: Multiple runs averaged
 - **Location**: `packages/philjs-core/src/benchmarks.test.ts` and `performance.test.ts`
@@ -272,18 +272,18 @@ PhilJS supports **perfect tree-shaking** with `sideEffects: false`:
 
 ```typescript
 // Smallest possible bundle (~2KB)
-import { signal, memo } from 'philjs-core/signals';
+import { signal, memo } from '@philjs/core/signals';
 
 // Add JSX (~3KB total)
-import { jsx } from 'philjs-core/jsx-runtime';
+import { jsx } from '@philjs/core/jsx-runtime';
 
 // Full features (~25KB total)
-import { signal, jsx, renderToString } from 'philjs-core';
+import { signal, jsx, renderToString } from '@philjs/core';
 ```
 
 ---
 
-## Performance Targets for v2.0
+## Performance Targets for v0.1.0
 
 ### Sprint Plan Targets
 
@@ -350,26 +350,26 @@ pnpm vitest run src/benchmarks.test.ts -t "Memory"
 
 ```bash
 # From project root
-node scripts/benchmark.js
+pnpm tsx scripts/benchmark.ts
 
 # Save results to metrics/
-node scripts/benchmark.js --save
+pnpm tsx scripts/benchmark.ts --save
 
 # JSON output
-node scripts/benchmark.js --json
+pnpm tsx scripts/benchmark.ts --json
 ```
 
 ### Check Bundle Sizes
 
 ```bash
 # From project root
-node scripts/check-budgets.mjs
+pnpm tsx scripts/check-budgets.ts
 
 # With baseline comparison
-node scripts/check-budgets.mjs --compare
+pnpm tsx scripts/check-budgets.ts --compare
 
 # Save history
-node scripts/check-budgets.mjs --save-history
+pnpm tsx scripts/check-budgets.ts --save-history
 ```
 
 ---
@@ -399,13 +399,13 @@ node scripts/check-budgets.mjs --save-history
 
 ### Support Scripts
 
-4. **`scripts/benchmark.js`**
+4. **`scripts/benchmark.ts`**
    - Automated benchmark runner
    - Report generation
    - Historical tracking
    - JSON output for CI/CD
 
-5. **`scripts/check-budgets.mjs`**
+5. **`scripts/check-budgets.ts`**
    - Bundle size monitoring
    - Budget enforcement
    - Regression detection
@@ -477,8 +477,8 @@ cat metrics/bundle-size-history.json | jq
 
 3. **Import from subpaths for smaller bundles**
    ```typescript
-   import { signal } from 'philjs-core/signals';
-   import { jsx } from 'philjs-core/jsx-runtime';
+   import { signal } from '@philjs/core/signals';
+   import { jsx } from '@philjs/core/jsx-runtime';
    ```
 
 4. **Use linkedSignal for derived state**
@@ -528,7 +528,7 @@ cat metrics/bundle-size-history.json | jq
    ```bash
    git clone https://github.com/yourusername/philjs.git
    cd philjs
-   git checkout v2.0.0-baseline
+   git checkout v0.1.0-baseline
    ```
 
 2. **Install dependencies**
@@ -557,7 +557,7 @@ cat metrics/bundle-size-history.json | jq
 
 If your benchmarks show significantly worse performance (>30% slower):
 
-1. Check Node.js version (v18+ recommended)
+1. Check Node.js version (v24+ required)
 2. Run on isolated machine (close other apps)
 3. Run multiple times and average
 4. Report issue with full environment details
@@ -568,7 +568,7 @@ If your benchmarks show significantly worse performance (>30% slower):
 
 ### 2025-12-17 - Initial Baseline
 
-- Established v2.0 performance baseline
+- Established v0.1.0 performance baseline
 - Documented all core benchmarks
 - Created comparison methodology
 - Validated against sprint targets
@@ -605,17 +605,16 @@ If your benchmarks show significantly worse performance (>30% slower):
 - [Bundle Size Guide](./bundle-size.md)
 - [Runtime Performance](./runtime-performance.md)
 - [Sprint Plan](../../SPRINT_PLAN_90_DAYS.md)
-- [Benchmark Runner](../../scripts/benchmark.js)
-- [Budget Checker](../../scripts/check-budgets.mjs)
+- [Benchmark Runner](../../scripts/benchmark.ts)
+- [Budget Checker](../../scripts/check-budgets.ts)
 
 ---
 
 **Document Version**: 1.0.0
 **Last Updated**: 2025-12-17
-**Status**: Official v2.0 Baseline
+**Status**: Official v0.1.0 Baseline
 **Approved By**: Core Team
 
 ---
 
-*This baseline document serves as the official performance reference for PhilJS v2.0. All performance claims, comparisons, and optimizations should reference this document.*
-
+*This baseline document serves as the official performance reference for PhilJS v0.1.0. All performance claims, comparisons, and optimizations should reference this document.*

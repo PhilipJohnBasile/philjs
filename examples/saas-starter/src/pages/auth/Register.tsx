@@ -1,6 +1,6 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { register } from "../../stores/authStore";
-import { Link } from "philjs-router";
+import { Link } from "@philjs/router";
 
 export function Register({ navigate }: { navigate: (path: string) => void }) {
   const name = signal("");

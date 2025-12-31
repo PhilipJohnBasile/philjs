@@ -503,7 +503,7 @@ src/
 
 ```tsx
 import { describe, it, expect } from 'vitest';
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 describe('Counter', () => {
   it('increments count', () => {

@@ -75,7 +75,7 @@ const budget: PerformanceBudget = {
 ### Analyze Current Performance
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface PerformanceMetrics {
   FCP: number;
@@ -168,7 +168,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['philjs-core', 'philjs-router'],
+          vendor: ['@philjs/core', '@philjs/router'],
           ui: ['./src/components']
         }
       }
@@ -298,7 +298,7 @@ npm install -D bundlesize
 ### Track Web Vitals
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface WebVitals {
   FCP: number;
@@ -570,8 +570,8 @@ jobs:
 
 ```typescript
 // scripts/check-budgets.ts
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 interface Budget {
   name: string;
@@ -642,7 +642,7 @@ checkBudgets();
 {
   "scripts": {
     "build": "vite build",
-    "check:budgets": "ts-node scripts/check-budgets.ts",
+    "check:budgets": "tsx scripts/check-budgets.ts",
     "prebuild": "npm run check:budgets"
   }
 }

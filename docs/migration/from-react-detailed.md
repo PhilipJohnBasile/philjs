@@ -55,11 +55,11 @@ Phase 4: Cleanup (Week 5+)
 ### 1. Install Dependencies
 
 ```bash
-npm install philjs-core philjs-react-compat philjs-router
+npm install @philjs/core philjs-react-compat @philjs/router
 # or
-yarn add philjs-core philjs-react-compat philjs-router
+yarn add @philjs/core philjs-react-compat @philjs/router
 # or
-pnpm add philjs-core philjs-react-compat philjs-router
+pnpm add @philjs/core philjs-react-compat @philjs/router
 ```
 
 ### 2. Update Build Configuration
@@ -69,13 +69,13 @@ pnpm add philjs-core philjs-react-compat philjs-router
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [philjs()],
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core'
+    jsxImportSource: '@philjs/core'
   }
 });
 ```
@@ -86,8 +86,8 @@ export default defineConfig({
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
-    "types": ["philjs-core/jsx"]
+    "jsxImportSource": "@philjs/core",
+    "types": ["@philjs/core/jsx"]
   }
 }
 ```
@@ -97,8 +97,7 @@ export default defineConfig({
 ```json
 {
   "scripts": {
-    "migrate": "jscodeshift -t node_modules/philjs-react-compat/dist/codemod/transform.js src/**/*.tsx",
-    "analyze": "node scripts/analyze-migration.js"
+    "migrate": "jscodeshift -t node_modules/philjs-react-compat/dist/codemod/transform.js src/**/*.tsx"
   }
 }
 ```
@@ -135,7 +134,7 @@ npm test
 
 If issues arise, check:
 
-1. **JSX Import Source**: Ensure `jsxImportSource` is set to `philjs-core`
+1. **JSX Import Source**: Ensure `jsxImportSource` is set to `@philjs/core`
 2. **Build Configuration**: Verify Vite/Webpack config is correct
 3. **Type Definitions**: Check TypeScript finds PhilJS types
 
@@ -155,7 +154,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 **After (PhilJS Router):**
 ```tsx
-import { Router, Route, Link } from 'philjs-router';
+import { Router, Route, Link } from '@philjs/router';
 
 <Router>
   <Route path="/" component={Home} />
@@ -443,7 +442,7 @@ useEffect(() => {
 
 **After:**
 ```tsx
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 effect(() => {
   document.title = `Count: ${count()}`;
@@ -481,7 +480,7 @@ const total = useMemo(() => {
 
 **After:**
 ```tsx
-import { memo } from 'philjs-core';
+import { memo } from '@philjs/core';
 
 const doubled = memo(() => count() * 2);
 
@@ -555,7 +554,7 @@ function Child({ count, setCount }: { count: number; setCount: (n: number) => vo
 Create reactive context with signals:
 
 ```tsx
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 interface ThemeContextType {
   theme: Signal<'light' | 'dark'>;
@@ -595,7 +594,7 @@ Create a global store with signals:
 
 ```tsx
 // store.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export const store = {
   // State
@@ -651,7 +650,7 @@ function Cart() {
 Create reusable form hooks:
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function useForm<T extends Record<string, any>>(initialValues: T) {
   const values = signal(initialValues);
@@ -730,7 +729,7 @@ function LoginForm() {
 Use `batch()` to group multiple signal updates:
 
 ```tsx
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 const firstName = signal('');
 const lastName = signal('');
@@ -754,7 +753,7 @@ batch(() => {
 Use `untrack()` to read signals without creating dependencies:
 
 ```tsx
-import { signal, effect, untrack } from 'philjs-core';
+import { signal, effect, untrack } from '@philjs/core';
 
 const count = signal(0);
 const debugMode = signal(false);
@@ -789,7 +788,7 @@ const expensiveData = memo(() => expensiveComputation());
 ### Unit Testing Signals
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import { describe, it, expect } from 'vitest';
 
 describe('Counter', () => {
@@ -820,8 +819,8 @@ describe('Counter', () => {
 ### Component Testing
 
 ```tsx
-import { render, screen } from 'philjs-testing';
-import { signal } from 'philjs-core';
+import { render, screen } from '@philjs/testing';
+import { signal } from '@philjs/core';
 
 describe('Counter Component', () => {
   it('should display count', () => {
@@ -946,7 +945,7 @@ function ProductList() {
 
 **PhilJS Version (After):**
 ```tsx
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 function ProductList() {
   const products = signal([]);

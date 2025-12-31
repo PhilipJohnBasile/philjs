@@ -239,7 +239,7 @@ export function Button({ variant = 'primary' }: {
 ### Conditional Classes
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import styles from './Alert.module.css';
 
 export function Alert({ type }: {
@@ -441,7 +441,7 @@ import styles from './Button.module.css';
 ```
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import styles from './Card.module.css';
 
 export function Card({ children }: { children: any }) {
@@ -522,7 +522,7 @@ export function Card({ children }: { children: any }) {
 ```
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import styles from './Modal.module.css';
 
 export function Modal({ isOpen, onClose }: {
@@ -677,7 +677,7 @@ styles/
 ```
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import styles from './Input.module.css';
 
 export function Input({ error }: { error?: string }) {

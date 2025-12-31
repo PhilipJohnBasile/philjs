@@ -12,7 +12,7 @@ Next.js-style edge middleware for PhilJS applications. Run at the edge for optim
 ## Installation
 
 ```bash
-npm install philjs-api
+npm install @philjs/api
 ```
 
 ## Basic Usage
@@ -20,7 +20,7 @@ npm install philjs-api
 ### Edge Middleware
 
 ```typescript
-import { executeEdgeMiddleware, type EdgeMiddleware } from 'philjs-api/edge-middleware';
+import { executeEdgeMiddleware, type EdgeMiddleware } from '@philjs/api/edge-middleware';
 
 // Simple middleware
 const loggingMiddleware: EdgeMiddleware = async (context) => {
@@ -39,7 +39,7 @@ export default {
 ### URL Rewrites
 
 ```typescript
-import { rewriteMiddleware } from 'philjs-api/edge-middleware';
+import { rewriteMiddleware } from '@philjs/api/edge-middleware';
 
 const rewrites = rewriteMiddleware({
   // Rewrite old paths to new paths
@@ -51,7 +51,7 @@ const rewrites = rewriteMiddleware({
 ### Redirects
 
 ```typescript
-import { redirectMiddleware } from 'philjs-api/edge-middleware';
+import { redirectMiddleware } from '@philjs/api/edge-middleware';
 
 const redirects = redirectMiddleware({
   '/old-page': '/new-page',
@@ -62,7 +62,7 @@ const redirects = redirectMiddleware({
 ### Header Manipulation
 
 ```typescript
-import { addHeadersMiddleware, securityHeadersMiddleware } from 'philjs-api/edge-middleware';
+import { addHeadersMiddleware, securityHeadersMiddleware } from '@philjs/api/edge-middleware';
 
 // Add custom headers
 const customHeaders = addHeadersMiddleware({
@@ -84,7 +84,7 @@ const security = securityHeadersMiddleware({
 ### Auto-detect Location
 
 ```typescript
-import { detectGeolocation } from 'philjs-api/geolocation';
+import { detectGeolocation } from '@philjs/api/geolocation';
 
 // Works with Cloudflare Workers, Vercel Edge, etc.
 const geo = await detectGeolocation(request);
@@ -94,7 +94,7 @@ console.log(geo.country, geo.city); // "US", "San Francisco"
 ### Geo-based Redirects
 
 ```typescript
-import { redirectByCountry } from 'philjs-api/geolocation';
+import { redirectByCountry } from '@philjs/api/geolocation';
 
 const geoRedirect = redirectByCountry({
   'GB,IE': '/uk',
@@ -106,7 +106,7 @@ const geoRedirect = redirectByCountry({
 ### Language Detection
 
 ```typescript
-import { languageDetectionMiddleware } from 'philjs-api/geolocation';
+import { languageDetectionMiddleware } from '@philjs/api/geolocation';
 
 const langDetection = languageDetectionMiddleware({
   cookieName: 'preferred-language',
@@ -117,7 +117,7 @@ const langDetection = languageDetectionMiddleware({
 ### Localized Redirects
 
 ```typescript
-import { localizedRedirectMiddleware } from 'philjs-api/geolocation';
+import { localizedRedirectMiddleware } from '@philjs/api/geolocation';
 
 const localized = localizedRedirectMiddleware({
   supportedLocales: ['en', 'fr', 'de', 'es'],
@@ -130,7 +130,7 @@ const localized = localizedRedirectMiddleware({
 ### Client-side Hook
 
 ```typescript
-import { useGeolocation } from 'philjs-api/geolocation';
+import { useGeolocation } from '@philjs/api/geolocation';
 
 function MyComponent() {
   const { geo, language } = useGeolocation();
@@ -149,7 +149,7 @@ function MyComponent() {
 ### Define Experiments
 
 ```typescript
-import { abTestingMiddleware } from 'philjs-api/edge-ab-testing';
+import { abTestingMiddleware } from '@philjs/api/edge-ab-testing';
 
 const abTesting = abTestingMiddleware({
   experiments: [
@@ -176,7 +176,7 @@ const abTesting = abTestingMiddleware({
 ### Variant-based Rendering
 
 ```typescript
-import { variantMiddleware } from 'philjs-api/edge-ab-testing';
+import { variantMiddleware } from '@philjs/api/edge-ab-testing';
 
 const variantRouting = variantMiddleware('checkout-flow', {
   control: async (context) => {
@@ -193,7 +193,7 @@ const variantRouting = variantMiddleware('checkout-flow', {
 ### Multivariate Testing
 
 ```typescript
-import { multivariateTestingMiddleware } from 'philjs-api/edge-ab-testing';
+import { multivariateTestingMiddleware } from '@philjs/api/edge-ab-testing';
 
 const mvt = multivariateTestingMiddleware({
   id: 'homepage',
@@ -222,7 +222,7 @@ const mvt = multivariateTestingMiddleware({
 ### Client-side Hook
 
 ```typescript
-import { useVariant } from 'philjs-api/edge-ab-testing';
+import { useVariant } from '@philjs/api/edge-ab-testing';
 
 function CheckoutPage() {
   const { variant } = useVariant('checkout-flow');
@@ -238,7 +238,7 @@ function CheckoutPage() {
 ### Statistical Significance
 
 ```typescript
-import { calculateSignificance } from 'philjs-api/edge-ab-testing';
+import { calculateSignificance } from '@philjs/api/edge-ab-testing';
 
 const result = calculateSignificance(
   {
@@ -265,7 +265,7 @@ console.log(`P-value: ${result.pValue}`);
 ### Basic Caching
 
 ```typescript
-import { edgeCacheMiddleware } from 'philjs-api/edge-cache';
+import { edgeCacheMiddleware } from '@philjs/api/edge-cache';
 
 const cache = edgeCacheMiddleware({
   ttl: 300, // 5 minutes
@@ -277,7 +277,7 @@ const cache = edgeCacheMiddleware({
 ### Cache Control Headers
 
 ```typescript
-import { cacheControlMiddleware } from 'philjs-api/edge-cache';
+import { cacheControlMiddleware } from '@philjs/api/edge-cache';
 
 const cacheControl = cacheControlMiddleware({
   maxAge: 3600,
@@ -290,7 +290,7 @@ const cacheControl = cacheControlMiddleware({
 ### ETags for Conditional Requests
 
 ```typescript
-import { etagMiddleware } from 'philjs-api/edge-cache';
+import { etagMiddleware } from '@philjs/api/edge-cache';
 
 const etag = etagMiddleware();
 // Automatically returns 304 for matching If-None-Match
@@ -299,7 +299,7 @@ const etag = etagMiddleware();
 ### Cache Presets
 
 ```typescript
-import { staticAssetCache, apiCache, pageCache } from 'philjs-api/edge-cache';
+import { staticAssetCache, apiCache, pageCache } from '@philjs/api/edge-cache';
 
 // Static assets (1 year)
 const staticCache = staticAssetCache();
@@ -314,7 +314,7 @@ const pageCaching = pageCache(300, 3600);
 ### Cache Purging
 
 ```typescript
-import { purgeCacheTags, purgeCacheKey } from 'philjs-api/edge-cache';
+import { purgeCacheTags, purgeCacheKey } from '@philjs/api/edge-cache';
 
 // Purge by tags
 await purgeCacheTags(['api-v2', 'users']);
@@ -326,7 +326,7 @@ await purgeCacheKey('/api/users/123');
 ### Vary Headers
 
 ```typescript
-import { varyMiddleware } from 'philjs-api/edge-cache';
+import { varyMiddleware } from '@philjs/api/edge-cache';
 
 const vary = varyMiddleware(['Accept-Language', 'Cookie']);
 // Cache varies by language and authentication
@@ -341,10 +341,10 @@ import {
   executeEdgeMiddleware,
   composeEdgeMiddleware,
   securityHeadersMiddleware,
-} from 'philjs-api/edge-middleware';
-import { redirectByCountry, languageDetectionMiddleware } from 'philjs-api/geolocation';
-import { abTestingMiddleware } from 'philjs-api/edge-ab-testing';
-import { edgeCacheMiddleware, cacheControlMiddleware } from 'philjs-api/edge-cache';
+} from '@philjs/api/edge-middleware';
+import { redirectByCountry, languageDetectionMiddleware } from '@philjs/api/geolocation';
+import { abTestingMiddleware } from '@philjs/api/edge-ab-testing';
+import { edgeCacheMiddleware, cacheControlMiddleware } from '@philjs/api/edge-cache';
 
 const middleware = composeEdgeMiddleware(
   // Security
@@ -397,9 +397,9 @@ export default {
 ### Vercel Edge Function
 
 ```typescript
-import { executeEdgeMiddleware } from 'philjs-api/edge-middleware';
-import { geoRedirectMiddleware } from 'philjs-api/geolocation';
-import { abTestingMiddleware } from 'philjs-api/edge-ab-testing';
+import { executeEdgeMiddleware } from '@philjs/api/edge-middleware';
+import { geoRedirectMiddleware } from '@philjs/api/geolocation';
+import { abTestingMiddleware } from '@philjs/api/edge-ab-testing';
 
 export const config = {
   runtime: 'edge',
@@ -436,7 +436,7 @@ export default async function handler(request: Request) {
 ### Custom Cache Store
 
 ```typescript
-import { edgeCacheMiddleware, type CacheStore } from 'philjs-api/edge-cache';
+import { edgeCacheMiddleware, type CacheStore } from '@philjs/api/edge-cache';
 
 class RedisCacheStore implements CacheStore {
   async get(key: string) {
@@ -465,7 +465,7 @@ const cache = edgeCacheMiddleware({
 ### Custom Analytics Provider
 
 ```typescript
-import { createAnalyticsProvider, abTestingMiddleware } from 'philjs-api/edge-ab-testing';
+import { createAnalyticsProvider, abTestingMiddleware } from '@philjs/api/edge-ab-testing';
 
 const analytics = createAnalyticsProvider({
   endpoint: 'https://analytics.example.com/track',
@@ -485,7 +485,7 @@ const abTesting = abTestingMiddleware({
 ### Deterministic Variant Selection
 
 ```typescript
-import { selectVariantDeterministic } from 'philjs-api/edge-ab-testing';
+import { selectVariantDeterministic } from '@philjs/api/edge-ab-testing';
 
 // Same user always gets same variant
 const userId = getUserId(request);

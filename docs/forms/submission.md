@@ -17,7 +17,7 @@ Handle form submission with loading states, error handling, and success feedback
 ### Simple Form Post
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function ContactForm() {
   const name = signal('');
@@ -138,7 +138,7 @@ function AsyncForm() {
 ### With Mutation
 
 ```typescript
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 const loginMutation = createMutation({
   mutationFn: async (data: { email: string; password: string }) => {

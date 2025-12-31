@@ -16,7 +16,7 @@ Handle data fetching errors gracefully with retry logic, fallbacks, and user-fri
 ### Simple Try-Catch
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useData<T>(url: string) {
   const data = signal<T | null>(null);
@@ -187,7 +187,7 @@ function DataComponent() {
 ### With createQuery
 
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 const userQuery = createQuery({
   key: (userId: string) => ['user', userId],
@@ -318,7 +318,7 @@ function UserProfile({ id }: { id: string }) {
 ### Data Error Boundary
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function DataErrorBoundary({ children }: { children: any }) {
   return (

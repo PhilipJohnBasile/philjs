@@ -30,7 +30,7 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "files": [

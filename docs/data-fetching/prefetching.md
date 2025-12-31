@@ -8,7 +8,7 @@ Prefetching loads data before it's needed, making navigation feel instant. PhilJ
 ### Automatic Prefetch on Hover
 
 ```tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export default function Navigation() {
   return (
@@ -45,7 +45,7 @@ export default function Navigation() {
 ### Programmatic Prefetch
 
 ```tsx
-import { prefetch } from 'philjs-router';
+import { prefetch } from '@philjs/router';
 
 export default function ProductCard({ product }) {
   return (
@@ -64,7 +64,7 @@ export default function ProductCard({ product }) {
 ### Prefetch with Data
 
 ```tsx
-import { prefetchQuery } from 'philjs-core';
+import { prefetchQuery } from '@philjs/core';
 
 const prefetchProduct = (id: number) => {
   prefetchQuery(`/api/products/${id}`);
@@ -80,7 +80,7 @@ const prefetchProduct = (id: number) => {
 ### Prefetch in Component
 
 ```tsx
-import { useQueryClient } from 'philjs-core';
+import { useQueryClient } from '@philjs/core';
 
 export default function ProductList() {
   const queryClient = useQueryClient();

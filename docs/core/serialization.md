@@ -12,7 +12,7 @@ SuperJSON-style serialization for PhilJS with enhanced features for complex data
 - **Complex Type Support**: Serialize Date, Map, Set, RegExp, BigInt, undefined, and binary data
 - **Custom Type Registration**: Extend serialization for your own classes
 - **Performance Optimizations**: Lazy deserialization, streaming, and compression
-- **RPC Integration**: Automatic serialization in philjs-rpc procedures
+- **RPC Integration**: Automatic serialization in @philjs/rpc procedures
 - **SSR Integration**: Seamless loader data serialization and hydration
 - **Type Safety**: Full TypeScript 6 support with enhanced type inference
 - **ES2024 Support**: Native support for new Set methods and array operations
@@ -22,7 +22,7 @@ SuperJSON-style serialization for PhilJS with enhanced features for complex data
 ### Simple Serialization
 
 ```typescript
-import { serialize, deserialize } from 'philjs-core/superjson';
+import { serialize, deserialize } from '@philjs/core/superjson';
 
 const data = {
   created: new Date('2024-01-15'),
@@ -42,7 +42,7 @@ console.log(deserialized.tags instanceof Set); // true
 ### String Conversion
 
 ```typescript
-import { stringify, parse } from 'philjs-core/superjson';
+import { stringify, parse } from '@philjs/core/superjson';
 
 const data = { date: new Date(), bigint: 123n };
 const json = stringify(data);
@@ -101,7 +101,7 @@ const deserialized = deserialize(serialized);
 ### Register Custom Types
 
 ```typescript
-import { registerCustomType } from 'philjs-core/superjson';
+import { registerCustomType } from '@philjs/core/superjson';
 
 class Point {
   constructor(public x: number, public y: number) {}
@@ -133,7 +133,7 @@ console.log(deserialized instanceof Point); // true
 ### Per-Operation Custom Types
 
 ```typescript
-import { serialize, deserialize } from 'philjs-core/superjson';
+import { serialize, deserialize } from '@philjs/core/superjson';
 
 const customTypes = [
   {
@@ -153,8 +153,8 @@ const deserialized = deserialize(serialized, { customTypes });
 ### Automatic Serialization
 
 ```typescript
-import { createAPI, procedure } from 'philjs-rpc';
-import { createSuperJSONMiddleware } from 'philjs-rpc';
+import { createAPI, procedure } from '@philjs/rpc';
+import { createSuperJSONMiddleware } from '@philjs/rpc';
 
 // Create API with SuperJSON middleware
 const middleware = createSuperJSONMiddleware({
@@ -180,8 +180,8 @@ export const api = createAPI({
 ### Client-Side Usage
 
 ```typescript
-import { createClient } from 'philjs-rpc/client';
-import { createClientRequestTransformer, createClientResponseTransformer } from 'philjs-rpc';
+import { createClient } from '@philjs/rpc/client';
+import { createClientRequestTransformer, createClientResponseTransformer } from '@philjs/rpc';
 
 const client = createClient({
   url: '/api/rpc',
@@ -198,7 +198,7 @@ console.log(user.tags instanceof Set); // true
 ### Per-Procedure Control
 
 ```typescript
-import { withSuperJSON, withoutSuperJSON } from 'philjs-rpc';
+import { withSuperJSON, withoutSuperJSON } from '@philjs/rpc';
 
 const api = createAPI({
   users: {
@@ -225,8 +225,8 @@ const api = createAPI({
 ### Loader Serialization
 
 ```typescript
-import { defineLoader } from 'philjs-ssr';
-import { superJSONLoader } from 'philjs-ssr';
+import { defineLoader } from '@philjs/ssr';
+import { superJSONLoader } from '@philjs/ssr';
 
 export const loader = superJSONLoader(
   defineLoader(async ({ params }) => {
@@ -250,7 +250,7 @@ export const loader = superJSONLoader(
 ### Hydration
 
 ```typescript
-import { createLoaderDataSerializer } from 'philjs-ssr';
+import { createLoaderDataSerializer } from '@philjs/ssr';
 
 // Server-side
 const serializer = createLoaderDataSerializer();
@@ -271,7 +271,7 @@ const html = `
 
 ```typescript
 // Client-side
-import { createLoaderDataAccessor } from 'philjs-ssr';
+import { createLoaderDataAccessor } from '@philjs/ssr';
 
 const accessor = createLoaderDataAccessor();
 const userData = accessor.get('user-data');
@@ -285,7 +285,7 @@ console.log(userData.user.preferences instanceof Map); // true
 ### Compression
 
 ```typescript
-import { serializeWithCompression, deserializeWithDecompression, NativeCompression } from 'philjs-core/superjson-perf';
+import { serializeWithCompression, deserializeWithDecompression, NativeCompression } from '@philjs/core/superjson-perf';
 
 // Serialize with compression
 const compressed = await serializeWithCompression(largeData, {
@@ -302,7 +302,7 @@ const data = await deserializeWithDecompression(compressed, {
 ### Lazy Deserialization
 
 ```typescript
-import { lazy, lazyObject } from 'philjs-core/superjson-perf';
+import { lazy, lazyObject } from '@philjs/core/superjson-perf';
 
 // Create lazy values
 const lazyData = lazy(serialized);
@@ -318,7 +318,7 @@ console.log(lazyData.isDeserialized()); // true
 ### Streaming
 
 ```typescript
-import { StreamingSerializer, StreamingDeserializer } from 'philjs-core/superjson-perf';
+import { StreamingSerializer, StreamingDeserializer } from '@philjs/core/superjson-perf';
 
 // Server-side: Stream large datasets
 const serializer = new StreamingSerializer();
@@ -340,7 +340,7 @@ for await (const chunk of receiveChunks()) {
 ### Performance Metrics
 
 ```typescript
-import { serializeWithMetrics, deserializeWithMetrics } from 'philjs-core/superjson-perf';
+import { serializeWithMetrics, deserializeWithMetrics } from '@philjs/core/superjson-perf';
 
 const { result, metrics } = await serializeWithMetrics(data, {
   compression: NativeCompression,
@@ -387,7 +387,7 @@ const serialized = serialize(deepData, { maxDepth: 2 });
 ### Custom SuperJSON Instance
 
 ```typescript
-import { createSuperJSON } from 'philjs-core/superjson';
+import { createSuperJSON } from '@philjs/core/superjson';
 
 const sj = createSuperJSON([
   {
@@ -469,7 +469,7 @@ Deserialize streaming data progressively.
 PhilJS SuperJSON supports ES2024 features:
 
 ```typescript
-import { serialize, deserialize } from 'philjs-core/superjson';
+import { serialize, deserialize } from '@philjs/core/superjson';
 
 // Set operations are preserved
 const setA = new Set([1, 2, 3]);

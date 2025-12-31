@@ -9,8 +9,8 @@ import {
   type EarlyHint,
   type LoaderCtx,
   type ActionCtx
-} from "philjs-ssr";
-import { createAI, providers } from "philjs-ai";
+} from "@philjs/ssr";
+import { createAI, providers } from "@philjs/ai";
 import { html, unsafeHTML } from "./template";
 import { matchRoute } from "./router";
 import { createMockDb } from "./mock-db";

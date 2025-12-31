@@ -40,7 +40,7 @@ Svelte and PhilJS share a similar philosophy of fine-grained reactivity and comp
 
 **PhilJS:**
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -461,7 +461,7 @@ export const count = writable(0);
 
 **PhilJS:**
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export const count = signal(0);
 
@@ -489,7 +489,7 @@ const doubled = derived(count, $count => $count * 2);
 
 **PhilJS:**
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 const doubled = memo(() => count() * 2);
@@ -512,7 +512,7 @@ const time = readable(new Date(), (set) => {
 
 **PhilJS:**
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const time = signal(new Date());
 
@@ -546,7 +546,7 @@ effect(() => {
 
 **PhilJS:**
 ```tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext('light');
 
@@ -595,7 +595,7 @@ function Child() {
 
 **PhilJS:**
 ```tsx
-import { Router, Route, Link, useParams } from 'philjs-router';
+import { Router, Route, Link, useParams } from '@philjs/router';
 
 function App() {
   return (

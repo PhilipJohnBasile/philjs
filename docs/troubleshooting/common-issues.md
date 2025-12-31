@@ -284,7 +284,7 @@ effect(() => {
 
 ```tsx
 // ✅ Solution
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 <Link to="/about">About</Link>  // Client-side navigation
 ```
@@ -467,7 +467,7 @@ npm install -D @types/react
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```

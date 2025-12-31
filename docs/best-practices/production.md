@@ -53,7 +53,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor chunks
-          vendor: ['philjs-core', 'philjs-router'],
+          vendor: ['@philjs/core', '@philjs/router'],
 
           // Feature chunks
           dashboard: ['./src/features/dashboard'],
@@ -212,7 +212,7 @@ function App() {
 ### Global Error Boundary
 
 ```tsx
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 import { captureException } from './services/errorTracking';
 
 function App() {
@@ -303,7 +303,7 @@ export const analytics = new Analytics();
 
 // App.tsx
 import { analytics } from './services/analytics';
-import { router } from 'philjs-router';
+import { router } from '@philjs/router';
 
 analytics.init();
 

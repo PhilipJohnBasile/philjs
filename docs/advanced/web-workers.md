@@ -47,7 +47,7 @@ function performHeavyCalculation(input: number): number {
 ### Using a Worker in Your App
 
 ```typescript
-import { signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect, onCleanup } from '@philjs/core';
 
 function HeavyComputationDemo() {
   const result = signal<number | null>(null);
@@ -109,7 +109,7 @@ Create a reusable worker manager that integrates seamlessly with PhilJS signals:
 
 ```typescript
 // src/lib/worker-manager.ts
-import { signal, batch, createRoot } from 'philjs-core';
+import { signal, batch, createRoot } from '@philjs/core';
 
 export interface WorkerMessage<T = any> {
   id: string;
@@ -314,7 +314,7 @@ Share memory between main thread and workers for real-time communication:
 
 ```typescript
 // src/lib/shared-memory-worker.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function createSharedCounter() {
   // Create shared memory (4 bytes for one Int32)
@@ -673,7 +673,7 @@ Manage multiple workers for parallel processing:
 
 ```typescript
 // src/lib/worker-pool.ts
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 export class WorkerPool<TRequest, TResponse> {
   private workers: Worker[] = [];

@@ -6,10 +6,10 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev": "node server/dev.js",
-    "build": "vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server",
-    "preview": "node server/prod.js",
-    "serve": "node server/prod.js",
+    "dev": "tsx scripts/build-sw.ts && tsx server/dev.ts",
+    "build": "tsx scripts/build-sw.ts && vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server",
+    "preview": "tsx server/prod.ts",
+    "serve": "tsx server/prod.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
@@ -24,8 +24,10 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
-    "@types/node": "^22.10.5",
-    "typescript": "next",
+    "@types/node": "^25.0.0",
+    "esbuild": "^0.27.2",
+    "tsx": "^4.19.1",
+    "typescript": "^6.0.0",
     "vite": "^7.3.0",
     "vitest": "^4.0.16",
     "playwright": "^1.48.0"

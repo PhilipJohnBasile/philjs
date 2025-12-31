@@ -8,7 +8,7 @@ Properly managing loading states creates a better user experience. PhilJS provid
 ### Component-Level Loading
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function UserProfile({ userId }: { userId: number }) {
   const user = signal(null);
@@ -74,7 +74,7 @@ export default function UserProfile() {
 ### Basic Suspense
 
 ```tsx
-import { Suspense } from 'philjs-core';
+import { Suspense } from '@philjs/core';
 
 export default function App() {
   return (
@@ -145,7 +145,7 @@ export default function Dashboard({ data }) {
 ### Top Loading Bar
 
 ```tsx
-import { useNavigation } from 'philjs-router';
+import { useNavigation } from '@philjs/router';
 
 export default function LoadingBar() {
   const navigation = useNavigation();

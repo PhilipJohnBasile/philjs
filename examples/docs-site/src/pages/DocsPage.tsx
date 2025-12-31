@@ -1,4 +1,4 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { createDocContent } from "../utils/docContent";
 
 export function DocsPage({

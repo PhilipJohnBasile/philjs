@@ -18,7 +18,7 @@ Handle routing errors, 404 pages, and error boundaries for robust navigation.
 
 ```typescript
 // src/pages/404.tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export default function NotFound() {
   return (
@@ -35,8 +35,8 @@ export default function NotFound() {
 
 ```typescript
 // src/pages/404.tsx
-import { Link, usePathname } from 'philjs-router';
-import { signal } from 'philjs-core';
+import { Link, usePathname } from '@philjs/router';
+import { signal } from '@philjs/core';
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -74,8 +74,8 @@ export default function NotFound() {
 
 ```typescript
 // src/pages/404.tsx
-import { usePathname } from 'philjs-router';
-import { effect } from 'philjs-core';
+import { usePathname } from '@philjs/router';
+import { effect } from '@philjs/core';
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -103,7 +103,7 @@ export default function NotFound() {
 
 ```typescript
 // src/pages/error.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 interface ErrorProps {
   error: Error;
@@ -131,8 +131,8 @@ export default function Error({ error, reset }: ErrorProps) {
 
 ```typescript
 // src/App.tsx
-import { ErrorBoundary } from 'philjs-core';
-import { Router } from 'philjs-router';
+import { ErrorBoundary } from '@philjs/core';
+import { Router } from '@philjs/router';
 
 export default function App() {
   return (
@@ -155,7 +155,7 @@ export default function App() {
 
 ```typescript
 // src/pages/(app)/layout.tsx
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 export default function AppLayout({ children }: { children: any }) {
   return (
@@ -183,8 +183,8 @@ export default function AppLayout({ children }: { children: any }) {
 ### Handle Navigation Errors
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 export default function App() {
   const router = useRouter();
@@ -221,8 +221,8 @@ export default function App() {
 ### Retry Failed Navigation
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal } from '@philjs/core';
 
 function useRetryableNavigation() {
   const router = useRouter();
@@ -256,8 +256,8 @@ function useRetryableNavigation() {
 
 ```typescript
 // src/pages/blog/[slug].tsx
-import { useParams } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useParams } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 export default function BlogPost() {
   const params = useParams<{ slug: string }>();
@@ -309,7 +309,7 @@ export default function BlogPost() {
 ### Automatic Retry
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useRetryableFetch<T>(url: string, maxRetries = 3) {
   const data = signal<T | null>(null);
@@ -427,7 +427,7 @@ export async function POST(request: Request) {
 ### Refresh on Error
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function Dashboard() {
   const data = signal(null);
@@ -464,7 +464,7 @@ export default function Dashboard() {
 ### Fallback Content
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function ProductList() {
   const products = signal([]);
@@ -503,7 +503,7 @@ export default function ProductList() {
 ### Detect Offline State
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const isOnline = signal(navigator.onLine);
 
@@ -538,7 +538,7 @@ export default function App() {
 ### Queue Failed Requests
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const failedRequests = signal<Array<{ url: string; options: RequestInit }>>([]);
 
@@ -595,8 +595,8 @@ function logError(error: Error, context?: any) {
 ### Route Error Monitoring
 
 ```typescript
-import { useRouter, usePathname } from 'philjs-router';
-import { effect } from 'philjs-core';
+import { useRouter, usePathname } from '@philjs/router';
+import { effect } from '@philjs/core';
 
 export default function ErrorMonitoring({ children }: { children: any }) {
   const router = useRouter();

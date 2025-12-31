@@ -65,7 +65,7 @@ import {
   sanitizeHtml,
   sanitizeUrl,
   safeJsonParse
-} from 'philjs-core';
+} from '@philjs/core';
 
 // Escape user input
 const safe = escapeHtml(userInput);
@@ -134,7 +134,7 @@ Example:
 <div dangerouslySetInnerHTML={{ __html: userComment }} />
 
 // GOOD - Safe rendering
-import { sanitizeHtml } from 'philjs-core';
+import { sanitizeHtml } from '@philjs/core';
 <div>{sanitizeHtml(userComment)}</div>
 ```
 
@@ -154,7 +154,7 @@ import { sanitizeHtml } from 'philjs-core';
 
 Example:
 ```typescript
-import { csrfProtection } from 'philjs-ssr';
+import { csrfProtection } from '@philjs/ssr';
 
 const csrf = csrfProtection({
   getSessionId: (req) => req.headers.get('session-id') || 'default',
@@ -185,7 +185,7 @@ if (!csrf.verifyRequest(request)) {
 
 Example:
 ```typescript
-import { safeJsonParse } from 'philjs-core';
+import { safeJsonParse } from '@philjs/core';
 
 // BAD - Vulnerable to prototype pollution
 const data = JSON.parse(userInput);
@@ -231,7 +231,7 @@ db.query('SELECT * FROM users WHERE id = ?', [userId]);
 
 Example:
 ```typescript
-import { sanitizeUrl } from 'philjs-core';
+import { sanitizeUrl } from '@philjs/core';
 
 // Validate redirect URL
 const redirectUrl = sanitizeUrl(
@@ -342,7 +342,7 @@ See [Security Checklist](./checklist.md) for a comprehensive pre-deployment chec
 ### 1. Validate Input, Escape Output
 
 ```typescript
-import { escapeHtml, sanitizeHtml } from 'philjs-core';
+import { escapeHtml, sanitizeHtml } from '@philjs/core';
 
 // Always validate input
 function validateEmail(email: string): boolean {
@@ -358,7 +358,7 @@ function renderComment(comment: string) {
 ### 2. Use Security Headers
 
 ```typescript
-import { buildCSP } from 'philjs-ssr';
+import { buildCSP } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: {
@@ -379,7 +379,7 @@ response.headers.set('Permissions-Policy', 'geolocation=(), microphone=()');
 ### 3. Implement Rate Limiting
 
 ```typescript
-import { RateLimiter } from 'philjs-ssr';
+import { RateLimiter } from '@philjs/ssr';
 
 const limiter = new RateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -396,7 +396,7 @@ if (!limiter.check(clientId)) {
 
 ```typescript
 // Use secure cookies for sessions
-import { createCookie } from 'philjs-ssr';
+import { createCookie } from '@philjs/ssr';
 
 const sessionCookie = createCookie('session', {
   httpOnly: true,
@@ -451,11 +451,11 @@ Based on the latest `pnpm audit`, the following vulnerabilities exist:
    - Fix: Update undici to 5.28.5+
 
 3. **esbuild** (Low) - Command injection in CLI
-   - Affected: `philjs-cli`, `@vercel/node`
+   - Affected: `@philjs/cli`, `@vercel/node`
    - Fix: Update esbuild to latest
 
 4. **glob** (High) - Command injection via `-c` flag
-   - Affected: `philjs-migrate`
+   - Affected: `@philjs/migrate`
    - Fix: Update glob to 10.5.0+
 
 ### Mitigation Steps

@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export interface OptimizedImageProps {
   src: string;
@@ -151,7 +151,7 @@ export function OptimizedImage({
         <img
           src={placeholder}
           alt=""
-          aria-hidden="true"
+          aria-hidden={true}
           style={placeholderStyle}
         />
       )}

@@ -34,7 +34,7 @@ A `Signal<T>` object with:
 #### Basic Usage
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 
@@ -132,7 +132,7 @@ A `Memo<T>` function that returns the computed value.
 #### Basic Memo
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(10);
 const doubled = memo(() => count() * 2);
@@ -223,7 +223,7 @@ A dispose function to stop the effect.
 #### Basic Effect
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -348,7 +348,7 @@ function batch(fn: () => void): void
 #### Basic Batching
 
 ```typescript
-import { signal, effect, batch } from 'philjs-core';
+import { signal, effect, batch } from '@philjs/core';
 
 const count = signal(0);
 const name = signal('Alice');
@@ -430,7 +430,7 @@ The return value of `fn`
 #### Untracked Reads
 
 ```typescript
-import { signal, effect, untrack } from 'philjs-core';
+import { signal, effect, untrack } from '@philjs/core';
 
 const count = signal(0);
 const threshold = signal(10);
@@ -496,7 +496,7 @@ function onCleanup(fn: () => void): void
 #### Using onCleanup
 
 ```typescript
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 effect(() => {
   const id = setInterval(() => {
@@ -639,7 +639,7 @@ PhilJS supports reactive attributes, styles, and classes. You can pass signals o
 #### Using Reactive Style Objects
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Button() {
   const isActive = signal(false);
@@ -677,7 +677,7 @@ const buttonStyle = memo(() =>
 ### Reactive Classes
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function TodoItem({ completed }: { completed: boolean }) {
   const isCompleted = signal(completed);

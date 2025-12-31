@@ -38,7 +38,7 @@ export default function UserProfile({ userId }: { userId: number }) {
 Use `serverFn` to create functions that ONLY run on the server:
 
 ```tsx
-import { serverFn } from 'philjs-ssr';
+import { serverFn } from '@philjs/ssr';
 
 // This code never reaches the browser
 export const getSecretData = serverFn(async (userId: number) => {
@@ -86,7 +86,7 @@ export default async function Dashboard() {
 Server-side data loading with loaders:
 
 ```tsx
-import { createDataLoader } from 'philjs-router';
+import { createDataLoader } from '@philjs/router';
 
 // Runs on server before rendering
 export const loader = createDataLoader(async ({ params, request }) => {
@@ -126,7 +126,7 @@ export default function MyPosts({ data }) {
 Mark components to run only in the browser:
 
 ```tsx
-import { clientOnly } from 'philjs-core';
+import { clientOnly } from '@philjs/core';
 
 // This never runs on the server
 const InteractiveMap = clientOnly(() => {
@@ -165,7 +165,7 @@ export default function MapPage() {
 Always check for browser environment:
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function WindowSize() {
   const size = signal({ width: 0, height: 0 });
@@ -200,7 +200,7 @@ function WindowSize() {
 ### Client-Side Navigation
 
 ```tsx
-import { useNavigate } from 'philjs-router';
+import { useNavigate } from '@philjs/router';
 
 function ClientNavigation() {
   const navigate = useNavigate();
@@ -336,7 +336,7 @@ export default function Page({ data }) {
 ### Client to Server
 
 ```tsx
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 function ContactForm() {
   const sendMessage = createMutation(async (data: FormData) => {

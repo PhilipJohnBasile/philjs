@@ -96,7 +96,7 @@ function Card({ title, children }: CardProps) {
 }
 
 // Better: Use ReactNode type (if available)
-import type { JSX } from 'philjs-core';
+import type { JSX } from '@philjs/core';
 
 interface CardProps {
   children: JSX.Element | JSX.Element[] | string | number;
@@ -149,7 +149,7 @@ function LoginForm({ onSubmit, onCancel, onChange }: FormProps) {
 ### Signal Type Inference
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // TypeScript infers type from initial value
 const count = signal(0); // Signal<number>
@@ -188,7 +188,7 @@ const data = signal<Record<string, any>>({});
 ### Signal as Props
 
 ```typescript
-import type { Signal } from 'philjs-core';
+import type { Signal } from '@philjs/core';
 
 interface CounterProps {
   count: Signal<number>;
@@ -216,7 +216,7 @@ const count = signal(0);
 ## Typing Memos
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const firstName = signal('John');
 const lastName = signal('Doe');
@@ -247,7 +247,7 @@ const stats = memo<Stats>(() => {
 ## Typing Effects
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -588,8 +588,8 @@ function DataView<T>({ response }: { response: ApiResponse<T> }) {
 ## Type-safe Context
 
 ```typescript
-import { createContext, useContext } from 'philjs-core';
-import type { Signal } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
+import type { Signal } from '@philjs/core';
 
 interface User {
   id: number;

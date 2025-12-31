@@ -6,8 +6,8 @@ Set and enforce performance budgets to maintain fast applications.
 
 ### Configure Budgets
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 export default {
   build: {
     rollupOptions: {
@@ -51,7 +51,7 @@ jobs:
 
 ### ✅ Do: Set Realistic Budgets
 
-```js
+```ts
 // ✅ Good - achievable targets
 budgets: {
   bundle: 250, // 250kb

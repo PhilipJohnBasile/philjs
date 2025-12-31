@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export interface CookieConsentProps {
   /** Position of the banner */

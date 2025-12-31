@@ -4,13 +4,13 @@
  * Displays auto-generated API documentation from TypeScript source
  */
 
-import { signal, effect } from 'philjs-core';
-import {
-  generateApiMarkdown,
-  philjsCoreApiDocs,
-  type ApiDocModule,
-} from '../lib/api-doc-generator';
+import { signal, effect } from '@philjs/core';
 import { renderMarkdown } from '../lib/markdown-renderer';
+import coreDocs from '../../../../docs/api-reference/core.md?raw';
+import routerDocs from '../../../../docs/api-reference/router.md?raw';
+import ssrDocs from '../../../../docs/api-reference/ssr.md?raw';
+import islandsDocs from '../../../../docs/advanced/islands.md?raw';
+import devtoolsDocs from '../../../../docs/advanced/devtools.md?raw';
 
 export interface ApiReferencePageProps {
   navigate: (path: string) => void;
@@ -22,27 +22,51 @@ export function ApiReferencePage({ navigate, module = 'core' }: ApiReferencePage
   const renderedContent = signal('');
 
   // Available API modules
-  const modules = [
-    { id: 'core', name: 'philjs-core', description: 'Core reactivity primitives' },
-    { id: 'router', name: 'philjs-router', description: 'File-based routing' },
-    { id: 'ssr', name: 'philjs-ssr', description: 'Server-side rendering' },
-    { id: 'islands', name: 'philjs-islands', description: 'Islands architecture' },
-    { id: 'devtools', name: 'philjs-devtools', description: 'Developer tools' },
-  ];
+  const moduleDocs = {
+    core: {
+      name: '@philjs/core',
+      description: 'Core reactivity primitives',
+      markdown: coreDocs,
+      editPath: 'docs/api-reference/core.md',
+    },
+    router: {
+      name: '@philjs/router',
+      description: 'File-based routing',
+      markdown: routerDocs,
+      editPath: 'docs/api-reference/router.md',
+    },
+    ssr: {
+      name: '@philjs/ssr',
+      description: 'Server-side rendering',
+      markdown: ssrDocs,
+      editPath: 'docs/api-reference/ssr.md',
+    },
+    islands: {
+      name: '@philjs/islands',
+      description: 'Islands architecture',
+      markdown: islandsDocs,
+      editPath: 'docs/advanced/islands.md',
+    },
+    devtools: {
+      name: '@philjs/devtools',
+      description: 'Developer tools',
+      markdown: devtoolsDocs,
+      editPath: 'docs/advanced/devtools.md',
+    },
+  } as const;
+
+  const modules = (Object.keys(moduleDocs) as Array<keyof typeof moduleDocs>).map(id => ({
+    id,
+    name: moduleDocs[id].name,
+    description: moduleDocs[id].description,
+  }));
 
   // Load and render API docs for selected module
   effect(() => {
     const moduleId = currentModule();
 
-    // For now, only core module has docs
-    if (moduleId === 'core') {
-      const markdown = generateApiMarkdown(philjsCoreApiDocs);
-      renderedContent.set(renderMarkdown(markdown));
-    } else {
-      renderedContent.set(
-        renderMarkdown(`# ${modules.find(m => m.id === moduleId)?.name || moduleId}\n\nAPI documentation coming soon...`)
-      );
-    }
+    const doc = moduleDocs[moduleId as keyof typeof moduleDocs] ?? moduleDocs.core;
+    renderedContent.set(renderMarkdown(doc.markdown));
   });
 
   return (
@@ -138,7 +162,7 @@ export function ApiReferencePage({ navigate, module = 'core' }: ApiReferencePage
                   fontWeight: currentModule() === mod.id ? 600 : 400,
                 }}
               >
-                <div style={{ fontSize: '0.875rem' }}>{mod.name}</div>
+              <div style={{ fontSize: '0.875rem' }}>{mod.name}</div>
                 <div style={{
                   fontSize: '0.75rem',
                   color: 'var(--color-text-tertiary)',
@@ -291,8 +315,8 @@ export function ApiReferencePage({ navigate, module = 'core' }: ApiReferencePage
             paddingTop: '2rem',
             borderTop: '1px solid var(--color-border)',
           }}>
-            <a
-              href={`https://github.com/philjs/philjs/edit/main/packages/philjs-${currentModule()}/src/index.ts`}
+              <a
+              href={`https://github.com/philjs/philjs/edit/main/${moduleDocs[currentModule() as keyof typeof moduleDocs]?.editPath ?? moduleDocs.core.editPath}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{

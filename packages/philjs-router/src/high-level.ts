@@ -6,8 +6,8 @@
  * Enhanced with Remix-style nested routes with parallel data loading.
  */
 
-import { render, signal, isResult, isOk, isErr } from "philjs-core";
-import type { JSXElement, VNode } from "philjs-core";
+import { render, signal, isResult, isOk, isErr } from "@philjs/core";
+import type { JSXElement, VNode } from "@philjs/core";
 import {
   SmartPreloader,
   initSmartPreloader,

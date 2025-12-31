@@ -597,7 +597,7 @@ effect(() => {
 ### PhilJS DevTools (if available)
 
 ```tsx
-import { DevTools } from 'philjs-devtools';
+import { DevTools } from '@philjs/devtools';
 
 function App() {
   return (

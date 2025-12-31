@@ -1,16 +1,24 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { theme, toggleTheme } from "../lib/theme";
 import { VersionSwitcher } from "./VersionSwitcher";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
+export interface HeaderProps {
+  navigate: (path: string) => void;
+  currentPage?: () => string;
+  onMenuToggle?: (open: boolean) => void;
+}
+
 export function Header({
   navigate,
-  currentPage,
-}: {
-  navigate: (path: string) => void;
-  currentPage: () => string;
-}) {
+  currentPage = () => window.location.pathname,
+  onMenuToggle,
+}: HeaderProps) {
   const mobileMenuOpen = signal(false);
+  const setMobileMenuOpen = (open: boolean) => {
+    mobileMenuOpen.set(open);
+    onMenuToggle?.(open);
+  };
 
   const navLinks = [
     { label: "Docs", path: "/docs" },
@@ -119,7 +127,7 @@ export function Header({
           {/* Mobile Menu Button */}
           <button
             style={styles.mobileMenuButton}
-            onClick={() => mobileMenuOpen.set(!mobileMenuOpen())}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen())}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen()}
           >
@@ -146,8 +154,8 @@ export function Header({
         {mobileMenuOpen() && (
           <div
             style={styles.mobileMenuBackdrop}
-            onClick={() => mobileMenuOpen.set(false)}
-            aria-hidden="true"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden={true}
           />
         )}
 
@@ -163,7 +171,7 @@ export function Header({
               <div style={styles.mobileMenuHeader}>
                 <span style={styles.mobileMenuTitle}>Navigation</span>
                 <button
-                  onClick={() => mobileMenuOpen.set(false)}
+                  onClick={() => setMobileMenuOpen(false)}
                   style={styles.mobileMenuClose}
                   aria-label="Close menu"
                 >
@@ -181,7 +189,7 @@ export function Header({
                     onClick={(e: MouseEvent) => {
                       e.preventDefault();
                       navigate(link.path);
-                      mobileMenuOpen.set(false);
+                      setMobileMenuOpen(false);
                     }}
                     style={{
                       ...styles.mobileMenuLink,

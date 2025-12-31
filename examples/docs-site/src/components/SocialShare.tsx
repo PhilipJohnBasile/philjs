@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface SocialShareProps {
   /** URL to share (defaults to current page) */

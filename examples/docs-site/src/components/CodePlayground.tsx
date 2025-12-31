@@ -1,4 +1,4 @@
-import { signal, effect, render } from 'philjs-core';
+import { signal, effect, render } from '@philjs/core';
 import hljs from 'highlight.js';
 
 interface CodePlaygroundProps {
@@ -96,19 +96,19 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
         <div class="code-playground-toolbar">
           <button
             class="playground-btn playground-btn-run"
-            onclick={runCode}
+            onClick={runCode}
           >
             ▶ Run
           </button>
           <button
             class="playground-btn playground-btn-reset"
-            onclick={resetCode}
+            onClick={resetCode}
           >
             ↻ Reset
           </button>
           <button
             class="playground-btn playground-btn-copy"
-            onclick={copyCode}
+            onClick={copyCode}
           >
             📋 Copy
           </button>
@@ -120,11 +120,11 @@ export function CodePlayground({ initialCode, language = 'javascript' }: CodePla
           <textarea
             class="code-editor-textarea"
             value={code()}
-            oninput={(e: Event) => {
+            onInput={(e: InputEvent) => {
               const target = e.target as HTMLTextAreaElement;
               code.set(target.value);
             }}
-            spellcheck="false"
+            spellCheck={false}
           />
           <pre class="code-editor-highlight">
             <code id="code-editor-content" class={`language-${language}`}>

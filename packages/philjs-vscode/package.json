@@ -127,12 +127,13 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@types/vscode": "^1.85.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.19.1",
+    "typescript": "^6.0.0"
   },
   "peerDependencies": {
-    "typescript": ">=5.9.3"
+    "typescript": "^6.0.0"
   },
   "files": [
     "dist",

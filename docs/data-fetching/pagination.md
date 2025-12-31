@@ -16,7 +16,7 @@ Load large datasets efficiently with pagination, infinite scroll, and cursor-bas
 ### Basic Offset Pagination
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function usePagination<T>(
   fetcher: (page: number, limit: number) => Promise<T[]>,
@@ -117,7 +117,7 @@ function ProductList() {
 ### With Query
 
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 const productsQuery = createQuery({
   key: (page: number) => ['products', page],
@@ -240,7 +240,7 @@ function PostsList() {
 ### Basic Infinite Scroll
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useInfiniteScroll<T>(
   fetcher: (offset: number) => Promise<T[]>,

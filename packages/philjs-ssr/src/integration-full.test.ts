@@ -5,9 +5,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { signal, memo, effect } from 'philjs-core';
-import { jsx } from 'philjs-core/jsx-runtime';
-import { renderToString } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
+import { jsx } from '@philjs/core/jsx-runtime';
+import { renderToString } from '@philjs/core';
 import { defineLoader, defineAction } from './loader.js';
 import { renderToStreamingResponse } from './streaming.js';
 

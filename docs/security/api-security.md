@@ -32,7 +32,7 @@ Cross-Site Request Forgery (CSRF) attacks trick users into performing unwanted a
 ### Implementation
 
 ```typescript
-import { csrfProtection, generateCSRFToken, extractCSRFToken } from 'philjs-ssr';
+import { csrfProtection, generateCSRFToken, extractCSRFToken } from '@philjs/ssr';
 
 // Create CSRF middleware
 const csrf = csrfProtection({
@@ -104,7 +104,7 @@ async function makeRequest(url: string, data: any) {
 Alternative CSRF protection:
 
 ```typescript
-import { createCookie, generateSecureToken } from 'philjs-ssr';
+import { createCookie, generateSecureToken } from '@philjs/ssr';
 
 const csrfCookie = createCookie('csrf-token', {
   httpOnly: false, // Must be readable by JavaScript
@@ -140,7 +140,7 @@ Protect APIs from abuse with rate limiting:
 ### Basic Rate Limiting
 
 ```typescript
-import { RateLimiter } from 'philjs-ssr';
+import { RateLimiter } from '@philjs/ssr';
 
 const apiLimiter = new RateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -302,7 +302,7 @@ export async function handleCreateUser(request: Request) {
 ### Manual Validation
 
 ```typescript
-import { isValidEmail, escapeHtml, sanitizeUrl } from 'philjs-core';
+import { isValidEmail, escapeHtml, sanitizeUrl } from '@philjs/core';
 
 export function validateInput(data: any): {
   valid: boolean;
@@ -449,7 +449,7 @@ export async function validateAPIKey(request: Request) {
 }
 
 // Generate API key
-import { generateSecureToken } from 'philjs-core';
+import { generateSecureToken } from '@philjs/core';
 
 export async function createAPIKey(userId: string, permissions: string[]) {
   const apiKey = generateSecureToken(32);

@@ -74,7 +74,7 @@ Ship 90% less JavaScript by default. Only interactive components get hydrated - 
 Type-safe GraphQL queries with automatic caching, SSR support, and zero configuration.
 
 ```typescript
-import { gql } from 'philjs-graphql';
+import { gql } from '@philjs/graphql';
 
 const user = gql`
   query GetUser($id: ID!) {
@@ -102,7 +102,7 @@ const { data } = await user({ id: userId });
 PhilJS automatically enhances your components with proper ARIA labels, validates color contrast, enforces heading hierarchy, and manages keyboard navigation.
 
 ```typescript
-import { enhanceWithAria } from 'philjs-core';
+import { enhanceWithAria } from '@philjs/core';
 
 function Button({ onClick, children }) {
   return enhanceWithAria(
@@ -129,7 +129,7 @@ auditAccessibility(); // Finds and reports a11y issues
 **Zero external dependencies. Production-ready.**
 
 ```typescript
-import { useExperiment, ABTest } from 'philjs-core';
+import { useExperiment, ABTest } from '@philjs/core';
 
 function PricingPage() {
   const variant = useExperiment('pricing-test');
@@ -161,7 +161,7 @@ function PricingPage() {
 **The only framework that shows you what your code costs to run.**
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 const costs = costTracker.track('MyComponent', () => {
   // Your component logic
@@ -227,7 +227,7 @@ function ExpensiveComponent({ data }) {
 Best of static and dynamic. Pre-render the shell, stream the content.
 
 ```tsx
-import { PPRBoundary } from 'philjs-core/ppr';
+import { PPRBoundary } from '@philjs/core/ppr';
 
 <PPRBoundary
   static={<ProductShell />}           // Pre-rendered at build time
@@ -244,7 +244,7 @@ import { PPRBoundary } from 'philjs-core/ppr';
 Mix static and dynamic content on the same page with per-component caching.
 
 ```tsx
-import { ServerIsland } from 'philjs-islands';
+import { ServerIsland } from '@philjs/islands';
 
 <article>
   <h1>Blog Post Title</h1>          {/* Static */}
@@ -264,7 +264,7 @@ import { ServerIsland } from 'philjs-islands';
 Priority-based rendering for smoother UX. Pre-render hidden content when idle.
 
 ```tsx
-import { Activity } from 'philjs-core/activity';
+import { Activity } from '@philjs/core/activity';
 
 <Activity
   mode={isActive ? 'visible' : 'hidden'}
@@ -502,7 +502,7 @@ pnpm dev
 ### Your First Component (5 minutes)
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Counter() {
   const count = signal(0);

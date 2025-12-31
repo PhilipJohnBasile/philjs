@@ -9,7 +9,7 @@ Performance-related frequently asked questions.
 A: Use code splitting and tree shaking:
 
 ```tsx
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 const Heavy = lazy(() => import('./Heavy'));
 ```

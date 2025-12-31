@@ -1,4 +1,4 @@
-import { signal, linkedSignal } from "philjs-core";
+import { signal, linkedSignal } from "@philjs/core";
 
 /**
  * LinkedSignal Demo - Writable Computed Values

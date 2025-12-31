@@ -367,8 +367,8 @@ export default {
     federation({
       name: 'app',
       shared: {
-        'philjs-core': {},
-        'philjs-router': {}
+        '@philjs/core': {},
+        '@philjs/router': {}
       }
     })
   ]

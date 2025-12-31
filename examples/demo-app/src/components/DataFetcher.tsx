@@ -1,4 +1,4 @@
-import { memo, signal } from "philjs-core";
+import { memo, signal } from "@philjs/core";
 
 export function DataFetcher() {
   const data = signal<any>(null);

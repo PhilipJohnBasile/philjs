@@ -376,7 +376,7 @@ function Form() {
 
 ```tsx
 // Solution: Use batch
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 function Form() {
   const firstName = signal('');
@@ -591,7 +591,7 @@ function testReactivity() {
 For two-way binding with transformation:
 
 ```tsx
-import { linkedSignal } from 'philjs-core';
+import { linkedSignal } from '@philjs/core';
 
 function TemperatureConverter() {
   // Celsius signal with automatic Fahrenheit conversion
@@ -619,7 +619,7 @@ function TemperatureConverter() {
 For async data loading:
 
 ```tsx
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: string }) {
   const user = resource(() => fetchUser(userId));
@@ -639,7 +639,7 @@ function UserProfile({ userId }: { userId: string }) {
 Read signal without tracking dependency:
 
 ```tsx
-import { untrack } from 'philjs-core';
+import { untrack } from '@philjs/core';
 
 function Component() {
   const count = signal(0);
@@ -693,7 +693,7 @@ if (count() < 10) {
 ### Batched Updates
 
 ```tsx
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 batch(() => {
   count.set(count() + 1);

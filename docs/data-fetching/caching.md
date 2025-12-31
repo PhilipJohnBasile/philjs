@@ -118,7 +118,7 @@ const query = createQuery({
 ### Manual Invalidation
 
 ```typescript
-import { invalidateQueries } from 'philjs-core';
+import { invalidateQueries } from '@philjs/core';
 
 // Invalidate specific query
 invalidateQueries(['user', userId]);
@@ -166,7 +166,7 @@ Update cache without refetching:
 ### Set Query Data
 
 ```typescript
-import { setQueryData } from 'philjs-core';
+import { setQueryData } from '@philjs/core';
 
 // Set entire cache
 setQueryData(['user', userId], updatedUser);
@@ -234,7 +234,7 @@ const likeMutation = createMutation({
 ### LocalStorage Persistence
 
 ```typescript
-import { persistQueryCache } from 'philjs-core';
+import { persistQueryCache } from '@philjs/core';
 
 // Persist cache to localStorage
 persistQueryCache({
@@ -249,7 +249,7 @@ persistQueryCache({
 ### Custom Storage
 
 ```typescript
-import { persistQueryCache } from 'philjs-core';
+import { persistQueryCache } from '@philjs/core';
 
 const customStorage = {
   getItem: (key: string) => {
@@ -352,7 +352,7 @@ const query = createQuery({
 ### Manual Cleanup
 
 ```typescript
-import { clearQueryCache, removeQueries } from 'philjs-core';
+import { clearQueryCache, removeQueries } from '@philjs/core';
 
 // Remove specific query
 removeQueries(['user', userId]);
@@ -370,7 +370,7 @@ removeQueries({ type: 'stale' });
 ### Cache Size Limits
 
 ```typescript
-import { setQueryCacheConfig } from 'philjs-core';
+import { setQueryCacheConfig } from '@philjs/core';
 
 setQueryCacheConfig({
   maxQueries: 100, // Maximum number of queries
@@ -445,7 +445,7 @@ setQueryData(['settings'], (old: Settings) => ({
 ### Batch Updates
 
 ```typescript
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 batch(() => {
   setQueryData(['user', '1'], user1);
@@ -460,7 +460,7 @@ batch(() => {
 ### Inspect Cache
 
 ```typescript
-import { getQueryCache } from 'philjs-core';
+import { getQueryCache } from '@philjs/core';
 
 // Get all queries in cache
 const cache = getQueryCache();
@@ -476,7 +476,7 @@ console.log('User cache:', userCache);
 ### Cache Events
 
 ```typescript
-import { onCacheChange } from 'philjs-core';
+import { onCacheChange } from '@philjs/core';
 
 onCacheChange((event) => {
   console.log('Cache event:', event.type);

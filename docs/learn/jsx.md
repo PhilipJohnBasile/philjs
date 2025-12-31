@@ -93,7 +93,7 @@ createElement('div', { className: 'card' },
 ### Embedding Expressions
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Greeting() {
   const name = signal('Alice');
@@ -320,7 +320,7 @@ function Button(props) {
 Group elements without adding extra DOM nodes:
 
 ```tsx
-import { Fragment } from 'philjs-core';
+import { Fragment } from '@philjs/core';
 
 function ListItems() {
   return (
@@ -540,7 +540,7 @@ function Button({ label, variant = 'primary', onClick, disabled }: ButtonProps) 
 ### Typed Children
 
 ```tsx
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 
 interface CardProps {
   title: string;
@@ -667,7 +667,7 @@ function Layout({ header, sidebar, content, footer }: LayoutProps) {
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
@@ -675,7 +675,7 @@ function Layout({ header, sidebar, content, footer }: LayoutProps) {
 ### Custom JSX Factory
 
 ```tsx
-/** @jsxImportSource philjs-core */
+/** @jsxImportSource @philjs/core */
 
 function Component() {
   return <div>Hello</div>;

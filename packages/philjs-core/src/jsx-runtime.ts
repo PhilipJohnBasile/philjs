@@ -3,6 +3,13 @@
  * Supports both server-side rendering and client-side hydration.
  */
 
+import type {
+  IntrinsicAttributes as PhilJSIntrinsicAttributes,
+  IntrinsicElements as PhilJSIntrinsicElements,
+} from "./types.js";
+
+export type { JSXChild } from "./types.js";
+
 export type JSXElement = {
   type: string | Function;
   props: Record<string, any>;
@@ -10,6 +17,12 @@ export type JSXElement = {
 };
 
 export type VNode = JSXElement | string | number | boolean | null | undefined;
+
+export namespace JSX {
+  export type Element = JSXElement;
+  export interface IntrinsicElements extends PhilJSIntrinsicElements {}
+  export interface IntrinsicAttributes extends PhilJSIntrinsicAttributes {}
+}
 
 /**
  * JSX factory function (used by TypeScript/Babel transforms).

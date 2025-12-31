@@ -55,7 +55,7 @@ cargo philjs init --template=ssr
 # Cargo.toml
 [dependencies]
 philjs = "2.0"
-philjs-axum = "2.0"  # or philjs-actix, philjs-rocket
+@philjs/axum = "2.0"  # or @philjs/actix, @philjs/rocket
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 
@@ -772,7 +772,7 @@ my-app/
 ```toml
 [features]
 default = ["ssr"]
-ssr = ["philjs/ssr", "philjs-axum"]
+ssr = ["philjs/ssr", "@philjs/axum"]
 hydration = ["philjs/hydration", "philjs/wasm"]
 full = ["ssr", "hydration"]
 ```

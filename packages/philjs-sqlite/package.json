@@ -33,7 +33,7 @@
     "wasm"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-sqlite'",
     "typecheck": "tsc --noEmit"
@@ -42,9 +42,9 @@
     "sql.js": "^1.12.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

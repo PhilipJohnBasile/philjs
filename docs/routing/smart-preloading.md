@@ -34,7 +34,7 @@ Traditional preloading is either too aggressive (wasting bandwidth) or too passi
 - **Works automatically** - No manual configuration needed
 
 ```typescript
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 // Initialize with intent prediction
 const preloader = initSmartPreloader({
@@ -52,7 +52,7 @@ const preloader = initSmartPreloader({
 ### 1. Initialize Preloader
 
 ```typescript
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 // Basic setup with intelligent defaults
 const preloader = initSmartPreloader();
@@ -89,7 +89,7 @@ function Navigation() {
 You can also manually control preloading:
 
 ```tsx
-import { usePreload, getSmartPreloader } from 'philjs-router';
+import { usePreload, getSmartPreloader } from '@philjs/router';
 
 function ProductCard({ product }: { product: Product }) {
   // Preload on component mount
@@ -340,7 +340,7 @@ Calculate click intent probability (0-1).
 
 **Example:**
 ```typescript
-import { calculateClickIntent } from 'philjs-router';
+import { calculateClickIntent } from '@philjs/router';
 
 const intent = calculateClickIntent(
   { x: 100, y: 200 },       // Mouse position
@@ -359,7 +359,7 @@ Predict next navigation based on history.
 
 **Example:**
 ```typescript
-import { predictNextRoute } from 'philjs-router';
+import { predictNextRoute } from '@philjs/router';
 
 const predictions = predictNextRoute('/products', [
   '/products',
@@ -427,8 +427,8 @@ initSmartPreloader({
 ### Example 1: E-Commerce Product List
 
 ```tsx
-import { initSmartPreloader } from 'philjs-router';
-import { signal } from 'philjs-core';
+import { initSmartPreloader } from '@philjs/router';
+import { signal } from '@philjs/core';
 
 // Initialize with intent prediction
 const preloader = initSmartPreloader({
@@ -467,7 +467,7 @@ function ProductGrid() {
 ### Example 2: Navigation Menu with Hover
 
 ```tsx
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 const preloader = initSmartPreloader({
   strategy: 'hover',
@@ -499,8 +499,8 @@ function Navigation() {
 ### Example 3: Conditional Preloading
 
 ```tsx
-import { usePreload } from 'philjs-router';
-import { signal } from 'philjs-core';
+import { usePreload } from '@philjs/router';
+import { signal } from '@philjs/core';
 
 function ArticleCard({ article }: { article: Article }) {
   const isHovered = signal(false);
@@ -537,7 +537,7 @@ function ArticleCard({ article }: { article: Article }) {
 ### Example 4: Priority Queue
 
 ```tsx
-import { initSmartPreloader, getSmartPreloader } from 'philjs-router';
+import { initSmartPreloader, getSmartPreloader } from '@philjs/router';
 
 // Initialize with max 3 concurrent preloads
 const preloader = initSmartPreloader({
@@ -574,7 +574,7 @@ function Dashboard() {
 ### Example 5: History-Based Prediction
 
 ```tsx
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 const preloader = initSmartPreloader({
   strategy: 'intent'
@@ -597,7 +597,7 @@ window.addEventListener('popstate', () => {
 ### Example 6: Network-Aware Preloading
 
 ```tsx
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 // Detect network conditions
 const connection = (navigator as any).connection;
@@ -660,7 +660,7 @@ initSmartPreloader({ intentThreshold: 0.6 });
 ### 4. Record Navigation History
 
 ```typescript
-import { getSmartPreloader } from 'philjs-router';
+import { getSmartPreloader } from '@philjs/router';
 
 // Record every navigation
 window.addEventListener('popstate', () => {
@@ -691,7 +691,7 @@ setInterval(() => {
 ### Custom Intent Algorithm
 
 ```typescript
-import { SmartPreloader } from 'philjs-router';
+import { SmartPreloader } from '@philjs/router';
 
 class CustomPreloader extends SmartPreloader {
   protected calculatePriority(url: string, options: any): number {
@@ -719,7 +719,7 @@ const preloader = new CustomPreloader({
 ### Integration with Analytics
 
 ```typescript
-import { getSmartPreloader } from 'philjs-router';
+import { getSmartPreloader } from '@philjs/router';
 
 const preloader = getSmartPreloader();
 

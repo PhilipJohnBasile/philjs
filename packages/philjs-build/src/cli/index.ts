@@ -195,7 +195,7 @@ program
 
     // Migration logic would go here
     console.log(chalk.yellow('\n⚠️  Migration preview:'));
-    console.log(chalk.gray('  - rollup.config.js → rspack.config.ts'));
+    console.log(chalk.gray('  - rollup.config.ts → rspack.config.ts'));
     console.log(chalk.gray('  - Update package.json scripts'));
     console.log(chalk.gray('  - Convert plugins where possible'));
 

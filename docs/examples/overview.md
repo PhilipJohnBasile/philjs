@@ -10,7 +10,7 @@ Explore complete, production-ready examples showcasing PhilJS features and patte
 A simple counter demonstrating PhilJS signals and reactivity. Perfect first example for learning the basics.
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -114,7 +114,7 @@ Interactive analytics dashboard with charts, filters, and real-time updates. Sho
 - Islands for interactivity
 - Optimized bundle size
 
-**[View Source](https://github.com/philjs/philjs/tree/main/examples/dashboard)** | **[Live Demo](https://philjs-dashboard.vercel.app)**
+**[View Source](https://github.com/philjs/philjs/tree/main/examples/dashboard)** | **[Live Demo](https://@philjs/dashboard.vercel.app)**
 
 ---
 

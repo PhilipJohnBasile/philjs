@@ -44,9 +44,9 @@
     "execa": "^9.6.1"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "next",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

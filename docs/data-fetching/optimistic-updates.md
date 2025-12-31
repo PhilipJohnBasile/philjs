@@ -32,7 +32,7 @@ Optimistic updates immediately update the UI assuming the server request will su
 ### Simple Optimistic Update
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function LikeButton({ postId, initialLikes, initialIsLiked }: {
   postId: string;
@@ -78,7 +78,7 @@ function LikeButton({ postId, initialLikes, initialIsLiked }: {
 ### Mutation with Optimistic Update
 
 ```typescript
-import { createMutation, setQueryData, getQueryData } from 'philjs-core';
+import { createMutation, setQueryData, getQueryData } from '@philjs/core';
 
 const likePostMutation = createMutation({
   mutationFn: async (postId: string) => {

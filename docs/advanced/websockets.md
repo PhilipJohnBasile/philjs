@@ -17,7 +17,7 @@ Real-time bidirectional communication in PhilJS applications.
 ### Basic WebSocket Connection
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function useWebSocket(url: string) {
   const socket = signal<WebSocket | null>(null);

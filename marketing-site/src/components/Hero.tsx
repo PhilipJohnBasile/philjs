@@ -1,7 +1,13 @@
 import { html } from "../server/template";
 
 export function Hero() {
-  const badges = ["Signals-first runtime", "Zero hydration", "88 package ecosystem"];
+  const badges = [
+    "TypeScript 6-first",
+    "Node 24+ baseline",
+    "Signals-first runtime",
+    "Zero hydration",
+    "88 package ecosystem"
+  ];
   const stats = [
     { value: "~3.3 KB", label: "Core runtime" },
     { value: "25 KB", label: "Full stack" },
@@ -12,22 +18,22 @@ export function Hero() {
     {
       title: "Core runtime",
       description: "Signals, JSX runtime, compiler, and islands.",
-      packages: ["philjs-core", "philjs-compiler", "philjs-islands"]
+      packages: ["@philjs/core", "@philjs/compiler", "@philjs/islands"]
     },
     {
       title: "Routing and rendering",
       description: "File-based routing with SSR and loaders.",
-      packages: ["philjs-router", "philjs-ssr", "philjs-router-typesafe"]
+      packages: ["@philjs/router", "@philjs/ssr", "@philjs/router-typesafe"]
     },
     {
       title: "Data and auth",
       description: "Typed APIs, GraphQL, sessions, and auth flows.",
-      packages: ["philjs-api", "philjs-graphql", "philjs-auth"]
+      packages: ["@philjs/api", "@philjs/graphql", "@philjs/auth"]
     },
     {
       title: "Production stack",
       description: "Adapters, testing, SEO, and observability.",
-      packages: ["philjs-adapters", "philjs-testing", "philjs-plugin-seo"]
+      packages: ["@philjs/adapters", "@philjs/testing", "@philjs/plugin-seo"]
     }
   ];
 
@@ -42,8 +48,9 @@ export function Hero() {
         </h1>
         <p class="hero-subtitle">
           PhilJS unifies signals, SSR, islands, and a full ecosystem of packages for
-          data, auth, UI, and deployment. Build fast, production-ready experiences
-          without duct-taping ten tools together.
+          data, auth, UI, and deployment. TypeScript 6-first with a Node 24+ baseline,
+          it helps you build fast, production-ready experiences without duct-taping
+          ten tools together.
         </p>
         <div class="hero-actions">
           <a href="#get-started" class="btn btn-primary" data-prefetch>

@@ -24,7 +24,10 @@
       "default": "./dist/utils/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -33,12 +36,19 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "drag-and-drop", "dnd", "sortable", "kanban", "accessibility"],
+  "keywords": [
+    "philjs",
+    "drag-and-drop",
+    "dnd",
+    "sortable",
+    "kanban",
+    "accessibility"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

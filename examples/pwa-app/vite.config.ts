@@ -15,6 +15,9 @@ export default defineConfig({
       development: process.env.NODE_ENV === "development",
     }),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt", "icons/*.png"],
       manifest: {
@@ -78,38 +81,8 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 24 hours
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "google-fonts-cache",
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
       },
       devOptions: {
         enabled: true,
@@ -119,16 +92,16 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "philjs-core": resolve(__dirname, "../../packages/philjs-core/dist"),
-      "philjs-router": resolve(__dirname, "../../packages/philjs-router/dist"),
-      "philjs-ssr": resolve(__dirname, "../../packages/philjs-ssr/dist"),
-      "philjs-islands": resolve(__dirname, "../../packages/philjs-islands/dist"),
-      "philjs-compiler": resolve(__dirname, "../../packages/philjs-compiler/src"),
+      "@philjs/core": resolve(__dirname, "../../packages/philjs-core/dist"),
+      "@philjs/router": resolve(__dirname, "../../packages/philjs-router/dist"),
+      "@philjs/ssr": resolve(__dirname, "../../packages/philjs-ssr/dist"),
+      "@philjs/islands": resolve(__dirname, "../../packages/philjs-islands/dist"),
+      "@philjs/compiler": resolve(__dirname, "../../packages/philjs-compiler/src"),
     },
   },
   esbuild: {
     jsx: "automatic",
-    jsxImportSource: "philjs-core",
+    jsxImportSource: "@philjs/core",
   },
   server: {
     port: 3002,

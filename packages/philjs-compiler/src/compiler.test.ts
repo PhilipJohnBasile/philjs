@@ -34,7 +34,7 @@ describe('PhilJS Compiler', () => {
   describe('transform', () => {
     it('should transform code with signal imports', () => {
       const code = `
-        import { signal, memo } from 'philjs-core';
+        import { signal, memo } from '@philjs/core';
 
         const count = signal(0);
         const doubled = count() * 2;
@@ -62,7 +62,7 @@ describe('PhilJS Compiler', () => {
 
     it('should generate source maps when enabled', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -73,7 +73,7 @@ describe('PhilJS Compiler', () => {
 
     it('should not generate source maps when disabled', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -87,7 +87,7 @@ describe('PhilJS Compiler', () => {
   describe('analyzeCode', () => {
     it('should analyze PhilJS code', () => {
       const code = `
-        import { signal, memo, effect } from 'philjs-core';
+        import { signal, memo, effect } from '@philjs/core';
 
         function Counter() {
           const count = signal(0);
@@ -116,7 +116,7 @@ describe('PhilJS Compiler', () => {
 
     it('should detect PhilJS imports', () => {
       const code = `
-        import { signal, memo, effect, batch } from 'philjs-core';
+        import { signal, memo, effect, batch } from '@philjs/core';
       `;
 
       const analysis = analyzeCode(code, 'test.ts');
@@ -131,7 +131,7 @@ describe('PhilJS Compiler', () => {
 
     it('should detect components', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         function MyComponent() {
           return <div>Hello</div>;
@@ -255,7 +255,7 @@ describe('PhilJS Compiler', () => {
   describe('auto-batch detection', () => {
     it('should detect batch candidates in consecutive signal sets', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         function Form() {
           const name = signal('');
@@ -280,7 +280,7 @@ describe('PhilJS Compiler', () => {
 
     it('should analyze signal bindings correctly', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         function DataLoader() {
           const data = signal(null);
@@ -301,7 +301,7 @@ describe('PhilJS Compiler', () => {
   describe('improved warnings', () => {
     it('should detect signal bindings in analysis', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         function Component() {
           const count = signal(0);
@@ -320,7 +320,7 @@ describe('PhilJS Compiler', () => {
 
     it('should analyze component structure', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         function HeavyComponent() {
           const a = signal(1);
@@ -340,7 +340,7 @@ describe('PhilJS Compiler', () => {
 
     it('should detect effects in analysis', () => {
       const code = `
-        import { signal, effect } from 'philjs-core';
+        import { signal, effect } from '@philjs/core';
 
         function Component() {
           const count = signal(0);
@@ -366,7 +366,7 @@ describe('PhilJS Compiler', () => {
     describe('deeply nested components', () => {
       it('should handle components nested 5 levels deep', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           export function Level1() {
             const count1 = signal(0);
@@ -406,7 +406,7 @@ describe('PhilJS Compiler', () => {
 
       it('should detect optimization opportunities in deeply nested components', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function OuterComponent() {
             const outer = signal(0);
@@ -436,7 +436,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle recursive component patterns', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function TreeNode({ depth }: { depth: number }) {
             const expanded = signal(false);
@@ -472,7 +472,7 @@ describe('PhilJS Compiler', () => {
     describe('conditional rendering with signals', () => {
       it('should handle if/else with signal conditions', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function ConditionalComponent() {
             const isLoggedIn = signal(false);
@@ -499,7 +499,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle ternary operators with signals', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function TernaryComponent() {
             const status = signal('loading');
@@ -528,7 +528,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle logical && and || operators with signals', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function LogicalComponent() {
             const showHeader = signal(true);
@@ -553,7 +553,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle switch statements with signal values', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function SwitchComponent() {
             const mode = signal('view');
@@ -585,7 +585,7 @@ describe('PhilJS Compiler', () => {
     describe('signals in loops', () => {
       it('should handle signals in map operations', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function ListComponent() {
             const items = signal([
@@ -622,7 +622,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle nested loops with signals', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function MatrixComponent() {
             const matrix = signal([
@@ -653,7 +653,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle signals created inside loops', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function DynamicSignals() {
             const count = signal(5);
@@ -683,7 +683,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle filter, reduce, and other array methods with signals', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function ArrayOperations() {
             const numbers = signal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -716,7 +716,7 @@ describe('PhilJS Compiler', () => {
     describe('dynamic component imports', () => {
       it('should handle dynamic imports with signal-based conditions', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function LazyLoader() {
             const componentName = signal('default');
@@ -753,7 +753,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle lazy component initialization with signals', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function ComponentFactory() {
             const componentType = signal('button');
@@ -784,7 +784,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle code-splitting patterns with signals', () => {
         const code = `
-          import { signal, effect } from 'philjs-core';
+          import { signal, effect } from '@philjs/core';
 
           function CodeSplitting() {
             const route = signal('home');
@@ -834,7 +834,7 @@ describe('PhilJS Compiler', () => {
     describe('complex JSX patterns', () => {
       it('should handle spread operators with signals', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function SpreadComponent() {
             const baseProps = signal({ id: 1, name: 'Test' });
@@ -858,7 +858,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle fragments with signals', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function FragmentComponent() {
             const items = signal(['A', 'B', 'C']);
@@ -891,7 +891,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle refs and DOM manipulation with signals', () => {
         const code = `
-          import { signal, effect } from 'philjs-core';
+          import { signal, effect } from '@philjs/core';
 
           function RefComponent() {
             const inputRef = signal(null);
@@ -926,7 +926,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle portal patterns with signals', () => {
         const code = `
-          import { signal, effect } from 'philjs-core';
+          import { signal, effect } from '@philjs/core';
 
           function PortalComponent() {
             const isOpen = signal(false);
@@ -965,7 +965,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle complex event handlers with signals', () => {
         const code = `
-          import { signal, memo, batch } from 'philjs-core';
+          import { signal, memo, batch } from '@philjs/core';
 
           function EventComponent() {
             const x = signal(0);
@@ -1011,7 +1011,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle context-like patterns with signals', () => {
         const code = `
-          import { signal, memo } from 'philjs-core';
+          import { signal, memo } from '@philjs/core';
 
           function createThemeContext() {
             const theme = signal('light');
@@ -1051,7 +1051,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle render props patterns with signals', () => {
         const code = `
-          import { signal } from 'philjs-core';
+          import { signal } from '@philjs/core';
 
           function DataProvider({ children }: any) {
             const data = signal({ loading: true, value: null });
@@ -1099,7 +1099,7 @@ describe('PhilJS Compiler', () => {
   describe('integration', () => {
     it('should handle real-world PhilJS component', () => {
       const code = `
-        import { signal, memo, effect } from 'philjs-core';
+        import { signal, memo, effect } from '@philjs/core';
 
         export function TodoList() {
           const todos = signal([
@@ -1163,7 +1163,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle nested component definitions', () => {
       const code = `
-        import { signal, memo } from 'philjs-core';
+        import { signal, memo } from '@philjs/core';
 
         export function ComponentComposition() {
           const count = signal(0);
@@ -1201,7 +1201,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle custom hook patterns', () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
 
         // Custom hook pattern
         const useCounter = (initialValue = 0) => {
@@ -1236,7 +1236,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle derived state chains (shopping cart pattern)', () => {
       const code = `
-        import { signal, memo } from 'philjs-core';
+        import { signal, memo } from '@philjs/core';
 
         export function ShoppingCart() {
           const items = signal([
@@ -1275,7 +1275,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle effects with cleanup', () => {
       const code = `
-        import { signal, effect } from 'philjs-core';
+        import { signal, effect } from '@philjs/core';
 
         export function SearchModal({ isOpen }: { isOpen: boolean }) {
           const query = signal('');
@@ -1313,7 +1313,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle batched updates pattern', () => {
       const code = `
-        import { signal, memo, batch } from 'philjs-core';
+        import { signal, memo, batch } from '@philjs/core';
 
         export function PerformanceDemo() {
           const numbers = signal(Array.from({ length: 1000 }, (_, i) => i));
@@ -1357,7 +1357,7 @@ describe('PhilJS Compiler', () => {
 
     it('should handle complex JSX with multiple signal reads', () => {
       const code = `
-        import { signal, memo } from 'philjs-core';
+        import { signal, memo } from '@philjs/core';
 
         export function Dashboard() {
           const users = signal(100);

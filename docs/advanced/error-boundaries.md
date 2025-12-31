@@ -17,7 +17,7 @@ Catch and handle errors gracefully in PhilJS applications.
 ### Creating an Error Boundary
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface ErrorBoundaryProps {
   fallback: (error: Error, reset: () => void) => JSX.Element;
@@ -402,7 +402,7 @@ function App() {
 ### Route-Level Error Handling
 
 ```typescript
-import { Router, Route, ErrorBoundary } from 'philjs-router';
+import { Router, Route, ErrorBoundary } from '@philjs/router';
 
 function App() {
   return (
@@ -434,7 +434,7 @@ function App() {
 ### Global Error Store
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface AppError {
   id: string;

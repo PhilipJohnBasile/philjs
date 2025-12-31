@@ -91,7 +91,7 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
 ### Image Component
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function OptimizedImage({ src, alt, placeholder }: {
   src: string;

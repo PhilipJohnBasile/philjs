@@ -7,7 +7,7 @@ Loaders fetch data before a route renders, but you still may want to show progre
 Because routes receive the navigation state via `useRouter()`, you can react to the current route’s loading status.
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 export function GlobalLoader() {
   const { route } = useRouter();

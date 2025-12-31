@@ -18,8 +18,8 @@
     "@philjs/compiler": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "typescript": "next",
+    "@types/node": "^25.0.0",
+    "typescript": "^6.0.0",
     "vite": "^7.3.0",
     "vite-plugin-pwa": "^0.21.1"
   }

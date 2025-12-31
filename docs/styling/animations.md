@@ -20,7 +20,7 @@ PhilJS signals work seamlessly with CSS transitions for reactive, declarative an
 ### Basic Fade Transition
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function FadeButton() {
   const isHovered = signal(false);
@@ -44,7 +44,7 @@ export default function FadeButton() {
 ### Multiple Property Transitions
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function InteractiveCard() {
   const isActive = signal(false);
@@ -78,7 +78,7 @@ function InteractiveCard() {
 ### Conditional Transitions
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function ConditionalTransition() {
   const isVisible = signal(false);
@@ -121,7 +121,7 @@ function ConditionalTransition() {
 ### Staggered List Animations
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function StaggeredList() {
   const items = signal(['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']);
@@ -209,7 +209,7 @@ For complex, multi-step animations, use CSS keyframes.
 ```
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import './styles.css';
 
 export default function KeyframeDemo() {
@@ -295,7 +295,7 @@ For fine-grained control, use JavaScript with requestAnimationFrame.
 ### Smooth Counter Animation
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function AnimatedCounter() {
   const count = signal(0);
@@ -342,7 +342,7 @@ export default function AnimatedCounter() {
 ### Progress Bar Animation
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function AnimatedProgressBar() {
   const progress = signal(0);
@@ -410,8 +410,8 @@ PhilJS includes built-in spring physics for natural, bouncy animations.
 ### Using createAnimatedValue
 
 ```tsx
-import { signal, effect } from 'philjs-core';
-import { createAnimatedValue } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
+import { createAnimatedValue } from '@philjs/core';
 
 function SpringDemo() {
   const position = createAnimatedValue(0);
@@ -468,7 +468,7 @@ function SpringDemo() {
 ### Custom Spring Configurations
 
 ```tsx
-import { createAnimatedValue } from 'philjs-core';
+import { createAnimatedValue } from '@philjs/core';
 
 function SpringConfigs() {
   // Stiff spring - quick, snappy
@@ -555,7 +555,7 @@ Use the browser's native View Transitions API for smooth page transitions.
 ### Basic Page Transition
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function Navigation() {
   const router = useRouter();
@@ -688,7 +688,7 @@ function ProductDetail() {
 ### Progressive Enhancement
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const supportsViewTransitions = signal(
   typeof document !== 'undefined' && 'startViewTransition' in document
@@ -727,7 +727,7 @@ npm install framer-motion
 
 ```tsx
 import { motion } from 'framer-motion';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function FramerMotionExample() {
   const isVisible = signal(false);
@@ -785,7 +785,7 @@ npm install gsap
 ```
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 import gsap from 'gsap';
 
 function GSAPExample() {
@@ -856,7 +856,7 @@ npm install animejs
 ```
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 import anime from 'animejs';
 
 function AnimeJSExample() {
@@ -904,7 +904,7 @@ npm install motion
 ```
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 import { animate } from 'motion';
 
 function MotionOneExample() {
@@ -949,8 +949,8 @@ First, Last, Invert, Play - smooth layout animations.
 ### Basic FLIP
 
 ```tsx
-import { signal } from 'philjs-core';
-import { FLIPAnimator } from 'philjs-core';
+import { signal } from '@philjs/core';
+import { FLIPAnimator } from '@philjs/core';
 
 function FLIPDemo() {
   const items = signal([1, 2, 3, 4, 5]);
@@ -1017,7 +1017,7 @@ function FLIPDemo() {
 ### 2. Use will-change Sparingly
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function OptimizedAnimation() {
   const isAnimating = signal(false);
@@ -1054,7 +1054,7 @@ function OptimizedAnimation() {
 ### 4. Use requestAnimationFrame
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function RAFExample() {
   const position = signal(0);
@@ -1108,7 +1108,7 @@ function RAFExample() {
 ```
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const prefersReducedMotion = signal(
   typeof window !== 'undefined' &&
@@ -1136,7 +1136,7 @@ function AccessibleAnimation() {
 ### 6. Debounce Expensive Animations
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function DebouncedAnimation() {
   const scrollY = signal(0);
@@ -1167,7 +1167,7 @@ function DebouncedAnimation() {
 ### 7. Batch DOM Updates
 
 ```tsx
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 function BatchedUpdates() {
   const x = signal(0);
@@ -1272,7 +1272,7 @@ transition: 'transform 2000ms ease-out'
 ## Complete Example: Animated Modal
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function AnimatedModal() {
   const isOpen = signal(false);

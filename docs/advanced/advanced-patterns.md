@@ -17,7 +17,7 @@ Expert techniques and patterns for PhilJS applications.
 ### Flexible Component APIs
 
 ```typescript
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 interface TabsContext {
   activeTab: () => string;
@@ -178,7 +178,7 @@ function UserProfile() {
 ### Reusable Logic Extraction
 
 ```typescript
-import { signal, effect, memo } from 'philjs-core';
+import { signal, effect, memo } from '@philjs/core';
 
 // Mouse position hook
 export function useMousePosition() {
@@ -358,7 +358,7 @@ const EnhancedComponent = withErrorBoundary(
 ### Injectable Services
 
 ```typescript
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 // Define service interface
 interface Logger {

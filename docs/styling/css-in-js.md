@@ -17,7 +17,7 @@ Create dynamic, type-safe styles with JavaScript in PhilJS applications.
 ### Inline Styles with Objects
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Button({ variant = 'primary' }: {
   variant?: 'primary' | 'secondary';
@@ -39,7 +39,7 @@ export function Button({ variant = 'primary' }: {
 ### Dynamic Styles with Signals
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Box() {
   const hovered = signal(false);
@@ -112,7 +112,7 @@ export function Button(props: StyleProps & { children: any }) {
 ### Responsive Styles
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useMediaQuery(query: string) {
   const matches = signal(false);
@@ -149,7 +149,7 @@ export function ResponsiveBox() {
 ### Basic Styled Component
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function styled<T extends keyof JSX.IntrinsicElements>(
   tag: T,
@@ -250,7 +250,7 @@ export function StyledCard() {
 ### Theme Provider
 
 ```typescript
-import { createContext, signal } from 'philjs-core';
+import { createContext, signal } from '@philjs/core';
 
 interface Theme {
   colors: {
@@ -387,7 +387,7 @@ export function ThemedCard({ children }: { children: any }) {
 ### Keyframe Animations
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function AnimatedBox() {
   const isAnimating = signal(false);
@@ -425,7 +425,7 @@ export function AnimatedBox() {
 ### Spring Animations
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useSpring(target: () => number, config = { stiffness: 0.1, damping: 0.8 }) {
   const value = signal(target());
@@ -483,7 +483,7 @@ export function SpringBox() {
 ### Memoize Style Objects
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export function OptimizedComponent() {
   const size = signal(100);
@@ -603,7 +603,7 @@ const button2 = { padding: '8px 16px' };
 }
 */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Button() {
   const color = signal('#007bff');

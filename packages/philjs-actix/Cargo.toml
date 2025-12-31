@@ -1,6 +1,6 @@
 [package]
 name = "philjs-actix"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Actix-web integration for PhilJS - SSR, API routes, WebSocket, and session management"

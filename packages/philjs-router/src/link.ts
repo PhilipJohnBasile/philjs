@@ -9,7 +9,7 @@
  * - none: No prefetch (for external links or heavy pages)
  */
 
-import type { VNode, JSXElement } from 'philjs-core';
+import type { VNode, JSXElement } from '@philjs/core';
 import { getPrefetchManager, prefetchRoute, prefetchRouteWithData } from './prefetch.js';
 import type { PrefetchMode, PrefetchPriority } from './prefetch.js';
 import { createIntersectionObserver, observeElement, unobserveElement } from './intersection.js';

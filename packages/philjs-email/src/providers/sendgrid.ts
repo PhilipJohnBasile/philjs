@@ -1,4 +1,3 @@
-// @ts-nocheck
 import sgMail from '@sendgrid/mail';
 import type { MailDataRequired } from '@sendgrid/mail';
 import type {

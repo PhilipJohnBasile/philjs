@@ -28,17 +28,17 @@ export function Comparison() {
     {
       title: "Routing and navigation",
       description: "Typed routes, loaders, and actions with file-based conventions.",
-      packages: ["philjs-router", "philjs-router-typesafe"]
+      packages: ["@philjs/router", "@philjs/router-typesafe"]
     },
     {
       title: "Rendering and islands",
       description: "SSR streaming, resumability, and selective hydration.",
-      packages: ["philjs-ssr", "philjs-islands", "philjs-resumable"]
+      packages: ["@philjs/ssr", "@philjs/islands", "@philjs/resumable"]
     },
     {
       title: "Data and APIs",
       description: "Typed API routes, GraphQL, and realtime messaging.",
-      packages: ["philjs-api", "philjs-graphql", "philjs-realtime"]
+      packages: ["@philjs/api", "@philjs/graphql", "@philjs/realtime"]
     }
   ];
 

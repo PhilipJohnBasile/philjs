@@ -1,4 +1,4 @@
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 import { SignalsDemo } from "./demos/SignalsDemo";
 import { ReactiveAttributesDemo } from "./demos/ReactiveAttributesDemo";
 import { FormsDemo } from "./demos/FormsDemo";

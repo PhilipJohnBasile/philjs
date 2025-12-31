@@ -10,9 +10,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { signal, memo, effect } from 'philjs-core';
-import { jsx } from 'philjs-core/jsx-runtime';
-import { renderToString } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
+import { jsx } from '@philjs/core/jsx-runtime';
+import { renderToString } from '@philjs/core';
 import { renderToStreamingResponse, Suspense } from './streaming.js';
 import { serializeState, deserializeState } from './resume.js';
 import { streamHTML } from './stream.js';

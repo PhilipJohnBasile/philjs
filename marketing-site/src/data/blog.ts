@@ -50,7 +50,7 @@ export const blogPosts: BlogPost[] = [
     ]
   },
   {
-    title: "Building GraphQL apps with philjs-graphql",
+    title: "Building GraphQL apps with @philjs/graphql",
     date: "2025-01-05",
     author: "Michael Rodriguez",
     excerpt: "Typed queries, caching, and SSR for GraphQL-first teams.",
@@ -58,7 +58,7 @@ export const blogPosts: BlogPost[] = [
     slug: "graphql-with-philjs",
     readingTime: "4 min read",
     body: [
-      "philjs-graphql ships a typed client with caching, SSR support, and normalized responses. It integrates with the router so queries can be prefetched at the route level.",
+      "@philjs/graphql ships a typed client with caching, SSR support, and normalized responses. It integrates with the router so queries can be prefetched at the route level.",
       "The caching layer is built to work with signals, so UI updates stay localized and reactive. When you navigate between routes, cache reuse keeps the app fast without manual wiring.",
       "Teams can also hook into analytics, tracing, and logging with the plugin ecosystem."
     ],
@@ -72,12 +72,12 @@ export const blogPosts: BlogPost[] = [
     title: "Auth, sessions, and protected routes",
     date: "2024-12-28",
     author: "Emma Johnson",
-    excerpt: "A guide to secure auth flows with philjs-auth and philjs-api.",
+    excerpt: "A guide to secure auth flows with @philjs/auth and @philjs/api.",
     tags: ["Security", "Auth"],
     slug: "auth-sessions-protected-routes",
     readingTime: "5 min read",
     body: [
-      "philjs-auth provides provider integrations, session helpers, and client utilities for building secure authentication flows. Pair it with philjs-api to enforce access at the server layer.",
+      "@philjs/auth provides provider integrations, session helpers, and client utilities for building secure authentication flows. Pair it with @philjs/api to enforce access at the server layer.",
       "Route guards improve UX, but server-side checks keep your data protected. PhilJS encourages a shared session shape across loaders, actions, and API routes.",
       "Security headers, CSRF protection, and auditing tools are available through the ecosystem when you need to harden production environments."
     ],

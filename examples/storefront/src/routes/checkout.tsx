@@ -1,4 +1,4 @@
-import { defineLoader, defineAction } from "philjs-ssr";
+import { defineLoader, defineAction } from "@philjs/ssr";
 import { html } from "../server/template";
 import type { Product, ShippingAddress } from "../server/mock-db";
 

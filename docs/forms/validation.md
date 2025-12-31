@@ -17,7 +17,7 @@ Validate form inputs with client-side and server-side validation strategies.
 ### Basic Validation
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function LoginForm() {
   const email = signal('');

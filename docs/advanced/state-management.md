@@ -17,7 +17,7 @@ Complex state patterns for large-scale PhilJS applications.
 ### Create Global Store
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface AppState {
   user: User | null;

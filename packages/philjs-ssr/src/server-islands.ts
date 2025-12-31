@@ -4,7 +4,7 @@
  * Provides server-side rendering for islands architecture with caching support.
  */
 
-import type { VNode } from 'philjs-core';
+import type { VNode } from '@philjs/core';
 
 // ============================================================================
 // Types

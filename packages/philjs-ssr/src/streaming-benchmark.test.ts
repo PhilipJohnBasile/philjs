@@ -5,8 +5,8 @@
 
 import { describe, it, expect } from "vitest";
 import { renderToStream, Suspense } from "./render-to-stream.js";
-import { renderToString } from "philjs-core";
-import { jsx } from "philjs-core";
+import { renderToString } from "@philjs/core";
+import { jsx } from "@philjs/core";
 
 /**
  * Measure Time-to-First-Byte for a stream.

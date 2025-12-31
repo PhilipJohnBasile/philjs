@@ -19,7 +19,7 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.0"
   },
   "peerDependencies": {
     "@sentry/browser": "^10.32.1",

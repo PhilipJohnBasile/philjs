@@ -25,6 +25,10 @@ examples/**/tests/**/*.js
 examples/**/tests/**/*.js.map
 examples/**/tests/**/*.d.ts
 examples/**/tests/**/*.d.ts.map
+examples/**/public/sw.js
+examples/**/public/sw.js.map
+examples/**/public/sw.d.ts
+examples/**/public/sw.d.ts.map
 
 # Debug files at root
 /test-*.js

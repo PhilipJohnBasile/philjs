@@ -25,7 +25,7 @@ pnpm install</code></pre>
           <div class="step-content">
             <h3>Add data and routing</h3>
             <div class="code-block">
-              <pre><code>import { defineLoader } from "philjs-ssr";
+              <pre><code>import { defineLoader } from "@philjs/ssr";
 
 export const loader = defineLoader(async () => {
   const res = await fetch("/api/products");

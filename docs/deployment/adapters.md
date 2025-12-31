@@ -4,7 +4,7 @@ PhilJS provides official deployment adapters for seamless deployment to major cl
 
 ## Overview
 
-The `philjs-adapters` package includes production-ready adapters for:
+The `@philjs/adapters` package includes production-ready adapters for:
 
 - **Vercel** - Edge Functions, Serverless, ISR
 - **Netlify** - Edge Functions, Serverless, Forms
@@ -16,13 +16,13 @@ The `philjs-adapters` package includes production-ready adapters for:
 ## Installation
 
 ```bash
-npm install philjs-adapters
+npm install @philjs/adapters
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add philjs-adapters
+pnpm add @philjs/adapters
 ```
 
 ## Quick Start
@@ -34,8 +34,8 @@ The easiest way to use adapters is with auto-detection:
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
-import { autoAdapter } from 'philjs-adapters';
+import philjs from '@philjs/compiler/vite';
+import { autoAdapter } from '@philjs/adapters';
 
 export default defineConfig({
   plugins: [
@@ -58,7 +58,7 @@ The auto-adapter detects your deployment platform from environment variables:
 Or specify the adapter explicitly:
 
 ```typescript
-import { vercelAdapter } from 'philjs-adapters/vercel';
+import { vercelAdapter } from '@philjs/adapters/vercel';
 
 export default defineConfig({
   plugins: [
@@ -79,7 +79,7 @@ Deploy to Vercel with Edge Runtime or Node.js Serverless functions.
 ### Configuration
 
 ```typescript
-import { vercelAdapter } from 'philjs-adapters/vercel';
+import { vercelAdapter } from '@philjs/adapters/vercel';
 
 vercelAdapter({
   // Use Edge Runtime (default: false)
@@ -128,12 +128,12 @@ vercelAdapter({
 
 ```typescript
 // Revalidate a path on-demand
-import { revalidatePath } from 'philjs-adapters/vercel';
+import { revalidatePath } from '@philjs/adapters/vercel';
 
 await revalidatePath('/blog/post-1');
 
 // Revalidate by cache tag
-import { revalidateTag } from 'philjs-adapters/vercel';
+import { revalidateTag } from '@philjs/adapters/vercel';
 
 await revalidateTag('blog-posts');
 ```
@@ -154,7 +154,7 @@ Deploy to Netlify with Edge Functions or Netlify Functions.
 ### Configuration
 
 ```typescript
-import { netlifyAdapter } from 'philjs-adapters/netlify';
+import { netlifyAdapter } from '@philjs/adapters/netlify';
 
 netlifyAdapter({
   // Use Edge Functions (default: false)
@@ -206,12 +206,12 @@ netlifyAdapter({
 
 ```typescript
 // Access Netlify context in edge functions
-import { getNetlifyContext } from 'philjs-adapters/netlify';
+import { getNetlifyContext } from '@philjs/adapters/netlify';
 
 const { geo, ip } = getNetlifyContext();
 
 // Use Netlify Image CDN
-import { netlifyImageCDN } from 'philjs-adapters/netlify';
+import { netlifyImageCDN } from '@philjs/adapters/netlify';
 
 const optimizedUrl = netlifyImageCDN('/photo.jpg', {
   width: 800,
@@ -235,7 +235,7 @@ Deploy to Cloudflare Workers or Pages with global edge network.
 ### Configuration
 
 ```typescript
-import { cloudflareAdapter } from 'philjs-adapters/cloudflare';
+import { cloudflareAdapter } from '@philjs/adapters/cloudflare';
 
 cloudflareAdapter({
   // Deploy as Pages or Workers
@@ -299,18 +299,18 @@ cloudflareAdapter({
 
 ```typescript
 // Access Cloudflare environment
-import { getCloudflareEnv } from 'philjs-adapters/cloudflare';
+import { getCloudflareEnv } from '@philjs/adapters/cloudflare';
 
 const env = getCloudflareEnv();
 const data = await env.KV.get('key');
 
 // Use execution context
-import { waitUntil } from 'philjs-adapters/cloudflare';
+import { waitUntil } from '@philjs/adapters/cloudflare';
 
 waitUntil(logToAnalytics());
 
 // KV helpers
-import { createKVHelper } from 'philjs-adapters/cloudflare';
+import { createKVHelper } from '@philjs/adapters/cloudflare';
 
 const kv = createKVHelper(env.CACHE);
 await kv.put('key', 'value', { expirationTtl: 3600 });
@@ -332,7 +332,7 @@ Deploy to AWS Lambda, Lambda@Edge, or AWS Amplify.
 ### Configuration
 
 ```typescript
-import { awsAdapter } from 'philjs-adapters/aws';
+import { awsAdapter } from '@philjs/adapters/aws';
 
 awsAdapter({
   // Deployment mode
@@ -386,12 +386,12 @@ awsAdapter({
 
 ```typescript
 // Access AWS context
-import { getAWSContext, getRemainingTimeMs } from 'philjs-adapters/aws';
+import { getAWSContext, getRemainingTimeMs } from '@philjs/adapters/aws';
 
 const timeLeft = getRemainingTimeMs();
 
 // Generate S3 asset URL
-import { getS3AssetUrl } from 'philjs-adapters/aws';
+import { getS3AssetUrl } from '@philjs/adapters/aws';
 
 const url = getS3AssetUrl('image.jpg', 'my-bucket', 'us-east-1');
 ```
@@ -418,7 +418,7 @@ Run as a standalone Node.js server with HTTP/HTTPS support.
 ### Configuration
 
 ```typescript
-import { nodeAdapter, startServer } from 'philjs-adapters/node';
+import { nodeAdapter, startServer } from '@philjs/adapters/node';
 
 nodeAdapter({
   // Server port
@@ -462,7 +462,7 @@ nodeAdapter({
 
 ```typescript
 // Create and start server
-import { startServer } from 'philjs-adapters/node';
+import { startServer } from '@philjs/adapters/node';
 
 startServer({
   port: process.env.PORT || 3000,
@@ -471,7 +471,7 @@ startServer({
 
 // Or with Express/Fastify
 import express from 'express';
-import { nodeAdapter } from 'philjs-adapters/node';
+import { nodeAdapter } from '@philjs/adapters/node';
 
 const app = express();
 const adapter = nodeAdapter();
@@ -503,7 +503,7 @@ Generate a fully static site with pre-rendering.
 ### Configuration
 
 ```typescript
-import { staticAdapter } from 'philjs-adapters/static';
+import { staticAdapter } from '@philjs/adapters/static';
 
 staticAdapter({
   // Output directory
@@ -554,7 +554,7 @@ staticAdapter({
 
 ```typescript
 // Prerender specific routes
-import { prerender, getStaticPaths } from 'philjs-adapters/static';
+import { prerender, getStaticPaths } from '@philjs/adapters/static';
 
 // In a route file
 export async function getStaticPaths() {
@@ -592,7 +592,7 @@ npm run deploy
 Use pre-configured adapter presets:
 
 ```typescript
-import { createAdapter } from 'philjs-adapters';
+import { createAdapter } from '@philjs/adapters';
 
 // Vercel Edge
 createAdapter('vercel-edge', { maxDuration: 30 });
@@ -630,7 +630,7 @@ Available presets:
 Create your own adapter for custom platforms:
 
 ```typescript
-import type { Adapter } from 'philjs-adapters';
+import type { Adapter } from '@philjs/adapters';
 
 export function customAdapter(config = {}): Adapter {
   return {
@@ -733,10 +733,10 @@ npm run build
 
 ### Adapter Not Found
 
-Make sure `philjs-adapters` is installed:
+Make sure `@philjs/adapters` is installed:
 
 ```bash
-npm install philjs-adapters
+npm install @philjs/adapters
 ```
 
 ### Environment Variables

@@ -196,6 +196,8 @@ export interface ExtractorContext {
   params: Record<string, string>;
   /** Request body */
   body?: unknown;
+  /** Application state */
+  state?: Record<string, unknown>;
   /** Remote address */
   remoteAddr?: string;
   /** Request ID */

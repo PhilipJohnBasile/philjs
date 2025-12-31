@@ -7,7 +7,7 @@ Monitor Core Web Vitals to ensure great user experience.
 ### LCP (Largest Contentful Paint)
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function LCPMonitor() {
   const lcp = signal(0);

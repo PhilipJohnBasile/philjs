@@ -1,4 +1,4 @@
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 
 export function ReactiveAttributesDemo() {
   return (

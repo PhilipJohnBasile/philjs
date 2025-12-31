@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { viteMultiFramework } from 'philjs-islands/vite-multi-framework';
+import { viteMultiFramework } from '@philjs/islands/vite-multi-framework';
 
 export default defineConfig({
   plugins: [

@@ -19,7 +19,7 @@ console.log(`Took ${end - start}ms`);
 ### React DevTools Profiler
 
 ```tsx
-import { enableDevTools } from 'philjs-devtools';
+import { enableDevTools } from '@philjs/devtools';
 
 if (process.env.NODE_ENV === 'development') {
   enableDevTools();
@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'development') {
 ### Use Memos
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const items = signal([1, 2, 3, 4, 5]);
 
@@ -42,7 +42,7 @@ const total = memo(() => items().reduce((a, b) => a + b, 0));
 ### Batch Updates
 
 ```tsx
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 const updateMultiple = () => {
   batch(() => {
@@ -58,7 +58,7 @@ const updateMultiple = () => {
 ### Debounce
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const query = signal('');
 

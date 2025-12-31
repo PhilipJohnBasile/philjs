@@ -18,7 +18,7 @@ Handle file uploads with drag-and-drop, preview, progress tracking, and validati
 ### Simple File Input
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function FileUpload() {
   const file = signal<File | null>(null);

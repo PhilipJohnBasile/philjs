@@ -1,4 +1,4 @@
-import { memo } from "philjs-core";
+import { memo } from "@philjs/core";
 import { formatNumber, formatCurrency, formatPercent } from "../utils/formatters";
 
 interface MetricCardProps {

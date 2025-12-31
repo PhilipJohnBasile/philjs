@@ -30,7 +30,7 @@ import {
   corsMiddleware,
   securityHeadersMiddleware,
   requestIDMiddleware,
-} from 'philjs-api';
+} from '@philjs/api';
 
 const middleware = composeMiddleware(
   requestIDMiddleware(),
@@ -57,7 +57,7 @@ import {
   composeEdgeMiddleware,
   redirectMiddleware,
   securityHeadersMiddleware,
-} from 'philjs-api/edge-middleware';
+} from '@philjs/api/edge-middleware';
 
 export default defineEdgeMiddleware({
   matcher: ['/admin/*', '/account/*'],
@@ -73,8 +73,8 @@ export default defineEdgeMiddleware({
 Use route guards to improve UX, but always enforce access on the server too.
 
 ```tsx
-import { useRouter } from 'philjs-router';
-import { effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { effect } from '@philjs/core';
 import { useAuth } from '@/auth/useAuth';
 
 export default function ProtectedLayout({ children }: { children: any }) {

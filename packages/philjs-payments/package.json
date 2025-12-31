@@ -28,7 +28,10 @@
       "default": "./dist/webhooks/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -37,7 +40,14 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "payments", "stripe", "paypal", "square", "subscriptions"],
+  "keywords": [
+    "philjs",
+    "payments",
+    "stripe",
+    "paypal",
+    "square",
+    "subscriptions"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -46,9 +56,9 @@
     "square": "^35.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

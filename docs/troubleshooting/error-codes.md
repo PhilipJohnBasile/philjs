@@ -699,7 +699,7 @@ return <div>{JSON.stringify(data())}</div>;
 Wrap your app in error boundaries to gracefully handle errors:
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function App() {
   return (
@@ -723,7 +723,7 @@ function App() {
 Set up error tracking for production:
 
 ```typescript
-import { initErrorTracking, createSentryTracker } from 'philjs-errors';
+import { initErrorTracking, createSentryTracker } from '@philjs/errors';
 
 if (process.env.NODE_ENV === 'production') {
   initErrorTracking(createSentryTracker(), {
@@ -739,7 +739,7 @@ if (process.env.NODE_ENV === 'production') {
 The error overlay automatically shows in development mode, but you can customize it:
 
 ```typescript
-import { initErrorOverlay } from 'philjs-errors';
+import { initErrorOverlay } from '@philjs/errors';
 
 if (process.env.NODE_ENV === 'development') {
   initErrorOverlay();
@@ -751,7 +751,7 @@ if (process.env.NODE_ENV === 'development') {
 Provide context when capturing errors:
 
 ```typescript
-import { captureError } from 'philjs-errors';
+import { captureError } from '@philjs/errors';
 
 try {
   await riskyOperation();

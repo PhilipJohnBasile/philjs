@@ -53,7 +53,7 @@ import {
   untrack,
   onCleanup,
   createRoot
-} from 'philjs-core';
+} from '@philjs/core';
 ```
 
 #### `signal<T>(initialValue: T): Signal<T>`
@@ -137,7 +137,7 @@ Create a non-tracking reactive scope with manual disposal.
 Rendering and component composition.
 
 ```typescript
-import { jsx, jsxs, Fragment, createElement } from 'philjs-core';
+import { jsx, jsxs, Fragment, createElement } from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.1.0
@@ -150,7 +150,7 @@ import { jsx, jsxs, Fragment, createElement } from 'philjs-core';
 Client-side rendering and hydration.
 
 ```typescript
-import { render, hydrate } from 'philjs-core';
+import { render, hydrate } from '@philjs/core';
 ```
 
 #### `render(component: JSXElement, container: HTMLElement): void`
@@ -174,7 +174,7 @@ Hydrate server-rendered HTML with interactivity.
 Generate HTML on the server.
 
 ```typescript
-import { renderToString, renderToStream } from 'philjs-core';
+import { renderToString, renderToStream } from '@philjs/core';
 ```
 
 #### `renderToString(component: JSXElement): Promise<string>`
@@ -202,7 +202,7 @@ import {
   createContext,
   useContext,
   createSignalContext
-} from 'philjs-core';
+} from '@philjs/core';
 ```
 
 #### `createContext<T>(defaultValue: T): Context<T>`
@@ -233,7 +233,7 @@ Create a context with reactive signal integration.
 Error handling and recovery.
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.1.0
@@ -246,7 +246,7 @@ import { ErrorBoundary } from 'philjs-core';
 Type-safe form handling with built-in validation.
 
 ```typescript
-import { useForm, validators as v } from 'philjs-core';
+import { useForm, validators as v } from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.1.0
@@ -259,7 +259,7 @@ import { useForm, validators as v } from 'philjs-core';
 Selective hydration for performance.
 
 ```typescript
-import { Island, mountIslands, registerIsland } from 'philjs-islands';
+import { Island, mountIslands, registerIsland } from '@philjs/islands';
 ```
 
 **Stability:** Stable since v0.2.0
@@ -277,7 +277,7 @@ import {
   createMutation,
   queryCache,
   invalidateQueries
-} from 'philjs-core';
+} from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.3.0
@@ -290,7 +290,7 @@ import {
 Multi-language support with AI-powered translation.
 
 ```typescript
-import { I18nProvider, useI18n, useTranslation } from 'philjs-core';
+import { I18nProvider, useI18n, useTranslation } from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.4.0
@@ -308,7 +308,7 @@ import {
   easings,
   FLIPAnimator,
   attachGestures
-} from 'philjs-core';
+} from '@philjs/core';
 ```
 
 **Stability:** Stable since v0.5.0
@@ -329,7 +329,7 @@ import {
   ServerIsland,
   cacheIsland,
   invalidateIslandsByTag
-} from 'philjs-islands/server';
+} from '@philjs/islands/server';
 ```
 
 **Status:** Experimental since v0.9.0
@@ -362,7 +362,7 @@ import {
 Bidirectional writable computed values.
 
 ```typescript
-import { linkedSignal } from 'philjs-core';
+import { linkedSignal } from '@philjs/core';
 ```
 
 **Status:** Experimental since v0.9.0
@@ -399,7 +399,7 @@ import {
   announceToScreenReader,
   createFocusManager,
   KeyboardNavigator
-} from 'philjs-core/accessibility';
+} from '@philjs/core/accessibility';
 ```
 
 **Status:** Experimental since v0.9.0
@@ -426,7 +426,7 @@ import {
   useExperiment,
   ABTest,
   useFeatureFlag
-} from 'philjs-core/ab-testing';
+} from '@philjs/core/ab-testing';
 ```
 
 **Status:** Experimental since v0.9.0
@@ -447,7 +447,7 @@ import {
 Async data loading with Suspense-like patterns.
 
 ```typescript
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 ```
 
 **Status:** Experimental since v0.1.0
@@ -474,7 +474,7 @@ import {
   matchResult,
   unwrap,
   unwrapOr
-} from 'philjs-core/result';
+} from '@philjs/core/result';
 ```
 
 **Status:** Experimental since v0.8.0
@@ -497,7 +497,7 @@ import {
   resumable,
   registerHandler,
   resume
-} from 'philjs-core/resumability';
+} from '@philjs/core/resumability';
 ```
 
 **Status:** Experimental since v0.6.0
@@ -521,7 +521,7 @@ Automatic PWA service worker generation.
 import {
   generateServiceWorker,
   registerServiceWorker
-} from 'philjs-core/service-worker';
+} from '@philjs/core/service-worker';
 ```
 
 **Status:** Experimental since v0.7.0
@@ -535,7 +535,7 @@ import {
 Automated performance monitoring.
 
 ```typescript
-import { PerformanceBudgetManager } from 'philjs-core/performance-budgets';
+import { PerformanceBudgetManager } from '@philjs/core/performance-budgets';
 ```
 
 **Status:** Experimental since v0.7.0
@@ -549,7 +549,7 @@ import { PerformanceBudgetManager } from 'philjs-core/performance-budgets';
 Cloud cost estimation and tracking.
 
 ```typescript
-import { costTracker, CostTracker } from 'philjs-core/cost-tracking';
+import { costTracker, CostTracker } from '@philjs/core/cost-tracking';
 ```
 
 **Status:** Experimental since v0.7.0
@@ -563,7 +563,7 @@ import { costTracker, CostTracker } from 'philjs-core/cost-tracking';
 Dead code detection and usage tracking.
 
 ```typescript
-import { usageAnalytics, UsageAnalytics } from 'philjs-core/usage-analytics';
+import { usageAnalytics, UsageAnalytics } from '@philjs/core/usage-analytics';
 ```
 
 **Status:** Experimental since v0.7.0
@@ -588,7 +588,7 @@ Static shell pre-rendering with dynamic content streaming.
 
 ```typescript
 // Planned API (subject to change)
-import { prerender, dynamic } from 'philjs-core/ppr';
+import { prerender, dynamic } from '@philjs/core/ppr';
 
 export default function Page() {
   return (
@@ -618,7 +618,7 @@ Priority-based deferred rendering (like React `<Activity>`).
 
 ```typescript
 // Planned API (subject to change)
-import { Activity } from 'philjs-core';
+import { Activity } from '@philjs/core';
 
 <Activity priority="low">
   <Comments /> {/* Deferred until high-priority content renders */}
@@ -703,7 +703,7 @@ count.set(count.get() + 1); // Direct update
 
 1. **Update dependencies:**
    ```bash
-   pnpm update philjs-core philjs-islands
+   pnpm update @philjs/core @philjs/islands
    ```
 
 2. **Check deprecation warnings** in development mode
@@ -717,7 +717,7 @@ count.set(count.get() + 1); // Direct update
 
 When experimental APIs become stable, no code changes are typically required. However:
 
-- **Import paths may change** (e.g., from `philjs-core/experimental` to `philjs-core`)
+- **Import paths may change** (e.g., from `@philjs/core/experimental` to `@philjs/core`)
 - **Some configuration options may be renamed**
 - **Default behaviors may be optimized**
 

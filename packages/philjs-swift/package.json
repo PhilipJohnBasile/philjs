@@ -20,22 +20,35 @@
       "import": "./dist/macos.js"
     }
   },
-  "files": ["dist", "swift", "templates"],
+  "files": [
+    "dist",
+    "swift",
+    "templates"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "next",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"
   },
-  "keywords": ["philjs", "swift", "ios", "macos", "native", "swiftui", "uikit", "appkit"],
+  "keywords": [
+    "philjs",
+    "swift",
+    "ios",
+    "macos",
+    "native",
+    "swiftui",
+    "uikit",
+    "appkit"
+  ],
   "license": "MIT",
   "author": "PhilJS Team",
   "engines": {

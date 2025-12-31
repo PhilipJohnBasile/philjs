@@ -20,7 +20,10 @@
       "default": "./dist/utils/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -29,7 +32,15 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "export", "csv", "excel", "json", "pdf", "download"],
+  "keywords": [
+    "philjs",
+    "export",
+    "csv",
+    "excel",
+    "json",
+    "pdf",
+    "download"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -44,7 +55,7 @@
     "@types/file-saver": "^2.0.7",
     "@types/papaparse": "^5.3.14",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

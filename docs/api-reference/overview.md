@@ -144,9 +144,9 @@ interface StreamOptions {
 
 ```typescript
 // Core APIs
-import { signal, memo, effect, batch } from 'philjs-core';
-import { render, hydrate } from 'philjs-core';
-import { createContext, useContext } from 'philjs-core';
+import { signal, memo, effect, batch } from '@philjs/core';
+import { render, hydrate } from '@philjs/core';
+import { createContext, useContext } from '@philjs/core';
 
 // Router APIs
 import {
@@ -157,16 +157,16 @@ import {
   applyLayouts,
   initSmartPreloader,
   initViewTransitions,
-} from 'philjs-router';
+} from '@philjs/router';
 
 // SSR APIs
-import { renderToString, renderToStream } from 'philjs-ssr';
+import { renderToString, renderToStream } from '@philjs/ssr';
 
 // Islands
-import { Island } from 'philjs-islands';
+import { Island } from '@philjs/islands';
 
 // DevTools
-import { DevTools } from 'philjs-devtools';
+import { DevTools } from '@philjs/devtools';
 ```
 
 ### Note on CommonJS
@@ -175,7 +175,7 @@ PhilJS 2.0+ is **ESM-only**. CommonJS is not supported. If you need to use PhilJ
 
 ```javascript
 // Dynamic import in CommonJS
-const { signal, memo, effect } = await import('philjs-core');
+const { signal, memo, effect } = await import('@philjs/core');
 ```
 
 We recommend migrating to ESM for better tree-shaking, faster builds, and access to modern JavaScript features.
@@ -224,7 +224,7 @@ No polyfills are required for supported browser versions.
 ### Reactivity
 
 ```typescript
-import { signal, memo, effect, batch } from 'philjs-core';
+import { signal, memo, effect, batch } from '@philjs/core';
 
 // Create signal
 const count = signal(0);
@@ -255,7 +255,7 @@ batch(() => {
 ### Components
 
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -276,7 +276,7 @@ render(<Counter />, document.getElementById('app')!);
 ### Router
 
 ```typescript
-import { Router, Route, Link, useNavigate } from 'philjs-router';
+import { Router, Route, Link, useNavigate } from '@philjs/router';
 
 function App() {
   return (
@@ -306,7 +306,7 @@ function NavigateButton() {
 ### Context
 
 ```typescript
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext<'light' | 'dark'>('light');
 
@@ -334,7 +334,7 @@ function ThemedButton() {
 ### SSR
 
 ```typescript
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 
 // Server-side
 const html = await renderToString(<App />);
@@ -350,7 +350,7 @@ res.send(`
 `);
 
 // Client-side
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 hydrate(<App />, document.getElementById('app')!);
 ```

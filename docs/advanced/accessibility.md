@@ -17,7 +17,7 @@ PhilJS accessibility features include:
 ## Quick Start
 
 ```typescript
-import { configureA11y } from 'philjs-core';
+import { configureA11y } from '@philjs/core';
 
 // Enable all accessibility features
 configureA11y({
@@ -36,7 +36,7 @@ configureA11y({
 ### Global Configuration
 
 ```typescript
-import { configureA11y, getA11yConfig } from 'philjs-core';
+import { configureA11y, getA11yConfig } from '@philjs/core';
 
 configureA11y({
   autoAria: true, // Auto-generate ARIA labels
@@ -59,7 +59,7 @@ const config = getA11yConfig();
 PhilJS automatically enhances elements with appropriate ARIA attributes:
 
 ```typescript
-import { enhanceWithAria } from 'philjs-core';
+import { enhanceWithAria } from '@philjs/core';
 
 // Button
 const button = enhanceWithAria('button', { children: 'Submit' });
@@ -103,7 +103,7 @@ function MyComponent() {
 PhilJS validates that headings follow proper hierarchy:
 
 ```typescript
-import { validateHeadingHierarchy, getHeadingWarnings } from 'philjs-core';
+import { validateHeadingHierarchy, getHeadingWarnings } from '@philjs/core';
 
 function MyPage() {
   return (
@@ -133,7 +133,7 @@ const warnings = getHeadingWarnings();
 Reset the heading tracker for testing or multi-page apps:
 
 ```typescript
-import { resetHeadingTracker } from 'philjs-core';
+import { resetHeadingTracker } from '@philjs/core';
 
 // Reset between page navigations
 resetHeadingTracker();
@@ -146,7 +146,7 @@ resetHeadingTracker();
 Calculate contrast ratio between two colors:
 
 ```typescript
-import { getContrastRatio } from 'philjs-core';
+import { getContrastRatio } from '@philjs/core';
 
 const ratio = getContrastRatio('#000000', '#ffffff');
 // Returns: 21 (maximum contrast)
@@ -160,7 +160,7 @@ const ratio2 = getContrastRatio('#666666', '#999999');
 Validate color combinations against WCAG standards:
 
 ```typescript
-import { validateColorContrast } from 'philjs-core';
+import { validateColorContrast } from '@philjs/core';
 
 const result = validateColorContrast('#000000', '#ffffff');
 // {
@@ -192,7 +192,7 @@ const largeTextResult = validateColorContrast('#777777', '#888888', true);
 Manage keyboard navigation programmatically:
 
 ```typescript
-import { KeyboardNavigator } from 'philjs-core';
+import { KeyboardNavigator } from '@philjs/core';
 
 const navigator = new KeyboardNavigator();
 
@@ -221,7 +221,7 @@ navigator.focusFirst(modal);
 Trap focus within a container (useful for modals):
 
 ```typescript
-import { KeyboardNavigator } from 'philjs-core';
+import { KeyboardNavigator } from '@philjs/core';
 
 function Modal({ isOpen, children }) {
   let cleanup: (() => void) | null = null;
@@ -248,7 +248,7 @@ function Modal({ isOpen, children }) {
 ### Create Focus Manager
 
 ```typescript
-import { createFocusManager } from 'philjs-core';
+import { createFocusManager } from '@philjs/core';
 
 const focusManager = createFocusManager();
 
@@ -279,7 +279,7 @@ console.log(currentFocus());
 Announce messages to screen readers:
 
 ```typescript
-import { announceToScreenReader } from 'philjs-core';
+import { announceToScreenReader } from '@philjs/core';
 
 // Polite announcement (waits for current speech to finish)
 announceToScreenReader('Form submitted successfully', 'polite');
@@ -293,7 +293,7 @@ announceToScreenReader('Error: Please fix form errors', 'assertive');
 Create accessible loading states:
 
 ```typescript
-import { createLoadingState } from 'philjs-core';
+import { createLoadingState } from '@philjs/core';
 
 function DataComponent() {
   const loading = signal(true);
@@ -314,7 +314,7 @@ function DataComponent() {
 Add skip navigation links:
 
 ```typescript
-import { addSkipLink } from 'philjs-core';
+import { addSkipLink } from '@philjs/core';
 
 function App() {
   useEffect(() => {
@@ -338,7 +338,7 @@ function App() {
 Perform a full accessibility audit:
 
 ```typescript
-import { auditAccessibility } from 'philjs-core';
+import { auditAccessibility } from '@philjs/core';
 
 const report = auditAccessibility(document.body);
 
@@ -362,7 +362,7 @@ console.log('Warnings:', report.warnings);
 Start continuous accessibility monitoring:
 
 ```typescript
-import { startA11yMonitoring } from 'philjs-core';
+import { startA11yMonitoring } from '@philjs/core';
 
 const stopMonitoring = startA11yMonitoring((report) => {
   if (report.score < 80) {
@@ -430,7 +430,7 @@ function Navigation() {
 ### 3. Color Contrast
 
 ```typescript
-import { validateColorContrast } from 'philjs-core';
+import { validateColorContrast } from '@philjs/core';
 
 const theme = {
   // Good - high contrast
@@ -729,7 +729,7 @@ function DataTable({ data, columns }) {
 3. Verify elements are being rendered through PhilJS JSX
 
 ```typescript
-import { getA11yConfig } from 'philjs-core';
+import { getA11yConfig } from '@philjs/core';
 
 const config = getA11yConfig();
 console.log('Auto ARIA enabled:', config.autoAria);

@@ -19,7 +19,7 @@ import {
   webStreamToNodeStream,
   type RenderToStreamOptions,
 } from "./index.js";
-import { jsx, signal } from "philjs-core";
+import { jsx, signal } from "@philjs/core";
 import type { IncomingMessage, ServerResponse } from "http";
 
 // ============================================================================

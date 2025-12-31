@@ -38,14 +38,14 @@ Traditional debugging is destructive - once you step forward, you can't go back.
 
 ## Installation
 
-DevTools are included in `philjs-devtools`:
+DevTools are included in `@philjs/devtools`:
 
 ```bash
-npm install philjs-devtools
+npm install @philjs/devtools
 # or
-pnpm add philjs-devtools
+pnpm add @philjs/devtools
 # or
-yarn add philjs-devtools
+yarn add @philjs/devtools
 ```
 
 ## Time-Travel Debugging
@@ -53,8 +53,8 @@ yarn add philjs-devtools
 ### Quick Start
 
 ```typescript
-import { initTimeTravel } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { initTimeTravel } from '@philjs/devtools';
+import { signal } from '@philjs/core';
 
 // Initialize time-travel debugger
 const timeTravelDebugger = initTimeTravel({
@@ -83,7 +83,7 @@ timeTravelDebugger.redo(); // Go forward
 ### Basic Time Travel
 
 ```typescript
-import { TimeTravelDebugger } from 'philjs-devtools';
+import { TimeTravelDebugger } from '@philjs/devtools';
 
 const debugger = new TimeTravelDebugger({
   maxSnapshots: 100,         // Keep last 100 snapshots
@@ -304,8 +304,8 @@ Debug a specific signal with automatic history tracking.
 
 **Example:**
 ```typescript
-import { signal } from 'philjs-core';
-import { debugSignal } from 'philjs-devtools';
+import { signal } from '@philjs/core';
+import { debugSignal } from '@philjs/devtools';
 
 let count = signal(0);
 count = debugSignal(count, 'count');
@@ -335,7 +335,7 @@ type StateDiff = {
 
 **Example:**
 ```typescript
-import { diffState } from 'philjs-devtools';
+import { diffState } from '@philjs/devtools';
 
 const oldState = {
   user: { name: 'Alice', age: 30 },
@@ -386,8 +386,8 @@ if (ttd) {
 ### Example 1: Todo App with Time Travel
 
 ```typescript
-import { signal } from 'philjs-core';
-import { initTimeTravel, debugSignal } from 'philjs-devtools';
+import { signal } from '@philjs/core';
+import { initTimeTravel, debugSignal } from '@philjs/devtools';
 
 // Initialize debugger
 const ttd = initTimeTravel();
@@ -466,8 +466,8 @@ function TodoApp() {
 ### Example 2: Visual Timeline
 
 ```typescript
-import { signal, effect } from 'philjs-core';
-import { initTimeTravel } from 'philjs-devtools';
+import { signal, effect } from '@philjs/core';
+import { initTimeTravel } from '@philjs/devtools';
 
 function Timeline() {
   const ttd = initTimeTravel();
@@ -520,8 +520,8 @@ function Timeline() {
 ### Example 3: State Diff Viewer
 
 ```typescript
-import { signal } from 'philjs-core';
-import { diffState } from 'philjs-devtools';
+import { signal } from '@philjs/core';
+import { diffState } from '@philjs/devtools';
 
 function DiffViewer({ oldState, newState }: any) {
   const diff = diffState(oldState, newState);
@@ -578,7 +578,7 @@ function DiffViewer({ oldState, newState }: any) {
 ### Example 4: Session Export/Import
 
 ```typescript
-import { initTimeTravel } from 'philjs-devtools';
+import { initTimeTravel } from '@philjs/devtools';
 
 function DebugControls() {
   const ttd = initTimeTravel();
@@ -644,8 +644,8 @@ function DebugControls() {
 ### Example 5: Timeline Branching
 
 ```typescript
-import { initTimeTravel } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { initTimeTravel } from '@philjs/devtools';
+import { signal } from '@philjs/core';
 
 function BranchingDemo() {
   const ttd = initTimeTravel({ enableBranching: true });
@@ -714,7 +714,7 @@ function TimelineVisualization({ ttd }: any) {
 ### Visual Metrics Display
 
 ```typescript
-import { showOverlay } from 'philjs-devtools';
+import { showOverlay } from '@philjs/devtools';
 
 // Show DevTools overlay
 showOverlay();
@@ -763,8 +763,8 @@ function CustomDevTools() {
 ### Inspect Signal Values
 
 ```typescript
-import { signal, effect } from 'philjs-core';
-import { debugSignal } from 'philjs-devtools';
+import { signal, effect } from '@philjs/core';
+import { debugSignal } from '@philjs/devtools';
 
 // Create and debug signal
 let count = signal(0);
@@ -973,7 +973,7 @@ class CustomTimeTravelDebugger extends TimeTravelDebugger {
 ### Integration with Redux DevTools
 
 ```typescript
-import { initTimeTravel } from 'philjs-devtools';
+import { initTimeTravel } from '@philjs/devtools';
 
 const ttd = initTimeTravel();
 

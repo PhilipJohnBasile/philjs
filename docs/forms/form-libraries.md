@@ -18,7 +18,7 @@ Integrate PhilJS with form validation libraries and build reusable form utilitie
 
 ```typescript
 import { z } from 'zod';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const UserSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
@@ -428,7 +428,7 @@ function EmailListForm() {
 ### Shared Form State
 
 ```typescript
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 
 interface FormContextValue<T> {
   values: () => T;

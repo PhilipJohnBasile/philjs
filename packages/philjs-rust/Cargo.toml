@@ -1,6 +1,6 @@
 [package]
 name = "philjs"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Pure Rust UI framework with fine-grained reactivity - write components in Rust, render anywhere"

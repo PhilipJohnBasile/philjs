@@ -7,7 +7,7 @@ Understanding the component lifecycle in PhilJS is essential for managing side e
 In PhilJS, components don't have traditional lifecycle methods like `componentDidMount` or `componentWillUnmount`. Instead, you use **effects** to respond to lifecycle events. This approach is simpler, more predictable, and eliminates many common bugs.
 
 ```tsx
-import { signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect, onCleanup } from '@philjs/core';
 
 function Timer() {
   const seconds = signal(0);
@@ -38,7 +38,7 @@ When a component is created, PhilJS:
 4. Runs any effects defined in the component
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: number }) {
   console.log('Component function called');
@@ -61,7 +61,7 @@ function UserProfile({ userId }: { userId: number }) {
 The mount phase occurs when a component is first added to the DOM. Use `effect()` without dependencies to run code after mounting:
 
 ```tsx
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function AnalyticsTracker() {
   effect(() => {
@@ -79,7 +79,7 @@ function AnalyticsTracker() {
 ### Mount with Async Operations
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function DataLoader() {
   const data = signal(null);
@@ -111,7 +111,7 @@ function DataLoader() {
 Components update when their signals change. PhilJS only re-renders the specific DOM nodes that depend on the changed signal:
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -139,7 +139,7 @@ function Counter() {
 Use effects to respond to signal changes:
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function SearchBox() {
   const query = signal('');
@@ -187,7 +187,7 @@ The cleanup phase runs when:
 Use `onCleanup()` to clean up resources:
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 function WebSocketComponent() {
   effect(() => {
@@ -211,7 +211,7 @@ function WebSocketComponent() {
 ### Multiple Cleanup Handlers
 
 ```tsx
-import { signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect, onCleanup } from '@philjs/core';
 
 function MultiResourceComponent() {
   const active = signal(true);
@@ -245,7 +245,7 @@ function MultiResourceComponent() {
 ### Execute Once on Mount
 
 ```tsx
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function OnceOnMount() {
   effect(() => {
@@ -260,7 +260,7 @@ function OnceOnMount() {
 ### Execute on Specific Signal Changes
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function WatchSpecificSignal() {
   const userPreference = signal('light');
@@ -289,7 +289,7 @@ function WatchSpecificSignal() {
 ### Conditional Effects
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function ConditionalEffect() {
   const isLoggedIn = signal(false);
@@ -324,7 +324,7 @@ function ConditionalEffect() {
 Execute code after the DOM has updated:
 
 ```tsx
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function DeferredExecution() {
   let divRef;
@@ -343,7 +343,7 @@ function DeferredExecution() {
 PhilJS automatically batches signal updates for optimal performance:
 
 ```tsx
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 function BatchedUpdates() {
   const firstName = signal('');
@@ -371,7 +371,7 @@ function BatchedUpdates() {
 ### Error Boundaries in Lifecycle
 
 ```tsx
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function SafeComponent() {
   return (
@@ -544,7 +544,7 @@ effect(() => {
 ### Log Lifecycle Events
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 function DebugComponent() {
   console.log('Component function called');
@@ -567,7 +567,7 @@ function DebugComponent() {
 Use PhilJS DevTools to visualize lifecycle events:
 
 ```tsx
-import { enableDevTools } from 'philjs-devtools';
+import { enableDevTools } from '@philjs/devtools';
 
 // Enable in development
 if (process.env.NODE_ENV === 'development') {
@@ -580,7 +580,7 @@ if (process.env.NODE_ENV === 'development') {
 ### Auto-save Form
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function AutoSaveForm() {
   const formData = signal({ title: '', content: '' });
@@ -617,7 +617,7 @@ function AutoSaveForm() {
 ### Polling with Pause/Resume
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function PollingComponent() {
   const data = signal(null);

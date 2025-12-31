@@ -85,7 +85,7 @@ export function Breadcrumb({
               >
                 {index > 0 && (
                   <span
-                    aria-hidden="true"
+                    aria-hidden={true}
                     style={{
                       color: 'var(--color-text-tertiary)',
                       fontSize: '0.875rem',

@@ -217,7 +217,7 @@ self.addEventListener('fetch', (event) => {
 ### Offline Detection in App
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function useOnlineStatus() {
   const isOnline = signal(navigator.onLine);
@@ -457,7 +457,7 @@ self.addEventListener('notificationclick', (event) => {
 ### Notify User of Updates
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function useServiceWorkerUpdate() {
   const updateAvailable = signal(false);

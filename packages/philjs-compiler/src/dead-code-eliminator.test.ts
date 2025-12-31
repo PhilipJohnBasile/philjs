@@ -10,7 +10,7 @@ import { DeadCodeEliminator } from './dead-code-eliminator';
 describe('DeadCodeEliminator', () => {
   it('should remove unused signals', () => {
     const code = `
-      import { signal } from 'philjs-core';
+      import { signal } from '@philjs/core';
 
       const unusedCount = signal(0);
       const usedCount = signal(5);
@@ -37,7 +37,7 @@ describe('DeadCodeEliminator', () => {
 
   it('should remove unused memos', () => {
     const code = `
-      import { signal, memo } from 'philjs-core';
+      import { signal, memo } from '@philjs/core';
 
       const count = signal(0);
       const unusedDoubled = memo(() => count() * 2);
@@ -65,7 +65,7 @@ describe('DeadCodeEliminator', () => {
 
   it('should not remove effects with dependencies', () => {
     const code = `
-      import { signal, effect } from 'philjs-core';
+      import { signal, effect } from '@philjs/core';
 
       const count = signal(0);
 
@@ -95,7 +95,7 @@ describe('DeadCodeEliminator', () => {
 
   it('should report size reduction', () => {
     const code = `
-      import { signal, memo } from 'philjs-core';
+      import { signal, memo } from '@philjs/core';
 
       const unused1 = signal(0);
       const unused2 = signal(1);
@@ -142,7 +142,7 @@ describe('DeadCodeEliminator', () => {
 
   it('should remove unused imports', () => {
     const code = `
-      import { signal, memo, effect, resource } from 'philjs-core';
+      import { signal, memo, effect, resource } from '@philjs/core';
 
       const count = signal(0);
 
@@ -168,7 +168,7 @@ describe('DeadCodeEliminator', () => {
 
   it('should mark signal calls as pure', () => {
     const code = `
-      import { signal } from 'philjs-core';
+      import { signal } from '@philjs/core';
 
       const count = signal(0);
 

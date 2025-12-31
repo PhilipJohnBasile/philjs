@@ -65,7 +65,7 @@ function Counter() {
 ### PhilJS Signals
 
 ```tsx
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -157,7 +157,7 @@ PhilJS can **resume** execution without re-running components:
 const { html, state } = renderToString(() => <App />);
 
 // Client resumes (no re-rendering!)
-import { resume } from 'philjs-core';
+import { resume } from '@philjs/core';
 resume(); // That's it!
 ```
 
@@ -236,7 +236,7 @@ PhilJS includes SSR, routing, and server features **in the core**:
 
 ```tsx
 // router.tsx
-import { createRouter, Route } from 'philjs-core';
+import { createRouter, Route } from '@philjs/core';
 
 const router = createRouter([
   { path: '/', component: Home },
@@ -244,7 +244,7 @@ const router = createRouter([
 ]);
 
 // Home.tsx
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 export default function Home() {
   const data = resource(() => fetchData());
@@ -349,7 +349,7 @@ const Counter: Component<Props> = (props) => {
 
 **PhilJS:**
 ```tsx
-import { Signal } from 'philjs-core';
+import { Signal } from '@philjs/core';
 
 interface Props {
   count: Signal<number>;
@@ -400,7 +400,7 @@ function List() {
 **PhilJS** uses standard JavaScript with reactive functions:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function List() {
   const items = signal([1, 2, 3]);
@@ -495,7 +495,7 @@ function ThemeProvider(props) {
 
 PhilJS has similar API:
 ```tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext();
 
@@ -517,7 +517,7 @@ function ThemeProvider({ children }) {
 #### 1. linkedSignal (Writable Computed)
 
 ```tsx
-import { signal, linkedSignal } from 'philjs-core';
+import { signal, linkedSignal } from '@philjs/core';
 
 const firstName = signal('John');
 const lastName = signal('Doe');
@@ -539,7 +539,7 @@ firstName.set('Jane'); // fullName becomes "Jane Doe"
 #### 2. Usage Analytics
 
 ```tsx
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 // Track component usage in production
 usageAnalytics.startTracking();
@@ -559,7 +559,7 @@ console.log('Suggestions:', report.suggestions);
 #### 3. Cost Tracking
 
 ```tsx
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 costTracker.configure({
   provider: 'aws',
@@ -577,7 +577,7 @@ console.log(`S3 requests: ${estimate.s3Requests}`);
 #### 4. Smart Preloading
 
 ```tsx
-import { router } from 'philjs-core';
+import { router } from '@philjs/core';
 
 // AI learns user behavior and preloads likely routes
 router.enableSmartPreload();
@@ -594,7 +594,7 @@ router.enableSmartPreload();
 #### 5. Partial Prerendering (PPR)
 
 ```tsx
-import { PartialPrerenderBoundary } from 'philjs-core';
+import { PartialPrerenderBoundary } from '@philjs/core';
 
 export default function Dashboard() {
   return (
@@ -735,7 +735,7 @@ render(() => <TodoApp />, document.getElementById('root')!);
 ### PhilJS Implementation
 
 ```tsx
-import { signal, render } from 'philjs-core';
+import { signal, render } from '@philjs/core';
 
 interface Todo {
   id: number;
@@ -850,7 +850,7 @@ return (
 
 **After (PhilJS):**
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 const doubled = memo(() => count() * 2);

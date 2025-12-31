@@ -23,7 +23,11 @@
       "import": "./dist/wasm.js"
     }
   },
-  "files": ["dist", "zig", "templates"],
+  "files": [
+    "dist",
+    "zig",
+    "templates"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
@@ -32,15 +36,25 @@
     "zig:test": "cd zig && zig build test"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "next",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"
   },
-  "keywords": ["philjs", "zig", "performance", "wasm", "simd", "fast", "low-level", "bun", "runtime"],
+  "keywords": [
+    "philjs",
+    "zig",
+    "performance",
+    "wasm",
+    "simd",
+    "fast",
+    "low-level",
+    "bun",
+    "runtime"
+  ],
   "license": "MIT",
   "author": "PhilJS Team",
   "engines": {

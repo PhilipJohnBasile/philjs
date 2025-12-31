@@ -1,4 +1,4 @@
-import { signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect, onCleanup } from '@philjs/core';
 
 export type Theme = 'light' | 'dark' | 'high-contrast';
 

@@ -3,8 +3,8 @@
  * Only hydrates components that need interactivity.
  */
 
-import type { VNode, JSXElement } from "philjs-core";
-import { isJSXElement, Fragment } from "philjs-core";
+import type { VNode, JSXElement } from "@philjs/core";
+import { isJSXElement, Fragment } from "@philjs/core";
 
 /**
  * Island hydration registry.

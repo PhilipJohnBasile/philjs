@@ -96,7 +96,7 @@ describe('TodoList', () => {
 ### Signal State Tests
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 describe('Signals', () => {
   it('updates signal value', () => {
@@ -141,7 +141,7 @@ describe('Signals', () => {
 ### Effect Execution
 
 ```typescript
-import { effect, signal } from 'philjs-core';
+import { effect, signal } from '@philjs/core';
 import { describe, it, expect, vi } from 'vitest';
 
 describe('Effects', () => {
@@ -330,7 +330,7 @@ describe('Todo App Integration', () => {
 ### Testing Router Integration
 
 ```typescript
-import { Router, Route } from 'philjs-router';
+import { Router, Route } from '@philjs/router';
 
 describe('Router Integration', () => {
   it('navigates between routes', () => {

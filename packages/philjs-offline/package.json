@@ -17,7 +17,15 @@
     "lint": "eslint src/",
     "test": "vitest"
   },
-  "keywords": ["philjs", "offline", "indexeddb", "sync", "cache", "local-first", "pwa"],
+  "keywords": [
+    "philjs",
+    "offline",
+    "indexeddb",
+    "sync",
+    "cache",
+    "local-first",
+    "pwa"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
@@ -25,7 +33,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "engines": {

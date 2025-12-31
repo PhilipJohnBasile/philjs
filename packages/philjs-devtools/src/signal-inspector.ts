@@ -8,7 +8,7 @@
  * - Signal performance metrics
  */
 
-import type { Signal } from "philjs-core";
+import type { Signal } from "@philjs/core";
 
 // ============================================================================
 // Types

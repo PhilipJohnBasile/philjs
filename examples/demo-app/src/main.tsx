@@ -1,4 +1,4 @@
-import { render } from "philjs-core";
+import { render } from "@philjs/core";
 import { App } from "./App";
 
 // Render the app

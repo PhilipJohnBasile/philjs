@@ -51,11 +51,11 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@vitest/ui": "^3.2.4",
     "jsdom": "^27.4.0",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "sideEffects": false,

@@ -382,7 +382,7 @@ function BrowserInfo() {
 
 ```tsx
 // Enable detailed hydration warnings
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 hydrate(<App />, document.getElementById('app')!, {
   debug: true,
@@ -546,7 +546,7 @@ function Form() {
 ```tsx
 // Test that component renders same on server and client
 import { describe, it, expect } from 'vitest';
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 describe('MyComponent SSR', () => {
   it('renders consistently', () => {

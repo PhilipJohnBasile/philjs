@@ -1,6 +1,6 @@
 [package]
 name = "philjs-rocket"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Rocket web framework integration for PhilJS - SSR, fairings, guards, and WebSocket support"

@@ -16,7 +16,7 @@ Cache expensive computations and prevent unnecessary re-renders for better perfo
 ### Simple Memoization
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function ExpensiveCalculation() {
   const numbers = signal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -44,7 +44,7 @@ function ExpensiveCalculation() {
 ### Derived State
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function UserList() {
   const users = signal([
@@ -90,7 +90,7 @@ function UserList() {
 ### Memo Component Wrapper
 
 ```typescript
-import { memo as memoComponent } from 'philjs-core';
+import { memo as memoComponent } from '@philjs/core';
 
 interface UserCardProps {
   user: {
@@ -168,7 +168,7 @@ const MemoizedComponent = memoComponent(
 ### Memoized Selectors
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface Todo {
   id: number;
@@ -255,7 +255,7 @@ function UserProfile({ userId }: { userId: number }) {
 ### Deep Memoization
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function deepMemo<T>(fn: () => T): () => T {
   let prevValue: T | undefined;
@@ -356,7 +356,7 @@ const expensiveCalculation = createMemoizedFn(
 ### Stable Callbacks
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function useCallback<T extends (...args: any[]) => any>(
   callback: T,

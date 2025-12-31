@@ -7,7 +7,7 @@ import {
   createNonce,
   type EarlyHint,
   type LoaderCtx
-} from "philjs-ssr";
+} from "@philjs/ssr";
 import { html, unsafeHTML } from "./template";
 import { matchRoute } from "./router";
 import globalStyles from "../styles/global.css?inline";

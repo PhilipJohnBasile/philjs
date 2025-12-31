@@ -27,7 +27,7 @@ Mutations modify server data (create, update, delete):
 ### Creating a Mutation
 
 ```typescript
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 interface UpdateUserData {
   id: string;
@@ -138,7 +138,7 @@ const updatePostMutation = createMutation({
 Automatically refresh queries after mutations:
 
 ```typescript
-import { invalidateQueries } from 'philjs-core';
+import { invalidateQueries } from '@philjs/core';
 
 const createPostMutation = createMutation({
   mutationFn: async (data: CreatePostData) => {
@@ -180,7 +180,7 @@ const deleteUserMutation = createMutation({
 Update UI immediately, before server responds:
 
 ```typescript
-import { setQueryData, getQueryData, invalidateQueries } from 'philjs-core';
+import { setQueryData, getQueryData, invalidateQueries } from '@philjs/core';
 
 const likePostMutation = createMutation({
   mutationFn: async (postId: string) => {
@@ -459,7 +459,7 @@ const updatePostMutation = createMutation<
 Set defaults for all mutations:
 
 ```typescript
-import { setMutationDefaults } from 'philjs-core';
+import { setMutationDefaults } from '@philjs/core';
 
 setMutationDefaults({
   retry: 1,

@@ -15,7 +15,7 @@ import {
   getIslandStatus,
   clearIslands,
 } from "./hydrate-island.js";
-import { jsx } from "philjs-core";
+import { jsx } from "@philjs/core";
 
 /**
  * Setup JSDOM environment.

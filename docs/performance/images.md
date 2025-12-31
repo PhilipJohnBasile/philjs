@@ -35,7 +35,7 @@ export default function ResponsiveImage({ src, alt }) {
 ### Intersection Observer
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function LazyImage({ src, alt }) {
   const isVisible = signal(false);

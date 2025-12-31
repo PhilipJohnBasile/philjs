@@ -11,7 +11,10 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -34,13 +37,13 @@
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16",
     "zod": "^4.2.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",
-    "typescript": ">=5.9.3",
+    "typescript": "^6.0.0",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {

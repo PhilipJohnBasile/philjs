@@ -201,7 +201,7 @@ PhilJS's reactive system is built on signals and effects. Understanding how to t
 ```tsx
 // signal.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 describe('Signal basics', () => {
   it('creates signal with initial value', () => {
@@ -324,7 +324,7 @@ describe('useCounter', () => {
 ```tsx
 // memo.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 describe('Memo behavior', () => {
   it('recalculates when dependency changes', () => {
@@ -401,7 +401,7 @@ describe('Memo behavior', () => {
 ```tsx
 // effect.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { signal, effect, onCleanup, batch } from 'philjs-core';
+import { signal, effect, onCleanup, batch } from '@philjs/core';
 
 describe('Effect behavior', () => {
   it('runs immediately', () => {
@@ -557,7 +557,7 @@ describe('Batching updates', () => {
 // useDocumentTitle.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/philjs';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 describe('Document title effect', () => {
   beforeEach(() => {
@@ -603,7 +603,7 @@ describe('Document title effect', () => {
 ```tsx
 // resource.test.ts
 import { describe, it, expect } from 'vitest';
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 describe('Resource behavior', () => {
   it('creates resource with initial value', () => {
@@ -806,7 +806,7 @@ describe('UserList', () => {
 // AsyncComponent.test.tsx
 import { describe, it, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/philjs';
-import { Suspense } from 'philjs-core';
+import { Suspense } from '@philjs/core';
 import { AsyncComponent } from './AsyncComponent';
 
 describe('AsyncComponent', () => {
@@ -887,7 +887,7 @@ describe('ThemeContext', () => {
 // ErrorBoundary.test.tsx
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/philjs';
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function BrokenComponent() {
   throw new Error('Something went wrong!');
@@ -1055,7 +1055,7 @@ describe('Server Functions', () => {
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/philjs';
 import { AuthContext, useAuth } from './AuthContext';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 describe('useAuth', () => {
   it('uses auth context', () => {
@@ -1091,7 +1091,7 @@ describe('useAuth', () => {
 ```tsx
 // timer.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 describe('Timer functionality', () => {
   beforeEach(() => {
@@ -1193,9 +1193,9 @@ describe('Storage utilities', () => {
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/philjs';
 import userEvent from '@testing-library/user-event';
-import { Router, useRouter } from 'philjs-router';
+import { Router, useRouter } from '@philjs/router';
 
-vi.mock('philjs-router', () => ({
+vi.mock('@philjs/router', () => ({
   useRouter: vi.fn(),
   Router: ({ children }: any) => children,
 }));
@@ -1230,7 +1230,7 @@ describe('Navigation', () => {
 ```tsx
 // websocket.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // Mock WebSocket
 class MockWebSocket {
@@ -1355,7 +1355,7 @@ describe('TodoApp Integration', () => {
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/philjs';
 import userEvent from '@testing-library/user-event';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
 function ThemeConsumer() {
@@ -1553,7 +1553,7 @@ PhilJS provides powerful snapshot testing utilities for capturing and comparing 
 ```tsx
 // snapshot.test.tsx
 import { describe, it } from 'vitest';
-import { render, takeSnapshot, createSnapshotMatcher } from 'philjs-testing';
+import { render, takeSnapshot, createSnapshotMatcher } from '@philjs/testing';
 import { UserCard } from './UserCard';
 
 describe('UserCard snapshots', () => {
@@ -1586,8 +1586,8 @@ describe('UserCard snapshots', () => {
 ```tsx
 // signalSnapshot.test.ts
 import { describe, it, expect } from 'vitest';
-import { snapshotSignalState, compareSignalSnapshots } from 'philjs-testing';
-import { signal } from 'philjs-core';
+import { snapshotSignalState, compareSignalSnapshots } from '@philjs/testing';
+import { signal } from '@philjs/core';
 
 describe('Signal state snapshots', () => {
   it('captures signal state', () => {
@@ -1623,7 +1623,7 @@ describe('Signal state snapshots', () => {
 ### Custom Snapshot Options
 
 ```tsx
-import { takeSnapshot } from 'philjs-testing';
+import { takeSnapshot } from '@philjs/testing';
 
 const result = takeSnapshot(element, {
   maxLength: 5000,
@@ -1642,7 +1642,7 @@ if (!result.toMatch(expectedSnapshot)) {
 
 ```ts
 // vitest.setup.ts
-import 'philjs-testing/vitest';
+import '@philjs/testing/vitest';
 
 // Custom setup if needed
 global.ResizeObserver = class ResizeObserver {
@@ -1669,7 +1669,7 @@ export default defineConfig({
 
 ```ts
 // jest.setup.ts
-import 'philjs-testing/jest';
+import '@philjs/testing/jest';
 
 // Custom matchers will be automatically extended
 ```
@@ -1688,7 +1688,7 @@ module.exports = {
 
 ```tsx
 // useCounter.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function useCounter(initialValue = 0) {
   const count = signal(initialValue);
@@ -1703,7 +1703,7 @@ export function useCounter(initialValue = 0) {
 
 // useCounter.test.ts
 import { describe, it, expect } from 'vitest';
-import { renderHook, act } from 'philjs-testing';
+import { renderHook, act } from '@philjs/testing';
 import { useCounter } from './useCounter';
 
 describe('useCounter', () => {
@@ -1731,7 +1731,7 @@ describe('useCounter', () => {
 ```tsx
 // api.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from 'philjs-testing';
+import { render, screen, waitFor } from '@philjs/testing';
 import { UserList } from './UserList';
 
 describe('Server function integration', () => {
@@ -1776,8 +1776,8 @@ describe('Server function integration', () => {
 ```tsx
 // ThemeContext.test.tsx
 import { describe, it, expect } from 'vitest';
-import { render, screen } from 'philjs-testing';
-import userEvent from 'philjs-testing/user-event';
+import { render, screen } from '@philjs/testing';
+import userEvent from '@philjs/testing/user-event';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
 function TestComponent() {
@@ -1823,7 +1823,7 @@ describe('ThemeContext', () => {
 ```tsx
 // DataLoader.test.tsx
 import { describe, it, expect } from 'vitest';
-import { render, screen, waitForLoadingToFinish } from 'philjs-testing';
+import { render, screen, waitForLoadingToFinish } from '@philjs/testing';
 import { DataLoader } from './DataLoader';
 
 describe('DataLoader', () => {
@@ -1855,8 +1855,8 @@ describe('DataLoader', () => {
 ```tsx
 // ContactForm.test.tsx
 import { describe, it, expect } from 'vitest';
-import { render, screen } from 'philjs-testing';
-import userEvent from 'philjs-testing/user-event';
+import { render, screen } from '@philjs/testing';
+import userEvent from '@philjs/testing/user-event';
 import { ContactForm } from './ContactForm';
 
 describe('ContactForm validation', () => {
@@ -1909,8 +1909,8 @@ describe('ContactForm validation', () => {
 ```tsx
 // performance.test.ts
 import { describe, it, expect } from 'vitest';
-import { render } from 'philjs-testing';
-import { signal, memo } from 'philjs-core';
+import { render } from '@philjs/testing';
+import { signal, memo } from '@philjs/core';
 import { HeavyComponent } from './HeavyComponent';
 
 describe('Performance tests', () => {

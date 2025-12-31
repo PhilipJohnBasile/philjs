@@ -1,4 +1,4 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 /**
  * A/B Testing Demo - Built-in Experimentation
@@ -10,7 +10,7 @@ import { signal } from "philjs-core";
  * - Statistical significance
  *
  * NOTE: This is a simplified demo. The full A/B testing module
- * would be imported from philjs-core/ab-testing
+ * would be imported from @philjs/core/ab-testing
  */
 export function ABTestingDemo() {
   // Simulate A/B test variants

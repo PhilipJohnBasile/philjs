@@ -139,7 +139,7 @@ const darkTheme: Theme = {
 ### Theme Provider
 
 ```typescript
-import { createContext, signal } from 'philjs-core';
+import { createContext, signal } from '@philjs/core';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -234,7 +234,7 @@ export function DarkModeToggle() {
 ### System Preference Detection
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useSystemTheme() {
   const systemTheme = signal<'light' | 'dark'>('light');
@@ -281,7 +281,7 @@ export function ThemeProvider({ children }: { children: any }) {
 ### Generate CSS Variables
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function themeToCSSVariables(theme: Theme): Record<string, string> {
   return {
@@ -367,7 +367,7 @@ export function ThemeProvider({ children }: { children: any }) {
 ### LocalStorage Persistence
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const THEME_STORAGE_KEY = 'app-theme';
 
@@ -547,7 +547,7 @@ export function ThemeProvider({ children }: { children: any }) {
 ### Smooth Theme Transitions
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export function ThemeProvider({ children }: { children: any }) {
   const mode = signal<ThemeMode>('light');

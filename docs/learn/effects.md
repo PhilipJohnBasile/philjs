@@ -15,7 +15,7 @@ Effects let you run code in response to signal changes. Use them for side effect
 An effect is a function that **runs when its dependencies change**:
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 

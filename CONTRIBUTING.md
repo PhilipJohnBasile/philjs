@@ -10,8 +10,9 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm 8+
+- Node.js 24+ (Node 25 supported)
+- pnpm 9.15.4+ (per packageManager)
+- TypeScript 6.x
 - Rust 1.70+ (for Rust packages)
 - wasm-pack (for WASM builds)
 

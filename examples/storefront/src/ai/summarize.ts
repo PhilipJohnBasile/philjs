@@ -2,8 +2,8 @@
  * AI summarization demo for the storefront.
  */
 
-import type { PromptSpec } from "philjs-ai";
-import { createPrompt } from "philjs-ai";
+import type { PromptSpec } from "@philjs/ai";
+import { createPrompt } from "@philjs/ai";
 
 export const summarize = createPrompt({
   in: { text: "" },

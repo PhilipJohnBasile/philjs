@@ -16,7 +16,7 @@ Build live, real-time applications with WebSockets, Server-Sent Events, and poll
 ### Basic WebSocket Connection
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useWebSocket<T>(url: string) {
   const data = signal<T | null>(null);
@@ -414,7 +414,7 @@ function Dashboard() {
 Combine queries with real-time updates:
 
 ```typescript
-import { createQuery, setQueryData } from 'philjs-core';
+import { createQuery, setQueryData } from '@philjs/core';
 
 const postsQuery = createQuery({
   key: () => ['posts'],

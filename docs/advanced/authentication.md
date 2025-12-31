@@ -20,7 +20,7 @@ Implement secure authentication patterns in PhilJS applications.
 Stateless authentication using tokens.
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface User {
   id: string;
@@ -300,7 +300,7 @@ function OAuthCallback() {
 ### Route Guard Component
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useAuth } from './auth';
 
 interface ProtectedRouteProps {

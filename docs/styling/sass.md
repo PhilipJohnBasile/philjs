@@ -438,7 +438,7 @@ styles/
 ```typescript
 // Button.tsx
 import './Button.scss';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Button({ variant = 'primary' }: {
   variant?: 'primary' | 'secondary';

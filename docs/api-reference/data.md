@@ -7,7 +7,7 @@ Complete API reference for data fetching.
 Create a query for data fetching.
 
 ```tsx
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 const users = createQuery(() => '/api/users');
 ```
@@ -19,7 +19,7 @@ const users = createQuery(() => '/api/users');
 Create a mutation.
 
 ```tsx
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 const createUser = createMutation(async (data) => {
   return await fetch('/api/users', {
@@ -36,7 +36,7 @@ const createUser = createMutation(async (data) => {
 Access query client.
 
 ```tsx
-import { useQueryClient } from 'philjs-core';
+import { useQueryClient } from '@philjs/core';
 
 const client = useQueryClient();
 client.invalidateQueries(['users']);

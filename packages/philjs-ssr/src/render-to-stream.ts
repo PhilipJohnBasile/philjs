@@ -3,8 +3,8 @@
  * Provides 50%+ faster Time-to-First-Byte compared to renderToString.
  */
 
-import type { VNode, JSXElement } from "philjs-core";
-import { Fragment, isJSXElement } from "philjs-core";
+import type { VNode, JSXElement } from "@philjs/core";
+import { Fragment, isJSXElement } from "@philjs/core";
 
 const VOID_ELEMENTS = new Set([
   "area", "base", "br", "col", "embed", "hr", "img", "input",

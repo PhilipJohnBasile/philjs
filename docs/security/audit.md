@@ -396,7 +396,7 @@ function sanitizeUrl(url: string): string | null {
 ### Form Validation
 
 ```tsx
-import { useForm, v as validators } from 'philjs-core';
+import { useForm, v as validators } from '@philjs/core';
 
 function RegistrationForm() {
   const form = useForm({
@@ -486,7 +486,7 @@ function RegistrationForm() {
 
 ## CSRF Protection
 
-PhilJS provides built-in CSRF (Cross-Site Request Forgery) protection through the `philjs-ssr` package.
+PhilJS provides built-in CSRF (Cross-Site Request Forgery) protection through the `@philjs/ssr` package.
 
 ### How CSRF Protection Works
 
@@ -502,7 +502,7 @@ export function generateCSRFToken(): string {
 ### Server-Side Setup
 
 ```typescript
-import { csrfProtection, csrfField } from 'philjs-ssr';
+import { csrfProtection, csrfField } from '@philjs/ssr';
 
 // Configure CSRF middleware
 const csrf = csrfProtection({
@@ -559,7 +559,7 @@ export async function POST(request: Request) {
 ### AJAX/Fetch Protection
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function SecureForm() {
   const csrfToken = signal('');
@@ -601,7 +601,7 @@ For production, use Redis or a similar distributed store:
 
 ```typescript
 import Redis from 'ioredis';
-import { csrfProtection } from 'philjs-ssr';
+import { csrfProtection } from '@philjs/ssr';
 
 const redis = new Redis();
 
@@ -628,7 +628,7 @@ const csrfStore = new RedisCSRFStore();
 ### Extract CSRF Token from Requests
 
 ```typescript
-import { extractCSRFToken } from 'philjs-ssr';
+import { extractCSRFToken } from '@philjs/ssr';
 
 export async function POST(request: Request) {
   // Extract from header or form field
@@ -649,7 +649,7 @@ export async function POST(request: Request) {
 Combine CSRF tokens with SameSite cookies for defense in depth:
 
 ```typescript
-import { createCookie } from 'philjs-ssr';
+import { createCookie } from '@philjs/ssr';
 
 const sessionCookie = createCookie('session', {
   httpOnly: true,      // Not accessible to JavaScript
@@ -672,7 +672,7 @@ PhilJS provides built-in CSP (Content Security Policy) support to prevent XSS an
 ### CSP Implementation
 
 ```typescript
-import { buildCSP, createNonce } from 'philjs-ssr';
+import { buildCSP, createNonce } from '@philjs/ssr';
 
 // Generate nonce for inline scripts
 const nonce = createNonce(); // Cryptographically secure random value
@@ -722,7 +722,7 @@ const DEFAULT_DIRECTIVES = {
 ### Using Nonces for Inline Scripts
 
 ```tsx
-import { buildCSP, createNonce } from 'philjs-ssr';
+import { buildCSP, createNonce } from '@philjs/ssr';
 
 export async function renderPage(request: Request) {
   const nonce = createNonce();
@@ -821,7 +821,7 @@ PhilJS provides comprehensive rate limiting to protect against abuse and DDoS at
 ### Basic Rate Limiting
 
 ```typescript
-import { rateLimit, MemoryRateLimitStore } from 'philjs-ssr';
+import { rateLimit, MemoryRateLimitStore } from '@philjs/ssr';
 
 // Create rate limiter
 const limiter = rateLimit({
@@ -849,7 +849,7 @@ import {
   authRateLimit,
   apiKeyRateLimit,
   userRateLimit,
-} from 'philjs-ssr';
+} from '@philjs/ssr';
 
 // API routes: 60 requests/minute
 export const apiLimiter = apiRateLimit(60);
@@ -887,7 +887,7 @@ const limiter = rateLimit({
 ### Redis Store for Production
 
 ```typescript
-import { RedisRateLimitStore } from 'philjs-ssr';
+import { RedisRateLimitStore } from '@philjs/ssr';
 import Redis from 'ioredis';
 
 const redis = new Redis({
@@ -939,7 +939,7 @@ const uploadLimiter = rateLimit({
 Automatically adjust limits based on error rates:
 
 ```typescript
-import { AdaptiveRateLimiter } from 'philjs-ssr';
+import { AdaptiveRateLimiter } from '@philjs/ssr';
 
 const limiter = new AdaptiveRateLimiter({
   baseLimit: 100,
@@ -964,7 +964,7 @@ await limiter.recordResult(success);
 More accurate than fixed windows:
 
 ```typescript
-import { SlidingWindowRateLimiter } from 'philjs-ssr';
+import { SlidingWindowRateLimiter } from '@philjs/ssr';
 
 const limiter = new SlidingWindowRateLimiter({
   windowMs: 60000,
@@ -1039,7 +1039,7 @@ export const GET = securityHeadersMiddleware(async (request) => {
 ### Secure Session Management
 
 ```typescript
-import { createCookie } from 'philjs-ssr';
+import { createCookie } from '@philjs/ssr';
 
 const sessionCookie = createCookie('session', {
   secrets: [process.env.SESSION_SECRET!],

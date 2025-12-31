@@ -5,7 +5,7 @@ Protect routes by using loaders to check authentication/authorization before ren
 ## Auth Guard Example
 
 ```ts
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 import { requireUser } from '../lib/auth';
 
 createAppRouter({

@@ -66,10 +66,10 @@
     "cron-parser": "^4.9.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "bullmq": "^5.66.3",
     "ioredis": "^5.8.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "engines": {

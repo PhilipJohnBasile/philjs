@@ -53,7 +53,7 @@ id = "your-kv-namespace-id"
 
 [[env.production.d1_databases]]
 binding = "DB"
-database_name = "philjs-db"
+database_name = "@philjs/db"
 database_id = "your-db-id"
 ```
 
@@ -103,7 +103,7 @@ For fully static sites optimized for edge caching:
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [
@@ -134,7 +134,7 @@ For dynamic pages rendered at the edge:
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [
@@ -299,7 +299,7 @@ export async function onRequestPut(context) {
 
 ```typescript
 // src/lib/server/cache.ts
-import { serverFn } from 'philjs-core';
+import { serverFn } from '@philjs/core';
 
 export const getCachedData = serverFn(async (key: string) => {
   // Access KV through context (requires adapter setup)
@@ -321,16 +321,16 @@ Use D1 for serverless SQL database:
 
 ```bash
 # Create database
-wrangler d1 create philjs-db
+wrangler d1 create @philjs/db
 
 # Add to wrangler.toml
 [[d1_databases]]
 binding = "DB"
-database_name = "philjs-db"
+database_name = "@philjs/db"
 database_id = "your-database-id"
 
 # Create tables
-wrangler d1 execute philjs-db --file=./schema.sql
+wrangler d1 execute @philjs/db --file=./schema.sql
 ```
 
 ### Database Schema

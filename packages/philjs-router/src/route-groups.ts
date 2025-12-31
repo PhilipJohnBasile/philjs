@@ -16,7 +16,7 @@
  * ```
  */
 
-import type { JSXElement, VNode } from "philjs-core";
+import type { JSXElement, VNode } from "@philjs/core";
 import type { RouteComponent } from "./nested.js";
 import type { LoaderFunction, LoaderFunctionContext } from "./loader.js";
 import type { ActionFunction, ActionFunctionContext } from "./action.js";

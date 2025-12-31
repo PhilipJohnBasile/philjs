@@ -21,7 +21,7 @@ A collection of battle-tested patterns for building robust applications with Phi
 **Solution**: Use signals to track state and async functions for data fetching.
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface User {
   id: number;
@@ -168,7 +168,7 @@ const fetchUser = async () => {
 **Solution**: Use signals for each field and memo for validation state.
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface FormData {
   email: string;
@@ -464,7 +464,7 @@ function RegistrationForm() {
 **Solution**: Use signals for auth state and localStorage for persistence.
 
 ```typescript
-import { signal, effect, createContext, useContext } from 'philjs-core';
+import { signal, effect, createContext, useContext } from '@philjs/core';
 
 interface User {
   id: string;
@@ -743,7 +743,7 @@ function App() {
 **Solution**: Track page state and calculate visible items.
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface PaginatedData<T> {
   items: T[];
@@ -1011,7 +1011,7 @@ function ServerPagination() {
 **Solution**: Use Intersection Observer to detect when to load more.
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface InfiniteScrollProps<T> {
   fetchPage: (page: number) => Promise<T[]>;
@@ -1254,7 +1254,7 @@ function ProductList() {
 ### Debouncing (Wait for User to Stop)
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function DebounceExample() {
   const searchTerm = signal('');
@@ -1382,7 +1382,7 @@ function DebounceExample() {
 ### Throttling (Execute at Most Once Per Interval)
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function ThrottleExample() {
   const scrollPosition = signal(0);
@@ -1512,7 +1512,7 @@ function MyComponent() {
 **Solution**: Sync signals with localStorage using effects.
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // Generic localStorage hook
 function useLocalStorage<T>(

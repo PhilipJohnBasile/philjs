@@ -94,7 +94,7 @@ measureOperation('data-processing', () => {
 ### Performance Observer
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function usePerformanceObserver() {
   effect(() => {
@@ -323,7 +323,7 @@ function analyzeResourceTiming() {
 ### Web Vitals Tracking
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function trackWebVitals() {
   effect(() => {

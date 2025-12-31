@@ -4,7 +4,7 @@ PhilJS pairs route loaders/actions with server handlers so you can colocate UI a
 
 ## Server Handler Basics
 
-Use `philjs-ssr` to map route modules to server endpoints. Each route module exported via `createAppRouter` appears in the manifest. For API-only endpoints, create files that export a default handler.
+Use `@philjs/ssr` to map route modules to server endpoints. Each route module exported via `createAppRouter` appears in the manifest. For API-only endpoints, create files that export a default handler.
 
 ```ts
 // routes/api/subscribe.ts
@@ -19,7 +19,7 @@ export async function action({ request }: { request: Request }) {
 In your server entry (e.g., Vite middleware or Cloudflare worker) reuse the manifest:
 
 ```ts
-import { createPhilJSServer } from 'philjs-ssr';
+import { createPhilJSServer } from '@philjs/ssr';
 import { router } from './dist/router-manifest.js';
 
 const handleRequest = createPhilJSServer(router);
@@ -33,7 +33,7 @@ Now POST requests to `/api/subscribe` call the route action without duplicating 
 On the client, use a form and let the action handle the submission. Afterwards, navigate programmatically or show a success message.
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 export function SubscribeForm({ navigate }: RouteComponentProps) {
   const { route } = useRouter();

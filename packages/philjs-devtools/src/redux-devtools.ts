@@ -10,7 +10,7 @@
  * - State import/export
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import {
   TimeTravelDebugger,
   type StateSnapshot,

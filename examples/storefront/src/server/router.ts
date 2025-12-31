@@ -1,4 +1,4 @@
-import type { RouteModule } from "philjs-router";
+import type { RouteModule } from "@philjs/router";
 
 type RouteEntry = {
   id: string;

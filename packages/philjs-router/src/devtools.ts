@@ -4,7 +4,7 @@
  *
  * @example
  * ```tsx
- * import { RouterDevTools } from 'philjs-router';
+ * import { RouterDevTools } from '@philjs/router';
  *
  * function App() {
  *   return (
@@ -17,8 +17,8 @@
  * ```
  */
 
-import { signal } from "philjs-core";
-import type { JSXElement, VNode } from "philjs-core";
+import { signal } from "@philjs/core";
+import type { JSXElement, VNode } from "@philjs/core";
 import type { MatchedRoute } from "./high-level.js";
 
 // ============================================================================

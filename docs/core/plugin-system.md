@@ -27,7 +27,7 @@ The PhilJS plugin system provides a robust, type-safe way to extend the framewor
 
 ```bash
 # Install a plugin
-philjs plugin add philjs-plugin-tailwind
+philjs plugin add @philjs/plugin-tailwind
 
 # List installed plugins
 philjs plugin list
@@ -36,16 +36,16 @@ philjs plugin list
 philjs plugin search analytics
 
 # Get plugin info
-philjs plugin info philjs-plugin-seo
+philjs plugin info @philjs/plugin-seo
 ```
 
 ### Configure Plugins
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from 'philjs-core';
-import tailwind from 'philjs-plugin-tailwind';
-import analytics from 'philjs-plugin-analytics';
+import { defineConfig } from '@philjs/core';
+import tailwind from '@philjs/plugin-tailwind';
+import analytics from '@philjs/plugin-analytics';
 
 // Using TypeScript 6 satisfies for type-safe config
 const config = defineConfig({
@@ -145,7 +145,7 @@ npx create-philjs-plugin my-awesome-plugin
 ### Manual Plugin Creation
 
 ```typescript
-import { definePlugin } from 'philjs-core/plugin-system';
+import { definePlugin } from '@philjs/core/plugin-system';
 
 export default definePlugin((options = {}) => ({
   meta: {
@@ -260,7 +260,7 @@ export default createBuilder()
 ### Tailwind CSS Plugin
 
 ```typescript
-import tailwind from 'philjs-plugin-tailwind';
+import tailwind from '@philjs/plugin-tailwind';
 
 export default {
   plugins: [
@@ -290,7 +290,7 @@ export default {
 ### Analytics Plugin
 
 ```typescript
-import analytics from 'philjs-plugin-analytics';
+import analytics from '@philjs/plugin-analytics';
 
 export default {
   plugins: [
@@ -322,7 +322,7 @@ export default {
 ### SEO Plugin
 
 ```typescript
-import seo from 'philjs-plugin-seo';
+import seo from '@philjs/plugin-seo';
 
 export default {
   plugins: [
@@ -350,7 +350,7 @@ export default {
 ### PWA Plugin
 
 ```typescript
-import pwa from 'philjs-plugin-pwa';
+import pwa from '@philjs/plugin-pwa';
 
 export default {
   plugins: [
@@ -383,7 +383,7 @@ export default {
 ### i18n Plugin
 
 ```typescript
-import i18n from 'philjs-plugin-i18n';
+import i18n from '@philjs/plugin-i18n';
 
 export default {
   plugins: [
@@ -430,7 +430,7 @@ npm test
     "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "philjs-core": "^2.0.0",
+    "@philjs/core": "^2.0.0",
     "typescript": "^6.0.0"
   }
 }
@@ -565,7 +565,7 @@ test('transform hook', async () => {
 ### Plugin Composition
 
 ```typescript
-import { composePlugins } from 'philjs-core/plugin-system';
+import { composePlugins } from '@philjs/core/plugin-system';
 import pluginA from './plugin-a';
 import pluginB from './plugin-b';
 
@@ -575,10 +575,10 @@ export default composePlugins([pluginA, pluginB]);
 ### Plugin Presets
 
 ```typescript
-import { definePreset } from 'philjs-core/plugin-system';
-import tailwind from 'philjs-plugin-tailwind';
-import analytics from 'philjs-plugin-analytics';
-import seo from 'philjs-plugin-seo';
+import { definePreset } from '@philjs/core/plugin-system';
+import tailwind from '@philjs/plugin-tailwind';
+import analytics from '@philjs/plugin-analytics';
+import seo from '@philjs/plugin-seo';
 
 export default definePreset('production-ready', [
   tailwind(),
@@ -626,7 +626,7 @@ export default {
 ### Plugin Manager
 
 ```typescript
-import { PluginManager } from 'philjs-core/plugin-system';
+import { PluginManager } from '@philjs/core/plugin-system';
 
 const manager = new PluginManager();
 

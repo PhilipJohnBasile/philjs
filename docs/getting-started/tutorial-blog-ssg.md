@@ -96,7 +96,7 @@ Here are the key benefits:
 ## Code Example
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 
@@ -234,7 +234,7 @@ export function formatDate(dateString: string): string {
 Create `src/components/SEO.tsx`:
 
 ```typescript
-import { Head } from 'philjs-core';
+import { Head } from '@philjs/core';
 
 interface SEOProps {
   title: string;
@@ -792,8 +792,8 @@ Static pages still work with regular hyperlinks, but if you want seamless client
 Create `src/router.ts`:
 
 ```typescript
-import { createRouter } from 'philjs-router';
-import { render } from 'philjs-core';
+import { createRouter } from '@philjs/router';
+import { render } from '@philjs/core';
 
 type RouteEntry = {
   pattern: string;
@@ -1151,7 +1151,7 @@ const Comments = lazy(() => import('./Comments'));
 ### Prefetching
 
 ```typescript
-import { initSmartPreloader } from 'philjs-router';
+import { initSmartPreloader } from '@philjs/router';
 
 const preloader = initSmartPreloader({ strategy: 'hover' });
 

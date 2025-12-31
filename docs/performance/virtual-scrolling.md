@@ -16,7 +16,7 @@ Efficiently render large lists by only displaying visible items.
 ### Fixed Height Items
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface VirtualScrollerProps<T> {
   items: T[];
@@ -162,7 +162,7 @@ export function VirtualScrollerWithOverscan<T>({
 ### Dynamic Height Virtual Scroller
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface DynamicVirtualScrollerProps<T> {
   items: T[];
@@ -373,7 +373,7 @@ export function GridVirtualScroller<T>({
 ### Throttled Scroll
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function throttle<T extends (...args: any[]) => any>(
   func: T,
@@ -452,7 +452,7 @@ export function RAFVirtualScroller<T>(props: VirtualScrollerProps<T>) {
 ### Load More on Scroll
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface InfiniteScrollProps<T> {
   items: T[];

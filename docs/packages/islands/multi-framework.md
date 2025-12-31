@@ -18,7 +18,7 @@ Astro-style multi-framework island architecture for PhilJS. Use React, Vue, Svel
 ## Installation
 
 ```bash
-pnpm add philjs-islands
+pnpm add @philjs/islands
 ```
 
 ### Optional Framework Dependencies
@@ -52,7 +52,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { viteMultiFramework } from 'philjs-islands/vite-multi-framework';
+import { viteMultiFramework } from '@philjs/islands/vite-multi-framework';
 
 export default defineConfig({
   plugins: [
@@ -71,7 +71,7 @@ export default defineConfig({
 ### 2. Register Island Components
 
 ```typescript
-import { registerIslandComponent } from 'philjs-islands';
+import { registerIslandComponent } from '@philjs/islands';
 
 // Register components from different frameworks
 registerIslandComponent('react', 'Counter', () => import('./islands/Counter.tsx'));
@@ -82,7 +82,7 @@ registerIslandComponent('svelte', 'Timer', () => import('./islands/Timer.svelte'
 ### 3. Use Islands in Your App
 
 ```tsx
-import { MultiFrameworkIsland } from 'philjs-islands';
+import { MultiFrameworkIsland } from '@philjs/islands';
 
 function App() {
   return (
@@ -192,7 +192,7 @@ Hydrate based on media query:
 Share state between islands from different frameworks:
 
 ```typescript
-import { createSharedState } from 'philjs-islands';
+import { createSharedState } from '@philjs/islands';
 
 // Create shared state
 const userState = createSharedState('user', {
@@ -220,7 +220,7 @@ const unsubscribe = userState.subscribe((state) => {
 #### React
 
 ```tsx
-import { frameworkHooks } from 'philjs-islands';
+import { frameworkHooks } from '@philjs/islands';
 
 function Counter() {
   const [count, setCount] = frameworkHooks.react.useSharedState('counter', 0);
@@ -239,7 +239,7 @@ function Counter() {
 
 ```vue
 <script setup>
-import { frameworkHooks } from 'philjs-islands';
+import { frameworkHooks } from '@philjs/islands';
 
 const { state: count, setState: setCount } = frameworkHooks.vue.useSharedState('counter', 0);
 const eventBus = frameworkHooks.vue.useEventBus();
@@ -259,7 +259,7 @@ function increment() {
 
 ```svelte
 <script>
-import { frameworkHooks } from 'philjs-islands';
+import { frameworkHooks } from '@philjs/islands';
 
 const count = frameworkHooks.svelte.createSharedStore('counter', 0);
 const eventBus = frameworkHooks.svelte.useEventBus();
@@ -276,7 +276,7 @@ function increment() {
 #### Solid
 
 ```tsx
-import { frameworkHooks } from 'philjs-islands';
+import { frameworkHooks } from '@philjs/islands';
 
 function Counter() {
   const [count, setCount] = frameworkHooks.solid.createSharedSignal('counter', 0);
@@ -296,7 +296,7 @@ function Counter() {
 Communicate between islands:
 
 ```typescript
-import { eventBus } from 'philjs-islands';
+import { eventBus } from '@philjs/islands';
 
 // Emit event
 eventBus.emit('user-logged-in', { userId: 123 });
@@ -326,7 +326,7 @@ eventBus.use((event, data) => {
 Create typed communication channels between specific islands:
 
 ```typescript
-import { createIslandBridge } from 'philjs-islands';
+import { createIslandBridge } from '@philjs/islands';
 
 const bridge = createIslandBridge(
   { framework: 'react', id: 'island-1' },
@@ -347,7 +347,7 @@ bridge.receive((data) => {
 Automatically convert props between framework conventions:
 
 ```typescript
-import { PropsNormalizer } from 'philjs-islands';
+import { PropsNormalizer } from '@philjs/islands';
 
 // React props
 const reactProps = {
@@ -372,7 +372,7 @@ const vueProps = PropsNormalizer.denormalize(normalized, 'vue');
 Create your own framework adapter:
 
 ```typescript
-import { registerAdapter, type FrameworkAdapter } from 'philjs-islands';
+import { registerAdapter, type FrameworkAdapter } from '@philjs/islands';
 
 const customAdapter: FrameworkAdapter = {
   name: 'custom-framework',
@@ -413,7 +413,7 @@ registerAdapter(customAdapter);
 ## Vite Plugin Options
 
 ```typescript
-import { viteMultiFramework } from 'philjs-islands/vite-multi-framework';
+import { viteMultiFramework } from '@philjs/islands/vite-multi-framework';
 
 viteMultiFramework({
   // Frameworks to support

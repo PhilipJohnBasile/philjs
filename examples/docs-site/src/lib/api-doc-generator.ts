@@ -377,7 +377,7 @@ export function generateApiMarkdown(module: ApiDocModule): string {
  * Sample API documentation for PhilJS Core
  */
 export const philjsCoreApiDocs: ApiDocModule = {
-  name: 'philjs-core',
+  name: '@philjs/core',
   description: 'Core reactivity primitives for PhilJS',
   functions: [
     {

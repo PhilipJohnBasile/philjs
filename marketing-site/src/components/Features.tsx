@@ -7,42 +7,42 @@ export function Features() {
       title: "Fine-grained reactivity that scales",
       description:
         "Signals, memos, and effects update only what changed. No virtual DOM diffing, no unnecessary work.",
-      packages: ["philjs-core", "philjs-compiler"]
+      packages: ["@philjs/core", "@philjs/compiler"]
     },
     {
       label: "Routing",
       title: "Routing, loaders, and actions",
       description:
         "File-based routing with data loading, actions, and type-safe params built in.",
-      packages: ["philjs-router", "philjs-router-typesafe", "philjs-ssr"]
+      packages: ["@philjs/router", "@philjs/router-typesafe", "@philjs/ssr"]
     },
     {
       label: "Rendering",
       title: "SSR, islands, and resumability",
       description:
         "Stream HTML fast, hydrate only where needed, and resume state without heavy client boot.",
-      packages: ["philjs-ssr", "philjs-islands", "philjs-resumable"]
+      packages: ["@philjs/ssr", "@philjs/islands", "@philjs/resumable"]
     },
     {
       label: "Data",
       title: "Data, APIs, and GraphQL",
       description:
         "Typed API routes, session utilities, and a built-in GraphQL client with caching.",
-      packages: ["philjs-api", "philjs-graphql", "philjs-db"]
+      packages: ["@philjs/api", "@philjs/graphql", "@philjs/db"]
     },
     {
       label: "Security",
       title: "Auth, sessions, and protection",
       description:
         "First-party auth flows, CSRF protection, and security headers for production apps.",
-      packages: ["philjs-auth", "philjs-api", "philjs-errors"]
+      packages: ["@philjs/auth", "@philjs/api", "@philjs/errors"]
     },
     {
       label: "Tooling",
       title: "Developer experience and testing",
       description:
         "CLI generators, devtools, testing utilities, and editor support for fast iteration.",
-      packages: ["philjs-cli", "philjs-devtools", "philjs-testing"]
+      packages: ["@philjs/cli", "@philjs/devtools", "@philjs/testing"]
     }
   ];
 

@@ -7,7 +7,7 @@ Get started with SuperJSON in PhilJS in 5 minutes.
 SuperJSON is built into PhilJS core. No additional installation needed!
 
 ```bash
-npm install philjs-core philjs-rpc philjs-ssr
+npm install @philjs/core @philjs/rpc @philjs/ssr
 ```
 
 ## Basic Usage
@@ -15,7 +15,7 @@ npm install philjs-core philjs-rpc philjs-ssr
 ### 1. Simple Serialization
 
 ```typescript
-import { serialize, deserialize } from 'philjs-core/superjson';
+import { serialize, deserialize } from '@philjs/core/superjson';
 
 // Serialize complex data
 const data = {
@@ -43,7 +43,7 @@ console.log(restored.tags instanceof Set); // true
 
 ```typescript
 // server/api.ts
-import { createAPI, procedure } from 'philjs-rpc';
+import { createAPI, procedure } from '@philjs/rpc';
 
 export const api = createAPI({
   users: {
@@ -57,11 +57,11 @@ export const api = createAPI({
 });
 
 // client.ts
-import { createClient } from 'philjs-rpc/client';
+import { createClient } from '@philjs/rpc/client';
 import {
   createClientRequestTransformer,
   createClientResponseTransformer,
-} from 'philjs-rpc';
+} from '@philjs/rpc';
 
 const client = createClient({
   url: '/api/rpc',
@@ -79,8 +79,8 @@ console.log(user.roles instanceof Set); // true
 
 ```typescript
 // routes/user/[id].tsx
-import { defineLoader } from 'philjs-ssr';
-import { superJSONLoader } from 'philjs-ssr';
+import { defineLoader } from '@philjs/ssr';
+import { superJSONLoader } from '@philjs/ssr';
 
 export const loader = superJSONLoader(
   defineLoader(async ({ params }) => ({
@@ -119,7 +119,7 @@ const response = { created: new Date() };
 JSON.stringify(response); // '{"created":"2024-01-15T..."}'
 
 // After: Dates preserved
-import { stringify, parse } from 'philjs-core/superjson';
+import { stringify, parse } from '@philjs/core/superjson';
 const json = stringify(response);
 const parsed = parse(json);
 console.log(parsed.created instanceof Date); // true
@@ -193,7 +193,7 @@ import {
   serializeWithCompression,
   deserializeWithDecompression,
   NativeCompression,
-} from 'philjs-core/superjson-perf';
+} from '@philjs/core/superjson-perf';
 
 const largeData = { /* lots of data */ };
 
@@ -211,7 +211,7 @@ const restored = await deserializeWithDecompression(compressed, {
 ### 2. Lazy Deserialization
 
 ```typescript
-import { lazy } from 'philjs-core/superjson-perf';
+import { lazy } from '@philjs/core/superjson-perf';
 
 // Don't deserialize until needed
 const lazyData = lazy(serialized);
@@ -230,7 +230,7 @@ console.log(lazyData.isDeserialized()); // true
 import {
   StreamingSerializer,
   StreamingDeserializer,
-} from 'philjs-core/superjson-perf';
+} from '@philjs/core/superjson-perf';
 
 const serializer = new StreamingSerializer();
 const deserializer = new StreamingDeserializer();
@@ -252,7 +252,7 @@ for (const chunk of serializer.serialize(largeData, 100)) {
 ## Custom Types
 
 ```typescript
-import { registerCustomType } from 'philjs-core/superjson';
+import { registerCustomType } from '@philjs/core/superjson';
 
 // Define your class
 class Money {
@@ -302,7 +302,7 @@ const json = JSON.stringify(data);
 const parsed = JSON.parse(json);
 
 // After
-import { stringify, parse } from 'philjs-core/superjson';
+import { stringify, parse } from '@philjs/core/superjson';
 
 const json = stringify(data);
 const parsed = parse(json);
@@ -315,7 +315,7 @@ const parsed = parse(json);
 ### Check if serialization is needed
 
 ```typescript
-import { needsSerialization } from 'philjs-core/superjson';
+import { needsSerialization } from '@philjs/core/superjson';
 
 const data1 = { simple: 'string', number: 42 };
 console.log(needsSerialization(data1)); // false
@@ -366,7 +366,7 @@ const correct = deserialize(parsed);
 
 ```typescript
 // Better
-import { stringify, parse } from 'philjs-core/superjson';
+import { stringify, parse } from '@philjs/core/superjson';
 
 const json = stringify(data);
 const parsed = parse(json);
@@ -377,8 +377,8 @@ const parsed = parse(json);
 - Read the [full documentation](./SUPERJSON.md)
 - Check out the [examples](./src/superjson-examples.ts)
 - Explore [performance optimizations](./src/superjson-perf.ts)
-- See [RPC integration](../philjs-rpc/src/superjson.ts)
-- Learn [SSR patterns](../philjs-ssr/src/superjson.ts)
+- See [RPC integration](../@philjs/rpc/src/superjson.ts)
+- Learn [SSR patterns](../@philjs/ssr/src/superjson.ts)
 
 ## Questions?
 

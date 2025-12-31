@@ -24,7 +24,7 @@ Each file exports a regular PhilJS component. Layouts receive `children` plus ro
 
 ```tsx
 // src/main.tsx
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 import { AppLayout } from './routes/_layout';
 import { HomeRoute } from './routes/index';
 import { AboutRoute } from './routes/about';
@@ -84,7 +84,7 @@ Layouts wrap child routes when you provide the `layout` property.
 
 ```tsx
 // src/routes/_layout.tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function AppLayout({ children }: { children: any }) {
   return (
@@ -112,7 +112,7 @@ Every child of `/` automatically renders inside `AppLayout`.
 Use `<Link>` for client-side navigation. It behaves like an anchor, supports modifier keys, and hooks into the smart preloader.
 
 ```tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function Nav() {
   return (
@@ -130,7 +130,7 @@ export function Nav() {
 `useRouter()` returns `{ route, navigate }`.
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 export function LoginForm() {
   const { navigate } = useRouter();
@@ -154,7 +154,7 @@ export function LoginForm() {
 `useRoute()` provides the matched route object.
 
 ```tsx
-import { useRoute } from 'philjs-router';
+import { useRoute } from '@philjs/router';
 
 export function RouteDebugger() {
   const route = useRoute();

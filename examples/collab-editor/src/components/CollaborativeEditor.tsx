@@ -1,4 +1,4 @@
-import { signal, computed, effect } from "philjs-core";
+import { signal, computed, effect } from "@philjs/core";
 import type { User, Cursor, TextOperation, Presence } from "../types";
 import { UserPresence } from "./UserPresence";
 import { RichTextToolbar } from "./RichTextToolbar";

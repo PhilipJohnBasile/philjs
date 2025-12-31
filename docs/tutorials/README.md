@@ -220,5 +220,5 @@ In this video:
 - GitHub: https://github.com/philjs/philjs
 - Discord: https://discord.gg/philjs
 
-#PhilJS #WebDev #JavaScript #TypeScript
+#PhilJS #WebDev #TypeScript
 ```

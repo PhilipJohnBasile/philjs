@@ -35,7 +35,7 @@ export default function ContactForm() {
 ### Controlled Form
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function LoginForm() {
   const email = signal('');
@@ -79,7 +79,7 @@ export default function LoginForm() {
 ### Form Data Signal
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function UserForm() {
   const formData = signal({
@@ -116,7 +116,7 @@ export default function UserForm() {
 ### Server Action
 
 ```tsx
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 export default function CreatePost() {
   const createPost = createMutation(async (data: FormData) => {

@@ -17,7 +17,16 @@
     "lint": "eslint src/",
     "test": "vitest"
   },
-  "keywords": ["philjs", "vector", "embeddings", "rag", "semantic-search", "openai", "cohere", "indexeddb"],
+  "keywords": [
+    "philjs",
+    "vector",
+    "embeddings",
+    "rag",
+    "semantic-search",
+    "openai",
+    "cohere",
+    "indexeddb"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
@@ -25,7 +34,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "engines": {

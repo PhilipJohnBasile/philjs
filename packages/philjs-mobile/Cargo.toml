@@ -1,6 +1,6 @@
 [package]
 name = "philjs-mobile"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Native mobile support for PhilJS - build iOS and Android apps with Rust"

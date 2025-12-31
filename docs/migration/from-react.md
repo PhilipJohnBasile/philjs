@@ -42,7 +42,7 @@ function Counter() {
 
 **PhilJS:**
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -554,7 +554,7 @@ function ThemedButton() {
 
 **PhilJS:**
 ```tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext('light');
 
@@ -648,7 +648,7 @@ function Profile() {
 
 **PhilJS:**
 ```tsx
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 interface AuthContextType {
   user: Signal<User | null>;
@@ -904,7 +904,7 @@ function User() {
 
 **PhilJS Router:**
 ```tsx
-import { Router, Route, Link, useParams } from 'philjs-router';
+import { Router, Route, Link, useParams } from '@philjs/router';
 
 function App() {
   return (
@@ -1390,7 +1390,7 @@ Use this checklist when migrating a React component to PhilJS:
 
 ### Phase 1: Setup
 
-- [ ] Install PhilJS packages (`philjs-core`, `philjs-router`, etc.)
+- [ ] Install PhilJS packages (`@philjs/core`, `@philjs/router`, etc.)
 - [ ] Update build configuration (Vite, Webpack, etc.)
 - [ ] Set up TypeScript if using (tsconfig.json)
 - [ ] Create a new branch for migration work
@@ -1425,14 +1425,14 @@ Use this checklist when migrating a React component to PhilJS:
   - [ ] Identify opportunities for batched updates
 
 - [ ] **Context**
-  - [ ] Update imports from `react` to `philjs-core`
+  - [ ] Update imports from `react` to `@philjs/core`
   - [ ] Keep Provider/Consumer pattern
   - [ ] Update context values to use signals
 
 ### Phase 3: Patterns and APIs
 
 - [ ] **Routing**
-  - [ ] Replace `react-router-dom` with `philjs-router`
+  - [ ] Replace `react-router-dom` with `@philjs/router`
   - [ ] Update `<Routes>` to `<Router>`
   - [ ] Change `element={<Component />}` to `component={Component}`
   - [ ] Verify `Link`, `useParams`, `useNavigate` work
@@ -1449,7 +1449,7 @@ Use this checklist when migrating a React component to PhilJS:
 
 - [ ] **Higher-Order Components**
   - [ ] Convert to composition functions
-  - [ ] Update type signatures if using TypeScript
+  - [ ] Update type signatures for TypeScript
 
 ### Phase 4: Testing and Validation
 

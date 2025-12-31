@@ -37,8 +37,8 @@ export interface PhilJSRollupPluginOptions extends CompilerConfig {
  *
  * @example
  * ```typescript
- * // rollup.config.js
- * import philjs from 'philjs-compiler/rollup';
+ * // rollup.config.ts
+ * import philjs from '@philjs/compiler/rollup';
  *
  * export default {
  *   input: 'src/index.ts',
@@ -188,7 +188,7 @@ export default function philJSCompiler(options: PhilJSRollupPluginOptions = {}):
  *
  * @example
  * ```typescript
- * import { createPhilJSPlugin } from 'philjs-compiler/rollup';
+ * import { createPhilJSPlugin } from '@philjs/compiler/rollup';
  *
  * const plugin = createPhilJSPlugin({
  *   autoMemo: true,

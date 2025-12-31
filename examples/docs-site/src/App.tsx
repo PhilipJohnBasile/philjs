@@ -1,4 +1,4 @@
-import { signal, effect, render } from 'philjs-core';
+import { signal, effect, render } from '@philjs/core';
 import { HomePage } from './pages/HomePage';
 import { ExamplesPage } from './pages/ExamplesPage';
 import { CompetitiveAnalysisPage } from './pages/CompetitiveAnalysisPage';
@@ -397,7 +397,7 @@ function DocsViewer({ navigate, path }: { navigate: (path: string) => void; path
       />
 
       {/* Main Content */}
-      <main id="main-content" class="docs-main" style="flex: 1; padding: 2rem; max-width: 900px; margin-left: 280px; margin-right: 240px;" tabindex="-1">
+      <main id="main-content" class="docs-main" style="flex: 1; padding: 2rem; max-width: 900px; margin-left: 280px; margin-right: 240px;" tabIndex={-1}>
         <Breadcrumbs
           section={section}
           file={file}

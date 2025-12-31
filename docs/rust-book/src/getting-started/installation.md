@@ -12,7 +12,7 @@
    cargo install wasm-pack
    \`\`\`
 
-3. **Node.js** (18+) for the dev server
+3. **Node.js** (24+, Node 25 supported) for the dev server
 
 ## Create a New Project
 

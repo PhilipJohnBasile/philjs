@@ -37,7 +37,7 @@ export function createDocContent(path: string, navigate: (path: string) => void,
 
           <h2>Quick Example</h2>
           <LanguageTabs
-            ts={`import { signal, Signal } from "philjs-core";
+            ts={`import { signal, Signal } from "@philjs/core";
 
 export function Counter() {
   const count: Signal<number> = signal(0);
@@ -48,7 +48,7 @@ export function Counter() {
     </button>
   );
 }`}
-            js={`import { signal } from "philjs-core";
+            js={`import { signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -89,16 +89,16 @@ export function Counter() {
 
           <h2>Manual Installation</h2>
           <p>Or install PhilJS packages manually:</p>
-          <PackageManagerTabs npm="npm install philjs-core philjs-router philjs-ssr" />
+          <PackageManagerTabs npm="npm install @philjs/core @philjs/router @philjs/ssr" />
 
           <h2>What's Included</h2>
           <ul>
-            <li><code>philjs-core</code> - Fine-grained reactivity system</li>
-            <li><code>philjs-router</code> - File-based routing with smart preloading</li>
-            <li><code>philjs-ssr</code> - Server-side rendering with streaming</li>
-            <li><code>philjs-islands</code> - Islands architecture support</li>
-            <li><code>philjs-devtools</code> - Time-travel debugging</li>
-            <li><code>philjs-ai</code> - AI-powered intelligence features</li>
+            <li><code>@philjs/core</code> - Fine-grained reactivity system</li>
+            <li><code>@philjs/router</code> - File-based routing with smart preloading</li>
+            <li><code>@philjs/ssr</code> - Server-side rendering with streaming</li>
+            <li><code>@philjs/islands</code> - Islands architecture support</li>
+            <li><code>@philjs/devtools</code> - Time-travel debugging</li>
+            <li><code>@philjs/ai</code> - AI-powered intelligence features</li>
           </ul>
 
           <h2>TypeScript Support</h2>
@@ -106,8 +106,8 @@ export function Counter() {
           <pre style={styles.codeBlock || {}}><code>{`{
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
-    "types": ["philjs-core"]
+    "jsxImportSource": "@philjs/core",
+    "types": ["@philjs/core"]
   }
 }`}</code></pre>
         </div>
@@ -125,7 +125,7 @@ export function Counter() {
           <LanguageTabs
             filename="src/Counter.tsx"
             ts={`// src/Counter.tsx
-import { signal, Signal } from "philjs-core";
+import { signal, Signal } from "@philjs/core";
 
 export function Counter() {
   const count: Signal<number> = signal(0);
@@ -140,7 +140,7 @@ export function Counter() {
   );
 }`}
             js={`// src/Counter.jsx
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -158,14 +158,14 @@ export function Counter() {
 
           <h2>2. Render to the DOM</h2>
           <pre style={styles.codeBlock || {}}><code>{`// src/main.tsx
-import { render } from "philjs-core";
+import { render } from "@philjs/core";
 import { Counter } from "./Counter";
 
 render(<Counter />, document.getElementById("root"));`}</code></pre>
 
           <h2>3. Add Routing</h2>
           <pre style={styles.codeBlock || {}}><code>{`// src/App.tsx
-import { route } from "philjs-router";
+import { route } from "@philjs/router";
 import { Home } from "./pages/Home";
 import { About } from "./pages/About";
 
@@ -176,7 +176,7 @@ export const App = route({
 
           <h2>4. Server-Side Rendering</h2>
           <pre style={styles.codeBlock || {}}><code>{`// server.ts
-import { createServer } from "philjs-ssr";
+import { createServer } from "@philjs/ssr";
 import { App } from "./App";
 
 createServer({
@@ -218,7 +218,7 @@ export function createTodo(text: string): Todo {
 
           <h2>Step 3: Build the Todo List</h2>
           <pre style={styles.codeBlock || {}}><code>{`// src/components/TodoList.tsx
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { Todo, createTodo } from "../models/todo";
 
 export function TodoList() {
@@ -348,12 +348,12 @@ function Button({ label, onClick, variant = "primary" }: ButtonProps) {
 
           <h2>Creating Signals</h2>
           <LanguageTabs
-            ts={`import { signal, Signal } from "philjs-core";
+            ts={`import { signal, Signal } from "@philjs/core";
 
 const count: Signal<number> = signal(0);
 const name: Signal<string> = signal("Alice");
 const user: Signal<{ id: number; name: string }> = signal({ id: 1, name: "Bob" });`}
-            js={`import { signal } from "philjs-core";
+            js={`import { signal } from "@philjs/core";
 
 const count = signal(0);
 const name = signal("Alice");
@@ -412,7 +412,7 @@ const lastName = signal("Smith");
 
           <h2>Basic Effects</h2>
           <LanguageTabs
-            ts={`import { signal, effect, Signal } from "philjs-core";
+            ts={`import { signal, effect, Signal } from "@philjs/core";
 
 const count: Signal<number> = signal(0);
 
@@ -421,7 +421,7 @@ effect(() => {
 });
 
 count.set(1); // Logs: "Count changed: 1"`}
-            js={`import { signal, effect } from "philjs-core";
+            js={`import { signal, effect } from "@philjs/core";
 
 const count = signal(0);
 
@@ -473,7 +473,7 @@ effect(() => {
           <p>Context provides a way to pass data through the component tree without having to pass props manually at every level.</p>
 
           <h2>Creating Context</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createContext } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createContext } from "@philjs/core";
 
 const ThemeContext = createContext("light");`}</code></pre>
 
@@ -491,7 +491,7 @@ const ThemeContext = createContext("light");`}</code></pre>
 }`}</code></pre>
 
           <h2>Consuming Context</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useContext } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useContext } from "@philjs/core";
 
 function ThemedButton() {
   const theme = useContext(ThemeContext);
@@ -505,7 +505,7 @@ function ThemedButton() {
 
           <h2>Signal Context</h2>
           <p>Create reactive context with signals:</p>
-          <pre style={styles.codeBlock || {}}><code>{`import { createSignalContext } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createSignalContext } from "@philjs/core";
 
 const [ThemeProvider, useTheme] = createSignalContext("light");
 
@@ -662,7 +662,7 @@ src/pages/
           <p>PhilJS provides multiple ways to navigate between pages in your application.</p>
 
           <h2>Link Component</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Link } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { Link } from "@philjs/router";
 
 export function Nav() {
   return (
@@ -675,7 +675,7 @@ export function Nav() {
 }`}</code></pre>
 
           <h2>Programmatic Navigation</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useRouter } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { useRouter } from "@philjs/router";
 
 export function LoginButton() {
   const router = useRouter();
@@ -707,7 +707,7 @@ router.forward();
 router.push('/search?q=philjs');`}</code></pre>
 
           <h2>Active Links</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Link, useRoute } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { Link, useRoute } from "@philjs/router";
 
 export function NavLink({ href, children }: { href: string; children: any }) {
   const route = useRoute();
@@ -817,7 +817,7 @@ export default function Template({ children }) {
 // Preloads when user hovers`}</code></pre>
 
           <h2>Manual Preloading</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { preload } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { preload } from "@philjs/router";
 
 // Preload programmatically
 preload('/dashboard');
@@ -843,7 +843,7 @@ export default {
 }`}</code></pre>
 
           <h2>Preload Analytics</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getPreloadStats } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { getPreloadStats } from "@philjs/router";
 
 const stats = getPreloadStats();
 console.log({
@@ -866,7 +866,7 @@ console.log({
 
           <h2>Creating Server Functions</h2>
           <pre style={styles.codeBlock || {}}><code>{`// File: src/server/users.ts
-import { serverFunction } from "philjs-ssr";
+import { serverFunction } from "@philjs/ssr";
 
 export const getUser = serverFunction(async (id: number) => {
   const user = await db.users.findById(id);
@@ -893,7 +893,7 @@ export function UserProfile({ userId }: { userId: number }) {
 }`}</code></pre>
 
           <h2>With Data Layer</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createQuery } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createQuery } from "@philjs/core";
 import { getUser } from "@/server/users";
 
 export function UserProfile({ userId }: { userId: number }) {
@@ -909,7 +909,7 @@ export function UserProfile({ userId }: { userId: number }) {
 }`}</code></pre>
 
           <h2>Security</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { serverFunction, requireAuth } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { serverFunction, requireAuth } from "@philjs/ssr";
 
 // Protected server function
 export const deleteUser = serverFunction(
@@ -933,7 +933,7 @@ export const deleteUser = serverFunction(
           <p>PhilJS provides a powerful data layer for fetching, caching, and synchronizing server state.</p>
 
           <h2>Queries</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createQuery } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createQuery } from "@philjs/core";
 
 export function Posts() {
   const posts = createQuery(async () => {
@@ -1008,7 +1008,7 @@ export function Posts() {
           <p>PhilJS provides intelligent caching to minimize network requests and improve performance.</p>
 
           <h2>Query Cache</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { queryCache } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { queryCache } from "@philjs/core";
 
 // Get cached data
 const data = queryCache.get(['posts']);
@@ -1051,7 +1051,7 @@ createQuery(['posts', { page, limit }], () =>
 // cacheTime: How long unused data stays in cache`}</code></pre>
 
           <h2>Prefetching</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { prefetchQuery } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { prefetchQuery } from "@philjs/core";
 
 // Prefetch on hover
 <Link
@@ -1100,7 +1100,7 @@ useEffect(() => {
           <p>Mutations handle data updates, sending changes to the server and updating local cache.</p>
 
           <h2>Basic Mutation</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createMutation } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createMutation } from "@philjs/core";
 
 export function CreatePost() {
   const mutation = createMutation(async (newPost) => {
@@ -1189,7 +1189,7 @@ const handlePublish = async () => {
 
           <h2>Basic SSR</h2>
           <pre style={styles.codeBlock || {}}><code>{`// server.ts
-import { createServer } from "philjs-ssr";
+import { createServer } from "@philjs/ssr";
 import { App } from "./App";
 
 createServer({
@@ -1271,7 +1271,7 @@ export default function Page({ data, error }: { data?: any; error?: string }) {
           <p>Stream HTML to the browser as it's generated for faster Time to First Byte (TTFB).</p>
 
           <h2>Enable Streaming</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { renderToStream } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { renderToStream } from "@philjs/core";
 
 const stream = renderToStream(<App />);
 
@@ -1280,7 +1280,7 @@ response.setHeader('Content-Type', 'text/html');
 stream.pipe(response);`}</code></pre>
 
           <h2>Suspense Boundaries</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Suspense } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { Suspense } from "@philjs/core";
 
 export function Page() {
   return (
@@ -1367,7 +1367,7 @@ export function Page() {
           </ul>
 
           <h2>Resumable Components</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { resumable } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { resumable } from "@philjs/core";
 
 export const Counter = resumable(() => {
   const count = signal(0);
@@ -1385,7 +1385,7 @@ export const Counter = resumable(() => {
 // Client resumes from serialized state - no re-render!`}</code></pre>
 
           <h2>Serialization</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getResumableState, serializeResumableState } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { getResumableState, serializeResumableState } from "@philjs/core";
 
 // Get current state
 const state = getResumableState();
@@ -1415,7 +1415,7 @@ export const InteractiveButton = resumable(() => {
 // Only InteractiveButton JS is loaded when user interacts!`}</code></pre>
 
           <h2>State Snapshots</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createSnapshot, restoreSnapshot } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createSnapshot, restoreSnapshot } from "@philjs/core";
 
 // Take snapshot
 const snapshot = createSnapshot();
@@ -1443,7 +1443,7 @@ restoreSnapshot(saved);
           <p>Think of your page as an ocean of static HTML with islands of interactivity. Only the islands need JavaScript!</p>
 
           <h2>Creating Islands</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { island } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { island } from "@philjs/islands";
 
 // Interactive island
 export const SearchBox = island(() => {
@@ -1495,7 +1495,7 @@ export const IdleIsland = island(() => <div>...</div>, {
 });`}</code></pre>
 
           <h2>Island Communication</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createIslandBridge } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { createIslandBridge } from "@philjs/islands";
 
 // Shared state between islands
 const bridge = createIslandBridge({
@@ -1656,7 +1656,7 @@ export async function onPostPublish(post) {
           <p>PhilJS includes built-in cost tracking for cloud services, allowing you to monitor and optimize infrastructure costs at the component level.</p>
 
           <h2>Basic Setup</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { trackCosts, getCostReport } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { trackCosts, getCostReport } from "@philjs/core";
 
 // Enable cost tracking
 trackCosts({
@@ -1666,7 +1666,7 @@ trackCosts({
 });`}</code></pre>
 
           <h2>Component-Level Tracking</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useCosts } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useCosts } from "@philjs/core";
 
 export function Dashboard() {
   const costs = useCosts({
@@ -1686,7 +1686,7 @@ export function Dashboard() {
 }`}</code></pre>
 
           <h2>Server Function Costs</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "@philjs/core";
 
 const fetchProducts = serverFn(async () => {
   // Automatically tracks:
@@ -1705,7 +1705,7 @@ const fetchProducts = serverFn(async () => {
 });`}</code></pre>
 
           <h2>Cost Budgets</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { setCostBudget } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { setCostBudget } from "@philjs/core";
 
 // Set daily budget
 setCostBudget({
@@ -1726,7 +1726,7 @@ setCostBudget({
 });`}</code></pre>
 
           <h2>Cost Reports</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getCostReport } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { getCostReport } from "@philjs/core";
 
 const report = await getCostReport({
   period: "last-7-days",
@@ -1750,7 +1750,7 @@ console.log(report);
 // }`}</code></pre>
 
           <h2>Optimization Suggestions</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getCostOptimizations } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { getCostOptimizations } from "@philjs/core";
 
 const suggestions = await getCostOptimizations();
 
@@ -1766,7 +1766,7 @@ suggestions.forEach(opt => {
 //   Potential savings: $8.20/month`}</code></pre>
 
           <h2>Real-time Monitoring</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { onCostUpdate } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { onCostUpdate } from "@philjs/core";
 
 onCostUpdate((update) => {
   console.log("Current spend:", update.current);
@@ -1788,7 +1788,7 @@ onCostUpdate((update) => {
           <p>Built-in privacy-focused analytics to understand how users interact with your application.</p>
 
           <h2>Enable Analytics</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { enableAnalytics } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { enableAnalytics } from "@philjs/core";
 
 enableAnalytics({
   enabled: true,
@@ -1808,7 +1808,7 @@ enableAnalytics({
 });`}</code></pre>
 
           <h2>Track Custom Events</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { track } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { track } from "@philjs/core";
 
 export function ProductPage({ id }) {
   const buyProduct = () => {
@@ -1828,7 +1828,7 @@ export function ProductPage({ id }) {
 }`}</code></pre>
 
           <h2>Page Views</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { trackPageView } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { trackPageView } from "@philjs/core";
 
 // Automatically tracked with router
 // Manual tracking:
@@ -1839,7 +1839,7 @@ trackPageView({
 });`}</code></pre>
 
           <h2>Feature Flags</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useFeature, track } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useFeature, track } from "@philjs/core";
 
 export function Dashboard() {
   const newUI = useFeature("new-dashboard-ui");
@@ -1855,7 +1855,7 @@ export function Dashboard() {
 }`}</code></pre>
 
           <h2>User Sessions</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { trackSession } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { trackSession } from "@philjs/core";
 
 // Session tracking
 trackSession({
@@ -1877,7 +1877,7 @@ trackSession({
 });`}</code></pre>
 
           <h2>Conversion Funnels</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { trackFunnel } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { trackFunnel } from "@philjs/core";
 
 // Define conversion funnel
 const checkoutFunnel = trackFunnel({
@@ -1898,7 +1898,7 @@ checkoutFunnel.track("enter_shipping", {
 });`}</code></pre>
 
           <h2>A/B Testing</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useExperiment } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useExperiment } from "@philjs/core";
 
 export function ProductList() {
   const variant = useExperiment("product-layout", {
@@ -1917,7 +1917,7 @@ export function ProductList() {
 }`}</code></pre>
 
           <h2>Analytics Dashboard</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getAnalytics } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { getAnalytics } from "@philjs/core";
 
 const analytics = await getAnalytics({
   period: "last-30-days",
@@ -1948,7 +1948,7 @@ console.log(analytics);
           <p>Set and enforce performance constraints to ensure your application stays fast.</p>
 
           <h2>Define Budgets</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { setPerformanceBudget } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { setPerformanceBudget } from "@philjs/core";
 
 setPerformanceBudget({
   // Bundle size limits
@@ -1973,7 +1973,7 @@ setPerformanceBudget({
 });`}</code></pre>
 
           <h2>Component Budgets</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { withBudget } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { withBudget } from "@philjs/core";
 
 export const ProductList = withBudget({
   // Size budget
@@ -2009,7 +2009,7 @@ export default {
 };`}</code></pre>
 
           <h2>Runtime Monitoring</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { monitorPerformance } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { monitorPerformance } from "@philjs/core";
 
 monitorPerformance({
   // Real User Monitoring (RUM)
@@ -2033,7 +2033,7 @@ monitorPerformance({
 });`}</code></pre>
 
           <h2>Progressive Enhancement</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useConnection } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useConnection } from "@philjs/core";
 
 export function ImageGallery() {
   const connection = useConnection();
@@ -2054,7 +2054,7 @@ export function ImageGallery() {
 }`}</code></pre>
 
           <h2>Budget Reports</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getPerformanceReport } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { getPerformanceReport } from "@philjs/core";
 
 const report = await getPerformanceReport();
 
@@ -2073,7 +2073,7 @@ console.log(report);
 // }`}</code></pre>
 
           <h2>Resource Hints</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { preload, prefetch } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { preload, prefetch } from "@philjs/core";
 
 // Preload critical resources
 preload("/critical.css", { as: "style" });
@@ -2096,7 +2096,7 @@ preconnect("https://api.example.com");`}</code></pre>
           <p>PhilJS DevTools includes powerful time-travel debugging to step through state changes and replay user interactions.</p>
 
           <h2>Enable Time Travel</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { enableDevTools } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { enableDevTools } from "@philjs/devtools";
 
 enableDevTools({
   timeTravel: {
@@ -2114,7 +2114,7 @@ enableDevTools({
 });`}</code></pre>
 
           <h2>Basic Usage</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { timeTravel } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { timeTravel } from "@philjs/devtools";
 
 // Go back 5 states
 timeTravel.back(5);
@@ -2129,7 +2129,7 @@ timeTravel.jumpTo(42);
 timeTravel.reset();`}</code></pre>
 
           <h2>State Snapshots</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createSnapshot, restoreSnapshot } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { createSnapshot, restoreSnapshot } from "@philjs/devtools";
 
 // Save current state
 const snapshot = createSnapshot({
@@ -2141,7 +2141,7 @@ const snapshot = createSnapshot({
 restoreSnapshot(snapshot);`}</code></pre>
 
           <h2>Action History</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getActionHistory } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { getActionHistory } from "@philjs/devtools";
 
 const history = getActionHistory();
 
@@ -2157,7 +2157,7 @@ history.forEach((action, index) => {
 // 4: ADD_TO_CART { productId: 123 }`}</code></pre>
 
           <h2>Record and Replay</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { startRecording, stopRecording, replay } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { startRecording, stopRecording, replay } from "@philjs/devtools";
 
 // Start recording session
 const recording = startRecording({
@@ -2181,7 +2181,7 @@ replay(sessionData, {
 });`}</code></pre>
 
           <h2>Time-Travel UI</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { TimeTravelPanel } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { TimeTravelPanel } from "@philjs/devtools";
 
 export function DevApp() {
   return (
@@ -2201,7 +2201,7 @@ export function DevApp() {
 }`}</code></pre>
 
           <h2>Conditional Breakpoints</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { addBreakpoint } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { addBreakpoint } from "@philjs/devtools";
 
 // Pause when condition is met
 addBreakpoint((state) => {
@@ -2212,7 +2212,7 @@ addBreakpoint((state) => {
 });`}</code></pre>
 
           <h2>State Diff</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { getStateDiff } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { getStateDiff } from "@philjs/devtools";
 
 const diff = getStateDiff(
   stateAtStep(10),
@@ -2227,7 +2227,7 @@ console.log(diff);
 // }`}</code></pre>
 
           <h2>Hot Reload State</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { preserveState } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { preserveState } from "@philjs/devtools";
 
 // Preserve state across hot reloads
 preserveState({
@@ -2251,7 +2251,7 @@ preserveState({
 
           <h2>Basic Form</h2>
           <LanguageTabs
-            ts={`import { signal, Signal } from "philjs-core";
+            ts={`import { signal, Signal } from "@philjs/core";
 
 export function ContactForm() {
   const name: Signal<string> = signal("");
@@ -2282,7 +2282,7 @@ export function ContactForm() {
     </form>
   );
 }`}
-            js={`import { signal } from "philjs-core";
+            js={`import { signal } from "@philjs/core";
 
 export function ContactForm() {
   const name = signal("");
@@ -2316,7 +2316,7 @@ export function ContactForm() {
           />
 
           <h2>Form Validation</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, memo } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, memo } from "@philjs/core";
 
 export function SignupForm() {
   const email = signal("");
@@ -2362,7 +2362,7 @@ export function SignupForm() {
 }`}</code></pre>
 
           <h2>Server Actions</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { serverFn, signal } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { serverFn, signal } from "@philjs/core";
 
 const createUser = serverFn(async (data: { name: string; email: string }) => {
   const user = await db.users.create({ data });
@@ -2409,7 +2409,7 @@ export function SignupForm() {
 }`}</code></pre>
 
           <h2>Form State Management</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createForm } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createForm } from "@philjs/core";
 
 const form = createForm({
   initialValues: {
@@ -2451,7 +2451,7 @@ export function Form() {
 }`}</code></pre>
 
           <h2>File Uploads</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, serverFn } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, serverFn } from "@philjs/core";
 
 const uploadFile = serverFn(async (file: File) => {
   const formData = new FormData();
@@ -2509,7 +2509,7 @@ export function FileUpload() {
           <p>Create smooth, performant animations with PhilJS's animation system.</p>
 
           <h2>Basic Animation</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, animate } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, animate } from "@philjs/core";
 
 export function AnimatedBox() {
   const x = signal(0);
@@ -2532,7 +2532,7 @@ export function AnimatedBox() {
 }`}</code></pre>
 
           <h2>Spring Animations</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, spring } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, spring } from "@philjs/core";
 
 export function BouncyButton() {
   const scale = signal(1);
@@ -2563,7 +2563,7 @@ export function BouncyButton() {
 }`}</code></pre>
 
           <h2>Keyframe Animations</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, keyframes } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, keyframes } from "@philjs/core";
 
 export function Pulse() {
   const opacity = signal(1);
@@ -2589,7 +2589,7 @@ export function Pulse() {
 }`}</code></pre>
 
           <h2>Transition Groups</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, TransitionGroup } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, TransitionGroup } from "@philjs/core";
 
 export function TodoList() {
   const todos = signal([
@@ -2612,7 +2612,7 @@ export function TodoList() {
 }`}</code></pre>
 
           <h2>Scroll Animations</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useScrollProgress } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useScrollProgress } from "@philjs/core";
 
 export function ParallaxHero() {
   const progress = useScrollProgress();
@@ -2631,7 +2631,7 @@ export function ParallaxHero() {
 }`}</code></pre>
 
           <h2>View Transitions</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { navigate } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { navigate } from "@philjs/router";
 
 // Enable view transitions
 export function NavLink({ href, children }) {
@@ -2651,7 +2651,7 @@ export function NavLink({ href, children }) {
 }`}</code></pre>
 
           <h2>Gesture Animations</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal, useDrag } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal, useDrag } from "@philjs/core";
 
 export function DraggableCard() {
   const x = signal(0);
@@ -2693,7 +2693,7 @@ export function DraggableCard() {
           <p>Catch and handle errors gracefully in your PhilJS applications.</p>
 
           <h2>Basic Error Boundary</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { ErrorBoundary } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { ErrorBoundary } from "@philjs/core";
 
 export function App() {
   return (
@@ -2731,7 +2731,7 @@ export function App() {
 }`}</code></pre>
 
           <h2>Error Reporting</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { ErrorBoundary } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { ErrorBoundary } from "@philjs/core";
 
 export function App() {
   return (
@@ -2756,7 +2756,7 @@ export function App() {
 }`}</code></pre>
 
           <h2>Async Error Handling</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Suspense, ErrorBoundary } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { Suspense, ErrorBoundary } from "@philjs/core";
 
 export function UserProfile({ userId }) {
   return (
@@ -2779,7 +2779,7 @@ async function AsyncUserProfile({ userId }) {
 }`}</code></pre>
 
           <h2>Recovery Strategies</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "@philjs/core";
 
 export function ResilientComponent() {
   const retryCount = signal(0);
@@ -2869,7 +2869,7 @@ export function App() {
           <p>Build multi-language applications with PhilJS's built-in i18n support.</p>
 
           <h2>Setup</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createI18n } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { createI18n } from "@philjs/core";
 
 const i18n = createI18n({
   defaultLocale: "en",
@@ -2892,7 +2892,7 @@ const i18n = createI18n({
 export default i18n;`}</code></pre>
 
           <h2>Using Translations</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "@philjs/core";
 import i18n from "./i18n";
 
 export function Greeting({ name }) {
@@ -2907,7 +2907,7 @@ export function Greeting({ name }) {
 }`}</code></pre>
 
           <h2>Locale Switching</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "@philjs/core";
 
 export function LocaleSwitcher() {
   const { locale, setLocale, locales } = useI18n();
@@ -2946,7 +2946,7 @@ export function ItemCount({ count }) {
 // <ItemCount count={5} /> → "5 items"`}</code></pre>
 
           <h2>Date and Number Formatting</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useI18n } from "@philjs/core";
 
 export function ProductPrice({ price }) {
   const { formatNumber, formatDate, locale } = useI18n();
@@ -3004,7 +3004,7 @@ export function App() {
 }`}</code></pre>
 
           <h2>SEO and Meta Tags</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useI18n, Head } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { useI18n, Head } from "@philjs/core";
 
 export function ProductPage() {
   const { t, locale } = useI18n();
@@ -3073,7 +3073,7 @@ test("increments counter", async () => {
 });`}</code></pre>
 
           <h2>Testing Signals</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { signal } from "@philjs/core";
 import { expect, test } from "vitest";
 
 test("signal updates value", () => {
@@ -3100,7 +3100,7 @@ test("memo recomputes on dependency change", () => {
 });`}</code></pre>
 
           <h2>Testing Server Functions</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "philjs-core";
+          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "@philjs/core";
 import { expect, test, vi } from "vitest";
 
 const fetchUser = serverFn(async (id: number) => {
@@ -3223,7 +3223,7 @@ test("useCounter hook", () => {
       content: (
         <div>
           <h1>Core API Reference</h1>
-          <p>Complete API reference for <code>philjs-core</code> package.</p>
+          <p>Complete API reference for <code>@philjs/core</code> package.</p>
 
           <h2>signal()</h2>
           <pre style={styles.codeBlock || {}}><code>{`function signal<T>(initialValue: T): Signal<T>
@@ -3330,10 +3330,10 @@ type Component<P = {}> = (props: P) => JSXElement;`}</code></pre>
       content: (
         <div>
           <h1>Router API Reference</h1>
-          <p>Complete API reference for <code>philjs-router</code> package.</p>
+          <p>Complete API reference for <code>@philjs/router</code> package.</p>
 
           <h2>Router</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Router } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { Router } from "@philjs/router";
 
 <Router>
   <Route path="/" component={Home} />
@@ -3350,7 +3350,7 @@ type Component<P = {}> = (props: P) => JSXElement;`}</code></pre>
 />`}</code></pre>
 
           <h2>Link</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { Link } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { Link } from "@philjs/router";
 
 <Link
   href="/products/123"
@@ -3367,7 +3367,7 @@ type Component<P = {}> = (props: P) => JSXElement;`}</code></pre>
 // - replace: boolean`}</code></pre>
 
           <h2>navigate()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { navigate } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { navigate } from "@philjs/router";
 
 // Navigate programmatically
 navigate("/products");
@@ -3380,7 +3380,7 @@ navigate("/products", {
 });`}</code></pre>
 
           <h2>useRouter()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useRouter } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { useRouter } from "@philjs/router";
 
 const router = useRouter();
 
@@ -3392,14 +3392,14 @@ router.back()
 router.forward()`}</code></pre>
 
           <h2>useParams()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useParams } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { useParams } from "@philjs/router";
 
 // Route: /users/:id
 const params = useParams();
 const userId = params.id; // Signal<string>`}</code></pre>
 
           <h2>useSearchParams()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useSearchParams } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { useSearchParams } from "@philjs/router";
 
 const [searchParams, setSearchParams] = useSearchParams();
 
@@ -3410,7 +3410,7 @@ const page = searchParams.get("page");
 setSearchParams({ page: "2", sort: "name" });`}</code></pre>
 
           <h2>preload()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { preload } from "philjs-router";
+          <pre style={styles.codeBlock || {}}><code>{`import { preload } from "@philjs/router";
 
 // Preload route
 await preload("/products");
@@ -3442,10 +3442,10 @@ export default function Layout({ children }) {
       content: (
         <div>
           <h1>SSR API Reference</h1>
-          <p>Complete API reference for <code>philjs-ssr</code> package.</p>
+          <p>Complete API reference for <code>@philjs/ssr</code> package.</p>
 
           <h2>renderToString()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { renderToString } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { renderToString } from "@philjs/ssr";
 
 const html = await renderToString(<App />);
 
@@ -3453,7 +3453,7 @@ const html = await renderToString(<App />);
 // Waits for all async resources`}</code></pre>
 
           <h2>renderToStream()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { renderToStream } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { renderToStream } from "@philjs/ssr";
 
 const stream = renderToStream(<App />);
 
@@ -3462,7 +3462,7 @@ const stream = renderToStream(<App />);
 // Supports out-of-order streaming`}</code></pre>
 
           <h2>createHandler()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createHandler } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { createHandler } from "@philjs/ssr";
 
 const handler = createHandler({
   render: (req) => <App url={req.url} />,
@@ -3479,7 +3479,7 @@ const handler = createHandler({
 export default handler;`}</code></pre>
 
           <h2>serverFn()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { serverFn } from "@philjs/ssr";
 
 const getUser = serverFn(async (id: number) => {
   // Only runs on server
@@ -3491,7 +3491,7 @@ const getUser = serverFn(async (id: number) => {
 const user = await getUser(123);`}</code></pre>
 
           <h2>useRequest()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useRequest } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { useRequest } from "@philjs/ssr";
 
 export function Page() {
   const request = useRequest();
@@ -3504,7 +3504,7 @@ export function Page() {
 }`}</code></pre>
 
           <h2>redirect()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { redirect } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { redirect } from "@philjs/ssr";
 
 // In server function or component
 redirect("/login", {
@@ -3515,7 +3515,7 @@ redirect("/login", {
 });`}</code></pre>
 
           <h2>setHeaders()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { setHeaders } from "philjs-ssr";
+          <pre style={styles.codeBlock || {}}><code>{`import { setHeaders } from "@philjs/ssr";
 
 export function API() {
   setHeaders({
@@ -3546,10 +3546,10 @@ export async function generateStaticParams() {
       content: (
         <div>
           <h1>Islands API Reference</h1>
-          <p>Complete API reference for <code>philjs-islands</code> package.</p>
+          <p>Complete API reference for <code>@philjs/islands</code> package.</p>
 
           <h2>island()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { island } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { island } from "@philjs/islands";
 
 const Counter = island(() => {
   const count = signal(0);
@@ -3581,7 +3581,7 @@ export default Counter;`}</code></pre>
 }`}</code></pre>
 
           <h2>createIsland()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { createIsland } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { createIsland } from "@philjs/islands";
 
 const MyIsland = createIsland({
   component: () => import("./MyComponent"),
@@ -3592,7 +3592,7 @@ const MyIsland = createIsland({
 });`}</code></pre>
 
           <h2>useIslandState()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useIslandState } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { useIslandState } from "@philjs/islands";
 
 export default island(() => {
   // State shared between server and client
@@ -3602,7 +3602,7 @@ export default island(() => {
 });`}</code></pre>
 
           <h2>islandBridge()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { islandBridge } from "philjs-islands";
+          <pre style={styles.codeBlock || {}}><code>{`import { islandBridge } from "@philjs/islands";
 
 // Share state between islands
 const bridge = islandBridge();
@@ -3635,10 +3635,10 @@ const IslandB = island(() => {
       content: (
         <div>
           <h1>DevTools API Reference</h1>
-          <p>Complete API reference for <code>philjs-devtools</code> package.</p>
+          <p>Complete API reference for <code>@philjs/devtools</code> package.</p>
 
           <h2>enableDevTools()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { enableDevTools } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { enableDevTools } from "@philjs/devtools";
 
 enableDevTools({
   // Time travel debugging
@@ -3655,7 +3655,7 @@ enableDevTools({
 });`}</code></pre>
 
           <h2>timeTravel</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { timeTravel } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { timeTravel } from "@philjs/devtools";
 
 // Navigation
 timeTravel.back(n)
@@ -3675,7 +3675,7 @@ timeTravel.export()
 timeTravel.import(data)`}</code></pre>
 
           <h2>performance</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { performance } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { performance } from "@philjs/devtools";
 
 // Metrics
 performance.measure("component-render")
@@ -3690,7 +3690,7 @@ const profile = performance.stopProfiling()
 performance.getFlameChart()`}</code></pre>
 
           <h2>inspector</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { inspector } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { inspector } from "@philjs/devtools";
 
 // Component tree
 inspector.getTree()
@@ -3707,7 +3707,7 @@ inspector.highlight(id)
 inspector.unhighlight()`}</code></pre>
 
           <h2>logger</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { logger } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { logger } from "@philjs/devtools";
 
 // Logging
 logger.log("message", data)
@@ -3721,7 +3721,7 @@ logger.filter({ level: "error", component: "App" })
 logger.export()`}</code></pre>
 
           <h2>DevToolsPanel</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { DevToolsPanel } from "philjs-devtools";
+          <pre style={styles.codeBlock || {}}><code>{`import { DevToolsPanel } from "@philjs/devtools";
 
 <DevToolsPanel
   position="bottom"
@@ -3737,10 +3737,10 @@ logger.export()`}</code></pre>
       content: (
         <div>
           <h1>AI API Reference</h1>
-          <p>Complete API reference for <code>philjs-ai</code> package.</p>
+          <p>Complete API reference for <code>@philjs/ai</code> package.</p>
 
           <h2>useChat()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useChat } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useChat } from "@philjs/ai";
 
 const chat = useChat({
   model: "gpt-4",
@@ -3758,7 +3758,7 @@ chat.clear()
 chat.regenerate()`}</code></pre>
 
           <h2>useCompletion()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useCompletion } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useCompletion } from "@philjs/ai";
 
 const completion = useCompletion({
   model: "gpt-4",
@@ -3774,7 +3774,7 @@ completion.complete(prompt)
 completion.stop()`}</code></pre>
 
           <h2>useEmbedding()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useEmbedding } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useEmbedding } from "@philjs/ai";
 
 const embedding = useEmbedding({
   model: "text-embedding-ada-002",
@@ -3784,7 +3784,7 @@ const vector = await embedding.embed("Hello world");
 // Returns: number[] (1536 dimensions)`}</code></pre>
 
           <h2>useSimilaritySearch()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useSimilaritySearch } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useSimilaritySearch } from "@philjs/ai";
 
 const search = useSimilaritySearch({
   documents: [
@@ -3797,7 +3797,7 @@ const results = await search.query("search query");
 // Returns: { id: string, score: number }[]`}</code></pre>
 
           <h2>useRAG()</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useRAG } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useRAG } from "@philjs/ai";
 
 const rag = useRAG({
   model: "gpt-4",
@@ -3809,7 +3809,7 @@ const answer = await rag.ask("What is PhilJS?");
 // Uses retrieval-augmented generation`}</code></pre>
 
           <h2>AI Providers</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { OpenAI, Anthropic, Cohere } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { OpenAI, Anthropic, Cohere } from "@philjs/ai";
 
 // OpenAI
 const openai = new OpenAI({ apiKey: "..." });
@@ -3821,7 +3821,7 @@ const anthropic = new Anthropic({ apiKey: "..." });
 const cohere = new Cohere({ apiKey: "..." });`}</code></pre>
 
           <h2>Streaming</h2>
-          <pre style={styles.codeBlock || {}}><code>{`import { useChat } from "philjs-ai";
+          <pre style={styles.codeBlock || {}}><code>{`import { useChat } from "@philjs/ai";
 
 const chat = useChat({
   model: "gpt-4",

@@ -42,7 +42,7 @@ The Counter demonstrates PhilJS's fine-grained reactivity. When you click a butt
 Create `src/components/Counter.tsx`:
 
 ```typescript
-import { memo, signal } from "philjs-core";
+import { memo, signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -121,7 +121,7 @@ The DataFetcher shows how to handle async operations with signals.
 Create `src/components/DataFetcher.tsx`:
 
 ```typescript
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 export function DataFetcher() {
   const data = signal<any>(null);
@@ -244,7 +244,7 @@ The AnimationDemo showcases PhilJS's spring physics animations with `createAnima
 Create `src/components/AnimationDemo.tsx`:
 
 ```typescript
-import { signal, createAnimatedValue, easings } from "philjs-core";
+import { signal, createAnimatedValue, easings } from "@philjs/core";
 
 export function AnimationDemo() {
   const position = createAnimatedValue(0, {
@@ -330,7 +330,7 @@ Now compose all components into a polished demo app.
 Update `src/App.tsx`:
 
 ```typescript
-import { signal, createAnimatedValue, createQuery, easings } from "philjs-core";
+import { signal, createAnimatedValue, createQuery, easings } from "@philjs/core";
 import { Counter } from "./components/Counter";
 import { DataFetcher } from "./components/DataFetcher";
 import { AnimationDemo } from "./components/AnimationDemo";
@@ -463,7 +463,7 @@ function FeatureCard(props: {
 Update `src/main.tsx`:
 
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import { App } from './App';
 import './index.css';
 

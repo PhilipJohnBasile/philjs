@@ -7,7 +7,7 @@ PhilJS’ high-level router includes everything you need for smooth navigation: 
 `Link` behaves like an anchor, but intercepts clicks to perform client-side navigation and prefetches destinations when possible.
 
 ```tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function Nav() {
   return (
@@ -38,7 +38,7 @@ Pass a full URL; PhilJS will let the browser handle it.
 Use `useRouter()` to navigate from code (e.g., after a mutation) and inspect the current route.
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 export function LoginForm() {
   const { navigate } = useRouter();
@@ -64,7 +64,7 @@ export function LoginForm() {
 `useRoute()` exposes the current match. Compare against `route.path` or `route.params` to highlight navigation.
 
 ```tsx
-import { Link, useRoute } from 'philjs-router';
+import { Link, useRoute } from '@philjs/router';
 
 export function NavLink({ to, children }: { to: string; children: any }) {
   const route = useRoute();
@@ -104,7 +104,7 @@ This taps into the smart preloader (intent from pointer velocity, history analys
 Routes participate in the View Transitions API when you configure `transitions`. Customize per link by calling `navigateWithTransition()` if you need fine-grained control:
 
 ```tsx
-import { navigateWithTransition } from 'philjs-router';
+import { navigateWithTransition } from '@philjs/router';
 
 async function goToModal() {
   await navigateWithTransition('/settings', {

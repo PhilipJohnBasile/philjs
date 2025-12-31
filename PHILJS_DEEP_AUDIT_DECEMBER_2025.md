@@ -16,7 +16,7 @@ The following critical issues from this audit have been addressed:
 | Rust hydration clears DOM | **FIXED** | `dom/hydration.rs` - New proper hydration module |
 | Streaming SSR single chunk | **FIXED** | `ssr/mod.rs` - Added `StreamingConfig` and shell streaming |
 | Macro issues (signal.rs, view.rs) | **FIXED** | `philjs-macros/src/signal.rs`, `view.rs` - Fixed codegen |
-| Versioning mismatch | **FIXED** | All packages now at 0.0.1 |
+| Versioning mismatch | **FIXED** | All packages now at 0.1.0 |
 | Missing READMEs | **FIXED** | Added 22 missing README.md files |
 | Missing proc-macros | **FIXED** | Added `memo!`, `effect!`, `resource!`, `Store` derive |
 | View macro Match arms empty | **FIXED** | Full Match arm parsing implemented |

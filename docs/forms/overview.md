@@ -16,7 +16,7 @@ Master form handling in PhilJS with controlled inputs, validation, and submissio
 ### Simple Form
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function ContactForm() {
   const name = signal('');

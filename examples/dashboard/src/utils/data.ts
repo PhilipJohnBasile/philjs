@@ -1,4 +1,4 @@
-import { signal, Signal } from "philjs-core";
+import { signal, Signal } from "@philjs/core";
 
 export interface MetricData {
   timestamp: Date;

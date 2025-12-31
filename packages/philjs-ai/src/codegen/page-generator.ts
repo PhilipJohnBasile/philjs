@@ -435,7 +435,7 @@ PhilJS page conventions:
 
 Page structure:
 \`\`\`typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // Loader for data fetching
 export async function loader({ params, request }) {

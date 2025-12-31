@@ -6,7 +6,7 @@ Build secure authentication flows and authorization policies for PhilJS applicat
 
 - The difference between authentication, authorization, and session management
 - When to use sessions, JWTs, or OAuth
-- Using `philjs-auth` for client-side auth state
+- Using `@philjs/auth` for client-side auth state
 - Protecting routes and API handlers
 - Segmenting users for roles and experiments
 
@@ -23,7 +23,7 @@ Authentication proves who the user is. Authorization decides what the user can a
 | OAuth/OIDC | Third-party identity | Offload login; depends on provider uptime |
 | Hybrid (session + access token) | Large apps | Flexible; more moving parts |
 
-## Quick Start with philjs-auth
+## Quick Start with @philjs/auth
 
 ### CLI Generator
 
@@ -34,7 +34,7 @@ philjs generate auth clerk
 ### Manual Provider Setup
 
 ```ts
-import { CustomAuthProvider, setAuthProvider, startSessionRefresh } from 'philjs-auth';
+import { CustomAuthProvider, setAuthProvider, startSessionRefresh } from '@philjs/auth';
 
 const authProvider = new CustomAuthProvider({
   apiUrl: 'https://api.example.com',
@@ -54,7 +54,7 @@ startSessionRefresh({
 ### Wrap Your App
 
 ```tsx
-import { AuthProvider } from 'philjs-auth';
+import { AuthProvider } from '@philjs/auth';
 
 export function App() {
   return (
@@ -68,7 +68,7 @@ export function App() {
 ### Use Auth Hooks
 
 ```tsx
-import { useAuth, useUser, useHasPermission } from 'philjs-auth/hooks';
+import { useAuth, useUser, useHasPermission } from '@philjs/auth/hooks';
 
 function AccountMenu() {
   const { signIn, signOut, isAuthenticated, isLoading } = useAuth();
@@ -100,7 +100,7 @@ function AccountMenu() {
 Use the `ProtectedRoute` component or role helpers to gate UI.
 
 ```tsx
-import { ProtectedRoute, withRole } from 'philjs-auth/protected-routes';
+import { ProtectedRoute, withRole } from '@philjs/auth/protected-routes';
 
 function AdminPage() {
   return (
@@ -121,7 +121,7 @@ const BillingAdmin = withRole(BillingAdminView, {
 Always enforce permissions on the server.
 
 ```ts
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 import { getSessionUser } from './auth/server';
 
 createAppRouter({

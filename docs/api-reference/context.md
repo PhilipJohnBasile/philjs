@@ -29,7 +29,7 @@ A context object with a `Provider` component
 #### Basic Context
 
 ```typescript
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 
 const ThemeContext = createContext<'light' | 'dark'>('light');
 

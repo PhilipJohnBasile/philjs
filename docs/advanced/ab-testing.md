@@ -19,7 +19,7 @@ PhilJS A/B Testing features:
 ## Quick Start
 
 ```typescript
-import { initABTesting, useExperiment } from 'philjs-core';
+import { initABTesting, useExperiment } from '@philjs/core';
 
 // Initialize A/B testing
 initABTesting({
@@ -54,7 +54,7 @@ function HomePage() {
 ### Initialize A/B Testing
 
 ```typescript
-import { initABTesting, getABTestEngine } from 'philjs-core';
+import { initABTesting, getABTestEngine } from '@philjs/core';
 
 initABTesting({
   enabled: true,
@@ -162,7 +162,7 @@ const experiment = {
 ### useExperiment Hook
 
 ```typescript
-import { useExperiment } from 'philjs-core';
+import { useExperiment } from '@philjs/core';
 
 function ProductPage({ user }) {
   const variant = useExperiment('product-layout', {
@@ -191,7 +191,7 @@ function ProductPage({ user }) {
 ### ABTest Component
 
 ```typescript
-import { ABTest } from 'philjs-core';
+import { ABTest } from '@philjs/core';
 
 function HomePage({ user }) {
   return (
@@ -218,7 +218,7 @@ function HomePage({ user }) {
 ### Manual Assignment
 
 ```typescript
-import { ABTestEngine } from 'philjs-core';
+import { ABTestEngine } from '@philjs/core';
 
 const engine = new ABTestEngine();
 
@@ -239,7 +239,7 @@ const variant = engine.getVariant('checkout-flow', user);
 ### Track Conversion
 
 ```typescript
-import { useExperiment, getABTestEngine } from 'philjs-core';
+import { useExperiment, getABTestEngine } from '@philjs/core';
 
 function CheckoutPage({ user }) {
   const variant = useExperiment('checkout-test', experiment, user);
@@ -292,7 +292,7 @@ engine.trackEvent('signup-test', variant.id, 'form-submit', {
 ### Get Experiment Results
 
 ```typescript
-import { getABTestEngine } from 'philjs-core';
+import { getABTestEngine } from '@philjs/core';
 
 const engine = getABTestEngine();
 const results = engine.getResults('button-color-test');
@@ -327,7 +327,7 @@ console.log('Results:', results);
 ### Calculate Statistical Significance
 
 ```typescript
-import { calculateSignificance } from 'philjs-core';
+import { calculateSignificance } from '@philjs/core';
 
 const significance = calculateSignificance(
   { conversions: 150, impressions: 1000 }, // Control
@@ -344,7 +344,7 @@ console.log('P-value:', significance.pValue); // 0.05
 ### Basic Feature Flag
 
 ```typescript
-import { useFeatureFlag } from 'philjs-core';
+import { useFeatureFlag } from '@philjs/core';
 
 function App({ user }) {
   const hasNewDashboard = useFeatureFlag('new-dashboard', user);
@@ -377,7 +377,7 @@ const newFeatureEnabled = useFeatureFlag(
 ### Create Multivariate Test
 
 ```typescript
-import { createMultivariateTest } from 'philjs-core';
+import { createMultivariateTest } from '@philjs/core';
 
 const mvTest = createMultivariateTest({
   id: 'landing-page-test',

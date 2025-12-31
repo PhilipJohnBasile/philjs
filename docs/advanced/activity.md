@@ -15,7 +15,7 @@ The Activity component is perfect for:
 ## Quick Start
 
 ```typescript
-import { Activity } from 'philjs-core';
+import { Activity } from '@philjs/core';
 
 function TabPanel({ isActive, children }) {
   return (
@@ -90,7 +90,7 @@ function TabContent() {
 Configure Activity behavior globally:
 
 ```typescript
-import { configureActivity } from 'philjs-core';
+import { configureActivity } from '@philjs/core';
 
 configureActivity({
   prerender: true, // Enable pre-rendering
@@ -127,7 +127,7 @@ Configure individual activities:
 Access activity state programmatically:
 
 ```typescript
-import { useActivityState, isActivityVisible } from 'philjs-core';
+import { useActivityState, isActivityVisible } from '@philjs/core';
 
 function MyComponent() {
   const state = useActivityState('my-activity');
@@ -149,7 +149,7 @@ function MyComponent() {
 Show, hide, or toggle activities programmatically:
 
 ```typescript
-import { showActivity, hideActivity, toggleActivity } from 'philjs-core';
+import { showActivity, hideActivity, toggleActivity } from '@philjs/core';
 
 // Show an activity
 showActivity('my-activity');
@@ -166,7 +166,7 @@ toggleActivity('my-activity');
 Clean up activity state when no longer needed:
 
 ```typescript
-import { clearActivityState } from 'philjs-core';
+import { clearActivityState } from '@philjs/core';
 
 clearActivityState('my-activity');
 ```
@@ -178,7 +178,7 @@ clearActivityState('my-activity');
 Create groups where only one activity is visible at a time:
 
 ```typescript
-import { createActivityGroup } from 'philjs-core';
+import { createActivityGroup } from '@philjs/core';
 
 const group = createActivityGroup(['tab1', 'tab2', 'tab3']);
 
@@ -194,7 +194,7 @@ const current = group.current(); // 'tab2'
 Create tab-like interfaces easily:
 
 ```typescript
-import { createTabs } from 'philjs-core';
+import { createTabs } from '@philjs/core';
 
 function TabsExample() {
   const tabs = createTabs(['home', 'profile', 'settings'], 'home');
@@ -230,7 +230,7 @@ function TabsExample() {
 Use pre-defined transitions:
 
 ```typescript
-import { activityTransitions } from 'philjs-core';
+import { activityTransitions } from '@philjs/core';
 
 <Activity
   mode={mode}
@@ -251,7 +251,7 @@ import { activityTransitions } from 'philjs-core';
 Create custom transitions:
 
 ```typescript
-import { createTransition } from 'philjs-core';
+import { createTransition } from '@philjs/core';
 
 const customTransition = createTransition('all', 500, 'cubic-bezier(0.4, 0, 0.2, 1)');
 
@@ -267,7 +267,7 @@ const customTransition = createTransition('all', 500, 'cubic-bezier(0.4, 0, 0.2,
 Manage pre-rendering manually:
 
 ```typescript
-import { createActivityScheduler } from 'philjs-core';
+import { createActivityScheduler } from '@philjs/core';
 
 const scheduler = createActivityScheduler();
 
@@ -294,7 +294,7 @@ scheduler.resume();
 Optimize activity rendering for lists:
 
 ```typescript
-import { optimizeActivityList } from 'philjs-core';
+import { optimizeActivityList } from '@philjs/core';
 
 function ItemList({ items, currentIndex }) {
   const optimized = optimizeActivityList(items, currentIndex, {
@@ -325,7 +325,7 @@ function ItemList({ items, currentIndex }) {
 Create reusable activity-aware components:
 
 ```typescript
-import { withActivity } from 'philjs-core';
+import { withActivity } from '@philjs/core';
 
 const ActivityAwareCard = withActivity(
   ({ title, content }) => (
@@ -356,7 +356,7 @@ const ActivityAwareCard = withActivity(
 Combine with code splitting for optimal loading:
 
 ```typescript
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 const LazyComponent = lazy(() => import('./HeavyComponent'));
 
@@ -701,7 +701,7 @@ const optimized = optimizeActivityList(items, currentIndex, {
 3. Verify priority is set appropriately
 
 ```typescript
-import { getActivityConfig } from 'philjs-core';
+import { getActivityConfig } from '@philjs/core';
 
 const config = getActivityConfig();
 console.log('Prerender enabled:', config.prerender);

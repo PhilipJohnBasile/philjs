@@ -172,7 +172,7 @@ export function Button({ children, variant = 'primary' }: {
 ### Dynamic Styles with Signals
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Box() {
   const color = signal('#007bff');
@@ -232,7 +232,7 @@ function Button({ variant = 'primary' }: { variant?: 'primary' | 'secondary' }) 
 ### Conditional Classes
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function classNames(...classes: (string | false | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -302,7 +302,7 @@ function Button({ variant, disabled }: {
 ### Dynamic CSS Variables
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function ThemedApp() {
   const primaryColor = signal('#007bff');
@@ -345,7 +345,7 @@ function ThemedApp() {
 ```typescript
 // Using CSS Modules + inline styles
 import styles from './Card.module.css';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Card({ children }: { children: any }) {
   const elevation = signal(2);

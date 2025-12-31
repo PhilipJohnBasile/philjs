@@ -32,8 +32,8 @@ pnpm preview
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
-import { createProductionViteConfig } from 'philjs-compiler/presets';
+import philjs from '@philjs/compiler/vite';
+import { createProductionViteConfig } from '@philjs/compiler/presets';
 
 export default defineConfig({
   plugins: [
@@ -66,7 +66,7 @@ PhilJS provides three optimized build presets:
 Optimized for deployment with maximum performance:
 
 ```typescript
-import { createProductionPreset } from 'philjs-compiler/presets';
+import { createProductionPreset } from '@philjs/compiler/presets';
 
 const config = createProductionPreset({
   // Enable source maps for error tracking
@@ -112,7 +112,7 @@ const config = createProductionPreset({
 Fast rebuilds with debugging support:
 
 ```typescript
-import { createDevelopmentPreset } from 'philjs-compiler/presets';
+import { createDevelopmentPreset } from '@philjs/compiler/presets';
 
 const config = createDevelopmentPreset({
   sourceMaps: true,
@@ -129,13 +129,13 @@ const config = createDevelopmentPreset({
 For building reusable packages:
 
 ```typescript
-import { createLibraryPreset } from 'philjs-compiler/presets';
+import { createLibraryPreset } from '@philjs/compiler/presets';
 
 const config = createLibraryPreset({
   name: 'MyLibrary',
   entry: './src/index.ts',
   formats: ['es', 'cjs'],
-  external: ['react', 'philjs-core'],
+  external: ['react', '@philjs/core'],
   dts: true,
   preserveModules: true,
 });
@@ -248,7 +248,7 @@ Chunks: 3
 ### Programmatic Analysis
 
 ```typescript
-import { Analyzer } from 'philjs-compiler';
+import { Analyzer } from '@philjs/compiler';
 
 const analyzer = new Analyzer();
 const analysis = analyzer.analyze(code, 'src/App.tsx');
@@ -308,7 +308,7 @@ export default defineConfig({
 ### Checking Budgets
 
 ```typescript
-import { checkPerformanceBudgets } from 'philjs-compiler/presets';
+import { checkPerformanceBudgets } from '@philjs/compiler/presets';
 
 const stats = [
   { name: 'index.js', size: 45000, gzipSize: 15000 },
@@ -376,7 +376,7 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // PhilJS in separate chunk
-          if (id.includes('philjs-core')) {
+          if (id.includes('@philjs/core')) {
             return 'vendor-philjs';
           }
 
@@ -466,11 +466,11 @@ rollbar deploy \
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
+import philjs from '@philjs/compiler/vite';
 import {
   createProductionViteConfig,
   createProductionPreset
-} from 'philjs-compiler/presets';
+} from '@philjs/compiler/presets';
 
 export default defineConfig({
   plugins: [
@@ -570,7 +570,7 @@ jobs:
           SOURCE_MAPS: true
 
       - name: Check bundle size
-        run: pnpm run check-budgets --ci
+        run: pnpm run check:budgets -- --ci
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -597,7 +597,7 @@ jobs:
     "build:analyze": "ANALYZE=true vite build",
     "build:staging": "NODE_ENV=staging vite build",
     "build:production": "NODE_ENV=production vite build",
-    "check-budgets": "node scripts/check-budgets.mjs",
+    "check:budgets": "tsx scripts/check-budgets.ts",
     "preview": "vite preview --port 4173"
   }
 }
@@ -674,13 +674,13 @@ Track bundle size over time:
 
 ```bash
 # Check against budgets
-pnpm check-budgets
+pnpm check:budgets
 
 # Save baseline
-pnpm check-budgets --save-history
+pnpm check:budgets -- --save-history
 
 # Compare with baseline
-pnpm check-budgets --compare
+pnpm check:budgets -- --compare
 ```
 
 ### 5. Leverage Caching

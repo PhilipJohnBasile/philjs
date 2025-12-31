@@ -5,22 +5,22 @@ export function Workflow() {
     {
       title: "Scaffold",
       description: "Generate a project with routing, SSR, and tooling in minutes.",
-      tools: ["create-philjs", "philjs-cli", "philjs-templates"]
+      tools: ["create-philjs", "@philjs/cli", "@philjs/templates"]
     },
     {
       title: "Build",
       description: "Compose routes, loaders, and islands with a signals-first runtime.",
-      tools: ["philjs-core", "philjs-router", "philjs-ssr", "philjs-islands"]
+      tools: ["@philjs/core", "@philjs/router", "@philjs/ssr", "@philjs/islands"]
     },
     {
       title: "Data",
       description: "Connect APIs, GraphQL, and realtime updates with type-safe utilities.",
-      tools: ["philjs-api", "philjs-graphql", "philjs-realtime", "philjs-rpc"]
+      tools: ["@philjs/api", "@philjs/graphql", "@philjs/realtime", "@philjs/rpc"]
     },
     {
       title: "Ship",
       description: "Deploy anywhere with adapters, observability, and optimization tools.",
-      tools: ["philjs-adapters", "philjs-optimizer", "philjs-errors"]
+      tools: ["@philjs/adapters", "@philjs/optimizer", "@philjs/errors"]
     }
   ];
 

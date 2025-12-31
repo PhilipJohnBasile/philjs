@@ -1,4 +1,4 @@
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import { Board } from './Board';
 
 type SquareValue = 'X' | 'O' | null;

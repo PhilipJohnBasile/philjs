@@ -6,7 +6,7 @@ This document cross-links each package's public surface with its implementation 
 
 ---
 
-## philjs-core
+## @philjs/core
 
 Source entry: `packages/philjs-core/src/index.ts`
 
@@ -29,7 +29,7 @@ Source entry: `packages/philjs-core/src/index.ts`
 
 ---
 
-## philjs-router
+## @philjs/router
 
 Source entry: `packages/philjs-router/src/index.ts`
 
@@ -43,7 +43,7 @@ Source entry: `packages/philjs-router/src/index.ts`
 
 ---
 
-## philjs-islands
+## @philjs/islands
 
 Source entry: `packages/philjs-islands/src/index.ts`
 
@@ -52,7 +52,7 @@ Source entry: `packages/philjs-islands/src/index.ts`
 
 ---
 
-## philjs-ssr
+## @philjs/ssr
 
 Source entry: `packages/philjs-ssr/src/index.ts`
 
@@ -64,7 +64,7 @@ Source entry: `packages/philjs-ssr/src/index.ts`
 
 ---
 
-## philjs-devtools
+## @philjs/devtools
 
 Source entry: `packages/philjs-devtools/src/index.ts`
 
@@ -75,7 +75,7 @@ Source entry: `packages/philjs-devtools/src/index.ts`
 
 ---
 
-## philjs-ai
+## @philjs/ai
 
 Source entry: `packages/philjs-ai/src/index.ts`
 
@@ -90,7 +90,7 @@ Relevant documentation: `docs/advanced/ai-integration.md`. Align examples with t
 
 ## Guidance for Documentation Authors
 
-- Audit every page that imports `{ Router, Route, Link, useRouter }` from `philjs-router`. Replace them with manifest/discovery examples or explicitly mark them as future API.
+- Audit every page that imports `{ Router, Route, Link, useRouter }` from `@philjs/router`. Replace them with manifest/discovery examples or explicitly mark them as future API.
 - When referencing advanced features (usage analytics, cost tracking, performance budgets), link to the actual source modules listed above to ensure code snippets stay truthful.
 - For tutorials, prefer showing how to combine `discoverRoutes`, `matchRoute`, and `applyLayouts` rather than relying on non-existent JSX components.
 

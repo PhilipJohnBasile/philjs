@@ -37,7 +37,7 @@
     }
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -58,7 +58,7 @@
     "@philjs/core": "workspace:*",
     "rollup": "^4.54.0",
     "@rollup/plugin-typescript": "^12.3.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16",
     "vite": "^7.3.0"
   },

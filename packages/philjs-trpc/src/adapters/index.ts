@@ -190,11 +190,82 @@ export function createLambdaAdapter(config: AdapterConfig) {
  * Create standalone HTTP server (Node.js)
  */
 export function createStandaloneServer(config: AdapterConfig & { port?: number }) {
+  let server: { listen: (port: number, cb: () => void) => void; close: (cb: (err?: Error) => void) => void } | null = null;
+
+  async function readBody(req: { on: (event: string, cb: (chunk: Buffer) => void) => void }): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      req.on('end', () => resolve(data));
+      req.on('error', (err) => reject(err));
+    });
+  }
+
+  async function handleRequest(
+    req: { method?: string; url?: string; headers: Record<string, string | string[] | undefined>; on: (event: string, cb: (chunk: Buffer) => void) => void },
+    res: { setHeader: (name: string, value: string) => void; statusCode: number; end: (body?: string) => void }
+  ) {
+    if (req.method !== 'POST') {
+      res.statusCode = 405;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: { code: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported' } }));
+      return;
+    }
+
+    try {
+      const bodyText = await readBody(req);
+      const body = JSON.parse(bodyText || '{}') as { method?: string; path?: string; input?: unknown; batch?: Array<{ method: string; path: string; input?: unknown }> };
+      const ctx = config.createContext ? await config.createContext({ req: req as unknown as Request }) : {};
+
+      if (body.batch && Array.isArray(body.batch)) {
+        const results = await Promise.all(
+          body.batch.map(async (item) => {
+            return await (config.router as unknown as RouterWithHandle).handle(item, ctx);
+          })
+        );
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+        return;
+      }
+
+      const result = await (config.router as unknown as RouterWithHandle).handle(body, ctx);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(result));
+    } catch (error) {
+      config.onError?.(toTRPCError(error as Error), {} as BaseContext);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } }));
+    }
+  }
+
   return {
     async listen(port = config.port || 3000): Promise<void> {
-      // Node.js http server would be created here
-      // This is a placeholder - actual implementation would use Node's http module
+      if (!server) {
+        const http = await import('node:http');
+        server = http.createServer((req, res) => {
+          void handleRequest(req, res);
+        });
+      }
+
+      await new Promise<void>((resolve) => {
+        server?.listen(port, () => resolve());
+      });
       console.log(`Server listening on port ${port}`);
+    },
+
+    async close(): Promise<void> {
+      if (!server) return;
+      await new Promise<void>((resolve, reject) => {
+        server?.close((err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
     },
   };
 }

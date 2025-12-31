@@ -36,7 +36,7 @@ export function LazyImage({ src, alt }: {
 ### Intersection Observer
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function IntersectionLazyImage({ src, alt }: {
   src: string;
@@ -80,7 +80,7 @@ export function IntersectionLazyImage({ src, alt }: {
 ### Progressive Image Loading
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function ProgressiveImage({ src, placeholder, alt }: {
   src: string;
@@ -117,7 +117,7 @@ export function ProgressiveImage({ src, placeholder, alt }: {
 ### Blur Hash Implementation
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function BlurHashImage({ src, blurHash, alt }: {
   src: string;
@@ -170,7 +170,7 @@ export function BlurHashImage({ src, blurHash, alt }: {
 ### Visibility-Based Loading
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useLazyLoad() {
   const isVisible = signal(false);
@@ -217,7 +217,7 @@ export function LazySection() {
 ### Scroll-Based Loading
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function ScrollLazyLoad({ children }: { children: any }) {
   const shouldLoad = signal(false);
@@ -253,7 +253,7 @@ export function ScrollLazyLoad({ children }: { children: any }) {
 ### Idle Time Loading
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function loadDuringIdle(importFn: () => Promise<any>) {
   effect(() => {
@@ -285,7 +285,7 @@ export function App() {
 ### Priority Queue Loading
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface LoadTask {
   priority: number;
@@ -346,7 +346,7 @@ loader.addTask({
 ### Lazy Video Element
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function LazyVideo({ src, poster }: {
   src: string;
@@ -507,7 +507,7 @@ preloadResource('/critical.css', 'style');
 ### Progressive Font Loading
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function useFontLoading(fontFamily: string) {
   const isLoaded = signal(false);

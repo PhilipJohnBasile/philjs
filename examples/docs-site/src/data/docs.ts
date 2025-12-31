@@ -38,7 +38,7 @@ Your app will be running at \`http://localhost:3000\`!
 Add PhilJS to an existing project:
 
 \`\`\`bash
-pnpm add philjs-core philjs-router
+pnpm add @philjs/core @philjs/router
 \`\`\`
 
 Configure your bundler to support JSX:
@@ -50,7 +50,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
 });
 \`\`\`
@@ -83,7 +83,7 @@ cd my-app
 Create \`src/Counter.tsx\`:
 
 \`\`\`tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Counter() {
   const count = signal(0);
@@ -152,7 +152,7 @@ PhilJS uses fine-grained reactivity with automatic dependency tracking.
 Signals are reactive primitives that hold a value. When the value changes, any computation that depends on it automatically updates.
 
 \`\`\`tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 
@@ -171,7 +171,7 @@ count.set(c => c + 1);
 Memos are derived values that automatically track dependencies:
 
 \`\`\`tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 const doubled = memo(() => count() * 2);
@@ -186,7 +186,7 @@ console.log(doubled()); // 10
 Effects run side effects and re-run when dependencies change:
 
 \`\`\`tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -205,7 +205,7 @@ count.set(5); // Logs: "Cleanup!" then "Count is: 5"
 Batch multiple updates for better performance:
 
 \`\`\`tsx
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 const firstName = signal('John');
 const lastName = signal('Doe');
@@ -221,7 +221,7 @@ batch(() => {
 Read signals without creating dependencies:
 
 \`\`\`tsx
-import { signal, memo, untrack } from 'philjs-core';
+import { signal, memo, untrack } from '@philjs/core';
 
 const a = signal(1);
 const b = signal(2);
@@ -439,7 +439,7 @@ export default function ProductPage({ data }) {
 Use the Link component:
 
 \`\`\`tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 function Nav() {
   return (
@@ -455,7 +455,7 @@ function Nav() {
 ## Programmatic Navigation
 
 \`\`\`tsx
-import { useNavigate } from 'philjs-router';
+import { useNavigate } from '@philjs/router';
 
 function LoginButton() {
   const navigate = useNavigate();

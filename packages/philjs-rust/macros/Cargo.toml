@@ -1,6 +1,6 @@
 [package]
 name = "philjs-macros"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Procedural macros for PhilJS - view!, component, and signal macros"

@@ -81,7 +81,7 @@ Annotate `params` in component props for type safety. Future versions of PhilJS 
 `useRoute()` returns the current match. Use it inside layouts, analytics components, or DevTools overlays:
 
 ```tsx
-import { useRoute } from 'philjs-router';
+import { useRoute } from '@philjs/router';
 
 export function Breadcrumbs() {
   const route = useRoute();

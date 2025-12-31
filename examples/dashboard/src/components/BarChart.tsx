@@ -1,4 +1,4 @@
-import { memo } from "philjs-core";
+import { memo } from "@philjs/core";
 
 interface BarChartData {
   label: string;

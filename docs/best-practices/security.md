@@ -80,7 +80,7 @@ PhilJS includes built-in CSRF (Cross-Site Request Forgery) protection for server
 ### Built-in CSRF Protection
 
 ```typescript
-import { csrfProtection, generateCSRFToken, csrfField } from 'philjs-ssr';
+import { csrfProtection, generateCSRFToken, csrfField } from '@philjs/ssr';
 
 // Set up CSRF middleware
 const csrf = csrfProtection({
@@ -107,7 +107,7 @@ if (!isValid) {
 ### Form Protection
 
 ```typescript
-import { csrfField } from 'philjs-ssr';
+import { csrfField } from '@philjs/ssr';
 
 // Server-side: Generate token and include in form
 export async function GET({ request }: { request: Request }) {
@@ -167,8 +167,8 @@ async function submitForm(data: any) {
 ### PhilJS Component Integration
 
 ```tsx
-import { signal } from 'philjs-core';
-import { csrfProtection } from 'philjs-ssr';
+import { signal } from '@philjs/core';
+import { csrfProtection } from '@philjs/ssr';
 
 function SecureForm() {
   const formData = signal({ name: '', email: '' });
@@ -213,7 +213,7 @@ function SecureForm() {
 PhilJS uses an in-memory token store by default. For production, use Redis:
 
 ```typescript
-import { csrfProtection, csrfStore } from 'philjs-ssr';
+import { csrfProtection, csrfStore } from '@philjs/ssr';
 import Redis from 'ioredis';
 
 const redis = new Redis();
@@ -241,7 +241,7 @@ const customStore = new RedisCSRFStore();
 ### Extract CSRF Token
 
 ```typescript
-import { extractCSRFToken } from 'philjs-ssr';
+import { extractCSRFToken } from '@philjs/ssr';
 
 export async function POST({ request }: { request: Request }) {
   const token = await extractCSRFToken(request);
@@ -467,7 +467,7 @@ function DocumentActions({ document }: { document: Document }) {
 
 ```tsx
 // components/ProtectedRoute.tsx
-import { Navigate } from 'philjs-router';
+import { Navigate } from '@philjs/router';
 import { userStore } from '@/stores/userStore';
 
 interface ProtectedRouteProps {
@@ -655,7 +655,7 @@ import {
   apiRateLimit,
   authRateLimit,
   MemoryRateLimitStore
-} from 'philjs-ssr';
+} from '@philjs/ssr';
 
 // Basic rate limiting
 const limiter = rateLimit({
@@ -716,7 +716,7 @@ const customLimiter = rateLimit({
 ### Redis Store for Production
 
 ```typescript
-import { RedisRateLimitStore } from 'philjs-ssr';
+import { RedisRateLimitStore } from '@philjs/ssr';
 import Redis from 'ioredis';
 
 const redis = new Redis({
@@ -740,7 +740,7 @@ const limiter = rateLimit(
 PhilJS includes a more accurate sliding window algorithm:
 
 ```typescript
-import { SlidingWindowRateLimiter } from 'philjs-ssr';
+import { SlidingWindowRateLimiter } from '@philjs/ssr';
 
 const limiter = new SlidingWindowRateLimiter({
   windowMs: 60 * 1000,
@@ -760,7 +760,7 @@ if (rateLimitResponse) {
 Automatically adjust limits based on error rates:
 
 ```typescript
-import { AdaptiveRateLimiter } from 'philjs-ssr';
+import { AdaptiveRateLimiter } from '@philjs/ssr';
 
 const limiter = new AdaptiveRateLimiter({
   baseLimit: 100,

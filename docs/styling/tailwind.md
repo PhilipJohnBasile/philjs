@@ -104,7 +104,7 @@ export function Button({ children }: { children: any }) {
 ### Conditional Classes
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Alert({ type = 'info' }: {
   type?: 'info' | 'success' | 'warning' | 'error';
@@ -137,7 +137,7 @@ export function Alert({ type = 'info' }: {
 ### Toggle Classes
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ToggleButton() {
   const isActive = signal(false);
@@ -162,7 +162,7 @@ export function ToggleButton() {
 ### Class Name Helper
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function cn(...classes: (string | false | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
@@ -428,7 +428,7 @@ export default {
 ```
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function DarkModeToggle() {
   const isDark = signal(false);
@@ -513,7 +513,7 @@ export default {
 ```
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function AnimatedNotification() {
   const isVisible = signal(false);

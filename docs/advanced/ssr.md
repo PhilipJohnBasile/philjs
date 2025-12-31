@@ -28,7 +28,7 @@ Server-side rendering offers several benefits:
 
 ```typescript
 // src/entry-server.ts
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 import { App } from './App';
 
 export async function render(url: string) {
@@ -98,7 +98,7 @@ app.listen(3000, () => {
 
 ```typescript
 // src/entry-client.ts
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 import { App } from './App';
 
 // Hydrate the server-rendered HTML
@@ -112,7 +112,7 @@ Hydration makes server-rendered HTML interactive by attaching event listeners an
 ### Basic Hydration
 
 ```typescript
-import { hydrate, signal } from 'philjs-core';
+import { hydrate, signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -139,7 +139,7 @@ hydrate(<Counter />, document.getElementById('app')!);
 ### Hydration with Props
 
 ```typescript
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 interface AppProps {
   url: string;
@@ -175,8 +175,8 @@ hydrate(
 ### Fetch During Render
 
 ```typescript
-import { renderToString } from 'philjs-ssr';
-import { signal } from 'philjs-core';
+import { renderToString } from '@philjs/ssr';
+import { signal } from '@philjs/core';
 
 async function UserProfile({ userId }: { userId: string }) {
   // Fetch on server
@@ -226,7 +226,7 @@ app.get('/users/:id', async (req, res) => {
 
 ```typescript
 // entry-client.ts
-import { hydrate, signal } from 'philjs-core';
+import { hydrate, signal } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: string }) {
   // Use server data if available
@@ -260,7 +260,7 @@ Stream HTML to the client as it's generated for faster Time to First Byte (TTFB)
 ### Basic Streaming
 
 ```typescript
-import { renderToStream } from 'philjs-ssr';
+import { renderToStream } from '@philjs/ssr';
 
 app.get('*', async (req, res) => {
   res.set({ 'Content-Type': 'text/html' });
@@ -301,8 +301,8 @@ app.get('*', async (req, res) => {
 ### Streaming with Suspense
 
 ```typescript
-import { Suspense, lazy } from 'philjs-core';
-import { renderToStream } from 'philjs-ssr';
+import { Suspense, lazy } from '@philjs/core';
+import { renderToStream } from '@philjs/ssr';
 
 const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
@@ -327,7 +327,7 @@ const stream = renderToStream(<App />);
 ### Dynamic Meta Tags
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface SEOProps {
   title: string;
@@ -431,7 +431,7 @@ Access request information during SSR.
 ### Request Context Provider
 
 ```typescript
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 interface RequestContext {
   url: string;
@@ -471,7 +471,7 @@ function UserGreeting() {
 ### Error Boundaries in SSR
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function App() {
   return (
@@ -551,7 +551,7 @@ const fullHtml = `
 ```typescript
 // ✅ Import only what's needed on server
 // entry-server.ts
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 import { App } from './App';
 
 // Don't import client-only code

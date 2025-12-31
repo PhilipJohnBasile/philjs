@@ -19,8 +19,8 @@
     "templates"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "dev": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript -w",
     "test": "vitest run"
   },
   "keywords": [
@@ -43,9 +43,9 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16",
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@types/prompts": "^2.4.9"
   },
   "sideEffects": true,

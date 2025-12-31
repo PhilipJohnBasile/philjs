@@ -6,7 +6,7 @@
  * at build time and streaming dynamic content at request time.
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 
 // ============================================================================
 // Core PPR Types

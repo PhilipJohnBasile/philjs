@@ -1,5 +1,5 @@
-import { mountIslands } from "philjs-islands";
-import { showOverlay } from "philjs-devtools";
+import { mountIslands } from "@philjs/islands";
+import { showOverlay } from "@philjs/devtools";
 
 declare global {
   interface Window {

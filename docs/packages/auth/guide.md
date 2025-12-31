@@ -60,7 +60,7 @@ npm install @supabase/supabase-js
 npm install next-auth
 
 # For Custom
-npm install philjs-auth jsonwebtoken
+npm install @philjs/auth jsonwebtoken
 ```
 
 ### 3. Configure Environment Variables
@@ -115,7 +115,6 @@ Options:
   --no-ui                     Skip UI components generation
   --no-middleware             Skip middleware generation
   --no-protected-routes       Skip protected route utilities
-  --js                        Use JavaScript instead of TypeScript
 ```
 
 ### Generated Files
@@ -173,8 +172,8 @@ interface AuthProvider {
 Create a custom authentication provider:
 
 ```typescript
-import { BaseAuthProvider, setAuthProvider } from 'philjs-auth';
-import { signal } from 'philjs-core/signals';
+import { BaseAuthProvider, setAuthProvider } from '@philjs/auth';
+import { signal } from '@philjs/core/signals';
 
 class MyAuthProvider extends BaseAuthProvider {
   readonly name = 'my-auth';
@@ -216,7 +215,7 @@ setAuthProvider(authProvider);
 Access authentication state and methods:
 
 ```typescript
-import { useAuth } from 'philjs-auth/hooks';
+import { useAuth } from '@philjs/auth/hooks';
 
 function MyComponent() {
   const {
@@ -251,7 +250,7 @@ function MyComponent() {
 Get the current authenticated user:
 
 ```typescript
-import { useUser } from 'philjs-auth/hooks';
+import { useUser } from '@philjs/auth/hooks';
 
 function Profile() {
   const user = useUser();
@@ -275,7 +274,7 @@ function Profile() {
 Check user permissions or roles:
 
 ```typescript
-import { useHasPermission } from 'philjs-auth/hooks';
+import { useHasPermission } from '@philjs/auth/hooks';
 
 function AdminPanel() {
   const isAdmin = useHasPermission('admin');
@@ -293,7 +292,7 @@ function AdminPanel() {
 Redirect if not authenticated:
 
 ```typescript
-import { useRequireAuth } from 'philjs-auth/hooks';
+import { useRequireAuth } from '@philjs/auth/hooks';
 
 function ProtectedPage() {
   useRequireAuth('/login'); // Redirects to /login if not authenticated
@@ -309,7 +308,7 @@ function ProtectedPage() {
 Wrap components that require authentication:
 
 ```typescript
-import { ProtectedRoute } from 'philjs-auth/protected-routes';
+import { ProtectedRoute } from '@philjs/auth/protected-routes';
 
 function Dashboard() {
   return (
@@ -336,7 +335,7 @@ With custom redirect and fallback:
 Higher-order component for protecting components:
 
 ```typescript
-import { withAuth } from 'philjs-auth/protected-routes';
+import { withAuth } from '@philjs/auth/protected-routes';
 
 function DashboardComponent() {
   return <div>Dashboard content</div>;
@@ -350,7 +349,7 @@ export const Dashboard = withAuth(DashboardComponent);
 Protect routes based on user roles:
 
 ```typescript
-import { withRole } from 'philjs-auth/protected-routes';
+import { withRole } from '@philjs/auth/protected-routes';
 
 function AdminPanelComponent() {
   return <div>Admin panel</div>;
@@ -365,7 +364,7 @@ export const AdminPanel = withRole(AdminPanelComponent, {
 Multiple roles (OR logic):
 
 ```typescript
-import { withAnyRole } from 'philjs-auth/protected-routes';
+import { withAnyRole } from '@philjs/auth/protected-routes';
 
 export const ModeratorPanel = withAnyRole(ModeratorPanelComponent, {
   roles: ['admin', 'moderator'],
@@ -378,7 +377,7 @@ export const ModeratorPanel = withAnyRole(ModeratorPanelComponent, {
 Conditionally render content based on auth state:
 
 ```typescript
-import { AuthGuard, ShowForAuth, ShowForGuest, ShowForRole } from 'philjs-auth/protected-routes';
+import { AuthGuard, ShowForAuth, ShowForGuest, ShowForRole } from '@philjs/auth/protected-routes';
 
 function Navigation() {
   return (
@@ -406,7 +405,7 @@ function Navigation() {
 Start automatic token refresh:
 
 ```typescript
-import { startSessionRefresh } from 'philjs-auth/session-refresh';
+import { startSessionRefresh } from '@philjs/auth/session-refresh';
 
 startSessionRefresh({
   refreshBeforeExpiry: 5 * 60 * 1000, // Refresh 5 minutes before expiry
@@ -428,7 +427,7 @@ startSessionRefresh({
 Save and load sessions:
 
 ```typescript
-import { SessionPersistence } from 'philjs-auth/session-refresh';
+import { SessionPersistence } from '@philjs/auth/session-refresh';
 
 // Save session
 SessionPersistence.save(session, 'local'); // or 'session'
@@ -448,7 +447,7 @@ SessionPersistence.clearAll();
 Revoke all sessions across all devices:
 
 ```typescript
-import { logoutEverywhere } from 'philjs-auth/session-refresh';
+import { logoutEverywhere } from '@philjs/auth/session-refresh';
 
 async function handleLogoutEverywhere() {
   try {
@@ -467,7 +466,7 @@ async function handleLogoutEverywhere() {
 Implement a custom authentication flow:
 
 ```typescript
-import { useAuth } from 'philjs-auth/hooks';
+import { useAuth } from '@philjs/auth/hooks';
 
 function LoginForm() {
   const { signIn } = useAuth();
@@ -519,7 +518,7 @@ function LoginForm() {
 Sign in with OAuth providers:
 
 ```typescript
-import { useAuth } from 'philjs-auth/hooks';
+import { useAuth } from '@philjs/auth/hooks';
 
 function SocialLogin() {
   const { signInWithOAuth } = useAuth();
@@ -547,7 +546,7 @@ function SocialLogin() {
 Get and use access tokens:
 
 ```typescript
-import { useAuth } from 'philjs-auth/hooks';
+import { useAuth } from '@philjs/auth/hooks';
 
 async function fetchProtectedData() {
   const { getToken } = useAuth();
@@ -569,7 +568,7 @@ async function fetchProtectedData() {
 Implement MFA flow:
 
 ```typescript
-import { useAuth } from 'philjs-auth/hooks';
+import { useAuth } from '@philjs/auth/hooks';
 
 function MFASetup() {
   const { user } = useAuth();
@@ -637,7 +636,7 @@ export function App() {
 Ensure your provider supports token refresh and you've started the refresh manager:
 
 ```typescript
-import { startSessionRefresh } from 'philjs-auth/session-refresh';
+import { startSessionRefresh } from '@philjs/auth/session-refresh';
 
 startSessionRefresh({
   refreshBeforeExpiry: 5 * 60 * 1000,

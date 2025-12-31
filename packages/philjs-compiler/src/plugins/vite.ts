@@ -177,7 +177,7 @@ function formatDuration(ms: number): string {
  * ```typescript
  * // vite.config.ts
  * import { defineConfig } from 'vite';
- * import philjs from 'philjs-compiler/vite';
+ * import philjs from '@philjs/compiler/vite';
  *
  * export default defineConfig({
  *   plugins: [
@@ -923,7 +923,7 @@ function createSizeBar(size: number, maxSize: number): string {
  *
  * @example
  * ```typescript
- * import { createPhilJSPlugin } from 'philjs-compiler/vite';
+ * import { createPhilJSPlugin } from '@philjs/compiler/vite';
  *
  * const plugin = createPhilJSPlugin({
  *   autoMemo: true

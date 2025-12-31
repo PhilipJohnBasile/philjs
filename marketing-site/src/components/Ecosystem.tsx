@@ -6,66 +6,66 @@ export function Ecosystem() {
       title: "Core and rendering",
       description: "Signals, compiler, SSR streaming, and islands for fast delivery.",
       packages: [
-        "philjs-core",
-        "philjs-compiler",
-        "philjs-ssr",
-        "philjs-islands",
-        "philjs-resumable"
+        "@philjs/core",
+        "@philjs/compiler",
+        "@philjs/ssr",
+        "@philjs/islands",
+        "@philjs/resumable"
       ]
     },
     {
       title: "Data and API",
       description: "Typed routes, sessions, caching, and GraphQL out of the box.",
       packages: [
-        "philjs-api",
-        "philjs-graphql",
-        "philjs-db",
-        "philjs-rpc",
-        "philjs-realtime"
+        "@philjs/api",
+        "@philjs/graphql",
+        "@philjs/db",
+        "@philjs/rpc",
+        "@philjs/realtime"
       ]
     },
     {
       title: "Auth and security",
       description: "Auth providers, security helpers, and audit tooling.",
       packages: [
-        "philjs-auth",
-        "philjs-errors",
-        "philjs-plugin-seo",
-        "philjs-plugin-pwa",
-        "philjs-plugin-i18n"
+        "@philjs/auth",
+        "@philjs/errors",
+        "@philjs/plugin-seo",
+        "@philjs/plugin-pwa",
+        "@philjs/plugin-i18n"
       ]
     },
     {
       title: "UI and styling",
       description: "Components, design systems, theming, and asset pipelines.",
       packages: [
-        "philjs-ui",
-        "philjs-styles",
-        "philjs-tailwind",
-        "philjs-image",
-        "philjs-meta"
+        "@philjs/ui",
+        "@philjs/styles",
+        "@philjs/tailwind",
+        "@philjs/image",
+        "@philjs/meta"
       ]
     },
     {
       title: "Tooling and DX",
       description: "CLI, devtools, testing utilities, and editor integrations.",
       packages: [
-        "philjs-cli",
+        "@philjs/cli",
         "create-philjs",
-        "philjs-devtools",
-        "philjs-testing",
-        "philjs-vscode"
+        "@philjs/devtools",
+        "@philjs/testing",
+        "@philjs/vscode"
       ]
     },
     {
       title: "Deployment",
       description: "Adapters and integrations across edge and server runtimes.",
       packages: [
-        "philjs-adapters",
-        "philjs-edge",
-        "philjs-actix",
-        "philjs-axum",
-        "philjs-rocket"
+        "@philjs/adapters",
+        "@philjs/edge",
+        "@philjs/actix",
+        "@philjs/axum",
+        "@philjs/rocket"
       ]
     }
   ];

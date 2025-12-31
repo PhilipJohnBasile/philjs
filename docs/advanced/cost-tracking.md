@@ -34,7 +34,7 @@ Cloud costs can spiral out of control without proper monitoring. PhilJS cost tra
 - **Compare cloud providers** - Make informed decisions
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 // Track a route's resource usage
 costTracker.trackRoute('/api/expensive', {
@@ -57,7 +57,7 @@ console.log(`Monthly projection: $${estimate.monthlyProjection.toFixed(2)}`);
 ### 1. Configure Provider
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 // Set your cloud provider (default is Cloudflare)
 costTracker.setProvider('aws');
@@ -244,7 +244,7 @@ await fs.writeFile('cost-report.json', JSON.stringify(data, null, 2));
 Global cost tracker instance, pre-configured and ready to use.
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 ```
 
 ## Supported Providers
@@ -311,7 +311,7 @@ costTracker.setProvider('vercel');
 ### Example 1: Middleware Integration
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 export async function costTrackingMiddleware(
   request: Request,
@@ -345,7 +345,7 @@ export async function costTrackingMiddleware(
 ### Example 2: Database Query Tracking
 
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 class CostAwareDatabase {
   private queryCount = 0;
@@ -389,8 +389,8 @@ class CostAwareDatabase {
 ### Example 3: Cost Budget Alerts
 
 ```typescript
-import { costTracker } from 'philjs-core';
-import { signal } from 'philjs-core';
+import { costTracker } from '@philjs/core';
+import { signal } from '@philjs/core';
 
 const costAlerts = signal<Array<{
   route: string;
@@ -445,8 +445,8 @@ setInterval(checkCostBudgets, 5 * 60 * 1000);
 ### Example 4: Cost Dashboard Component
 
 ```typescript
-import { signal, effect } from 'philjs-core';
-import { costTracker } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
+import { costTracker } from '@philjs/core';
 
 function CostDashboard() {
   const routes = signal<string[]>([]);
@@ -526,7 +526,7 @@ function CostDashboard() {
 ### Example 5: Cloud Provider Comparison
 
 ```typescript
-import { CostTracker } from 'philjs-core';
+import { CostTracker } from '@philjs/core';
 
 async function compareProviders(route: string, metrics: any) {
   const providers: Array<'aws' | 'gcp' | 'azure' | 'cloudflare' | 'vercel'> = [
@@ -815,7 +815,7 @@ if (today.total > avgCost * 1.5) {
 ### Custom Metrics
 
 ```typescript
-import { CostTracker, type CostMetrics } from 'philjs-core';
+import { CostTracker, type CostMetrics } from '@philjs/core';
 
 // Extend metrics with custom data
 interface ExtendedMetrics extends CostMetrics {
@@ -839,7 +839,7 @@ customTracker.trackRoute('/api/ai-image', {
 
 ```typescript
 // Send cost data to Datadog, Prometheus, etc.
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 setInterval(() => {
   const data = costTracker.exportCostData();

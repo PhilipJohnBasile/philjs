@@ -32,7 +32,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "echo 'Lint philjs-wasm'",
@@ -52,10 +52,10 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@philjs/core": "workspace:*",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
   },

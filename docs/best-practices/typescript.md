@@ -17,7 +17,7 @@ Write type-safe PhilJS applications with TypeScript 6+.
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "strict": true,
     "isolatedDeclarations": true,
     "exactOptionalPropertyTypes": true,
@@ -32,7 +32,7 @@ Write type-safe PhilJS applications with TypeScript 6+.
 ## Component Types
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface ButtonProps {
   label: string;
@@ -52,7 +52,7 @@ function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
 ## Signal Types
 
 ```tsx
-import { signal, Signal } from 'philjs-core';
+import { signal, Signal } from '@philjs/core';
 
 const count = signal<number>(0);
 const user = signal<User | null>(null);
@@ -76,7 +76,7 @@ const config = {
 ### Use NoInfer for Better Generic Control
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Prevent unwanted inference from default values
 function createSignalWithDefault<T>(

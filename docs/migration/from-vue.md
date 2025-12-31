@@ -44,7 +44,7 @@ function increment() {
 
 **PhilJS:**
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -450,7 +450,7 @@ const theme = inject('theme');
 
 **PhilJS:**
 ```tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext('light');
 
@@ -502,7 +502,7 @@ const router = createRouter({
 
 **PhilJS Router:**
 ```tsx
-import { Router, Route, Link } from 'philjs-router';
+import { Router, Route, Link } from '@philjs/router';
 
 function App() {
   return (
@@ -536,7 +536,7 @@ const userId = route.params.id;
 
 **PhilJS:**
 ```tsx
-import { useParams } from 'philjs-router';
+import { useParams } from '@philjs/router';
 
 function User() {
   const { id } = useParams();
@@ -575,7 +575,7 @@ export function useCounter(initial = 0) {
 **PhilJS Hook:**
 ```typescript
 // useCounter.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export function useCounter(initial = 0) {
   const count = signal(initial);
@@ -634,7 +634,7 @@ export const useUserStore = defineStore('user', () => {
 
 **PhilJS:**
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function createUserStore() {
   const user = signal(null);

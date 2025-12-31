@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c ../../rollup.config.js",
+    "build": "rollup -c ../../rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-zustand'",
     "typecheck": "tsc --noEmit"
@@ -28,7 +28,7 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "keywords": [

@@ -172,7 +172,7 @@ export default {
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['philjs-core', 'philjs-router'],
+          vendor: ['@philjs/core', '@philjs/router'],
         },
       },
     },

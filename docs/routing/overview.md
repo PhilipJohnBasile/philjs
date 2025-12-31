@@ -8,7 +8,7 @@ Route components live wherever you prefer (many apps use `src/routes/`). Create 
 
 ```tsx
 // src/routes/_layout.tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function AppLayout({ children }: { children: any }) {
   return (
@@ -42,7 +42,7 @@ export function HomeRoute() {
 Next wire the router in `src/main.tsx`:
 
 ```tsx
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 import { AppLayout } from './routes/_layout';
 import { HomeRoute } from './routes/index';
 import { AboutRoute } from './routes/about';
@@ -75,7 +75,7 @@ The router renders into `#app`, tracks history, and automatically applies smart 
 Use the bundled `<Link>` component for client-side navigation. It integrates with the smart preloader and respects modifier keys:
 
 ```tsx
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 export function Nav() {
   return (
@@ -95,7 +95,7 @@ export function Nav() {
 `useRouter()` exposes the current match and a `navigate()` helper:
 
 ```tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 export function LoginForm() {
   const { navigate } = useRouter();

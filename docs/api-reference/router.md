@@ -84,7 +84,7 @@ A `HighLevelRouter` object with:
 #### Example
 
 ```typescript
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 import { HomePage, AboutPage, BlogPost } from './routes';
 
 const router = createAppRouter({
@@ -155,7 +155,7 @@ type NavigateFunction = (
 #### Example
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function LoginForm() {
   const { route, navigate } = useRouter();
@@ -230,7 +230,7 @@ The currently matched route object or `null` if no route matches.
 #### Example
 
 ```typescript
-import { useRoute } from 'philjs-router';
+import { useRoute } from '@philjs/router';
 
 function Breadcrumbs() {
   const route = useRoute();
@@ -336,7 +336,7 @@ type PrefetchOptions =
 #### Example
 
 ```typescript
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 // Basic navigation
 <Link to="/">Home</Link>
@@ -405,7 +405,7 @@ function RouterView(): VNode | JSXElement | string | null
 #### Example
 
 ```typescript
-import { RouterView } from 'philjs-router';
+import { RouterView } from '@philjs/router';
 
 // Instead of letting createAppRouter render to a target,
 // you can embed the router inside a larger component tree
@@ -453,7 +453,7 @@ type RouteModule = {
 #### Example
 
 ```typescript
-import { createRouteManifest } from 'philjs-router';
+import { createRouteManifest } from '@philjs/router';
 import { routes } from './routes';
 
 // Generate manifest for SSR
@@ -488,7 +488,7 @@ type RouteMatcher = (pathname: string) => MatchedRoute | null
 #### Example
 
 ```typescript
-import { createRouteMatcher } from 'philjs-router';
+import { createRouteMatcher } from '@philjs/router';
 import { routes } from './routes';
 
 const match = createRouteMatcher(routes);
@@ -554,7 +554,7 @@ type RouteTypeGenerationOptions = {
 #### Example
 
 ```typescript
-import { generateRouteTypes } from 'philjs-router';
+import { generateRouteTypes } from '@philjs/router';
 import { writeFileSync } from 'node:fs';
 import { routes } from './routes';
 
@@ -858,7 +858,7 @@ function BlogPost({ params, data, error, url, navigate }: RouteComponentProps) {
 Use the `Link` component for navigation:
 
 ```typescript
-import { Link } from 'philjs-router';
+import { Link } from '@philjs/router';
 
 <Link to="/products">Products</Link>
 ```
@@ -868,7 +868,7 @@ import { Link } from 'philjs-router';
 Use `useRouter()` hook:
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function CheckoutButton() {
   const { navigate } = useRouter();
@@ -899,7 +899,7 @@ navigate('/checkout', {
 ### Accessing Route Information
 
 ```typescript
-import { useRoute } from 'philjs-router';
+import { useRoute } from '@philjs/router';
 
 function CurrentPath() {
   const route = useRoute();
@@ -1031,7 +1031,7 @@ Protect routes using loader functions that check authentication/authorization.
 ### Authentication Guard
 
 ```typescript
-import { createAppRouter } from 'philjs-router';
+import { createAppRouter } from '@philjs/router';
 
 async function requireAuth({ request }: LoaderContext) {
   const session = await getSession(request);
@@ -1147,7 +1147,7 @@ Low-level utilities for file-system based routing (typically used in build tools
 Scans a directory for route files and generates route patterns.
 
 ```typescript
-import { discoverRoutes } from 'philjs-router';
+import { discoverRoutes } from '@philjs/router';
 
 const patterns = discoverRoutes('/path/to/routes');
 
@@ -1177,7 +1177,7 @@ const patterns = discoverRoutes('/path/to/routes');
 Matches a URL against discovered route patterns.
 
 ```typescript
-import { matchRoute } from 'philjs-router';
+import { matchRoute } from '@philjs/router';
 
 const match = matchRoute('/blog/hello-world', patterns);
 
@@ -1196,7 +1196,7 @@ Intent-aware prefetching that predicts navigation based on user behavior.
 ### SmartPreloader Class
 
 ```typescript
-import { SmartPreloader } from 'philjs-router';
+import { SmartPreloader } from '@philjs/router';
 
 const preloader = new SmartPreloader({
   strategy: 'intent',
@@ -1223,7 +1223,7 @@ const preloader = new SmartPreloader({
 ### Global Preloader
 
 ```typescript
-import { initSmartPreloader, getSmartPreloader } from 'philjs-router';
+import { initSmartPreloader, getSmartPreloader } from '@philjs/router';
 
 // Initialize global instance
 initSmartPreloader({ strategy: 'intent' });
@@ -1236,7 +1236,7 @@ preloader?.preload('/pricing', { strategy: 'manual', priority: 'high' });
 ### usePreload Hook
 
 ```typescript
-import { usePreload } from 'philjs-router';
+import { usePreload } from '@philjs/router';
 
 function PricingButton() {
   // Returns manual trigger function
@@ -1255,7 +1255,7 @@ function PricingButton() {
 ### preloadLink Directive
 
 ```typescript
-import { preloadLink } from 'philjs-router';
+import { preloadLink } from '@philjs/router';
 
 const anchor = document.querySelector('a[href="/pricing"]');
 const cleanup = preloadLink(anchor, {
@@ -1276,7 +1276,7 @@ The intent algorithm considers:
 - Historical navigation patterns
 
 ```typescript
-import { calculateClickIntent } from 'philjs-router';
+import { calculateClickIntent } from '@philjs/router';
 
 const intent = calculateClickIntent(
   { x: mouseX, y: mouseY },      // Mouse position
@@ -1293,7 +1293,7 @@ const intent = calculateClickIntent(
 Predicts likely next routes based on navigation history:
 
 ```typescript
-import { predictNextRoute } from 'philjs-router';
+import { predictNextRoute } from '@philjs/router';
 
 const predictions = predictNextRoute(
   '/products',           // Current path
@@ -1315,7 +1315,7 @@ Progressive enhancement for smooth page transitions using the View Transitions A
 ### ViewTransitionManager
 
 ```typescript
-import { ViewTransitionManager } from 'philjs-router';
+import { ViewTransitionManager } from '@philjs/router';
 
 const manager = new ViewTransitionManager();
 
@@ -1342,7 +1342,7 @@ await manager.transition(() => {
 ### Global Manager
 
 ```typescript
-import { initViewTransitions, getViewTransitionManager } from 'philjs-router';
+import { initViewTransitions, getViewTransitionManager } from '@philjs/router';
 
 // Initialize
 initViewTransitions();
@@ -1356,7 +1356,7 @@ const manager = getViewTransitionManager();
 Navigate with a custom transition:
 
 ```typescript
-import { navigateWithTransition } from 'philjs-router';
+import { navigateWithTransition } from '@philjs/router';
 
 async function openModal() {
   await navigateWithTransition('/modal', {
@@ -1371,7 +1371,7 @@ async function openModal() {
 Mark elements for smooth morphing between pages:
 
 ```typescript
-import { markSharedElement } from 'philjs-router';
+import { markSharedElement } from '@philjs/router';
 
 function ProductCard({ product }) {
   let imageRef;
@@ -1413,7 +1413,7 @@ function ProductDetail({ product }) {
 Enhance anchor tags with automatic transitions:
 
 ```typescript
-import { transitionLink } from 'philjs-router';
+import { transitionLink } from '@philjs/router';
 
 const link = document.querySelector('a');
 const cleanup = transitionLink(link, {
@@ -1425,7 +1425,7 @@ const cleanup = transitionLink(link, {
 ### Feature Detection
 
 ```typescript
-import { supportsViewTransitions } from 'philjs-router';
+import { supportsViewTransitions } from '@philjs/router';
 
 if (supportsViewTransitions()) {
   // Use View Transitions API
@@ -1439,7 +1439,7 @@ if (supportsViewTransitions()) {
 For browsers without View Transitions API:
 
 ```typescript
-import { animateFallback } from 'philjs-router';
+import { animateFallback } from '@philjs/router';
 
 if (!supportsViewTransitions()) {
   await animateFallback(element, 'fade');
@@ -1455,7 +1455,7 @@ if (!supportsViewTransitions()) {
 Creates a basic router from a route manifest (without rendering).
 
 ```typescript
-import { createRouter } from 'philjs-router';
+import { createRouter } from '@philjs/router';
 
 const router = createRouter({
   '/': await import('./routes/index'),
@@ -1475,7 +1475,7 @@ const router = createRouter({
 Discovers layout files in the file system hierarchy.
 
 ```typescript
-import { findLayouts } from 'philjs-router';
+import { findLayouts } from '@philjs/router';
 
 const layouts = await findLayouts(
   'blog/[slug].tsx',
@@ -1494,7 +1494,7 @@ const layouts = await findLayouts(
 Wraps a component with layout components.
 
 ```typescript
-import { applyLayouts } from 'philjs-router';
+import { applyLayouts } from '@philjs/router';
 
 const wrapped = applyLayouts(
   <BlogPost />,

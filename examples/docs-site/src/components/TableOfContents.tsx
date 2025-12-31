@@ -1,4 +1,4 @@
-import { signal, effect, memo } from 'philjs-core';
+import { signal, effect, memo } from '@philjs/core';
 
 export interface TocItem {
   id: string;

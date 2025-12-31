@@ -44,7 +44,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "jsdom": "^27.4.0",
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

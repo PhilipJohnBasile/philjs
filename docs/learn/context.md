@@ -49,7 +49,7 @@ function Avatar({ theme }: { theme: Signal<string> }) {
 Context lets you provide data at the top and consume it anywhere below:
 
 ```typescript
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 // 1. Create context
 const ThemeContext = createContext<Signal<string>>();
@@ -79,7 +79,7 @@ No prop drilling! Intermediate components don't need to know about `theme`.
 Use `createContext()` to create a context:
 
 ```typescript
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 
 // Basic context
 const ThemeContext = createContext<'light' | 'dark'>();
@@ -182,7 +182,7 @@ function App() {
 Use `useContext()` to read context values:
 
 ```typescript
-import { useContext } from 'philjs-core';
+import { useContext } from '@philjs/core';
 
 function ThemedButton() {
   const theme = useContext(ThemeContext);

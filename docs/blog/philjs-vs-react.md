@@ -66,7 +66,7 @@ PhilJS uses **signals** - reactive primitives that track their dependencies auto
 **PhilJS Counter Example:**
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -173,7 +173,7 @@ PhilJS is **resumable** - it can pick up exactly where the server left off:
 
 ```tsx
 // PhilJS - Resumes from server state
-import { resume } from 'philjs-core';
+import { resume } from '@philjs/core';
 
 resume(); // That's it! No re-rendering.
 ```
@@ -192,7 +192,7 @@ PhilJS has built-in islands support:
 
 ```tsx
 // Only the Counter island hydrates
-import { island } from 'philjs-islands';
+import { island } from '@philjs/islands';
 
 export default function Page() {
   return (
@@ -243,7 +243,7 @@ function UserProfile({ userId }) {
 
 **PhilJS:**
 ```tsx
-import { signal, memo, resource } from 'philjs-core';
+import { signal, memo, resource } from '@philjs/core';
 
 function UserProfile({ userId }) {
   const user = resource(() =>
@@ -317,7 +317,7 @@ function Counter() {
 **PhilJS:**
 ```tsx
 // Built-in signal-based state
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 const increment = () => count.set(c => c + 1);
@@ -351,7 +351,7 @@ Signals work globally without context providers or external libraries.
 #### 1. linkedSignal (Writable Computed Values)
 
 ```tsx
-import { signal, linkedSignal } from 'philjs-core';
+import { signal, linkedSignal } from '@philjs/core';
 
 function NameForm() {
   const firstName = signal('John');
@@ -379,7 +379,7 @@ React has no equivalent - you need complex state management for this pattern.
 #### 2. Usage Analytics
 
 ```tsx
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 // Track which components are actually used
 usageAnalytics.startTracking();
@@ -395,7 +395,7 @@ Automatically finds unused code in your app.
 #### 3. Cost Tracking
 
 ```tsx
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 costTracker.configure({
   provider: 'aws',
@@ -412,7 +412,7 @@ Know the real cost of your components.
 #### 4. Smart Preloading
 
 ```tsx
-import { router } from 'philjs-core';
+import { router } from '@philjs/core';
 
 // Automatically learns user patterns and preloads likely routes
 router.enableSmartPreload(); // That's it!
@@ -494,7 +494,7 @@ function TodoApp() {
 **PhilJS Implementation:**
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface Todo {
   id: number;
@@ -586,7 +586,7 @@ function TodoApp() {
 
 1. **Install PhilJS:**
 ```bash
-npm install philjs-core
+npm install @philjs/core
 ```
 
 2. **Replace imports:**
@@ -595,7 +595,7 @@ npm install philjs-core
 import { useState, useEffect } from 'react';
 
 // After
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 ```
 
 3. **Convert state:**

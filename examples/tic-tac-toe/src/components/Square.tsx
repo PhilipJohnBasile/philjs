@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface SquareProps {
   value: string | null;

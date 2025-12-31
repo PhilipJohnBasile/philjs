@@ -12,7 +12,7 @@
     }
   },
   "bin": {
-    "create-philjs": "./bin/create.js"
+    "create-philjs": "./dist/bin/create.js"
   },
   "scripts": {
     "build": "tsc",
@@ -24,11 +24,10 @@
     "degit": "^2.8.4"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.0"
   },
   "files": [
     "dist",
-    "bin",
     "README.md"
   ],
   "keywords": [

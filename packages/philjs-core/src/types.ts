@@ -132,7 +132,8 @@ export type JSXChild =
   | boolean
   | null
   | undefined
-  | JSXChild[];
+  | JSXChild[]
+  | Accessor<JSXChild>;
 
 /**
  * Virtual node - any valid renderable value
@@ -173,6 +174,8 @@ export interface HTMLAttributes<T extends Element = Element> extends BaseProps {
   title?: string;
   role?: string;
   tabIndex?: number;
+  spellCheck?: boolean;
+  dangerouslySetInnerHTML?: { __html: string };
   ref?: ((el: T) => void) | { current: T | null };
 
   // ARIA attributes
@@ -356,6 +359,49 @@ export interface AnchorHTMLAttributes extends HTMLAttributes<HTMLAnchorElement> 
 }
 
 /**
+ * Link element attributes
+ */
+export interface LinkHTMLAttributes extends HTMLAttributes<HTMLLinkElement> {
+  rel?: string;
+  href?: string;
+  as?: string;
+  type?: string;
+  media?: string;
+  sizes?: string;
+  crossOrigin?: 'anonymous' | 'use-credentials' | '';
+  integrity?: string;
+  referrerPolicy?: string;
+  title?: string;
+  disabled?: boolean;
+}
+
+/**
+ * Meta element attributes
+ */
+export interface MetaHTMLAttributes extends HTMLAttributes<HTMLMetaElement> {
+  charSet?: string;
+  content?: string;
+  httpEquiv?: string;
+  name?: string;
+  property?: string;
+}
+
+/**
+ * IFrame element attributes
+ */
+export interface IFrameHTMLAttributes extends HTMLAttributes<HTMLIFrameElement> {
+  src?: string;
+  srcDoc?: string;
+  name?: string;
+  sandbox?: string;
+  allow?: string;
+  loading?: 'eager' | 'lazy';
+  referrerPolicy?: string;
+  width?: number | string;
+  height?: number | string;
+}
+
+/**
  * Image element attributes
  */
 export interface ImgHTMLAttributes extends HTMLAttributes<HTMLImageElement> {
@@ -463,6 +509,10 @@ export interface SVGHTMLAttributes extends HTMLAttributes<SVGElement> {
   height?: number | string;
   x?: number | string;
   y?: number | string;
+  textAnchor?: 'start' | 'middle' | 'end' | string;
+  dy?: number | string;
+  fontSize?: number | string;
+  fontWeight?: number | string;
   // Circle/Ellipse
   cx?: number | string;
   cy?: number | string;
@@ -617,6 +667,8 @@ export function resolveAccessor<T>(value: MaybeAccessor<T>): T {
 
 declare global {
   namespace JSX {
+    type Element = JSXElement;
+
     /**
      * Intrinsic attributes available on all elements
      */
@@ -655,6 +707,7 @@ declare global {
       blockquote: HTMLAttributes<HTMLQuoteElement>;
       pre: HTMLAttributes<HTMLPreElement>;
       code: HTMLAttributes<HTMLElement>;
+      kbd: HTMLAttributes<HTMLElement>;
       em: HTMLAttributes<HTMLElement>;
       strong: HTMLAttributes<HTMLElement>;
       small: HTMLAttributes<HTMLElement>;
@@ -710,11 +763,11 @@ declare global {
       // Other
       br: HTMLAttributes<HTMLBRElement>;
       hr: HTMLAttributes<HTMLHRElement>;
-      iframe: HTMLAttributes<HTMLIFrameElement>;
+      iframe: IFrameHTMLAttributes;
       script: ScriptHTMLAttributes;
       style: HTMLAttributes<HTMLStyleElement>;
-      meta: HTMLAttributes<HTMLMetaElement>;
-      link: HTMLAttributes<HTMLLinkElement>;
+      meta: MetaHTMLAttributes;
+      link: LinkHTMLAttributes;
       title: HTMLAttributes<HTMLTitleElement>;
 
       // SVG elements
@@ -734,3 +787,6 @@ declare global {
     }
   }
 }
+
+export type IntrinsicElements = JSX.IntrinsicElements;
+export type IntrinsicAttributes = JSX.IntrinsicAttributes;

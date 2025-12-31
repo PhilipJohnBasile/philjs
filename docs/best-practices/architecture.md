@@ -65,7 +65,7 @@ Business logic and state management.
 
 ```tsx
 // stores/statsStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import { statsService } from '@/services/statsService';
 import { userStore } from './userStore';
 
@@ -179,7 +179,7 @@ export const api = new ApiClient(import.meta.env.VITE_API_URL);
 
 ```tsx
 // services/ServiceContext.tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 interface Services {
   userService: UserService;
@@ -329,7 +329,7 @@ const app = createApp()
 
 ```tsx
 // Shell Application
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const ProductsApp = lazy(() => import('products/App'));
 const CartApp = lazy(() => import('cart/App'));

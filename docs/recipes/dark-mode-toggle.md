@@ -5,7 +5,7 @@
 ## Solution
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // Initialize from localStorage or system preference
 const getInitialTheme = () => {

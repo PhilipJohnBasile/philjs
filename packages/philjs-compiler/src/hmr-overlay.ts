@@ -304,7 +304,7 @@ export function setupOverlayHandlers(): void {
     hideHMRErrorOverlay();
 
     try {
-      const { rollbackHMRState, getHMRStats } = await import('philjs-core/signals');
+      const { rollbackHMRState, getHMRStats } = await import('@philjs/core/signals');
       const stats = getHMRStats();
 
       if (stats.hasSnapshot) {

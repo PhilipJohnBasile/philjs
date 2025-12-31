@@ -63,7 +63,7 @@ export function createTodo(text: string): Todo {
 Create `src/components/TodoItem.tsx`:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import type { Todo } from '../types/todo';
 
 interface TodoItemProps {
@@ -234,7 +234,7 @@ export function saveTodos(todos: Todo[]): void {
 Create `src/components/TodoApp.tsx`:
 
 ```typescript
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 import { TodoItem } from './TodoItem';
 import { createTodo } from '../types/todo';
 import type { Todo, Filter } from '../types/todo';
@@ -537,8 +537,8 @@ const styles = {
 Create `src/router.ts` so the current low-level APIs can mount and navigate your routes:
 
 ```typescript
-import { createRouter } from 'philjs-router';
-import { render } from 'philjs-core';
+import { createRouter } from '@philjs/router';
+import { render } from '@philjs/core';
 
 type RouteEntry = {
   pattern: string;

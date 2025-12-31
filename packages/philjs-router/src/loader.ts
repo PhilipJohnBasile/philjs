@@ -3,8 +3,8 @@
  * Provides data loading with parallel execution and streaming support.
  */
 
-import { signal } from "philjs-core";
-import type { JSXElement, VNode } from "philjs-core";
+import { signal } from "@philjs/core";
+import type { JSXElement, VNode } from "@philjs/core";
 
 // ============================================================================
 // Types

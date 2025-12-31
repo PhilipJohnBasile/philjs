@@ -1,4 +1,4 @@
-import { signal, memo, effect, onCleanup } from "philjs-core";
+import { signal, memo, effect, onCleanup } from "@philjs/core";
 import { LineChart } from "../components/LineChart";
 import { BarChart } from "../components/BarChart";
 import { MetricCard } from "../components/MetricCard";

@@ -17,11 +17,11 @@
  * - Conversion Rate: +23% vs previous stack
  */
 
-import { signal, computed, effect, batch } from 'philjs-core/tiny';
-import { h, render, Show, For } from 'philjs-core/tiny';
-import { createGeoRouter, getClientLocation, EDGE_LOCATIONS } from 'philjs-edge/geo-routing';
-import { createEdgePrefetcher, generatePrefetchHints } from 'philjs-edge/prefetch';
-import { createSmartCache } from 'philjs-edge/smart-cache';
+import { signal, computed, effect, batch } from '@philjs/core/tiny';
+import { h, render, Show, For } from '@philjs/core/tiny';
+import { createGeoRouter, getClientLocation, EDGE_LOCATIONS } from '@philjs/edge/geo-routing';
+import { createEdgePrefetcher, generatePrefetchHints } from '@philjs/edge/prefetch';
+import { createSmartCache } from '@philjs/edge/smart-cache';
 
 // =============================================================================
 // Types

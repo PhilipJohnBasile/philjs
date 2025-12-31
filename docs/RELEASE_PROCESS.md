@@ -124,7 +124,7 @@ December:  v3.0.0 (Major) - Breaking changes, major features
 **Version Update Command:**
 ```bash
 # Run version update script
-node scripts/update-version.mjs
+pnpm tsx scripts/update-version.ts
 ```
 
 ### 4. Release Candidate (3-5 days before release)
@@ -132,7 +132,7 @@ node scripts/update-version.mjs
 **Create RC:**
 ```bash
 # Update to RC version
-node scripts/update-version.mjs --version 2.1.0-rc.1
+pnpm tsx scripts/update-version.ts --version 2.1.0-rc.1
 
 # Build and test
 pnpm clean
@@ -202,7 +202,7 @@ pnpm publish -r --tag next
    pnpm test
 
    # Verify versions
-   node scripts/verify-versions.mjs
+   pnpm changeset status
 
    # Check bundle sizes
    pnpm check:budgets
@@ -241,7 +241,7 @@ pnpm publish -r --tag next
    cd packages/philjs-core
    npm publish --access public
 
-   cd ../philjs-compiler
+   cd ../@philjs/compiler
    npm publish --access public
 
    # ... repeat for all packages
@@ -250,16 +250,16 @@ pnpm publish -r --tag next
 6. **Verify NPM Publication**
    ```bash
    # Check each package on NPM
-   npm view philjs-core version
-   npm view philjs-compiler version
-   npm view philjs-router version
+   npm view @philjs/core version
+   npm view @philjs/compiler version
+   npm view @philjs/router version
 
    # Test installation
    mkdir /tmp/test-philjs
    cd /tmp/test-philjs
    npm init -y
-   npm install philjs-core@2.1.0
-   node -e "console.log(require('philjs-core'))"
+   npm install @philjs/core@2.1.0
+   node -e "console.log(require('@philjs/core'))"
    ```
 
 7. **Create GitHub Release**
@@ -297,7 +297,7 @@ pnpm publish -r --tag next
 11. **Monitoring**
     ```bash
     # Watch NPM downloads
-    npm-stat philjs-core
+    npm-stat @philjs/core
 
     # Monitor error tracking
     # Check Sentry/error dashboards
@@ -387,7 +387,7 @@ pnpm publish -r --tag next
 2. **Version Bump**
    ```bash
    # Update version to patch
-   node scripts/update-version.mjs --version 2.1.1
+pnpm tsx scripts/update-version.ts --version 2.1.1
 
    # Update CHANGELOG
    # Add hotfix entry
@@ -430,7 +430,7 @@ pnpm publish -r --tag next
    Fix: Update to v2.1.1 immediately
 
    ```bash
-   pnpm update philjs-core@2.1.1
+   pnpm update @philjs/core@2.1.1
    ```
 
    Apologies for any inconvenience.
@@ -513,16 +513,16 @@ npm publish --tag latest  # Stable
 **Version Management:**
 ```bash
 # Update all package versions
-node scripts/update-version.mjs --version 2.1.0
+pnpm tsx scripts/update-version.ts --version 2.1.0
 
 # Verify versions are consistent
-node scripts/verify-versions.mjs
+pnpm changeset status
 
 # Add NPM metadata
-node scripts/add-npm-metadata.mjs
+pnpm tsx scripts/add-npm-metadata.ts
 
 # Verify NPM configs
-node scripts/verify-npm-config.mjs
+pnpm tsx scripts/verify-npm-config.ts
 ```
 
 **Pre-Release Checks:**
@@ -692,7 +692,7 @@ git push --follow-tags
 - [Feature 2]
 - [Feature 3]
 
-📦 Install: npm install philjs-core@2.1.0
+📦 Install: npm install @philjs/core@2.1.0
 
 📖 Docs: https://philjs.dev/docs/v2.1
 📝 Release Notes: https://github.com/[...]/releases/v2.1.0
@@ -708,7 +708,7 @@ git push --follow-tags
 Fixed critical issue affecting [affected users]
 
 Please update immediately:
-npm install philjs-core@2.1.1
+npm install @philjs/core@2.1.1
 
 Details: [GitHub issue link]
 

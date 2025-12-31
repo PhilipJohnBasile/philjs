@@ -20,7 +20,10 @@
       "default": "./dist/utils/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -29,7 +32,13 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "editor", "rich-text", "prosemirror", "collaborative"],
+  "keywords": [
+    "philjs",
+    "editor",
+    "rich-text",
+    "prosemirror",
+    "collaborative"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -48,7 +57,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

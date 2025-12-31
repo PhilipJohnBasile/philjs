@@ -1,6 +1,6 @@
 [package]
 name = "philjs-axum"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Axum web framework integration for PhilJS - SSR, middleware, and typed extractors"

@@ -7,7 +7,7 @@ Build sophisticated forms with dynamic fields, nested data, and advanced validat
 ### Wizard Pattern
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function SignupWizard() {
   const step = signal(1);
@@ -75,7 +75,7 @@ export default function SignupWizard() {
 ### Add/Remove Fields
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function DynamicForm() {
   const items = signal([{ id: 1, value: '' }]);

@@ -1,4 +1,4 @@
-import { effect, render } from 'philjs-core';
+import { effect, render } from '@philjs/core';
 
 interface Route {
   path: string | ((path: string) => boolean);

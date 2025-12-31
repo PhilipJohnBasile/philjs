@@ -11,5 +11,8 @@
     "@philjs/adapters": "workspace:*",
     "@philjs/core": "workspace:*",
     "@philjs/ssr": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

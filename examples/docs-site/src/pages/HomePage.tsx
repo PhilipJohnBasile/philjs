@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import { CodeBlock } from '../components/CodeBlock';
 import { theme, toggleTheme } from '../lib/theme';
 
@@ -26,7 +26,7 @@ const ExpensiveComponent = memo(({ data, onUpdate }) => {
 });`;
 
   const philJSCode = `// PhilJS: Zero manual optimization
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function ExpensiveComponent({ data, onUpdate }) {
   // Automatically tracks dependencies
@@ -1474,7 +1474,7 @@ $ philjs analyze --production
                     border-radius: 4px;
                     font-family: var(--font-mono);
                     font-size: 0.875rem;
-                  ">npm install philjs-core philjs-router</code> in your existing React app. They can coexist.
+                  ">npm install @philjs/core @philjs/router</code> in your existing React app. They can coexist.
                 </p>
               </div>
             </div>
@@ -2040,7 +2040,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-core</h3>
+              ">@philjs/core</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2062,7 +2062,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-router</h3>
+              ">@philjs/router</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2084,7 +2084,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-islands</h3>
+              ">@philjs/islands</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2106,7 +2106,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-ssr</h3>
+              ">@philjs/ssr</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2128,7 +2128,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-devtools</h3>
+              ">@philjs/devtools</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2150,7 +2150,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-ai</h3>
+              ">@philjs/ai</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2172,7 +2172,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-forms</h3>
+              ">@philjs/forms</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;
@@ -2194,7 +2194,7 @@ $ philjs analyze --production
                 font-size: 1rem;
                 font-weight: 600;
                 margin-bottom: 0.5rem;
-              ">philjs-i18n</h3>
+              ">@philjs/i18n</h3>
               <p style="
                 color: var(--color-text-tertiary);
                 font-size: 0.875rem;

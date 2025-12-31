@@ -39,7 +39,11 @@
   "bin": {
     "philjs-native": "./dist/cli.js"
   },
-  "files": ["dist", "src", "templates"],
+  "files": [
+    "dist",
+    "src",
+    "templates"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -65,7 +69,7 @@
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

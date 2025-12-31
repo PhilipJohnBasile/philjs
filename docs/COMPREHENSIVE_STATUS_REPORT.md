@@ -188,7 +188,7 @@ Signals are PhilJS's reactive state primitive...
 ## Creating Signals
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 const name = signal('Alice');

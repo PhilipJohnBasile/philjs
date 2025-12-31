@@ -1,4 +1,4 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 /**
  * Accessibility Demo - Automatic WCAG Compliance
@@ -9,7 +9,7 @@ import { signal } from "philjs-core";
  * - Keyboard navigation
  * - Screen reader support
  *
- * NOTE: The accessibility module would need to be imported from philjs-core
+ * NOTE: The accessibility module would need to be imported from @philjs/core
  * This demo shows manual accessibility best practices that the module automates
  */
 export function AccessibilityDemo() {

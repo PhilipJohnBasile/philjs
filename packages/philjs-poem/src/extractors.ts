@@ -561,7 +561,12 @@ export class FormExtractor<T> extends Extractor<T> {
       return this.err('Invalid content type for form data', 415);
     }
 
-    return this.err('Form parsing not implemented in TypeScript extractor', 500);
+    const parsed = parseFormBody(ctx.body, contentType, this.maxSize);
+    if (!parsed.ok) {
+      return parsed;
+    }
+
+    return this.ok(parsed.value as T);
   }
 
   toRustCode(): string {
@@ -610,7 +615,17 @@ export class MultipartExtractor extends Extractor<Map<string, string | Multipart
       return this.err('Content-Type must be multipart/form-data', 415);
     }
 
-    return this.err('Multipart parsing not implemented in TypeScript extractor', 500);
+    const boundaryMatch = contentType.match(/boundary=([^;]+)/i);
+    if (!boundaryMatch) {
+      return this.err('Multipart boundary missing', 400);
+    }
+
+    const parsed = parseMultipartBody(ctx.body, boundaryMatch[1]!, this.maxFileSize);
+    if (!parsed.ok) {
+      return parsed;
+    }
+
+    return this.ok(parsed.value);
   }
 
   toRustCode(): string {
@@ -716,7 +731,10 @@ export class DataExtractor<T> extends Extractor<T> {
   readonly name = 'Data';
 
   extract(ctx: ExtractorContext): ExtractorResult<T> {
-    return this.err('Data extraction not available in TypeScript context', 500);
+    if (!ctx.state) {
+      return this.err('Application state is not available', 500);
+    }
+    return this.ok(ctx.state as T);
   }
 
   toRustCode(): string {
@@ -779,4 +797,159 @@ export function auth(config?: AuthExtractorConfig): AuthExtractor {
  */
 export function optionalAuth(): AuthExtractor {
   return new AuthExtractor({ optional: true });
+}
+
+type ParseFormResult<T> = { ok: true; value: T } | { ok: false; error: string; status?: number };
+
+function parseFormBody(
+  body: ExtractorContext['body'],
+  contentType: string,
+  maxSize: number
+): ParseFormResult<Record<string, unknown>> {
+  if (body === undefined || body === null) {
+    return { ok: false, error: 'Request body is required', status: 400 };
+  }
+
+  if (typeof FormData !== 'undefined' && body instanceof FormData) {
+    return { ok: true, value: formDataToRecord(body) };
+  }
+
+  if (body instanceof URLSearchParams) {
+    return { ok: true, value: paramsToRecord(body) };
+  }
+
+  const raw = typeof body === 'string'
+    ? body
+    : body instanceof Uint8Array
+      ? new TextDecoder('utf-8').decode(body)
+      : null;
+
+  if (raw === null) {
+    if (typeof body === 'object') {
+      return { ok: true, value: body as Record<string, unknown> };
+    }
+    return { ok: false, error: 'Unsupported body type', status: 415 };
+  }
+
+  if (maxSize > 0 && raw.length > maxSize) {
+    return { ok: false, error: 'Payload too large', status: 413 };
+  }
+
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    return { ok: true, value: paramsToRecord(new URLSearchParams(raw)) };
+  }
+
+  const boundaryMatch = contentType.match(/boundary=([^;]+)/i);
+  if (!boundaryMatch) {
+    return { ok: false, error: 'Multipart boundary missing', status: 400 };
+  }
+
+  const { fields } = parseMultipart(raw, boundaryMatch[1]!, maxSize);
+  return { ok: true, value: fields };
+}
+
+function parseMultipartBody(
+  body: ExtractorContext['body'],
+  boundary: string,
+  maxFileSize: number
+): ParseFormResult<Map<string, string | MultipartFile>> {
+  const raw = typeof body === 'string'
+    ? body
+    : body instanceof Uint8Array
+      ? new TextDecoder('utf-8').decode(body)
+      : null;
+
+  if (raw === null) {
+    return { ok: false, error: 'Unsupported body type', status: 415 };
+  }
+
+  const { files, oversize } = parseMultipart(raw, boundary, maxFileSize);
+  if (oversize) {
+    return { ok: false, error: 'File too large', status: 413 };
+  }
+  return { ok: true, value: files };
+}
+
+function formDataToRecord(formData: FormData): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of formData.entries()) {
+    appendValue(result, key, value);
+  }
+  return result;
+}
+
+function paramsToRecord(params: URLSearchParams): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  params.forEach((value, key) => {
+    appendValue(result, key, value);
+  });
+  return result;
+}
+
+function parseMultipart(
+  body: string,
+  boundary: string,
+  maxFileSize: number
+): {
+  fields: Record<string, unknown>;
+  files: Map<string, string | MultipartFile>;
+  oversize: boolean;
+} {
+  const fields: Record<string, unknown> = {};
+  const files = new Map<string, string | MultipartFile>();
+  let oversize = false;
+
+  const parts = body.split(`--${boundary}`).slice(1, -1);
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const [rawHeaders, rawValue] = trimmed.split(/\r\n\r\n/);
+    if (!rawHeaders || rawValue === undefined) continue;
+
+    const headers = rawHeaders.split(/\r\n/).reduce<Record<string, string>>((acc, line) => {
+      const [key, ...rest] = line.split(':');
+      if (!key) return acc;
+      acc[key.trim().toLowerCase()] = rest.join(':').trim();
+      return acc;
+    }, {});
+
+    const disposition = headers['content-disposition'] || '';
+    const nameMatch = disposition.match(/name=\"([^\"]+)\"/i);
+    if (!nameMatch) continue;
+
+    const filenameMatch = disposition.match(/filename=\"([^\"]*)\"/i);
+    const value = rawValue.replace(/\r\n$/, '');
+
+    if (filenameMatch) {
+      const data = new TextEncoder().encode(value);
+      if (data.length > maxFileSize) {
+        oversize = true;
+        continue;
+      }
+      const file: MultipartFile = {
+        name: nameMatch[1]!,
+        filename: filenameMatch[1]!,
+        contentType: headers['content-type'] || 'application/octet-stream',
+        size: data.length,
+        data,
+      };
+      files.set(nameMatch[1]!, file);
+    } else {
+      appendValue(fields, nameMatch[1]!, value);
+      files.set(nameMatch[1]!, value);
+    }
+  }
+
+  return { fields, files, oversize };
+}
+
+function appendValue(target: Record<string, unknown>, key: string, value: unknown): void {
+  const existing = target[key];
+  if (existing === undefined) {
+    target[key] = value;
+  } else if (Array.isArray(existing)) {
+    existing.push(value);
+  } else {
+    target[key] = [existing, value];
+  }
 }

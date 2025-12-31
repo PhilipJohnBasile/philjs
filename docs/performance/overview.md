@@ -54,7 +54,7 @@ const performanceBudget = {
 Split code into smaller chunks for faster initial load:
 
 ```typescript
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./Dashboard'));
@@ -75,7 +75,7 @@ function App() {
 Cache expensive computations:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function ExpensiveComponent() {
   const data = signal([/* large dataset */]);
@@ -97,7 +97,7 @@ function ExpensiveComponent() {
 Render only visible items in large lists:
 
 ```typescript
-import { VirtualScroller } from 'philjs-core';
+import { VirtualScroller } from '@philjs/core';
 
 function LargeList({ items }: { items: any[] }) {
   return (
@@ -122,7 +122,7 @@ export default {
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['philjs-core'],
+          vendor: ['@philjs/core'],
           utils: ['date-fns', 'lodash-es']
         }
       }
@@ -183,7 +183,7 @@ const updateItem = (id: string) => {
 ### Performance Observer
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function measurePerformance() {
   effect(() => {
@@ -361,7 +361,7 @@ self.onmessage = (e) => {
 ### Real User Monitoring
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const metrics = signal<WebVitals>({
   LCP: 0,

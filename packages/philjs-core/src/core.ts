@@ -1,7 +1,7 @@
 /**
  * philjs-core/core - Minimal core bundle (~4KB)
  *
- * Import from 'philjs-core/core' for the smallest possible bundle.
+ * Import from '@philjs/core/core' for the smallest possible bundle.
  * Only includes signals and JSX runtime - everything you need for basic apps.
  *
  * For additional features, import them separately:

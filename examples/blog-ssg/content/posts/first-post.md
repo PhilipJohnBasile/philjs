@@ -21,7 +21,7 @@ Here are the key benefits:
 ## Code Example
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 

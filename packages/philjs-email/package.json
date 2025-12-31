@@ -16,7 +16,10 @@
       "default": "./dist/providers/*.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -25,7 +28,14 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "email", "nodemailer", "sendgrid", "resend", "ses"],
+  "keywords": [
+    "philjs",
+    "email",
+    "nodemailer",
+    "sendgrid",
+    "resend",
+    "ses"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -35,10 +45,10 @@
     "resend": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@types/nodemailer": "^6.4.14",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

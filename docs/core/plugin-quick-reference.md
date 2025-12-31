@@ -7,12 +7,12 @@ Fast reference guide for working with PhilJS plugins.
 ```bash
 # Install plugin
 philjs plugin add <plugin-name>
-philjs plugin add philjs-plugin-tailwind
-philjs plugin add philjs-plugin-analytics --version 1.2.0
+philjs plugin add @philjs/plugin-tailwind
+philjs plugin add @philjs/plugin-analytics --version 1.2.0
 
 # Remove plugin
 philjs plugin remove <plugin-name>
-philjs plugin rm philjs-plugin-tailwind
+philjs plugin rm @philjs/plugin-tailwind
 
 # List plugins
 philjs plugin list
@@ -49,7 +49,7 @@ philjs plugin setup
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from 'philjs-core';
+import { defineConfig } from '@philjs/core';
 import myPlugin from 'philjs-plugin-name';
 
 export default defineConfig({
@@ -62,8 +62,8 @@ export default defineConfig({
 ### With Configuration
 
 ```typescript
-import tailwind from 'philjs-plugin-tailwind';
-import analytics from 'philjs-plugin-analytics';
+import tailwind from '@philjs/plugin-tailwind';
+import analytics from '@philjs/plugin-analytics';
 
 export default defineConfig({
   plugins: [
@@ -140,7 +140,7 @@ export default createBuilder()
 ### Manual Plugin
 
 ```typescript
-import type { Plugin } from 'philjs-core/plugin-system';
+import type { Plugin } from '@philjs/core/plugin-system';
 
 export default function myPlugin(options = {}): Plugin {
   return {
@@ -340,7 +340,7 @@ hooks: {
 ### Tailwind CSS
 
 ```typescript
-import tailwind from 'philjs-plugin-tailwind';
+import tailwind from '@philjs/plugin-tailwind';
 
 tailwind({
   jit: true,
@@ -358,7 +358,7 @@ tailwind({
 ### Analytics
 
 ```typescript
-import analytics from 'philjs-plugin-analytics';
+import analytics from '@philjs/plugin-analytics';
 
 analytics({
   provider: 'ga4', // or 'plausible', 'mixpanel', etc.
@@ -379,7 +379,7 @@ analytics({
 ## Plugin Composition
 
 ```typescript
-import { composePlugins, definePreset } from 'philjs-core/plugin-system';
+import { composePlugins, definePreset } from '@philjs/core/plugin-system';
 
 // Compose multiple plugins
 const combined = composePlugins([plugin1, plugin2, plugin3]);

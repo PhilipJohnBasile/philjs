@@ -1,6 +1,6 @@
 # Introduction to PhilJS
 
-Welcome to PhilJS - a revolutionary JavaScript framework that thinks ahead so you don't have to.
+Welcome to PhilJS - a TypeScript-first framework that thinks ahead so you don't have to.
 
 ## What is PhilJS?
 
@@ -14,7 +14,7 @@ At its core, PhilJS uses **fine-grained reactivity** with signals, meaning your 
 
 Here's a simple PhilJS example you can edit and run right in your browser:
 
-```javascript live
+```typescript live
 const count = signal(0);
 
 const increment = () => {
@@ -82,7 +82,7 @@ When you click the button, **only the text node** showing the count updates. The
 PhilJS is the first framework with **built-in cost tracking**. See exactly how much your components cost to run in production - down to the penny.
 
 ```typescript
-import { useCosts } from 'philjs-core';
+import { useCosts } from '@philjs/core';
 
 export function Dashboard() {
   const costs = useCosts({ component: 'Dashboard' });
@@ -253,9 +253,9 @@ No decision fatigue. No hunting for packages. Everything works together perfectl
 - Use Electron with React or Vue
 - PhilJS is optimized for web
 
-**Your Team Isn't Ready for TypeScript**
-- PhilJS works with JavaScript but shines with TypeScript
-- Consider Vue or Svelte if your team prefers JavaScript
+**You Need a JavaScript-Only Stack**
+- PhilJS is TypeScript-first and requires TypeScript 6+
+- Consider Vue or Svelte if your team needs JavaScript-only projects
 
 ## How Is PhilJS Different?
 
@@ -328,12 +328,12 @@ PhilJS includes everything Next.js does plus:
 ## Quick Feature Overview
 
 ### Requirements
-- **Node.js 24+** - Required for native ESM, Promise.withResolvers(), Object.groupBy()
+- **Node.js 24+** (Node 25 supported) - Required for native ESM, Promise.withResolvers(), Object.groupBy()
 - **TypeScript 6+** - Required for isolated declarations and enhanced inference
 
 ### Reactivity
 ```typescript
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 const count = signal(0);           // Reactive state
 const doubled = memo(() => count() * 2);  // Computed value

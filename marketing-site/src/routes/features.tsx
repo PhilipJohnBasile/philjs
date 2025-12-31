@@ -1,4 +1,4 @@
-import { defineLoader } from "philjs-ssr";
+import { defineLoader } from "@philjs/ssr";
 import { html } from "../server/template";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
@@ -18,18 +18,18 @@ export default function FeaturesPage() {
         {
           title: "Fine-grained signals",
           description: "Track dependencies automatically and update only what changed.",
-          code: `import { signal, memo } from "philjs-core";
+          code: `import { signal, memo } from "@philjs/core";
 
 const count = signal(0);
 const doubled = memo(() => count() * 2);
 
 count.set(5); // Updates only doubled` ,
-          packages: ["philjs-core", "philjs-compiler"]
+          packages: ["@philjs/core", "@philjs/compiler"]
         },
         {
           title: "Scheduling and batching",
           description: "Group updates and keep reactive work efficient.",
-          code: `import { signal, effect, batch } from "philjs-core";
+          code: `import { signal, effect, batch } from "@philjs/core";
 
 const count = signal(0);
 
@@ -41,7 +41,7 @@ batch(() => {
   count.set(1);
   count.set(2);
 });`,
-          packages: ["philjs-core"]
+          packages: ["@philjs/core"]
         }
       ]
     },
@@ -51,7 +51,7 @@ batch(() => {
         {
           title: "File-based routing",
           description: "Use routes, loaders, and actions with type-safe params.",
-          code: `import { createAppRouter } from "philjs-router";
+          code: `import { createAppRouter } from "@philjs/router";
 
 createAppRouter({
   routes: [
@@ -59,16 +59,16 @@ createAppRouter({
     { path: "/posts/:slug", component: Post }
   ]
 });`,
-          packages: ["philjs-router", "philjs-router-typesafe"]
+          packages: ["@philjs/router", "@philjs/router-typesafe"]
         },
         {
           title: "SSR streaming and islands",
           description: "Stream HTML quickly and hydrate only where needed.",
-          code: `import { renderToStream } from "philjs-ssr";
+          code: `import { renderToStream } from "@philjs/ssr";
 
 const stream = renderToStream(<App />);
 // send stream to client`,
-          packages: ["philjs-ssr", "philjs-islands"]
+          packages: ["@philjs/ssr", "@philjs/islands"]
         }
       ]
     },
@@ -78,22 +78,22 @@ const stream = renderToStream(<App />);
         {
           title: "Typed API routes",
           description: "Define server handlers with built-in validation and helpers.",
-          code: `import { defineAPIRoute, json } from "philjs-api";
+          code: `import { defineAPIRoute, json } from "@philjs/api";
 
 export default defineAPIRoute({
   handler: async () => json({ ok: true })
 });`,
-          packages: ["philjs-api"]
+          packages: ["@philjs/api"]
         },
         {
           title: "GraphQL and realtime",
           description: "Use cached queries, subscriptions, and realtime streams.",
-          code: `import { createGraphQLClient } from "philjs-graphql";
+          code: `import { createGraphQLClient } from "@philjs/graphql";
 
 const client = createGraphQLClient({
   endpoint: "/graphql"
 });`,
-          packages: ["philjs-graphql", "philjs-realtime"]
+          packages: ["@philjs/graphql", "@philjs/realtime"]
         }
       ]
     },
@@ -104,16 +104,16 @@ const client = createGraphQLClient({
           title: "Tooling and testing",
           description: "CLI generators, devtools, and testing utilities built in.",
           code: `pnpm dlx create-philjs my-app
-pnpm add philjs-testing philjs-devtools`,
-          packages: ["philjs-cli", "philjs-testing", "philjs-devtools"]
+pnpm add @philjs/testing @philjs/devtools`,
+          packages: ["@philjs/cli", "@philjs/testing", "@philjs/devtools"]
         },
         {
           title: "Deploy everywhere",
           description: "Adapters for edge, server, and Rust environments.",
-          code: `import { createAdapter } from "philjs-adapters";
+          code: `import { createAdapter } from "@philjs/adapters";
 
 const adapter = createAdapter("cloudflare-pages");`,
-          packages: ["philjs-adapters", "philjs-edge", "philjs-rust"]
+          packages: ["@philjs/adapters", "@philjs/edge", "@philjs/rust"]
         }
       ]
     }
@@ -123,22 +123,22 @@ const adapter = createAdapter("cloudflare-pages");`,
     {
       title: "UI and styling",
       description: "Components, theming, Tailwind, and image pipelines.",
-      packages: ["philjs-ui", "philjs-styles", "philjs-tailwind", "philjs-image"]
+      packages: ["@philjs/ui", "@philjs/styles", "@philjs/tailwind", "@philjs/image"]
     },
     {
       title: "Auth and sessions",
       description: "Auth providers, session utilities, and security tooling.",
-      packages: ["philjs-auth", "philjs-api", "philjs-errors"]
+      packages: ["@philjs/auth", "@philjs/api", "@philjs/errors"]
     },
     {
       title: "Content and docs",
       description: "Content pipelines and documentation tooling.",
-      packages: ["philjs-content", "philjs-docs", "philjs-meta"]
+      packages: ["@philjs/content", "@philjs/docs", "@philjs/meta"]
     },
     {
       title: "Automation and AI",
       description: "AI adapters, analytics, and automation helpers.",
-      packages: ["philjs-ai", "philjs-plugin-analytics", "philjs-optimizer"]
+      packages: ["@philjs/ai", "@philjs/plugin-analytics", "@philjs/optimizer"]
     }
   ];
 

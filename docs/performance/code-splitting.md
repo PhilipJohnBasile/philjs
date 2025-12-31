@@ -17,7 +17,7 @@ Split your application into smaller chunks for faster initial load times.
 ### Lazy Load Routes
 
 ```typescript
-import { Router, Route, lazy } from 'philjs-router';
+import { Router, Route, lazy } from '@philjs/router';
 
 // Lazy load route components
 const Home = lazy(() => import('./pages/Home'));
@@ -40,7 +40,7 @@ export function App() {
 ### With Loading States
 
 ```typescript
-import { Router, Route, lazy, Suspense } from 'philjs-router';
+import { Router, Route, lazy, Suspense } from '@philjs/router';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 
@@ -74,7 +74,7 @@ export function App() {
 ### Lazy Load Heavy Components
 
 ```typescript
-import { lazy, Suspense, signal } from 'philjs-core';
+import { lazy, Suspense, signal } from '@philjs/core';
 
 // Split heavy components
 const ChartComponent = lazy(() => import('./components/Chart'));
@@ -113,7 +113,7 @@ export function Dashboard() {
 ### Modal Code Splitting
 
 ```typescript
-import { lazy, Suspense, signal } from 'philjs-core';
+import { lazy, Suspense, signal } from '@philjs/core';
 
 const UserModal = lazy(() => import('./modals/UserModal'));
 const SettingsModal = lazy(() => import('./modals/SettingsModal'));
@@ -152,7 +152,7 @@ export function App() {
 ### Conditional Loading
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function FeatureToggle() {
   const adminMode = signal(false);
@@ -227,7 +227,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor chunk
-          vendor: ['philjs-core', 'philjs-router'],
+          vendor: ['@philjs/core', '@philjs/router'],
 
           // UI components chunk
           ui: [
@@ -290,7 +290,7 @@ export default defineConfig({
 ### Prefetch Routes
 
 ```typescript
-import { Router, Route, prefetch } from 'philjs-router';
+import { Router, Route, prefetch } from '@philjs/router';
 
 export function Navigation() {
   return (
@@ -316,7 +316,7 @@ export function Navigation() {
 ### Intelligent Preloading
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function preloadLikelyRoutes() {
   effect(() => {
@@ -376,7 +376,7 @@ function PrefetchLink({ href, children }: {
 ### Lazy Load Error Boundaries
 
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function LazyLoadErrorFallback({ error, retry }: {
   error: Error;
@@ -518,7 +518,7 @@ npm run build -- --analyze
 ### Performance Monitoring
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function trackChunkLoad(chunkName: string) {
   const start = performance.now();

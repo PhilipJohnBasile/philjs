@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import {
   createPPRContext,
   renderToStaticShell,

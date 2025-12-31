@@ -1,6 +1,6 @@
 # Core API Reference
 
-Complete API reference for philjs-core package.
+Complete API reference for @philjs/core package.
 
 ## Table of Contents
 
@@ -44,7 +44,7 @@ interface Signal<T> {
 **Examples**:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Example 1: Basic counter
 const count = signal(0);
@@ -81,7 +81,7 @@ todos.set(todos => todos.map(t =>
 ));
 
 // Example 4: Using peek() to read without tracking
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 const a = signal(1);
 const b = signal(2);
@@ -192,7 +192,7 @@ interface Memo<T> {
 **Examples**:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // Example 1: Simple derived value
 const count = signal(5);
@@ -262,7 +262,7 @@ showDetails.set(true);
 console.log(display()); // "info - updated"
 
 // Example 6: Using untrack for non-reactive reads
-import { untrack } from 'philjs-core';
+import { untrack } from '@philjs/core';
 
 const multiplier = signal(2);
 const value = signal(5);
@@ -402,7 +402,7 @@ interface LinkedSignal<T> {
 **Examples**:
 
 ```typescript
-import { signal, linkedSignal } from 'philjs-core';
+import { signal, linkedSignal } from '@philjs/core';
 
 // Example 1: Two-way binding with computed default
 const firstName = signal('John');
@@ -626,7 +626,7 @@ type EffectCleanup = () => void
 **Examples**:
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // Example 1: Simple logging effect
 const count = signal(0);
@@ -799,7 +799,7 @@ dispose = effect(() => {
 
 ```typescript
 // 1. Using onCleanup for multiple cleanup tasks
-import { onCleanup } from 'philjs-core';
+import { onCleanup } from '@philjs/core';
 
 effect(() => {
   const ws = new WebSocket('ws://localhost:8080');
@@ -915,7 +915,7 @@ function batch<T>(fn: () => T): T
 **Examples**:
 
 ```typescript
-import { signal, batch, effect } from 'philjs-core';
+import { signal, batch, effect } from '@philjs/core';
 
 // Example 1: Batching multiple updates
 const firstName = signal('John');
@@ -1223,7 +1223,7 @@ function untrack<T>(fn: () => T): T
 **Examples**:
 
 ```typescript
-import { signal, memo, effect, untrack } from 'philjs-core';
+import { signal, memo, effect, untrack } from '@philjs/core';
 
 // Example 1: Reading signals without creating dependencies
 const a = signal(1);
@@ -1512,7 +1512,7 @@ function getUntracked<T>(signal: Signal<T>): T {
 
 **Example**:
 ```typescript
-import { onCleanup, effect } from 'philjs-core';
+import { onCleanup, effect } from '@philjs/core';
 
 effect(() => {
   const id = setInterval(() => console.log('tick'), 1000);
@@ -1536,7 +1536,7 @@ effect(() => {
 
 **Example**:
 ```typescript
-import { createRoot, signal, effect } from 'philjs-core';
+import { createRoot, signal, effect } from '@philjs/core';
 
 const cleanup = createRoot(() => {
   const count = signal(0);
@@ -1568,7 +1568,7 @@ cleanup(); // Dispose of the root
 
 **Example**:
 ```typescript
-import { jsx } from 'philjs-core';
+import { jsx } from '@philjs/core';
 
 // Automatically used in JSX:
 const element = <div className="container">Hello</div>;
@@ -1589,7 +1589,7 @@ const element = jsx('div', { className: 'container' }, 'Hello');
 
 **Example**:
 ```typescript
-import { Fragment } from 'philjs-core';
+import { Fragment } from '@philjs/core';
 
 function List() {
   return (
@@ -1614,7 +1614,7 @@ function List() {
 
 **Example**:
 ```typescript
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 function App() {
   return <div>Hello World</div>;
@@ -1636,7 +1636,7 @@ const html = renderToString(<App />);
 
 **Example**:
 ```typescript
-import { renderToStream } from 'philjs-core';
+import { renderToStream } from '@philjs/core';
 
 function App() {
   return <div>Hello World</div>;
@@ -1658,7 +1658,7 @@ const stream = renderToStream(<App />);
 
 **Example**:
 ```typescript
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 function App() {
   return <div>Hello World</div>;
@@ -1679,7 +1679,7 @@ hydrate(<App />, document.getElementById('root'));
 
 **Example**:
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 
 function App() {
   return <div>Hello World</div>;
@@ -1702,7 +1702,7 @@ render(<App />, document.getElementById('root'));
 
 **Example**:
 ```typescript
-import { initResumability } from 'philjs-core';
+import { initResumability } from '@philjs/core';
 
 // Call once at app startup
 initResumability();
@@ -1720,7 +1720,7 @@ initResumability();
 
 **Example**:
 ```typescript
-import { getResumableState } from 'philjs-core';
+import { getResumableState } from '@philjs/core';
 
 const state = getResumableState();
 console.log(state.handlers, state.signals);
@@ -1738,7 +1738,7 @@ console.log(state.handlers, state.signals);
 
 **Example**:
 ```typescript
-import { getResumableState, serializeResumableState } from 'philjs-core';
+import { getResumableState, serializeResumableState } from '@philjs/core';
 
 const state = getResumableState();
 const serialized = serializeResumableState(state);
@@ -1759,7 +1759,7 @@ const html = `<script>window.__RESUMABLE__=${serialized}</script>`;
 
 **Example**:
 ```typescript
-import { resume } from 'philjs-core';
+import { resume } from '@philjs/core';
 
 // On client:
 const state = window.__RESUMABLE__;
@@ -1778,7 +1778,7 @@ resume(state);
 
 **Example**:
 ```typescript
-import { resumable } from 'philjs-core';
+import { resumable } from '@philjs/core';
 
 const handleClick = resumable(() => {
   console.log('Clicked!');
@@ -1799,7 +1799,7 @@ const handleClick = resumable(() => {
 
 **Example**:
 ```typescript
-import { registerHandler } from 'philjs-core';
+import { registerHandler } from '@philjs/core';
 
 registerHandler('handleSubmit', (e) => {
   e.preventDefault();
@@ -1819,7 +1819,7 @@ registerHandler('handleSubmit', (e) => {
 
 **Example**:
 ```typescript
-import { registerState, signal } from 'philjs-core';
+import { registerState, signal } from '@philjs/core';
 
 const count = signal(0);
 registerState('count', count);
@@ -1839,7 +1839,7 @@ registerState('count', count);
 
 **Example**:
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 function UserProfile({ userId }) {
   const query = createQuery(() =>
@@ -1869,7 +1869,7 @@ function UserProfile({ userId }) {
 
 **Example**:
 ```typescript
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 function UpdateProfile() {
   const mutation = createMutation(
@@ -1904,7 +1904,7 @@ function UpdateProfile() {
 
 **Example**:
 ```typescript
-import { queryCache } from 'philjs-core';
+import { queryCache } from '@philjs/core';
 
 // Access cached data
 const data = queryCache.get('user-123');
@@ -1928,7 +1928,7 @@ queryCache.clear();
 
 **Example**:
 ```typescript
-import { invalidateQueries } from 'philjs-core';
+import { invalidateQueries } from '@philjs/core';
 
 // Invalidate specific query
 invalidateQueries('user-123');
@@ -1952,7 +1952,7 @@ invalidateQueries();
 
 **Example**:
 ```typescript
-import { prefetchQuery } from 'philjs-core';
+import { prefetchQuery } from '@philjs/core';
 
 // Prefetch user data on hover
 <Link
@@ -1981,7 +1981,7 @@ import { prefetchQuery } from 'philjs-core';
 
 **Example**:
 ```typescript
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 
 const ThemeContext = createContext<'light' | 'dark'>('light');
 
@@ -2006,7 +2006,7 @@ function App() {
 
 **Example**:
 ```typescript
-import { useContext } from 'philjs-core';
+import { useContext } from '@philjs/core';
 
 function Header() {
   const theme = useContext(ThemeContext);
@@ -2026,7 +2026,7 @@ function Header() {
 
 **Example**:
 ```typescript
-import { createSignalContext } from 'philjs-core';
+import { createSignalContext } from '@philjs/core';
 
 const CountContext = createSignalContext(0);
 
@@ -2056,7 +2056,7 @@ function Counter() {
 
 **Example**:
 ```typescript
-import { createThemeContext } from 'philjs-core';
+import { createThemeContext } from '@philjs/core';
 
 const ThemeContext = createThemeContext({
   light: { bg: '#fff', text: '#000' },
@@ -2084,7 +2084,7 @@ function App() {
 
 **Example**:
 ```typescript
-import { combineProviders } from 'philjs-core';
+import { combineProviders } from '@philjs/core';
 
 const AppProviders = combineProviders([
   <ThemeContext.Provider value="dark" />,
@@ -2115,7 +2115,7 @@ function App() {
 
 **Example**:
 ```typescript
-import { createAnimatedValue } from 'philjs-core';
+import { createAnimatedValue } from '@philjs/core';
 
 const x = createAnimatedValue(0, {
   spring: { tension: 170, friction: 26 },
@@ -2136,7 +2136,7 @@ x.set(100); // Animates to 100
 
 **Example**:
 ```typescript
-import { easings, createAnimatedValue } from 'philjs-core';
+import { easings, createAnimatedValue } from '@philjs/core';
 
 const opacity = createAnimatedValue(0, {
   duration: 300,
@@ -2156,7 +2156,7 @@ const opacity = createAnimatedValue(0, {
 
 **Example**:
 ```typescript
-import { FLIPAnimator } from 'philjs-core';
+import { FLIPAnimator } from '@philjs/core';
 
 const animator = new FLIPAnimator();
 
@@ -2182,7 +2182,7 @@ animator.play(element);
 
 **Example**:
 ```typescript
-import { attachGestures } from 'philjs-core';
+import { attachGestures } from '@philjs/core';
 
 const cleanup = attachGestures(element, {
   onSwipeLeft: () => console.log('Swiped left'),
@@ -2206,7 +2206,7 @@ cleanup();
 
 **Example**:
 ```typescript
-import { createParallax } from 'philjs-core';
+import { createParallax } from '@philjs/core';
 
 const parallax = createParallax({
   speed: 0.5,
@@ -2232,7 +2232,7 @@ const parallax = createParallax({
 
 **Example**:
 ```typescript
-import { I18nProvider } from 'philjs-core';
+import { I18nProvider } from '@philjs/core';
 
 const translations = {
   en: { hello: 'Hello' },
@@ -2260,7 +2260,7 @@ function App() {
 
 **Example**:
 ```typescript
-import { useI18n } from 'philjs-core';
+import { useI18n } from '@philjs/core';
 
 function LanguageSwitcher() {
   const i18n = useI18n();
@@ -2289,7 +2289,7 @@ function LanguageSwitcher() {
 
 **Example**:
 ```typescript
-import { useTranslation } from 'philjs-core';
+import { useTranslation } from '@philjs/core';
 
 function Greeting() {
   const t = useTranslation();
@@ -2312,7 +2312,7 @@ function Greeting() {
 
 **Example**:
 ```typescript
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function App() {
   return (
@@ -2335,7 +2335,7 @@ function App() {
 
 **Example**:
 ```typescript
-import { setupGlobalErrorHandler } from 'philjs-core';
+import { setupGlobalErrorHandler } from '@philjs/core';
 
 setupGlobalErrorHandler((error, errorInfo) => {
   console.error('Global error:', error);
@@ -2355,7 +2355,7 @@ setupGlobalErrorHandler((error, errorInfo) => {
 
 **Example**:
 ```typescript
-import { errorRecovery } from 'philjs-core';
+import { errorRecovery } from '@philjs/core';
 
 try {
   // Some code
@@ -2379,7 +2379,7 @@ try {
 
 **Example**:
 ```typescript
-import { generateServiceWorker } from 'philjs-core';
+import { generateServiceWorker } from '@philjs/core';
 
 const sw = generateServiceWorker({
   cacheStrategy: 'network-first',
@@ -2399,7 +2399,7 @@ const sw = generateServiceWorker({
 
 **Example**:
 ```typescript
-import { registerServiceWorker } from 'philjs-core';
+import { registerServiceWorker } from '@philjs/core';
 
 if ('serviceWorker' in navigator) {
   registerServiceWorker('/sw.js').then(reg => {
@@ -2422,7 +2422,7 @@ if ('serviceWorker' in navigator) {
 
 **Example**:
 ```typescript
-import { performanceBudgets } from 'philjs-core';
+import { performanceBudgets } from '@philjs/core';
 
 performanceBudgets.setBudget('/', {
   fcp: 1500, // First Contentful Paint
@@ -2445,7 +2445,7 @@ const report = performanceBudgets.check('/');
 
 **Example**:
 ```typescript
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 costTracker.trackRequest('/api/users', {
   computeTime: 100,
@@ -2468,7 +2468,7 @@ console.log('Monthly cost:', estimate.monthly);
 
 **Example**:
 ```typescript
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 usageAnalytics.track('MyComponent');
 
@@ -2490,7 +2490,7 @@ console.log('Unused components:', report.deadCode);
 
 **Example**:
 ```typescript
-import { Ok, Err, matchResult } from 'philjs-core';
+import { Ok, Err, matchResult } from '@philjs/core';
 
 function divide(a: number, b: number) {
   if (b === 0) return Err('Division by zero');
@@ -2516,7 +2516,7 @@ matchResult(result, {
 
 **Example**:
 ```typescript
-import { Err, isErr } from 'philjs-core';
+import { Err, isErr } from '@philjs/core';
 
 const result = Err('Something went wrong');
 
@@ -2537,7 +2537,7 @@ if (isErr(result)) {
 
 **Example**:
 ```typescript
-import { Ok, isOk } from 'philjs-core';
+import { Ok, isOk } from '@philjs/core';
 
 const result = Ok(42);
 
@@ -2558,7 +2558,7 @@ if (isOk(result)) {
 
 **Example**:
 ```typescript
-import { Err, isErr } from 'philjs-core';
+import { Err, isErr } from '@philjs/core';
 
 const result = Err('Failed');
 
@@ -2579,7 +2579,7 @@ if (isErr(result)) {
 
 **Example**:
 ```typescript
-import { Ok, map } from 'philjs-core';
+import { Ok, map } from '@philjs/core';
 
 const result = Ok(5);
 const doubled = map(result, (x) => x * 2);
@@ -2598,7 +2598,7 @@ const doubled = map(result, (x) => x * 2);
 
 **Example**:
 ```typescript
-import { Err, mapErr } from 'philjs-core';
+import { Err, mapErr } from '@philjs/core';
 
 const result = Err(404);
 const mapped = mapErr(result, (code) => `Error ${code}`);
@@ -2617,7 +2617,7 @@ const mapped = mapErr(result, (code) => `Error ${code}`);
 
 **Example**:
 ```typescript
-import { Ok, andThen } from 'philjs-core';
+import { Ok, andThen } from '@philjs/core';
 
 const parse = (s: string) => Ok(parseInt(s));
 const validate = (n: number) => n > 0 ? Ok(n) : Err('Must be positive');
@@ -2637,7 +2637,7 @@ const result = andThen(parse('42'), validate);
 
 **Example**:
 ```typescript
-import { Ok, unwrap } from 'philjs-core';
+import { Ok, unwrap } from '@philjs/core';
 
 const result = Ok(42);
 const value = unwrap(result); // 42
@@ -2655,7 +2655,7 @@ const value = unwrap(result); // 42
 
 **Example**:
 ```typescript
-import { Err, unwrapOr } from 'philjs-core';
+import { Err, unwrapOr } from '@philjs/core';
 
 const result = Err('Failed');
 const value = unwrapOr(result, 0); // 0
@@ -2673,7 +2673,7 @@ const value = unwrapOr(result, 0); // 0
 
 **Example**:
 ```typescript
-import { Ok, Err, matchResult } from 'philjs-core';
+import { Ok, Err, matchResult } from '@philjs/core';
 
 const result = Ok(42);
 
@@ -2697,7 +2697,7 @@ const message = matchResult(result, {
 
 **Example**:
 ```typescript
-import { useForm, validators as v } from 'philjs-core';
+import { useForm, validators as v } from '@philjs/core';
 
 function LoginForm() {
   const form = useForm({
@@ -2744,7 +2744,7 @@ function LoginForm() {
 
 **Example**:
 ```typescript
-import { validators as v } from 'philjs-core';
+import { validators as v } from '@philjs/core';
 
 const validators = [
   v.required('This field is required'),
@@ -2768,7 +2768,7 @@ const validators = [
 
 **Example**:
 ```typescript
-import { createField, validators as v } from 'philjs-core';
+import { createField, validators as v } from '@philjs/core';
 
 const email = createField('', [v.required(), v.email()]);
 

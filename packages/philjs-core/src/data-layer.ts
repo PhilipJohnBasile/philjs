@@ -86,27 +86,33 @@ export type MutationResult<TData, TVariables> = {
 /**
  * Global cache for queries.
  */
+type CacheEntry = {
+  data: unknown;
+  error: Error | undefined;
+  timestamp: number;
+  promise?: Promise<unknown>;
+};
+
 class QueryCache {
-  private cache = new Map<string, {
-    data: any;
-    error: Error | undefined;
-    timestamp: number;
-    promise?: Promise<any>;
-  }>();
+  private cache = new Map<string, CacheEntry>();
+  private gcTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   get(key: string) {
     return this.cache.get(key);
   }
 
-  set(key: string, value: any, error?: Error) {
+  set(key: string, value: unknown, error?: Error, cacheTime?: number) {
     this.cache.set(key, {
       data: value,
       error,
       timestamp: Date.now(),
     });
+    if (cacheTime !== undefined) {
+      this.scheduleGc(key, cacheTime);
+    }
   }
 
-  setPromise(key: string, promise: Promise<any>) {
+  setPromise(key: string, promise: Promise<unknown>) {
     const entry = this.cache.get(key);
     if (entry) {
       entry.promise = promise;
@@ -122,10 +128,19 @@ class QueryCache {
 
   delete(key: string) {
     this.cache.delete(key);
+    const timer = this.gcTimers.get(key);
+    if (timer) {
+      clearTimeout(timer);
+      this.gcTimers.delete(key);
+    }
   }
 
   clear() {
     this.cache.clear();
+    for (const timer of this.gcTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.gcTimers.clear();
   }
 
   isStale(key: string, staleTime: number): boolean {
@@ -133,15 +148,101 @@ class QueryCache {
     if (!entry) return true;
     return Date.now() - entry.timestamp > staleTime;
   }
+
+  invalidate(key: string) {
+    const entry = this.cache.get(key);
+    if (entry) {
+      entry.timestamp = 0;
+      entry.promise = undefined;
+    }
+  }
+
+  private scheduleGc(key: string, cacheTime: number) {
+    if (cacheTime <= 0) {
+      return;
+    }
+    const existing = this.gcTimers.get(key);
+    if (existing) {
+      clearTimeout(existing);
+    }
+    const timer = setTimeout(() => {
+      this.cache.delete(key);
+      this.gcTimers.delete(key);
+    }, cacheTime);
+    this.gcTimers.set(key, timer);
+  }
 }
 
 export const queryCache = new QueryCache();
+
+type QueryObserver = {
+  key: QueryKey;
+  keyStr: string;
+  refetch: () => Promise<unknown>;
+  staleTime: number;
+};
+
+const queryObservers = new Map<string, Set<QueryObserver>>();
+
+function registerObserver(observer: QueryObserver) {
+  const set = queryObservers.get(observer.keyStr);
+  if (set) {
+    set.add(observer);
+  } else {
+    queryObservers.set(observer.keyStr, new Set([observer]));
+  }
+}
+
+function getKeyString(key: QueryKey): string {
+  return typeof key === "string" ? key : stableStringify(key);
+}
+
+function stableStringify(value: unknown): string {
+  return JSON.stringify(value, (_key, val) => {
+    if (!val || typeof val !== "object" || Array.isArray(val)) {
+      return val;
+    }
+    const sorted: Record<string, unknown> = {};
+    for (const key of Object.keys(val as Record<string, unknown>).sort()) {
+      sorted[key] = (val as Record<string, unknown>)[key];
+    }
+    return sorted;
+  });
+}
+
+function isEqual(a: unknown, b: unknown): boolean {
+  return stableStringify(a) === stableStringify(b);
+}
+
+function matchesKey(key: QueryKey, pattern: QueryKey | ((key: QueryKey) => boolean)): boolean {
+  if (typeof pattern === "function") {
+    return pattern(key);
+  }
+  if (typeof pattern === "string") {
+    if (typeof key === "string") return key === pattern;
+    if (Array.isArray(key)) return key[0] === pattern;
+    return false;
+  }
+  if (!Array.isArray(pattern)) {
+    return isEqual(key, pattern);
+  }
+  if (!Array.isArray(key)) return false;
+  if (pattern.length > key.length) return false;
+  for (let i = 0; i < pattern.length; i += 1) {
+    if (!isEqual(key[i], pattern[i])) {
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  * Create a query hook for data fetching.
  */
 export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
-  const keyStr = JSON.stringify(options.key);
+  const keyStr = getKeyString(options.key);
+  const staleTime = options.staleTime ?? 0;
+  const cacheTime = options.cacheTime ?? 5 * 60 * 1000;
 
   // Signals for reactive state
   const data = signal<T | undefined>(options.initialData);
@@ -151,12 +252,10 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
 
   // Check cache
   const cached = queryCache.get(keyStr);
-  if (cached && !queryCache.isStale(keyStr, options.staleTime || 0)) {
-    data.set(cached.data);
+  if (cached && !queryCache.isStale(keyStr, staleTime)) {
+    data.set(cached.data as T);
     error.set(cached.error);
   }
-
-  let listenersAttached = false;
 
   // Fetch function
   const fetchData = async (): Promise<T> => {
@@ -167,7 +266,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       const existing = queryCache.get(keyStr);
       if (existing?.promise) {
         const result = await existing.promise;
-        data.set(result);
+        data.set(result as T);
         return result;
       }
 
@@ -178,7 +277,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       const result = await promise;
 
       // Update cache and state
-      queryCache.set(keyStr, result);
+      queryCache.set(keyStr, result, undefined, cacheTime);
       data.set(result);
       error.set(undefined);
 
@@ -190,7 +289,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       const e = err instanceof Error ? err : new Error(String(err));
 
       // Update cache and state
-      queryCache.set(keyStr, undefined, e);
+      queryCache.set(keyStr, undefined, e, cacheTime);
       error.set(e);
 
       // Call error callback
@@ -201,36 +300,13 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       isFetching.set(false);
       isLoading.set(false);
 
-      if (!listenersAttached) {
-        listenersAttached = true;
-        // Set up refetch on focus
-        if (options.refetchOnFocus && typeof window !== "undefined") {
-          window.addEventListener("focus", () => {
-            if (queryCache.isStale(keyStr, options.staleTime || 0)) {
-              fetchData();
-            }
-          });
-        }
-
-        // Set up refetch on reconnect
-        if (options.refetchOnReconnect && typeof window !== "undefined") {
-          window.addEventListener("online", () => {
-            fetchData();
-          });
-        }
-
-        // Set up refetch interval
-        if (options.refetchInterval && typeof window !== "undefined") {
-          setInterval(() => {
-            fetchData();
-          }, options.refetchInterval);
-        }
-      }
     }
   };
 
+  registerObserver({ key: options.key, keyStr, refetch: fetchData, staleTime });
+
   // Initial fetch
-  if (!cached || queryCache.isStale(keyStr, options.staleTime || 0)) {
+  if (!cached || queryCache.isStale(keyStr, staleTime)) {
     isLoading.set(true);
 
     if (options.suspense && typeof window === "undefined") {
@@ -242,27 +318,29 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
     }
   }
 
-  // Set up refetch on focus
-  if (options.refetchOnFocus && typeof window !== "undefined") {
-    window.addEventListener("focus", () => {
-      if (queryCache.isStale(keyStr, options.staleTime || 0)) {
+  if (typeof window !== "undefined") {
+    // Set up refetch on focus
+    if (options.refetchOnFocus) {
+      window.addEventListener("focus", () => {
+        if (queryCache.isStale(keyStr, staleTime)) {
+          fetchData();
+        }
+      });
+    }
+
+    // Set up refetch on reconnect
+    if (options.refetchOnReconnect) {
+      window.addEventListener("online", () => {
         fetchData();
-      }
-    });
-  }
+      });
+    }
 
-  // Set up refetch on reconnect
-  if (options.refetchOnReconnect && typeof window !== "undefined") {
-    window.addEventListener("online", () => {
-      fetchData();
-    });
-  }
-
-  // Set up refetch interval
-  if (options.refetchInterval && typeof window !== "undefined") {
-    setInterval(() => {
-      fetchData();
-    }, options.refetchInterval);
+    // Set up refetch interval
+    if (options.refetchInterval) {
+      setInterval(() => {
+        fetchData();
+      }, options.refetchInterval);
+    }
   }
 
   // Computed values
@@ -278,9 +356,12 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
     isError,
     refetch: fetchData,
     mutate: (newData: T | ((prev: T | undefined) => T)) => {
-      const updated = typeof newData === "function" ? (newData as (prev: T | undefined) => T)(data()) : newData;
+      const updated = typeof newData === "function"
+        ? (newData as (prev: T | undefined) => T)(data())
+        : newData;
       data.set(updated);
-      queryCache.set(keyStr, { ...queryCache.get(keyStr), data: updated });
+      const existing = queryCache.get(keyStr);
+      queryCache.set(keyStr, updated, existing?.error, cacheTime);
     },
   };
 }
@@ -360,19 +441,33 @@ export function createMutation<TData, TVariables>(
  * Invalidate queries by key pattern.
  */
 export function invalidateQueries(keyPattern?: QueryKey | ((key: QueryKey) => boolean)): void {
-  // This would trigger refetch of matching queries
-  // Implementation depends on query tracking system
-  console.log("Invalidating queries:", keyPattern);
+  const observers = Array.from(queryObservers.values()).flatMap((set) => Array.from(set));
+  if (!keyPattern) {
+    queryCache.clear();
+    observers.forEach((observer) => {
+      observer.refetch();
+    });
+    return;
+  }
+
+  for (const observer of observers) {
+    if (matchesKey(observer.key, keyPattern)) {
+      queryCache.invalidate(observer.keyStr);
+      observer.refetch();
+    }
+  }
 }
 
 /**
  * Prefetch a query (for SSR or preloading).
  */
 export async function prefetchQuery<T>(options: QueryOptions<T>): Promise<T> {
-  const keyStr = JSON.stringify(options.key);
+  const keyStr = getKeyString(options.key);
+  const staleTime = options.staleTime ?? 0;
+  const cacheTime = options.cacheTime ?? 5 * 60 * 1000;
 
   // Check if already cached and fresh
-  if (!queryCache.isStale(keyStr, options.staleTime || 0)) {
+  if (!queryCache.isStale(keyStr, staleTime)) {
     const cached = queryCache.get(keyStr);
     if (cached?.data) return cached.data;
   }
@@ -380,11 +475,11 @@ export async function prefetchQuery<T>(options: QueryOptions<T>): Promise<T> {
   // Fetch and cache
   try {
     const result = await options.fetcher();
-    queryCache.set(keyStr, result);
+    queryCache.set(keyStr, result, undefined, cacheTime);
     return result;
   } catch (err) {
     const e = err instanceof Error ? err : new Error(String(err));
-    queryCache.set(keyStr, undefined, e);
+    queryCache.set(keyStr, undefined, e, cacheTime);
     throw e;
   }
 }

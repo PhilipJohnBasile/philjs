@@ -24,7 +24,10 @@
       "default": "./dist/transform.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -57,7 +60,7 @@
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.5",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

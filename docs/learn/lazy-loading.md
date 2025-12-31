@@ -57,7 +57,7 @@ async function loadAndRender() {
 Create a helper for lazy components:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function lazy<T>(loader: () => Promise<{ default: T }>) {
   const Component = signal<T | null>(null);

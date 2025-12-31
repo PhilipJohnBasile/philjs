@@ -16,17 +16,27 @@
     "./esm": "./dist/philjs.esm.js",
     "./mini": "./dist/philjs.mini.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "node build.js",
-    "build:watch": "node build.js --watch"
+    "build": "tsx build.ts",
+    "build:watch": "tsx build.ts --watch"
   },
   "devDependencies": {
     "esbuild": "^0.27.2",
     "terser": "^5.26.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.19.1",
+    "typescript": "^6.0.0"
   },
-  "keywords": ["philjs", "cdn", "umd", "global", "no-build", "alpine-style"],
+  "keywords": [
+    "philjs",
+    "cdn",
+    "umd",
+    "global",
+    "no-build",
+    "alpine-style"
+  ],
   "license": "MIT",
   "sideEffects": false,
   "engines": {

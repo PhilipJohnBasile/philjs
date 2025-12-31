@@ -27,7 +27,7 @@ TanStack Router-style developer tools for debugging and monitoring your routes.
 ### Usage
 
 ```tsx
-import { RouterDevTools } from 'philjs-router';
+import { RouterDevTools } from '@philjs/router';
 
 function App() {
   return (
@@ -43,7 +43,7 @@ function App() {
 ### Configuration
 
 ```tsx
-import { initRouterDevTools } from 'philjs-router';
+import { initRouterDevTools } from '@philjs/router';
 
 initRouterDevTools({
   position: 'bottom',        // 'bottom' | 'top' | 'left' | 'right'
@@ -65,7 +65,7 @@ import {
   trackLoader,
   updateRouteTree,
   exportState,
-} from 'philjs-router';
+} from '@philjs/router';
 
 // Track navigation
 trackNavigation('/users/123', { id: '123' }, searchParams);
@@ -116,7 +116,7 @@ routes/
 ### Creating Route Groups
 
 ```tsx
-import { createRouteGroup, addRouteToGroup } from 'philjs-router';
+import { createRouteGroup, addRouteToGroup } from '@philjs/router';
 
 const marketingGroup = createRouteGroup('marketing', {
   layout: MarketingLayout,
@@ -139,7 +139,7 @@ import {
   createPermissionMiddleware,
   createLoggingMiddleware,
   createRateLimitMiddleware,
-} from 'philjs-router';
+} from '@philjs/router';
 
 const adminGroup = createRouteGroup('admin', {
   middleware: [
@@ -168,7 +168,7 @@ const adminGroup = createRouteGroup('admin', {
 ### Processing Groups
 
 ```tsx
-import { processRouteGroups } from 'philjs-router';
+import { processRouteGroups } from '@philjs/router';
 
 const groups = [marketingGroup, dashboardGroup, adminGroup];
 const routes = processRouteGroups(groups);
@@ -179,7 +179,7 @@ const routes = processRouteGroups(groups);
 ### File-based Discovery
 
 ```tsx
-import { discoverRouteGroups } from 'philjs-router';
+import { discoverRouteGroups } from '@philjs/router';
 
 const files = import.meta.glob('./(*)/*.tsx', { eager: true });
 const groups = discoverRouteGroups(files);
@@ -202,7 +202,7 @@ Display a different URL in the browser than the actual route being rendered.
 ### Basic Usage
 
 ```tsx
-import { navigateWithMask } from 'philjs-router';
+import { navigateWithMask } from '@philjs/router';
 
 // Navigate to photo detail but show /photos in URL
 navigateWithMask('/photos/123', {
@@ -214,7 +214,7 @@ navigateWithMask('/photos/123', {
 ### Modal Pattern
 
 ```tsx
-import { navigateAsModal, closeOverlay } from 'philjs-router';
+import { navigateAsModal, closeOverlay } from '@philjs/router';
 
 // Open modal
 function openPhotoModal(id: string) {
@@ -233,7 +233,7 @@ function closePhotoModal() {
 ### Drawer Pattern
 
 ```tsx
-import { navigateAsDrawer } from 'philjs-router';
+import { navigateAsDrawer } from '@philjs/router';
 
 function openSettings() {
   navigateAsDrawer('/settings/detail', {
@@ -247,7 +247,7 @@ function openSettings() {
 ### Nested Masking
 
 ```tsx
-import { pushMask, popMask } from 'philjs-router';
+import { pushMask, popMask } from '@philjs/router';
 
 // Push masks onto stack
 const mask1 = createRouteMask('/modal1', '/background');
@@ -269,7 +269,7 @@ import {
   useIsRouteMasked,
   useActualRoute,
   useMaskedUrl,
-} from 'philjs-router';
+} from '@philjs/router';
 
 function MyComponent() {
   const mask = useRouteMask();
@@ -302,7 +302,7 @@ Global context available to all routes with type-safe injection.
 ### Basic Usage
 
 ```tsx
-import { initRouterContext, setGlobalContext } from 'philjs-router';
+import { initRouterContext, setGlobalContext } from '@philjs/router';
 
 // Initialize with context
 initRouterContext({
@@ -333,7 +333,7 @@ import {
   registerContextProvider,
   defineContextProvider,
   createUserContextProvider,
-} from 'philjs-router';
+} from '@philjs/router';
 
 // Define provider
 const apiProvider = defineContextProvider(
@@ -353,7 +353,7 @@ registerContextProvider(
 ### Route-specific Context
 
 ```tsx
-import { registerRouteContextOverride } from 'philjs-router';
+import { registerRouteContextOverride } from '@philjs/router';
 
 // Override context for specific routes
 registerRouteContextOverride({
@@ -372,7 +372,7 @@ registerRouteContextOverride({
 import {
   addContextMiddleware,
   defineContextMiddleware,
-} from 'philjs-router';
+} from '@philjs/router';
 
 const loggingMiddleware = defineContextMiddleware((ctx, { route }) => {
   console.log(`Route ${route} accessing context:`, Object.keys(ctx));
@@ -385,7 +385,7 @@ addContextMiddleware(loggingMiddleware);
 ### Typed Context
 
 ```tsx
-import { createTypedContext } from 'philjs-router';
+import { createTypedContext } from '@philjs/router';
 
 type AppContext = {
   user: User;
@@ -403,7 +403,7 @@ const user = typedContext.useValue('user'); // Type: User
 ### Validation
 
 ```tsx
-import { initRouterContext } from 'philjs-router';
+import { initRouterContext } from '@philjs/router';
 
 initRouterContext({
   validators: {
@@ -427,7 +427,7 @@ import {
   createThemeContextProvider,
   createLocaleContextProvider,
   createApiContextProvider,
-} from 'philjs-router';
+} from '@philjs/router';
 
 // User context
 registerContextProvider(
@@ -470,7 +470,7 @@ import {
   createAuthMiddleware,
   navigateAsModal,
   closeOverlay,
-} from 'philjs-router';
+} from '@philjs/router';
 
 // Set up context
 initRouterContext({
@@ -583,7 +583,7 @@ import {
   // Router Context
   useRouterContext,
   initRouterContext,
-} from 'philjs-router';
+} from '@philjs/router';
 ```
 
 ---

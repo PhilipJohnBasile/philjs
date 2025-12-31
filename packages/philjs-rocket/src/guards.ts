@@ -557,10 +557,19 @@ export class JsonBodyGuard<T> extends RequestGuard<T> {
       }
     }
 
-    // In a real implementation, we'd parse the body here
-    // This is handled by Rocket's Json extractor in Rust
+    const parsed = parseJsonBody(ctx.body, this.config.maxSize || 0);
+    if (!parsed.success) {
+      return this.failure(parsed.error, parsed.status);
+    }
 
-    return this.failure('Body parsing not implemented in TypeScript guard', 500);
+    if (this.schema) {
+      const schemaError = validateSchema(parsed.value, this.schema);
+      if (schemaError) {
+        return this.failure(schemaError, 422);
+      }
+    }
+
+    return this.success(parsed.value as T);
   }
 
   toRustCode(): string {
@@ -630,7 +639,12 @@ export class FormDataGuard<T> extends RequestGuard<T> {
       return this.failure('Invalid content type for form data', 415);
     }
 
-    return this.failure('Form parsing not implemented in TypeScript guard', 500);
+    const parsed = parseFormBody(ctx.body, contentType, this.maxSize);
+    if (!parsed.success) {
+      return this.failure(parsed.error, parsed.status);
+    }
+
+    return this.success(parsed.value as T);
   }
 
   toRustCode(): string {
@@ -788,4 +802,167 @@ export function combineGuards<T extends unknown[]>(
 
     return { success: true, value: results as T };
   };
+}
+
+type ParseResult<T> = { success: true; value: T } | { success: false; error: string; status?: number };
+
+function parseJsonBody(body: GuardContext['body'], maxSize: number): ParseResult<unknown> {
+  if (body === undefined) {
+    return { success: false, error: 'Request body is required', status: 400 };
+  }
+
+  if (typeof body === 'string') {
+    if (maxSize > 0 && body.length > maxSize) {
+      return { success: false, error: 'Payload too large', status: 413 };
+    }
+    try {
+      return { success: true, value: JSON.parse(body) };
+    } catch (error) {
+      return { success: false, error: `Invalid JSON: ${(error as Error).message}`, status: 400 };
+    }
+  }
+
+  if (body instanceof Uint8Array) {
+    if (maxSize > 0 && body.length > maxSize) {
+      return { success: false, error: 'Payload too large', status: 413 };
+    }
+    const text = new TextDecoder('utf-8').decode(body);
+    try {
+      return { success: true, value: JSON.parse(text) };
+    } catch (error) {
+      return { success: false, error: `Invalid JSON: ${(error as Error).message}`, status: 400 };
+    }
+  }
+
+  if (typeof body === 'object') {
+    return { success: true, value: body };
+  }
+
+  return { success: false, error: 'Unsupported body type', status: 415 };
+}
+
+function parseFormBody(
+  body: GuardContext['body'],
+  contentType: string,
+  maxSize: number
+): ParseResult<Record<string, unknown>> {
+  if (body === undefined) {
+    return { success: false, error: 'Request body is required', status: 400 };
+  }
+
+  if (body instanceof FormData) {
+    return { success: true, value: formDataToRecord(body) };
+  }
+
+  if (body instanceof URLSearchParams) {
+    return { success: true, value: paramsToRecord(body) };
+  }
+
+  const raw = typeof body === 'string'
+    ? body
+    : body instanceof Uint8Array
+      ? new TextDecoder('utf-8').decode(body)
+      : null;
+
+  if (raw === null) {
+    if (typeof body === 'object') {
+      return { success: true, value: body as Record<string, unknown> };
+    }
+    return { success: false, error: 'Unsupported body type', status: 415 };
+  }
+
+  if (maxSize > 0 && raw.length > maxSize) {
+    return { success: false, error: 'Payload too large', status: 413 };
+  }
+
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    return { success: true, value: paramsToRecord(new URLSearchParams(raw)) };
+  }
+
+  const boundaryMatch = contentType.match(/boundary=([^;]+)/i);
+  if (!boundaryMatch) {
+    return { success: false, error: 'Multipart boundary missing', status: 400 };
+  }
+
+  return { success: true, value: parseMultipart(raw, boundaryMatch[1]!) };
+}
+
+function formDataToRecord(formData: FormData): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of formData.entries()) {
+    appendFormValue(result, key, value);
+  }
+  return result;
+}
+
+function paramsToRecord(params: URLSearchParams): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  params.forEach((value, key) => {
+    appendFormValue(result, key, value);
+  });
+  return result;
+}
+
+function parseMultipart(body: string, boundary: string): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  const parts = body.split(`--${boundary}`).slice(1, -1);
+
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const [rawHeaders, rawValue] = trimmed.split(/\r\n\r\n/);
+    if (!rawHeaders || rawValue === undefined) continue;
+
+    const headers = rawHeaders.split(/\r\n/).reduce<Record<string, string>>((acc, line) => {
+      const [key, ...rest] = line.split(':');
+      if (!key) return acc;
+      acc[key.trim().toLowerCase()] = rest.join(':').trim();
+      return acc;
+    }, {});
+
+    const disposition = headers['content-disposition'] || '';
+    const nameMatch = disposition.match(/name=\"([^\"]+)\"/i);
+    if (!nameMatch) continue;
+
+    const filenameMatch = disposition.match(/filename=\"([^\"]*)\"/i);
+    const value = rawValue.replace(/\r\n$/, '');
+
+    if (filenameMatch) {
+      appendFormValue(result, nameMatch[1]!, {
+        filename: filenameMatch[1]!,
+        contentType: headers['content-type'],
+        data: value,
+        size: value.length,
+      });
+    } else {
+      appendFormValue(result, nameMatch[1]!, value);
+    }
+  }
+
+  return result;
+}
+
+function appendFormValue(result: Record<string, unknown>, key: string, value: unknown): void {
+  const existing = result[key];
+  if (existing === undefined) {
+    result[key] = value;
+  } else if (Array.isArray(existing)) {
+    existing.push(value);
+  } else {
+    result[key] = [existing, value];
+  }
+}
+
+function validateSchema(value: unknown, schema: object): string | null {
+  if (!schema || typeof schema !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  const required = (schema as { required?: string[] }).required;
+  if (required && Array.isArray(required)) {
+    for (const key of required) {
+      if (!(key in record)) {
+        return `Missing required field: ${key}`;
+      }
+    }
+  }
+  return null;
 }

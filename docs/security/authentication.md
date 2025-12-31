@@ -30,8 +30,8 @@ PhilJS doesn't include built-in authentication, giving you flexibility to choose
 ### Implementation
 
 ```typescript
-import { createCookie } from 'philjs-ssr';
-import { generateSecureToken } from 'philjs-core';
+import { createCookie } from '@philjs/ssr';
+import { generateSecureToken } from '@philjs/core';
 
 // Session storage (use Redis in production)
 const sessions = new Map<string, {
@@ -229,7 +229,7 @@ export async function requireAuth(request: Request) {
 ### Refresh Tokens
 
 ```typescript
-import { generateSecureToken } from 'philjs-core';
+import { generateSecureToken } from '@philjs/core';
 
 const refreshTokens = new Map<string, {
   userId: string;
@@ -271,7 +271,7 @@ export async function handleRefresh(request: Request) {
 ### OAuth 2.0 Flow
 
 ```typescript
-import { generateSecureToken } from 'philjs-core';
+import { generateSecureToken } from '@philjs/core';
 
 const OAUTH_CONFIG = {
   google: {
@@ -566,7 +566,7 @@ export async function handlePasswordReset(request: Request) {
 
 ```typescript
 import * as OTPAuth from 'otpauth';
-import { generateSecureToken } from 'philjs-core';
+import { generateSecureToken } from '@philjs/core';
 
 // Generate TOTP secret
 export function generateTOTPSecret(email: string) {
@@ -719,7 +719,7 @@ export function httpsRedirect(request: Request) {
 ### 2. Implement Rate Limiting
 
 ```typescript
-import { RateLimiter } from 'philjs-ssr';
+import { RateLimiter } from '@philjs/ssr';
 
 const loginLimiter = new RateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes

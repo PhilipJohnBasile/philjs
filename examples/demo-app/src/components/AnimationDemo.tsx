@@ -1,4 +1,4 @@
-import { createAnimatedValue, memo } from "philjs-core";
+import { createAnimatedValue, memo } from "@philjs/core";
 
 export function AnimationDemo() {
   const position = createAnimatedValue(0, {

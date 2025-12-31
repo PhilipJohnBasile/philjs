@@ -112,7 +112,7 @@ Slots can coordinate navigation:
 
 ```tsx
 // routes/dashboard/@analytics/[metric].tsx
-import { useParams, useNavigate } from 'philjs-router';
+import { useParams, useNavigate } from '@philjs/router';
 
 export default function MetricDetail() {
   const params = useParams();
@@ -216,7 +216,7 @@ export default function DashboardLayout({ analytics, activity, settings }) {
 ### Dynamic Slot Selection
 
 ```tsx
-import { useSearchParams } from 'philjs-router';
+import { useSearchParams } from '@philjs/router';
 
 export default function DashboardLayout(slots) {
   const [params] = useSearchParams();
@@ -391,7 +391,7 @@ export default function DashboardLayout({ analytics, activity }) {
 ### Shared State Between Slots
 
 ```tsx
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 const DashboardContext = createContext();
 

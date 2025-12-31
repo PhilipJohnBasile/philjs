@@ -16,7 +16,10 @@
       "default": "./dist/collectors/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -25,7 +28,14 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "performance", "monitoring", "dashboard", "metrics", "web-vitals"],
+  "keywords": [
+    "philjs",
+    "performance",
+    "monitoring",
+    "dashboard",
+    "metrics",
+    "web-vitals"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -37,7 +47,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

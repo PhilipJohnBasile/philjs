@@ -61,6 +61,7 @@ export const registerServiceWorker = async (): Promise<ServiceWorkerRegistration
   try {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
+      type: "module",
     });
     console.log("Service Worker registered:", registration);
     return registration;

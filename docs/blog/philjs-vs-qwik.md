@@ -80,7 +80,7 @@ export const Counter = component$(() => {
 PhilJS: **Load interactive components, resume state, skip re-rendering.**
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function Counter() {
   const count = signal(0);
@@ -177,7 +177,7 @@ export const UserProfile = component$(() => {
 PhilJS uses direct signal objects:
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export function UserProfile() {
   const firstName = signal('John');
@@ -280,7 +280,7 @@ export const TodoApp = component$(() => {
 **PhilJS's Standard Syntax:**
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export function TodoApp() {
   const todos = signal<Todo[]>([]);
@@ -353,7 +353,7 @@ export default component$(() => {
 **PhilJS's resource:**
 
 ```tsx
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 export default function UserProfile({ id }) {
   const userData = resource(async () => {
@@ -395,7 +395,7 @@ export const Counter = component$<Props>(({ count, onIncrement }) => {
 
 **PhilJS:**
 ```tsx
-import { Signal } from 'philjs-core';
+import { Signal } from '@philjs/core';
 
 interface Props {
   count: Signal<number>;
@@ -466,7 +466,7 @@ PhilJS routing is fully integrated:
 
 ```tsx
 // router.tsx
-import { createRouter } from 'philjs-core';
+import { createRouter } from '@philjs/core';
 
 export const router = createRouter([
   {
@@ -487,7 +487,7 @@ export const router = createRouter([
 ]);
 
 // blog-post.tsx
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 export function BlogPost({ params, loader }) {
   const post = resource(() => loader.data);
@@ -589,7 +589,7 @@ Containers define serialization boundaries for resumability.
 #### 1. linkedSignal
 
 ```tsx
-import { signal, linkedSignal } from 'philjs-core';
+import { signal, linkedSignal } from '@philjs/core';
 
 const firstName = signal('John');
 const lastName = signal('Doe');
@@ -607,7 +607,7 @@ fullName.set('Custom Name'); // Can override!
 #### 2. Usage Analytics
 
 ```tsx
-import { usageAnalytics } from 'philjs-core';
+import { usageAnalytics } from '@philjs/core';
 
 usageAnalytics.startTracking();
 
@@ -620,7 +620,7 @@ console.log('Dead code:', report.deadComponents);
 #### 3. Cost Tracking
 
 ```tsx
-import { costTracker } from 'philjs-core';
+import { costTracker } from '@philjs/core';
 
 const estimate = costTracker.estimateCost('Dashboard');
 console.log(`Monthly cost: $${estimate.totalCost}`);
@@ -631,7 +631,7 @@ console.log(`Monthly cost: $${estimate.totalCost}`);
 #### 4. Activity Component (Real-time Features)
 
 ```tsx
-import { Activity } from 'philjs-core';
+import { Activity } from '@philjs/core';
 
 <Activity
   events={['user:login', 'message:new']}
@@ -652,7 +652,7 @@ import { Activity } from 'philjs-core';
 #### 5. Partial Prerendering (PPR)
 
 ```tsx
-import { PartialPrerenderBoundary } from 'philjs-core';
+import { PartialPrerenderBoundary } from '@philjs/core';
 
 export default function Page() {
   return (
@@ -806,7 +806,7 @@ export const TodoApp = component$(() => {
 ### PhilJS Implementation
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface Todo {
   id: number;

@@ -28,7 +28,7 @@ View Transitions provide native browser animations between pages, creating smoot
 
 ```typescript
 // src/App.tsx
-import { Router } from 'philjs-router';
+import { Router } from '@philjs/router';
 
 export default function App() {
   return (
@@ -44,7 +44,7 @@ That's it! Routes now cross-fade smoothly.
 ### Manual Transition
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function Navigation() {
   const router = useRouter();
@@ -137,8 +137,8 @@ function Navigation() {
 ### Forward/Back Navigation
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 const navigationDirection = signal<'forward' | 'back'>('forward');
 
@@ -230,7 +230,7 @@ export default function ProductList() {
 
 ```typescript
 // src/pages/products/[id].tsx
-import { useParams } from 'philjs-router';
+import { useParams } from '@philjs/router';
 
 export default function ProductDetail() {
   const params = useParams<{ id: string }>();
@@ -337,8 +337,8 @@ export default function BlogPost() {
 ### Route-Based Transitions
 
 ```typescript
-import { usePathname } from 'philjs-router';
-import { effect } from 'philjs-core';
+import { usePathname } from '@philjs/router';
+import { effect } from '@philjs/core';
 
 export default function Layout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -363,7 +363,7 @@ export default function Layout({ children }: { children: any }) {
 ### Skip Transition for Certain Routes
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function Navigation() {
   const router = useRouter();
@@ -410,8 +410,8 @@ function Navigation() {
 ### Conditional Shared Elements
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal } from '@philjs/core';
 
 const enableSharedElement = signal(true);
 
@@ -434,7 +434,7 @@ function ProductCard({ product }: { product: Product }) {
 ### Cleanup Transition Names
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function ProductDetail({ product }: { product: Product }) {
   effect(() => {
@@ -486,7 +486,7 @@ export default function Layout({ children }: { children: any }) {
 ### Progressive Enhancement
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 
 function useViewTransition() {
   const router = useRouter();

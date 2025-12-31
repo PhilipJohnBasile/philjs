@@ -1,4 +1,4 @@
-# PhilJS v2.0 Performance Tuning Report
+# PhilJS v0.1.0 Performance Tuning Report
 
 **Week 11-12 Sprint: Final Performance Tuning**
 **Date**: 2025-12-18
@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Final performance tuning has been completed for PhilJS v2.0. The framework demonstrates **exceptional runtime performance** with optimizations applied to critical hot paths. Bundle size requires additional optimization through module extraction strategies.
+Final performance tuning has been completed for PhilJS v0.1.0. The framework demonstrates **exceptional runtime performance** with optimizations applied to critical hot paths. Bundle size requires additional optimization through module extraction strategies.
 
 ### Key Achievements
 
@@ -256,7 +256,7 @@ for (const prop in value) {
 ### Current Bundle Sizes
 
 ```
-[philjs-core]
+[@philjs/core]
   ❌ signals              5.02 KB / 2.00 KB (+3.02 KB)
   ✅ jsx-runtime          0.75 KB / 1.00 KB (0.25 KB under)
   ❌ full-bundle          39.72 KB / 25.00 KB (+14.72 KB)
@@ -319,23 +319,23 @@ Total size (gzip): 45.48 KB
 
 1. **Extract HMR to Separate Package**
    ```
-   philjs-core/signals  (~2 KB - core only)
-   philjs-core/hmr      (HMR functions)
+   @philjs/core/signals  (~2 KB - core only)
+   @philjs/core/hmr      (HMR functions)
    ```
 
 2. **Split Optional Features**
    ```
-   philjs-core          (signals + jsx + ssr)
-   philjs-forms         (form utilities)
-   philjs-i18n          (internationalization)
+   @philjs/core          (signals + jsx + ssr)
+   @philjs/forms         (form utilities)
+   @philjs/i18n          (internationalization)
    philjs-animation     (animation utilities)
    ```
 
 3. **Create Preset Bundles**
    ```
-   philjs-core/minimal  (signals + jsx)
-   philjs-core/ssr      (+ renderToString)
-   philjs-core/full     (all features)
+   @philjs/core/minimal  (signals + jsx)
+   @philjs/core/ssr      (+ renderToString)
+   @philjs/core/full     (all features)
    ```
 
 ### Tree-Shaking Verification
@@ -352,7 +352,7 @@ Checked package.json:
 **Manual Import Test**:
 ```typescript
 // Should only include signal code, not HMR/resource/linkedSignal
-import { signal, memo } from 'philjs-core/signals';
+import { signal, memo } from '@philjs/core/signals';
 ```
 
 **Recommendation**: Run bundlesize analysis with actual app imports to verify tree-shaking effectiveness.
@@ -415,8 +415,8 @@ From benchmark tests:
 
 #### Production Build Configuration
 
-```javascript
-// vite.config.js
+```ts
+// vite.config.ts
 export default {
   build: {
     minify: 'terser',
@@ -438,14 +438,14 @@ export default {
 
 ```typescript
 // ✅ Good: Import only what you need
-import { signal, memo, effect } from 'philjs-core/signals';
-import { jsx } from 'philjs-core/jsx-runtime';
+import { signal, memo, effect } from '@philjs/core/signals';
+import { jsx } from '@philjs/core/jsx-runtime';
 
 // ❌ Avoid: Importing full bundle
-import { signal, renderToString, createI18n, ... } from 'philjs-core';
+import { signal, renderToString, createI18n, ... } from '@philjs/core';
 
 // ✅ Better: Use subpath imports
-import { renderToString } from 'philjs-core/render-to-string';
+import { renderToString } from '@philjs/core/render-to-string';
 ```
 
 #### Performance Patterns
@@ -503,7 +503,7 @@ const value = untrack(() => optionalSignal());
 ### Test Environment
 
 - **Date**: 2025-12-18
-- **Node.js**: v22.x
+- **Node.js**: v24.x
 - **Platform**: Windows x64
 - **Test Framework**: Vitest 3.2.4
 - **CPU Load**: Variable (system under load during tests)
@@ -646,7 +646,7 @@ Observed significant variance between runs due to:
 
 ### Final Assessment
 
-**PhilJS v2.0 is production-ready from a performance perspective.**
+**PhilJS v0.1.0 is production-ready from a performance perspective.**
 
 Runtime performance is exceptional and competitive with leading frameworks. Bundle size requires attention but has clear optimization path through module extraction. The framework provides an excellent balance of developer experience and runtime efficiency.
 
@@ -665,7 +665,7 @@ pnpm vitest run benchmarks.test.ts
 
 ### Check Bundle Sizes
 ```bash
-node scripts/check-budgets.mjs --package=philjs-core
+pnpm tsx scripts/check-budgets.ts --package=@philjs/core
 ```
 
 ### Build Packages
@@ -715,5 +715,5 @@ npx rollup-plugin-visualizer dist/stats.html
 
 **Report Generated**: 2025-12-18
 **Author**: PhilJS Core Team
-**Version**: v2.0.0-rc1
+**Version**: v0.1.0-rc1
 **Next Review**: Week 13-14 (Bundle Optimization Sprint)

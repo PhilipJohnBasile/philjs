@@ -19,7 +19,7 @@
  * @see https://qwik.builder.io/docs/concepts/resumable/
  */
 
-import { signal, memo as computed, effect, type Signal, type Memo } from 'philjs-core';
+import { signal, memo as computed, effect, type Signal, type Memo } from '@philjs/core';
 
 // ============================================================================
 // Types

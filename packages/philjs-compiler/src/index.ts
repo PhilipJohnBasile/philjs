@@ -56,7 +56,7 @@ export * from './presets/index.js';
  *
  * @example
  * ```typescript
- * import { createCompiler } from 'philjs-compiler';
+ * import { createCompiler } from '@philjs/compiler';
  *
  * const compiler = createCompiler({
  *   autoMemo: true,
@@ -85,7 +85,7 @@ export function createCompiler(config: CompilerConfig = {}): Optimizer {
  *
  * @example
  * ```typescript
- * import { analyzeCode } from 'philjs-compiler';
+ * import { analyzeCode } from '@philjs/compiler';
  *
  * const analysis = analyzeCode(code, 'src/App.tsx');
  *
@@ -116,7 +116,7 @@ export function analyzeCode(code: string, filePath: string): FileAnalysis {
  *
  * @example
  * ```typescript
- * import { transform } from 'philjs-compiler';
+ * import { transform } from '@philjs/compiler';
  *
  * const result = transform(code, 'src/App.tsx', {
  *   autoMemo: true,
@@ -164,7 +164,7 @@ export const defaultConfig: CompilerConfig = {
  *
  * @example
  * ```typescript
- * import { getDefaultConfig } from 'philjs-compiler';
+ * import { getDefaultConfig } from '@philjs/compiler';
  *
  * const config = getDefaultConfig({
  *   development: true,
@@ -204,7 +204,7 @@ export function getDefaultConfig(overrides: Partial<CompilerConfig> = {}): Compi
  *
  * @example
  * ```typescript
- * import { validateConfig } from 'philjs-compiler';
+ * import { validateConfig } from '@philjs/compiler';
  *
  * const errors = validateConfig({
  *   autoMemo: true,

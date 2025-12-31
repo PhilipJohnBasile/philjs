@@ -5,8 +5,8 @@ Get started with PhilJS multi-framework islands in 5 minutes.
 ## Installation
 
 ```bash
-# Install philjs-islands
-pnpm add philjs-islands
+# Install @philjs/islands
+pnpm add @philjs/islands
 
 # Install frameworks you want to use (pick one or more)
 pnpm add react react-dom        # React
@@ -24,7 +24,7 @@ Create or update `vite.config.ts`:
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
-import { viteMultiFramework } from 'philjs-islands/vite-multi-framework';
+import { viteMultiFramework } from '@philjs/islands/vite-multi-framework';
 
 export default defineConfig({
   plugins: [
@@ -91,7 +91,7 @@ function addTodo() {
 In your main app file:
 
 ```typescript
-import { registerIslandComponent } from 'philjs-islands';
+import { registerIslandComponent } from '@philjs/islands';
 
 // Register components
 registerIslandComponent('react', 'Counter', () => import('./islands/Counter.tsx'));
@@ -101,7 +101,7 @@ registerIslandComponent('vue', 'TodoList', () => import('./islands/TodoList.vue'
 ## Step 4: Use Islands
 
 ```tsx
-import { MultiFrameworkIsland } from 'philjs-islands';
+import { MultiFrameworkIsland } from '@philjs/islands';
 
 export default function App() {
   return (
@@ -140,7 +140,7 @@ That's it! You now have a multi-framework application with:
 ### Share State Between Islands
 
 ```typescript
-import { createSharedState } from 'philjs-islands';
+import { createSharedState } from '@philjs/islands';
 
 const userState = createSharedState('user', {
   name: 'Guest',
@@ -154,7 +154,7 @@ userState.updateState({ name: 'John', isLoggedIn: true });
 ### Use Event Bus
 
 ```typescript
-import { eventBus } from 'philjs-islands';
+import { eventBus } from '@philjs/islands';
 
 // Emit from one island
 eventBus.emit('user-login', { userId: 123 });
@@ -169,7 +169,7 @@ eventBus.on('user-login', (data) => {
 
 ```tsx
 // React
-import { frameworkHooks } from 'philjs-islands';
+import { frameworkHooks } from '@philjs/islands';
 
 function MyComponent() {
   const [state, setState] = frameworkHooks.react.useSharedState('app', {});

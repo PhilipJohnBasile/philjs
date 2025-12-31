@@ -4,7 +4,7 @@ Components are the building blocks of PhilJS applications. Let's learn how to cr
 
 ## What is a Component?
 
-A component is a reusable piece of UI that combines markup (JSX), logic (JavaScript/TypeScript), and optionally state (signals). Think of components as custom HTML elements that you define.
+A component is a reusable piece of UI that combines markup (JSX), logic (TypeScript), and optionally state (signals). Think of components as custom HTML elements that you define.
 
 **Simple example:**
 ```typescript
@@ -144,7 +144,7 @@ const styles = {
 Let's add a follow button:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface UserCardProps {
   name: string;
@@ -315,7 +315,7 @@ const users = [
 Group elements without adding extra DOM nodes:
 
 ```typescript
-import { Fragment } from 'philjs-core';
+import { Fragment } from '@philjs/core';
 
 function UserInfo() {
   return (
@@ -606,7 +606,7 @@ function Counter({ initialCount }) {
 Here's a complete, real-world component:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface Product {
   id: number;

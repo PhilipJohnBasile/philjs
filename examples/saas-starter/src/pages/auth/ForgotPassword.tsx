@@ -1,6 +1,6 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { resetPassword } from "../../stores/authStore";
-import { Link } from "philjs-router";
+import { Link } from "@philjs/router";
 
 export function ForgotPassword() {
   const email = signal("");

@@ -9,7 +9,7 @@
  * - Resumability (serialize and resume state)
  */
 
-import type { VNode, JSXElement } from "philjs-core";
+import type { VNode, JSXElement } from "@philjs/core";
 
 // =============================================================================
 // Types

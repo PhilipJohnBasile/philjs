@@ -8,7 +8,7 @@
  * - Error recovery and fallback handling
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import type {
   StaticShell,
   RequestTimeData,

@@ -746,7 +746,7 @@ export type ${schema.name}FormData = z.infer<typeof ${schema.name.toLowerCase()}
     const name = schema.name;
     const lower = name.toLowerCase();
 
-    return `import { signal, effect } from 'philjs-core';
+    return `import { signal, effect } from '@philjs/core';
 import type { ${name}, Create${name}Input, Update${name}Input } from './${lower}.types';
 
 const API_BASE = '/api/${lower}s';
@@ -901,7 +901,7 @@ export function useDelete${name}() {
   ): Promise<GeneratedSchemaComponent> {
     const name = schema.name;
 
-    const code = `import { signal } from 'philjs-core';
+    const code = `import { signal } from '@philjs/core';
 import type { ${name} } from './${name.toLowerCase()}.types';
 
 interface Delete${name}ConfirmProps {
@@ -975,7 +975,7 @@ export function Delete${name}Confirm({ item, open, onConfirm, onCancel }: Delete
   ): Promise<GeneratedSchemaComponent> {
     const name = schema.name;
 
-    const code = `import { signal } from 'philjs-core';
+    const code = `import { signal } from '@philjs/core';
 import { ${name}Table } from './${name}Table';
 import { Create${name}Form } from './Create${name}Form';
 import { Edit${name}Form } from './Edit${name}Form';

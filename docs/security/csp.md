@@ -37,12 +37,12 @@ This policy means:
 
 ## CSP in PhilJS
 
-PhilJS provides comprehensive CSP utilities in the `philjs-ssr` package:
+PhilJS provides comprehensive CSP utilities in the `@philjs/ssr` package:
 
 ### Basic Setup
 
 ```typescript
-import { buildCSP } from 'philjs-ssr';
+import { buildCSP } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: {
@@ -59,7 +59,7 @@ response.headers.set(csp.header, csp.value);
 ### With Auto-Generated Nonce
 
 ```typescript
-import { buildCSP } from 'philjs-ssr';
+import { buildCSP } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: {
@@ -92,7 +92,7 @@ const html = `
 PhilJS provides secure defaults:
 
 ```typescript
-import { DEFAULT_CSP_DIRECTIVES } from 'philjs-ssr';
+import { DEFAULT_CSP_DIRECTIVES } from '@philjs/ssr';
 
 // Equivalent to:
 {
@@ -117,7 +117,7 @@ import { DEFAULT_CSP_DIRECTIVES } from 'philjs-ssr';
 For maximum security:
 
 ```typescript
-import { STRICT_CSP_DIRECTIVES } from 'philjs-ssr';
+import { STRICT_CSP_DIRECTIVES } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: STRICT_CSP_DIRECTIVES,
@@ -132,7 +132,7 @@ const csp = buildCSP({
 More relaxed for local development:
 
 ```typescript
-import { DEV_CSP_DIRECTIVES } from 'philjs-ssr';
+import { DEV_CSP_DIRECTIVES } from '@philjs/ssr';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -147,7 +147,7 @@ const csp = buildCSP({
 Add your own directives:
 
 ```typescript
-import { buildCSP, mergeCSP, DEFAULT_CSP_DIRECTIVES } from 'philjs-ssr';
+import { buildCSP, mergeCSP, DEFAULT_CSP_DIRECTIVES } from '@philjs/ssr';
 
 const customCSP = mergeCSP(DEFAULT_CSP_DIRECTIVES, {
   'script-src': ["'self'", 'https://analytics.example.com'],
@@ -165,7 +165,7 @@ Nonces allow specific inline scripts while blocking all others:
 ### Server-Side Implementation
 
 ```typescript
-import { buildCSP, generateNonce } from 'philjs-ssr';
+import { buildCSP, generateNonce } from '@philjs/ssr';
 
 export async function handleRequest(request: Request) {
   // Generate CSP with nonce
@@ -214,7 +214,7 @@ function renderPage({ nonce }: { nonce?: string }) {
 ### SSR with Nonces
 
 ```typescript
-import { renderToStream, buildCSP } from 'philjs-ssr';
+import { renderToStream, buildCSP } from '@philjs/ssr';
 
 export async function handleSSR(request: Request) {
   const csp = buildCSP({
@@ -465,7 +465,7 @@ the following Content Security Policy directive: "script-src 'self'".
 Use PhilJS validation:
 
 ```typescript
-import { validateCSP } from 'philjs-ssr';
+import { validateCSP } from '@philjs/ssr';
 
 const warnings = validateCSP({
   'script-src': ["'unsafe-eval'", "'unsafe-inline'"],
@@ -541,7 +541,7 @@ const csp = buildCSP({
 
 ```typescript
 // Start with strict
-import { STRICT_CSP_DIRECTIVES } from 'philjs-ssr';
+import { STRICT_CSP_DIRECTIVES } from '@philjs/ssr';
 
 // Add only what you need
 const csp = mergeCSP(STRICT_CSP_DIRECTIVES, {

@@ -23,7 +23,7 @@ import {
   getHMRStats,
   isHMRInProgress,
   type HMROptions,
-} from 'philjs-core/signals';
+} from '@philjs/core/signals';
 
 import {
   showHMRErrorOverlay,

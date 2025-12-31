@@ -10,7 +10,7 @@ Comprehensive guide to diagnosing and fixing build errors in PhilJS applications
 ```
 Error: Cannot find module '@/components/Button'
 Error: Cannot resolve './utils'
-Error: Module not found: Can't resolve 'philjs-core'
+Error: Module not found: Can't resolve '@philjs/core'
 ```
 
 #### Solution 1: Check Import Path
@@ -61,10 +61,10 @@ export default defineConfig({
 
 ```bash
 # Check if package is installed
-npm list philjs-core
+npm list @philjs/core
 
 # Install missing package
-npm install philjs-core
+npm install @philjs/core
 
 # Install all dependencies
 npm install
@@ -89,7 +89,7 @@ Error: 'React' refers to a UMD global, but the current file is a module
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "types": ["vite/client"]
   }
 }
@@ -103,7 +103,7 @@ export default defineConfig({
   esbuild: {
     jsxFactory: 'jsx',
     jsxFragment: 'Fragment',
-    jsxInject: `import { jsx, Fragment } from 'philjs-core'`
+    jsxInject: `import { jsx, Fragment } from '@philjs/core'`
   }
 });
 ```
@@ -112,7 +112,7 @@ export default defineConfig({
 
 **Error:**
 ```
-TS2307: Cannot find module 'philjs-core' or its corresponding type declarations
+TS2307: Cannot find module '@philjs/core' or its corresponding type declarations
 TS2322: Type 'string' is not assignable to type 'number'
 TS2339: Property 'xyz' does not exist on type 'Props'
 ```
@@ -157,7 +157,7 @@ declare module '*.svg' {
   export default content;
 }
 
-declare module 'philjs-core' {
+declare module '@philjs/core' {
   // Add any missing type definitions
 }
 ```
@@ -317,7 +317,7 @@ Error: Dynamic import failed
 const LazyComponent = import('./LazyComponent'); // Wrong!
 
 // Solution: Use lazy helper
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 const LazyComponent = lazy(() => import('./LazyComponent'));
 
@@ -504,7 +504,7 @@ export default defineConfig({
 **Error:**
 ```
 npm ERR! ERESOLVE unable to resolve dependency tree
-npm ERR! Found: philjs-core@1.0.0
+npm ERR! Found: @philjs/core@1.0.0
 npm ERR! Could not resolve dependency
 ```
 
@@ -512,7 +512,7 @@ npm ERR! Could not resolve dependency
 
 ```bash
 # Check for conflicts
-npm ls philjs-core
+npm ls @philjs/core
 
 # Force install (use with caution)
 npm install --force
@@ -532,11 +532,11 @@ npm install
 // package.json - Pin specific versions
 {
   "dependencies": {
-    "philjs-core": "^1.0.0",
-    "philjs-router": "^1.0.0"
+    "@philjs/core": "^1.0.0",
+    "@philjs/router": "^1.0.0"
   },
   "resolutions": {
-    "philjs-core": "1.0.0"
+    "@philjs/core": "1.0.0"
   }
 }
 ```
@@ -570,7 +570,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['philjs-core', 'philjs-router']
+          vendor: ['@philjs/core', '@philjs/router']
         }
       }
     }
@@ -590,7 +590,7 @@ export default defineConfig({
   esbuild: {
     jsxFactory: 'jsx',
     jsxFragment: 'Fragment',
-    jsxInject: `import { jsx, Fragment } from 'philjs-core'`
+    jsxInject: `import { jsx, Fragment } from '@philjs/core'`
   }
 });
 ```
@@ -605,7 +605,7 @@ export default defineConfig({
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
 
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -759,7 +759,7 @@ export default defineConfig({
 
   optimizeDeps: {
     // Pre-bundle dependencies
-    include: ['philjs-core', 'philjs-router'],
+    include: ['@philjs/core', '@philjs/router'],
 
     // Exclude large dependencies
     exclude: ['large-package']

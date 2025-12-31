@@ -4,7 +4,7 @@
  * Vector storage, similarity search, and context augmentation.
  */
 
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import type { AIProvider } from './types.js';
 
 // Message type for RAG conversations

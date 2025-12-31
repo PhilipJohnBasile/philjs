@@ -68,7 +68,7 @@ However, check the current version and stability before using in critical applic
 - () instead of .value
 
 **If you're new to frameworks:** 1 week to get productive
-- Learn JavaScript/TypeScript first
+- Learn TypeScript first
 - Understand reactive programming
 - Follow tutorials and examples
 
@@ -199,12 +199,12 @@ PhilJS supports SSR for SEO:
 
 ```tsx
 // Server
-import { renderToString } from 'philjs-ssr';
+import { renderToString } from '@philjs/ssr';
 
 const html = await renderToString(<App />);
 
 // Client
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 hydrate(<App />, document.getElementById('app')!);
 ```
@@ -222,7 +222,7 @@ PhilJS has excellent testing support:
 
 ```tsx
 import { describe, it, expect } from 'vitest';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 describe('Counter', () => {
   it('increments count', () => {
@@ -555,7 +555,7 @@ No manual dependency arrays needed! PhilJS knows that the effect depends on `cou
 Yes, use `untrack()`:
 
 ```tsx
-import { untrack } from 'philjs-core';
+import { untrack } from '@philjs/core';
 
 const trigger = signal(0);
 const value = signal(0);
@@ -598,7 +598,7 @@ effect(() => {
 Use `batch()` when making multiple signal updates that should trigger effects only once:
 
 ```tsx
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 // Without batch - effect runs 3 times
 firstName.set('Alice');
@@ -799,7 +799,7 @@ Create signals at module level:
 
 ```tsx
 // store.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface User {
   id: string;
@@ -1127,7 +1127,7 @@ function Chat() {
 Use the forms package:
 
 ```tsx
-import { useForm, validators as v } from 'philjs-core';
+import { useForm, validators as v } from '@philjs/core';
 
 function RegistrationForm() {
   const form = useForm({

@@ -170,7 +170,7 @@ await expect(page.locator('[data-test="count-value"]')).toHaveText('1');
 ### Creating Signals
 
 ```ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 console.log(count());     // Read: 0
@@ -181,7 +181,7 @@ count.set(c => c + 1);    // Update: 6
 ### Creating Memos
 
 ```ts
-import { memo } from 'philjs-core';
+import { memo } from '@philjs/core';
 
 const doubled = memo(() => count() * 2);
 console.log(doubled());   // Auto-updates when count changes
@@ -190,7 +190,7 @@ console.log(doubled());   // Auto-updates when count changes
 ### Creating Effects
 
 ```ts
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 effect(() => {
   const interval = setInterval(() => {
@@ -204,7 +204,7 @@ effect(() => {
 ### Batch Updates
 
 ```ts
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 batch(() => {
   count.set(1);
@@ -216,7 +216,7 @@ batch(() => {
 ### Untrack Reads
 
 ```ts
-import { untrack } from 'philjs-core';
+import { untrack } from '@philjs/core';
 
 effect(() => {
   console.log(count());           // Tracked

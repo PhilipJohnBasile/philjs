@@ -29,7 +29,7 @@ Queries provide a declarative way to fetch and cache data:
 ### Creating a Query
 
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 interface User {
   id: string;
@@ -50,7 +50,7 @@ const userQuery = createQuery({
 ### Using a Query
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: string }) {
   const { data, loading, error, refetch } = userQuery(userId);
@@ -273,7 +273,7 @@ function UserProfile({ userId }: { userId: string }) {
 ### Refetch All
 
 ```typescript
-import { refetchAll } from 'philjs-core';
+import { refetchAll } from '@philjs/core';
 
 function RefreshButton() {
   return (
@@ -287,7 +287,7 @@ function RefreshButton() {
 ### Refetch by Key
 
 ```typescript
-import { refetchQueries } from 'philjs-core';
+import { refetchQueries } from '@philjs/core';
 
 function refreshUserData(userId: string) {
   // Refetch all queries with matching key
@@ -300,7 +300,7 @@ function refreshUserData(userId: string) {
 Mark queries as stale and refetch:
 
 ```typescript
-import { invalidateQueries } from 'philjs-core';
+import { invalidateQueries } from '@philjs/core';
 
 async function updateUser(userId: string, data: any) {
   const res = await fetch(`/api/users/${userId}`, {
@@ -332,7 +332,7 @@ async function deletePost(postId: string) {
 Update UI before server responds:
 
 ```typescript
-import { setQueryData, invalidateQueries } from 'philjs-core';
+import { setQueryData, invalidateQueries } from '@philjs/core';
 
 async function updateUserOptimistic(userId: string, data: Partial<User>) {
   // Save current data for rollback
@@ -459,7 +459,7 @@ function PostsList() {
 Continuously append data:
 
 ```typescript
-import { createInfiniteQuery } from 'philjs-core';
+import { createInfiniteQuery } from '@philjs/core';
 
 const infinitePostsQuery = createInfiniteQuery({
   key: () => ['posts-infinite'],
@@ -507,7 +507,7 @@ function InfinitePostsList() {
 Load data before it's needed:
 
 ```typescript
-import { prefetchQuery } from 'philjs-core';
+import { prefetchQuery } from '@philjs/core';
 
 function ProductCard({ product }: { product: Product }) {
   const handleMouseEnter = () => {

@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "lint": "echo 'Lint philjs-ssr'",
     "typecheck": "tsc --noEmit"
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "sideEffects": false,

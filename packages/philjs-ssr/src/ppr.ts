@@ -11,7 +11,7 @@
  * - Dynamic component: Explicitly mark request-time content
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import type {
   PPRContext,
   PPRConfig,

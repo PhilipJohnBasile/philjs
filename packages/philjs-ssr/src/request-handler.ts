@@ -6,7 +6,7 @@
 export type VNode = any;
 
 import type { Loader, Action, ActionCtx } from "./types.js";
-import { isResult, isOk, isErr, renderToString } from "philjs-core";
+import { isResult, isOk, isErr, renderToString } from "@philjs/core";
 import type { RouteMatcher } from "@philjs/router";
 
 const defaultRenderToString = async (vnode: VNode): Promise<string> => {

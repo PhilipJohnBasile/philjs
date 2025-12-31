@@ -9,7 +9,7 @@ import {
   NavigateFunction,
   RouteDefinition,
 } from "./high-level.js";
-import { Ok, Err } from "philjs-core";
+import { Ok, Err } from "@philjs/core";
 
 /**
  * Enhanced Router Test Suite

@@ -16,22 +16,22 @@ PhilJS 2.0 introduces enhanced session management features:
 
 **Before:**
 ```typescript
-import { createCookieSessionStorage } from 'philjs-api/session';
+import { createCookieSessionStorage } from '@philjs/api/session';
 ```
 
 **After:**
 ```typescript
 // For basic sessions (backward compatible)
-import { createCookieSessionStorage } from 'philjs-api/session';
+import { createCookieSessionStorage } from '@philjs/api/session';
 
 // For enhanced sessions (new)
-import { createEnhancedCookieSessionStorage } from 'philjs-api/cookie-session';
+import { createEnhancedCookieSessionStorage } from '@philjs/api/cookie-session';
 
 // For flash messages
-import { setFlashSuccess, getFlashMessages } from 'philjs-api/flash';
+import { setFlashSuccess, getFlashMessages } from '@philjs/api/flash';
 
 // For utilities
-import { sessionMiddleware, requireSession } from 'philjs-api/session-utils';
+import { sessionMiddleware, requireSession } from '@philjs/api/session-utils';
 ```
 
 ### Step 2: Update Session Configuration
@@ -85,7 +85,7 @@ session.delete('messageType');
 
 **After:**
 ```typescript
-import { setFlashSuccess, getFlashMessages } from 'philjs-api/flash';
+import { setFlashSuccess, getFlashMessages } from '@philjs/api/flash';
 
 // In action
 setFlashSuccess(session, 'Success!');
@@ -112,7 +112,7 @@ if (submittedToken !== session.get('csrfToken')) {
 
 **After:**
 ```typescript
-import { csrfMiddleware } from 'philjs-api/cookie-session';
+import { csrfMiddleware } from '@philjs/api/cookie-session';
 
 // Enable in session config
 const sessionStorage = createEnhancedCookieSessionStorage({
@@ -150,7 +150,7 @@ session.set('lastActivity', Date.now());
 
 **After:**
 ```typescript
-import { sessionTimeoutMiddleware } from 'philjs-api/session-utils';
+import { sessionTimeoutMiddleware } from '@philjs/api/session-utils';
 
 const timeoutMw = sessionTimeoutMiddleware(
   sessionStorage,
@@ -184,7 +184,7 @@ if (!user || !user.active) {
 
 **After:**
 ```typescript
-import { sessionValidatorMiddleware } from 'philjs-api/session-utils';
+import { sessionValidatorMiddleware } from '@philjs/api/session-utils';
 
 const validator = sessionValidatorMiddleware(
   sessionStorage,
@@ -233,8 +233,8 @@ export async function handleLogin(request: Request) {
 
 **After:**
 ```typescript
-import { regenerateSession } from 'philjs-api/session-utils';
-import { setFlashSuccess, setFlashError } from 'philjs-api/flash';
+import { regenerateSession } from '@philjs/api/session-utils';
+import { setFlashSuccess, setFlashError } from '@philjs/api/flash';
 
 export async function handleLogin(request: Request) {
   const { email, password } = await request.json();
@@ -267,7 +267,7 @@ export async function handleLogin(request: Request) {
 
 ## Backward Compatibility
 
-The original `createCookieSessionStorage` from `philjs-api/session` remains unchanged and fully compatible. You can migrate incrementally:
+The original `createCookieSessionStorage` from `@philjs/api/session` remains unchanged and fully compatible. You can migrate incrementally:
 
 1. Keep using basic sessions for existing code
 2. Use enhanced sessions for new features
@@ -340,7 +340,7 @@ const sessionStorage = createEnhancedCookieSessionStorage({
 ### Pattern 1: Protected Route
 
 ```typescript
-import { sessionValidatorMiddleware, requireSession } from 'philjs-api/session-utils';
+import { sessionValidatorMiddleware, requireSession } from '@philjs/api/session-utils';
 
 const auth = sessionValidatorMiddleware(
   sessionStorage,
@@ -359,7 +359,7 @@ export async function handleRoute(request: Request) {
 ### Pattern 2: Form with Flash
 
 ```typescript
-import { setFlashSuccess, setFlashError, getFlashMessages } from 'philjs-api/flash';
+import { setFlashSuccess, setFlashError, getFlashMessages } from '@philjs/api/flash';
 
 export async function handleForm(request: Request) {
   const session = await sessionStorage.getSession(request);
@@ -390,9 +390,9 @@ export async function showForm(request: Request) {
 ### Pattern 3: Middleware Stack
 
 ```typescript
-import { composeMiddleware } from 'philjs-api/middleware';
-import { sessionMiddleware, sessionTimeoutMiddleware } from 'philjs-api/session-utils';
-import { csrfMiddleware, sessionRotationMiddleware } from 'philjs-api/cookie-session';
+import { composeMiddleware } from '@philjs/api/middleware';
+import { sessionMiddleware, sessionTimeoutMiddleware } from '@philjs/api/session-utils';
+import { csrfMiddleware, sessionRotationMiddleware } from '@philjs/api/cookie-session';
 
 const middleware = composeMiddleware([
   sessionMiddleware({ storage: sessionStorage }),

@@ -1,4 +1,4 @@
-import { signal, effect, render } from "philjs-core";
+import { signal, effect, render } from "@philjs/core";
 
 export function PlaygroundPage({
   navigate,
@@ -6,7 +6,7 @@ export function PlaygroundPage({
   navigate: (path: string) => void;
 }) {
   const activeTab = signal("counter");
-  const code = signal(`import { signal } from "philjs-core";
+  const code = signal(`import { signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -39,7 +39,7 @@ export function Counter() {
   const templates = {
     counter: {
       title: "Counter",
-      code: `import { signal } from "philjs-core";
+      code: `import { signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -69,7 +69,7 @@ export function Counter() {
     },
     todoList: {
       title: "Todo List",
-      code: `import { signal } from "philjs-core";
+      code: `import { signal } from "@philjs/core";
 
 export function TodoList() {
   const todos = signal([
@@ -155,7 +155,7 @@ export function TodoList() {
     },
     form: {
       title: "Form Validation",
-      code: `import { signal } from "philjs-core";
+      code: `import { signal } from "@philjs/core";
 
 export function SignupForm() {
   const email = signal("");
@@ -267,7 +267,7 @@ export function SignupForm() {
     },
     animation: {
       title: "Animated Counter",
-      code: `import { signal, effect } from "philjs-core";
+      code: `import { signal, effect } from "@philjs/core";
 
 export function AnimatedCounter() {
   const count = signal(0);
@@ -340,7 +340,7 @@ export function AnimatedCounter() {
       // Create a function that returns the component
       // This is a simplified version - real implementation would use proper sandboxing
       const componentCode = codeStr
-        .replace(/import.*from.*philjs-core.*;?\n/g, "")
+        .replace(/import.*from.*@philjs\/core.*;?\n/g, "")
         .replace(/export function/, "function");
 
       // Execute in a sandboxed context
@@ -465,7 +465,7 @@ export function AnimatedCounter() {
               }
             }}
             style={styles.codeEditor}
-            spellcheck={false}
+            spellCheck={false}
           />
         </div>
 

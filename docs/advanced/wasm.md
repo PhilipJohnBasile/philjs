@@ -5,7 +5,7 @@ Use WebAssembly to run high-performance Rust or C/C++ code inside PhilJS applica
 ## What You'll Learn
 
 - When to choose WASM for performance or portability
-- Loading modules with `philjs-wasm`
+- Loading modules with `@philjs/wasm`
 - Using WASM in components and signals
 - Build and bundling considerations
 
@@ -14,7 +14,7 @@ Use WebAssembly to run high-performance Rust or C/C++ code inside PhilJS applica
 Load a module and bind its exports:
 
 ```ts
-import { loadWasm, bindRustFunctions } from 'philjs-wasm';
+import { loadWasm, bindRustFunctions } from '@philjs/wasm';
 
 const module = await loadWasm('/math.wasm');
 const rust = bindRustFunctions(module);
@@ -27,7 +27,7 @@ const total = rust.sum(1, 2, 3);
 Use the hook to manage loading state inside components.
 
 ```tsx
-import { useWasm } from 'philjs-wasm';
+import { useWasm } from '@philjs/wasm';
 
 function HashDemo() {
   const wasm = useWasm('/crypto.wasm');
@@ -45,7 +45,7 @@ function HashDemo() {
 Share state between Rust and PhilJS with typed signals.
 
 ```ts
-import { loadWasm, createI32Signal } from 'philjs-wasm';
+import { loadWasm, createI32Signal } from '@philjs/wasm';
 
 const module = await loadWasm('/counter.wasm');
 const count = createI32Signal(module, 0);
@@ -59,7 +59,7 @@ count.syncFromRust();
 Render WASM modules as components when you need server-side rendering or reusable UI.
 
 ```ts
-import { createWasmComponent } from 'philjs-wasm';
+import { createWasmComponent } from '@philjs/wasm';
 
 const Counter = await createWasmComponent('/counter.wasm', {
   renderFn: 'render_counter',
@@ -75,7 +75,7 @@ Add the Vite plugin for streaming compilation and HMR.
 
 ```ts
 import { defineConfig } from 'vite';
-import { viteWasmPlugin } from 'philjs-wasm/vite';
+import { viteWasmPlugin } from '@philjs/wasm/vite';
 
 export default defineConfig({
   plugins: [

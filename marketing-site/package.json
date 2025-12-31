@@ -4,26 +4,30 @@
   "type": "module",
   "description": "PhilJS Marketing Website - Built with PhilJS",
   "scripts": {
-    "dev": "node server/dev.js",
+    "dev": "tsx server/dev.ts",
     "build": "vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server",
-    "preview": "node server/prod.js",
-    "serve": "node server/prod.js",
+    "preview": "tsx server/prod.ts",
+    "serve": "tsx server/prod.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*",
-    "philjs-ssr": "workspace:*",
-    "philjs-islands": "workspace:*",
-    "philjs-devtools": "workspace:*",
-    "philjs-compiler": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
+    "@philjs/ssr": "workspace:*",
+    "@philjs/islands": "workspace:*",
+    "@philjs/devtools": "workspace:*",
+    "@philjs/compiler": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
-    "@types/node": "^22.10.5",
+    "@types/node": "^25.0.0",
+    "tsx": "^4.19.1",
     "vite": "^7.3.0",
     "vitest": "^4.0.16",
     "playwright": "^1.48.0"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

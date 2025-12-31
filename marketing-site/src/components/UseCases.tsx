@@ -5,22 +5,22 @@ export function UseCases() {
     {
       title: "Marketing and content",
       description: "Ship fast landing pages with islands, SEO tooling, and image optimization.",
-      packages: ["philjs-islands", "philjs-meta", "philjs-image", "philjs-plugin-seo"]
+      packages: ["@philjs/islands", "@philjs/meta", "@philjs/image", "@philjs/plugin-seo"]
     },
     {
       title: "SaaS and dashboards",
       description: "Auth, forms, data pipelines, and charts for customer-facing apps.",
-      packages: ["philjs-auth", "philjs-forms", "philjs-db", "philjs-charts"]
+      packages: ["@philjs/auth", "@philjs/forms", "@philjs/db", "@philjs/charts"]
     },
     {
       title: "Commerce and payments",
       description: "SSR storefronts with performance budgets, caching, and APIs.",
-      packages: ["philjs-ssr", "philjs-api", "philjs-optimizer", "philjs-payments"]
+      packages: ["@philjs/ssr", "@philjs/api", "@philjs/optimizer", "@philjs/payments"]
     },
     {
       title: "Realtime experiences",
       description: "Live data, multiplayer, and collaboration with reliable transport.",
-      packages: ["philjs-realtime", "philjs-rpc", "philjs-jobs", "philjs-liveview"]
+      packages: ["@philjs/realtime", "@philjs/rpc", "@philjs/jobs", "@philjs/liveview"]
     }
   ];
 

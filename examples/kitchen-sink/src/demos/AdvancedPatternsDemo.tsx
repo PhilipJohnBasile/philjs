@@ -1,4 +1,4 @@
-import { signal, memo, effect, batch } from "philjs-core";
+import { signal, memo, effect, batch } from "@philjs/core";
 
 export function AdvancedPatternsDemo() {
   return (

@@ -20,7 +20,7 @@ cd my-counter-app
 ```
 
 When prompted, choose these options:
-- **TypeScript?** Yes
+- **TypeScript (required)** Yes
 - **Tailwind CSS?** No (we'll use simple CSS)
 - **Git repository?** Yes
 - **Install dependencies?** Yes
@@ -45,7 +45,7 @@ my-counter-app/
 Open `src/routes/index.tsx` and replace its contents with:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function Home() {
   // Create a reactive signal for our count
@@ -103,7 +103,7 @@ When you click the button, the signal updates and the `<p>` tag automatically sh
 Let's make it look better. Update your component:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function Home() {
   const count = signal(0);
@@ -233,7 +233,7 @@ You should see your counter app! Try clicking the buttons - notice how smooth an
 Let's add a reset button and track total clicks:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export default function Home() {
   const count = signal(0);
@@ -499,7 +499,7 @@ Make sure your `tsconfig.json` has (TypeScript 6+):
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "isolatedDeclarations": true,
     "exactOptionalPropertyTypes": true
   }

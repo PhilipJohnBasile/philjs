@@ -33,6 +33,8 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
 
+    "ignoreDeprecations": "6.0",
+
     "baseUrl": ".",
     "paths": {
       "@philjs/*": ["packages/philjs-*/src"]

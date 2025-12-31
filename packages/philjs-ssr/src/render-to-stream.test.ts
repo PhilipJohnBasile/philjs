@@ -9,7 +9,7 @@ import {
   Island,
   type RenderToStreamOptions,
 } from "./render-to-stream.js";
-import { jsx } from "philjs-core";
+import { jsx } from "@philjs/core";
 
 /**
  * Helper to read entire stream into string.

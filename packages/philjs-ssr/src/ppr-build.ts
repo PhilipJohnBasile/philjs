@@ -8,7 +8,7 @@
  * - Cache warming
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import type {
   PPRBuildConfig,
   PPRBuildResult,

@@ -16,7 +16,7 @@ Create component-scoped styles with TypeScript integration in PhilJS.
 ### Style Helper Function
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 type StyleFn<P = {}> = (props: P) => React.CSSProperties;
 
@@ -239,7 +239,7 @@ const StyledButton = withStyles(Button, {
 ### Theme Context
 
 ```typescript
-import { createContext } from 'philjs-core';
+import { createContext } from '@philjs/core';
 
 interface Theme {
   colors: {
@@ -347,7 +347,7 @@ export function App() {
 ### Reactive Styled Components
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 interface AnimatedBoxProps {
   animate?: boolean;
@@ -378,7 +378,7 @@ function AnimatedBox({ animate }: AnimatedBoxProps) {
 ### State-Based Styling
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function InteractiveButton({ children }: { children: any }) {
   const hovered = signal(false);
@@ -574,7 +574,7 @@ const Button = styled('button', (props) => ({
 ### Memoize Complex Styles
 
 ```typescript
-import { memo } from 'philjs-core';
+import { memo } from '@philjs/core';
 
 // ✅ Memoize expensive style calculations
 function ComplexComponent() {

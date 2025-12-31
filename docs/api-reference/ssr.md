@@ -35,7 +35,7 @@ Complete reference for server-side rendering, hydration, streaming, islands arch
 Synchronously render a JSX element to an HTML string.
 
 ```ts
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 function renderToString(vnode: VNode): string
 ```
@@ -51,7 +51,7 @@ function renderToString(vnode: VNode): string
 **Example**
 
 ```tsx
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 function App() {
   return (
@@ -109,7 +109,7 @@ renderToString(
 Asynchronously render a JSX element to a stream of HTML chunks.
 
 ```ts
-import { renderToStream } from 'philjs-core';
+import { renderToStream } from '@philjs/core';
 
 async function* renderToStream(vnode: VNode): AsyncGenerator<string>
 ```
@@ -125,7 +125,7 @@ async function* renderToStream(vnode: VNode): AsyncGenerator<string>
 **Example**
 
 ```tsx
-import { renderToStream } from 'philjs-core';
+import { renderToStream } from '@philjs/core';
 
 function App() {
   return <div><h1>Streaming Content</h1></div>;
@@ -148,7 +148,7 @@ response.end();
 Create a streaming HTTP response with progressive HTML delivery and Suspense support.
 
 ```ts
-import { renderToStreamingResponse, Suspense } from 'philjs-ssr';
+import { renderToStreamingResponse, Suspense } from '@philjs/ssr';
 
 function renderToStreamingResponse(
   vnode: VNode,
@@ -172,7 +172,7 @@ function renderToStreamingResponse(
 **Example**
 
 ```tsx
-import { renderToStreamingResponse, Suspense } from 'philjs-ssr';
+import { renderToStreamingResponse, Suspense } from '@philjs/ssr';
 
 async function SlowComponent() {
   const data = await fetchData();
@@ -241,7 +241,7 @@ The streaming response includes a client runtime that handles progressive inject
 Attach event handlers and reactivity to server-rendered HTML.
 
 ```ts
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 function hydrate(vnode: VNode, container: Element): void
 ```
@@ -259,7 +259,7 @@ function hydrate(vnode: VNode, container: Element): void
 
 ```tsx
 // Server (entry-server.ts)
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -277,7 +277,7 @@ const html = renderToString(<Counter />);
 // Send HTML to client...
 
 // Client (entry-client.ts)
-import { hydrate } from 'philjs-core';
+import { hydrate } from '@philjs/core';
 
 hydrate(<Counter />, document.getElementById('app')!);
 // Now button clicks work!
@@ -337,7 +337,7 @@ function GoodComponent() {
 Create and mount a client-side component (no server HTML).
 
 ```ts
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 
 function render(vnode: VNode, container: Element): void
 ```
@@ -354,7 +354,7 @@ function render(vnode: VNode, container: Element): void
 **Example**
 
 ```tsx
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 
 function ClientOnlyWidget() {
   return <div>Client-only component</div>;
@@ -389,7 +389,7 @@ render(<ClientOnlyWidget />, document.getElementById('widget')!);
 Low-level request handler that powers all server adapters.
 
 ```ts
-import { handleRequest } from 'philjs-ssr';
+import { handleRequest } from '@philjs/ssr';
 
 function handleRequest(
   request: Request,
@@ -415,8 +415,8 @@ function handleRequest(
 **Example**
 
 ```ts
-import { handleRequest } from 'philjs-ssr';
-import { createRouteMatcher } from 'philjs-router';
+import { handleRequest } from '@philjs/ssr';
+import { createRouteMatcher } from '@philjs/router';
 import { routes } from './routes';
 
 const match = createRouteMatcher(routes);
@@ -481,7 +481,7 @@ type PhilJSServerOptions = {
 Create a Fetch API handler for any JavaScript runtime.
 
 ```ts
-import { createFetchHandler } from 'philjs-ssr';
+import { createFetchHandler } from '@philjs/ssr';
 
 function createFetchHandler(
   options: PhilJSServerOptions
@@ -491,7 +491,7 @@ function createFetchHandler(
 **Example: Cloudflare Workers**
 
 ```ts
-import { createFetchHandler } from 'philjs-ssr';
+import { createFetchHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createFetchHandler({ routes });
@@ -506,7 +506,7 @@ export default {
 **Example: Deno**
 
 ```ts
-import { createFetchHandler } from 'philjs-ssr';
+import { createFetchHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createFetchHandler({ routes });
@@ -517,7 +517,7 @@ Deno.serve(handler);
 **Example: Bun**
 
 ```ts
-import { createFetchHandler } from 'philjs-ssr';
+import { createFetchHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createFetchHandler({ routes });
@@ -533,7 +533,7 @@ export default {
 Create a handler for Node.js http/https servers.
 
 ```ts
-import { createNodeHttpHandler } from 'philjs-ssr';
+import { createNodeHttpHandler } from '@philjs/ssr';
 
 function createNodeHttpHandler(
   options: PhilJSServerOptions
@@ -544,7 +544,7 @@ function createNodeHttpHandler(
 
 ```ts
 import { createServer } from 'node:http';
-import { createNodeHttpHandler } from 'philjs-ssr';
+import { createNodeHttpHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createNodeHttpHandler({ routes });
@@ -560,7 +560,7 @@ server.listen(3000, () => {
 Create Connect-style middleware for Express.js.
 
 ```ts
-import { createExpressMiddleware } from 'philjs-ssr';
+import { createExpressMiddleware } from '@philjs/ssr';
 
 function createExpressMiddleware(
   options: PhilJSServerOptions
@@ -571,7 +571,7 @@ function createExpressMiddleware(
 
 ```ts
 import express from 'express';
-import { createExpressMiddleware } from 'philjs-ssr';
+import { createExpressMiddleware } from '@philjs/ssr';
 import { routes } from './routes';
 
 const app = express();
@@ -596,7 +596,7 @@ app.listen(3000);
 Create Vite middleware for development.
 
 ```ts
-import { createViteMiddleware } from 'philjs-ssr';
+import { createViteMiddleware } from '@philjs/ssr';
 
 function createViteMiddleware(
   options: PhilJSServerOptions
@@ -608,7 +608,7 @@ function createViteMiddleware(
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { createViteMiddleware } from 'philjs-ssr';
+import { createViteMiddleware } from '@philjs/ssr';
 import { routes } from './routes';
 
 export default defineConfig({
@@ -617,7 +617,7 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'philjs-ssr',
+      name: '@philjs/ssr',
       configureServer(server) {
         server.middlewares.use(createViteMiddleware({ routes }));
       },
@@ -638,7 +638,7 @@ export default defineConfig({
 Create a handler for Web Workers, Service Workers, and edge runtimes.
 
 ```ts
-import { createWorkerHandler } from 'philjs-ssr';
+import { createWorkerHandler } from '@philjs/ssr';
 
 function createWorkerHandler(
   options: PhilJSServerOptions
@@ -648,7 +648,7 @@ function createWorkerHandler(
 **Example: Cloudflare Workers**
 
 ```ts
-import { createWorkerHandler } from 'philjs-ssr';
+import { createWorkerHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createWorkerHandler({ routes });
@@ -661,7 +661,7 @@ export default {
 **Example: Service Worker**
 
 ```ts
-import { createWorkerHandler } from 'philjs-ssr';
+import { createWorkerHandler } from '@philjs/ssr';
 import { routes } from './routes';
 
 const handler = createWorkerHandler({ routes });
@@ -682,7 +682,7 @@ Server Islands enable per-component server-side rendering with intelligent cachi
 Create a server-rendered component with caching.
 
 ```ts
-import { ServerIsland } from 'philjs-islands/server';
+import { ServerIsland } from '@philjs/islands/server';
 
 function ServerIsland(props: ServerIslandProps): VNode
 
@@ -726,7 +726,7 @@ interface ServerIslandCache {
 **Example: Basic Island**
 
 ```tsx
-import { ServerIsland } from 'philjs-islands/server';
+import { ServerIsland } from '@philjs/islands/server';
 
 function ProductRecommendations({ userId }) {
   return (
@@ -787,7 +787,7 @@ function ProductRecommendations({ userId }) {
 Manually cache an island's HTML.
 
 ```ts
-import { cacheIsland } from 'philjs-islands/server';
+import { cacheIsland } from '@philjs/islands/server';
 
 function cacheIsland(
   id: string,
@@ -810,7 +810,7 @@ await cacheIsland('product-123', '<div>...</div>', {
 Invalidate all islands with a specific tag.
 
 ```ts
-import { invalidateIslandsByTag } from 'philjs-islands/server';
+import { invalidateIslandsByTag } from '@philjs/islands/server';
 
 function invalidateIslandsByTag(tag: string): Promise<void>
 ```
@@ -827,7 +827,7 @@ await invalidateIslandsByTag('products');
 Invalidate a specific island.
 
 ```ts
-import { invalidateIsland } from 'philjs-islands/server';
+import { invalidateIsland } from '@philjs/islands/server';
 
 function invalidateIsland(
   id: string,
@@ -847,7 +847,7 @@ await invalidateIsland('user-profile', { userId: '123' });
 Clear all cached islands.
 
 ```ts
-import { clearIslandCache } from 'philjs-islands/server';
+import { clearIslandCache } from '@philjs/islands/server';
 
 function clearIslandCache(): Promise<void>
 ```
@@ -864,7 +864,7 @@ await clearIslandCache();
 #### Redis Adapter
 
 ```ts
-import { createRedisCacheAdapter, setIslandCacheStore } from 'philjs-islands/server';
+import { createRedisCacheAdapter, setIslandCacheStore } from '@philjs/islands/server';
 import Redis from 'ioredis';
 
 const redis = new Redis();
@@ -875,7 +875,7 @@ setIslandCacheStore(adapter);
 #### Cloudflare KV Adapter
 
 ```ts
-import { createKVCacheAdapter, setIslandCacheStore } from 'philjs-islands/server';
+import { createKVCacheAdapter, setIslandCacheStore } from '@philjs/islands/server';
 
 const adapter = createKVCacheAdapter(env.MY_KV_NAMESPACE);
 setIslandCacheStore(adapter);
@@ -884,7 +884,7 @@ setIslandCacheStore(adapter);
 #### Custom Adapter
 
 ```ts
-import { setIslandCacheStore } from 'philjs-islands/server';
+import { setIslandCacheStore } from '@philjs/islands/server';
 
 const customStore = {
   async get(key: string) { /* ... */ },
@@ -900,7 +900,7 @@ setIslandCacheStore(customStore);
 ### Metrics
 
 ```ts
-import { getServerIslandMetrics } from 'philjs-islands/server';
+import { getServerIslandMetrics } from '@philjs/islands/server';
 
 const metrics = getServerIslandMetrics();
 
@@ -925,7 +925,7 @@ PPR combines static pre-rendering with dynamic streaming for optimal performance
 Define static and dynamic content boundaries.
 
 ```ts
-import { PPRBoundary } from 'philjs-core';
+import { PPRBoundary } from '@philjs/core';
 
 function PPRBoundary(props: PPRBoundaryProps): VNode
 
@@ -973,7 +973,7 @@ function ProductPage({ productId }) {
 Configure global PPR settings.
 
 ```ts
-import { configurePPR } from 'philjs-core';
+import { configurePPR } from '@philjs/core';
 
 function configurePPR(config: PPRConfig): void
 
@@ -1005,7 +1005,7 @@ configurePPR({
 Get current PPR configuration.
 
 ```ts
-import { getPPRConfig } from 'philjs-core';
+import { getPPRConfig } from '@philjs/core';
 
 const config = getPPRConfig();
 console.log('Shell Cache TTL:', config.shellCacheTTL);
@@ -1018,7 +1018,7 @@ console.log('Shell Cache TTL:', config.shellCacheTTL);
 Manually cache a static shell.
 
 ```ts
-import { cacheShell } from 'philjs-core';
+import { cacheShell } from '@philjs/core';
 
 function cacheShell(key: string, html: string, ttl: number): void
 ```
@@ -1034,7 +1034,7 @@ cacheShell('product-123', '<div>Static shell</div>', 3600);
 Retrieve a cached shell.
 
 ```ts
-import { getShellFromCache } from 'philjs-core';
+import { getShellFromCache } from '@philjs/core';
 
 const cached = getShellFromCache('product-123');
 if (cached) {
@@ -1047,7 +1047,7 @@ if (cached) {
 Invalidate a specific shell.
 
 ```ts
-import { invalidateShell } from 'philjs-core';
+import { invalidateShell } from '@philjs/core';
 
 invalidateShell('product-123');
 ```
@@ -1057,7 +1057,7 @@ invalidateShell('product-123');
 Clear all cached shells.
 
 ```ts
-import { clearShellCache } from 'philjs-core';
+import { clearShellCache } from '@philjs/core';
 
 clearShellCache();
 ```
@@ -1069,7 +1069,7 @@ clearShellCache();
 Render with PPR support on the server.
 
 ```ts
-import { renderWithPPR } from 'philjs-core';
+import { renderWithPPR } from '@philjs/core';
 
 async function renderWithPPR(
   vnode: VNode,
@@ -1109,7 +1109,7 @@ export async function handler(req, res) {
 ### Metrics
 
 ```ts
-import { getPPRMetrics } from 'philjs-core';
+import { getPPRMetrics } from '@philjs/core';
 
 const metrics = getPPRMetrics();
 
@@ -1131,7 +1131,7 @@ console.log({
 Wrap async components with a loading fallback.
 
 ```ts
-import { Suspense } from 'philjs-ssr';
+import { Suspense } from '@philjs/ssr';
 
 function Suspense(props: {
   children: VNode;
@@ -1142,7 +1142,7 @@ function Suspense(props: {
 **Example**
 
 ```tsx
-import { Suspense } from 'philjs-ssr';
+import { Suspense } from '@philjs/ssr';
 
 function App() {
   return (
@@ -1177,7 +1177,7 @@ function App() {
 Create a readable stream from async HTML chunks.
 
 ```ts
-import { streamHTML } from 'philjs-ssr';
+import { streamHTML } from '@philjs/ssr';
 
 function streamHTML(
   parts: AsyncIterable<string>
@@ -1239,7 +1239,7 @@ window.__PHILJS_ROUTE_INFO__.current = { params, url };
 Serialize state to base64 for embedding in HTML.
 
 ```ts
-import { serializeState } from 'philjs-ssr';
+import { serializeState } from '@philjs/ssr';
 
 function serializeState(obj: unknown): string
 ```
@@ -1262,7 +1262,7 @@ const html = `
 Deserialize state from base64.
 
 ```ts
-import { deserializeState } from 'philjs-ssr';
+import { deserializeState } from '@philjs/ssr';
 
 function deserializeState(b64: string): unknown
 ```
@@ -1449,7 +1449,7 @@ function Product({ product }) {
 **Use Error Boundaries**
 
 ```tsx
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function App() {
   return (

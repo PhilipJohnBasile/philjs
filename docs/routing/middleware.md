@@ -29,7 +29,7 @@ Use layouts for route protection:
 
 ```typescript
 // src/pages/(protected)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function ProtectedLayout({ children }: { children: any }) {
@@ -54,9 +54,9 @@ All routes in `(protected)/` are now guarded!
 
 ```typescript
 // src/pages/(auth)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useAuth } from '@/hooks/useAuth';
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export default function AuthLayout({ children }: { children: any }) {
   const router = useRouter();
@@ -83,7 +83,7 @@ export default function AuthLayout({ children }: { children: any }) {
 ### Save Return URL
 
 ```typescript
-import { useRouter, usePathname } from 'philjs-router';
+import { useRouter, usePathname } from '@philjs/router';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function AuthLayout({ children }: { children: any }) {
@@ -106,7 +106,7 @@ Then in login page:
 
 ```typescript
 // src/pages/login.tsx
-import { useRouter, useSearchParams } from 'philjs-router';
+import { useRouter, useSearchParams } from '@philjs/router';
 
 export default function Login() {
   const router = useRouter();
@@ -129,7 +129,7 @@ export default function Login() {
 
 ```typescript
 // src/pages/(admin)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function AdminLayout({ children }: { children: any }) {
@@ -190,7 +190,7 @@ export default function RoleLayout({
 
 ```typescript
 // src/pages/(editor)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function EditorLayout({ children }: { children: any }) {
@@ -219,7 +219,7 @@ Check subscription status:
 
 ```typescript
 // src/pages/(premium)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser, useSubscription } from '@/hooks';
 
 export default function PremiumLayout({ children }: { children: any }) {
@@ -247,7 +247,7 @@ Gate features with flags:
 
 ```typescript
 // src/pages/(beta)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useFeatureFlag } from '@/hooks/useFeatureFlag';
 
 export default function BetaLayout({ children }: { children: any }) {
@@ -273,8 +273,8 @@ export default function BetaLayout({ children }: { children: any }) {
 Track page views:
 
 ```typescript
-import { usePathname } from 'philjs-router';
-import { effect } from 'philjs-core';
+import { usePathname } from '@philjs/router';
+import { effect } from '@philjs/core';
 
 export default function AnalyticsLayout({ children }: { children: any }) {
   const pathname = usePathname();
@@ -296,8 +296,8 @@ export default function AnalyticsLayout({ children }: { children: any }) {
 Client-side rate limit checks:
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 const requestCount = signal(0);
 const lastReset = signal(Date.now());
@@ -334,7 +334,7 @@ Show maintenance page:
 
 ```typescript
 // src/pages/layout.tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const maintenanceMode = signal(false);
 
@@ -352,8 +352,8 @@ export default function RootLayout({ children }: { children: any }) {
 Restrict by location:
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 const userCountry = signal<string | null>(null);
 
@@ -389,7 +389,7 @@ export default function GeoLayout({ children }: { children: any }) {
 Split traffic between variants:
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const variant = signal<'A' | 'B' | null>(null);
 
@@ -461,7 +461,7 @@ Apply middleware to specific pages:
 
 ```typescript
 // src/pages/admin/users.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function AdminUsers() {
@@ -489,9 +489,9 @@ export default function AdminUsers() {
 
 ```typescript
 // src/pages/login.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export default function Login() {
   const router = useRouter();
@@ -511,9 +511,9 @@ export default function Login() {
 ### Role-Based Landing
 
 ```typescript
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export default function Home() {
   const router = useRouter();
@@ -544,8 +544,8 @@ export default function Home() {
 Confirm before leaving:
 
 ```typescript
-import { useRouter } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useRouter } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 export default function EditPost() {
   const router = useRouter();
@@ -657,7 +657,7 @@ Multi-tier access control:
 
 ```typescript
 // src/middleware/auth.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useAuth } from '@/hooks/useAuth';
 
 export function RequireAuth({ children }: { children: any }) {
@@ -679,7 +679,7 @@ export function RequireAuth({ children }: { children: any }) {
 
 ```typescript
 // src/middleware/role.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 interface RoleProps {
@@ -704,7 +704,7 @@ export function RequireRole({ children, roles }: RoleProps) {
 
 ```typescript
 // src/middleware/subscription.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useSubscription } from '@/hooks/useSubscription';
 
 export function RequireSubscription({ children }: { children: any }) {

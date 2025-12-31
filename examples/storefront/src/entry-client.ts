@@ -1,6 +1,6 @@
-import { signal } from "philjs-core";
-import { mountIslands } from "philjs-islands";
-import { showOverlay } from "philjs-devtools";
+import { signal } from "@philjs/core";
+import { mountIslands } from "@philjs/islands";
+import { showOverlay } from "@philjs/devtools";
 import { enableViewTransitions } from "./lib/view-transitions";
 import { enableHoverPrefetch } from "./lib/speculation-rules";
 import { initRUM } from "./lib/rum";

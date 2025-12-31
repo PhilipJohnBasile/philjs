@@ -15,7 +15,7 @@ PPR enables you to:
 ## Quick Start
 
 ```typescript
-import { PPRBoundary } from 'philjs-core';
+import { PPRBoundary } from '@philjs/core';
 
 function ProductPage({ productId }) {
   return (
@@ -35,7 +35,7 @@ function ProductPage({ productId }) {
 The static shell is pre-rendered at build time and served immediately to users. It contains the structural layout and non-personalized content.
 
 ```typescript
-import { staticShell } from 'philjs-core';
+import { staticShell } from '@philjs/core';
 
 const shell = staticShell(
   <div className="container">
@@ -51,7 +51,7 @@ const shell = staticShell(
 Dynamic content is rendered on-demand and streamed to the client. This is perfect for personalized data, user-specific information, or frequently changing content.
 
 ```typescript
-import { dynamicContent } from 'philjs-core';
+import { dynamicContent } from '@philjs/core';
 
 const dynamic = dynamicContent(
   <div>
@@ -68,7 +68,7 @@ const dynamic = dynamicContent(
 Configure PPR globally for your entire application:
 
 ```typescript
-import { configurePPR } from 'philjs-core';
+import { configurePPR } from '@philjs/core';
 
 configurePPR({
   enabled: true,
@@ -101,7 +101,7 @@ Override global settings for specific boundaries:
 ### Manual Shell Caching
 
 ```typescript
-import { cacheShell, getShellFromCache, invalidateShell } from 'philjs-core';
+import { cacheShell, getShellFromCache, invalidateShell } from '@philjs/core';
 
 // Cache a shell manually
 cacheShell('product-123', '<div>...</div>', 3600);
@@ -118,7 +118,7 @@ invalidateShell('product-123');
 Create custom streaming responses:
 
 ```typescript
-import { createPPRStream } from 'philjs-core';
+import { createPPRStream } from '@philjs/core';
 
 async function* generateDynamicContent() {
   yield '<div class="user-data">';
@@ -139,7 +139,7 @@ const stream = createPPRStream({
 Improve performance by preloading dynamic content:
 
 ```typescript
-import { preloadDynamic, generatePreloadHints } from 'philjs-core';
+import { preloadDynamic, generatePreloadHints } from '@philjs/core';
 
 // Preload on user interaction
 <Link
@@ -163,7 +163,7 @@ const hints = generatePreloadHints([
 Create PPR-enabled components automatically:
 
 ```typescript
-import { withPPR } from 'philjs-core';
+import { withPPR } from '@philjs/core';
 
 const ProductPage = withPPR(
   ({ productId, user }) => (
@@ -190,7 +190,7 @@ const ProductPage = withPPR(
 Use PPR in your server-side rendering:
 
 ```typescript
-import { renderWithPPR } from 'philjs-core';
+import { renderWithPPR } from '@philjs/core';
 
 export async function handler(req, res) {
   const { shell, dynamic } = await renderWithPPR(
@@ -219,7 +219,7 @@ export async function handler(req, res) {
 PPR uses HTML comments to mark boundaries:
 
 ```typescript
-import { flushBoundary, hydrateBoundary } from 'philjs-core';
+import { flushBoundary, hydrateBoundary } from '@philjs/core';
 
 // Flush marker (server)
 const marker = flushBoundary('user-profile');
@@ -235,7 +235,7 @@ const script = hydrateBoundary('user-profile', '<div>User content</div>');
 Track PPR performance:
 
 ```typescript
-import { getPPRMetrics, updatePPRMetrics } from 'philjs-core';
+import { getPPRMetrics, updatePPRMetrics } from '@philjs/core';
 
 const metrics = getPPRMetrics();
 console.log('TTFB:', metrics.ttfb);
@@ -256,7 +256,7 @@ updatePPRMetrics({
 ### Content Type Checking
 
 ```typescript
-import { isStaticContent, isDynamicContent } from 'philjs-core';
+import { isStaticContent, isDynamicContent } from '@philjs/core';
 
 const content = staticShell(<Header />);
 
@@ -272,7 +272,7 @@ if (isDynamicContent(content)) {
 ### Cache Management
 
 ```typescript
-import { clearShellCache } from 'philjs-core';
+import { clearShellCache } from '@philjs/core';
 
 // Clear all cached shells
 clearShellCache();
@@ -498,7 +498,7 @@ function BlogPost({ slug }) {
 3. Verify cache isn't being cleared prematurely
 
 ```typescript
-import { getPPRConfig } from 'philjs-core';
+import { getPPRConfig } from '@philjs/core';
 
 const config = getPPRConfig();
 console.log('Shell Cache TTL:', config.shellCacheTTL);

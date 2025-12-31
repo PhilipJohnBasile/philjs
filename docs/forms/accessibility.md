@@ -18,7 +18,7 @@ Make forms accessible to all users with proper semantics, ARIA attributes, and k
 ### Proper Labels
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function AccessibleForm() {
   const email = signal('');

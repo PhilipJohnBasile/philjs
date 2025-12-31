@@ -8,7 +8,7 @@ PhilJS makes it easy to create smooth, performant animations. This guide covers 
 The simplest way to add motion to your UI:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function FadeIn() {
   const isVisible = signal(false);
@@ -37,7 +37,7 @@ function FadeIn() {
 ### Transform Transitions
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function SlideIn() {
   const isOpen = signal(false);
@@ -70,7 +70,7 @@ function SlideIn() {
 ### Multiple Properties
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Card() {
   const isHovered = signal(false);
@@ -103,7 +103,7 @@ function Card() {
 For more complex animations, use CSS keyframes:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Spinner() {
   return (
@@ -171,7 +171,7 @@ function BounceButton() {
 For precise control, use JavaScript-based animations:
 
 ```tsx
-import { signal, effect, onCleanup } from 'philjs-core';
+import { signal, effect, onCleanup } from '@philjs/core';
 
 function CounterAnimation() {
   const displayValue = signal(0);
@@ -279,7 +279,7 @@ function AnimatedProgress() {
 Natural, physics-based motion:
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useSpring(target: number, config = { stiffness: 170, damping: 26 }) {
   const value = signal(target);
@@ -342,7 +342,7 @@ function SpringDemo() {
 Animate items entering and leaving lists:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function AnimatedList() {
   const items = signal([1, 2, 3]);
@@ -400,7 +400,7 @@ function AnimatedList() {
 ### Staggered Animations
 
 ```tsx
-import { signal, For } from 'philjs-core';
+import { signal, For } from '@philjs/core';
 
 function StaggeredList() {
   const items = signal(['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']);
@@ -443,8 +443,8 @@ function StaggeredList() {
 Smooth transitions between routes:
 
 ```tsx
-import { useLocation } from 'philjs-router';
-import { signal, effect } from 'philjs-core';
+import { useLocation } from '@philjs/router';
+import { signal, effect } from '@philjs/core';
 
 function PageTransition({ children }: { children: JSX.Element }) {
   const location = useLocation();
@@ -487,7 +487,7 @@ function PageTransition({ children }: { children: JSX.Element }) {
 Use the browser's native View Transitions API:
 
 ```tsx
-import { useNavigate } from 'philjs-router';
+import { useNavigate } from '@philjs/router';
 
 function ViewTransitionDemo() {
   const navigate = useNavigate();
@@ -516,7 +516,7 @@ function ViewTransitionDemo() {
 Respond to touch and drag:
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function DraggableCard() {
   const position = signal({ x: 0, y: 0 });
@@ -623,7 +623,7 @@ function FramerExample() {
 ### Using GSAP
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 import gsap from 'gsap';
 
 function GSAPExample() {

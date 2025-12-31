@@ -1,6 +1,6 @@
 [package]
 name = "philjs-poem"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "Poem web framework integration for PhilJS - SSR, middleware, extractors, and WebSocket support"

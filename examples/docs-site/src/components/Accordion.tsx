@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface AccordionItem {
   id: string;
@@ -198,7 +198,7 @@ export function Collapsible({
  *     {
  *       id: '2',
  *       title: 'How do I install it?',
- *       content: <CodeBlock>npm install philjs-core</CodeBlock>
+ *       content: <CodeBlock>npm install @philjs/core</CodeBlock>
  *     }
  *   ]}
  *   allowMultiple

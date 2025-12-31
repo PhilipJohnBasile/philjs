@@ -16,7 +16,7 @@ Render components outside the normal DOM hierarchy.
 ### Creating a Portal
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export function createPortal(
   children: JSX.Element,
@@ -91,7 +91,7 @@ export function Portal({ children, container = document.body }: PortalProps) {
 ### Basic Modal
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface ModalProps {
   isOpen: () => boolean;

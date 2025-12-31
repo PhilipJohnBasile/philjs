@@ -48,7 +48,7 @@ export async function getUser(id: string) {
 ```typescript
 // src/pages/profile.tsx
 import { getUser } from '@/server/users';
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function Profile({ userId }: { userId: string }) {
   const user = signal(null);
@@ -248,7 +248,7 @@ export async function deletePost(id: string) {
 // src/server/auth.ts
 'use server';
 
-import { cookies } from 'philjs-core';
+import { cookies } from '@philjs/core';
 import { verifyToken } from '@/lib/jwt';
 
 export async function getCurrentUser() {
@@ -613,7 +613,7 @@ export async function uploadAvatar(file: File) {
 ```typescript
 'use server';
 
-import { cache } from 'philjs-core';
+import { cache } from '@philjs/core';
 
 export const getPublicPosts = cache(
   async () => {

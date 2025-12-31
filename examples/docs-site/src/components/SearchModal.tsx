@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import { getAllDocs } from '../lib/docs-structure';
 
 interface SearchModalProps {
@@ -111,7 +111,7 @@ export function SearchModal({ isOpen, onClose, navigate }: SearchModalProps) {
                 outline: none;
                 color: var(--color-text);
               "
-              autofocus
+              autoFocus
             />
             <kbd style="
               padding: 0.25rem 0.5rem;

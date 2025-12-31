@@ -89,5 +89,5 @@ Playwright exercises SSR navigation, and vitest covers unit pieces in individual
 ## Notes
 
 - RUM posts to `/api/metrics`; wire this up to your own endpoint in production.
-- `window.__PHIL_STATE__` carries base64 payloads via `philjs-ssr` `serializeState`/`deserializeState` helpers.
+- `window.__PHIL_STATE__` carries base64 payloads via `@philjs/ssr` `serializeState`/`deserializeState` helpers.
 - Signals keep the product total reactive without additional hydration payload.

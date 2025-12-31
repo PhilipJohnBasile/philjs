@@ -30,7 +30,7 @@ PhilJS now includes SvelteKit-style comprehensive platform adapters for major de
 ### Usage
 
 ```typescript
-import { cloudflarePagesAdapter } from 'philjs-adapters/cloudflare-pages';
+import { cloudflarePagesAdapter } from '@philjs/adapters/cloudflare-pages';
 
 export default cloudflarePagesAdapter({
   kv: [
@@ -108,7 +108,7 @@ await bucket.put('file.txt', 'content');
 ### Usage
 
 ```typescript
-import { vercelAdapter } from 'philjs-adapters/vercel/adapter';
+import { vercelAdapter } from '@philjs/adapters/vercel/adapter';
 
 export default vercelAdapter({
   edge: true,
@@ -149,7 +149,7 @@ export default vercelAdapter({
 ### Revalidation API
 
 ```typescript
-import { revalidatePath, revalidateTag } from 'philjs-adapters/vercel/adapter';
+import { revalidatePath, revalidateTag } from '@philjs/adapters/vercel/adapter';
 
 // Revalidate specific path
 await revalidatePath('/blog/post-1');
@@ -175,7 +175,7 @@ await revalidateTag('blog-posts');
 ### Usage
 
 ```typescript
-import { netlifyAdapter } from 'philjs-adapters/netlify/adapter';
+import { netlifyAdapter } from '@philjs/adapters/netlify/adapter';
 
 export default netlifyAdapter({
   edge: true,
@@ -221,7 +221,7 @@ export default netlifyAdapter({
 ### Image Optimization
 
 ```typescript
-import { netlifyImageCDN } from 'philjs-adapters/netlify/adapter';
+import { netlifyImageCDN } from '@philjs/adapters/netlify/adapter';
 
 const url = netlifyImageCDN('/image.jpg', {
   width: 800,
@@ -248,7 +248,7 @@ const url = netlifyImageCDN('/image.jpg', {
 ### Usage
 
 ```typescript
-import { awsLambdaAdapter } from 'philjs-adapters/aws-lambda';
+import { awsLambdaAdapter } from '@philjs/adapters/aws-lambda';
 
 export default awsLambdaAdapter({
   region: 'us-east-1',
@@ -307,7 +307,7 @@ export default awsLambdaAdapter({
 ### Usage
 
 ```typescript
-import { railwayAdapter } from 'philjs-adapters/railway';
+import { railwayAdapter } from '@philjs/adapters/railway';
 
 export default railwayAdapter({
   docker: {
@@ -379,7 +379,7 @@ All adapters are properly exported in `package.json`:
 New presets added to the main package:
 
 ```typescript
-import { createAdapter } from 'philjs-adapters';
+import { createAdapter } from '@philjs/adapters';
 
 const adapter = createAdapter('railway');
 const dockerAdapter = createAdapter('railway-docker');
@@ -422,20 +422,20 @@ railway run npm start
 
 ```typescript
 // Before
-import { cloudflareAdapter } from 'philjs-adapters/cloudflare';
+import { cloudflareAdapter } from '@philjs/adapters/cloudflare';
 
 // After
-import { cloudflarePagesAdapter } from 'philjs-adapters/cloudflare-pages';
+import { cloudflarePagesAdapter } from '@philjs/adapters/cloudflare-pages';
 ```
 
 ### From Basic Vercel to Enhanced Vercel
 
 ```typescript
 // Before
-import { vercelAdapter } from 'philjs-adapters/vercel';
+import { vercelAdapter } from '@philjs/adapters/vercel';
 
 // After
-import { vercelAdapter } from 'philjs-adapters/vercel/adapter';
+import { vercelAdapter } from '@philjs/adapters/vercel/adapter';
 ```
 
 ## Performance Optimizations

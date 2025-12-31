@@ -1,4 +1,4 @@
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 import { SignalsDemo } from "./demos/SignalsDemo";
 
 export function App() {

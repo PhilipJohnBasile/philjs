@@ -13,14 +13,14 @@ A: Create tsconfig.json:
   "compilerOptions": {
     "target": "ES2020",
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
 
 ## Type Errors
 
-**Q: "Cannot find module 'philjs-core'"**
+**Q: "Cannot find module '@philjs/core'"**
 
 A: Add to tsconfig.json:
 
@@ -40,7 +40,7 @@ A: Configure JSX:
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```

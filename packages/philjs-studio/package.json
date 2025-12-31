@@ -12,7 +12,10 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -21,7 +24,13 @@
     "test": "vitest",
     "lint": "eslint src/"
   },
-  "keywords": ["philjs", "studio", "visual-builder", "drag-and-drop", "no-code"],
+  "keywords": [
+    "philjs",
+    "studio",
+    "visual-builder",
+    "drag-and-drop",
+    "no-code"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -30,7 +39,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {

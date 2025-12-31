@@ -1,6 +1,6 @@
 # AI Integration
 
-PhilJS provides type-safe AI integration that makes it easy to build AI-powered features directly into your web applications. The `philjs-ai` package offers a unique, strongly-typed approach to working with AI providers, ensuring type safety from prompts to responses.
+PhilJS provides type-safe AI integration that makes it easy to build AI-powered features directly into your web applications. The `@philjs/ai` package offers a unique, strongly-typed approach to working with AI providers, ensuring type safety from prompts to responses.
 
 ## Table of Contents
 
@@ -45,11 +45,11 @@ const reply: string = response.text; // TypeScript knows this is a string!
 ## Installation
 
 ```bash
-npm install philjs-ai
+npm install @philjs/ai
 # or
-pnpm add philjs-ai
+pnpm add @philjs/ai
 # or
-yarn add philjs-ai
+yarn add @philjs/ai
 ```
 
 ## Quick Start
@@ -57,7 +57,7 @@ yarn add philjs-ai
 Here's a minimal example to get started:
 
 ```typescript
-import { createPrompt, createAI, providers } from 'philjs-ai';
+import { createPrompt, createAI, providers } from '@philjs/ai';
 
 // 1. Define a typed prompt specification
 const chatPrompt = createPrompt({
@@ -178,7 +178,7 @@ console.log(response.text); // "Echo: {\"spec\":...,\"input\":{\"message\":\"Tes
 You can create custom providers for any AI service:
 
 ```typescript
-import type { Provider } from 'philjs-ai';
+import type { Provider } from '@philjs/ai';
 
 const customProvider: Provider = {
   name: "my-custom-ai",
@@ -202,8 +202,8 @@ const ai = createAI(customProvider);
 ### Example 1: AI-Powered Chatbot
 
 ```typescript
-import { signal } from 'philjs-core';
-import { createPrompt, createAI, providers } from 'philjs-ai';
+import { signal } from '@philjs/core';
+import { createPrompt, createAI, providers } from '@philjs/ai';
 
 // Define chat types
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
@@ -288,8 +288,8 @@ function ChatBot() {
 ### Example 2: Content Generation with Streaming
 
 ```typescript
-import { signal } from 'philjs-core';
-import { createPrompt, createAI, providers } from 'philjs-ai';
+import { signal } from '@philjs/core';
+import { createPrompt, createAI, providers } from '@philjs/ai';
 
 type GenerateInput = { topic: string; style: 'formal' | 'casual' };
 type GenerateOutput = { content: string };
@@ -364,8 +364,8 @@ function ContentGenerator() {
 ### Example 3: Form Auto-Completion
 
 ```typescript
-import { signal, effect } from 'philjs-core';
-import { createPrompt, createAI, providers } from 'philjs-ai';
+import { signal, effect } from '@philjs/core';
+import { createPrompt, createAI, providers } from '@philjs/ai';
 
 type AutocompleteInput = { partial: string; context: string };
 type AutocompleteOutput = { suggestions: string[] };
@@ -432,7 +432,7 @@ function SmartForm() {
 ### OpenAI Integration
 
 ```typescript
-import { createAI, createPrompt } from 'philjs-ai';
+import { createAI, createPrompt } from '@philjs/ai';
 
 const openaiProvider = {
   name: "openai",
@@ -571,7 +571,7 @@ async function generateWithFallback() {
 ### 4. Use Debouncing for Real-Time Features
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 let debounceTimer: number;
 
@@ -611,7 +611,7 @@ async function generateCached(input: any) {
 ### Rate Limiting AI Calls
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 class RateLimitedAI {
   private queue: Array<() => Promise<any>> = [];

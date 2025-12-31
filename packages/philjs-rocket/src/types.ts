@@ -208,6 +208,8 @@ export interface GuardContext {
   cookies: Record<string, string>;
   /** Session data */
   session?: Record<string, unknown>;
+  /** Raw or parsed request body */
+  body?: string | Uint8Array | Record<string, unknown> | FormData | URLSearchParams;
   /** Query parameters */
   query: Record<string, string>;
   /** Path parameters */

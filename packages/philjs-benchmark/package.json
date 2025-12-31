@@ -59,12 +59,12 @@
     "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "esbuild": "^0.27.2",
     "gzip-size": "^7.0.0",
     "terser": "^5.27.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.0"
   },
   "keywords": [
     "benchmark",

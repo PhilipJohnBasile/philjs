@@ -41,7 +41,7 @@ PhilJS is open source and welcomes contributions of all kinds.
 **📝 Documentation**
 - Fix typos or clarify explanations
 - Add examples or recipes
-- Translate docs (coming soon)
+- Help translate docs via PRs or community discussions
 
 **🐛 Bug Reports**
 - Found a bug? [Open an issue](https://github.com/philjs/philjs/issues/new?template=bug_report.md)

@@ -27,7 +27,7 @@
  * ```
  */
 
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 // ============================================================================
 // Types

@@ -80,7 +80,7 @@ For server-side rendering on Vercel:
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
-import philjs from 'philjs-compiler/vite';
+import philjs from '@philjs/compiler/vite';
 
 export default defineConfig({
   plugins: [

@@ -331,10 +331,10 @@ const match = matchRoute('/users/123');
 // { route: {...}, params: { id: '123' } }
 ```
 
-### virtual:philjs-content
+### virtual:@philjs/content
 
 ```typescript
-import { content, getCollection, loadContent } from 'virtual:philjs-content';
+import { content, getCollection, loadContent } from 'virtual:@philjs/content';
 
 // Get all content
 console.log(content);
@@ -365,10 +365,10 @@ function App() {
 }
 ```
 
-### virtual:philjs-plugins
+### virtual:@philjs/plugins
 
 ```typescript
-import { plugins, initializePlugins } from 'virtual:philjs-plugins';
+import { plugins, initializePlugins } from 'virtual:@philjs/plugins';
 
 console.log(plugins);
 
@@ -383,7 +383,7 @@ Virtual modules include full TypeScript support:
 
 ```typescript
 import type { RouteMetadata } from 'virtual:philjs-routes';
-import type { ContentItem } from 'virtual:philjs-content';
+import type { ContentItem } from 'virtual:@philjs/content';
 
 function createRouteHandler(route: RouteMetadata) {
   // Full IntelliSense support
@@ -527,7 +527,7 @@ const userLink = buildPath('/users/:id', { id: 123 });
 ### Blog System
 
 ```typescript
-import { getCollection } from 'virtual:philjs-content';
+import { getCollection } from 'virtual:@philjs/content';
 import { filterByFrontmatter, sortByFrontmatter } from '@philjs/core';
 
 async function getBlogPosts() {
@@ -611,7 +611,7 @@ export default {
 };
 
 // Usage
-import { plugins, initializePlugins } from 'virtual:philjs-plugins';
+import { plugins, initializePlugins } from 'virtual:@philjs/plugins';
 
 const app = {};
 await initializePlugins(app);
@@ -662,7 +662,7 @@ const posts = [
 
 **After:**
 ```typescript
-import { getCollection } from 'virtual:philjs-content';
+import { getCollection } from 'virtual:@philjs/content';
 const posts = await Promise.all(
   getCollection('blog').map(p => p.load())
 );

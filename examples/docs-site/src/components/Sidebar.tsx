@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import { docsStructure } from '../lib/docs-structure';
 import { theme, toggleTheme } from '../lib/theme';
 

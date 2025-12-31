@@ -2,7 +2,7 @@
  * Streaming SSR with Suspense boundaries.
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 
 export type StreamContext = {
   /** Unique ID generator for suspense boundaries */

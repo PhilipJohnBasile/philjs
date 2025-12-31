@@ -149,7 +149,7 @@ Create the main Game component with full game logic.
 Create `src/components/Game.tsx`:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import { Board } from './Board';
 
 type SquareValue = 'X' | 'O' | null;
@@ -541,7 +541,7 @@ Here's the complete, production-ready code:
 
 **src/components/Square.tsx:**
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface SquareProps {
   value: string | null;
@@ -639,7 +639,7 @@ const styles = {
 
 **src/components/Game.tsx:**
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import { Board } from './Board';
 
 type SquareValue = 'X' | 'O' | null;

@@ -14,7 +14,7 @@ Master PhilJS performance optimization with automatic and manual techniques.
 
 ## Table of Contents
 
-1. [Understanding PhilJS Performance](#understanding-philjs-performance)
+1. [Understanding PhilJS Performance](#understanding-@philjs/performance)
 2. [Auto-Memo Optimization](#auto-memo-optimization)
 3. [Auto-Batch Optimization](#auto-batch-optimization)
 4. [Manual Optimization Techniques](#manual-optimization-techniques)
@@ -113,7 +113,7 @@ function ShoppingCart() {
 Use manual `memo()` when you need explicit control:
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function AdvancedAnalytics() {
   const events = signal<Event[]>([]);
@@ -144,7 +144,7 @@ function AdvancedAnalytics() {
 Use `linkedSignal` when you need a computed value that can be manually overridden:
 
 ```typescript
-import { signal, linkedSignal } from 'philjs-core';
+import { signal, linkedSignal } from '@philjs/core';
 
 function SmartSearchBox() {
   const query = signal('');
@@ -288,7 +288,7 @@ function BulkUpdate() {
 ### Manual Batch for Complex Scenarios
 
 ```typescript
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 function ComplexStateUpdate() {
   const user = signal({ name: '', age: 0 });
@@ -484,7 +484,7 @@ function SearchComponent() {
 ### 3. Optimize Effects with Cleanup
 
 ```typescript
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 function RealtimeComponent() {
   const data = signal<Data | null>(null);
@@ -528,7 +528,7 @@ function TimerComponent() {
 ### 4. Lazy Load Components
 
 ```typescript
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./Dashboard'));
@@ -659,7 +659,7 @@ function ProfiledOperation() {
 ### Performance Observer API
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function usePerformanceMonitoring() {
   effect(() => {
@@ -779,15 +779,15 @@ trackWebVitals();
 
 ```typescript
 // ❌ Imports entire library (39KB gzipped)
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 // ✅ Import only what you need (3.3KB gzipped)
-import { signal, memo, effect } from 'philjs-core/signals';
-import { jsx } from 'philjs-core/jsx-runtime';
+import { signal, memo, effect } from '@philjs/core/signals';
+import { jsx } from '@philjs/core/jsx-runtime';
 
 // ✅ Even more granular
-import { signal } from 'philjs-core/signals';
-import { render } from 'philjs-core/hydrate';
+import { signal } from '@philjs/core/signals';
+import { render } from '@philjs/core/hydrate';
 ```
 
 ### 2. Tree Shaking Configuration
@@ -800,7 +800,7 @@ export default {
       output: {
         manualChunks: {
           // Separate vendor chunks
-          'philjs': ['philjs-core'],
+          'philjs': ['@philjs/core'],
           'vendor': ['date-fns', 'lodash-es']
         }
       }
@@ -901,7 +901,7 @@ export default {
 ### Pattern 1: Selective Reactivity with Untrack
 
 ```typescript
-import { signal, memo, untrack } from 'philjs-core';
+import { signal, memo, untrack } from '@philjs/core';
 
 function SearchResults() {
   const query = signal('');
@@ -933,7 +933,7 @@ function SearchResults() {
 ### Pattern 2: Resource Pattern for Data Fetching
 
 ```typescript
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: number }) {
   // Resource automatically handles loading/error states
@@ -958,7 +958,7 @@ function UserProfile({ userId }: { userId: number }) {
 ### Pattern 3: Computed Context for Shared State
 
 ```typescript
-import { signal, memo, createContext, useContext } from 'philjs-core';
+import { signal, memo, createContext, useContext } from '@philjs/core';
 
 // Create context with computed values
 const CartContext = createContext<{

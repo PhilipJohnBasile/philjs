@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export interface Toast {
   id: string;
@@ -195,7 +195,7 @@ export function ToastContainer({
         pointerEvents: 'none',
       }}
       aria-live="polite"
-      aria-atomic="false"
+      aria-atomic={false}
     >
       {toasts().map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={dismiss} />

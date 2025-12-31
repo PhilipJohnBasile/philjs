@@ -57,8 +57,8 @@ Vite 7 changes the default browser target from `'modules'` to `'baseline-widely-
 - More modern target than the previous `'modules'` setting
 
 **Before (Vite 6):**
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 export default {
   build: {
     target: 'modules' // Default
@@ -67,8 +67,8 @@ export default {
 ```
 
 **After (Vite 7):**
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 export default {
   build: {
     target: 'baseline-widely-available' // New default
@@ -84,7 +84,7 @@ export default {
 **Action Required:**
 - Review your browser support requirements
 - If you need to support older browsers, explicitly set a different target:
-  ```js
+  ```ts
   export default {
     build: {
       target: 'es2020' // Or your preferred target
@@ -405,7 +405,7 @@ pnpm --filter @philjs/compiler add -D vite@^7.3.0
 
 #### 2. Update Configuration Files
 
-Review all `vite.config.js` / `vite.config.ts` files:
+Review all `vite.config.ts` files:
 
 ```js
 // Before

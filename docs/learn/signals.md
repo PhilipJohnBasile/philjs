@@ -15,7 +15,7 @@ Signals are PhilJS's reactive state primitive. They're the foundation of how you
 A signal is a container for a value that **notifies subscribers when it changes**.
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 
@@ -55,7 +55,7 @@ count.set(1); // All UI using count() automatically updates!
 Use `signal()` with an initial value:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Primitive values
 const count = signal(0);
@@ -212,7 +212,7 @@ todos.set(
 Signals work great in components:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -274,7 +274,7 @@ For global state, create signals outside components:
 
 ```typescript
 // store.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export const user = signal<User | null>(null);
 export const theme = signal<'light' | 'dark'>('light');
@@ -427,7 +427,7 @@ function updateUser(user: User) {
 Use memos for computed values (covered in detail in the Memos guide):
 
 ```typescript
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 

@@ -80,7 +80,7 @@ function ScrollHandler() {
 ### Passive Event Listeners
 
 ```typescript
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 function usePassiveScroll(callback: (e: Event) => void) {
   effect(() => {
@@ -104,7 +104,7 @@ usePassiveScroll((e) => {
 ### Batch Updates
 
 ```typescript
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 function updateMultipleValues() {
   const count = signal(0);

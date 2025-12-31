@@ -4,9 +4,10 @@ Welcome to the PhilJS documentation! PhilJS is a modern web framework designed f
 
 ## Getting Started
 
-- [Installation](./getting-started/installation.md) _(Coming soon)_
-- [Quick Start](./getting-started/quick-start.md) _(Coming soon)_
-- [Migration from v1](./getting-started/migration.md) _(Coming soon)_
+- [Installation](./getting-started/installation.md)
+- [Quick Start](./getting-started/quick-start.md)
+- [PhilJS Standards](../PHILJS_STANDARDS.md)
+- [Migration Guides](./migration/)
 
 ## Core Concepts
 
@@ -49,14 +50,15 @@ Core features and APIs that power PhilJS:
 
 ## Guides
 
-- [Authentication](./guides/authentication.md) _(Coming soon)_
-- [Deployment](./guides/deployment.md) _(Coming soon)_
-- [Performance](./guides/performance.md) _(Coming soon)_
-- [Testing](./guides/testing.md) _(Coming soon)_
+- [Rust Integration](./guides/RUST_INTEGRATION_GUIDE.md)
+- [Authentication](./packages/auth/guide.md)
+- [Deployment](./deployment/overview.md)
+- [Performance](./performance/overview.md)
+- [Testing](./best-practices/testing.md)
 
 ## API Reference
 
-- [Auto-generated API docs](./api-reference/) _(Coming soon)_
+- [Auto-generated API docs](./api-reference/)
 
 ## Examples
 
@@ -66,22 +68,22 @@ Browse complete example applications:
 
 ## Contributing
 
-- [Contribution Guide](../CONTRIBUTING.md) _(Coming soon)_
-- [Code of Conduct](../CODE_OF_CONDUCT.md) _(Coming soon)_
+- [Contribution Guide](../CONTRIBUTING.md)
+- [Code of Conduct](../CODE_OF_CONDUCT.md)
 
 ## Architecture
 
-- [Architecture Overview](./architecture/overview.md) _(Coming soon)_
-- [Design Decisions](./architecture/decisions/) _(Coming soon)_
+- [Architecture Best Practices](./best-practices/architecture.md)
+- [Design Principles](./best-practices/overview.md)
 
 ---
 
 ## Quick Links
 
-- [Official Website](https://philjs.dev) _(Coming soon)_
+- [Official Website](https://philjs.dev)
 - [GitHub Repository](https://github.com/philjs/philjs)
-- [Discord Community](https://discord.gg/philjs) _(Coming soon)_
-- [Twitter](https://twitter.com/philjsdev) _(Coming soon)_
+- [Discord Community](https://discord.gg/philjs)
+- [Twitter](https://twitter.com/philjsdev)
 
 ## Package Documentation
 

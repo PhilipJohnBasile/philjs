@@ -662,7 +662,7 @@ const PhilJS = {
   nextTick,
   onMount,
   // Version
-  version: '0.0.1',
+  version: '0.1.0',
 };
 
 // Auto-register on window

@@ -61,7 +61,7 @@ JSX element type 'Component' does not have any construct or call signatures
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "types": ["vite/client"]
   }
 }
@@ -296,7 +296,7 @@ const handleClick = async (e: MouseEvent) => {
 }}>Click</button>
 
 // Solution 4: Use resource for async data
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 function Component() {
   const data = resource(() => fetchData());
@@ -315,7 +315,7 @@ function Component() {
 
 **Error:**
 ```typescript
-Cannot find module 'philjs-core' or its corresponding type declarations
+Cannot find module '@philjs/core' or its corresponding type declarations
 Could not find a declaration file for module 'xyz'
 ```
 
@@ -747,7 +747,7 @@ function LoginForm() {
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
 
     // Module Resolution
     "moduleResolution": "bundler",

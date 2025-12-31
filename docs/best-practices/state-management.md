@@ -317,7 +317,7 @@ For state shared across unrelated components without context overhead.
 
 ```tsx
 // state/modal.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface ModalState {
   isOpen: boolean;
@@ -397,7 +397,7 @@ PhilJS provides a powerful Context API for dependency injection and global state
 
 ```tsx
 // contexts/ThemeContext.tsx
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 type Theme = 'light' | 'dark';
 
@@ -455,7 +455,7 @@ function ThemeToggle() {
 
 ```tsx
 // contexts/UserContext.tsx
-import { createSignalContext, signal, memo } from 'philjs-core';
+import { createSignalContext, signal, memo } from '@philjs/core';
 
 interface User {
   id: string;
@@ -548,7 +548,7 @@ function ProtectedRoute({ children }: { children: any }) {
 
 ```tsx
 // contexts/AppContext.tsx
-import { combineProviders } from 'philjs-core';
+import { combineProviders } from '@philjs/core';
 import { UserProvider } from './UserContext';
 import { ThemeProvider } from './ThemeContext';
 import { NotificationProvider } from './NotificationContext';
@@ -577,7 +577,7 @@ function App() {
 
 ```tsx
 // contexts/ThemeContext.tsx
-import { createThemeContext, signal, effect } from 'philjs-core';
+import { createThemeContext, signal, effect } from '@philjs/core';
 
 interface AppTheme {
   primaryColor: string;
@@ -640,7 +640,7 @@ State accessible throughout the application without context overhead.
 
 ```tsx
 // stores/userStore.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function createUserStore() {
   const user = signal<User | null>(null);
@@ -694,7 +694,7 @@ function Header() {
 
 ```tsx
 // stores/themeStore.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const theme = signal<'light' | 'dark'>('light');
 
@@ -870,7 +870,7 @@ State that survives page reloads and browser sessions.
 
 ```tsx
 // stores/settingsStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface Settings {
   theme: 'light' | 'dark';
@@ -938,7 +938,7 @@ export const settingsStore = createSettingsStore();
 
 ```tsx
 // utils/persistentSignal.ts
-import { signal, effect, Signal } from 'philjs-core';
+import { signal, effect, Signal } from '@philjs/core';
 
 interface PersistOptions<T> {
   key: string;
@@ -1023,7 +1023,7 @@ const userPreferences = persistentSignal({
 
 ```tsx
 // stores/formDraftStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface FormDraft {
   title: string;
@@ -1131,7 +1131,7 @@ function BlogPostEditor() {
 
 ```tsx
 // utils/indexedDBStore.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 class IndexedDBStore<T> {
   private db: IDBDatabase | null = null;
@@ -1266,7 +1266,7 @@ Keeping state synchronized with external sources like WebSockets, Server-Sent Ev
 
 ```tsx
 // stores/realtimeStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface Message {
   id: string;
@@ -1403,7 +1403,7 @@ function ChatRoom() {
 
 ```tsx
 // stores/notificationStore.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface Notification {
   id: string;
@@ -1474,7 +1474,7 @@ export const notificationStore = createNotificationStore();
 
 ```tsx
 // stores/pollingStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface PollingOptions {
   interval: number;
@@ -1581,7 +1581,7 @@ function OrdersMonitor() {
 
 ```tsx
 // stores/crossTabStore.ts
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 interface CrossTabState<T> {
   key: string;
@@ -1656,7 +1656,7 @@ function ShoppingCart() {
 
 ```tsx
 // stores/broadcastStore.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface BroadcastMessage<T> {
   type: string;
@@ -2061,7 +2061,7 @@ function TextEditor() {
 ### Batching Updates
 
 ```tsx
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 function createFormStore() {
   const firstName = signal('');

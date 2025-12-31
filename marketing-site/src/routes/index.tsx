@@ -1,4 +1,4 @@
-import { defineLoader } from "philjs-ssr";
+import { defineLoader } from "@philjs/ssr";
 import { html } from "../server/template";
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";

@@ -7,9 +7,9 @@ Get PhilJS up and running in less than a minute.
 
 Before installing PhilJS, make sure you have:
 
-- **Node.js 24.0 or higher** ([Download here](https://nodejs.org/))
+- **Node.js 24.0 or higher** (Node 25 supported) ([Download here](https://nodejs.org/))
 - **npm**, **pnpm**, **yarn**, or **bun** package manager
-- **TypeScript 6.0 or higher** (if using TypeScript)
+- **TypeScript 6.0 or higher**
 
 Check your Node version:
 ```bash
@@ -70,7 +70,7 @@ When you run `create-philjs`, you'll be asked some questions:
 
 ```
 ✔ What is your project named? › my-app
-✔ Would you like to use TypeScript? › Yes
+✔ TypeScript (required) › Yes
 ✔ Would you like to use Tailwind CSS? › Yes
 ✔ Initialize a git repository? › Yes
 ✔ Install dependencies? › Yes
@@ -78,10 +78,10 @@ When you run `create-philjs`, you'll be asked some questions:
 
 ### Options Explained
 
-**TypeScript** (Recommended)
-- Choose "Yes" for better type safety and autocomplete
+**TypeScript** (Required)
+- TypeScript is required for PhilJS projects
 - PhilJS is built with TypeScript and has excellent type inference
-- You can always use JavaScript if you prefer
+- All templates are TypeScript-first
 
 **Tailwind CSS** (Optional)
 - Utility-first CSS framework
@@ -104,16 +104,16 @@ If you prefer to add PhilJS to an existing project:
 ### 1. Install PhilJS packages
 
 ```bash
-npm install philjs-core philjs-router philjs-ssr
+npm install @philjs/core @philjs/router @philjs/ssr
 
 # Or with pnpm
-pnpm add philjs-core philjs-router philjs-ssr
+pnpm add @philjs/core @philjs/router @philjs/ssr
 
 # Or with yarn
-yarn add philjs-core philjs-router philjs-ssr
+yarn add @philjs/core @philjs/router @philjs/ssr
 
 # Or with bun
-bun add philjs-core philjs-router philjs-ssr
+bun add @philjs/core @philjs/router @philjs/ssr
 ```
 
 ### 2. Install dev dependencies
@@ -139,7 +139,7 @@ npm install -D vite @vitejs/plugin-react typescript
     "isolatedDeclarations": true,
     "noEmit": true,
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -197,7 +197,7 @@ export default defineConfig({
 
 Create `src/App.tsx`:
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function App() {
   const count = signal(0);
@@ -217,7 +217,7 @@ export function App() {
 ### 8. Create `src/index.tsx`
 
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import { App } from './App';
 
 render(<App />, document.getElementById('root')!);
@@ -275,7 +275,7 @@ my-app/
 
 **`src/index.tsx`** - Application entry point
 ```typescript
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import { App } from './App';
 
 render(<App />, document.getElementById('root')!);
@@ -283,7 +283,7 @@ render(<App />, document.getElementById('root')!);
 
 **`src/App.tsx`** - Root component
 ```typescript
-import { Router } from 'philjs-router';
+import { Router } from '@philjs/router';
 
 export function App() {
   return (
@@ -402,7 +402,7 @@ Make sure your `tsconfig.json` has:
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
@@ -415,12 +415,12 @@ Install Vite as a dev dependency:
 npm install -D vite
 ```
 
-### "Cannot find module 'philjs-core'"
+### "Cannot find module '@philjs/core'"
 
 Make sure you've installed the core package:
 
 ```bash
-npm install philjs-core
+npm install @philjs/core
 ```
 
 ### Windows-specific issues
@@ -450,7 +450,7 @@ Now that PhilJS is installed, you're ready to start building:
 
 **Minimum Requirements**:
 - Node.js 24.0+
-- TypeScript 6.0+ (if using TypeScript)
+- TypeScript 6.0+
 - Modern browser with ES2024 support
 
 **Supported Browsers**:
@@ -471,10 +471,10 @@ Now that PhilJS is installed, you're ready to start building:
 To upgrade to the latest version:
 
 ```bash
-npm install philjs-core@latest philjs-router@latest philjs-ssr@latest
+npm install @philjs/core@latest @philjs/router@latest @philjs/ssr@latest
 
 # Or with pnpm
-pnpm update philjs-core philjs-router philjs-ssr
+pnpm update @philjs/core @philjs/router @philjs/ssr
 ```
 
 Check the [changelog](https://github.com/philjs/philjs/blob/main/CHANGELOG.md) for breaking changes.

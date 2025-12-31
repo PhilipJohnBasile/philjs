@@ -290,7 +290,7 @@ email.set('alice@example.com');  // Effect runs again
 
 ```tsx
 // ✅ Single effect run
-import { batch } from 'philjs-core';
+import { batch } from '@philjs/core';
 
 batch(() => {
   firstName.set('Alice');
@@ -321,7 +321,7 @@ import { Analytics } from './Analytics';
 
 ```tsx
 // ✅ Load on demand
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const Settings = lazy(() => import('./Settings'));
@@ -496,7 +496,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['philjs-core', 'philjs-router']
+          vendor: ['@philjs/core', '@philjs/router']
         }
       }
     },

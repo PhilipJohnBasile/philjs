@@ -29,7 +29,7 @@ function App() {
 ## Creating an Error Boundary
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface ErrorBoundaryProps {
   children: any;

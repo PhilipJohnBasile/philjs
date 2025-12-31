@@ -7,7 +7,7 @@
  *
  * @example
  * ```tsx
- * import { dynamic } from 'philjs-ssr';
+ * import { dynamic } from '@philjs/ssr';
  *
  * function Page() {
  *   return (
@@ -22,7 +22,7 @@
  * ```
  */
 
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import type {
   DynamicProps,
   PPRContext,

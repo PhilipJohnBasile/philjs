@@ -16,13 +16,13 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "philjs-core": resolve(__dirname, "../../packages/philjs-core/dist"),
-      "philjs-compiler": resolve(__dirname, "../../packages/philjs-compiler/src"),
+      "@philjs/core": resolve(__dirname, "../../packages/philjs-core/dist"),
+      "@philjs/compiler": resolve(__dirname, "../../packages/philjs-compiler/src"),
     },
   },
   esbuild: {
     jsx: "automatic",
-    jsxImportSource: "philjs-core",
+    jsxImportSource: "@philjs/core",
   },
   server: {
     port: 3007,

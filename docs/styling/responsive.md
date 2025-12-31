@@ -72,7 +72,7 @@ Wide: @media (min-width: 1280px)
 ### useMediaQuery Hook
 
 ```typescript
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function useMediaQuery(query: string) {
   const matches = signal(false);
@@ -193,7 +193,7 @@ export function ResponsiveGrid({ children }: { children: any }) {
 ### Dynamic Grid
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function DynamicGrid({ children }: { children: any }) {
   const columns = signal(3);
@@ -475,7 +475,7 @@ export function ResponsiveSpacing({ children }: { children: any }) {
 ### Responsive Nav
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ResponsiveNav() {
   const isMobile = useMediaQuery('(max-width: 767px)');

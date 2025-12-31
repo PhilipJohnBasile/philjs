@@ -158,7 +158,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should skip transformation when disabled', async () => {
       const disabledPlugin = philJSCompiler({ enabled: false }) as Plugin;
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       const result = await disabledPlugin.transform?.(code, 'test.ts');
 
       expect(result).toBeNull();
@@ -180,7 +180,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should transform PhilJS code', async () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -194,14 +194,14 @@ describe('Vite Plugin - PhilJS Compiler', () => {
     });
 
     it('should detect PhilJS imports with double quotes', async () => {
-      const code = `import { signal } from "philjs-core";`;
+      const code = `import { signal } from "@philjs/core";`;
       const result = await plugin.transform?.(code, 'test.ts');
 
       expect(result).toBeDefined();
     });
 
     it('should detect PhilJS imports with single quotes', async () => {
-      const code = `import { signal } from 'philjs-core';`;
+      const code = `import { signal } from '@philjs/core';`;
       const result = await plugin.transform?.(code, 'test.ts');
 
       expect(result).toBeDefined();
@@ -209,7 +209,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should generate source maps when enabled', async () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -224,7 +224,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should use cache for repeated transformations', async () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -245,12 +245,12 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should invalidate cache when code changes', async () => {
       const code1 = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
       const code2 = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(1);
       `;
 
@@ -268,7 +268,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should handle transformation errors gracefully', async () => {
       const invalidCode = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(
       `;
 
@@ -289,7 +289,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
       } as any);
 
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -303,7 +303,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
     it('should log warnings in development mode', async () => {
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
 
@@ -356,7 +356,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
       // Process a file - note: transform may or may not succeed depending on optimizer
       const code = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(0);
       `;
       await plugin.transform?.(code, 'test.ts');
@@ -413,7 +413,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
       mockContext = {
         file: '/path/to/test.tsx',
         modules: [mockModule],
-        read: vi.fn().mockResolvedValue('import { signal } from "philjs-core";'),
+        read: vi.fn().mockResolvedValue('import { signal } from "@philjs/core";'),
         server: {
           ws: { send: vi.fn() },
         } as any,
@@ -444,7 +444,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
     });
 
     it('should invalidate cache on HMR update', async () => {
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
 
       // First, transform to populate cache
       await plugin.transform?.(code, '/path/to/test.tsx');
@@ -550,7 +550,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
       } as any);
 
       // Add something to cache
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       await plugin.transform?.(code, 'test.ts');
 
       plugin.closeBundle?.();
@@ -595,7 +595,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
       // Try to transform invalid code
       const invalidCode = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(
       `;
 
@@ -629,7 +629,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
       plugin.configureServer?.(mockServer);
 
       const invalidCode = `
-        import { signal } from 'philjs-core';
+        import { signal } from '@philjs/core';
         const count = signal(
       `;
 
@@ -656,7 +656,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
         build: { sourcemap: true },
       } as any);
 
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       await plugin.transform?.(code, 'custom.ts');
 
       expect(customFilter).toHaveBeenCalledWith('custom.ts');
@@ -669,7 +669,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
         filter: customFilter,
       }) as Plugin;
 
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       const result = await plugin.transform?.(code, 'custom.ts');
 
       expect(customFilter).toHaveBeenCalledWith('custom.ts');
@@ -689,7 +689,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
         build: { sourcemap: true },
       } as any);
 
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       const result = await plugin.transform?.(code, 'test.custom.ts');
 
       expect(result).toBeDefined();
@@ -706,7 +706,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
         build: { sourcemap: true },
       } as any);
 
-      const code = 'import { signal } from "philjs-core";';
+      const code = 'import { signal } from "@philjs/core";';
       const result = await plugin.transform?.(code, 'test.excluded.ts');
 
       expect(result).toBeNull();
@@ -726,7 +726,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
       plugin.buildStart?.({} as any);
 
       // Process multiple files - transform may succeed or fail
-      const code = 'import { signal } from "philjs-core"; const x = signal(0);';
+      const code = 'import { signal } from "@philjs/core"; const x = signal(0);';
       await plugin.transform?.(code, 'test1.ts');
       await plugin.transform?.(code, 'test2.ts');
       await plugin.transform?.(code, 'test3.ts');
@@ -751,7 +751,7 @@ describe('Vite Plugin - PhilJS Compiler', () => {
 
       plugin.buildStart?.({} as any);
 
-      const code = 'import { signal } from "philjs-core"; const x = signal(0);';
+      const code = 'import { signal } from "@philjs/core"; const x = signal(0);';
 
       // First pass - cache miss
       await plugin.transform?.(code, 'test.ts');

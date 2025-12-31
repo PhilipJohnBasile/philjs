@@ -82,7 +82,7 @@ PhilJS uses **loaders** to fetch data on the server before rendering.
 File: `src/routes/index.tsx`
 
 ```typescript
-import { defineLoader } from "philjs-ssr";
+import { defineLoader } from "@philjs/ssr";
 import { html } from "../server/template";
 
 // Loader runs on the server during SSR
@@ -143,10 +143,10 @@ Product pages use **dynamic routes** and **actions** for mutations.
 File: `src/routes/products/[id].tsx`
 
 ```typescript
-import { defineLoader, defineAction } from "philjs-ssr";
-import { signal } from "philjs-core";
+import { defineLoader, defineAction } from "@philjs/ssr";
+import { signal } from "@philjs/core";
 import { html } from "../../server/template";
-import { Island } from "philjs-islands";
+import { Island } from "@philjs/islands";
 
 // Loader fetches product data
 export const loader = defineLoader(async ({ params, db }) => {
@@ -234,7 +234,7 @@ Islands are **interactive components** that hydrate on demand. The rest of the p
 File: `src/entry-client.ts`
 
 ```typescript
-import { hydrateIslands } from 'philjs-islands';
+import { hydrateIslands } from '@philjs/islands';
 import { AddToCart } from './islands/AddToCart';
 import { CartSummary } from './islands/CartSummary';
 
@@ -271,7 +271,7 @@ if ('startViewTransition' in document) {
 File: `src/islands/AddToCart.tsx`
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface AddToCartProps {
   productId: string;
@@ -356,7 +356,7 @@ Integrate AI to generate product summaries.
 File: `src/ai/summarize.ts`
 
 ```typescript
-import { createAIAdapter } from 'philjs-ai';
+import { createAIAdapter } from '@philjs/ai';
 
 // Create adapter for AI endpoint
 const ai = createAIAdapter({
@@ -509,11 +509,11 @@ getLCP(sendToAnalytics);
 
 ### Performance Budgets
 
-File: `scripts/check-budgets.js`
+File: `scripts/check-budgets.ts`
 
-```javascript
-import { readFileSync } from 'fs';
-import { gzipSync } from 'zlib';
+```typescript
+import { readFileSync } from 'node:fs';
+import { gzipSync } from 'node:zlib';
 
 const budgets = {
   'dist/client/assets/index.js': 70 * 1024, // 70 KB
@@ -548,7 +548,7 @@ if (failed) {
 Run with:
 ```bash
 pnpm build
-node scripts/check-budgets.js
+pnpm tsx scripts/check-budgets.ts
 ```
 
 ## Step 7: Security
@@ -556,7 +556,7 @@ node scripts/check-budgets.js
 ### Content Security Policy (CSP)
 
 ```typescript
-import { buildCSP } from 'philjs-ssr';
+import { buildCSP } from '@philjs/ssr';
 
 const csp = buildCSP({
   directives: {
@@ -575,7 +575,7 @@ headers.set('Content-Security-Policy', csp);
 ### Signed Cookies
 
 ```typescript
-import { createCookie } from 'philjs-ssr';
+import { createCookie } from '@philjs/ssr';
 
 const sessionCookie = createCookie('session', {
   secrets: [process.env.COOKIE_SECRET],

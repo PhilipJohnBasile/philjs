@@ -1,4 +1,4 @@
-import { signal, computed } from "philjs-core";
+import { signal, computed } from "@philjs/core";
 
 export type User = {
   id: string;

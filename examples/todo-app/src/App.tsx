@@ -3,7 +3,7 @@
  * Demonstrates signals, forms, and state management
  */
 
-import { memo, signal } from "philjs-core";
+import { memo, signal } from "@philjs/core";
 
 type Todo = {
   id: number;

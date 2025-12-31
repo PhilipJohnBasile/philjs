@@ -19,14 +19,14 @@ A comprehensive, type-safe database migration system for PhilJS applications wit
 ## Installation
 
 ```bash
-npm install philjs-db
+npm install @philjs/db
 ```
 
 ## Quick Start
 
 ### 1. Configuration
 
-Create `philjs-db.config.js` in your project root:
+Create `@philjs/db.config.js` in your project root:
 
 ```javascript
 export default {
@@ -50,7 +50,7 @@ npx philjs db migrate:create --name create_users_table --template table
 Edit the generated migration file:
 
 ```typescript
-import type { Migration } from 'philjs-db/migrations';
+import type { Migration } from '@philjs/db/migrations';
 
 export default {
   name: 'create_users_table',
@@ -375,7 +375,7 @@ table.integer('age').check('age >= 18');
 ### Prisma
 
 ```typescript
-import { PrismaMigrationIntegration } from 'philjs-db/migrations';
+import { PrismaMigrationIntegration } from '@philjs/db/migrations';
 
 // Import Prisma migrations
 const migrations = await PrismaMigrationIntegration.importPrismaMigrations('./prisma/migrations');
@@ -387,7 +387,7 @@ const schema = await PrismaMigrationIntegration.exportToPrismaSchema(migrations)
 ### Drizzle
 
 ```typescript
-import { DrizzleMigrationIntegration } from 'philjs-db/migrations';
+import { DrizzleMigrationIntegration } from '@philjs/db/migrations';
 
 // Import Drizzle migrations
 const migrations = await DrizzleMigrationIntegration.importDrizzleMigrations('./drizzle');
@@ -403,7 +403,7 @@ const schema = await DrizzleMigrationIntegration.exportToDrizzleSchema(migration
 Generate migrations automatically from schema changes:
 
 ```typescript
-import { AutoMigrationGenerator } from 'philjs-db/migrations';
+import { AutoMigrationGenerator } from '@philjs/db/migrations';
 
 const generator = new AutoMigrationGenerator(config);
 const result = await generator.generate({
@@ -421,7 +421,7 @@ console.log('Warnings:', result.warnings);
 Compare schemas and generate diff:
 
 ```typescript
-import { SchemaDiffGenerator } from 'philjs-db/migrations';
+import { SchemaDiffGenerator } from '@philjs/db/migrations';
 
 const generator = new SchemaDiffGenerator(config);
 const diff = await generator.generate();
@@ -434,7 +434,7 @@ console.log('Modified tables:', diff.tables.modified);
 ### Backup & Restore
 
 ```typescript
-import { BackupManager } from 'philjs-db/migrations';
+import { BackupManager } from '@philjs/db/migrations';
 
 const backup = new BackupManager(config);
 
@@ -448,7 +448,7 @@ await backup.restoreBackup(filename);
 ### Data Migration Helpers
 
 ```typescript
-import { DataMigrationHelper } from 'philjs-db/migrations';
+import { DataMigrationHelper } from '@philjs/db/migrations';
 
 // Transform data
 await DataMigrationHelper.transformData(

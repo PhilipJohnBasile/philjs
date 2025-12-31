@@ -7,7 +7,7 @@ Form actions in PhilJS allow you to handle form submissions declaratively, with 
 ### Server Action
 
 ```tsx
-import { serverFn } from 'philjs-ssr';
+import { serverFn } from '@philjs/ssr';
 
 const createUser = serverFn(async (formData: FormData) => {
   const user = {
@@ -33,7 +33,7 @@ export default function SignupForm() {
 ### With State Management
 
 ```tsx
-import { createMutation } from 'philjs-core';
+import { createMutation } from '@philjs/core';
 
 export default function CommentForm({ postId }) {
   const addComment = createMutation(

@@ -8,7 +8,7 @@
  * - DOM-to-component mapping
  */
 
-import type { JSXElement } from "philjs-core";
+import type { JSXElement } from "@philjs/core";
 import { getSignalInspector } from "./signal-inspector.js";
 
 // ============================================================================

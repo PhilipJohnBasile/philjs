@@ -60,8 +60,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
 ### ✅ Do: Enable Compression
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 export default {
   build: {
     minify: 'terser',

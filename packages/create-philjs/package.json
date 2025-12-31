@@ -14,12 +14,22 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "templates"],
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
     "build": "tsup src/cli.ts --format esm --dts",
     "dev": "tsup src/cli.ts --watch"
   },
-  "keywords": ["philjs", "create", "cli", "scaffold", "rust", "wasm"],
+  "keywords": [
+    "philjs",
+    "create",
+    "cli",
+    "scaffold",
+    "rust",
+    "wasm"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -34,9 +44,9 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.0"
   },
   "engines": {
     "node": ">=24"

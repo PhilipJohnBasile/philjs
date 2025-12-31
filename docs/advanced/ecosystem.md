@@ -13,7 +13,7 @@ PhilJS is designed to work seamlessly with the existing JavaScript ecosystem. Wh
 PhilJS's native signals provide all you need for most apps:
 
 ```typescript
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 // Global state
 export const user = signal(null);
@@ -227,7 +227,7 @@ export function App() {
 ### Built-in createQuery (Recommended)
 
 ```typescript
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 export function UserProfile({ userId }) {
   const user = createQuery(() =>
@@ -298,7 +298,7 @@ export function Profile() {
 ### Built-in Forms (Recommended)
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ContactForm() {
   const formData = signal({ name: '', email: '', message: '' });
@@ -420,7 +420,7 @@ npm install @analytics/google-analytics
 
 ```typescript
 // src/lib/analytics.ts
-import { effect } from 'philjs-core';
+import { effect } from '@philjs/core';
 
 export function trackPageView(url: string) {
   if (typeof window !== 'undefined' && window.gtag) {

@@ -18,7 +18,7 @@ Understand the difference between controlled and uncontrolled form inputs and wh
 Controlled components have their value managed by PhilJS state:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function ControlledInput() {
   const value = signal('');

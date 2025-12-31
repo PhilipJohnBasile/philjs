@@ -9,7 +9,7 @@
  * - Export/import sessions for bug reports
  */
 
-import { signal, type Signal } from "philjs-core";
+import { signal, type Signal } from "@philjs/core";
 
 export type StateSnapshot<T = any> = {
   id: string;

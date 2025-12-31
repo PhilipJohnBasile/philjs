@@ -253,7 +253,7 @@ Apply middleware to route groups:
 
 ```typescript
 // src/pages/(admin)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function AdminLayout({ children }: { children: any }) {
@@ -366,7 +366,7 @@ src/pages/
 
 ```typescript
 // src/pages/(shop)/products/[id].tsx
-import { useParams } from 'philjs-router';
+import { useParams } from '@philjs/router';
 
 export default function Product() {
   const params = useParams<{ id: string }>();
@@ -393,7 +393,7 @@ export default function PublicLayout({ children }: { children: any }) {
 }
 
 // src/pages/(authenticated)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function AuthenticatedLayout({ children }: { children: any }) {
@@ -509,7 +509,7 @@ export default function ShopLayout({ children }: { children: any }) {
 
 ```typescript
 // src/pages/(account)/layout.tsx
-import { useRouter } from 'philjs-router';
+import { useRouter } from '@philjs/router';
 import { useUser } from '@/hooks/useUser';
 
 export default function AccountLayout({ children }: { children: any }) {

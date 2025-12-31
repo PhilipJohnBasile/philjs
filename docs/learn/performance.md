@@ -14,7 +14,7 @@ PhilJS achieves exceptional performance through:
 5. **Minimal runtime**: Small bundle sizes
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function OptimizedList({ items }: { items: number[] }) {
   const filter = signal('');
@@ -49,7 +49,7 @@ function OptimizedList({ items }: { items: number[] }) {
 PhilJS includes performance tracking out of the box:
 
 ```tsx
-import { enablePerformanceTracking } from 'philjs-core';
+import { enablePerformanceTracking } from '@philjs/core';
 
 if (process.env.NODE_ENV === 'development') {
   enablePerformanceTracking({
@@ -68,7 +68,7 @@ function App() {
 Monitor Core Web Vitals:
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function WebVitalsTracker() {
   const vitals = signal({
@@ -110,7 +110,7 @@ function WebVitalsTracker() {
 ### Use Memos for Expensive Calculations
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function ExpensiveCalculation() {
   const numbers = signal([1, 2, 3, 4, 5]);
@@ -165,7 +165,7 @@ function GoodExample() {
 ### Batch Updates
 
 ```tsx
-import { signal, batch } from 'philjs-core';
+import { signal, batch } from '@philjs/core';
 
 function BatchedUpdates() {
   const firstName = signal('');
@@ -202,7 +202,7 @@ function BatchedUpdates() {
 ### Dynamic Imports
 
 ```tsx
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 // Component is loaded only when needed
 const HeavyComponent = lazy(() => import('./HeavyComponent'));
@@ -247,7 +247,7 @@ export default function Settings() {
 For long lists, use virtual scrolling:
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function VirtualList({ items }: { items: any[] }) {
   const scrollTop = signal(0);
@@ -283,7 +283,7 @@ function VirtualList({ items }: { items: any[] }) {
 
 ```tsx
 import { createVirtualizer } from '@tanstack/virtual-core';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function OptimizedList({ items }: { items: any[] }) {
   let parentRef: HTMLDivElement;
@@ -375,10 +375,10 @@ function ResponsiveImage({ src, alt }: { src: string; alt: string }) {
 
 ```tsx
 // ✅ Good - imports only what you need
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // ❌ Bad - imports everything
-import * as PhilJS from 'philjs-core';
+import * as PhilJS from '@philjs/core';
 ```
 
 ### Analyze Bundle
@@ -418,7 +418,7 @@ function ChartComponent() {
 ### Prefetch Critical Resources
 
 ```tsx
-import { prefetch } from 'philjs-router';
+import { prefetch } from '@philjs/router';
 
 function ProductCard({ productId }: { productId: number }) {
   return (
@@ -439,7 +439,7 @@ function ProductCard({ productId }: { productId: number }) {
 ### Optimize Data Fetching
 
 ```tsx
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 function UserProfile({ userId }: { userId: number }) {
   // Cached and deduplicated
@@ -463,7 +463,7 @@ function UserProfile({ userId }: { userId: number }) {
 ### Clean Up Resources
 
 ```tsx
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 function MemoryAwareComponent() {
   effect(() => {
@@ -549,7 +549,7 @@ function Fast() {
 ### Debounce Expensive Operations
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function SearchWithDebounce() {
   const query = signal('');

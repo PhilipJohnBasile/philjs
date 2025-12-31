@@ -362,10 +362,10 @@ async function generateLibraryTemplate(projectPath: string, config: ProjectConfi
   console.log(pc.green(`  ✓ Created src/lib/index.${jsExt}`));
 
   await fs.writeFile(
-    path.join(projectPath, 'rollup.config.js'),
+    path.join(projectPath, 'rollup.config.ts'),
     generateRollupConfig(config)
   );
-  console.log(pc.green('  ✓ Created rollup.config.js'));
+  console.log(pc.green('  ✓ Created rollup.config.ts'));
 
   await fs.writeFile(
     path.join(projectPath, 'examples', 'basic.html'),

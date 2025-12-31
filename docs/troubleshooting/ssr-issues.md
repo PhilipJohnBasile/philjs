@@ -80,7 +80,7 @@ function ClientOnly({ children }: { children: any }) {
 }
 
 // Solution 3: Lazy load client components
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const ClientComponent = lazy(() => import('./ClientComponent'));
 
@@ -116,7 +116,7 @@ function UserProfile({ userId }: { userId: string }) {
 
 ```tsx
 // Solution 1: Data loader
-import { createQuery } from 'philjs-core';
+import { createQuery } from '@philjs/core';
 
 export const userLoader = createQuery(async (userId: string) => {
   return await fetchUser(userId);
@@ -161,7 +161,7 @@ hydrate(
 );
 
 // Solution 3: Use resource
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 function UserProfile({ userId, initialData }: { userId: string; initialData?: User }) {
   const user = resource(
@@ -195,7 +195,7 @@ async function handleRequest(req: Request) {
 
 ```tsx
 // Solution: Proper streaming setup
-import { renderToStream } from 'philjs-core';
+import { renderToStream } from '@philjs/core';
 
 async function handleRequest(req: Request) {
   try {
@@ -249,7 +249,7 @@ function Counter() {
 
 ```tsx
 // Solution: Use resumability
-import { initResumability, registerState } from 'philjs-core';
+import { initResumability, registerState } from '@philjs/core';
 
 // On server
 function Counter({ initialCount = 0 }: { initialCount?: number }) {
@@ -282,7 +282,7 @@ const html = `
 `;
 
 // On client
-import { resume } from 'philjs-core';
+import { resume } from '@philjs/core';
 
 const state = window.__RESUMABLE_STATE__;
 resume(state);
@@ -373,7 +373,7 @@ async function AsyncComponent() { // Can't be async!
 
 ```tsx
 // Solution: Use resource for async data
-import { resource, Suspense } from 'philjs-core';
+import { resource, Suspense } from '@philjs/core';
 
 function AsyncComponent() {
   const data = resource(() => fetchData());
@@ -417,7 +417,7 @@ function Page() {
 
 ```tsx
 // Solution 1: Lazy load
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const ThirdPartyWidget = lazy(() => import('third-party-widget'));
 
@@ -534,7 +534,7 @@ function DeepComponent() {
 
 ```tsx
 // Solution: Request context
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 interface RequestContext {
   url: string;
@@ -653,7 +653,7 @@ if (isServer) {
 
 ```tsx
 // SSR-safe error boundary
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 function App() {
   return (
@@ -736,7 +736,7 @@ export async function renderPage(req: Request) {
 
 ```tsx
 import { describe, it, expect } from 'vitest';
-import { renderToString } from 'philjs-core';
+import { renderToString } from '@philjs/core';
 
 describe('SSR Tests', () => {
   it('renders component on server', async () => {
@@ -775,7 +775,7 @@ describe('SSR Tests', () => {
 
 ```tsx
 import { describe, it, expect } from 'vitest';
-import { renderToString, hydrate } from 'philjs-core';
+import { renderToString, hydrate } from '@philjs/core';
 
 describe('Hydration Tests', () => {
   it('hydrates without errors', async () => {

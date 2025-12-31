@@ -37,9 +37,9 @@
   },
   "devDependencies": {
     "rollup": "^4.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.16",
-    "@types/node": "^24.0.0"
+    "@types/node": "^25.0.0"
   },
   "peerDependencies": {
     "@philjs/graphql": "workspace:*"

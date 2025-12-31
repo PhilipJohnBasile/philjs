@@ -470,7 +470,7 @@ function UserProfile({ userId }: { userId: string }) {
 ### Suspense Pattern
 
 ```tsx
-import { Suspense, lazy } from 'philjs-core';
+import { Suspense, lazy } from '@philjs/core';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const Settings = lazy(() => import('./Settings'));

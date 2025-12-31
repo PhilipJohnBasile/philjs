@@ -11,7 +11,7 @@
  *
  * @example
  * ```ts
- * import { serialize, deserialize } from 'philjs-core/superjson';
+ * import { serialize, deserialize } from '@philjs/core/superjson';
  *
  * const data = {
  *   date: new Date(),

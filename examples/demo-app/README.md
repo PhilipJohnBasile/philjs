@@ -87,11 +87,11 @@ You can see these in action in `vite.config.ts`.
 
 This example uses:
 
-- `philjs-core` - Core reactivity system
-- `philjs-router` - Client-side routing
-- `philjs-ssr` - Server-side rendering utilities
-- `philjs-islands` - Islands architecture support
-- `philjs-compiler` - Auto-compiler with Vite plugin
+- `@philjs/core` - Core reactivity system
+- `@philjs/router` - Client-side routing
+- `@philjs/ssr` - Server-side rendering utilities
+- `@philjs/islands` - Islands architecture support
+- `@philjs/compiler` - Auto-compiler with Vite plugin
 
 ## Learn More
 

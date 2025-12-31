@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export interface ReadingProgressProps {
   /** Target element to track (defaults to document.body) */

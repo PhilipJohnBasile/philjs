@@ -5,7 +5,7 @@ Robust error handling patterns for production applications.
 ## Error Boundaries
 
 ```tsx
-import { ErrorBoundary } from 'philjs-core';
+import { ErrorBoundary } from '@philjs/core';
 
 export default function App() {
   return (

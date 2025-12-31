@@ -4,8 +4,8 @@ import { createServer as createSecureServer } from "node:https";
 import { once } from "node:events";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { Ok, Err } from "philjs-core";
-import type { RouteDefinition } from "philjs-router";
+import { Ok, Err } from "@philjs/core";
+import type { RouteDefinition } from "@philjs/router";
 import {
   createFetchHandler,
   createNodeHttpHandler,

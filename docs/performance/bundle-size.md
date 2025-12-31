@@ -28,10 +28,10 @@ bundle-buddy dist/stats.json
 
 ```tsx
 // ✅ Good - imports only signal
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // ❌ Bad - imports everything
-import * as PhilJS from 'philjs-core';
+import * as PhilJS from '@philjs/core';
 ```
 
 ## Code Splitting
@@ -49,7 +49,7 @@ export default function Dashboard() {
 ### Component-Level Splitting
 
 ```tsx
-import { lazy } from 'philjs-core';
+import { lazy } from '@philjs/core';
 
 const HeavyChart = lazy(() => import('./HeavyChart'));
 

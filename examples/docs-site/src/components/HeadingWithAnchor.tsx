@@ -1,4 +1,4 @@
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface HeadingWithAnchorProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;

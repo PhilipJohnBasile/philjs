@@ -1,6 +1,6 @@
-# PhilJS v2.0 Launch Checklist
+# PhilJS v0.1.0 Launch Checklist
 
-This checklist ensures all critical tasks are completed before launching PhilJS v2.0 to production.
+This checklist ensures all critical tasks are completed before launching PhilJS v0.1.0 to production.
 
 ## Pre-Launch Preparation
 
@@ -17,8 +17,8 @@ This checklist ensures all critical tasks are completed before launching PhilJS 
 - [ ] No console warnings in production build
 
 ### Documentation
-- [x] CHANGELOG.md updated with v2.0 changes
-- [x] RELEASE_NOTES_v2.0.md created
+- [x] CHANGELOG.md updated with v0.1.0 changes
+- [x] RELEASE_NOTES_v0.1.0.md created
 - [x] API documentation complete for all packages
 - [x] Migration guides written (React, Vue, Svelte)
 - [x] Deployment guides for all platforms
@@ -29,7 +29,7 @@ This checklist ensures all critical tasks are completed before launching PhilJS 
 - [ ] Code examples tested
 
 ### Package Configuration
-- [x] All packages versioned at 2.0.0
+- [x] All packages versioned at 0.1.0
 - [x] package.json exports configured correctly
 - [x] files array includes only necessary files
 - [x] Peer dependencies updated
@@ -54,7 +54,7 @@ This checklist ensures all critical tasks are completed before launching PhilJS 
 - [ ] Check bundle sizes after publish
 
 ### GitHub Release
-- [ ] Git tags created (v2.0.0)
+- [ ] Git tags created (v0.1.0)
 - [ ] GitHub release drafted
 - [ ] Release notes attached
 - [ ] Changelog linked
@@ -78,8 +78,8 @@ This checklist ensures all critical tasks are completed before launching PhilJS 
 - [ ] Discord/community announcement ready
 
 ### Publishing (In Order)
-1. [ ] Create git tag: `git tag -a v2.0.0 -m "PhilJS v2.0.0"`
-2. [ ] Push tags: `git push origin v2.0.0`
+1. [ ] Create git tag: `git tag -a v0.1.0 -m "PhilJS v0.1.0"`
+2. [ ] Push tags: `git push origin v0.1.0`
 3. [ ] Publish packages to NPM: `pnpm publish -r`
 4. [ ] Verify packages on NPM registry
 5. [ ] Create GitHub release
@@ -97,7 +97,7 @@ This checklist ensures all critical tasks are completed before launching PhilJS 
   - [ ] Dev.to
 - [ ] Send email announcements
 - [ ] Post in Discord/community channels
-- [ ] Update GitHub README with v2.0 badge
+- [ ] Update GitHub README with v0.1.0 badge
 
 ### Monitoring (First 24 Hours)
 - [ ] Monitor NPM download stats
@@ -135,7 +135,7 @@ pnpm check:budgets
 # Test publish without actually publishing
 cd packages/philjs-core
 npm pack
-tar -tzf philjs-core-2.0.0.tgz
+tar -tzf @philjs/core-0.1.0.tgz
 
 # Verify contents include:
 # - dist/
@@ -147,8 +147,8 @@ tar -tzf philjs-core-2.0.0.tgz
 mkdir /tmp/test-install
 cd /tmp/test-install
 npm init -y
-npm install /path/to/philjs-core-2.0.0.tgz
-node -e "require('philjs-core')"
+npm install /path/to/@philjs/core-0.1.0.tgz
+node -e "require('@philjs/core')"
 ```
 
 ### Performance Benchmarks
@@ -157,10 +157,10 @@ node -e "require('philjs-core')"
 pnpm bench
 
 # Save benchmark results
-pnpm bench:save
+pnpm tsx scripts/benchmark.ts --save
 
-# Compare with previous version
-node scripts/compare-benchmarks.js v0.1.0 v2.0.0
+# Compare with previous results
+git diff metrics/benchmark-history.json
 ```
 
 ### Bundle Size Check
@@ -175,16 +175,16 @@ pnpm size:why
 ## Post-Launch Tasks (Week 1)
 
 ### Documentation
-- [ ] Create v2.0 migration video tutorial
+- [ ] Create v0.1.0 onboarding video tutorial
 - [ ] Update getting started guide
-- [ ] Create "What's new in v2.0" blog post
+- [ ] Create "What's new in v0.1.0" blog post
 - [ ] Update framework comparison tables
 - [ ] Add community examples to docs
 
 ### Community
 - [ ] Monitor and respond to GitHub issues
 - [ ] Answer questions on Discord/forums
-- [ ] Collect feedback for v2.1
+- [ ] Collect feedback for v0.2.0
 - [ ] Start tracking feature requests
 - [ ] Schedule AMA (Ask Me Anything) session
 
@@ -198,7 +198,7 @@ pnpm size:why
 ### Planning
 - [ ] Review launch metrics
 - [ ] Analyze adoption patterns
-- [ ] Plan v2.1 roadmap based on feedback
+- [ ] Plan v0.2.0 roadmap based on feedback
 - [ ] Schedule retrospective meeting
 - [ ] Document lessons learned
 
@@ -215,13 +215,13 @@ If critical issues are discovered after launch:
 2. **Critical Issue Response**
    ```bash
    # Unpublish broken version (within 72 hours)
-   npm unpublish philjs-core@2.0.0
+   npm unpublish @philjs/core@0.1.0
 
    # Or deprecate with message
-   npm deprecate philjs-core@2.0.0 "Critical bug, use 2.0.1"
+   npm deprecate @philjs/core@0.1.0 "Critical bug, use 0.1.1"
 
    # Publish hotfix
-   # (Update version to 2.0.1, fix bug, republish)
+   # (Update version to 0.1.1, fix bug, republish)
    ```
 
 3. **Communication**
@@ -278,8 +278,8 @@ Before proceeding with launch, each area lead must sign off:
 pnpm clean && pnpm install && pnpm build && pnpm test
 
 # 2. Create and push tag
-git tag -a v2.0.0 -m "PhilJS v2.0.0 - Production Ready"
-git push origin v2.0.0
+git tag -a v0.1.0 -m "PhilJS v0.1.0 - Production Ready"
+git push origin v0.1.0
 
 # 3. Publish to NPM (from root with changesets)
 pnpm changeset publish
@@ -290,9 +290,9 @@ cd packages/philjs-compiler && npm publish --access public
 # ... repeat for all packages
 
 # 4. Create GitHub release
-gh release create v2.0.0 \
-  --title "PhilJS v2.0.0" \
-  --notes-file RELEASE_NOTES_v2.0.md \
+gh release create v0.1.0 \
+  --title "PhilJS v0.1.0" \
+  --notes-file RELEASE_NOTES_v0.1.0.md \
   --verify-tag
 
 # 5. Deploy docs
@@ -302,4 +302,4 @@ cd docs-site && pnpm build && pnpm deploy
 ---
 
 **Last Updated**: December 18, 2025
-**Next Review**: Before v2.1 launch
+**Next Review**: Before v0.2.0 launch

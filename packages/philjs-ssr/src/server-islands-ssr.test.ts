@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { signal } from 'philjs-core';
-import { jsx } from 'philjs-core/jsx-runtime';
+import { signal } from '@philjs/core';
+import { jsx } from '@philjs/core/jsx-runtime';
 import {
   renderServerIsland,
   clearIslandCache,

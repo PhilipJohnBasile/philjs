@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createAppRouter, useRouter, Link, createRouteManifest } from "./high-level.js";
-import { Err } from "philjs-core";
+import { Err } from "@philjs/core";
 
 describe("High-level router", () => {
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import { HomePage } from './pages/HomePage';
 import { Sidebar } from './components/Sidebar';
 import { TableOfContents } from './components/TableOfContents';

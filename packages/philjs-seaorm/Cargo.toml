@@ -1,6 +1,6 @@
 [package]
 name = "philjs-seaorm"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 authors = ["PhilJS Contributors"]
 description = "SeaORM integration for PhilJS - entity-based database queries with active record pattern"

@@ -5,9 +5,9 @@
   "description": "PhilJS Documentation Site - philjs.dev",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.js",
-    "build": "node scripts/build.js",
-    "preview": "node scripts/preview.js"
+    "dev": "tsx scripts/dev.ts",
+    "build": "tsx scripts/build.ts",
+    "preview": "tsx scripts/preview.ts"
   },
   "devDependencies": {
     "@philjs/core": "workspace:*",
@@ -15,7 +15,8 @@
     "marked": "^17.0.1",
     "gray-matter": "^4.0.3",
     "chokidar": "^5.0.0",
-    "typescript": "^5.9.3",
+    "tsx": "^4.19.1",
+    "typescript": "^6.0.0",
     "ws": "^8.18.3"
   },
   "engines": {

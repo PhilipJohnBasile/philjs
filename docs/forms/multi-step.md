@@ -18,7 +18,7 @@ Build wizard-style forms with multiple steps, progress indicators, and state per
 ### Simple Wizard
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface FormData {
   // Step 1
@@ -423,7 +423,7 @@ function PersistentMultiStepForm() {
 ### URL State Persistence
 
 ```typescript
-import { useSearchParams } from 'philjs-router';
+import { useSearchParams } from '@philjs/router';
 
 function URLPersistedWizard() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -710,7 +710,7 @@ function StrictWizard() {
 ### Step Transitions
 
 ```typescript
-import { animate } from 'philjs-core';
+import { animate } from '@philjs/core';
 
 function AnimatedWizard() {
   const currentStep = signal(1);

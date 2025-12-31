@@ -19,14 +19,14 @@
  * - 60 FPS animations
  */
 
-import { signal, computed, effect, batch } from 'philjs-core';
-import { h, render } from 'philjs-core/jsx-runtime';
-import { createAutoTuner } from 'philjs-core/auto-tune';
-import { createSmartCache } from 'philjs-edge/smart-cache';
+import { signal, computed, effect, batch } from '@philjs/core';
+import { h, render } from '@philjs/core/jsx-runtime';
+import { createAutoTuner } from '@philjs/core/auto-tune';
+import { createSmartCache } from '@philjs/edge/smart-cache';
 import { createPresenceManager } from '@philjs/collab/presence';
 import { createTenantManager } from '@philjs/enterprise/multi-tenancy';
 import { createRBACManager } from '@philjs/enterprise/rbac';
-import { createStreamingRenderer } from 'philjs-ssr/streaming-v2';
+import { createStreamingRenderer } from '@philjs/ssr/streaming-v2';
 
 // =============================================================================
 // Types

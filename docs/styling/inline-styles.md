@@ -28,7 +28,7 @@ export default function StyledButton() {
 ### Dynamic Styles
 
 ```tsx
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function DynamicBox() {
   const isActive = signal(false);
@@ -54,7 +54,7 @@ export default function DynamicBox() {
 ### Window Size Based
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 export default function ResponsiveComponent() {
   const windowWidth = signal(window.innerWidth);
@@ -107,7 +107,7 @@ export default function ThemedComponent() {
 ### Calculated Values
 
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export default function ProgressBar() {
   const progress = signal(0);

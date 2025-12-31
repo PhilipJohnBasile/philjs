@@ -147,7 +147,7 @@ userTypes.ts   // If conflicts with userUtils.ts
 
 ```tsx
 // imports - external
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // imports - internal
 import { Button } from '@/components/Button';
@@ -220,7 +220,7 @@ export type { UserCardProps } from './types';
 
 ```typescript
 // stores/themeStore.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export type Theme = 'light' | 'dark';
 
@@ -261,7 +261,7 @@ export interface UserState {
 }
 
 // stores/userStore/index.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import { fetchUser, loginUser } from './actions';
 import { isAdmin, isAuthenticated } from './selectors';
 
@@ -295,8 +295,8 @@ export const userStore = createUserStore();
 
 ```tsx
 // 1. External dependencies
-import { signal, memo, effect } from 'philjs-core';
-import { Router, Route } from 'philjs-router';
+import { signal, memo, effect } from '@philjs/core';
+import { Router, Route } from '@philjs/router';
 
 // 2. Internal absolute imports
 import { Button } from '@/components/Button';

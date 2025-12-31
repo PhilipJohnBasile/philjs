@@ -5,7 +5,7 @@
 ## Solution
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function LoginForm() {
   const email = signal('');
