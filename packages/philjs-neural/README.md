@@ -11,7 +11,7 @@ npm install @philjs/neural
 ## Requirements
 
 - Node.js >= 24
-- TypeScript 5.9+ (for development)
+- TypeScript 6.x (for development)
 - Modern browser with `requestAnimationFrame` and `IntersectionObserver` support
 
 ## Basic Usage

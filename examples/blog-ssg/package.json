@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
-    "@philjs/router": "workspace:*",
+    "@philjs/core": "^0.1.0",
+    "@philjs/router": "^0.1.0",
     "gray-matter": "^4.0.3",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1"

@@ -1,42 +1,43 @@
 # Introduction
 
-Welcome to The PhilJS Rust Book! This book will teach you how to build modern web applications using PhilJS and Rust.
+Welcome to The PhilJS Rust Book. This guide shows how to build modern web applications with Rust and PhilJS.
 
 ## Why Rust for Web?
 
-Rust brings several advantages to web development:
+Rust brings real advantages to UI development:
 
-- **Performance**: Near-native speed via WebAssembly
-- **Type Safety**: Catch bugs at compile time
-- **Memory Safety**: No null pointer exceptions or data races
-- **Ecosystem**: Access to the Rust crate ecosystem
+- Performance: near-native speed with WebAssembly
+- Type safety: compile-time guarantees
+- Memory safety: no null pointer exceptions or data races
+- Portability: the same code runs in the browser and on the server
 
 ## Why PhilJS?
 
-PhilJS is the only framework that provides:
+PhilJS pairs Rust ergonomics with a signals-first UI model:
 
-- **True Dual-Language Support**: Write in Rust OR JavaScript
-- **Shared Reactivity**: Signals work across both languages  
-- **Best-in-Class SSR**: Streaming, resumability, hydration
-- **Familiar Patterns**: If you know SolidJS or Leptos, you know PhilJS
+- Fine-grained reactivity with signals, memos, and effects
+- RSX syntax with the view! macro
+- SSR, hydration, and streaming APIs
+- Integration with TypeScript-based tooling and dev servers
 
 ## What You Will Learn
 
-1. Setting up a Rust + WASM development environment
-2. Building reactive components with signals
-3. Server-side rendering with Axum or Actix
-4. Deploying to production
+1. Setting up a Rust + WASM environment
+2. Building components and wiring signals
+3. Rendering with RSX, lists, and conditionals
+4. Server-side rendering and hydration
+5. Deploying Rust-based PhilJS apps
 
 ## Prerequisites
 
 - Basic Rust knowledge (ownership, borrowing, traits)
-- Familiarity with web development concepts
-- Understanding of reactive programming is helpful but not required
+- Familiarity with web concepts (DOM, HTTP, forms)
+- Optional: TypeScript experience for frontend tooling
 
 ## Getting Help
 
-- [Discord](https://discord.gg/philjs)
-- [GitHub Issues](https://github.com/PhilipJohnBasile/philjs/issues)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/philjs)
+- Discord: https://discord.gg/philjs
+- GitHub Issues: https://github.com/PhilipJohnBasile/philjs/issues
+- Stack Overflow: https://stackoverflow.com/questions/tagged/philjs
 
-Lets get started!
+Let's get started.

@@ -26,7 +26,7 @@ npm install @philjs/db
 
 ### 1. Configuration
 
-Create `@philjs/db.config.js` in your project root:
+Create `@philjs/db.config.ts` in your project root:
 
 ```javascript
 export default {

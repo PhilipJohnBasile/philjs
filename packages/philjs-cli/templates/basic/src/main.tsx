@@ -1,7 +1,7 @@
 /**
  * Application entry point
  */
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import { App } from './App';
 
 const root = document.getElementById('root');

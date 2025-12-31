@@ -29,14 +29,16 @@ const packageJson = {
     preview: "vite preview"
   },
   dependencies: {
-    "philjs-core": "workspace:*",
-    "philjs-router": "workspace:*",
-    "philjs-ssr": "workspace:*",
-    "philjs-islands": "workspace:*",
-    "philjs-ai": "workspace:*"
+    "@philjs/core": "^0.1.0",
+    "@philjs/router": "^0.1.0",
+    "@philjs/ssr": "^0.1.0",
+    "@philjs/islands": "^0.1.0",
+    "@philjs/ai": "^0.1.0"
   },
   devDependencies: {
-    vite: "^5.4.11"
+    "@types/node": "^25.0.0",
+    typescript: "^6.0.0",
+    vite: "^7.3.0"
   }
 };
 

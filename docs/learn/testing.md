@@ -1675,7 +1675,7 @@ import '@philjs/testing/jest';
 ```
 
 ```js
-// jest.config.js
+// jest.config.ts
 module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

@@ -176,7 +176,7 @@ const handleSubmit = async (e) => {
 
 ## Version Information
 
-Current stable version: 1.0.0
+Current preview version: 0.1.0
 Documentation last updated: 2025
 License: MIT
 

@@ -4,7 +4,7 @@
  * Provides {{camelName}} state and actions to child components.
  */
 
-import { JSX, createContext, signal } from 'philjs-core';
+import { JSX, createContext, signal } from '@philjs/core';
 
 {{#if typescript}}
 export interface {{pascalName}}State {
@@ -44,11 +44,11 @@ export function {{pascalName}}Provider({{#if typescript}}props: {{pascalName}}Pr
   });
 
   const setValue = (value{{#if typescript}}: string{{/if}}) => {
-    state.set({ ...state.get(), value });
+    state.set({ ...state(), value });
   };
 
   const setLoading = (isLoading{{#if typescript}}: boolean{{/if}}) => {
-    state.set({ ...state.get(), isLoading });
+    state.set({ ...state(), isLoading });
   };
 
   const reset = () => {
@@ -56,8 +56,8 @@ export function {{pascalName}}Provider({{#if typescript}}props: {{pascalName}}Pr
   };
 
   const contextValue{{#if typescript}}: {{pascalName}}ContextValue{{/if}} = {
-    get value() { return state.get().value; },
-    get isLoading() { return state.get().isLoading; },
+    get value() { return state().value; },
+    get isLoading() { return state().isLoading; },
     setValue,
     setLoading,
     reset,

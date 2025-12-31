@@ -24,7 +24,7 @@ npx tailwindcss init -p
 ### Configuration
 
 ```javascript
-// tailwind.config.js
+// tailwind.config.ts
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -288,7 +288,7 @@ export function CardFooter({ children }: { children: any }) {
 ### Extend Theme
 
 ```javascript
-// tailwind.config.js
+// tailwind.config.ts
 export default {
   theme: {
     extend: {
@@ -354,7 +354,7 @@ npm install -D @tailwindcss/forms
 ```
 
 ```javascript
-// tailwind.config.js
+// tailwind.config.ts
 export default {
   plugins: [
     require('@tailwindcss/forms')
@@ -420,7 +420,7 @@ export function Article({ content }: { content: string }) {
 ### Class-Based Dark Mode
 
 ```javascript
-// tailwind.config.js
+// tailwind.config.ts
 export default {
   darkMode: 'class',
   // ...
@@ -489,7 +489,7 @@ export function PulseCard() {
 ### Custom Animations
 
 ```javascript
-// tailwind.config.js
+// tailwind.config.ts
 export default {
   theme: {
     extend: {

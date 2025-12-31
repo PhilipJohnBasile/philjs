@@ -4,7 +4,7 @@
  * This example shows how to create a simple plugin with lifecycle hooks
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 
 export interface HelloWorldConfig {
   enabled?: boolean;
@@ -17,11 +17,11 @@ export function createHelloWorldPlugin(
   return {
     meta: {
       name: "philjs-plugin-hello-world",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "A simple hello world plugin",
       author: "PhilJS Team",
       license: "MIT",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
 
     async setup(pluginConfig: HelloWorldConfig, ctx: PluginContext) {

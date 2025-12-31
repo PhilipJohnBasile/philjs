@@ -190,7 +190,7 @@ function processLargeDataset(data: any[]) {
 }
 
 // ✅ Use Web Worker
-const worker = new Worker('/worker.js');
+const worker = new Worker('/worker.ts');
 
 worker.postMessage({ data: largeDataset });
 
@@ -286,7 +286,7 @@ function createList(items: string[]) {
 
 ```typescript
 // main thread
-const worker = new Worker('/data-processor.worker.js');
+const worker = new Worker('/data-processor.worker.ts');
 
 worker.postMessage({
   action: 'process',
@@ -301,7 +301,7 @@ worker.onmessage = (e) => {
   }
 };
 
-// data-processor.worker.js
+// data-processor.worker.ts
 self.onmessage = (e) => {
   if (e.data.action === 'process') {
     const results = [];
@@ -387,7 +387,7 @@ class WorkerPool {
 }
 
 // Usage
-const pool = new WorkerPool('/processor.worker.js', 4);
+const pool = new WorkerPool('/processor.worker.ts', 4);
 
 async function processData(items: any[]) {
   const results = await Promise.all(

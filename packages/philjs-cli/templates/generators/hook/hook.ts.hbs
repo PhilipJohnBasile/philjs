@@ -2,7 +2,7 @@
  * {{hookName}} - Custom hook
  */
 
-import { signal, computed } from 'philjs-core';
+import { signal, computed } from '@philjs/core';
 
 {{#if typescript}}
 export interface {{hookName}}Options {
@@ -31,7 +31,7 @@ export function {{hookName}}({{#if typescript}}options: {{hookName}}Options = {}
 
   return {
     get value() {
-      return state.get();
+      return state();
     },
     setValue,
     reset,

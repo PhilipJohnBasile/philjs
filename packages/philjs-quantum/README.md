@@ -11,7 +11,7 @@ npm install @philjs/quantum
 ## Requirements
 
 - Node.js >= 24
-- TypeScript 5.9+ (for development)
+- TypeScript 6.x (for development)
 - Browser with `crypto.getRandomValues` support (for QRNG)
 
 ## Basic Usage

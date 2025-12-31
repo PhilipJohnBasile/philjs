@@ -11,7 +11,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
-const VERSION = '1.0.0';
+const VERSION = '0.1.0';
 
 const TEMPLATES = {
   default: { name: 'TypeScript + Signals', features: ['signals', 'router', 'ssr'] },
@@ -60,13 +60,12 @@ async function createProject(name: string, opts: Record<string, unknown>) {
     
     // package.json
     const dependencies: Record<string, string> = {
-      '@philjs/core': '^1.0.0',
-      '@philjs/signals': '^1.0.0',
+      '@philjs/core': '^0.1.0',
     };
 
-    if (features.includes('router')) dependencies['@philjs/router'] = '^1.0.0';
-    if (features.includes('ssr')) dependencies['@philjs/ssr'] = '^1.0.0';
-    if (features.includes('htmx')) dependencies['@philjs/htmx'] = '^1.0.0';
+    if (features.includes('router')) dependencies['@philjs/router'] = '^0.1.0';
+    if (features.includes('ssr')) dependencies['@philjs/ssr'] = '^0.1.0';
+    if (features.includes('htmx')) dependencies['@philjs/htmx'] = '^0.1.0';
 
     const pkg = {
       name,
@@ -80,8 +79,8 @@ async function createProject(name: string, opts: Record<string, unknown>) {
       },
       dependencies,
       devDependencies: {
-        '@philjs/cli': '^1.0.0',
-        typescript: '^5.3.0',
+        '@philjs/cli': '^0.1.0',
+        typescript: '^6.0.0',
       },
     };
     
@@ -106,7 +105,7 @@ async function createProject(name: string, opts: Record<string, unknown>) {
     );
     
     fs.writeFileSync(path.join(projectPath, 'src/App.tsx'),
-      `import { signal } from '@philjs/signals';\n\nexport function App() {\n  const count = signal(0);\n  return (\n    <div>\n      <h1>PhilJS App</h1>\n      <button onClick={() => count.set(count.get() + 1)}>\n        Count: {count}\n      </button>\n    </div>\n  );\n}`
+      `import { signal } from '@philjs/core';\n\nexport function App() {\n  const count = signal(0);\n  return (\n    <div>\n      <h1>PhilJS App</h1>\n      <button onClick={() => count.set((c) => c + 1)}>\n        Count: {count()}\n      </button>\n    </div>\n  );\n}`
     );
     
     fs.writeFileSync(path.join(projectPath, 'index.html'),

@@ -85,7 +85,7 @@ npx tailwindcss init -p
 ```
 
 ```typescript
-// tailwind.config.js
+// tailwind.config.ts
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {

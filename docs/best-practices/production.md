@@ -430,7 +430,7 @@ logger.error('Payment failed', { userId: '123', error: 'Card declined' });
 ### Service Worker
 
 ```typescript
-// public/sw.js
+// src/sw.ts (compiled to public/sw.js)
 const CACHE_NAME = 'philjs-app-v1';
 
 const urlsToCache = [

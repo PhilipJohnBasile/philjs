@@ -4,7 +4,7 @@
  * This example shows how to create a plugin that integrates with Vite
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 import type { Plugin as VitePlugin } from "vite";
 
 export interface VirtualModulesConfig {
@@ -18,11 +18,11 @@ export function createVirtualModulesPlugin(
   return {
     meta: {
       name: "philjs-plugin-virtual-modules",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "Virtual modules plugin for PhilJS",
       author: "PhilJS Team",
       license: "MIT",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
 
     vitePlugin(pluginConfig: VirtualModulesConfig) {

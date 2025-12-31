@@ -18,9 +18,9 @@
   "dependencies": {
     "highlight.js": "^11.11.1",
     "marked": "^16.3.0",
-    "@philjs/core": "workspace:*",
-    "@philjs/router": "workspace:*",
-    "@philjs/compiler": "workspace:*"
+    "@philjs/core": "^0.1.0",
+    "@philjs/router": "^0.1.0",
+    "@philjs/compiler": "^0.1.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

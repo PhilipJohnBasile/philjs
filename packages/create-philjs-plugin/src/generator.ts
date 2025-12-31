@@ -18,9 +18,9 @@ export interface PluginOptions {
 export function createPlugin(options: PluginOptions): Plugin {
   const meta: PluginMetadata = {
     name: options.name,
-    version: '1.0.0',
+    version: '0.1.0',
     license: options.license || 'MIT',
-    philjs: '^2.0.0',
+    philjs: '^0.1.0',
     ...(options.description !== undefined && { description: options.description }),
     ...(options.author !== undefined && { author: options.author }),
   };

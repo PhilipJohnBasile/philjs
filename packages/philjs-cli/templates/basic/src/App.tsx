@@ -1,7 +1,7 @@
 /**
  * Root App Component
  */
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import './App.css';
 
 export function App() {
@@ -16,7 +16,7 @@ export function App() {
       <main className="app-main">
         <div className="counter">
           <h2>Counter Example</h2>
-          <p className="count">{count}</p>
+          <p className="count">{count()}</p>
           <div className="controls">
             <button onClick={() => count.set((c) => c - 1)}>-</button>
             <button onClick={() => count.set(0)}>Reset</button>

@@ -4,7 +4,7 @@
  * This example shows how to create a plugin that transforms code
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 
 export interface CodeTransformConfig {
   enabled?: boolean;
@@ -19,11 +19,11 @@ export function createCodeTransformPlugin(
   return {
     meta: {
       name: "philjs-plugin-code-transform",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "Code transformation plugin for PhilJS",
       author: "PhilJS Team",
       license: "MIT",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
 
     async setup(pluginConfig: CodeTransformConfig, ctx: PluginContext) {
@@ -105,7 +105,7 @@ export default createCodeTransformPlugin();
 //     codeTransform({
 //       replacements: {
 //         '__API_URL__': 'https://api.example.com',
-//         '__VERSION__': '1.0.0',
+//         '__VERSION__': '0.1.0',
 //       },
 //     }),
 //   ],

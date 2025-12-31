@@ -3,7 +3,7 @@
  * Template for creating plugins that integrate with databases
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 
 /**
  * Database type
@@ -217,11 +217,11 @@ export function create{{PLUGIN_NAME}}Plugin(
   return {
     meta: {
       name: "{{PACKAGE_NAME}}",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "{{DESCRIPTION}}",
       author: "{{AUTHOR}}",
       license: "{{LICENSE}}",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
 
     configSchema: {

@@ -358,7 +358,7 @@ $ philjs analyze --production
               border-radius: 50%;
               animation: pulse 2s ease-in-out infinite;
             "></span>
-            Production Ready • v1.0.0-beta • 2025
+            Preview Release • v0.1.0 • 2025
           </div>
 
           <h1 style="
@@ -2583,7 +2583,7 @@ $ philjs analyze --production
                 color: var(--color-text-secondary);
                 line-height: 1.7;
               ">
-                Yes! PhilJS v1.0.0-beta is stable and used in production by early adopters. The core API is stable, with full documentation, TypeScript support, and comprehensive test coverage. We're in beta to gather feedback before v1.0 final.
+                PhilJS v0.1.0 is a preview release. The core API is stabilizing, documentation is complete, and TypeScript support is first-class. We are collecting feedback and hardening the ecosystem before the v1.0 release.
               </p>
             </div>
 

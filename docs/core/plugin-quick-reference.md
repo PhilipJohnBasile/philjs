@@ -261,7 +261,7 @@ describe('My Plugin', () => {
       'transform',
       {},
       'const x = 1;',
-      'file.js'
+      'file.ts'
     );
 
     expect(result).not.toBeNull();
@@ -449,7 +449,7 @@ vitePlugin(config) {
 ```typescript
 async setup(config, ctx) {
   await ctx.fs.writeFile(
-    'my-config.js',
+    'my-config.ts',
     `export default ${JSON.stringify(config, null, 2)};`
   );
 }

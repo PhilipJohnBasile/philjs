@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { philJSPlugin } from 'philjs-cli';
+import { philJSPlugin } from '@philjs/cli';
 
 export default defineConfig({
   plugins: [philJSPlugin()],

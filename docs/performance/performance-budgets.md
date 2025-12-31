@@ -502,7 +502,7 @@ npm install -D @lhci/cli
 ```
 
 ```javascript
-// lighthouserc.js
+// lighthouserc.ts
 module.exports = {
   ci: {
     collect: {

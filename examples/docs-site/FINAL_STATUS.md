@@ -459,7 +459,7 @@ Each recipe includes:
 - Support the Project (sponsors)
 
 ### Changelog & Versioning
-- Complete version history (1.0.0 stable, beta releases)
+- Complete version history (0.1.0 preview, future releases)
 - Breaking changes tracker table
 - Versioning policy (Semantic Versioning 2.0)
 - Support timeline and release schedule

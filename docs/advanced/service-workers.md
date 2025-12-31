@@ -50,8 +50,8 @@ registerServiceWorker();
 
 ### Basic Service Worker
 
-```javascript
-// public/sw.js
+```ts
+// src/sw.ts (compiled to public/sw.js)
 const CACHE_NAME = 'philjs-app-v1';
 const urlsToCache = [
   '/',
@@ -260,8 +260,8 @@ function App() {
 
 ### Queue Requests for Sync
 
-```javascript
-// sw.js
+```ts
+// src/sw.ts
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-posts') {
     event.waitUntil(syncPosts());
@@ -423,8 +423,8 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 ### Handle Push Events
 
-```javascript
-// sw.js
+```ts
+// src/sw.ts
 self.addEventListener('push', (event) => {
   const data = event.data.json();
 
@@ -526,7 +526,7 @@ npm install -D workbox-webpack-plugin
 ```
 
 ```javascript
-// workbox-config.js
+// workbox-config.ts
 module.exports = {
   globDirectory: 'dist/',
   globPatterns: [

@@ -163,7 +163,7 @@ export default definePlugin((options = {}) => ({
 
     // Create config file
     await ctx.fs.writeFile(
-      'awesome.config.js',
+      'awesome.config.ts',
       `export default ${JSON.stringify(config, null, 2)};`
     );
 
@@ -554,7 +554,7 @@ test('transform hook', async () => {
     'transform',
     {},
     'input code',
-    'file.js'
+    'file.ts'
   );
   expect(result).toBeDefined();
 });

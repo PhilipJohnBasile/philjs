@@ -1,0 +1,18 @@
+[book]
+title = "The PhilJS Book"
+authors = ["PhilJS Team"]
+description = "TypeScript-first guide to building with PhilJS"
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[output.html]
+theme = "light"
+default-theme = "light"
+git-repository-url = "https://github.com/PhilipJohnBasile/philjs"
+edit-url-template = "https://github.com/PhilipJohnBasile/philjs/edit/main/docs/philjs-book/{path}"
+site-url = "/book/"

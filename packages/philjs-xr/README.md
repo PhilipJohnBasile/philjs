@@ -12,7 +12,7 @@ npm install @philjs/xr
 
 - Node.js >= 24
 - Browser with WebXR support (Chrome, Edge, Firefox, or compatible VR/AR headset browser)
-- TypeScript 5.9+ (for development)
+- TypeScript 6.x (for development)
 
 ## Basic Usage
 

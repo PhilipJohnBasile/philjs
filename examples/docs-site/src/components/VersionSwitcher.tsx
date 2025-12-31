@@ -4,17 +4,16 @@ interface Version {
   version: string;
   label: string;
   url: string;
-  status: 'stable' | 'next' | 'legacy';
+  status: 'stable' | 'preview' | 'legacy';
 }
 
 const versions: Version[] = [
-  { version: '1.0', label: '1.0 (Stable)', url: '/', status: 'stable' },
-  { version: '0.9', label: '0.9 (Beta)', url: '/v0.9', status: 'legacy' },
+  { version: '0.1', label: '0.1 (Preview)', url: '/', status: 'preview' },
 ];
 
 export function VersionSwitcher() {
   const isOpen = signal(false);
-  const currentVersion = '1.0';
+  const currentVersion = '0.1';
 
   const handleVersionChange = (version: Version) => {
     if (version.url !== '/') {
@@ -113,16 +112,16 @@ export function VersionSwitcher() {
                   STABLE
                 </span>
               )}
-              {version.status === 'next' && (
+              {version.status === 'preview' && (
                 <span style="
                   padding: 0.125rem 0.5rem;
-                  background: var(--color-info);
+                  background: var(--color-brand);
                   color: white;
                   border-radius: 4px;
                   font-size: 0.75rem;
                   font-weight: 600;
                 ">
-                  NEXT
+                  PREVIEW
                 </span>
               )}
               {version.status === 'legacy' && (

@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*"
+    "@philjs/core": "^0.1.0"
   },
   "devDependencies": {
     "vite": "^7.3.0",

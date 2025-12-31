@@ -2,7 +2,7 @@
 
 PhilJS configuration reference.
 
-## philjs.config.js
+## philjs.config.ts
 
 ```js
 export default {

@@ -88,16 +88,16 @@ function generatePackageJson(path: string, name: string, _pm: string) {
       test: "vitest",
     },
     dependencies: {
-      "philjs-core": "^0.1.0",
-      "philjs-router": "^0.1.0",
-      "philjs-ssr": "^0.1.0",
-      "philjs-islands": "^0.1.0",
+      "@philjs/core": "^0.1.0",
+      "@philjs/router": "^0.1.0",
+      "@philjs/ssr": "^0.1.0",
+      "@philjs/islands": "^0.1.0",
     },
     devDependencies: {
-      "@types/node": "^20.11.0",
-      typescript: "^5.7.2",
-      vite: "^5.4.11",
-      vitest: "^2.1.8",
+      "@types/node": "^25.0.0",
+      typescript: "^6.0.0",
+      vite: "^7.3.0",
+      vitest: "^4.0.16",
     },
   };
 
@@ -110,11 +110,11 @@ function generatePackageJson(path: string, name: string, _pm: string) {
 function generateTsConfig(path: string) {
   const tsconfig = {
     compilerOptions: {
-      target: "ES2020",
+      target: "ES2022",
       module: "ESNext",
-      lib: ["ES2020", "DOM", "DOM.Iterable"],
+      lib: ["ES2022", "DOM", "DOM.Iterable"],
       jsx: "react-jsx",
-      jsxImportSource: "philjs-core",
+      jsxImportSource: "@philjs/core",
       moduleResolution: "bundler",
       resolveJsonModule: true,
       allowImportingTsExtensions: true,
@@ -142,7 +142,7 @@ function generateViteConfig(path: string) {
 export default defineConfig({
   esbuild: {
     jsx: "automatic",
-    jsxImportSource: "philjs-core",
+    jsxImportSource: "@philjs/core",
   },
   server: {
     port: 3000,
@@ -238,7 +238,7 @@ function generateAppFiles(path: string, _template: string) {
   writeFileSync(join(path, "index.html"), html);
 
   // main.tsx
-  const main = `import { createAppRouter } from "philjs-router";
+  const main = `import { createAppRouter } from "@philjs/router";
 import { routes } from "./routes";
 
 createAppRouter({
@@ -251,7 +251,7 @@ createAppRouter({
   writeFileSync(join(path, "src/main.tsx"), main);
 
   // App.tsx
-  const layout = `import { Link } from "philjs-router";
+  const layout = `import { Link } from "@philjs/router";
 
 export function AppLayout({ children }: { children: any }) {
   return (
@@ -271,7 +271,7 @@ export function AppLayout({ children }: { children: any }) {
 
   writeFileSync(join(path, "src/routes/_layout.tsx"), layout);
 
-  const counter = `import { signal } from "philjs-core";
+  const counter = `import { signal } from "@philjs/core";
 
 export function Counter() {
   const count = signal(0);
@@ -318,7 +318,7 @@ export function HomeRoute() {
 
   writeFileSync(join(path, "src/routes/about.tsx"), aboutRoute);
 
-  const docsRoute = `import { Link } from "philjs-router";
+  const docsRoute = `import { Link } from "@philjs/router";
 
 export function DocsRoute() {
   return (
@@ -336,8 +336,8 @@ export function DocsRoute() {
 
   writeFileSync(join(path, "src/routes/docs.tsx"), docsRoute);
 
-  const routesModule = `import type { RouteDefinition } from "philjs-router";
-import { createRouteManifest } from "philjs-router";
+  const routesModule = `import type { RouteDefinition } from "@philjs/router";
+import { createRouteManifest } from "@philjs/router";
 import { AppLayout } from "./routes/_layout";
 import { HomeRoute } from "./routes/index";
 import { AboutRoute } from "./routes/about";

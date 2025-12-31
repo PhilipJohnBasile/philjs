@@ -286,7 +286,7 @@ function HeavyComponent() {
 
 ```typescript
 // ✅ Use Web Workers for heavy computation
-const worker = new Worker('/worker.js');
+const worker = new Worker('/worker.ts');
 
 worker.postMessage({ data: largeDataset });
 
@@ -295,7 +295,7 @@ worker.onmessage = (e) => {
   updateUI(result);
 };
 
-// worker.js
+// worker.ts
 self.onmessage = (e) => {
   const processed = heavyComputation(e.data);
   self.postMessage(processed);

@@ -92,7 +92,7 @@ Fluent API for building plugins:
 import { createBuilder } from 'create-philjs-plugin';
 
 const plugin = createBuilder()
-  .meta({ name: 'my-plugin', version: '1.0.0' })
+  .meta({ name: 'my-plugin', version: '0.1.0' })
   .setup(async (config, ctx) => {
     ctx.logger.info('Setting up...');
   })

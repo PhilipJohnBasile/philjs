@@ -12,7 +12,7 @@ npm install @philjs/webgpu
 
 - Node.js >= 24
 - Browser with WebGPU support (Chrome 113+, Edge 113+, Firefox Nightly)
-- TypeScript 5.9+ (for development)
+- TypeScript 6.x (for development)
 - `@webgpu/types` for TypeScript type definitions
 
 ## Basic Usage

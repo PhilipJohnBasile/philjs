@@ -99,9 +99,9 @@ export class PluginBuilder {
   private plugin: Partial<Plugin> = {
     meta: {
       name: "",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
     hooks: {},
   };
@@ -191,7 +191,7 @@ export class PluginTester {
     const files = this.files;
 
     return {
-      version: "2.0.0",
+      version: "0.1.0",
       root: "/mock/project",
       mode: "development",
       config: {},
@@ -216,7 +216,7 @@ export class PluginTester {
         exec: async () => ({ stdout: "", stderr: "" }),
         getPackageManager: async () => "npm" as const,
         installPackages: async () => {},
-        readPackageJson: async () => ({ name: "test", version: "1.0.0" }),
+        readPackageJson: async () => ({ name: "test", version: "0.1.0" }),
         writePackageJson: async () => {},
       },
     };
@@ -385,7 +385,7 @@ export const pluginPublisher = {
       },
       files: ["dist"],
       peerDependencies: {
-        "philjs-core": plugin.meta.philjs || "^2.0.0",
+        "@philjs/core": plugin.meta.philjs || "^0.1.0",
       },
       scripts: {
         build: "tsc",
@@ -416,7 +416,7 @@ npm install ${plugin.meta.name}
 ## Usage
 
 \`\`\`typescript
-import { defineConfig } from 'philjs-core';
+import { defineConfig } from '@philjs/core';
 import ${plugin.meta.name.replace(/^philjs-plugin-/, "")}Plugin from '${plugin.meta.name}';
 
 export default defineConfig({

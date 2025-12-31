@@ -11,9 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
-    "@philjs/router": "workspace:*",
-    "@philjs/compiler": "workspace:*"
+    "@philjs/core": "^0.1.0",
+    "@philjs/router": "^0.1.0",
+    "@philjs/compiler": "^0.1.0"
   },
   "devDependencies": {
     "vite": "^7.3.0",

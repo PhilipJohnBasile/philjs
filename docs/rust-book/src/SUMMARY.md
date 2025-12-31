@@ -40,7 +40,7 @@
 
 # Advanced
 
-- [JavaScript Interop](./advanced/js-interop.md)
+- [TypeScript Interop](./advanced/typescript-interop.md)
 - [WASM Optimization](./advanced/wasm-optimization.md)
 - [Testing](./advanced/testing.md)
 - [Debugging](./advanced/debugging.md)

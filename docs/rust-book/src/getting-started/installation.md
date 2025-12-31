@@ -2,28 +2,30 @@
 
 ## Prerequisites
 
-1. **Rust** (1.70+)
-   \`\`\`bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   \`\`\`
+1. Rust (1.70+)
 
-2. **wasm-pack**
-   \`\`\`bash
-   cargo install wasm-pack
-   \`\`\`
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
 
-3. **Node.js** (24+, Node 25 supported) for the dev server
+2. wasm-pack
+
+```bash
+cargo install wasm-pack
+```
+
+3. Node.js 24+ (Node 25 supported) for dev tooling
 
 ## Create a New Project
 
-\`\`\`bash
+```bash
 cargo new my-philjs-app
 cd my-philjs-app
-\`\`\`
+```
 
 ## Add Dependencies
 
-\`\`\`toml
+```toml
 # Cargo.toml
 [package]
 name = "my-philjs-app"
@@ -34,34 +36,34 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-philjs-rust = "0.1"
+philjs = "0.1"
 philjs-macros = "0.1"
 wasm-bindgen = "0.2"
+js-sys = "0.3"
 web-sys = { version = "0.3", features = ["Document", "Element", "Window"] }
 
 [profile.release]
 lto = true
 opt-level = "z"
-\`\`\`
+```
 
 ## Project Structure
 
-\`\`\`
+```
 my-philjs-app/
 ├── Cargo.toml
 ├── src/
 │   ├── lib.rs          # Main entry
-│   ├── components/     # Your components
-│   └── pages/          # Route pages
+│   └── components/     # Your components
 ├── index.html
 └── pkg/                # WASM output
-\`\`\`
+```
 
 ## Build and Run
 
-\`\`\`bash
+```bash
 wasm-pack build --target web
-npx serve .
-\`\`\`
+python -m http.server 3000
+```
 
 Open http://localhost:3000

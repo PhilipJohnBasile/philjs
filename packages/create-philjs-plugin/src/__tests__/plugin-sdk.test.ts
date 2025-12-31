@@ -10,7 +10,7 @@ import {
   createTester,
   pluginValidator,
 } from '../index.js';
-import type { Plugin } from 'philjs-core/plugin-system';
+import type { Plugin } from '@philjs/core/plugin-system';
 
 describe('Plugin SDK', () => {
   describe('PluginBuilder', () => {
@@ -18,15 +18,15 @@ describe('Plugin SDK', () => {
       const plugin = createBuilder()
         .meta({
           name: 'test-plugin',
-          version: '1.0.0',
+          version: '0.1.0',
           description: 'Test plugin',
         })
         .build();
 
       expect(plugin.meta.name).toBe('test-plugin');
-      expect(plugin.meta.version).toBe('1.0.0');
+      expect(plugin.meta.version).toBe('0.1.0');
       expect(plugin.meta.description).toBe('Test plugin');
-      expect(plugin.meta.philjs).toBe('^2.0.0');
+      expect(plugin.meta.philjs).toBe('^0.1.0');
     });
 
     it('should add setup function', () => {
@@ -108,9 +108,9 @@ describe('Plugin SDK', () => {
       testPlugin = {
         meta: {
           name: 'test-plugin',
-          version: '1.0.0',
+          version: '0.1.0',
           description: 'Test plugin',
-          philjs: '^2.0.0',
+          philjs: '^0.1.0',
         },
         async setup(config, ctx) {
           ctx.logger.info('Setup called');
@@ -178,8 +178,8 @@ describe('Plugin SDK', () => {
       const pluginWithoutHooks: Plugin = {
         meta: {
           name: 'test',
-          version: '1.0.0',
-          philjs: '^2.0.0',
+          version: '0.1.0',
+          philjs: '^0.1.0',
         },
         hooks: {},
       };
@@ -194,7 +194,7 @@ describe('Plugin SDK', () => {
     it('should provide mock context', () => {
       const ctx = tester.getContext();
 
-      expect(ctx.version).toBe('2.0.0');
+      expect(ctx.version).toBe('0.1.0');
       expect(ctx.mode).toBe('development');
       expect(ctx.logger).toBeDefined();
       expect(ctx.fs).toBeDefined();
@@ -214,9 +214,9 @@ describe('Plugin SDK', () => {
       const plugin: Plugin = {
         meta: {
           name: 'test-plugin',
-          version: '1.0.0',
+          version: '0.1.0',
           description: 'Test',
-          philjs: '^2.0.0',
+          philjs: '^0.1.0',
         },
         async setup() {},
       };
@@ -230,7 +230,7 @@ describe('Plugin SDK', () => {
     it('should detect missing name', () => {
       const plugin: any = {
         meta: {
-          version: '1.0.0',
+          version: '0.1.0',
         },
       };
 
@@ -258,7 +258,7 @@ describe('Plugin SDK', () => {
         meta: {
           name: 'test',
           version: 'invalid',
-          philjs: '^2.0.0',
+          philjs: '^0.1.0',
         },
         hooks: {},
       };
@@ -273,7 +273,7 @@ describe('Plugin SDK', () => {
       const plugin: any = {
         meta: {
           name: 'test',
-          version: '1.0.0',
+          version: '0.1.0',
         },
       };
 
@@ -289,8 +289,8 @@ describe('Plugin SDK', () => {
       const plugin: Plugin = {
         meta: {
           name: 'test',
-          version: '1.0.0',
-          philjs: '^2.0.0',
+          version: '0.1.0',
+          philjs: '^0.1.0',
         },
         hooks: {
           async init() {},

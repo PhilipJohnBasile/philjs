@@ -56,7 +56,7 @@ function HeavyComputationDemo() {
 
   effect(() => {
     // Initialize worker
-    const w = new Worker('/workers/calculator.worker.js');
+    const w = new Worker('/workers/calculator.worker.ts');
     worker.set(w);
 
     // Handle messages from worker
@@ -199,7 +199,7 @@ function ImageProcessingApp() {
   const workerManager = createWorkerManager<
     { image: ImageData; filter: string },
     ImageData
-  >('/workers/image-processor.worker.js');
+  >('/workers/image-processor.worker.ts');
 
   const processedImage = signal<ImageData | null>(null);
 
@@ -265,7 +265,7 @@ Transfer ownership of ArrayBuffers for better performance:
 // src/lib/transferable-worker.ts
 export function processLargeDataset() {
   const data = signal<Float32Array | null>(null);
-  const worker = new Worker('/workers/data-processor.worker.js');
+  const worker = new Worker('/workers/data-processor.worker.ts');
 
   const processData = (input: Float32Array) => {
     // Transfer ownership to worker (zero-copy)
@@ -322,7 +322,7 @@ export function createSharedCounter() {
   const sharedArray = new Int32Array(sharedBuffer);
 
   const count = signal(0);
-  const worker = new Worker('/workers/counter.worker.js');
+  const worker = new Worker('/workers/counter.worker.ts');
 
   // Send shared buffer to worker
   worker.postMessage({ type: 'INIT', buffer: sharedBuffer });
@@ -559,7 +559,7 @@ function estimatePi(iterations: number): number {
 
 // Usage in app
 function MathCalculator() {
-  const worker = createWorkerManager<any, any>('/workers/math-processor.worker.js');
+  const worker = createWorkerManager<any, any>('/workers/math-processor.worker.ts');
   const result = signal<number | null>(null);
   const calculating = signal(false);
 
@@ -787,7 +787,7 @@ export class WorkerPool<TRequest, TResponse> {
 
 // Usage
 function BatchImageProcessor() {
-  const pool = new WorkerPool('/workers/image-processor.worker.js', 4);
+  const pool = new WorkerPool('/workers/image-processor.worker.ts', 4);
   const processed = signal(0);
   const total = signal(0);
 
@@ -830,7 +830,7 @@ function BatchImageProcessor() {
 ```typescript
 // ✅ Good: Offload expensive operations
 function DataAnalyzer() {
-  const worker = createWorkerManager('/workers/analyzer.worker.js');
+  const worker = createWorkerManager('/workers/analyzer.worker.ts');
   const results = signal(null);
 
   const analyzeData = async (data: number[]) => {
@@ -848,7 +848,7 @@ function DataAnalyzer() {
 ```typescript
 // ❌ Bad: Worker overhead exceeds benefit
 function SimpleCalculator() {
-  const worker = new Worker('/workers/add.worker.js');
+  const worker = new Worker('/workers/add.worker.ts');
 
   const add = (a: number, b: number) => {
     // Communication overhead > computation time
@@ -890,7 +890,7 @@ worker.postMessage({ buffer }, [buffer]);
 ```typescript
 // ✅ Good: Terminate workers when done
 function WorkerComponent() {
-  const worker = new Worker('/workers/processor.worker.js');
+  const worker = new Worker('/workers/processor.worker.ts');
 
   effect(() => {
     onCleanup(() => {
@@ -906,7 +906,7 @@ function WorkerComponent() {
 
 ```typescript
 // ✅ Good: Error handling
-const worker = new Worker('/workers/processor.worker.js');
+const worker = new Worker('/workers/processor.worker.ts');
 
 worker.addEventListener('error', (error) => {
   console.error('Worker error:', error);
@@ -934,7 +934,7 @@ interface WorkerResponse {
   error?: string;
 }
 
-const worker = new Worker('/workers/typed.worker.js') as Worker;
+const worker = new Worker('/workers/typed.worker.ts') as Worker;
 
 worker.postMessage({
   type: 'PROCESS',

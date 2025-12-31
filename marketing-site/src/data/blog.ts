@@ -12,20 +12,20 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
-    title: "PhilJS 1.0 Beta: Signals, SSR, and the ecosystem",
+    title: "PhilJS 0.1 Preview: Signals, SSR, and the ecosystem",
     date: "2025-01-15",
     author: "Phil Dev Team",
-    excerpt: "A look at the full PhilJS stack and the packages shipping in the 1.0 beta release.",
+    excerpt: "A look at the full PhilJS stack and the packages shipping in the 0.1 preview release.",
     tags: ["Release", "Ecosystem"],
-    slug: "v1-beta-ecosystem",
+    slug: "v0-1-preview-ecosystem",
     readingTime: "6 min read",
     body: [
-      "PhilJS 1.0 beta brings the full signals-first runtime together with a production-ready ecosystem. The core runtime is lean, but the surrounding packages cover routing, SSR, islands, data, auth, and deployment.",
+      "PhilJS 0.1 preview brings the full signals-first runtime together with a cohesive ecosystem. The core runtime stays lean, while the surrounding packages cover routing, SSR, islands, data, auth, and deployment.",
       "The stack is designed to be cohesive. Routing, loaders, and actions share the same request lifecycle, while SSR and islands are built to work with the same primitives as the client runtime.",
-      "With 88 packages in the monorepo, teams can start small and adopt more functionality as their product grows. The beta focuses on stability, performance, and predictable upgrade paths."
+      "With 88 packages in the monorepo, teams can start small and adopt more functionality as their product grows. The preview focuses on stability, performance, and predictable upgrade paths before v1.0."
     ],
     highlights: [
-      "Signals and compiler now ship together for predictable performance.",
+      "Signals and compiler ship together for predictable performance.",
       "SSR, islands, and resumability are built into the same rendering pipeline.",
       "First-party packages cover GraphQL, auth, PWA, analytics, and deployment."
     ]

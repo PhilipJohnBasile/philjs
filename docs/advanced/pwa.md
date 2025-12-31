@@ -30,6 +30,7 @@ const swCode = generateServiceWorker({
   offlineFallback: '/offline.html',
 });
 
+// scripts/build-sw.ts generates the output file
 fs.writeFileSync('public/sw.js', swCode);
 ```
 

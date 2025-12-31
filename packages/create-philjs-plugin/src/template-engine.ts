@@ -60,7 +60,7 @@ import { Plugin } from 'create-philjs-plugin';
 export default {
   meta: {
     name: '{{name}}',
-    version: '1.0.0',
+    version: '0.1.0',
     description: '{{description}}',
   },
   hooks: {
@@ -76,7 +76,7 @@ import { Plugin } from 'create-philjs-plugin';
 export default {
   meta: {
     name: '{{name}}',
-    version: '1.0.0',
+    version: '0.1.0',
     description: '{{description}}',
   },
   vitePlugin: (config) => ({
@@ -97,7 +97,7 @@ import { Plugin, PluginBuilder } from 'create-philjs-plugin';
 export default new PluginBuilder()
   .meta({
     name: '{{name}}',
-    version: '1.0.0',
+    version: '0.1.0',
     description: '{{description}}',
   })
   .hook('init', async (ctx) => {
@@ -113,7 +113,7 @@ export default new PluginBuilder()
 `,
   minimal: `
 export default {
-  meta: { name: '{{name}}', version: '1.0.0' },
+  meta: { name: '{{name}}', version: '0.1.0' },
 };
 `,
 };

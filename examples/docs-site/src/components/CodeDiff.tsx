@@ -686,8 +686,8 @@ export function BeforeAfter({
  * <BeforeAfter
  *   oldCode="const x = 1;"
  *   newCode="const x = 2;"
- *   oldTitle="v1.0"
- *   newTitle="v2.0"
+ *   oldTitle="v0.1"
+ *   newTitle="v0.2"
  * />
  * ```
  */

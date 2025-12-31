@@ -2,7 +2,7 @@
  * Transform PhilJS Plugin Template
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 
 export interface {{PLUGIN_NAME}}Config {
   enabled?: boolean;
@@ -16,11 +16,11 @@ export function create{{PLUGIN_NAME}}Plugin(
   return {
     meta: {
       name: "{{PACKAGE_NAME}}",
-      version: "1.0.0",
+      version: "0.1.0",
       description: "{{DESCRIPTION}}",
       author: "{{AUTHOR}}",
       license: "{{LICENSE}}",
-      philjs: "^2.0.0",
+      philjs: "^0.1.0",
     },
 
     async setup(config: {{PLUGIN_NAME}}Config, ctx: PluginContext) {
