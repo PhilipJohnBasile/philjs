@@ -1,6 +1,6 @@
 # PhilJS Documentation
 
-The official documentation site for PhilJS, built with Next.js 14 and featuring an interactive playground.
+The official documentation site for PhilJS, built with the PhilJS docs pipeline and TypeScript-first tooling.
 
 ## Features
 
@@ -15,8 +15,8 @@ The official documentation site for PhilJS, built with Next.js 14 and featuring 
 
 ### Prerequisites
 
-- Node.js 20+
-- pnpm 8+
+- Node.js 24+ (Node 25 supported)
+- pnpm 9+
 
 ### Development
 

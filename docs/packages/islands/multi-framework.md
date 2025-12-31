@@ -1,10 +1,10 @@
 # PhilJS Multi-Framework Islands
 
-Astro-style multi-framework island architecture for PhilJS. Use React, Vue, Svelte, Preact, and Solid components on the same page with selective hydration.
+PhilJS-first island architecture with optional legacy-framework wrappers. Prefer PhilJS components; use React/Vue/Svelte/Preact/Solid islands only when migrating.
 
 ## Features
 
-- **Multi-Framework Support**: React, Vue, Svelte, Preact, and Solid components on one page
+- **Legacy Framework Support**: Optional React, Vue, Svelte, Preact, and Solid wrappers
 - **Selective Hydration**: Only hydrate interactive components when needed
 - **Multiple Strategies**: Immediate, visible, idle, interaction, and media-based hydration
 - **Framework Auto-Detection**: Automatically detect component frameworks
@@ -13,7 +13,7 @@ Astro-style multi-framework island architecture for PhilJS. Use React, Vue, Svel
 - **Event Bus**: Inter-island communication
 - **Props Normalization**: Automatic props conversion between frameworks
 - **Vite Plugin**: Build-time optimization and manifest generation
-- **TypeScript Support**: Full type safety across all frameworks
+- **TypeScript Support**: Full type safety across PhilJS components and wrappers
 
 ## Installation
 
@@ -23,7 +23,7 @@ pnpm add @philjs/islands
 
 ### Optional Framework Dependencies
 
-Install only the frameworks you plan to use:
+Install only the legacy frameworks you need for migration:
 
 ```bash
 # React

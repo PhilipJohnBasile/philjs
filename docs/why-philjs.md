@@ -662,11 +662,11 @@ PhilJS isn't just another JavaScript framework. It's a complete rethinking of wh
 - **TypeScript-first** development experience
 - **Production-ready** features out of the box
 
-**Consider alternatives if:**
-- You need React's massive ecosystem today
-- Your team is deeply invested in Vue/Angular
-- You prefer template syntax over JSX
-- You're building Electron/React Native apps
+**If you have constraints:**
+- Use PhilJS adapters to bridge legacy React/Vue code while migrating
+- Add missing integrations via PhilJS plugins (or ship a new package)
+- Keep JSX as the standard and enforce it across the codebase
+- For native/desktop, build on PhilJS Native/Desktop packages
 
 ---
 

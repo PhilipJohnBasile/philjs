@@ -21,14 +21,14 @@ This directory contains examples of how to use the PhilJS Analytics Plugin.
 ### 1. Install the plugin
 
 ```bash
-npm install philjs-plugin-analytics
+npm install @philjs/plugin-analytics
 ```
 
 ### 2. Configure in your PhilJS app
 
 ```typescript
 // philjs.config.ts
-import { createAnalyticsPlugin } from "philjs-plugin-analytics";
+import { createAnalyticsPlugin } from "@philjs/plugin-analytics";
 
 export default {
   plugins: [
@@ -43,7 +43,7 @@ export default {
 ### 3. Track events in your app
 
 ```typescript
-import { trackEvent } from "philjs-plugin-analytics/client";
+import { trackEvent } from "@philjs/plugin-analytics/client";
 
 function handleClick() {
   trackEvent("button_click", {
@@ -120,7 +120,7 @@ customEvents: {
 ### Custom Events
 
 ```typescript
-import { trackEvent } from "philjs-plugin-analytics/client";
+import { trackEvent } from "@philjs/plugin-analytics/client";
 
 trackEvent("custom_event", {
   category: "engagement",
@@ -132,7 +132,7 @@ trackEvent("custom_event", {
 ### User Identification
 
 ```typescript
-import { identifyUser } from "philjs-plugin-analytics/client";
+import { identifyUser } from "@philjs/plugin-analytics/client";
 
 identifyUser("user123", {
   email: "user@example.com",
@@ -143,7 +143,7 @@ identifyUser("user123", {
 ### E-commerce
 
 ```typescript
-import { trackTransaction } from "philjs-plugin-analytics/client";
+import { trackTransaction } from "@philjs/plugin-analytics/client";
 
 trackTransaction({
   transaction_id: "T12345",

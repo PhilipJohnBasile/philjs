@@ -95,7 +95,7 @@ effect(() => {
 ### Browser Breakpoints
 
 **Set breakpoints in Sources tab:**
-1. Open DevTools → Sources
+1. Open DevTools > Sources
 2. Find your file
 3. Click line number to set breakpoint
 4. Refresh page
@@ -111,7 +111,7 @@ effect(() => {
 **Monitor values in DevTools:**
 
 ```
-Sources tab → Watch panel
+Sources tab > Watch panel
 
 Add expressions:
 - count()
@@ -245,7 +245,7 @@ async function debugFetch(url: string) {
 ### Monitor API Calls
 
 **Network Tab:**
-1. Open DevTools → Network
+1. Open DevTools > Network
 2. Filter by XHR/Fetch
 3. Click request to see details
 4. Check Request Headers, Response, Timing
@@ -290,7 +290,7 @@ class ApiClient {
 ### Chrome Performance Tab
 
 **Record Performance:**
-1. Open DevTools → Performance
+1. Open DevTools > Performance
 2. Click Record
 3. Interact with app
 4. Stop recording
@@ -337,7 +337,7 @@ function ProfiledComponent() {
 
 **Check for Memory Leaks:**
 
-1. Open DevTools → Memory
+1. Open DevTools > Memory
 2. Take heap snapshot
 3. Interact with app
 4. Take another snapshot
@@ -347,14 +347,14 @@ function ProfiledComponent() {
 **Common Leaks:**
 
 ```tsx
-// ❌ Leak: Effect not cleaning up
+// > Leak: Effect not cleaning up
 effect(() => {
   const interval = setInterval(() => {
     // This keeps running!
   }, 1000);
 });
 
-// ✅ Fixed: Cleanup
+// > Fixed: Cleanup
 effect(() => {
   const interval = setInterval(() => {
     console.log('Tick');
@@ -431,12 +431,12 @@ console.log('History:', countHistory.getHistory());
 // [0, 1, 2, 3, 4, 5]
 ```
 
-## React DevTools (if using adapter)
+## PhilJS DevTools
 
 ### Component Tree
 
 ```
-React DevTools → Components tab
+PhilJS DevTools > Components tab
 
 - View component hierarchy
 - Inspect props
@@ -447,7 +447,7 @@ React DevTools → Components tab
 ### Profiler
 
 ```
-React DevTools → Profiler tab
+PhilJS DevTools > Profiler tab
 
 - Record interactions
 - See render times
@@ -622,16 +622,16 @@ function App() {
 
 **Debugging Techniques:**
 
-✅ Use console.log strategically
-✅ Set breakpoints with debugger
-✅ Monitor signals with inspectors
-✅ Track effects with logging
-✅ Profile performance
-✅ Check network requests
-✅ Inspect state history
-✅ Use source maps
-✅ Write debugging tests
-✅ Enable DevTools
+> Use console.log strategically
+> Set breakpoints with debugger
+> Monitor signals with inspectors
+> Track effects with logging
+> Profile performance
+> Check network requests
+> Inspect state history
+> Use source maps
+> Write debugging tests
+> Enable DevTools
 
 **Best Practices:**
 
@@ -642,4 +642,4 @@ function App() {
 - Test edge cases
 - Document complex debugging sessions
 
-**Next:** [Performance Issues →](./performance-issues.md)
+**Next:** [Performance Issues >](./performance-issues.md)

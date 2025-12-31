@@ -242,20 +242,20 @@ No decision fatigue. No hunting for packages. Everything works together perfectl
 - Works great on slow networks
 - Battery-friendly
 
-### Consider Alternatives If:
+### When You Need Extensions
 
-**You Need React's Ecosystem**
-- PhilJS is new - fewer third-party libraries
-- Some React libraries won't work in PhilJS
-- Consider Next.js if you need the React ecosystem
+**You Need Additional Ecosystem Features**
+- PhilJS is new and the ecosystem is expanding quickly
+- If a dependency is missing, build a PhilJS plugin or adapter
+- Use the compatibility layers during migration
 
 **You're Building a Desktop App**
-- Use Electron with React or Vue
-- PhilJS is optimized for web
+- Use PhilJS Desktop or PhilJS Native packages
+- Share components between web and desktop targets
 
 **You Need a JavaScript-Only Stack**
 - PhilJS is TypeScript-first and requires TypeScript 6+
-- Consider Vue or Svelte if your team needs JavaScript-only projects
+- Keep everything in TypeScript for consistency and safety
 
 ## How Is PhilJS Different?
 

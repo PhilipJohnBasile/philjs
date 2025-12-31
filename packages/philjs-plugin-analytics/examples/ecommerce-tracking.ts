@@ -2,8 +2,9 @@
  * E-commerce Tracking Example (GA4 & Mixpanel)
  */
 
-import { trackEvent, trackTransaction } from "philjs-plugin-analytics/client";
-import type { EcommerceItem } from "philjs-plugin-analytics";
+import { effect } from "@philjs/core";
+import { trackEvent, trackTransaction } from "@philjs/plugin-analytics/client";
+import type { EcommerceItem } from "@philjs/plugin-analytics";
 
 // Track product view
 export function trackProductView(product: {
@@ -100,9 +101,9 @@ export function trackSearch(searchTerm: string, resultCount: number) {
 // Example usage in a component
 export function ProductPage({ product }: any) {
   // Track page view on mount
-  React.useEffect(() => {
+  effect(() => {
     trackProductView(product);
-  }, [product]);
+  });
 
   const handleAddToCart = () => {
     trackAddToCart({

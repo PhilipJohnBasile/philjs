@@ -103,4 +103,4 @@ function LoginForm() {
 - Use Zod or Yup for schema validation
 - Add debounced async validation (check email availability)
 - Show field-level validation on blur
-- Use React Hook Form or similar for complex forms
+- Use PhilJS form helpers or a custom signal-based form store for complex flows

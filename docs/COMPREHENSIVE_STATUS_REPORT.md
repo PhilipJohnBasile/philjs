@@ -210,7 +210,7 @@ Signals are reactive.
 const x = signal(0);
 ```
 
-Use signals for state. See React docs for more info.
+Use signals for state. See PhilJS docs for more info.
 ```
 
 ## Files Created

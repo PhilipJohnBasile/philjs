@@ -436,7 +436,7 @@ describe('PhilJS Compiler', () => {
 
       it('should handle recursive component patterns', () => {
         const code = `
-          import { signal } from '@philjs/core';
+          import { signal, Fragment } from '@philjs/core';
 
           function TreeNode({ depth }: { depth: number }) {
             const expanded = signal(false);
@@ -869,10 +869,10 @@ describe('PhilJS Compiler', () => {
                 {showWrapper() ? (
                   <div>
                     {items().map(item => (
-                      <React.Fragment key={item}>
+                      <Fragment key={item}>
                         <span>{item}</span>
                         <br />
-                      </React.Fragment>
+                      </Fragment>
                     ))}
                   </div>
                 ) : (

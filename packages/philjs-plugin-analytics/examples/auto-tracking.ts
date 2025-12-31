@@ -3,7 +3,7 @@
  * Demonstrates automatic click and form tracking
  */
 
-import { createAnalyticsPlugin } from "philjs-plugin-analytics";
+import { createAnalyticsPlugin } from "@philjs/plugin-analytics";
 
 // Enable auto-tracking
 export const analyticsPlugin = createAnalyticsPlugin({
@@ -59,7 +59,7 @@ export const exampleHTML = `
 </div>
 `;
 
-// Usage in React component
+// Usage in PhilJS component
 export function TrackableButton({
   onClick,
   eventName = "button_click",

@@ -2,25 +2,25 @@
 
 ## Prerequisites
 
-- Node.js 18+ or Bun 1.0+
+- Node.js 24+ (Node 25 supported)
 - (Optional) Rust 1.70+ for Rust components
 
 ## Quick Start
 
 \`\`\`bash
-npm create philjs@latest my-app
+pnpm create philjs@latest my-app
 cd my-app
-npm run dev
+pnpm dev
 \`\`\`
 
 ## Manual Setup
 
 \`\`\`bash
-npm install philjs-core
+pnpm add @philjs/core
 \`\`\`
 
 \`\`\`tsx
-import { signal, render } from 'philjs-core';
+import { signal, render } from '@philjs/core';
 
 function App() {
   const count = signal(0);
@@ -31,5 +31,5 @@ function App() {
   );
 }
 
-render(() => <App />, document.getElementById('root')!);
+render(<App />, document.getElementById('root')!);
 \`\`\`

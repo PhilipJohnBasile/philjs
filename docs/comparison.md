@@ -126,11 +126,10 @@ How PhilJS compares to other modern JavaScript frameworks.
 - You want built-in SSR/SSG/ISR
 - You prefer signals over hooks
 
-**Consider alternatives when:**
-- You need a huge ecosystem (React)
-- You prefer compiled output (Svelte)
-- Your team knows React well
-- You need specific third-party integrations
+**When you need extensions:**
+- Use PhilJS plugins for third-party integrations
+- Migrate incrementally if your team is coming from other frameworks
+- Add missing adapters as needed
 
 ## Migration Difficulty
 

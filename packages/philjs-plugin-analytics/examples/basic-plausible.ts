@@ -2,7 +2,7 @@
  * Basic Plausible Analytics Example
  */
 
-import { createAnalyticsPlugin } from "philjs-plugin-analytics";
+import { createAnalyticsPlugin } from "@philjs/plugin-analytics";
 
 // Create the plugin
 export const analyticsPlugin = createAnalyticsPlugin({

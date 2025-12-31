@@ -15,6 +15,7 @@ export type { Signal, Memo, LinkedSignal, Resource, EffectCleanup } from "./sign
 // JSX Runtime
 export { jsx, jsxs, jsxDEV, Fragment, createElement, isJSXElement } from "./jsx-runtime.js";
 export type { JSXElement, VNode } from "./jsx-runtime.js";
+export type { JSXChild, CSSProperties } from "./types.js";
 
 // Rendering
 export { renderToString, renderToStream } from "./render-to-string.js";

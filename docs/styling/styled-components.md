@@ -17,12 +17,13 @@ Create component-scoped styles with TypeScript integration in PhilJS.
 
 ```typescript
 import { signal } from '@philjs/core';
+import type { CSSProperties } from '@philjs/core';
 
-type StyleFn<P = {}> = (props: P) => React.CSSProperties;
+type StyleFn<P = {}> = (props: P) => CSSProperties;
 
 function styled<T extends keyof JSX.IntrinsicElements, P = {}>(
   tag: T,
-  styles: React.CSSProperties | StyleFn<P>
+  styles: CSSProperties | StyleFn<P>
 ) {
   return (props: P & JSX.IntrinsicElements[T]) => {
     const Tag = tag as any;
@@ -142,7 +143,7 @@ export function App() {
 function createStyledComponent<
   T extends keyof JSX.IntrinsicElements,
   P extends Record<string, any> = {}
->(tag: T, baseStyles: React.CSSProperties, variantFn?: (props: P) => React.CSSProperties) {
+>(tag: T, baseStyles: CSSProperties, variantFn?: (props: P) => CSSProperties) {
   return (props: P & JSX.IntrinsicElements[T]) => {
     const Tag = tag as any;
     const { children, style, ...rest } = props;
@@ -212,7 +213,7 @@ const OutlineButton = styled('button', {
 ```typescript
 function withStyles<P extends {}>(
   Component: (props: P) => JSX.Element,
-  styles: React.CSSProperties
+  styles: CSSProperties
 ) {
   return (props: P) => {
     return (
@@ -296,7 +297,7 @@ export function useTheme() {
 ```typescript
 function createThemedComponent<T extends keyof JSX.IntrinsicElements, P = {}>(
   tag: T,
-  styleFn: (theme: Theme, props: P) => React.CSSProperties
+  styleFn: (theme: Theme, props: P) => CSSProperties
 ) {
   return (props: P & JSX.IntrinsicElements[T]) => {
     const theme = useTheme();
@@ -417,10 +418,10 @@ function InteractiveButton({ children }: { children: any }) {
 ### Variant Factory
 
 ```typescript
-type Variants<V extends string> = Record<V, React.CSSProperties>;
+type Variants<V extends string> = Record<V, CSSProperties>;
 
 function createVariants<V extends string>(
-  baseStyles: React.CSSProperties,
+  baseStyles: CSSProperties,
   variants: Variants<V>
 ) {
   return function StyledComponent({ variant, children, ...props }: {
@@ -490,8 +491,8 @@ interface ButtonVariants {
   outlined?: boolean;
 }
 
-function getButtonStyles({ variant, size, outlined }: ButtonVariants): React.CSSProperties {
-  const baseStyles: React.CSSProperties = {
+function getButtonStyles({ variant, size, outlined }: ButtonVariants): CSSProperties {
+  const baseStyles: CSSProperties = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',

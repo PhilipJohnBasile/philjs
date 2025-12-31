@@ -98,7 +98,7 @@ Each deployment guide includes:
 - Excellent DX with zero config
 - Preview deployments for every branch
 - Built-in analytics and monitoring
-- Strong Next.js ecosystem (compatible with PhilJS)
+- Strong edge ecosystem with PhilJS adapters
 
 ### Use Netlify if you want:
 - Forms without backend code

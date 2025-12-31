@@ -3,6 +3,8 @@
  * QR code generation and scanning types
  */
 
+import type { CSSProperties, JSXChild } from "@philjs/core";
+
 // Error correction levels
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
 
@@ -110,7 +112,7 @@ export interface CameraPermission {
 export interface QRCodeProps extends Omit<QRCodeOptions, 'style'> {
   className?: string;
   qrStyle?: QRStyle;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   onLoad?: () => void;
   onError?: (error: Error) => void;
 }
@@ -120,12 +122,12 @@ export interface QRScannerProps {
   onScan: (result: ScanResult) => void;
   onError?: (error: Error) => void;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   showViewfinder?: boolean;
   showTorchButton?: boolean;
   showSwitchCameraButton?: boolean;
   pauseOnScan?: boolean;
-  children?: React.ReactNode;
+  children?: JSXChild;
 }
 
 // Batch generation

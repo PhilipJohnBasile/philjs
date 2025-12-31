@@ -14,9 +14,9 @@
  * ```tsx
  * // app/layout.tsx
  * export default function Layout({ children, modal, sidebar }: {
- *   children: React.ReactNode;
- *   modal?: React.ReactNode;
- *   sidebar?: React.ReactNode;
+ *   children: VNode;
+ *   modal?: VNode;
+ *   sidebar?: VNode;
  * }) {
  *   return (
  *     <div>

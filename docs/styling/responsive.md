@@ -565,10 +565,12 @@ export function App() {
 ### Responsive Wrapper
 
 ```typescript
+import type { CSSProperties } from '@philjs/core';
+
 interface ResponsiveProps {
-  mobile?: React.CSSProperties;
-  tablet?: React.CSSProperties;
-  desktop?: React.CSSProperties;
+  mobile?: CSSProperties;
+  tablet?: CSSProperties;
+  desktop?: CSSProperties;
   children: any;
 }
 

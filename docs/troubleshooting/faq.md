@@ -500,10 +500,10 @@ Consider PhilJS if:
 - ✅ You want simpler state management
 - ✅ You're starting a new project
 
-Stick with React if:
-- ❌ You have a large existing codebase
-- ❌ You depend heavily on React ecosystem
-- ❌ Your team isn't ready to learn new tools
+If you have constraints:
+- ✅ Migrate incrementally with PhilJS compatibility layers
+- ✅ Isolate legacy routes and move page-by-page
+- ✅ If a dependency is missing, build a PhilJS plugin or adapter
 
 ### How long does migration take?
 
@@ -829,12 +829,11 @@ function UserProfile() {
 }
 ```
 
-### Can I use Redux with PhilJS?
+### How do I model global state in PhilJS?
 
-You could, but signals provide similar functionality more simply:
+PhilJS uses signals for shared state. Create a module-level store and export actions:
 
 ```tsx
-// Instead of Redux
 interface State {
   count: number;
   user: User | null;

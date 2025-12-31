@@ -95,11 +95,11 @@ function Card({ title, children }: CardProps) {
   );
 }
 
-// Better: Use ReactNode type (if available)
-import type { JSX } from '@philjs/core';
+// Better: Use JSXChild from @philjs/core
+import type { JSXChild } from '@philjs/core';
 
 interface CardProps {
-  children: JSX.Element | JSX.Element[] | string | number;
+  children: JSXChild;
   title?: string;
 }
 ```

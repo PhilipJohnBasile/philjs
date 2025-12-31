@@ -13,7 +13,7 @@ A comprehensive demonstration of PhilJS framework features including the new aut
 
 ## Prerequisites
 
-- Node.js 18+ or higher
+- Node.js 24+ (Node 25 supported)
 - pnpm (workspace package manager)
 
 ## Setup

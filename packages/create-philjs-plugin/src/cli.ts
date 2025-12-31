@@ -87,7 +87,7 @@ const FEATURES_BY_TYPE: Record<string, Array<{ title: string; value: string; sel
     { title: 'Code splitting', value: 'splitting' },
   ],
   'ui-addon': [
-    { title: 'React components', value: 'react', selected: true },
+    { title: 'PhilJS components', value: 'components', selected: true },
     { title: 'CSS utilities', value: 'css', selected: true },
     { title: 'Theme system', value: 'theme' },
     { title: 'Icons package', value: 'icons' },

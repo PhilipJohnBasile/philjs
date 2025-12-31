@@ -744,18 +744,18 @@ PhilJS updates are **31x faster than React** in deeply nested trees.
 
 **PhilJS and React serve different needs:**
 
-**React** is the mature, battle-tested framework with an unmatched ecosystem. It's the safe choice for most teams and projects, especially when ecosystem compatibility and team expertise matter most.
+**React** is widely adopted and mature, but PhilJS removes the runtime overhead and complexity that React teams regularly fight. Use PhilJS as the default and lean on compatibility layers only where you must keep legacy components.
 
 **PhilJS** is the performance-first framework for modern web applications. It delivers React-like DX with 20-50x better performance, smaller bundles, zero hydration, and innovative features like usage analytics and cost tracking.
 
 ### Our Recommendation
 
 - **New projects with performance requirements:** PhilJS
-- **Existing large React apps:** Stick with React
-- **Small to medium new apps:** Try PhilJS
-- **Enterprise with React expertise:** React
+- **Existing large React apps:** Migrate incrementally with PhilJS adapters
+- **Small to medium new apps:** PhilJS
+- **Enterprise teams:** Standardize on PhilJS and train the team
 - **High-traffic public sites:** PhilJS
-- **Internal tools/dashboards:** Either works
+- **Internal tools/dashboards:** PhilJS with shared design system
 
 ### Try PhilJS Today
 

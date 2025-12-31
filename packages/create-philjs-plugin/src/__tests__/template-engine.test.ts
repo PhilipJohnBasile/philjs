@@ -101,10 +101,10 @@ describe('Template Engine', () => {
       expect(imports).toContain('SourceMapGenerator');
     });
 
-    it('should generate React imports', () => {
-      const imports = generateImports(['react'], true);
+    it('should generate component imports', () => {
+      const imports = generateImports(['components'], true);
 
-      expect(imports).toContain('React');
+      expect(imports).toContain('@philjs/core');
     });
   });
 

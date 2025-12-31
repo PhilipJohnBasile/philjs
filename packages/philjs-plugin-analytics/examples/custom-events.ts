@@ -2,7 +2,7 @@
  * Custom Event Tracking Example
  */
 
-import { analytics, trackEvent, identifyUser, setUserProperties } from "philjs-plugin-analytics/client";
+import { analytics, trackEvent, identifyUser, setUserProperties } from "@philjs/plugin-analytics/client";
 
 // Initialize analytics (usually done by the plugin)
 analytics.init({

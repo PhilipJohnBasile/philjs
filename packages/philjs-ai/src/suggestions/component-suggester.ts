@@ -224,7 +224,7 @@ const PHILJS_COMPONENTS: ComponentSuggestion[] = [
     category: 'layout',
     relevance: 80,
     props: [
-      { name: 'children', type: 'ReactNode', required: true },
+      { name: 'children', type: 'JSXChild', required: true },
       { name: 'className', type: 'string', required: false },
       { name: 'padding', type: "'none' | 'sm' | 'md' | 'lg'", required: false, defaultValue: "'md'" },
     ],
@@ -243,7 +243,7 @@ const PHILJS_COMPONENTS: ComponentSuggestion[] = [
       { name: 'open', type: 'boolean', required: true },
       { name: 'onClose', type: '() => void', required: true },
       { name: 'title', type: 'string', required: false },
-      { name: 'children', type: 'ReactNode', required: true },
+      { name: 'children', type: 'JSXChild', required: true },
     ],
     importStatement: "import { Modal } from '@philjs/ui';",
     snippet: '<Modal open={${1:isOpen}} onClose={${2:onClose}} title="${3:Title}">\n\t${4:content}\n</Modal>',
@@ -291,7 +291,7 @@ const PHILJS_COMPONENTS: ComponentSuggestion[] = [
     relevance: 75,
     props: [
       { name: 'items', type: 'T[]', required: true },
-      { name: 'renderItem', type: '(item: T, index: number) => ReactNode', required: true },
+      { name: 'renderItem', type: '(item: T, index: number) => JSXChild', required: true },
       { name: 'keyExtractor', type: '(item: T) => string', required: false },
     ],
     importStatement: "import { List } from '@philjs/ui';",
@@ -306,7 +306,7 @@ const PHILJS_COMPONENTS: ComponentSuggestion[] = [
     category: 'navigation',
     relevance: 70,
     props: [
-      { name: 'tabs', type: 'Array<{ id: string; label: string; content: ReactNode }>', required: true },
+      { name: 'tabs', type: 'Array<{ id: string; label: string; content: JSXChild }>', required: true },
       { name: 'defaultTab', type: 'string', required: false },
       { name: 'onChange', type: '(tabId: string) => void', required: false },
     ],

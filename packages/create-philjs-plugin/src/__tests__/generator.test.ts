@@ -43,7 +43,7 @@ describe('Plugin Generator', () => {
       basic: ['config', 'runtime-api', 'cli', 'middleware'],
       vite: ['virtual-modules', 'hmr', 'assets', 'ssr'],
       transform: ['ast', 'sourcemaps', 'types', 'splitting'],
-      'ui-addon': ['react', 'css', 'theme', 'icons'],
+      'ui-addon': ['components', 'css', 'theme', 'icons'],
       api: ['cache', 'retry', 'interceptors', 'transformers', 'rate-limit', 'offline-queue'],
       database: ['pooling', 'migrations', 'query-builder', 'transactions', 'seeding', 'logging'],
       auth: ['credentials', 'oauth', 'jwt', 'sessions', 'rbac', '2fa'],
