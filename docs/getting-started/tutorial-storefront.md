@@ -33,6 +33,7 @@ The storefront uses a modern architecture:
 ```
 src/
   entry-client.ts        # Client runtime with islands
+  sw.ts                  # Service worker source
   routes/
     index.tsx            # Home page with loader
     products/[id].tsx    # Product page with loader + action
@@ -43,12 +44,11 @@ src/
   ai/
     summarize.ts         # AI integration
 public/
-  sw.js                  # Service worker
   manifest.json          # PWA manifest
 server/
-  dev.js                 # Vite dev server
-  prod.js                # Production server
-  ai.js                  # AI endpoint (optional)
+  dev.ts                 # Vite dev server
+  prod.ts                # Production server
+  ai.ts                  # AI endpoint (optional)
 ```
 
 ## Setup
@@ -408,10 +408,10 @@ Make your storefront installable and work offline.
 
 ### Service Worker
 
-File: `public/sw.js`
+File: `src/sw.ts` (compiled to `public/sw.js` via `scripts/build-sw.ts`)
 
-```javascript
-const CACHE_NAME = 'philjs-storefront-v1';
+```ts
+const CACHE_NAME = 'philjs-storefront-v0.1.0';
 const STATIC_CACHE = [
   '/',
   '/manifest.json',
@@ -606,28 +606,96 @@ This creates:
 
 ### Production Server
 
-File: `server/prod.js`
+File: `server/prod.ts`
 
-```javascript
-import { createServer } from 'http';
-import { serveStatic } from './serve-static.js';
-import { renderPage } from '../dist/server/entry-server.js';
+```ts
+import http from "node:http";
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+import { extname, join, resolve } from "node:path";
+import { Readable } from "node:stream";
+import { writeEarlyHints } from "@philjs/ssr";
 
-const server = createServer(async (req, res) => {
-  // Serve static assets
-  if (req.url.startsWith('/assets/')) {
-    return serveStatic(req, res, 'dist/client');
+const clientDir = resolve(process.cwd(), "dist/client");
+const port = Number(process.env.PORT ?? 3000);
+const serverEntry = await import("../dist/server/entry-server.js");
+
+const mimeMap = new Map(
+  Object.entries({
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".ico": "image/x-icon",
+    ".png": "image/png",
+    ".svg": "image/svg+xml"
+  })
+);
+
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url ?? "/", `http://${req.headers.host}`);
+  const filePath = join(clientDir, url.pathname.replace(/^\\//, ""));
+
+  if (await tryServeFile(filePath, res)) {
+    return;
   }
 
-  // SSR for pages
-  const html = await renderPage(req.url);
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.end(html);
+  const result = await serverEntry.render(req);
+  if (Array.isArray(result?.earlyHints)) {
+    writeEarlyHints(res, result.earlyHints);
+  }
+
+  if (!result) {
+    res.writeHead(404, { "content-type": "text/plain" });
+    res.end("Not Found");
+    return;
+  }
+
+  const { status = 200, headers = {}, body } = result;
+  res.writeHead(status, headers);
+
+  if (!body) {
+    res.end();
+    return;
+  }
+
+  if (typeof body === "string") {
+    res.end(body);
+    return;
+  }
+
+  if (typeof body.getReader === "function") {
+    Readable.fromWeb(body).pipe(res);
+    return;
+  }
+
+  if (body instanceof Readable) {
+    body.pipe(res);
+    return;
+  }
+
+  res.end();
 });
 
-server.listen(3000, () => {
-  console.log('Production server running at http://localhost:3000');
+server.listen(port, () => {
+  console.log(`PhilJS storefront (prod) listening on http://localhost:${port}`);
 });
+
+async function tryServeFile(path: string, res: http.ServerResponse): Promise<boolean> {
+  try {
+    const stats = await stat(path);
+    if (!stats.isFile()) {
+      return false;
+    }
+
+    const type = mimeMap.get(extname(path)) ?? "application/octet-stream";
+    res.writeHead(200, { "content-type": type, "content-length": stats.size });
+    createReadStream(path).pipe(res);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 ```
 
 ### Deployment Platforms
@@ -655,7 +723,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
-CMD ["node", "server/prod.js"]
+CMD ["pnpm", "serve"]
 EXPOSE 3000
 ```
 

@@ -502,5 +502,5 @@ We will:
 
 ## Version History
 
-- **v1.0.0** (2024): Initial security documentation
+- **v0.1.0** (2025): Initial security documentation
 - Security features continuously updated with framework releases

@@ -4,7 +4,7 @@ This report summarizes the current public status of the PhilJS monorepo and poin
 
 ## Snapshot
 
-- Version: 1.0.0-beta
+- Version: 0.1.0 (preview)
 - Packages: 88 packages in the monorepo (core + integrations + tooling)
 - Documentation: 110+ pages (see docs/README.md)
 - Tests: 500+ passing tests (see docs/archive/status-reports/FINAL_STATUS.md)
@@ -13,7 +13,7 @@ This report summarizes the current public status of the PhilJS monorepo and poin
 
 ## Production Readiness
 
-Core packages are production-ready and documented. Experimental or niche integrations live alongside the core in /packages and may evolve more quickly.
+Core packages are in preview and documented. Experimental or niche integrations live alongside the core in /packages and may evolve more quickly.
 
 ## Detailed Reports
 

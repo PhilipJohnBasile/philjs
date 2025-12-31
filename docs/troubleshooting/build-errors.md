@@ -504,7 +504,7 @@ export default defineConfig({
 **Error:**
 ```
 npm ERR! ERESOLVE unable to resolve dependency tree
-npm ERR! Found: @philjs/core@1.0.0
+npm ERR! Found: @philjs/core@0.1.0
 npm ERR! Could not resolve dependency
 ```
 
@@ -532,11 +532,11 @@ npm install
 // package.json - Pin specific versions
 {
   "dependencies": {
-    "@philjs/core": "^1.0.0",
-    "@philjs/router": "^1.0.0"
+    "@philjs/core": "^0.1.0",
+    "@philjs/router": "^0.1.0"
   },
   "resolutions": {
-    "@philjs/core": "1.0.0"
+    "@philjs/core": "0.1.0"
   }
 }
 ```

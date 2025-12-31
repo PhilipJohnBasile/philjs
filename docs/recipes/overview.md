@@ -23,22 +23,18 @@ Validate form fields and show errors before submission. Includes accessibility a
 ### [Dark Mode Toggle](/docs/recipes/dark-mode-toggle)
 Persist user's theme preference and apply it instantly. Respects system preference and provides smooth transitions.
 
-## Coming Soon
+## More Patterns in the Docs
 
-More recipes are being added regularly. Check back soon for:
+Looking for more than a quick recipe? These guides cover the same topics in depth:
 
-- Optimistic UI updates
-- File upload with progress
-- Virtual scrolling
-- Drag and drop
-- Modal dialogs
-- Toast notifications
-- Keyboard shortcuts
-- Copy to clipboard
-- Real-time data with WebSockets
-- Pagination
-- Sorting and filtering
-- Multi-step wizards
+- [Optimistic Updates](/docs/data-fetching/optimistic-updates)
+- [File Uploads](/docs/forms/file-uploads)
+- [Virtual Scrolling](/docs/performance/virtual-scrolling)
+- [Real-Time Data](/docs/data-fetching/real-time)
+- [Pagination](/docs/data-fetching/pagination)
+- [Queries, Filtering, and Sorting](/docs/data-fetching/queries)
+- [Multi-Step Forms](/docs/forms/multi-step)
+- [Portals, Modals, and Toasts](/docs/advanced/portals)
 
 ## Recipe Format
 

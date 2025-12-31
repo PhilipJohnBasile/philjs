@@ -596,7 +596,7 @@ export function Counter() {
 ## Frequently Asked Questions
 
 ### Is PhilJS production-ready?
-**Yes.** PhilJS v1.0.0-beta is production-ready with:
+**Not yet.** PhilJS v0.1.0 is an early preview. It already includes:
 - 500+ passing tests
 - 88 packages in the monorepo, with core packages production-ready
 - 110+ pages of documentation
@@ -613,7 +613,7 @@ Some React libraries work (Headless UI, Radix primitives), but many don't (hooks
 **Absolutely.** PhilJS is TypeScript-first with excellent inference. Every API is fully typed, and the auto-compiler understands TypeScript.
 
 ### How mature is PhilJS?
-**Version 1.0.0-beta** (December 2025):
+**Version 0.1.0** (December 2025):
 - 2+ years of development
 - Complete feature set
 - Production deployments
@@ -702,5 +702,5 @@ pnpm dev
 
 ---
 
-*Last Updated: December 2025 • v1.0.0-beta*
+*Last Updated: December 2025 - v0.1.0*
 

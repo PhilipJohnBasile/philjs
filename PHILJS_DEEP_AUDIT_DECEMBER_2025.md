@@ -62,7 +62,7 @@ The following critical issues from this audit have been addressed:
 2. **Streaming SSR is TODO** - Single chunk emission only (ssr/mod.rs:65)
 3. **Benchmarks show expected values only** - No actual measured results (benchmarks/README.md:33-38)
 4. **50+ TODOs in production code** - Including critical paths like route splitting, streaming
-5. **Versioning mismatch** - JS is 1.0.0-beta, Rust packages are 2.0.0
+5. **Versioning mismatch** - Resolved; packages aligned to 0.1.0
 6. **Spread attrs unimplemented** - `spread_attrs()` returns empty Vec (lib.rs:191-194)
 7. **Many flaky tests** - 6+ tests marked as flaky on CI
 8. **Documentation site not deployed** - LAUNCH_CHECKLIST.md shows "[ ] Documentation site deployed"

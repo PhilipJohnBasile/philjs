@@ -150,7 +150,7 @@ import { definePlugin } from '@philjs/core/plugin-system';
 export default definePlugin((options = {}) => ({
   meta: {
     name: 'philjs-plugin-awesome',
-    version: '1.0.0',
+    version: '0.1.0',
     description: 'An awesome plugin',
     philjs: '^2.0.0',
   },
@@ -207,7 +207,7 @@ import { createBuilder } from 'create-philjs-plugin';
 export default createBuilder()
   .meta({
     name: 'philjs-plugin-awesome',
-    version: '1.0.0',
+    version: '0.1.0',
     description: 'An awesome plugin',
   })
   .configSchema({
@@ -417,7 +417,7 @@ npm test
 ```json
 {
   "name": "philjs-plugin-awesome",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
   "exports": {
     ".": {

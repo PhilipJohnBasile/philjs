@@ -607,7 +607,7 @@ console.log('Cache size:', cacheSize.size);
 ### Version Your Cache
 
 ```javascript
-const VERSION = '1.0.0';
+const VERSION = '0.1.0';
 const CACHE_NAME = `philjs-app-${VERSION}`;
 
 // Update version when deploying new version

@@ -20,28 +20,28 @@ This document outlines the complete release process for PhilJS, from planning to
 ### Major Release (x.0.0)
 - **Frequency**: 6-12 months
 - **Contains**: Breaking changes, major features, architectural improvements
-- **Examples**: v1.0.0 → v2.0.0
+- **Examples**: v1.0.0 -> v2.0.0
 - **Process Time**: 2-4 weeks of preparation
 - **Approval Required**: All core team members
 
 ### Minor Release (x.y.0)
 - **Frequency**: 1-2 months
 - **Contains**: New features, non-breaking API additions
-- **Examples**: v2.0.0 → v2.1.0
+- **Examples**: v0.1.0 -> v0.2.0
 - **Process Time**: 1 week of preparation
 - **Approval Required**: Engineering lead
 
 ### Patch Release (x.y.z)
 - **Frequency**: As needed (weekly/bi-weekly)
 - **Contains**: Bug fixes, documentation updates
-- **Examples**: v2.0.0 → v2.0.1
+- **Examples**: v0.1.0 -> v0.1.1
 - **Process Time**: 1-2 days
 - **Approval Required**: Release manager
 
 ### Hotfix Release
 - **Frequency**: Emergency only
 - **Contains**: Critical bug fixes, security patches
-- **Examples**: v2.0.0 → v2.0.1 (emergency)
+- **Examples**: v0.1.0 -> v0.1.1 (emergency)
 - **Process Time**: Same day
 - **Approval Required**: Any two core team members
 
@@ -52,18 +52,18 @@ This document outlines the complete release process for PhilJS, from planning to
 ### Regular Release Cadence
 
 ```
-January:   v2.1.0 (Minor) - New features from Q4 feedback
-February:  v2.1.x (Patch) - Bug fixes
-March:     v2.2.0 (Minor) - Q1 features
-April:     v2.2.x (Patch) - Bug fixes
-May:       v2.3.0 (Minor) - Q1 features
-June:      v2.3.x (Patch) - Bug fixes + summer prep
-July:      v2.4.0 (Minor) - Summer features
-August:    v2.4.x (Patch) - Bug fixes
-September: v2.5.0 (Minor) - Q3 features
-October:   v2.5.x (Patch) - Bug fixes
-November:  v2.6.0 (Minor) - Q3 features
-December:  v3.0.0 (Major) - Breaking changes, major features
+January:   v0.2.0 (Minor) - New features from Q4 feedback
+February:  v0.2.x (Patch) - Bug fixes
+March:     v0.3.0 (Minor) - Q1 features
+April:     v0.3.x (Patch) - Bug fixes
+May:       v0.4.0 (Minor) - Q1 features
+June:      v0.4.x (Patch) - Bug fixes + summer prep
+July:      v0.5.0 (Minor) - Summer features
+August:    v0.5.x (Patch) - Bug fixes
+September: v0.6.0 (Minor) - Q3 features
+October:   v0.6.x (Patch) - Bug fixes
+November:  v0.7.0 (Minor) - Q3 features
+December:  v1.0.0 (Major) - First stable release
 ```
 
 ### Release Windows

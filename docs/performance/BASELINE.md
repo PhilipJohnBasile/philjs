@@ -610,7 +610,7 @@ If your benchmarks show significantly worse performance (>30% slower):
 
 ---
 
-**Document Version**: 1.0.0
+**Document Version**: 0.1.0
 **Last Updated**: 2025-12-17
 **Status**: Official v0.1.0 Baseline
 **Approved By**: Core Team

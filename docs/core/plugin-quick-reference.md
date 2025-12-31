@@ -102,7 +102,7 @@ import { createBuilder } from 'create-philjs-plugin';
 export default createBuilder()
   .meta({
     name: 'philjs-plugin-awesome',
-    version: '1.0.0',
+    version: '0.1.0',
     description: 'An awesome plugin',
     philjs: '^2.0.0',
   })
@@ -146,7 +146,7 @@ export default function myPlugin(options = {}): Plugin {
   return {
     meta: {
       name: 'philjs-plugin-awesome',
-      version: '1.0.0',
+      version: '0.1.0',
       philjs: '^2.0.0',
     },
 
@@ -463,7 +463,7 @@ async setup(config, ctx) {
 
   pkg.devDependencies = {
     ...pkg.devDependencies,
-    'my-dep': '^1.0.0',
+    'my-dep': '^0.1.0',
   };
 
   await ctx.utils.writePackageJson(pkg);
