@@ -71,5 +71,6 @@ docs/rust-book/dist/pandoc-test.*
 docs/philjs-book/src/.obsidian/
 docs/rust-book/src/.obsidian/
 
-# Rust build artifacts for the Rust implementation
-packages/philjs-rust/target/
+# Rust build artifacts (all packages)
+**/target/
+.rollup.cache/
