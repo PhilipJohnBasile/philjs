@@ -1130,6 +1130,21 @@ window.addEventListener('beforeinstallprompt', (e) => {
 - [PWA on iOS](https://webkit.org/status/#specification-web-app-manifest)
 - [Background Sync](https://developer.chrome.com/docs/web-platform/background-sync/)
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-plugin-pwa/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: (none detected)
+- Re-exported modules: ./background-sync.js, ./cache-strategies.js, ./install.js, ./manifest.js, ./offline.js, ./service-worker.js, ./types.js, ./updates.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

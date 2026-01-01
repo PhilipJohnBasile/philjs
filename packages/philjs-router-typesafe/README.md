@@ -571,6 +571,31 @@ const route = createRoute({
 });
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-router-typesafe/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: // Component Types
+  RouteComponentProps, // Link Types
+  LinkPropsWithRoute, // Loader Types
+  LoaderContext, // Navigation Types
+  NavigateOptions, // Path Parameter Types
+  ExtractPathParams, // Route Tree Types
+  RootRouteOptions, // Route Types
+  RouteOptions, // Router Types
+  RouterOptions, // Search Parameter Types
+  InferSearchParams, // Utility Types
+  RequireKeys, ActiveLink, AllRoutePaths, BeforeLoadContext, DeepPartial, ErrorComponent, ErrorComponentProps, ExtractRoute, HasParams, InferLoaderData, Link, LinkProps, LinkPropsWithPath, LoaderFn, MatchedRoute, NavLink, NavigateFn, NavigationEvent, NavigationRedirect, PathParams, PendingComponent, Prettify, Redirect, RegisteredRoutes, RouteComponent, RouteDefinition, RouteMeta, RouteTree, Router, RouterContextType, RouterLocation, RouterOutlet, SearchParamsOrEmpty, TypeSafeRouter, TypedNavigateOptions, UnionToIntersection, addChildren, buildPath, createNavigateLink, createRootRoute, createRoute, createRouteWithChildren, createRouter, createSSRRouter, flattenRouteTree, getActiveRoute, getRouterContext, loadRouteData, matchRoutes, matchesRoute, parsePathParams, parseSearchParams, redirect, serializeSearchParams, useBlocker, useIsPending, useLoaderData, useLocation, useMatchRoute, useMatches, useNavigate, useNavigateTyped, useParams, usePreloadRoute, useRouteError, useRouter, useSearch
+- Re-exported modules: ./context.js, ./hooks.js, ./link.js, ./route.js, ./router.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

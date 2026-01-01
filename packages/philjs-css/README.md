@@ -572,9 +572,9 @@ import { css, type CSSStyleObject } from 'philjs-css';
 
 // Type-safe style objects
 const styles: CSSStyleObject = {
-  display: 'flex', // ✅ Valid
-  flexDirection: 'row', // ✅ Valid
-  // flexDirection: 'invalid', // ❌ Type error
+  display: 'flex', //  Valid
+  flexDirection: 'row', //  Valid
+  // flexDirection: 'invalid', //  Type error
 };
 
 // Type-safe theme tokens
@@ -583,8 +583,8 @@ const theme = createTheme({
 });
 
 // Autocomplete works
-theme.colors.primary; // ✅ Autocomplete available
-// theme.colors.invalid; // ❌ Type error
+theme.colors.primary; //  Autocomplete available
+// theme.colors.invalid; //  Type error
 ```
 
 ## Performance
@@ -664,6 +664,37 @@ const button = variants({
 ## API Reference
 
 See the [full API documentation](./docs/api.md) for detailed information on all available functions and types.
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-css/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: // CSS Anchor Positioning
+  createAnchor, // CSS Color Functions
+  colorMix, // CSS Layers
+  defineLayers, // CSS Nesting
+  processNesting, // Container Queries
+  createContainer, // FLIP technique
+  captureState, // Feature Detection
+  supportsCSS, // Generators
+  generateAllKeyframes, // Keyframe generators
+  slide, // Orchestration
+  calculateStagger, // Presets
+  motionPresets, // Reduced motion
+  reducedMotionStyles, // Scoped Styles
+  scopedStyles, // Scroll-driven Animations
+  scrollTimeline, // Spring physics
+  springPresets, // View Transitions
+  viewTransition, AnchorConfig, AnchorPositionConfig, AnimationTimeline, AtomicConfig, BuildPlugin, BundleStats, CSSProperties, CSSResult, CSSRule, CSSStyleObject, ContainerConfig, ContainerQuery, Direction, ExtractConfig, FLIPState, GestureConfig, GestureEvent, GestureHandler, GestureHandlers, GestureState, GestureType, Keyframe, LayerName, LongPressConfig, MotionConfig, OrchestrationConfig, PanConfig, PanEvent, PinchConfig, PinchEvent, Point, ResponsiveValue, RotateConfig, RotateEvent, ScopeConfig, ScrollTimelineConfig, SpringConfig, StaggerConfig, StyleSheet, SwipeConfig, SwipeEvent, TapConfig, Theme, ThemeTokens, VariantConfig, VariantProps, ViewTimelineConfig, ViewTransitionConfig, analyzeCSSBundle, anchorPosition, applyTheme, atomicDeduplication, atomicRegistry, attachGestures, batchFLIP, batchStyleUpdates, booleanVariant, bounce, calculateSpring, clearStyles, componentScope, compose, containerQuery, cq, createAtomicSystem, createBreakpoints, createCarousel, createColorUtilities, createDynamicStyle, createGestureAnimation, createLayoutUtilities, createReactiveStyle, createRollupPlugin, createSpacingUtilities, createStyles, createTheme, createThemeToggle, createThemeVariant, createTypographyUtilities, createVitePlugin, createWebpackPlugin, css, cssFeatures, cssVar, cx, dataVariants, deduplicateCSS, defaultLayerOrder, defaultTheme, directionVectors, draggableStyles, easings, extractAllCSS, extractAtomicCSS, extractCSS, extractCriticalCSS, extractCriticalCSSFromFull, extractToFile, extractUsageFromFiles, extractUsageFromHTML, extractUsageFromJSX, fade, featureDetectionCSS, flip, generateAnimationUtilities, generateAtomicClasses, generateLayeredStylesheet, generateOptimizationReport, generateSourceMap, generateThemeCSS, gesturePresets, getCSSVariable, getCriticalSSRStyles, getSSRStyles, getStyleDebugInfo, getTheme, globalStyle, hydrateStyles, injectStyle, keyframes, layer, lightDark, motionSafe, optimizeCSS, parallel, playFLIP, positionFallback, prefersReducedMotion, prefetchStyles, pullToRefresh, pullToRefreshStyles, pulse, purgeUnusedCSS, recipe, relativeColor, removeCSSVariable, removeStyle, resetAtomicRegistry, resetStyles, responsiveVariants, rotate, rubberBand, scale, scrollAnimation, sequence, setCSSVariable, setCSSVariables, shake, slotVariants, splitCSSByRoute, springAnimation, springEasing, staggerAnimation, startViewTransition, stateVariants, styleFactory, styleRegistry, swing, swipeToDismiss, swipeableStyles, syncWithSystemTheme, themeVar, variants, viewTimeline, viewTransitionPresets, wobble, zoomableStyles
+- Re-exported modules: ./advanced.js, ./animations.js, ./atomic.js, ./compiler.js, ./css.js, ./extract.js, ./gestures.js, ./runtime.js, ./theme.js, ./types.js, ./variants.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

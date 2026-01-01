@@ -30,7 +30,7 @@
       "cache": true
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": [],
       "inputs": ["src/**", "**/*.test.ts"],
       "outputs": ["coverage/**"],
       "cache": true

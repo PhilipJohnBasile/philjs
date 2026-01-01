@@ -135,7 +135,7 @@ pnpm check:budgets
 # Test publish without actually publishing
 cd packages/philjs-core
 npm pack
-tar -tzf @philjs/core-0.1.0.tgz
+tar -tzf philjs-core-0.1.0.tgz
 
 # Verify contents include:
 # - dist/
@@ -147,7 +147,7 @@ tar -tzf @philjs/core-0.1.0.tgz
 mkdir /tmp/test-install
 cd /tmp/test-install
 npm init -y
-npm install /path/to/@philjs/core-0.1.0.tgz
+npm install /path/to/philjs-core-0.1.0.tgz
 node -e "require('@philjs/core')"
 ```
 

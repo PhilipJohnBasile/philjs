@@ -285,6 +285,51 @@ impl Element {
     }
 }
 
+/// Builder for constructing elements fluently.
+pub struct ElementBuilder {
+    element: Element,
+}
+
+impl ElementBuilder {
+    /// Create a new builder with the given tag name.
+    pub fn new(tag: impl Into<String>) -> Self {
+        ElementBuilder {
+            element: Element::new(tag),
+        }
+    }
+
+    /// Add a single static attribute.
+    pub fn attr(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
+        self.element.attrs.insert(key.into(), value.into());
+        self
+    }
+
+    /// Add multiple static attributes.
+    pub fn attrs(mut self, attrs: Vec<(String, String)>) -> Self {
+        for (key, value) in attrs {
+            self.element.attrs.insert(key, value);
+        }
+        self
+    }
+
+    /// Add a single child.
+    pub fn child(mut self, child: impl Into<View>) -> Self {
+        self.element.children.push(child.into());
+        self
+    }
+
+    /// Add multiple children.
+    pub fn children(mut self, children: Vec<View>) -> Self {
+        self.element.children = children;
+        self
+    }
+
+    /// Finish building and return the element.
+    pub fn build(self) -> Element {
+        self.element
+    }
+}
+
 /// Check if a tag is a void element (self-closing).
 fn is_void_element(tag: &str) -> bool {
     matches!(

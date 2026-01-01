@@ -225,6 +225,21 @@ philjs-swift macos:run
 | `bridge.invoke(fn, args)` | Call Swift function |
 | `bridge.create(struct, props)` | Instantiate Swift struct |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./ios, ./macos
+- Source files: packages/philjs-swift/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: (none detected)
+- Re-exported modules: ./bridge.js, ./codegen.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

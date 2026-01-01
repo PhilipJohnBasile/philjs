@@ -337,7 +337,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-## [2.0.0] - 2025-12-18
+## [0.1.0] - 2025-12-18
 
 ### Added
 
@@ -395,9 +395,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **philjs-cli**: Command-line interface for project management
 
 ### Changed
-- **Breaking: Version bump to 2.0.0** - Signifies production readiness
+- **Version**: Set to 0.1.0 (alpha)
 - **Marked `createReducerContext` as deprecated** - Use signals directly instead
-- **Updated all peer dependencies** to use ^2.0.0 version ranges
+- **Updated all peer dependencies** to use ^0.1.0 version ranges
 - **Improved signal performance** with optimized dependency tracking
 - **Enhanced compiler batch detection** with better heuristics
 - **Refined error messages** across all packages for better debugging
@@ -439,11 +439,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration Notes
 
-#### From 0.1.0 to 2.0.0
+#### From 0.0.0 to 0.1.0
 
 1. **Update Dependencies**:
    ```bash
-   pnpm add philjs-core@2.0.0 philjs-compiler@2.0.0
+   pnpm add philjs-core@0.1.0 philjs-compiler@0.1.0
    ```
 
 2. **Replace `createReducerContext`**:
@@ -476,27 +476,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking Changes
 
-1. **Version number**: Jumped from 0.1.0 to 2.0.0 to signal production readiness
+1. **Version number**: Initial 0.1.0 alpha release
 2. **Deprecated API**: `createReducerContext` is now deprecated (not removed)
-3. **Peer dependencies**: Updated to require ^2.0.0 for cross-package compatibility
+3. **Peer dependencies**: Updated to require ^0.1.0 for cross-package compatibility
 4. **TypeScript strict mode**: May reveal type errors in user code
 
 ### Package Versions
 
-All packages updated to 2.0.0:
-- philjs-core@2.0.0
-- philjs-compiler@2.0.0
-- philjs-router@2.0.0
-- philjs-islands@2.0.0
-- philjs-ssr@2.0.0
-- philjs-devtools@2.0.0
-- philjs-testing@2.0.0
-- create-philjs@2.0.0
+All packages updated to 0.1.0:
+- philjs-core@0.1.0
+- philjs-compiler@0.1.0
+- philjs-router@0.1.0
+- philjs-islands@0.1.0
+- philjs-ssr@0.1.0
+- philjs-devtools@0.1.0
+- philjs-testing@0.1.0
+- create-philjs@0.1.0
 - And 21+ additional packages
 
 ### Notes
 
-**Framework Status:** Production Ready - Stable API with semantic versioning
+**Framework Status:** Alpha - APIs may change
 
 **Stability Guarantees:**
 - Core reactivity API (signals, effects, memos) - **Stable**, no breaking changes planned

@@ -359,6 +359,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-sqlx/src/lib.rs
+
+### Public API
+- Public modules: context, error, migrate, migration, pool, prelude, query, reactive, transaction
+- Public items: (none detected)
+- Re-exports: context::{provide_pool, use_pool, DbContext}, crate::context::{provide_pool, use_pool, DbContext}, crate::error::{DbError, DbResult}, crate::migrate::{run_migrations, MigrationRunner}, crate::pool::{DbPool, PoolConfig, create_pool}, crate::query::{Query, QueryBuilder, Executor}, crate::reactive::{ReactiveQuery, DbResource, ReactiveQueryBuilder}, crate::transaction::{
+        TransactionHelper, with_transaction, Savepoint,
+        BatchOperation, retry_transaction,
+    }, error::{DbError, DbResult}, philjs::prelude::*, pool::{DbPool, PoolConfig, create_pool}, query::{Query, QueryBuilder, Executor}, sqlx::{
+    FromRow, Row, Column, TypeInfo, ValueRef,
+    query, query_as, query_scalar,
+    Encode, Decode, Type,
+}, sqlx::{FromRow, Row, query, query_as, query_scalar}, sqlx::{MySql, MySqlPool, MySqlConnection, MySqlRow}, sqlx::{MySql, MySqlPool}, sqlx::{Postgres, PgPool, PgConnection, PgRow}, sqlx::{Postgres, PgPool}, sqlx::{Sqlite, SqlitePool, SqliteConnection, SqliteRow}, sqlx::{Sqlite, SqlitePool}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

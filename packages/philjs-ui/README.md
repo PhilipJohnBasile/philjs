@@ -140,6 +140,21 @@ Customize the theme with CSS variables:
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./theme, ./styles.css
+- Source files: packages/philjs-ui/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: Accordion, AccordionButton, AccordionButtonProps, AccordionItem, AccordionItemProps, AccordionPanel, AccordionPanelProps, AccordionProps, Alert, AlertDescription, AlertProps, AlertStatus, AlertTitle, AlertVariant, Avatar, AvatarBadge, AvatarBadgeProps, AvatarGroup, AvatarGroupProps, AvatarProps, AvatarSize, Badge, BadgeColor, BadgeProps, BadgeSize, BadgeVariant, Breadcrumb, BreadcrumbIcons, BreadcrumbItem, BreadcrumbItemProps, BreadcrumbLink, BreadcrumbProps, BreadcrumbSeparator, BreadcrumbSeparatorProps, Button, ButtonColor, ButtonGroup, ButtonProps, ButtonSize, ButtonVariant, Card, CardBody, CardFooter, CardHeader, CardImage, CardProps, CardTitle, CardVariant, Checkbox, CheckboxGroup, CheckboxGroupProps, CheckboxProps, CheckboxSize, CircularProgress, CircularProgressProps, ConfirmDialog, ConfirmDialogProps, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerPlacement, DrawerProps, DrawerSize, Dropdown, DropdownDivider, DropdownItem, DropdownItemProps, DropdownLabel, DropdownPlacement, DropdownProps, IconButton, Input, InputProps, InputSize, InputVariant, Modal, ModalBody, ModalFooter, ModalHeader, ModalProps, ModalSize, MultiSelect, MultiSelectProps, NotificationBadge, NotificationBadgeProps, Popover, PopoverProps, Progress, ProgressColor, ProgressProps, ProgressSize, Radio, RadioGroup, RadioGroupProps, RadioProps, RadioSize, Select, SelectOption, SelectProps, SelectSize, Skeleton, SkeletonProps, Spinner, SpinnerProps, SpinnerSize, StatusIndicator, StatusIndicatorProps, StatusIndicatorStatus, Switch, SwitchProps, SwitchSize, Tab, TabList, TabListProps, TabPanel, TabPanelProps, TabPanels, TabPanelsProps, TabProps, Table, TableCaption, TableEmpty, TableProps, TableSize, TableVariant, Tabs, TabsProps, TabsSize, TabsVariant, Tbody, Td, TdProps, Textarea, TextareaProps, Tfoot, Th, ThProps, Thead, Theme, ThemeProvider, ToastContainer, ToastOptions, ToastPosition, ToastStatus, Tooltip, TooltipPlacement, TooltipProps, Tr, TrProps, borderRadius, boxShadow, breakpoints, colors, defaultTheme, fontFamily, fontSize, fontWeight, generateCSSVariables, spacing, toast, transition, useColorMode, useTheme, useToast, zIndex
+- Re-exported modules: ./components/Accordion.js, ./components/Alert.js, ./components/Avatar.js, ./components/Badge.js, ./components/Breadcrumb.js, ./components/Button.js, ./components/Card.js, ./components/Checkbox.js, ./components/Drawer.js, ./components/Dropdown.js, ./components/Input.js, ./components/Modal.js, ./components/Radio.js, ./components/Select.js, ./components/Spinner.js, ./components/Switch.js, ./components/Table.js, ./components/Tabs.js, ./components/Toast.js, ./components/Tooltip.js, ./theme/ThemeProvider.js, ./theme/tokens.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -233,6 +233,21 @@ interface BiometricCapabilities {
 
 Requires HTTPS in production (localhost exempt for development).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-biometric/src/index.ts
+
+### Public API
+- Direct exports: AuthenticationOptions, AuthenticationResult, BiometricCapabilities, BiometricConfig, BiometricCredential, BiometricManager, BiometricPrompt, BiometricPromptOptions, PasskeyManager, RegistrationOptions, RegistrationResult, useBiometric, useBiometricPrompt, usePasskeys
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -162,21 +162,20 @@ pub use ssr::{
 
 // Hydration exports
 pub use dom::{
-    hydrate,
-    hydrate_to,
-    hydrate_to_body,
     HydrationMode,
     HydrationContext,
     HydrationState,
+    HydrationError,
     generate_hydration_script,
 };
+#[cfg(feature = "wasm")]
+pub use dom::{hydrate, hydrate_to, hydrate_to_body};
 
 // Server function exports
 pub use server::functions::{
     ServerResult,
     ServerError,
     ServerFnConfig,
-    server_fn,
 };
 
 /// Prelude module - import everything you need

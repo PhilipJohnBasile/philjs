@@ -8,33 +8,45 @@ use philjs::prelude::*;
 fn Counter(initial: i32) -> impl IntoView {
     let count = Signal::new(initial);
 
-    view! {
-        <div class="counter">
-            <h1>"Count: " {count}</h1>
-            <div class="buttons">
-                <button on:click=move |_| count.update(|n| *n -= 1)>
-                    "-"
-                </button>
-                <button on:click=move |_| count.set(0)>
-                    "Reset"
-                </button>
-                <button on:click=move |_| count.update(|n| *n += 1)>
-                    "+"
-                </button>
-            </div>
-        </div>
-    }
+    let decrement = {
+        let count = count.clone();
+        move |_| count.update(|n| *n -= 1)
+    };
+    let reset = {
+        let count = count.clone();
+        move |_| count.set(0)
+    };
+    let increment = {
+        let count = count.clone();
+        move |_| count.update(|n| *n += 1)
+    };
+
+    let heading = Element::new("h1")
+        .child(Text::new("Count: "))
+        .child(count.clone().into_view());
+
+    let buttons = Element::new("div")
+        .attr("class", "buttons")
+        .child(Element::new("button").on("click", decrement).child(Text::new("-")))
+        .child(Element::new("button").on("click", reset).child(Text::new("Reset")))
+        .child(Element::new("button").on("click", increment).child(Text::new("+")));
+
+    Element::new("div")
+        .attr("class", "counter")
+        .child(heading)
+        .child(buttons)
 }
 
 #[component]
 fn App() -> impl IntoView {
-    view! {
-        <main>
-            <h1>"PhilJS Rust Counter"</h1>
-            <Counter initial=0 />
-            <Counter initial=10 />
-        </main>
-    }
+    let heading = Element::new("h1").child(Text::new("PhilJS Rust Counter"));
+    let counter_one = Counter(CounterProps { initial: 0 });
+    let counter_two = Counter(CounterProps { initial: 10 });
+
+    Element::new("main")
+        .child(heading)
+        .child(counter_one.into_view())
+        .child(counter_two.into_view())
 }
 
 fn main() {

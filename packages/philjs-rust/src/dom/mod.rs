@@ -13,10 +13,9 @@ pub use event::Event;
 pub use mount::mount;
 
 // Hydration exports
+#[cfg(feature = "wasm")]
+pub use hydration::{hydrate, hydrate_to, hydrate_to_body};
 pub use hydration::{
-    hydrate,
-    hydrate_to,
-    hydrate_to_body,
     HydrationMode,
     HydrationContext,
     HydrationState,

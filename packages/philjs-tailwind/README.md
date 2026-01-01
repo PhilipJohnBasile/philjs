@@ -127,6 +127,21 @@ export default {
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./preset, ./plugin, ./vite
+- Source files: packages/philjs-tailwind/src/index.ts, packages/philjs-tailwind/src/preset.ts, packages/philjs-tailwind/src/plugin.ts
+
+### Public API
+- Direct exports: PhilJSPluginOptions, PhilJSPresetOptions, createPhilJSPlugin, createPhilJSPreset, createTailwindConfig, philjsPreset, philjsTailwindPlugin
+- Re-exported names: ClassValue, PhilJSPluginOptions, PhilJSPresetOptions, PhilJSTailwindViteOptions, VariantProps, clsx, cn, createPhilJSPlugin, createPhilJSPreset, cva, philjsPreset, philjsTailwindPlugin, philjsTailwindVite, tw, twJoin, twMerge
+- Re-exported modules: ./plugin.js, ./preset.js, ./types.js, ./utils.js, ./vite-plugin.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -360,6 +360,21 @@ const render = (state) => html`
 | File Upload | Yes | Yes | Yes | Planned |
 | SSR | Yes | Yes | Yes | Yes |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./client, ./server
+- Source files: packages/philjs-liveview/src/index.ts, packages/philjs-liveview/src/client.ts, packages/philjs-liveview/src/server.ts
+
+### Public API
+- Direct exports: LiveViewClient, LiveViewServer, PubSub, createLiveViewClient, createLiveViewServer, createMemoryPubSub, initLiveView, liveViewMiddleware, liveViewWebSocketHandler
+- Re-exported names: createLiveComponent, createLiveView, livePatch, liveRedirect, registerHooks
+- Re-exported modules: ./client.js, ./differ.js, ./forms.js, ./hooks.js, ./live-component.js, ./live-socket.js, ./live-view.js, ./navigation.js, ./server.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

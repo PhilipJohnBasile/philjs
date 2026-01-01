@@ -549,6 +549,33 @@ async function organizeWindows() {
 | `installUpdate()` | Install pending update |
 | `quitApp()` | Quit the application |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./tauri, ./window, ./system, ./ipc, ./lifecycle, ./cli, ./electron
+- Source files: packages/philjs-desktop/src/index.ts, packages/philjs-desktop/src/tauri/index.ts, packages/philjs-desktop/src/window.ts, packages/philjs-desktop/src/system/index.ts, packages/philjs-desktop/src/ipc.ts, packages/philjs-desktop/src/lifecycle.ts, packages/philjs-desktop/src/cli.ts, packages/philjs-desktop/src/electron/index.ts
+
+### Public API
+- Direct exports: AppState, CLIOptions, IPCBridge, IPCBridgeOptions, LifecycleEvent, Monitor, PhysicalPosition, PhysicalSize, TauriConfig, TypedIPCSchema, UpdateInfo, UpdateStatus, WindowHandle, WindowOptions, WindowPosition, WindowSize, WindowState, buildApp, center, checkForUpdates, closeWindow, createAppState, createChannel, createIPCBridge, createRequestChannel, createTypedIPC, createWindow, destroyLifecycle, exposeToRust, getAllMonitors, getAllWindows, getCurrentWindow, getPrimaryMonitor, getWindow, hideApp, initLifecycle, initProject, installUpdate, isAppReady, maximizeWindow, minimizeWindow, onAppReady, onAppUpdate, onBeforeQuit, onBlur, onFocus, onQuit, onUpdateDownloaded, onWillQuit, onWindowClose, parseArgs, quitApp, registerCommand, restartApp, setAlwaysOnTop, setFullscreen, setPosition, setSize, setTitle, showApp, startDev, useLifecycle, useWindow
+- Re-exported names: // App creation
+  createDesktopApp, // Auto Launch
+  AutoLaunch, // Clipboard
+  Clipboard, // Command invocation
+  invoke, // Context and hooks
+  initTauriContext, // Dialog
+  Dialog, // Events
+  listen, // File System
+  FileSystem, // Global Shortcut
+  GlobalShortcut, // Notification
+  Notification, // Shell
+  Shell, // System Tray
+  SystemTray, AppInfo, AppState, AutoLaunch, AutoLaunchOptions, BaseDirectory, BrowserWindow, BrowserWindowOptions, Clipboard, ClipboardError, CommandDefinition, CommandOptions, CommandOutput, ConfirmDialogOptions, CopyOptions, DesktopAppOptions, Dialog, DialogFilter, ElectronToTauriMapper, Event, EventCallback, FileEntry, FileSystem, GlobalShortcut, IPCBridge, IPCBridgeOptions, InvokeArgs, IpcEvent, LifecycleEvent, MessageDialogOptions, Monitor, Notification, NotificationAction, NotificationError, NotificationOptions, OpenDialogOptions, PhysicalPosition, PhysicalSize, ReadOptions, SaveDialogOptions, ScheduledNotificationOptions, Shell, ShortcutHandler, SpawnedProcess, SystemTray, TauriConfig, TauriContext, TauriEventType, TauriEvents, TauriPlugin, Tray, TrayClickEvent, TrayMenuItem, TrayOptions, TypedCommand, TypedIPCSchema, UnlistenFn, UpdateInfo, UpdateStatus, WebContentsLike, WindowConfig, WindowHandle, WindowOptions, WindowPosition, WindowSize, WindowState, WriteOptions, app, batchInvoke, cancelNotification, center, checkForUpdates, clearClipboard, clipboard, closeWindow, contextBridge, copyFile, createAppState, createChannel, createCommand, createDefaultConfig, createDesktopApp, createDir, createEventEmitter, createIPCBridge, createMigrationHelper, createRequestChannel, createTray, createTypedIPC, createTypedListener, createWindow, defineCommand, destroyLifecycle, destroyTray, dialog, disableAutoLaunch, emit, enableAutoLaunch, execute, exists, exposeToRust, getAllMonitors, getAllWindows, getAppName, getAppVersion, getCurrentWindow, getLoadedPlugins, getPrimaryMonitor, getTauriContext, getTauriVersion, getWindow, globalShortcut, hideApp, hideTray, initLifecycle, initTauriContext, installUpdate, invoke, invokeWithRetry, invokeWithTimeout, ipcMain, ipcRenderer, isAppInitialized, isAppReady, isAutoLaunchEnabled, isShortcutRegistered, isTauri, listen, maximizeWindow, minimizeWindow, notify, onAppReady, onAppUpdate, onBeforeClose, onBeforeQuit, onBlur, onFocus, onQuit, onTauriEvent, onUpdateDownloaded, onWillQuit, onWindowClose, once, openDialog, openPath, openUrl, powershell, quitApp, readBinaryFile, readClipboard, readClipboardImage, readDir, readTextFile, registerCommand, registerShortcut, removeAllEventListeners, removeAllListeners, removeDir, removeFile, rename, requestNotificationPermission, resetTauriContext, restartApp, runScript, saveDialog, scheduleNotification, setAlwaysOnTop, setFullscreen, setPosition, setSize, setTitle, setTrayIcon, setTrayMenu, setTrayTooltip, shell, showApp, showAsk, showConfirm, showMessage, showNotification, showTray, sidecar, spawn, stat, toggleAutoLaunch, trayItem, traySeparator, traySubmenu, unregisterAllShortcuts, unregisterShortcut, useLifecycle, useTauri, useWindow, waitForEvent, watchPath, writeBinaryFile, writeClipboard, writeClipboardImage, writeTextFile
+- Re-exported modules: ../system/clipboard.js, ../system/dialog.js, ../system/notification.js, ../system/shell.js, ../system/shortcut.js, ../system/tray.js, ./app.js, ./autolaunch.js, ./browser-window.js, ./clipboard.js, ./context.js, ./dialog.js, ./events.js, ./filesystem.js, ./invoke.js, ./ipc.js, ./lifecycle.js, ./migration.js, ./notification.js, ./shell.js, ./shortcut.js, ./system/index.js, ./tauri/index.js, ./tray.js, ./types.js, ./window.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

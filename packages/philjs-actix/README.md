@@ -407,6 +407,29 @@ Available features:
 - `compression`: Response compression
 - `tls`: TLS/SSL support
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-actix/src/lib.rs
+
+### Public API
+- Public modules: config, cors, error, extractors, handlers, middleware, prelude, service, session, ssr, websocket
+- Public items: api_error, api_response, render_document, render_stream, render_to_response, render_with_data
+- Re-exports: actix_web::{
+        web, App, HttpServer, HttpRequest, HttpResponse,
+        http::StatusCode,
+        Responder,
+    }, config::PhilJsConfig, crate::config::PhilJsConfig, crate::error::PhilJsError, crate::extractors::{Json, Form, Path, Query, SsrContext, ConnectionInfo}, crate::handlers::{
+        health_check, not_found, cors_preflight, redirect,
+        ApiResponse, ErrorHandler, PaginationParams, PaginatedResponse,
+    }, crate::middleware::{SsrMiddleware, CompressionMiddleware, TracingMiddleware}, crate::service::PhilJsService, crate::session::{SessionManager, SessionConfig}, crate::ssr::{
+        SsrRenderer, SsrConfig, HtmlDocument, MetaTag, Script, SeoBuilder,
+    }, crate::websocket::{LiveViewSocket, WebSocketHandler}, crate::{render_to_response, render_with_data, render_stream, api_response}, error::PhilJsError, middleware::{SsrMiddleware, CompressionMiddleware, TracingMiddleware}, philjs::prelude::*, service::PhilJsService, session::{SessionManager, SessionConfig}, websocket::{LiveViewSocket, WebSocketHandler}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

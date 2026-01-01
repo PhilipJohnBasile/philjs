@@ -13,12 +13,12 @@ Current release: v0.1.0 (Alpha)
 
 ## Why PhilJS
 
-- Fine-grained reactivity with signals, memos, and effects.
-- Zero-hydration resumability with server state serialization.
-- Islands architecture for selective hydration.
-- Auto-compiler for memoization, batching, and dead code elimination.
-- First-party packages for GraphQL, auth, PWA, data, and tooling.
-- Production features: security headers, adapters, and testing utilities.
+- Signals-first reactivity with fine-grained updates (signals, memos, effects).
+- SSR + islands + streaming for fast TTFB and selective hydration.
+- Route-first data (loaders/actions) with caching and optimistic flows.
+- TypeScript-first with Rust/WASM integration for performance-critical paths.
+- Deployment adapters for edge and regional runtimes.
+- Nexus-ready patterns: local-first data, collaboration, AI-assisted flows.
 
 ## Quick Start
 
@@ -41,6 +41,16 @@ yarn create philjs my-app
 bun create philjs my-app
 ```
 
+## Book
+
+- [PhilJS Book (source)](./docs/philjs-book/src/SUMMARY.md)
+- [PhilJS Book PDF](./docs/philjs-book/dist/philjs-book.pdf)
+- [PhilJS Book EPUB](./docs/philjs-book/dist/philjs-book.epub)
+- [Package Atlas (Book)](./docs/philjs-book/src/packages/atlas.md)
+- [Publishing Workflow](./docs/philjs-book/src/publishing/workflow.md)
+
+Package reference sync: run `pnpm book:packages` to refresh the atlas and API snapshots.
+
 ## First Component
 
 ```tsx
@@ -62,6 +72,7 @@ function Counter() {
 
 ## Documentation
 
+- [PhilJS Book (canonical guide)](./docs/philjs-book/src/SUMMARY.md)
 - [Docs Home](./docs/README.md)
 - [PhilJS Standards](./PHILJS_STANDARDS.md)
 - [Getting Started](./docs/getting-started/introduction.md)
@@ -82,6 +93,13 @@ PhilJS is a monorepo with 90+ packages covering TypeScript and Rust. The framewo
 - `@philjs/ssr` - Server-side rendering with streaming support
 - `@philjs/compiler` - Build-time optimizations and transforms
 - `@philjs/islands` - Islands architecture for partial hydration
+
+### Tooling:
+
+- `@philjs/cli` - Project scaffolding and dev commands
+- `@philjs/builder` - Adapter bundling for edge and regional targets
+- `@philjs/compiler` - Auto-memo/batch optimizations at build time
+- `@philjs/devtools` - DevTools extension and diagnostics
 
 ### Rust Integration:
 

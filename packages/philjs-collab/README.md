@@ -66,6 +66,21 @@ function CollaborativeEditor() {
 | `useSyncedList` | Collaborative array/list |
 | `useRoom` | Room connection and status |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-collab/src/index.ts
+
+### Public API
+- Direct exports: CollabRoom, CollabRoomConfig, createCollabRoom
+- Re-exported names: ArrayEvent, Awareness, AwarenessConfig, AwarenessState, AwarenessUpdate, BroadcastTransport, COMMENT_REACTIONS, CURSOR_STYLES, CollabMessage, Comment, CommentAuthor, CommentEventHandlers, CommentReaction, CommentThread, CommentsConfig, CommentsManager, CursorConfig, CursorDecoration, CursorManager, CursorPosition, DeleteOp, DeleteSet, InsertOp, Item, ItemId, MapEvent, MessageType, OTClient, OTServer, Operation, OperationWithMeta, PRESENCE_COLORS, PresenceConfig, PresenceManager, PresenceUpdate, RetainOp, StandardAwarenessState, StateVector, TextDelta, ThreadAnchor, TransportConfig, TransportEvents, Update, UserPresence, WebSocketTransport, YArray, YDoc, YMap, YText, applyOperation, applyOperations, compose, createAwareness, createBroadcastTransport, createCommentsManager, createCursorManager, createOTClient, createOTServer, createPresenceManager, createTypedAwareness, createWebSocketTransport, createYDoc, generateClientId, getPresenceColor, injectCursorStyles, invert, transform, transformOperations
+- Re-exported modules: ./awareness.js, ./comments.js, ./crdt.js, ./cursors.js, ./ot.js, ./presence.js, ./transport.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

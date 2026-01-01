@@ -165,8 +165,8 @@ createI18nPlugin({
   defaultLocale: 'en',
   locales: [
     { code: 'en', name: 'English', dir: 'ltr' },
-    { code: 'ar', name: 'العربية', dir: 'rtl' },
-    { code: 'he', name: 'עברית', dir: 'rtl' },
+    { code: 'ar', name: '', dir: 'rtl' },
+    { code: 'he', name: '', dir: 'rtl' },
   ],
 });
 ```
@@ -243,6 +243,21 @@ console.log(locales); // ['en', 'es', 'fr']
 // Get specific locale
 const esTranslations = getTranslation('es');
 ```
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./client
+- Source files: packages/philjs-plugin-i18n/src/index.ts, packages/philjs-plugin-i18n/src/client.ts
+
+### Public API
+- Direct exports: TranslationKey, createI18nPlugin, currentLocale, formatCurrency, formatDate, formatNumber, formatRelativeTime, getAvailableLocales, getI18nContext, getTranslation, hasTranslation, initI18n, isRTL, loadTranslations, locales, setLocale, t, translations, useTranslation
+- Re-exported names: I18nContextValue, I18nPluginConfig, LocaleConfig, PluralRules, TranslationMap, TranslationValue, ViteI18nPluginOptions, currentLocale, formatCurrency, formatDate, formatNumber, formatRelativeTime, getAvailableLocales, getI18nContext, hasTranslation, initI18n, isRTL, loadTranslations, setLocale, t, useTranslation
+- Re-exported modules: ./client.js, ./types.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

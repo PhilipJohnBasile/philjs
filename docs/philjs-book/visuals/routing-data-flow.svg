@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260" role="img" aria-label="Routing and data flow">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#111827" />
+    </marker>
+  </defs>
+  <rect x="20" y="40" width="140" height="60" fill="#f1f5f9" stroke="#111827" />
+  <rect x="180" y="40" width="140" height="60" fill="#f1f5f9" stroke="#111827" />
+  <rect x="340" y="40" width="140" height="60" fill="#f1f5f9" stroke="#111827" />
+  <rect x="500" y="40" width="140" height="60" fill="#f1f5f9" stroke="#111827" />
+  <rect x="660" y="40" width="200" height="60" fill="#f1f5f9" stroke="#111827" />
+
+  <text x="90" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Request</text>
+  <text x="250" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Router</text>
+  <text x="410" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Loader</text>
+  <text x="570" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Cache</text>
+  <text x="760" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Component</text>
+
+  <line x1="160" y1="70" x2="180" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="320" y1="70" x2="340" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="480" y1="70" x2="500" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="640" y1="70" x2="660" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+
+  <rect x="140" y="150" width="140" height="60" fill="#fff7ed" stroke="#7c2d12" />
+  <rect x="300" y="150" width="160" height="60" fill="#fff7ed" stroke="#7c2d12" />
+  <rect x="480" y="150" width="160" height="60" fill="#fff7ed" stroke="#7c2d12" />
+
+  <text x="210" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Action</text>
+  <text x="380" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Invalidate</text>
+  <text x="380" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Tags</text>
+  <text x="560" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Revalidate</text>
+  <text x="560" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Cache</text>
+
+  <line x1="280" y1="180" x2="300" y2="180" stroke="#7c2d12" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="460" y1="180" x2="480" y2="180" stroke="#7c2d12" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="560" y1="150" x2="560" y2="100" stroke="#7c2d12" stroke-width="2" marker-end="url(#arrow)" />
+
+  <text x="450" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#4b5563">Top row: read path. Bottom row: mutation and cache invalidation.</text>
+</svg>

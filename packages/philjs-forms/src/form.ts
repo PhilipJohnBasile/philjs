@@ -22,6 +22,8 @@ export class Form<T extends FormValues = FormValues> {
   private submitCountSignal: Signal<number>;
   private initialValues: T;
   private config: FormConfig<T>;
+  private isValidMemo: Memo<boolean>;
+  private isDirtyMemo: Memo<boolean>;
 
   constructor(config: FormConfig<T> = {}) {
     this.config = config;
@@ -33,6 +35,14 @@ export class Form<T extends FormValues = FormValues> {
     this.isSubmittingSignal = signal(false);
     this.isValidatingSignal = signal(false);
     this.submitCountSignal = signal(0);
+    this.isValidMemo = memo(() => {
+      const errors = this.errorsSignal();
+      return Object.values(errors).every(error => !error);
+    });
+    this.isDirtyMemo = memo(() => {
+      const current = this.valuesSignal();
+      return JSON.stringify(current) !== JSON.stringify(this.initialValues);
+    });
 
     if (config.validateOnMount) {
       this.validate();
@@ -63,41 +73,35 @@ export class Form<T extends FormValues = FormValues> {
   /**
    * Computed: is form valid
    */
-  get isValid() {
-    return memo(() => {
-      const errors = this.errorsSignal();
-      return Object.values(errors).every(error => !error);
-    });
+  isValid() {
+    return this.isValidMemo;
   }
 
   /**
    * Computed: is form dirty (has changes)
    */
-  get isDirty() {
-    return memo(() => {
-      const current = this.valuesSignal();
-      return JSON.stringify(current) !== JSON.stringify(this.initialValues);
-    });
+  isDirty() {
+    return this.isDirtyMemo;
   }
 
   /**
    * Get submitting state
    */
-  get isSubmitting(): Signal<boolean> {
+  isSubmitting(): Signal<boolean> {
     return this.isSubmittingSignal;
   }
 
   /**
    * Get validating state
    */
-  get isValidating(): Signal<boolean> {
+  isValidating(): Signal<boolean> {
     return this.isValidatingSignal;
   }
 
   /**
    * Get submit count
    */
-  get submitCount(): Signal<number> {
+  submitCount(): Signal<number> {
     return this.submitCountSignal;
   }
 
@@ -109,10 +113,10 @@ export class Form<T extends FormValues = FormValues> {
       values: this.valuesSignal(),
       errors: this.errorsSignal(),
       touched: this.touchedSignal(),
-      isValid: this.isValid(),
+      isValid: this.isValid()(),
       isSubmitting: this.isSubmittingSignal(),
       isValidating: this.isValidatingSignal(),
-      isDirty: this.isDirty(),
+      isDirty: this.isDirty()(),
       submitCount: this.submitCountSignal()
     }));
   }
@@ -303,11 +307,11 @@ export function useForm<T extends FormValues = FormValues>(
     values: form.values,
     errors: form.errors,
     touched: form.touched,
-    isValid: form.isValid,
-    isDirty: form.isDirty,
-    isSubmitting: form.isSubmitting,
-    isValidating: form.isValidating,
-    submitCount: form.submitCount,
+    isValid: form.isValid.bind(form),
+    isDirty: form.isDirty.bind(form),
+    isSubmitting: form.isSubmitting.bind(form),
+    isValidating: form.isValidating.bind(form),
+    submitCount: form.submitCount.bind(form),
     state: form.state,
     setFieldValue: form.setFieldValue.bind(form),
     setValues: form.setValues.bind(form),

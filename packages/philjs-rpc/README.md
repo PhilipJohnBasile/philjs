@@ -889,6 +889,45 @@ const state = stateManager.load('last-room');
 
 For complete examples, see the [examples directory](./examples/README.md).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./client, ./server
+- Source files: packages/philjs-rpc/src/index.ts, packages/philjs-rpc/src/client.ts, packages/philjs-rpc/src/server.ts
+
+### Public API
+- Direct exports: ClientConfig, createClient, createExpressHandler, createFetchHandler, createHandler, createNetlifyHandler, createNodeHandler, createVercelHandler, getQueryCache, invalidateQueries, prefetchQuery
+- Re-exported names: // Client types
+  UseQueryOptions, // Error types
+  InferErrors, // Error types
+  RPCErrorCode, // File upload types
+  FileUpload, // HTTP method mapping
+  ProcedureTypeToMethod, // Handler types
+  RequestAdapter, // Method types
+  HttpMethod, // Middleware types
+  InferMiddlewareContext, // Middleware types
+  Middleware, // Path construction
+  BuildPath, // Path types
+  ExtractPathParamNames, // Procedure types
+  ProcedureType, // Request types
+  TreatyRequestOptions, // Request/Response types
+  RPCRequest, // Response extraction
+  InferOutput, // Router types
+  Router, // Schema extraction
+  ExtractBody, // Schema types
+  Schema, // Subscription types
+  SubscriptionObserver, // Type builders
+  BuildTreatyClient, // Type inference utilities
+  InferProcedureInput, // Utility types
+  PartialBy, // WebSocket extraction
+  InferWSMessage, // WebSocket types
+  WebSocketOptions, APIDefinition, APIMetadata, AcceptsFiles, Assert, AssertEquals, Awaited, BackpressureOptions, BatchLinkOptions, Brand, BuildClientFromRouter, ClientProcedure, ConnectionLimitOptions, DeduplicationLinkOptions, DeepPartial, DeepReadonly, Equals, ErrorCode, ExtractBodyParams, ExtractCookies, ExtractFiles, ExtractHeaders, ExtractInput, ExtractPathParams, ExtractPaths, ExtractQueryParams, ExtractResponse, GetProcedureInput, GetProcedureOutput, GetProcedureType, HTTPMethod, HandlerFn, HandlerOptions, HasPathParams, HttpLinkOptions, InferInput, InferPaths, InferProcedureOutput, InferProcedureType, InferRouter, InferSchemaOutput, InferTreatyClient, InferWSSend, IsInputRequired, IsMutation, IsNever, IsProcedure, IsQuery, IsSubscription, IsUnknown, IsWebSocket, Keys, LAZY_MARKER, LazyDeserialized, Link, LinkFn, LoggingLinkOptions, MergeContexts, MiddlewareFn, MiddlewareResult, MultiplexingOptions, OpenAPIOperation, OpenAPISchema, Operation, OperationResult, OptionalInput, OptionalKeys, Prettify, ProcedureBuilder, ProcedureContext, ProcedureDefinition, ProcedureHandler, ProcedureOptions, RPCBatchRequest, RPCBatchResponse, RPCError, RPCResponse, RPC_ERROR_CODES_TO_HTTP, RequiredBy, RequiredKeys, ResponseAdapter, RetryLinkOptions, RouteMetadata, RouterNode, RouterPaths, SSEConnection, SSEConnectionConfig, SSEMessage, SUPERJSON_ENABLED, SplitLinkOptions, SubscriptionAuthOptions, SubscriptionContext, SubscriptionEventMap, SubscriptionFilterOptions, SubscriptionHandler, SubscriptionMiddleware, SubscriptionRateLimitOptions, SubscriptionStateManager, SuperJSONChunk, SuperJSONHandlerOptions, SuperJSONProcedure, TreatyConfig, TreatyError, TreatyMethod, TreatyRequestConfig, TreatyWebSocket, TypeGenerationOptions, TypedError, Unbrand, UnwrapArray, UseMutationOptions, UseMutationResult, UseQueryResult, UseSubscriptionOptions, UseSubscriptionResult, ValidInput, Values, WebSocketConnection, WebSocketConnectionConfig, WebSocketHandler, WebSocketLinkOptions, WebSocketMessage, cacheMiddleware, composeSubscriptionMiddleware, createAPI, createAPIWithMiddleware, createAuthMiddleware, createAutoTransport, createBackpressureMiddleware, createBatchLink, createClientRequestTransformer, createClientResponseTransformer, createConnectionLimitMiddleware, createDeduplicationLink, createHttpLink, createLazyDeserialized, createLinkChain, createLocalStorageStateManager, createLoggingLink, createMemoryStateManager, createMiddleware, createMultiplexingMiddleware, createProcedureBuilder, createRetryLink, createRouter, createSplitLink, createStreamingDeserializer, createStreamingSerializer, createSubscriptionAuthMiddleware, createSubscriptionFilterMiddleware, createSubscriptionRateLimitMiddleware, createSuperJSONMiddleware, createTerminatingLink, createTreatyClient, createUseSSESubscription, createUseSubscription, createWebSocketLink, deserializeBatchRequest, deserializeBatchResponse, deserializeRequest, deserializeResponse, executeMiddlewareChain, executeProcedure, exportRoutesJSON, extractAPIMetadata, generateOpenAPI, generateTypeDefinitions, getAllPaths, getProcedureAtPath, getProcedureCount, getRouterPaths, getSuperJSONOptions, hasSuperJSON, isLazyDeserialized, isMutation, isProcedure, isQuery, isRouter, isSSESupported, isSubscription, loggerMiddleware, mergeRouters, permissionMiddleware, printAPIRoutes, procedure, rateLimitMiddleware, retryMiddleware, serializeBatchRequest, serializeBatchResponse, serializeRequest, serializeResponse, timingMiddleware, treaty, unwrapLazy, validateRequest, validationMiddleware, withSuperJSON, withoutSuperJSON
+- Re-exported modules: ./createAPI.js, ./links.js, ./middleware.js, ./procedure.js, ./sse.js, ./subscription-middleware.js, ./subscriptions.js, ./superjson.js, ./treaty-server.js, ./treaty-types.js, ./treaty.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

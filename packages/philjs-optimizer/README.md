@@ -383,8 +383,8 @@ Build a graph of dependencies between symbols.
 
 ```
 Counter
-  └─> $handler_123
-      └─> count (from signal)
+  > $handler_123
+      > count (from signal)
 ```
 
 ### 3. Bundling Strategy
@@ -562,6 +562,21 @@ See the [examples](./examples) directory for:
 - Component lazy loading
 - Form handling
 - Benchmarks
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./vite, ./runtime, ./transform
+- Source files: packages/philjs-optimizer/src/index.ts, packages/philjs-optimizer/src/vite.ts, packages/philjs-optimizer/src/runtime.ts, packages/philjs-optimizer/src/transform.ts
+
+### Public API
+- Direct exports: DeferredQueue, HandlerRunner, SymbolLoader, ViteOptimizerOptions, createOptimizer, createSymbolLoader, deferHandler, executeHandler, extractLazyChunks, generateLazyImports, generateManifest, getDeferredQueue, getHandlerRunner, getSymbolLoader, initSymbolLoader, injectHandlerRegistrations, load, loadSymbol, philjsOptimizer, prefetchSymbol, transform
+- Re-exported names: BundleStrategy, ChunkManifest, DeferredQueue, DependencyGraph, ExtractionContext, HandlerRunner, LazyHandler, OptimizerOptions, RuntimeConfig, Symbol, SymbolLoader, SymbolPattern, SymbolRegistry, SymbolType, TransformResult, aggressiveStrategy, buildDependencyGraph, bundleSymbols, calculateCohesion, calculateDepth, conservativeStrategy, createSymbolLoader, defaultStrategy, deferHandler, depthStrategy, detectCircularDependencies, executeHandler, extractLazyChunks, extractSymbols, findCommonDependencies, findEntryPoints, findLeafNodes, generateLazyImports, generateManifest, generateSymbolId, getAllDependencies, getAllDependents, getDeferredQueue, getHandlerRunner, getStrategy, getSymbolLoader, groupByDepth, hybridStrategy, initSymbolLoader, injectHandlerRegistrations, loadSymbol, prefetchSymbol, routeStrategy, sizeStrategy, topologicalSort, transform
+- Re-exported modules: ./bundler.js, ./dependency-graph.js, ./runtime.js, ./symbols.js, ./transform.js, ./types.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

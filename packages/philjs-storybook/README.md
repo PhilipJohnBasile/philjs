@@ -507,6 +507,21 @@ const meta: Meta<ButtonProps> = {
 type Story = StoryObj<ButtonProps>;
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./preset, ./addons/signal-inspector, ./addons/route-tester, ./addons/theme-switcher, ./addons/viewport, ./decorators, ./mocks
+- Source files: packages/philjs-storybook/src/index.ts, packages/philjs-storybook/src/preset.ts, packages/philjs-storybook/src/decorators/index.ts, packages/philjs-storybook/src/mocks/index.ts
+
+### Public API
+- Direct exports: addons, core, docs, framework, presetConfig, typescript, viteFinal
+- Re-exported names: MockAPIHandler, MockRouter, RenderContext, StoryConfig, StoryContext, createMockAPI, createMockAction, createMockComputed, createMockLoader, createMockRouter, createMockSignal, createStory, presetConfig, renderer, withLayout, withMockData, withRouter, withSignals, withTheme
+- Re-exported modules: ./api-mocks.js, ./decorators/index.js, ./mocks/index.js, ./preset.js, ./renderer.js, ./route-mocks.js, ./router-mocks.js, ./signal-mocks.js, ./story-helpers.js, ./with-layout.js, ./with-mock-data.js, ./with-router.js, ./with-signals.js, ./with-theme.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
-MIT © PhilJS Team
+MIT  PhilJS Team

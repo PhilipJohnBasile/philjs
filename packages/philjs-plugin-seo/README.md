@@ -338,6 +338,21 @@ const html = `
 `;
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./head
+- Source files: packages/philjs-plugin-seo/src/index.ts, packages/philjs-plugin-seo/src/head.ts
+
+### Public API
+- Direct exports: JsonLd, MetaTags, OpenGraphTags, PageSEO, TwitterTags, createBreadcrumbs, createFAQ, createOrganization, createSEOPlugin, createWebSite, defaultSEO, generateJsonLd, generateLinkTag, generateMetaTag, generateMetaTags, generateOpenGraphTags, generatePageSEO, generateRobotsContent, generateSEOHead, generateTwitterTags, mergeSEO, setPageSEO, updateHead
+- Re-exported names: ArticleJsonLd, BreadcrumbJsonLd, FAQJsonLd, JsonLd, JsonLdType, MetaTags, OpenGraphImage, OpenGraphTags, OrganizationJsonLd, PageSEO, ProductJsonLd, RobotsDirectives, RobotsTxtConfig, SEOPluginConfig, SitemapConfig, SitemapEntry, TwitterTags, WebSiteJsonLd, createBreadcrumbs, createFAQ, createOrganization, createWebSite, generateJsonLd, generateMetaTags, generateOpenGraphTags, generateSEOHead, generateTwitterTags, mergeSEO, updateHead
+- Re-exported modules: ./head.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -134,6 +134,21 @@ npm test         # Run tests
 npm run build    # Build for production
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/create-philjs-plugin/src/index.ts
+
+### Public API
+- Direct exports: Plugin, PluginBuilder, PluginConfigSchema, PluginContext, PluginFileSystem, PluginHooks, PluginLogger, PluginMetadata, PluginTester, PluginUtils, createBuilder, createTester, pluginHelpers, pluginPublisher, pluginValidator
+- Re-exported names: PluginOptions, createPlugin
+- Re-exported modules: ./generator.js, ./template-engine.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -291,6 +291,21 @@ Device A          Sync Server          Device B
    |       (WebRTC when available)         |
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-crossdevice/src/index.ts
+
+### Public API
+- Direct exports: CrossDeviceConfig, CrossDeviceSync, Device, HandoffData, PairingInfo, SyncConflict, SyncState, detectDevice, generateDeviceId, getCrossDeviceSync, initCrossDevice, initiateHandoff, useCrossDeviceState, useDevices, useHandoff
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

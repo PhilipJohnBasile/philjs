@@ -168,7 +168,7 @@ export function clearFlashMessages(session: Session<FlashSessionData>): void {
  */
 export function hasFlashMessages(session: Session<FlashSessionData>): boolean {
   const flashMessages = session.get(FLASH_KEY as keyof FlashSessionData) as FlashMessage[];
-  return flashMessages && flashMessages.length > 0;
+  return Boolean(flashMessages && flashMessages.length > 0);
 }
 
 /**

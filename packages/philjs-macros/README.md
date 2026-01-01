@@ -236,6 +236,20 @@ All macros are designed to:
 - Support generics and complex types
 - Match the ergonomics of Leptos/Dioxus
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-macros/src/lib.rs
+
+### Public API
+- Public modules: (none detected)
+- Public items: action, api, component, derive_props, derive_store, effect, into_store, layout, loader, memo, navigate, redirect, resource, route, server, signal, store, use_params, use_query, view
+- Re-exports: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

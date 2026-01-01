@@ -778,6 +778,21 @@ const { data, connectionState } = useSubscription(subscriptionClient, {
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-graphql/src/index.ts
+
+### Public API
+- Direct exports: CacheStore, DocumentNode, GraphQLClient, GraphQLClientConfig, GraphQLMutationOptions, GraphQLQueryOptions, GraphQLResponse, GraphQLSubscriptionOptions, createGraphQLAction, createGraphQLClient, createGraphQLLoader, createMutation, createQuery, gql
+- Re-exported names: BatchCodegen, CodegenConfig, ConflictResolver, CustomConflictResolver, FirstWriteWinsResolver, FragmentDefinition, FragmentRegistry, FragmentUtils, GeneratedFragment, GeneratedOperation, GraphQLCodegen, LastWriteWinsResolver, MaskedFragment, MutationQueue, OptimisticMutation, OptimisticResponseBuilder, OptimisticUpdateConfig, OptimisticUpdateManager, OptimisticUpdateSnapshot, PersistedQueryConfig, PersistedQueryLink, PersistedQueryManager, PersistedQueryRegistry, SubscriptionClient, SubscriptionConfig, SubscriptionHandle, SubscriptionOptions, SubscriptionState, buildOptimisticResponse, buildPersistedQueryRequest, buildQueryWithFragments, composeFragments, createBatchCodegen, createCodegen, createFragmentRegistry, createMutationQueue, createOptimisticUpdateManager, createPersistedQueryManager, createPersistedQueryRegistry, createSubscriptionClient, defineFragment, extractFragmentInfo, extractOperationInfo, extractQueryHash, fragment, generatePersistedQueryManifest, getComponentFragment, getFragmentRegistry, inlineFragment, isMaskedFragment, maskFragment, mergeFragmentData, runCodegen, selectFromFragment, shouldRetryWithFullQuery, spreadFragment, unmaskFragment, useFragment, useSubscription, withFragment
+- Re-exported modules: ./codegen-enhanced.js, ./fragments.js, ./optimistic.js, ./persisted.js, ./subscription.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

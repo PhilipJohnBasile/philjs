@@ -25,7 +25,7 @@ import { I18nProvider, useTranslation, useLocale } from '@philjs/i18n';
 
 const translations = {
   en: { greeting: 'Hello, {name}!', items: '{count} item|{count} items' },
-  es: { greeting: 'Hola, {name}!', items: '{count} artículo|{count} artículos' },
+  es: { greeting: 'Hola, {name}!', items: '{count} artculo|{count} artculos' },
 };
 
 function App() {
@@ -94,6 +94,21 @@ npx philjs-i18n extract ./src
 # Validate translation files
 npx philjs-i18n validate ./locales
 ```
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./translator, ./formatter, ./detector
+- Source files: packages/philjs-i18n/src/index.ts
+
+### Public API
+- Direct exports: I18n, I18nOptions, TranslationMap, createI18n, createPlural, pluralRules
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

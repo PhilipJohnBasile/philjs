@@ -469,6 +469,21 @@ Rspack provides significant performance improvements over webpack:
 - `rslibPresets.component` - Component library preset
 - `rslibPresets.node` - Node.js preset
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./rspack, ./rslib, ./vite, ./cli
+- Source files: packages/philjs-build/src/index.ts, packages/philjs-build/src/rspack/index.ts, packages/philjs-build/src/rslib/index.ts, packages/philjs-build/src/vite/index.ts, packages/philjs-build/src/cli/index.ts
+
+### Public API
+- Direct exports: program
+- Re-exported names: DevServerConfig, ModuleFederationOptions, OutputFormat, PhilJSRslibOptions, PhilJSRspackOptions, PhilJSViteOptions, RslibConfig, RslibLibConfig, RspackConfiguration, RspackRule, SharedModuleConfig, VitePlugin, adaptVitePlugin, createDevServerConfig, createModuleFederationPlugin, createPhilJSPlugin, createRslibConfig, createRspackConfig, defineConfig, entriesFromGlob, generateExportsField, mergeConfigs, philJSVite, rslibPresets, rspackPresets, rspackViteCompat, toRspackDevServerConfig, toViteServerConfig
+- Re-exported modules: ./compatibility.js, ./config.js, ./rslib/config.js, ./rspack/config.js, ./vite/compatibility.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

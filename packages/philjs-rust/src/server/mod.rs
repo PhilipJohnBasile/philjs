@@ -2,8 +2,6 @@
 //!
 //! Define server-side functions that can be called from the client.
 //! Similar to Leptos #[server] and Next.js Server Actions.
-
-pub mod functions;
 //!
 //! # Example
 //! ```rust
@@ -18,6 +16,8 @@ pub mod functions;
 //! // On the client:
 //! let user = get_user(123).await?;
 //! ```
+
+pub mod functions;
 
 use std::future::Future;
 use std::pin::Pin;
@@ -196,14 +196,15 @@ fn uuid_v4() -> String {
 // Server Function Registry
 // ============================================================================
 
-use std::sync::RwLock;
+use std::sync::{OnceLock, RwLock};
 use std::collections::HashMap;
 
 type ServerFnHandler = Box<dyn Fn(String) -> Pin<Box<dyn Future<Output = Result<String, ServerError>> + Send>> + Send + Sync>;
 
-lazy_static::lazy_static! {
-    static ref SERVER_FN_REGISTRY: RwLock<HashMap<&'static str, ServerFnHandler>> =
-        RwLock::new(HashMap::new());
+static SERVER_FN_REGISTRY: OnceLock<RwLock<HashMap<&'static str, ServerFnHandler>>> = OnceLock::new();
+
+fn get_server_registry() -> &'static RwLock<HashMap<&'static str, ServerFnHandler>> {
+    SERVER_FN_REGISTRY.get_or_init(|| RwLock::new(HashMap::new()))
 }
 
 /// Register a server function
@@ -220,12 +221,12 @@ pub fn register_server_fn<F: ServerFn + 'static>() {
         })
     });
 
-    SERVER_FN_REGISTRY.write().unwrap().insert(F::PATH, handler);
+    get_server_registry().write().unwrap().insert(F::PATH, handler);
 }
 
 /// Call a server function by path
 pub async fn call_server_fn(path: &str, input: String) -> Result<String, ServerError> {
-    let registry = SERVER_FN_REGISTRY.read().unwrap();
+    let registry = get_server_registry().read().unwrap();
 
     let handler = registry.get(path)
         .ok_or_else(|| ServerError::not_found(format!("Server function not found: {}", path)))?;
@@ -284,52 +285,6 @@ pub async fn call_server<F: ServerFn>(input: F::Input) -> ServerResult<F::Output
 pub async fn call_server<F: ServerFn>(input: F::Input) -> ServerResult<F::Output> {
     // On server, call directly
     F::run(input).await
-}
-
-// ============================================================================
-// Macros
-// ============================================================================
-
-/// Define a server function
-///
-/// # Example
-/// ```rust
-/// #[server(CreateUser, "/api/users")]
-/// pub async fn create_user(name: String, email: String) -> ServerResult<User> {
-///     let user = db.create_user(name, email).await?;
-///     Ok(user)
-/// }
-/// ```
-#[macro_export]
-macro_rules! server_fn {
-    (
-        $vis:vis async fn $name:ident($($arg:ident : $arg_ty:ty),* $(,)?) -> $ret:ty $body:block
-    ) => {
-        paste::paste! {
-            #[derive(serde::Serialize, serde::Deserialize)]
-            pub struct [<$name:camel Input>] {
-                $(pub $arg: $arg_ty,)*
-            }
-
-            pub struct [<$name:camel>];
-
-            impl $crate::server::ServerFn for [<$name:camel>] {
-                type Input = [<$name:camel Input>];
-                type Output = $ret;
-
-                const PATH: &'static str = concat!("/api/", stringify!($name));
-
-                fn run(input: Self::Input) -> std::pin::Pin<Box<dyn std::future::Future<Output = $crate::server::ServerResult<Self::Output>> + Send>> {
-                    let [<$name:camel Input>] { $($arg,)* } = input;
-                    Box::pin(async move $body)
-                }
-            }
-
-            $vis async fn $name($($arg: $arg_ty),*) -> $crate::server::ServerResult<$ret> {
-                $crate::server::call_server::<[<$name:camel>]>([<$name:camel Input>] { $($arg,)* }).await
-            }
-        }
-    };
 }
 
 // ============================================================================

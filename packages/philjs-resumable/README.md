@@ -472,6 +472,59 @@ const count: ResumableSignal<number> = useSignal(0);
 const strategy: HydrationStrategy = 'visible';
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./serializer, ./loader, ./hydration
+- Source files: packages/philjs-resumable/src/index.ts, packages/philjs-resumable/src/serializer.ts, packages/philjs-resumable/src/loader.ts, packages/philjs-resumable/src/hydration.ts
+
+### Public API
+- Direct exports: AnyHydrationOptions, ComponentLoader, CustomOptions, FEATURES, Hydrate, HydrateProps, HydrationOptions, HydrationStrategy, IdleOptions, InteractionOptions, LazyComponent, LoaderConfig, MediaOptions, SerializationContext, SerializedElement, SerializedHandler, SerializedSignal, SerializedValue, VERSION, VisibleOptions, addSignalSubscriber, addStreamingChunk, cancelHydration, clearHydrationState, clearLoaderCache, configureLoader, createHydrateComponent, createSerializationContext, createStreamingContext, deserializeFromAttribute, deserializeValue, discoverHydrationBoundaries, forceHydration, generateBootstrapScript, generateElementAttributes, generateId, generateInlineState, generateStateScript, getHydrationStats, getLazyComponent, getLoaderConfig, getLoaderStats, getSerializationContext, hasLazyComponent, initHydration, initLoader, isHydrated, loadAndHydrate, loadAndInvokeHandler, loadComponent, loadFromQRL, prefetchChunk, prefetchComponent, prefetchVisibleComponents, queueHydration, queueLoad, registerComponent, registerElement, registerLazyComponent, registerLazyComponents, registerSignal, serializeToAttribute, serializeValue, setupHydration, useHydration, waitForHydration, waitForLoads, withSerializationContext
+- Re-exported names: // Client Resume
+  resume, // Common Event Handlers
+  onClick$, // Compact Serialization
+  serializeToAttribute, // Component Factory
+  resumable$, // Component Modifiers
+  static$, // Component Registration
+  registerLazyComponent, // Components
+  Hydrate, // Components
+  ResumableContainer, // Configuration
+  configureLoader, // Configuration
+  configureQRL, // Container Management
+  getContainer, // Context
+  getResumableContext, // Context
+  useContainerContext, // Context Management
+  createSerializationContext, // Core Functions
+  setupHydration, // Core QRL
+  type QRL, // Discovery
+  discoverHydrationBoundaries, // Element/Signal Registration
+  registerElement, // Event Handlers
+  handler$, // HTML Generation
+  generateStateScript, // Initialization
+  initLoader, // Loading
+  loadComponent, // Prefetching
+  prefetchContainer, // QRL Factory Functions
+  $, // SSR
+  renderToResumableString, // Signal/State QRLs
+  signal$, // Signals
+  useSignal, // Statistics
+  getContainerStats, // Streaming
+  createStreamingContext, // Task QRLs
+  server$, // Types
+  type ComponentLoader, // Types
+  type ContainerState, // Types
+  type HydrationStrategy, // Types
+  type ResumableComponent, // Types
+  type SerializedSignal, // Utilities
+  getHydrationStats, // Utilities
+  getLoaderStats, // Value Serialization
+  serializeValue, AnyHydrationOptions, ContainerConfig, ContainerContextValue, ContainerProps, ContainerProvider, CustomOptions, ErrorBoundary, ErrorBoundaryProps, HydrateProps, HydrationOptions, IdleOptions, InteractionOptions, LazyComponent, LoaderConfig, MediaOptions, QRLComponent, QRLEventHandler, QRLOptions, ResumableConfig, ResumableContext, ResumableSignal, SerializationContext, SerializedElement, SerializedHandler, SerializedValue, Suspense, SuspenseProps, VisibleOptions, addSignalSubscriber, addStreamingChunk, browser$, cancelHydration, clearHydrationState, clearLoaderCache, clearQRLRegistry, client$, component$, computed$, createQRL, createStreamingRenderer, deserializeFromAttribute, deserializeValue, disposeAllContainers, disposeContainer, event$, forceHydration, generateBootstrapScript, generateElementAttributes, generateId, generateInlineState, getAllContainers, getCurrentComponentId, getLazyComponent, getLoaderConfig, getQRLAttribute, getSerializationContext, hasLazyComponent, initHydration, inlineQRL, isContainerHydrated, isHydrated, isQRL, isResumable, isServer, loadAndHydrate, loadAndInvokeHandler, loadFromQRL, onBlur$, onChange$, onFocus$, onInput$, onKeyDown$, onKeyUp$, onSubmit$, parseQRL, prefetchChunk, prefetchComponent, prefetchQRL, prefetchQRLs, prefetchVisibleComponents, qrl, queueHydration, queueLoad, registerChunk, registerChunks, registerComponent, registerLazyComponents, registerSignal, resumeAllContainers, resumeContainer, server$component, setupContainerPrefetching, useComputed, useHydration, useTask$, useVisibleTask$, waitForContainer, waitForHydration, waitForLoads, withResumableContext, withSerializationContext
+- Re-exported modules: ./container.js, ./hydration.js, ./loader.js, ./qrl.js, ./resumable.js, ./serializer.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

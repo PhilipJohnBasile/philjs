@@ -491,6 +491,22 @@ See the [examples](../../examples) directory for full working tests.
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./vitest, ./jest
+- Source files: packages/philjs-testing/src/index.ts, packages/philjs-testing/src/vitest.ts, packages/philjs-testing/src/jest.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: // Re-export everything for convenience
+  render, A11yIncomplete, A11yPass, A11yReport, A11yViolation, APITestHelper, ActionArgs, BoundFunctions, ComponentQueries, ComponentTestConfig, ComponentTestResult, GraphQLMock, HookResult, IntegrationTestContext, IntegrationTestOptions, LoaderArgs, MatcherResult, MockAction, MockHandler, MockLoader, MockRequest, MockResponse, MockResponseConfig, MockRouteOptions, MockSignal, NavigateOptions, NavigationState, NetworkMock, NetworkStats, PerformanceMetrics, Queries, QueryOptions, RenderOptions, RenderResult, RouteTestContext, SnapshotMatcher, SnapshotOptions, SnapshotResult, SubmitOptions, TestContext, TestFixture, VisualDiff, VisualTestOptions, WaitForOptions, WebSocketMock, act, assertNavigationState, assertRouteParams, assertSearchParams, assertSignalHistory, benchmarkRoute, cleanup, cleanupHooks, compareSignalSnapshots, compareSnapshots, componentFixture, createAPITestHelper, createAuthTestHelper, createDatabaseTestHelper, createEvent, createFixture, createGraphQLMock, createIntegrationTest, createMockAction, createMockComputed, createMockFormData, createMockLoader, createMockRequest, createMockRoute, createMockSignal, createNetworkMock, createSnapshotMatcher, createVisualSnapshot, createWebSocketMock, debug, debugA11y, debugForm, debugSignals, delay, delayed, expectActionToReturn, expectActionToThrow, expectHTMLSnapshot, expectJSONSnapshot, expectLoaderToReturn, expectLoaderToThrow, expectNoA11yViolations, expectNoRequests, expectRenderWithinBudget, expectRequest, expectRequestCount, findByRole, findByText, fireEvent, flaky, getNetworkStats, integrationWaitFor, interactionTest, json, logDOM, measureRenderPerformance, measureResponseTime, networkError, paginated, prettyDOM, queries, render, renderHook, retry, screen, setup, signalValue, snapshot, snapshotSignalState, takeSnapshot, testAction, testComponent, testLoader, testLoaderWithParams, testNavigation, testPostAction, testRouteFlow, toBeChecked, toBeDisabled, toBeEmptyDOMElement, toBeEnabled, toBeInTheDocument, toBeVisible, toHaveAttribute, toHaveClass, toHaveFocus, toHaveStyle, toHaveTextContent, toHaveValue, updateVisualSnapshot, user, userEvent, visualTest, waitFor, waitForElementToBeRemoved, waitForLoaderData, waitForLoadingToFinish, waitForNavigation, waitForNetworkIdle, waitForSignal, waitForSignalValue, withBody, withHeaders, withQuery, within
+- Re-exported modules: ./async.js, ./component-testing.js, ./debug.js, ./events.js, ./hooks.js, ./index.js, ./integration.js, ./matchers.js, ./network-mocking.js, ./queries.js, ./render.js, ./route-testing.js, ./signals.js, ./snapshot.js, ./user-event.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -107,6 +107,29 @@ npm run tauri dev
 npm run tauri build
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-tauri/src/lib.rs
+
+### Public API
+- Public modules: clipboard, commands, dialog, fs, menu, notification, prelude, process, shell, state, tray, updater, window
+- Public items: Builder, PhilJSApp, TauriConfig, TauriError, clipboard, config, create_state, create_window, exit, get_window, handle, init, invoke_handler, main_window, new, notify, restart, run, setup, title
+- Re-exports: crate::{
+        Builder, PhilJSApp, TauriConfig,
+        commands::*,
+        window::{Window, WindowBuilder, WindowConfig},
+        tray::{TrayIcon, TrayBuilder},
+        menu::{Menu, MenuItem, MenuBuilder},
+        dialog::{Dialog, FileDialog, MessageDialog},
+        clipboard::Clipboard,
+        notification::Notification,
+    }, tauri::{self, AppHandle, Manager, State, Wry}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

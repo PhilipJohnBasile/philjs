@@ -619,6 +619,35 @@ Mix and match modes per route for optimal performance.
 | SSR | Slower | Always fresh | Dashboards, admin |
 | CSR | Slower | Fresh | SPAs, highly interactive |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-ssr/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: $$, $closure, // App Types
+  ResumableAppOptions, // Closure Serialization
+  serializeClosure, // Component Boundaries
+  boundary, // Development Tools
+  getResumabilityStats, // Event Listener Serialization
+  on, // Full Resumability Context
+  createResumableContext, // QRL (Qwik Resource Locator) - Lazy-loadable References
+  qrl, // QRL Types
+  QRL, // Resumable App Wrapper
+  createResumableApp, // SSR Integration
+  injectResumableState, // State Serialization
+  resumable, // State Types
+  ResumableState, // Utilities
+  isResuming, AdaptiveConfig, AdaptiveRateLimiter, AdvancedStreamContext, BoundaryResolution, BuildConfig, CacheStats, CacheTagManager, ComponentBoundary, DYNAMIC_SYMBOL, DynamicBoundary, DynamicBoundaryMetadata, DynamicProps, EdgeCacheController, EdgeCachingStrategy, FileSystemPPRCache, HydrationStrategy, ISRCache, Island, LRUPPRCache, Lazy-loadable
+  $, MemoryPPRCache, MemoryRateLimitStore, PPRBuildConfig, PPRBuildError, PPRBuildResult, PPRBuilder, PPRCache, PPRConfig, PPRContext, PPRManifest, PPRRouteEntry, PPRStreamController, PPRStreamOptions, PPRSuspenseProps, PPR_FALLBACK_END, PPR_FALLBACK_START, PPR_PLACEHOLDER_END, PPR_PLACEHOLDER_START, PPR_VERSION, PhilJSServerOptions, RateLimitConfig, RateLimitInfo, RateLimitStore, RateLimiter, RedisISRCache, RedisPPRCache, RedisRateLimitStore, RenderMode, RenderOptions, RenderToStreamOptions, RequestContext, RequestTimeData, ResumabilityOptions, ResumableApp, ResumableContext, ResumableListener, RevalidationOptions, RouteConfig, RouteModule, SSRSuperJSONOptions, SUPERJSON_LOADER, ShellAssets, SlidingWindowRateLimiter, StaticGenerator, StaticPage, StaticShell, StreamContext, Suspense, SuspenseBoundary, TimedChunk, apiKeyRateLimit, apiRateLimit, authRateLimit, autoHydrateIslands, buildPPR, buildPPRRoute, buildStaticSite, clearIslands, clearSerializedState, configureRoute, create304Response, createBufferedStream, createCompressionStream, createDynamic, createExpressMiddleware, createFetchHandler, createFilterStream, createLoaderDataAccessor, createLoaderDataSerializer, createMultiplexStream, createNodeHttpHandler, createPPRContext, createPPRDevServer, createPPRStream, createRateLimitedStream, createRenderingMiddleware, createStreamingLoaderSerializer, createThroughputMeasurer, createTimingStream, createViteMiddleware, createWorkerHandler, csr, csrfField, csrfProtection, deserializeClosureVars, deserializeLoaderData, deserializeState, dynamic, dynamicDeferred, dynamicForUser, dynamicIf, dynamicPriority, dynamicWithDependencies, dynamicWithRevalidation, enableResumability, extractBoundaryId, extractCSRFToken, extractHydrationData, extractResumableState, generateCSRFToken, generateCacheHeaders, generateHydrationRestoreScript, generateHydrationScript, generatePPRResponse, getBoundary, getDynamicBoundaryId, getIslandStatus, getSuperJSONLoaderOptions, handleRequest, handleRevalidation, hasResumableState, hasResumed, hasSuperJSONLoader, hashContent, hydrateAllIslands, hydrateIsland, hydrateIslandOnIdle, hydrateIslandOnInteraction, hydrateIslandOnVisible, injectDynamicContent, injectLoaderData, isDynamic, isQRL, isr, loadPPRManifest, loadStaticShell, logResumabilityInfo, makeDynamic, mergeStreams, nodeStreamToWebStream, onResume, parseConditionalRequest, pipeWebStreamToNode, pprVitePlugin, preloadIsland, qrlChunk, qrlRegistry, rateLimit, registerDynamicBoundary, registerIsland, renderAllDynamicContent, renderDynamicContent, renderToStaticShell, renderToStream, renderToStreamingResponse, resolveQRL, resumableComputed, resumeContext, resumeFromState, resumeListeners, serializeBoundaries, serializeContext, serializeListeners, serializeLoaderData, serializeState, serverOnly, shouldReturn304, ssg, ssr, streamPPRResponse, superJSONAction, superJSONLoader, teeStream, useResumable, userRateLimit, webStreamToNodeStream, wrapActionWithSuperJSON, wrapLoaderWithSuperJSON
+- Re-exported modules: ./adapters.js, ./csrf.js, ./dynamic.js, ./hints.js, ./hydrate-island.js, ./loader.js, ./ppr-build.js, ./ppr-cache.js, ./ppr-streaming.js, ./ppr-types.js, ./ppr.js, ./rate-limit.js, ./render-to-stream.js, ./request-handler.js, ./resumability.js, ./resume.js, ./security.js, ./static-generation.js, ./stream-adapters.js, ./stream.js, ./streaming.js, ./superjson.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

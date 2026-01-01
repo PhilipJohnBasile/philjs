@@ -91,6 +91,21 @@ const intent = await createPaymentIntent({
 const event = validateWebhook(payload, signature);
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./providers/stripe, ./providers/paypal, ./providers/square, ./webhooks
+- Source files: packages/philjs-payments/src/index.ts, packages/philjs-payments/src/providers/stripe.ts, packages/philjs-payments/src/providers/paypal.ts, packages/philjs-payments/src/providers/square.ts, packages/philjs-payments/src/webhooks/index.ts
+
+### Public API
+- Direct exports: Address, AttachPaymentMethodRequest, CancelSubscriptionRequest, CheckoutSession, CreateCheckoutRequest, CreateCustomerRequest, CreateInvoiceRequest, CreateSubscriptionRequest, Currency, Customer, IdempotencyError, IdempotencyOptions, Invoice, InvoiceLineItem, LineItem, Money, PayPalAmount, PayPalCapture, PayPalConfig, PayPalItem, PayPalLink, PayPalOrderResponse, PayPalPayer, PayPalProvider, PayPalPurchaseUnit, PayPalRefundResponse, PaymentError, PaymentMethod, PaymentProvider, PaymentStatus, Refund, RefundReason, RefundRequest, SquareConfig, SquareProvider, StripeConfig, StripeProvider, Subscription, SubscriptionError, SubscriptionStatus, WebhookEvent, WebhookHandler, WebhookRequest, WebhookVerificationError, addMoney, attachPaymentMethod, cancelSubscription, createCheckout, createCustomer, createDeterministicKey, createInvoice, createPayPalProvider, createSquareProvider, createStripeProvider, createSubscription, formatMoney, fromCents, generateIdempotencyKey, getProvider, handlePayPalWebhook, handleStripeWebhook, handleWebhook, listProviders, maskCardNumber, refund, registerProvider, sanitizeForLogging, setDefaultProvider, toCents, validateNoPCI, verifyWebhookSignature
+- Re-exported names: InvoiceList, PaddleProvider, PayPalProvider, PaymentForm, PricingTable, SquareProvider, StripeProvider, SubscriptionManager, createPaddleProvider, createPayPalProvider, createSquareProvider, createStripeProvider, handlePayPalWebhook, handleStripeWebhook, useInvoices, usePayment, useSubscription, verifyWebhookSignature
+- Re-exported modules: ./components/index.js, ./hooks.js, ./providers/paddle.js, ./providers/paypal.js, ./providers/square.js, ./providers/stripe.js, ./webhooks/index.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -18,8 +18,8 @@ import {
   gc,
   getMemoryUsage,
   DEFAULT_OPTIONS,
-} from '../utils.js';
-import type { Benchmark, BenchmarkResult } from '../types.js';
+} from '../utils.ts';
+import type { Benchmark, BenchmarkResult } from '../types.ts';
 
 describe('Utility Functions', () => {
   describe('randomLabel', () => {

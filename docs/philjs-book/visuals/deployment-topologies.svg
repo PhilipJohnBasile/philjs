@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260" role="img" aria-label="Deployment topologies">
+  <rect x="20" y="40" width="260" height="180" fill="#e2e8f0" stroke="#111827" />
+  <rect x="320" y="40" width="260" height="180" fill="#e2e8f0" stroke="#111827" />
+  <rect x="620" y="40" width="260" height="180" fill="#e2e8f0" stroke="#111827" />
+
+  <text x="150" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Static / ISR</text>
+  <text x="450" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Edge</text>
+  <text x="750" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Regional</text>
+
+  <rect x="70" y="100" width="160" height="40" fill="#fef3c7" stroke="#92400e" />
+  <text x="150" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="12">Build + CDN</text>
+
+  <rect x="370" y="100" width="160" height="40" fill="#fef3c7" stroke="#92400e" />
+  <text x="450" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="12">Edge Runtime</text>
+
+  <rect x="670" y="100" width="160" height="40" fill="#fef3c7" stroke="#92400e" />
+  <text x="750" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="12">Load Balancer</text>
+
+  <rect x="670" y="150" width="160" height="40" fill="#fef3c7" stroke="#92400e" />
+  <text x="750" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="12">App Servers</text>
+
+  <rect x="670" y="200" width="160" height="40" fill="#fef3c7" stroke="#92400e" />
+  <text x="750" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="12">Database</text>
+</svg>

@@ -275,6 +275,21 @@ Some features require sensor APIs with limited browser support:
 
 Fallbacks are provided where native APIs are unavailable.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-ambient/src/index.ts
+
+### Public API
+- Direct exports: AdaptationRules, AdaptiveUI, AmbientCSS, AmbientCallback, AmbientContext, AmbientContextManager, AttentionAdaptation, AttentionState, AudioEnvironment, CustomAdaptation, DevicePosture, LightAdaptation, LightConditions, MotionAdaptation, MotionState, ProximityState, TimeAdaptation, TimeContext, useAdaptiveUI, useAmbientContext, useAttentionState, useAudioEnvironment, useLightConditions, useMotionState
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

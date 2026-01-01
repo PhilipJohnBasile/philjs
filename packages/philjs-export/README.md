@@ -83,6 +83,21 @@ function ReportPage() {
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./formats, ./utils
+- Source files: packages/philjs-export/src/index.ts, packages/philjs-export/src/formats/index.ts, packages/philjs-export/src/utils/index.ts
+
+### Public API
+- Direct exports: ExportOptions, downloadFile, exportToCSV, exportToExcel, exportToJSON, exportToPDF, exportToXML, exportToYAML
+- Re-exported names: (none detected)
+- Re-exported modules: ./components/index.js, ./csv.js, ./excel.js, ./formats/index.js, ./formatters.js, ./hooks.js, ./json.js, ./streaming.js, ./utils/index.js, ./xml.js, ./yaml.js, ./zip.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

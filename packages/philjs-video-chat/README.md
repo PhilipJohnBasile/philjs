@@ -246,6 +246,24 @@ Pre-built video grid layout component.
 - **spotlight** - Single large video
 - **presentation** - Screen share focused layout
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-video-chat/src/index.ts
+
+### Public API
+- Direct exports: // Core classes
+  VideoRoom, // Hooks
+  useVideoRoom, // Types
+  type RoomConfig, AudioEnhancementConfig, AudioEnhancer, ChatMessage, LayoutMode, Participant, ParticipantState, TranscriptionSegment, UseVideoRoomResult, VideoGridConfig, VideoGridLayout, VirtualBackgroundConfig, VirtualBackgroundProcessor, useActiveSpeaker, useParticipant, useVirtualBackground
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

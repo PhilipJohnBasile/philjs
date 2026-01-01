@@ -23,7 +23,10 @@ use super::runtime::with_runtime;
 pub fn batch<R>(f: impl FnOnce() -> R) -> R {
     with_runtime(|rt| rt.start_batch());
     let result = f();
-    with_runtime(|rt| rt.end_batch());
+    let pending = with_runtime(|rt| rt.end_batch());
+    for subscriber in pending {
+        subscriber.notify();
+    }
     result
 }
 

@@ -12,8 +12,10 @@
     "build:affected": "turbo run build --filter=...[origin/main]",
     "build:no-cache": "turbo run build --force",
     "dev": "turbo run dev --parallel",
-    "test": "turbo run test",
-    "test:unit": "turbo run test:unit --parallel",
+    "test": "turbo run test --filter=./packages/**",
+    "test:unit": "turbo run test:unit --parallel --filter=./packages/**",
+    "test:examples": "turbo run test --filter=./examples/**",
+    "test:all": "turbo run test",
     "lint": "turbo run lint --parallel",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules/.cache",
@@ -24,6 +26,9 @@
     "verify:treeshake": "tsx scripts/verify-tree-shaking.ts",
     "size": "size-limit",
     "size:why": "size-limit --why",
+    "book:packages": "node scripts/generate-package-atlas.mjs",
+    "book:export": "node scripts/export-book.mjs",
+    "book:links": "node scripts/book-links.mjs",
     "prepare": "turbo run build"
   },
   "workspaces": [

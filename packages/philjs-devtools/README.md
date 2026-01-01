@@ -130,10 +130,10 @@ tree.mount('Footer', 'App');
 // Print the tree
 console.log(renderTree(tree));
 // App
-//   ├─ Header
-//   │  └─ Nav
-//   ├─ Main
-//   └─ Footer
+//    Header
+//      Nav
+//    Main
+//    Footer
 
 // Track unmounts
 tree.unmount('Nav');
@@ -505,6 +505,21 @@ See the [demo app](../../examples/demo-app) for a working example with DevTools 
 ## Documentation
 
 For more information, see the [PhilJS documentation](../../docs).
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-devtools/src/index.ts
+
+### Public API
+- Direct exports: showOverlay
+- Re-exported names: ActionReplayer, BundleProfile, ChunkInfo, ComponentInspector, ComponentNode, DevToolsState, DiffType, DuplicateInfo, ElementHighlighter, FlameNode, InspectorConfig, InspectorEvent, MemoryProfile, ModuleInfo, NetworkProfile, PerformanceInfo, PerformancePanel, PersistenceConfig, ProfilerConfig, PropInfo, PropsPanel, ReduxAction, ReduxDevTools, ReduxDevToolsConfig, RenderProfile, SearchBar, StateDiff, StateInfo, StatePanel, StatePersistence, StateSnapshot, StyleInfo, StylePanel, TimeTravelConfig, TimeTravelDebugger, TimelineNode, analyzeMemoryUsage, analyzeNetworkRequests, analyzeRenderPerformance, captureMemorySnapshot, createInspector, debugSignal, diffState, disconnectReduxDevTools, exportProfileData, generateFlameGraph, getInspector, getReduxDevTools, getTimeTravelDebugger, importProfileData, initReduxDevTools, initTimeTravel, recordMemo, recordRenderEnd, recordRenderStart, startMemoryProfiling, startNetworkProfiling, startProfiling, stopMemoryProfiling, stopNetworkProfiling, stopProfiling
+- Re-exported modules: ./inspector/index.js, ./inspector/types.js, ./profiler.js, ./redux-devtools.js, ./time-travel.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

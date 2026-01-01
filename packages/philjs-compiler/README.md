@@ -248,6 +248,21 @@ This will log each optimization:
 
 See the `/examples` directory for complete working examples with different build tools.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./vite, ./rollup, ./presets, ./presets/production, ./presets/development, ./presets/library
+- Source files: packages/philjs-compiler/src/index.ts, packages/philjs-compiler/src/presets/index.ts, packages/philjs-compiler/src/presets/production.ts, packages/philjs-compiler/src/presets/development.ts, packages/philjs-compiler/src/presets/library.ts
+
+### Public API
+- Direct exports: Analyzer, CodeSplitBoundary, CodeSplitReport, CodeSplitter, CompilerConfig, CompilerPlugin, ComponentAnalysis, DeadCodeEliminator, DeadCodeReport, DevBuildReport, DevMetrics, DevPerformanceTracker, DevelopmentPresetOptions, FileAnalysis, LibraryPresetOptions, LibraryValidation, OptimizationOpportunity, Optimizer, ProductionPresetOptions, ReactiveBinding, TransformResult, analyzeCode, calculateCompressionRatio, checkPerformanceBudgets, createCompiler, createDevelopmentPreset, createDevelopmentViteConfig, createLibraryPreset, createLibraryViteConfig, createProductionPreset, createProductionViteConfig, defaultConfig, defaultDevelopmentConfig, defaultLibraryConfig, defaultProductionConfig, formatDevError, formatSize, generatePackageJsonFields, generatePrefetchHints, generatePreloadHints, getDefaultConfig, printDevBuildReport, printLibraryBuildReport, transform, validateConfig, validateLibraryBuild, version
+- Re-exported names: BundleMetrics, ChunkCandidate, DependencyGraph, DevBuildReport, DevMetrics, DevPerformanceTracker, DevelopmentPresetOptions, HMRErrorType, LibraryPresetOptions, LibraryValidation, ProductionPresetOptions, calculateCompressionRatio, checkPerformanceBudgets, clearHMRErrorHistory, createDevelopmentPreset, createDevelopmentViteConfig, createLibraryPreset, createLibraryViteConfig, createProductionPreset, createProductionViteConfig, defaultDevelopmentConfig, defaultLibraryConfig, defaultProductionConfig, formatDevError, formatSize, generatePackageJsonFields, generatePrefetchHints, generatePreloadHints, getHMRClientStats, getHMRErrorHistory, hideHMRErrorOverlay, printDevBuildReport, printLibraryBuildReport, resetHMRClientStats, setupHMRClient, showHMRErrorOverlay, validateLibraryBuild
+- Re-exported modules: ./analyzer.js, ./development.js, ./hmr-client.js, ./hmr-overlay.js, ./library.js, ./presets/index.js, ./production.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

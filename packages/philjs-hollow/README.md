@@ -710,6 +710,21 @@ import {
 
 Requires native Custom Elements and Shadow DOM support.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./react, ./vue, ./svelte, ./components, ./styles, ./philjs, ./core
+- Source files: packages/philjs-hollow/src/index.ts, packages/philjs-hollow/src/components/index.ts, packages/philjs-hollow/src/styles/index.ts, packages/philjs-hollow/src/core/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: AccordionItem, AccordionVariant, ButtonSize, ButtonVariant, CardPadding, CardVariant, CheckboxSize, CheckboxVariant, HollowAccordion, HollowAccordionItem, HollowButton, HollowCard, HollowCheckbox, HollowElement, HollowInput, HollowModal, HollowSelect, HollowSwitch, HollowTab, HollowTabList, HollowTabPanel, HollowTabs, InputSize, InputType, InputVariant, ModalAnimation, ModalSize, PropertyOptions, SelectOption, SelectSize, SelectVariant, SwitchSize, SwitchVariant, TabDefinition, TabsAlignment, TabsSize, TabsVariant, borderRadius, colors, createTheme, defineElement, designTokensCSS, philjs, property, react, shadows, spacing, svelte, tokens, transitions, typography, vue, zIndex
+- Re-exported modules: ./accordion.js, ./base-element.js, ./button.js, ./card.js, ./checkbox.js, ./components/button.js, ./components/card.js, ./components/input.js, ./core/base-element.js, ./input.js, ./modal.js, ./select.js, ./styles/tokens.js, ./switch.js, ./tabs.js, ./tokens.js, ./wrappers/philjs.js, ./wrappers/react.js, ./wrappers/svelte.js, ./wrappers/vue.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

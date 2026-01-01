@@ -85,6 +85,21 @@ const { flyTo, zoomIn, getBounds } = useMap();
 const { position, error } = useGeolocation();
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./google, ./mapbox, ./leaflet, ./utils
+- Source files: packages/philjs-maps/src/utils/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: (none detected)
+- Re-exported modules: ./cluster.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

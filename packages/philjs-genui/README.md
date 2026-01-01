@@ -381,6 +381,21 @@ import { ASTValidator, DEFAULT_SANDBOX_CONFIG } from '@philjs/genui/sandbox';
 import { useGenUI, useAgentUI } from '@philjs/genui/hooks';
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./protocol, ./registry, ./runtime, ./sandbox, ./hooks
+- Source files: packages/philjs-genui/src/index.ts, packages/philjs-genui/src/protocol/index.ts, packages/philjs-genui/src/registry/index.ts, packages/philjs-genui/src/runtime/index.ts, packages/philjs-genui/src/sandbox/index.ts, packages/philjs-genui/src/hooks.ts
+
+### Public API
+- Direct exports: AgentUIOptions, AgentUIState, GenUIAgent, GenUIOptions, GenUIState, createLayoutGenerator, createMockAgent, useAgentUI, useGenUI
+- Re-exported names: ASTValidator, ComponentRegistry, DEFAULT_SANDBOX_CONFIG, GenUIHydrator, builtinComponents, createActionMessage, createHydrator, createLayoutGenerator, createMockAgent, createRegistry, createRenderMessage, createUpdateMessage, createValidator, getDefaultRegistry, registerBuiltins, schemas, setDefaultRegistry, useAgentUI, useGenUI, validateComponent, validateLayout, validateMessage
+- Re-exported modules: ./a2ui-schema.js, ./ast-validator.js, ./builtin-components.js, ./component-registry.js, ./hooks.js, ./hydrator.js, ./protocol/a2ui-schema.js, ./protocol/validator.js, ./registry/builtin-components.js, ./registry/component-registry.js, ./runtime/hydrator.js, ./sandbox/ast-validator.js, ./types.js, ./validator.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

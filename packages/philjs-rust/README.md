@@ -15,7 +15,7 @@ Pure Rust UI framework with fine-grained reactivity. Write components in Rust, r
 
 ```toml
 [dependencies]
-philjs = "2.0"
+philjs = "0.1.0"
 ```
 
 ## Quick Start
@@ -252,12 +252,12 @@ let count = store.count.get();
 
 | Feature | PhilJS | Leptos | Dioxus | Yew |
 |---------|--------|--------|--------|-----|
-| Fine-grained Reactivity | ✅ | ✅ | ✅ | ❌ |
-| `view!` Macro | ✅ | ✅ | ❌ (rsx!) | ❌ (html!) |
-| SSR | ✅ | ✅ | ✅ | ✅ |
-| Hydration | ✅ | ✅ | ✅ | ✅ |
-| Islands | ✅ | ✅ | ❌ | ❌ |
-| JS Interop | ✅ Best | ✅ | ✅ | ✅ |
+| Fine-grained Reactivity |  |  |  |  |
+| `view!` Macro |  |  |  (rsx!) |  (html!) |
+| SSR |  |  |  |  |
+| Hydration |  |  |  |  |
+| Islands |  |  |  |  |
+| JS Interop |  Best |  |  |  |
 | Bundle Size | ~50KB | ~60KB | ~80KB | ~100KB |
 
 ## Integration with PhilJS (JavaScript)
@@ -282,6 +282,87 @@ const RustCounter = useRustComponent('RustCounter');
 // Use in JavaScript view
 <RustCounter />
 ```
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-rust/src/lib.rs
+
+### Public API
+- Public modules: dom, liveview, meta, prelude, query, reactive, router, runtime, server, ssr, store, view, wasm
+- Public items: spread_attrs
+- Re-exports: crate::dom::{
+        node_ref::NodeRef,
+        event::Event,
+        mount::mount,
+    }, crate::reactive::{
+        signal::Signal,
+        memo::Memo,
+        effect::Effect,
+        resource::Resource,
+        batch::batch,
+        context::{provide_context, use_context},
+    }, crate::ssr::{render_to_string, render_to_stream}, crate::view::{
+        element::Element,
+        text::Text,
+        fragment::Fragment,
+        dynamic::Dynamic,
+        children::Children,
+        into_view::IntoView,
+    }, dom::{
+    HydrationMode,
+    HydrationContext,
+    HydrationState,
+    HydrationError,
+    generate_hydration_script,
+}, dom::{
+    node_ref::NodeRef,
+    event::Event,
+    mount::mount,
+}, dom::{hydrate, hydrate_to, hydrate_to_body}, meta::{
+    Title, TitleTemplate, Meta, Link, Style, Script, Html, Body,
+    MetaContext, use_meta_context, with_meta_context,
+}, philjs_macros::{component, effect, memo, resource, signal, view, Store}, reactive::{
+    Action, MultiAction, ActionError,
+    create_action, create_server_action, create_multi_action,
+    RwSignal, create_rw_signal,
+    StoredValue, create_stored_value,
+    Trigger, create_trigger,
+    on_cleanup,
+}, reactive::{
+    signal::Signal,
+    memo::Memo,
+    effect::Effect,
+    resource::Resource,
+    batch::batch,
+    context::{provide_context, use_context, Context},
+}, router::form::{Form, FormMethod, FormData, ActionForm, MultiActionForm}, server::functions::{
+    ServerResult,
+    ServerError,
+    ServerFnConfig,
+}, ssr::{
+    render_to_string,
+    render_to_stream,
+    render_to_stream_async,
+    StreamingConfig,
+    HydrationScript,
+}, store::{Store, StoreField, StoreVec, StoreMap, create_store, produce}, view::{
+    Transition, TransitionConfig, use_transition, use_deferred_value,
+    AnimatedShow, AnimatedShowConfig, AnimationState,
+    fade, slide, scale,
+}, view::{
+    element::Element,
+    text::Text,
+    fragment::Fragment,
+    dynamic::Dynamic,
+    children::Children,
+    into_view::IntoView,
+    view::View,
+}
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

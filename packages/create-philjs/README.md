@@ -188,18 +188,18 @@ All templates create a similar structure:
 
 ```
 my-app/
-├── src/
-│   ├── components/      # Reusable components
-│   ├── routes/          # Route components
-│   ├── styles/          # Global styles
-│   ├── entry-client.ts  # Client entry point
-│   └── entry-server.ts  # Server entry point (SSR templates)
-├── public/              # Static assets
-├── tests/               # Test files (full-stack+)
-├── package.json
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript config (TS templates)
-└── README.md
+ src/
+    components/      # Reusable components
+    routes/          # Route components
+    styles/          # Global styles
+    entry-client.ts  # Client entry point
+    entry-server.ts  # Server entry point (SSR templates)
+ public/              # Static assets
+ tests/               # Test files (full-stack+)
+ package.json
+ vite.config.ts       # Vite configuration
+ tsconfig.json        # TypeScript config (TS templates)
+ README.md
 ```
 
 ## What's Included
@@ -265,6 +265,21 @@ export default defineConfig({
 ## Documentation
 
 For more information, see the [PhilJS documentation](https://philjs.dev/docs).
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/create-philjs/src/index.ts
+
+### Public API
+- Direct exports: AppLayout, Counter, DocsRoute, HomeRoute, routeManifest, routes
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

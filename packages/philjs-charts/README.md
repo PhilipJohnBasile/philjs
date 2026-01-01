@@ -62,6 +62,25 @@ function Dashboard() {
 | `Sparkline` | Inline micro-charts |
 | `GaugeChart` | Single metric display |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./components, ./hooks, ./utils
+- Source files: packages/philjs-charts/src/index.ts, packages/philjs-charts/src/utils/index.ts
+
+### Public API
+- Direct exports: // Constants
+  defaultColors, // Core classes
+  Chart, // Hooks
+  useChart, // Types
+  type ChartType, AnimationConfig, AxisConfig, BandScale, CanvasRenderer, ChartConfig, DataPoint, DataSeries, LegendConfig, LinearScale, Renderer, TimeScale, TooltipConfig, UseChartResult, darkTheme, lightTheme, useRealtimeChart
+- Re-exported names: (none detected)
+- Re-exported modules: ./animations.js, ./colors.js, ./formatters.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

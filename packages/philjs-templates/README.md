@@ -113,51 +113,51 @@ pnpm create philjs my-app --template library
 
 ```
 my-app/
-├── src/
-│   ├── routes/
-│   │   └── index.tsx
-│   ├── components/
-│   │   └── Counter.tsx
-│   ├── styles/
-│   │   └── global.css
-│   └── entry-client.tsx
-├── public/
-│   └── favicon.ico
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
+ src/
+    routes/
+       index.tsx
+    components/
+       Counter.tsx
+    styles/
+       global.css
+    entry-client.tsx
+ public/
+    favicon.ico
+ package.json
+ vite.config.ts
+ tsconfig.json
 ```
 
 ### Full Template
 
 ```
 my-app/
-├── src/
-│   ├── routes/
-│   │   ├── index.tsx
-│   │   ├── about.tsx
-│   │   └── api/
-│   │       └── users.ts
-│   ├── components/
-│   │   ├── Counter.tsx
-│   │   └── TodoList.tsx
-│   ├── lib/
-│   │   ├── db.ts
-│   │   └── auth.ts
-│   ├── styles/
-│   │   └── global.css
-│   ├── entry-client.tsx
-│   └── entry-server.tsx
-├── public/
-│   └── assets/
-├── tests/
-│   ├── unit/
-│   └── e2e/
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-├── playwright.config.ts
-└── .env.example
+ src/
+    routes/
+       index.tsx
+       about.tsx
+       api/
+           users.ts
+    components/
+       Counter.tsx
+       TodoList.tsx
+    lib/
+       db.ts
+       auth.ts
+    styles/
+       global.css
+    entry-client.tsx
+    entry-server.tsx
+ public/
+    assets/
+ tests/
+    unit/
+    e2e/
+ package.json
+ vite.config.ts
+ tsconfig.json
+ playwright.config.ts
+ .env.example
 ```
 
 ## Programmatic Usage
@@ -227,11 +227,11 @@ Create your own templates by adding a directory in `templates/`:
 
 ```
 templates/
-└── my-custom-template/
-    ├── template.json
-    ├── package.json
-    ├── src/
-    └── public/
+ my-custom-template/
+     template.json
+     package.json
+     src/
+     public/
 ```
 
 **template.json:**
@@ -333,6 +333,21 @@ All templates include these npm scripts:
 ## Documentation
 
 For more information, see the [PhilJS documentation](../../docs) and [Getting Started guide](../../docs/getting-started.md).
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-templates/src/index.ts
+
+### Public API
+- Direct exports: Template, getAllTags, getTemplate, getTemplates, getTemplatesByDifficulty, getTemplatesByTag, searchTemplates, templates
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

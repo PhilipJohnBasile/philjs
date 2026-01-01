@@ -201,6 +201,21 @@ philjs-python types ./models/schema.py
 | `server.invoke(fn, args)` | Call Python function |
 | `server.shutdown()` | Stop the server |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./cli, ./llm, ./embeddings, ./server
+- Source files: packages/philjs-python/src/index.ts, packages/philjs-python/src/llm.ts, packages/philjs-python/src/embeddings.ts, packages/philjs-python/src/server.ts
+
+### Public API
+- Direct exports: BatchOptions, Embeddings, LLM, PythonServer, SimilarityResult, StreamChunk, checkPythonInstalled, createAnthropic, createEmbeddings, createLLM, createOpenAI, createOpenAIEmbeddings, createOpenAILargeEmbeddings, createPythonServer, detectProvider, embeddings, initPythonProject, llm
+- Re-exported names: (none detected)
+- Re-exported modules: ./embeddings.js, ./llm.js, ./server.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -307,9 +307,9 @@ The validation report identified **6 critical violations**. We've addressed **3*
 
 2. **Core Package Slimming**
    - Move i18n to `@philjs/i18n`
-   - Move animation to `@philjs/animation`
+   - Move animation to `@philjs/motion`
    - Move forms to `@philjs/forms`
-   - Move data-layer to `@philjs/data` or integrate into core more tightly
+   - Move data-layer into `@philjs/core` (or `@philjs/api` if split later)
    - Move cost tracking, usage analytics to `@philjs/analytics`
 
 3. **Islands Test Coverage**

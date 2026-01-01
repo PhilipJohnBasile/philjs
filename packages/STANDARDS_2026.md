@@ -38,7 +38,13 @@ await import('@philjs/core');
 PhilJS provides a TC39-compatible signals API:
 
 ```typescript
-import { Signal } from '@philjs/core/tc39-signals';
+import { getSignalImpl, hasNativeSignals } from '@philjs/core/tc39-signals';
+
+const Signal = await getSignalImpl();
+
+if (!hasNativeSignals()) {
+  console.log('Using the polyfill for TC39 Signals.');
+}
 
 // State signal (writable)
 const count = new Signal.State(0);
@@ -55,7 +61,7 @@ const watcher = new Signal.subtle.Watcher(() => {
 watcher.watch(count);
 ```
 
-When native Signals ship, PhilJS will seamlessly transition to the native implementation.
+When native Signals ship, PhilJS will seamlessly transition to the native implementation. For always-on polyfill installs, import `@philjs/core/tc39-signals-polyfill`.
 
 ### Native Decorators (Stage 3)
 

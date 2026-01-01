@@ -14,16 +14,16 @@ Comprehensive authentication and authorization system for PhilJS applications.
 
 ## Features
 
-- **🎯 Multiple Provider Support**: Clerk, Auth0, Supabase, NextAuth, or custom
-- **⚡ CLI Generators**: RedwoodJS-style generators for rapid setup
-- **🔄 Automatic Token Refresh**: Smart token refresh with configurable strategies
-- **🛡️ Protected Routes**: HOCs, components, and hooks for route protection
-- **👥 Role-Based Access**: Built-in permission and role checking
-- **📱 Session Management**: Reactive session state using signals
-- **🎨 UI Components**: Pre-built, customizable auth UI components
-- **🔑 JWT Support**: Full JWT token management
-- **🌐 OAuth Integration**: Support for multiple OAuth providers
-- **📦 Type-Safe**: Full TypeScript support with excellent DX
+- ** Multiple Provider Support**: Clerk, Auth0, Supabase, NextAuth, or custom
+- ** CLI Generators**: RedwoodJS-style generators for rapid setup
+- ** Automatic Token Refresh**: Smart token refresh with configurable strategies
+- ** Protected Routes**: HOCs, components, and hooks for route protection
+- ** Role-Based Access**: Built-in permission and role checking
+- ** Session Management**: Reactive session state using signals
+- ** UI Components**: Pre-built, customizable auth UI components
+- ** JWT Support**: Full JWT token management
+- ** OAuth Integration**: Support for multiple OAuth providers
+- ** Type-Safe**: Full TypeScript support with excellent DX
 
 ## Installation
 
@@ -55,12 +55,12 @@ philjs generate auth custom
 ```
 
 This creates:
-- ✅ Authentication configuration
-- ✅ Provider integration
-- ✅ Login/Signup/Password Reset forms
-- ✅ Profile management
-- ✅ Protected route utilities
-- ✅ Example pages
+-  Authentication configuration
+-  Provider integration
+-  Login/Signup/Password Reset forms
+-  Profile management
+-  Protected route utilities
+-  Example pages
 
 ### 2. Manual Setup
 
@@ -411,6 +411,21 @@ export function LoginForm() {
 
 Contributions are welcome! Please read our [contributing guide](../../CONTRIBUTING.md).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./oauth, ./jwt, ./session, ./session-refresh, ./protected-route, ./protected-routes, ./hooks, ./auth-provider, ./providers/clerk, ./providers/auth0, ./providers/supabase, ./providers/next-auth
+- Source files: packages/philjs-auth/src/index.ts, packages/philjs-auth/src/oauth.ts, packages/philjs-auth/src/jwt.ts, packages/philjs-auth/src/session.ts, packages/philjs-auth/src/session-refresh.ts, packages/philjs-auth/src/protected-route.ts, packages/philjs-auth/src/hooks.ts, packages/philjs-auth/src/auth-provider.ts, packages/philjs-auth/src/providers/clerk.ts, packages/philjs-auth/src/providers/auth0.ts, packages/philjs-auth/src/providers/supabase.ts, packages/philjs-auth/src/providers/next-auth.ts
+
+### Public API
+- Direct exports: Auth0AuthProvider, Auth0Config, AuthProvider, AuthProviderConfig, AuthProviderContext, AuthProviderFactory, ClerkAuthProvider, ClerkConfig, JWTManager, NextAuthConfig, NextAuthProvider, OAuthManager, OAuthProviders, PKCEPair, ProtectedRoute, RefreshConfig, SessionManager, SessionPersistence, SessionRefreshManager, SupabaseAuthProvider, SupabaseConfig, createJWTManager, createOAuthManager, createSessionManager, createToken, decodeToken, generateCodeChallenge, generateCodeVerifier, generatePKCE, generateState, getAuthProvider, getDefaultSessionManager, getRedirectUrl, getSessionRefreshManager, logoutEverywhere, redirectAfterLogin, redirectToLogin, requireAuth, setAuthProvider, setDefaultSessionManager, startSessionRefresh, stopSessionRefresh, useAccessToken, useAuth, useAuthLoading, useHasPermission, useIsAuthenticated, useRequireAuth, useSession, useUser, validateState, verifyToken, withAuth
+- Re-exported names: Auth0AuthProvider, Auth0Config, AuthConfig, AuthProvider, AuthProviderConfig, AuthProviderContext, AuthProviderFactory, AuthSession, BaseAuthProvider, ClerkAuthProvider, ClerkConfig, JWTConfig, JWTManager, JWTPayload, NextAuthConfig, NextAuthProvider, OAuthConfig, OAuthManager, OAuthProvider, OAuthProviders, ProtectedRoute, ProtectedRouteConfig, RefreshConfig, SessionManager, SessionPersistence, SessionRefreshManager, SupabaseAuthProvider, SupabaseConfig, User, createJWTManager, createOAuthManager, createSessionManager, createToken, decodeToken, generateState, getAuthProvider, getDefaultSessionManager, getRedirectUrl, getSessionRefreshManager, logoutEverywhere, redirectAfterLogin, redirectToLogin, requireAuth, setAuthProvider, setDefaultSessionManager, startSessionRefresh, stopSessionRefresh, useAccessToken, useAuth, useAuthLoading, useHasPermission, useIsAuthenticated, useRequireAuth, useSession, useUser, validateState, verifyToken, withAuth
+- Re-exported modules: ./auth-provider.js, ./hooks.js, ./jwt.js, ./oauth.js, ./protected-route.js, ./providers/auth0.js, ./providers/clerk.js, ./providers/next-auth.js, ./providers/supabase.js, ./session-refresh.js, ./session.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
-MIT © PhilJS Team
+MIT  PhilJS Team

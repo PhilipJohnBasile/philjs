@@ -438,6 +438,21 @@ useRoom({ roomId: `doc-${documentId}` });
 | Auto-reconnect | Yes | Yes | Yes | Yes |
 | TypeScript | Yes | Yes | Yes | Yes |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./presence, ./yjs, ./cursors, ./rooms
+- Source files: packages/philjs-realtime/src/index.ts
+
+### Public API
+- Direct exports: ConnectionStatus, CursorPosition, CursorState, PresenceState, RealtimeMessage, Room, RoomConfig, RoomManager, SharedStateOptions, UseBroadcastOptions, UseCursorsOptions, UsePresenceOptions, UseRoomOptions, User, WebSocketClient, WebSocketClientOptions, useBroadcast, useCursors, usePresence, useRoom, useSharedState
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

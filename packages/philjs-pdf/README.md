@@ -489,6 +489,21 @@ link.download = 'document.pdf';
 link.click();
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./templates, ./utils
+- Source files: packages/philjs-pdf/src/index.ts, packages/philjs-pdf/src/templates/index.ts, packages/philjs-pdf/src/utils/index.ts
+
+### Public API
+- Direct exports: ComponentToPDFOptions, CompressionOptions, HTMLToPDFOptions, MergeOptions, PDFGenerator, PDFGeneratorOptions, PDFMargin, ProtectionOptions, TemplateData, TemplateName, TemplateOptions, WatermarkOptions, createPDFGenerator, htmlToPdf, mergePdfs, templates
+- Re-exported names: (none detected)
+- Re-exported modules: ./certificate.js, ./fonts.js, ./images.js, ./invoice.js, ./report.js, ./tables.js, ./templates/index.js, ./utils/fonts.js, ./utils/images.js, ./utils/tables.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

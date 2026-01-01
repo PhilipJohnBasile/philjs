@@ -322,6 +322,21 @@ The cryptographic implementations in this package are **simulated** for educatio
 - [liboqs](https://github.com/open-quantum-safe/liboqs) - Open Quantum Safe
 - [NIST PQC](https://csrc.nist.gov/projects/post-quantum-cryptography) - Standardized algorithms
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-quantum/src/index.ts
+
+### Public API
+- Direct exports: Complex, DilithiumSignature, EncapsulatedKey, GateType, KyberKEM, OptimizationResult, QAOAOptimizer, QAOAParams, QuantumAnnealingOptimizer, QuantumCircuit, QuantumConfig, QuantumGate, QuantumKey, QuantumRNG, QuantumSignature, QuantumSimulator, QuantumState, Qubit, initQuantum, usePostQuantumCrypto, useQAOA, useQuantumAnnealing, useQuantumId, useQuantumRandom, useQuantumShuffle, useQuantumSimulator
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

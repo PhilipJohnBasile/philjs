@@ -74,6 +74,21 @@ import { RichTextEditor, BoldExtension, LinkExtension } from '@philjs/editor';
 />
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./extensions, ./utils
+- Source files: packages/philjs-editor/src/index.ts, packages/philjs-editor/src/extensions/index.ts
+
+### Public API
+- Direct exports: EditorConfig, EditorInstance, PhilEditor, createEditorConfig, getCharacterCount, getWordCount, sanitizeContent
+- Re-exported names: BlockMath, CodeBlock, CodeBlockOptions, CustomVideo, Emoji, EmojiOptions, Image, ImageExtensionOptions, ImageUpload, ImageUploadOptions, InlineMath, Link, LinkOptions, LinkPreviewData, MathOptions, Table, TableCell, TableHeader, TableOptions, TableRow, TaskItem, TaskList, TaskListOptions, VideoOptions, Vimeo, Youtube, bulletListToTaskList, checkAllTasks, codeBlockShortcuts, commonEmojis, createCodeBlockExtension, createImageExtension, createLinkExtension, createLinkPreviewPlugin, createMathExtensions, createTableExtensions, createTaskListExtensions, createVideoExtensions, detectVideoPlatform, emojiCategories, emojiPickerStyles, emojiToShortcode, getAllTasks, getDomain, getEmoji, getLinkAtSelection, getSupportedLanguages, getTableInfo, getTaskStats, insertEmoji, insertImageByUrl, insertVideo, isExternalUrl, isInTable, isValidUrl, linkCommands, linkShortcuts, linkStyles, lowlight, mathShortcuts, mathStyles, mathSymbols, mathTemplates, normalizeUrl, pickAndUploadImage, registerLanguage, renderLatex, replaceShortcodes, searchEmojis, tableCommands, tableShortcuts, taskListCommands, taskListShortcuts, taskListStyles, taskListToBulletList, toggleTaskAtPosition, uncheckAllTasks, validateLatex
+- Re-exported modules: ./code-block.js, ./emoji.js, ./image.js, ./link.js, ./math.js, ./table.js, ./task-list.js, ./video.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

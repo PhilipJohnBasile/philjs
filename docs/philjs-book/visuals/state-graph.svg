@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="320" viewBox="0 0 800 320" role="img" aria-label="State graph">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#111827" />
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="140" height="60" fill="#e2e8f0" stroke="#111827" />
+  <rect x="240" y="40" width="140" height="60" fill="#e2e8f0" stroke="#111827" />
+  <rect x="440" y="40" width="140" height="60" fill="#e2e8f0" stroke="#111827" />
+  <rect x="640" y="40" width="120" height="60" fill="#e2e8f0" stroke="#111827" />
+  <rect x="140" y="200" width="160" height="70" fill="#fef3c7" stroke="#92400e" />
+  <rect x="360" y="200" width="160" height="70" fill="#fef3c7" stroke="#92400e" />
+
+  <text x="110" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Signals</text>
+  <text x="310" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Memos</text>
+  <text x="510" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Effects</text>
+  <text x="700" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Resources</text>
+  <text x="220" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Stores</text>
+  <text x="440" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Middleware</text>
+
+  <line x1="180" y1="70" x2="240" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="380" y1="70" x2="440" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="580" y1="70" x2="640" y2="70" stroke="#111827" stroke-width="2" marker-end="url(#arrow)" />
+
+  <line x1="110" y1="100" x2="220" y2="200" stroke="#92400e" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="510" y1="100" x2="440" y2="200" stroke="#92400e" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="220" y1="270" x2="360" y2="235" stroke="#92400e" stroke-width="2" marker-end="url(#arrow)" />
+</svg>

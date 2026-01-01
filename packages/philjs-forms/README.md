@@ -14,14 +14,14 @@ Advanced form handling for PhilJS with Remix-style primitives, progressive enhan
 
 ## Features
 
-- ✅ **Form Management** - Reactive form state with signals
-- ✅ **Validation** - Built-in validators + Zod integration
-- ✅ **useFormAction** - Remix-style form actions with progressive enhancement
-- ✅ **useFetcher** - Non-navigational form submissions
-- ✅ **Optimistic UI** - Instant updates with automatic rollback
-- ✅ **Progressive Enhancement** - Works without JavaScript
-- ✅ **Field Components** - Pre-built accessible form fields
-- ✅ **TypeScript** - Full type safety
+-  **Form Management** - Reactive form state with signals
+-  **Validation** - Built-in validators + Zod integration
+-  **useFormAction** - Remix-style form actions with progressive enhancement
+-  **useFetcher** - Non-navigational form submissions
+-  **Optimistic UI** - Instant updates with automatic rollback
+-  **Progressive Enhancement** - Works without JavaScript
+-  **Field Components** - Pre-built accessible form fields
+-  **TypeScript** - Full type safety
 
 ## Installation
 
@@ -635,6 +635,25 @@ const form = useForm<MyFormValues>({
   }
 });
 ```
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./validation, ./fields
+- Source files: packages/philjs-forms/src/index.ts, packages/philjs-forms/src/validation.ts, packages/philjs-forms/src/fields.ts
+
+### Public API
+- Direct exports: BaseFieldProps, CheckboxField, CheckboxFieldProps, Field, FieldProps, FieldType, FileField, FileFieldProps, NumberField, NumberFieldProps, RadioField, RadioFieldProps, SelectField, SelectFieldProps, TextAreaField, TextAreaFieldProps, TextField, TextFieldProps, composeValidators, createZodValidator, debounceValidation, patterns, validateValue, validators, zodValidator
+- Re-exported names: // Advanced validators
+  advancedValidators, // Schema validator
+  SchemaValidator, // Types
+  type AsyncValidationRule, // Utilities
+  when, AutoSaveConfig, AutoSaveController, AutoSaveState, CheckboxField, ClientOnly, ConditionalRule, ConflictStrategy, CrossFieldRule, FetcherMethod, FetcherReturn, FetcherState, FetcherSubmitOptions, Field, FieldConfig, FieldError, FieldState, FieldValidationResult, FieldValue, FileField, Form, FormActionOptions, FormActionReturn, FormActionState, FormConfig, FormDraft, FormErrors, FormState, FormValues, MaskChar, MaskConfig, MaskDefinition, MaskInputHandler, MaskResult, NoScript, NumberField, OptimisticOptions, OptimisticUpdate, ProgressiveFormOptions, RadioField, RecoveryDialogProps, SelectField, StepIndicatorProps, StepTransitionConfig, TextAreaField, TextField, TouchedFields, TransitionDirection, ValidationContext, ValidationGroup, ValidationResult, ValidationRule, ValidationSchema, WizardConfig, WizardController, WizardState, WizardStep, addJavaScriptMarker, applyMask, calculateProgress, clientHasJavaScript, combineResults, composeValidators, createAutoSave, createCheckoutWizard, createForm, createIndexedDBStorage, createMaskInputHandler, createSchemaValidator, createSessionStorage, createSignupWizard, createSurveyWizard, createWizard, createZodValidator, creditCardMask, crossField, currencyMask, dateMask, debounceValidation, dependsOn, detectCardType, formatDraftTimestamp, formatErrors, getFirstError, getRecoveryMessage, getStepIndicatorData, getStepTransitionStyles, hasErrors, isHydrated, isJSEnabled, isProgressivelyEnhanced, luhnCheck, maskChars, maskPresets, messageWithField, parseMaskPattern, patterns, phoneMask, resolveConflict, ssnMask, timeMask, unmask, useAutoSave, useFetcher, useForm, useFormAction, useOptimistic, useOptimisticValue, useProgressiveForm, useWizard, validateValue, validators, zipCodeMask, zodValidator
+- Re-exported modules: ./advanced-validation.js, ./auto-save.js, ./fields.js, ./form.js, ./input-mask.js, ./optimistic.js, ./progressive.js, ./types.js, ./useFetcher.js, ./useFormAction.js, ./validation.js, ./wizard.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

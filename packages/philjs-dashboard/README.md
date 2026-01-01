@@ -64,6 +64,26 @@ function AdminPanel() {
 | `WidgetHeader` | Widget title and action buttons |
 | `StatCard` | KPI/metric display widget |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./collectors
+- Source files: packages/philjs-dashboard/src/index.ts
+
+### Public API
+- Direct exports: DashboardInitConfig, DashboardInstance, VERSION, initDashboard
+- Re-exported names: // Errors
+  ErrorTracker, // Local Storage
+  LocalStorageManager, // Metrics
+  MetricsCollector, // Remote Storage
+  RemoteStorageManager, // Tracing
+  TracingManager, Alert, AlertCondition, AlertManager, AlertManagerConfig, AlertRule, AlertSeverity, AlertStatus, AnomalyCondition, AnomalyDetector, BatchItem, BatchPayload, BeaconSender, Breadcrumb, CPUMetrics, CapturedError, CombinedStorageConfig, CombinedStorageManager, ComparisonOperator, ConsoleConfig, CustomConfig, CustomMetric, DashboardConfig, DashboardDBSchema, DashboardData, DashboardFilter, DashboardTab, DataType, DatadogConfig, DatadogExporter, DatadogLog, DatadogMetric, DatadogRumEvent, DatadogTrace, EmailConfig, ErrorBoundaryInfo, ErrorContext, ErrorGroup, ErrorPatternCondition, ErrorRateCondition, ErrorTrackerConfig, ExportOptions, ExportedData, GrafanaConfig, GrafanaDashboard, GrafanaExporter, GrafanaPanel, LocalStorageConfig, LokiLogEntry, LokiPushRequest, LongTaskAttribution, LongTaskEntry, MemoryMetrics, MetricType, MetricsCollectorConfig, MetricsSnapshot, NetworkRequest, NotificationChannel, NotificationConfig, PRESET_RULES, PagerDutyConfig, ParsedError, PhilChartContainer, PhilDashboard, PhilMetricCard, PrometheusTimeSeries, PrometheusWriteRequest, RemoteStorageConfig, RetentionPolicy, SentryBreadcrumb, SentryConfig, SentryEvent, SentryExporter, SentrySpan, SentryStackFrame, SentryTransaction, SlackConfig, SourceMapResolver, Span, SpanAttributes, SpanBuilder, SpanEvent, SpanKind, SpanLink, SpanStatusCode, StackFrame, StorageMetadata, StoredError, StoredMetrics, StoredSpan, TempoSpan, ThresholdCondition, TimeRange, TimeRangeValue, TraceContext, TracingConfig, UserInfo, WebVitalsMetrics, WebhookConfig, calculatePerformanceScore, captureReactError, createDatadogExporter, createGrafanaExporter, createSentryExporter, generateErrorFingerprint, generateWebVitalsDashboard, getAlertManager, getErrorTracker, getLocalStorage, getMetricsCollector, getRemoteStorage, getTracingManager, initErrorTracking, initRemoteStorage, initTracing, measureAsync, measureSync, parseError, parseStackTrace, resetAlertManager, resetErrorTracking, resetLocalStorage, resetMetricsCollector, resetRemoteStorage, resetTracing, trace, traceSync
+- Re-exported modules: ./alerts/index.js, ./collector/errors.js, ./collector/metrics.js, ./collector/tracing.js, ./integrations/datadog.js, ./integrations/grafana.js, ./integrations/sentry.js, ./storage/local.js, ./storage/remote.js, ./ui/Dashboard.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

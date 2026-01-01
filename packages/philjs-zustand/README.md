@@ -308,6 +308,21 @@ const useStore = createStore<BearState>((set) => ({
 4. Batch updates with `batch()` from philjs-core
 5. Use slices to organize large stores
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-zustand/src/index.ts
+
+### Public API
+- Direct exports: Destroy, DevToolsOptions, GetState, Middleware, PersistOptions, SetState, StateCreator, StoreApi, Subscribe, UseStore, combine, createSlice, createStore, devtools, immer, persist, shallow
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

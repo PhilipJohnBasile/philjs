@@ -361,6 +361,21 @@ export default defineConfig({
 - Aspect ratio (CSS aspect-ratio + fallback)
 - Priority hints (fetchpriority attribute)
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./vite, ./image-service
+- Source files: packages/philjs-image/src/index.ts, packages/philjs-image/src/vite.ts, packages/philjs-image/src/image-service.ts
+
+### Public API
+- Direct exports: CloudinaryImageService, ImageService, ImageServiceMetadata, ImageServiceRegistry, ImageServiceTransformOptions, ImgixImageService, SharpImageService, configureImageService, getFormatPriority, getImageService, imageServiceRegistry, selectOptimalFormat
+- Re-exported names: ArtDirectionSource, BlurPlaceholderOptions, CloudinaryImageService, Image, ImageCache, ImageFit, ImageFormat, ImageMetadata, ImageOptimizationConfig, ImagePosition, ImageProps, ImageService, ImageServiceMetadata, ImageServiceRegistry, ImageServiceTransformOptions, ImageTransformOptions, ImgixImageService, LoadingAnimation, LoadingStrategy, OptimizedImage, PlaceholderType, SharpImageService, calculateAspectRatio, configure, configureImageService, createCacheKey, default, extractDominantColor, generateBlurDataURL, generateBlurPlaceholder, generateResponsiveSet, generateSrcSet, getConfig, getDominantColor, getFormatFromSrc, getFormatPriority, getImageService, getMetadata, getOptimizedUrl, getResponsiveSizes, imageServiceRegistry, isExternalUrl, isSharpAvailable, isValidFormat, optimizeImage, selectOptimalFormat
+- Re-exported modules: ./Image.js, ./image-service.js, ./optimizer.js, ./types.js, ./utils.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

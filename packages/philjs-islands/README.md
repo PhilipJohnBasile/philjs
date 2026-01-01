@@ -467,6 +467,21 @@ element.addEventListener('phil:island-loaded', (e) => {
 5. **Monitor metrics** - Track cache hit rates to optimize TTLs
 6. **Prefetch strategically** - Warm caches for critical paths
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-islands/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: HydrationStrategy, HydrationTrigger, Island, IslandComponent, IslandConfig, IslandInstance, IslandLifecycle, IslandLoader, IslandRegistry, IslandState, LoaderConfig, RegistryEntry, createIsland, createIslandLoader, defineIsland, getRegistry, hydrateAll, hydrateIsland, mountIslands
+- Re-exported modules: ./hydration.js, ./island.js, ./loader.js, ./registry.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

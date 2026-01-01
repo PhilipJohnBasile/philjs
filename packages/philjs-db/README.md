@@ -527,6 +527,24 @@ See the [examples](../../examples) directory for full working examples:
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./supabase, ./migrations
+- Source files: packages/philjs-db/src/index.ts, packages/philjs-db/src/supabase.ts, packages/philjs-db/src/migrations/index.ts
+
+### Public API
+- Direct exports: AuthButton, FileUpload, GET, SupabaseConfig, SupabaseProvider, createSupabaseClient, exampleUsage, supabase, useSupabase, useSupabaseAuth, useSupabaseRealtime, useSupabaseStorage, withSupabase
+- Re-exported names: // CRUD operations with provider detection
+  create, // Transaction support with Symbol.asyncDispose
+  Transaction, // Universal QueryBuilder
+  QueryBuilder, AutoMigrationGenerator, AutoMigrationOptions, BackupConfig, BackupManager, CascadeRelation, ColumnBuilder, ColumnDefinition, ColumnDiff, CreateOptions, DataMigrationHelper, DataMigrationHelpers, DatabaseConfig, DatabaseProvider, DatabaseType, DeepPartial, DeepRequired, DeleteOptions, DrizzleMigrationIntegration, DrizzleSchemaParser, DryRunResult, Exact, ForeignKeyBuilder, ForeignKeyDefinition, ForeignKeyDiff, IndexDefinition, IndexDiff, InferInsert, InferModel, InferSelect, InferUpdate, JoinClause, JoinCondition, Migration, MigrationBuilder, MigrationCLI, MigrationConfig, MigrationConflict, MigrationContext, MigrationError, MigrationFile, MigrationManager, MigrationOperation, MigrationRecord, MigrationResult, MigrationStatus, MySQLMigrationAdapter, Operators, OrderByClause, PaginatedResult, PaginationOptions, PostgresMigrationAdapter, PrismaMigrationIntegration, PrismaSchemaParser, QueryOptions, Relationship, RelationshipBuilder, RelationshipType, Repository, RepositoryOptions, SQLiteMigrationAdapter, SchemaBuilder, SchemaConstraints, SchemaDiff, SchemaDiffGenerator, SchemaValidator, Seed, SeedConfig, SupabaseProvider, TableBuilder, TableDiff, TransactionRollbackError, TypeSafeQueryBuilder, UpdateOptions, UtilsWhereClause, ValidationError, ValidationResult, WhereClause, assert, createDatabaseConnection, createRepository, createSupabaseClient, createTransaction, deleteRecord, detectProvider, healthCheck, is, migration, omit, paginate, pick, query, queryBuilder, relationship, restore, softDelete, transaction, update, useSupabase, useSupabaseAuth, useSupabaseStorage, validator, withSupabase, withTransaction
+- Re-exported modules: ./adapters/mysql.js, ./adapters/postgres.js, ./adapters/sqlite.js, ./auto-migration.js, ./cli.js, ./integrations/drizzle.js, ./integrations/prisma.js, ./manager.js, ./migrations/index.js, ./schema-diff.js, ./supabase.js, ./type-safe-db.js, ./types.js, ./utils.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

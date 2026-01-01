@@ -45,3 +45,65 @@ const dispose = createRoot(() => {
 // Later
 // dispose();
 ```
+
+## When to use what
+
+- **effect**: DOM/event listeners, logging, network calls, imperative bridges.
+- **memo**: derived values that should stay in sync with dependencies.
+- **resource**: async data with loading/error states.
+- **linkedSignal**: writable computed with override/reset behavior.
+
+## Avoiding pitfalls
+
+- Do not perform heavy computation inside effects; compute in memos.
+- Avoid async effects; use resources or actions instead.
+- Clean up listeners with `onCleanup` to prevent leaks.
+- Keep dependency graphs shallow; break large effects into smaller ones.
+
+## Untracking in effects
+
+Use `untrack` to read without subscribing:
+
+```tsx
+effect(() => {
+  const value = untrack(() => expensiveSignal());
+  console.log(value);
+});
+```
+
+## Testing effects and memos
+
+```tsx
+import { describe, it, expect, vi } from 'vitest';
+import { effect, memo, signal } from '@philjs/core';
+
+describe('effects', () => {
+  it('runs when dependencies change', () => {
+    const a = signal(1);
+    const spy = vi.fn();
+    effect(() => spy(a()));
+    a.set(2);
+    expect(spy).toHaveBeenCalledTimes(2); // initial + update
+  });
+});
+```
+
+## Checklist
+
+- [ ] Side effects live in `effect`; derived values in `memo`.
+- [ ] Effects cleaned up via `onCleanup`.
+- [ ] No async work inside effects; use resources/actions.
+- [ ] Expensive reads wrapped in memos to avoid churn.
+
+## Try it now: memo + effect combo
+
+```tsx
+const count = signal(0);
+const label = memo(() => `Count is ${count()}`);
+
+effect(() => {
+  document.title = label(); // derived value used in side effect
+});
+```
+
+Click a button to change `count` and watch both the UI and document title stay in sync.

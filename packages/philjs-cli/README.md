@@ -321,19 +321,19 @@ Recommended project structure when using philjs-cli:
 
 ```
 my-app/
-├── src/
-│   ├── components/     # Shared components
-│   ├── routes/         # Route components with loaders
-│   ├── pages/          # Page components
-│   ├── hooks/          # Custom hooks
-│   ├── stores/         # State stores
-│   ├── styles/         # Global styles
-│   ├── entry-client.ts # Client entry point
-│   └── entry-server.ts # Server entry point
-├── public/             # Static assets
-├── philjs.config.ts    # PhilJS configuration
-├── vite.config.ts      # Vite configuration
-└── package.json
+ src/
+    components/     # Shared components
+    routes/         # Route components with loaders
+    pages/          # Page components
+    hooks/          # Custom hooks
+    stores/         # State stores
+    styles/         # Global styles
+    entry-client.ts # Client entry point
+    entry-server.ts # Server entry point
+ public/             # Static assets
+ philjs.config.ts    # PhilJS configuration
+ vite.config.ts      # Vite configuration
+ package.json
 ```
 
 ## Examples
@@ -401,6 +401,21 @@ Add these scripts to your `package.json`:
 ## Documentation
 
 For more information, see the [PhilJS documentation](../../docs).
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-cli/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: ApiOptions, BuildOptions, ComponentOptions, ContextOptions, DevServerOptions, GeneratorConfig, HookOptions, ModelOptions, PageOptions, PhilJSConfig, RouteOptions, ScaffoldOptions, StoreOptions, TemplateContext, analyze, buildProduction, defineConfig, generateApi, generateComponent, generateContext, generateHook, generateModel, generatePage, generateRoute, generateScaffold, generateStore, generateTypes, getGeneratorConfig, loadConfig, philJSPlugin, philJSSSRPlugin, startDevServer
+- Re-exported modules: ./analyze.js, ./build.js, ./config.js, ./dev-server.js, ./generate-types.js, ./generators/index.js, ./vite-plugin.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

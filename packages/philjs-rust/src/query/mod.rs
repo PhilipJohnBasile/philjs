@@ -22,10 +22,10 @@ use std::any::Any;
 use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, RwLock};
+use std::sync::{OnceLock, RwLock};
 use std::time::{Duration, Instant};
 
-use crate::reactive::{Signal, Memo, effect};
+use crate::reactive::{Effect, Signal};
 
 // ============================================================================
 // Types
@@ -123,8 +123,10 @@ impl CacheEntry {
     }
 }
 
-lazy_static::lazy_static! {
-    static ref QUERY_CACHE: RwLock<HashMap<String, CacheEntry>> = RwLock::new(HashMap::new());
+static QUERY_CACHE: OnceLock<RwLock<HashMap<String, CacheEntry>>> = OnceLock::new();
+
+fn get_cache() -> &'static RwLock<HashMap<String, CacheEntry>> {
+    QUERY_CACHE.get_or_init(|| RwLock::new(HashMap::new()))
 }
 
 fn cache_key(key: &QueryKey) -> String {
@@ -132,7 +134,7 @@ fn cache_key(key: &QueryKey) -> String {
 }
 
 fn get_cached<T: Clone + Send + Sync + 'static>(key: &QueryKey) -> Option<(T, bool)> {
-    let cache = QUERY_CACHE.read().ok()?;
+    let cache = get_cache().read().ok()?;
     let entry = cache.get(&cache_key(key))?;
 
     let data = entry.data.downcast_ref::<T>()?.clone();
@@ -142,7 +144,7 @@ fn get_cached<T: Clone + Send + Sync + 'static>(key: &QueryKey) -> Option<(T, bo
 }
 
 fn set_cached<T: Clone + Send + Sync + 'static>(key: &QueryKey, data: T, stale_time: Duration) {
-    if let Ok(mut cache) = QUERY_CACHE.write() {
+    if let Ok(mut cache) = get_cache().write() {
         cache.insert(cache_key(key), CacheEntry {
             data: Box::new(data),
             last_updated: Instant::now(),
@@ -152,13 +154,13 @@ fn set_cached<T: Clone + Send + Sync + 'static>(key: &QueryKey, data: T, stale_t
 }
 
 fn invalidate_cache(key: &QueryKey) {
-    if let Ok(mut cache) = QUERY_CACHE.write() {
+    if let Ok(mut cache) = get_cache().write() {
         cache.remove(&cache_key(key));
     }
 }
 
 fn invalidate_queries(predicate: impl Fn(&str) -> bool) {
-    if let Ok(mut cache) = QUERY_CACHE.write() {
+    if let Ok(mut cache) = get_cache().write() {
         cache.retain(|k, _| !predicate(k));
     }
 }
@@ -254,7 +256,7 @@ where
 
         // Would spawn async task to fetch
         // For now, just set loading state
-        effect(move || {
+        let _effect = Effect::new(move || {
             // Check if we need to fetch
             if state_clone.get().data.is_none() || state_clone.get().is_fetching {
                 let mut s = state_clone.get();
@@ -455,7 +457,7 @@ impl QueryClient {
 
     /// Clear all cached queries
     pub fn clear(&self) {
-        if let Ok(mut cache) = QUERY_CACHE.write() {
+        if let Ok(mut cache) = get_cache().write() {
             cache.clear();
         }
     }

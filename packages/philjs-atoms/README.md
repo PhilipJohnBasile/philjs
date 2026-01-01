@@ -91,7 +91,7 @@ function Temperature() {
         value={fahrenheit}
         onChange={(e) => setFahrenheit(Number(e.target.value))}
       />
-      <span>°F</span>
+      <span>F</span>
     </div>
   );
 }
@@ -522,6 +522,21 @@ Batch multiple updates.
 4. Batch updates with batchAtoms
 5. Use write-only atoms for actions
 6. Keep atoms small and focused
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-atoms/src/index.ts
+
+### Public API
+- Direct exports: AsyncAtom, Atom, AtomFamily, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom, asyncAtom, atom, atomAction, atomFamily, atomWithReset, atomWithStorage, batchAtoms, focusAtom, freezeAtom, loadable, selectAtom, splitAtom, useAtom, useAtomValue, useResetAtom, useSetAtom
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

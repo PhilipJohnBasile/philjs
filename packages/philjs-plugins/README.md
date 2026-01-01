@@ -2,6 +2,44 @@
 
 Plugin system for PhilJS - Create and use framework plugins to extend functionality.
 
+<!-- PACKAGE_GUIDE_START -->
+## Overview
+
+Plugin system for PhilJS - create and use framework plugins
+
+## Focus Areas
+
+- philjs, plugins, extensions, integrations
+
+## Entry Points
+
+- packages/philjs-plugins/src/index.ts
+- packages/philjs-plugins/src/registry.ts
+
+## Quick Start
+
+```ts
+import { BuildResult, Middleware, PhilJSApp } from '@philjs/plugins';
+```
+
+Wire the exported helpers into your app-specific workflow. See the API snapshot for the full surface.
+
+## Exports at a Glance
+
+- BuildResult
+- Middleware
+- PhilJSApp
+- Plugin
+- PluginCategory
+- PluginContext
+- PluginHooks
+- PluginInfo
+- PluginRegistry
+- RenderContext
+- RouteDefinition
+- ServerHandler
+<!-- PACKAGE_GUIDE_END -->
+
 ## Features
 
 - **Plugin Architecture** - Extend PhilJS with custom plugins
@@ -51,6 +89,21 @@ usePlugins([myPlugin]);
 ## Documentation
 
 For more information, see the [PhilJS documentation](../../docs).
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./registry
+- Source files: packages/philjs-plugins/src/index.ts, packages/philjs-plugins/src/registry.ts
+
+### Public API
+- Direct exports: BuildResult, Middleware, PhilJSApp, Plugin, PluginCategory, PluginContext, PluginHooks, PluginInfo, PluginRegistry, RenderContext, RouteDefinition, ServerHandler, callHook, createPlugin, definePlugin, fetchPluginInfo, getInstalledPlugins, getPluginCategories, getPluginsByCategory, getProvider, installPlugin, isPluginInstalled, searchPlugins, uninstallPlugin
+- Re-exported names: PluginRegistry, fetchPluginInfo, searchPlugins
+- Re-exported modules: ./registry.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

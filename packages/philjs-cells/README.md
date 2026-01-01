@@ -344,6 +344,21 @@ philjs generate cell Users -d src/components/cells
 5. **Leverage caching** - Use appropriate TTL for your data freshness needs
 6. **Prefetch on hover** - Improve perceived performance
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./cell, ./context, ./cache
+- Source files: packages/philjs-cells/src/index.ts, packages/philjs-cells/src/cell.ts, packages/philjs-cells/src/context.ts, packages/philjs-cells/src/cache.ts
+
+### Public API
+- Direct exports: CacheStats, CellContext, CellProvider, CellProviderProps, CellSSRContext, CellSSRProvider, CellSSRProviderProps, batchInvalidate, cellCache, composeCells, createCell, createCellCacheKey, createCellWithRetry, createDependentCell, createScopedCache, createTypedCell, generateCacheKey, getCellHydrationScript, hydrateCells, initializeCellsFromWindow, inspectCache, logCacheStats, serializeCellData, setupCacheGC, useCellContext, useCellInvalidate, useCellPrefetch, useCellSSR, warmCache
+- Re-exported names: CacheStats, CellCache, CellCacheEntry, CellComponent, CellContextValue, CellDataType, CellDefinition, CellFetcher, CellProps, CellProvider, CellProviderConfig, CellQuery, CellSSRContext, CellSSRProvider, CellState, CellStateComponents, CellVariablesType, EmptyCheckFn, EmptyProps, FailureProps, GraphQLResult, LoadingProps, PartialExcept, ReactiveCellState, SuccessProps, batchInvalidate, cellCache, composeCells, createCell, createCellCacheKey, createCellWithRetry, createDependentCell, createScopedCache, createTypedCell, defaultIsEmpty, generateCacheKey, getCellHydrationScript, hydrateCells, initializeCellsFromWindow, inspectCache, logCacheStats, serializeCellData, setupCacheGC, useCellContext, useCellInvalidate, useCellPrefetch, useCellSSR, warmCache
+- Re-exported modules: ./cache.js, ./cell.js, ./context.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

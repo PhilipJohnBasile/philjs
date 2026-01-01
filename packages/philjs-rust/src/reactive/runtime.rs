@@ -62,13 +62,10 @@ impl Runtime {
         self.batching = true;
     }
 
-    /// End batching and flush pending notifications.
-    pub fn end_batch(&mut self) {
+    /// End batching and return any pending notifications.
+    pub fn end_batch(&mut self) -> Vec<Subscriber> {
         self.batching = false;
-        let pending = std::mem::take(&mut self.pending_notifications);
-        for subscriber in pending {
-            subscriber.notify();
-        }
+        std::mem::take(&mut self.pending_notifications)
     }
 
     /// Check if we're currently batching.
@@ -110,13 +107,18 @@ impl Subscriber {
 
     /// Notify this subscriber.
     pub fn notify(&self) {
-        with_runtime(|rt| {
+        let queued = with_runtime(|rt| {
             if rt.is_batching() {
                 rt.queue_notification(self.clone());
+                true
             } else {
-                (self.callback)();
+                false
             }
         });
+
+        if !queued {
+            (self.callback)();
+        }
     }
 }
 

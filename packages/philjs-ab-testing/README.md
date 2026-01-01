@@ -218,6 +218,21 @@ interface FeatureFlag {
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-ab-testing/src/index.ts
+
+### Public API
+- Direct exports: ABTestingConfig, ABTestingManager, Assignment, AssignmentEngine, AudienceRule, EventTracker, Experiment, ExperimentEvent, ExperimentResults, FeatureFlag, FeatureFlagManager, MetricResults, StatisticalAnalyzer, UserContext, Variant, VariantResults, useABTesting, useExperiment, useFeatureFlag
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

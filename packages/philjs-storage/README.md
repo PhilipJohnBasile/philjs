@@ -94,6 +94,21 @@ import { FileUpload, FileList, ImagePreview } from '@philjs/storage/react';
 | `useFileList` | List files in path |
 | `useSignedUrl` | Generate signed URLs |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./s3, ./gcs, ./azure, ./local, ./memory, ./hooks, ./utils
+- Source files: packages/philjs-storage/src/index.ts, packages/philjs-storage/src/hooks.ts
+
+### Public API
+- Direct exports: AzureConfig, CopyOptions, DownloadOptions, DownloadProgress, DownloadState, FileListState, GCSConfig, ListOptions, ListResult, LocalConfig, MemoryConfig, MoveOptions, S3Config, SignedUrlOptions, StorageConfig, StorageFile, StorageProviderType, UploadOptions, UploadProgress, UploadState, createStorageClient, useDownload, useFileList, useUpload
+- Re-exported names: AzureStorageClient, GCSStorageClient, LocalStorageClient, MemoryStorageClient, ResizeOptions, S3StorageClient, StreamingUploadOptions, bufferToStream, createStreamingUpload, detectMimeType, getMimeTypeFromExtension, resizeImage, streamToBuffer, useDownload, useFileList, useUpload
+- Re-exported modules: ./hooks.js, ./providers/azure.js, ./providers/gcs.js, ./providers/local.js, ./providers/memory.js, ./providers/s3.js, ./utils/mime.js, ./utils/resize.js, ./utils/stream.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

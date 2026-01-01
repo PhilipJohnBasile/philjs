@@ -169,6 +169,21 @@ interface A11yAIConfig {
 | `missing-focus-indicator` | 2.4.7 | Serious |
 | `auto-playing-media` | 1.4.2 | Serious |
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-a11y-ai/src/index.ts
+
+### Public API
+- Direct exports: A11yAI, A11yAIConfig, A11yFix, A11yIssue, A11yIssueType, A11yReport, A11ySummary, AltTextGenerator, AriaLabelGenerator, ColorContrastFix, GeneratedAltText, adjustColorForContrast, getA11yAI, getContrastRatio, initA11yAI, useA11yAudit, useAutoAltText
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

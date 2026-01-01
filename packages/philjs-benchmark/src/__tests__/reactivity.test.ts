@@ -13,8 +13,8 @@ import {
   effectBenchmarks,
   memoBenchmarks,
   batchBenchmarks,
-} from '../reactivity/index.js';
-import type { BenchmarkSuite } from '../types.js';
+} from '../reactivity/index.ts';
+import type { BenchmarkSuite } from '../types.ts';
 
 describe('Reactivity Benchmark Suite', () => {
   describe('runReactivityBenchmarks', () => {

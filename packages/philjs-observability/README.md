@@ -96,6 +96,21 @@ metrics.histogram('response_time', 234);
 metrics.timing('api_call', startTime);
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./tracing, ./metrics, ./logging, ./sentry, ./datadog
+- Source files: packages/philjs-observability/src/index.ts
+
+### Public API
+- Direct exports: ConsoleTransport, ErrorTracker, ErrorTrackerOptions, LogEntry, LogLevel, LogTransport, Logger, LoggerOptions, MetricValue, Metrics, MetricsExporter, MetricsOptions, PerformanceMetrics, Span, SpanEvent, SpanExporter, Tracer, TracerOptions, usePerformance
+- Re-exported names: Alert, AlertCondition, AlertManager, AlertManagerConfig, AlertRule, AlertSeverity, AlertState, ComparisonOperator, NotificationChannel, getAlertManager, initAlertManager, presetRules, useAlerts
+- Re-exported modules: ./alerting.js, ./charts/index.js, ./dashboard/index.js, ./widgets/index.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

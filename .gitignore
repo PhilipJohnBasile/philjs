@@ -9,6 +9,7 @@ playwright-report/
 test-results/
 .vite/
 .cache/
+.turbo/cache/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 
@@ -37,3 +38,15 @@ examples/**/public/sw.d.ts.map
 /*-test.png
 /light-mode*.png
 /scroll-debug.png
+
+# Book exports (track the final artifacts, ignore test outputs)
+!docs/philjs-book/dist/
+!docs/philjs-book/dist/philjs-book.pdf
+!docs/philjs-book/dist/philjs-book.epub
+docs/philjs-book/dist/pandoc-test.*
+
+# Editor workspace
+docs/philjs-book/src/.obsidian/
+
+# Rust build artifacts for the Rust implementation
+packages/philjs-rust/target/

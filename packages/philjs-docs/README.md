@@ -107,30 +107,30 @@ netlify login
 
 ```
 packages/philjs-docs/
-├── src/
-│   ├── app/                  # Next.js App Router pages
-│   │   ├── docs/            # Documentation pages
-│   │   │   ├── getting-started/
-│   │   │   ├── core-concepts/
-│   │   │   ├── guides/
-│   │   │   ├── api/
-│   │   │   ├── tutorials/
-│   │   │   └── rust-guide/
-│   │   ├── examples/        # Example gallery
-│   │   └── playground/      # Interactive playground
-│   └── components/          # Shared components
-│       ├── Header.tsx       # Site header with navigation
-│       ├── Sidebar.tsx      # Documentation sidebar
-│       ├── Search.tsx       # Search dialog
-│       ├── CodeBlock.tsx    # Syntax-highlighted code blocks
-│       ├── Playground.tsx   # Interactive code playground
-│       └── APIReference.tsx # API documentation component
-├── public/                  # Static assets
-├── vercel.json             # Vercel configuration
-├── wrangler.toml           # Cloudflare configuration
-├── netlify.toml            # Netlify configuration
-├── next.config.mjs         # Next.js configuration
-└── tailwind.config.ts      # Tailwind CSS configuration
+ src/
+    app/                  # Next.js App Router pages
+       docs/            # Documentation pages
+          getting-started/
+          core-concepts/
+          guides/
+          api/
+          tutorials/
+          rust-guide/
+       examples/        # Example gallery
+       playground/      # Interactive playground
+    components/          # Shared components
+        Header.tsx       # Site header with navigation
+        Sidebar.tsx      # Documentation sidebar
+        Search.tsx       # Search dialog
+        CodeBlock.tsx    # Syntax-highlighted code blocks
+        Playground.tsx   # Interactive code playground
+        APIReference.tsx # API documentation component
+ public/                  # Static assets
+ vercel.json             # Vercel configuration
+ wrangler.toml           # Cloudflare configuration
+ netlify.toml            # Netlify configuration
+ next.config.mjs         # Next.js configuration
+ tailwind.config.ts      # Tailwind CSS configuration
 ```
 
 ## Documentation Sections
@@ -200,6 +200,21 @@ packages/philjs-docs/
 5. Commit your changes: `git commit -m 'Add new feature'`
 6. Push to the branch: `git push origin feature/my-feature`
 7. Open a Pull Request
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: (none detected)
+- Source files: (none detected)
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

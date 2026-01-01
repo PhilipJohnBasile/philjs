@@ -22,7 +22,7 @@ debug = []
 
 [dependencies]
 # Core
-philjs-macros = { path = "./macros", version = "2.0.0" }
+philjs-macros = { path = "./macros", version = "0.1.0" }
 
 # WASM bindings
 wasm-bindgen = { version = "0.2", optional = true }

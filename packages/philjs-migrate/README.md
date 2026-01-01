@@ -298,6 +298,21 @@ interface MigrationOptions {
 
 For more information, see the [PhilJS migration guide](../../docs/migration).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-migrate/src/index.ts
+
+### Public API
+- Direct exports: ANGULAR_TRANSFORMS, MigrationError, MigrationOptions, MigrationResult, REACT_TRANSFORMS, SVELTE_TRANSFORMS, VUE_TRANSFORMS, analyzeProject, migrate
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

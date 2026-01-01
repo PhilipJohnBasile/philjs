@@ -123,6 +123,10 @@
       "types": "./dist/tc39-signals.d.ts",
       "import": "./dist/tc39-signals.js"
     },
+    "./tc39-signals-polyfill": {
+      "types": "./dist/tc39-signals-polyfill.d.ts",
+      "import": "./dist/tc39-signals-polyfill.js"
+    },
     "./view-transitions": {
       "types": "./dist/view-transitions.d.ts",
       "import": "./dist/view-transitions.js"

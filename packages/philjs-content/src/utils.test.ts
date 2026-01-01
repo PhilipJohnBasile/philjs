@@ -148,7 +148,7 @@ describe('findRelatedPosts', () => {
       id: '3',
       slug: 'post-3',
       collection: 'blog',
-      data: { title: 'React Performance', tags: ['react', 'performance'] },
+      data: { title: 'React Performance', tags: ['react', 'javascript', 'performance'] },
       body: '',
       filePath: '',
       modifiedTime: new Date(),

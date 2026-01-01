@@ -103,6 +103,40 @@ let result = CursorPaginator::new(&db, posts::Entity::find())
     .await?;
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-seaorm/src/lib.rs
+
+### Public API
+- Public modules: context, entity, error, hooks, migration, pagination, prelude, query, reactive
+- Public items: ConnectionBuilder, build_options, connect, connect_timeout_secs, connect_with_options, idle_timeout_secs, max_connections, min_connections, new, sqlx_logging
+- Re-exports: context::{provide_db, use_db, DbProvider}, crate::context::{provide_db, use_db, DbProvider}, crate::entity::{EntityHelpers, Pagination, SortOrder}, crate::error::{OrmError, OrmResult}, crate::hooks::{HookedEntity, BeforeHook, AfterHook, ValidationHook, LoggingHook}, crate::pagination::{
+        Paginator, PaginationParams, PaginationMeta, PaginatedResult,
+        CursorPaginator, CursorParams, CursorResult, PaginateExt,
+    }, crate::query::{QueryHelpers, FilterBuilder, RelationLoader}, crate::reactive::{ReactiveEntity, ReactiveQueryBuilder, EntityResource}, entity::{EntityHelpers, Pagination, SortOrder}, error::{OrmError, OrmResult}, migration::{Migrator, MigrationStatus}, philjs::prelude::*, query::{QueryHelpers, FilterBuilder, RelationLoader}, sea_orm::entity::prelude::*, sea_orm::{
+        entity::*, query::*, ActiveModelTrait, ActiveValue,
+        ColumnTrait, EntityTrait, ModelTrait, Set,
+        DatabaseConnection, DatabaseTransaction,
+        ConnectionTrait, TransactionTrait,
+        FromQueryResult, IntoActiveModel,
+        Related, RelationDef, RelationTrait,
+        Condition, Order,
+    }, sea_orm::{
+    entity::*, query::*, ActiveModelTrait, ActiveValue,
+    ColumnTrait, EntityTrait, ModelTrait, PrimaryKeyTrait,
+    DatabaseConnection, DatabaseTransaction, ConnectOptions,
+    ConnectionTrait, TransactionTrait, Statement,
+    DbErr, DbBackend, ExecResult,
+    FromQueryResult, IntoActiveModel, TryIntoModel,
+    Related, RelationDef, RelationTrait,
+    Condition, Order, Value,
+}, sea_query::{Expr, Func, SimpleExpr}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

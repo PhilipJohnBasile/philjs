@@ -777,12 +777,116 @@ pnpm typecheck
 
 When using file-based routing:
 
-- `index.tsx` → `/`
-- `about.tsx` → `/about`
-- `products/[id].tsx` → `/products/:id` (dynamic segment)
-- `blog/[...slug].tsx` → `/blog/*` (catch-all)
-- `_layout.tsx` → Layout component (not a route)
-- `_component.tsx` → Shared component (not a route)
+- `index.tsx`  `/`
+- `about.tsx`  `/about`
+- `products/[id].tsx`  `/products/:id` (dynamic segment)
+- `blog/[...slug].tsx`  `/blog/*` (catch-all)
+- `_layout.tsx`  Layout component (not a route)
+- `_component.tsx`  Shared component (not a route)
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-router/src/index.ts
+
+### Public API
+- Direct exports: Route, RouteModule, createRouter
+- Re-exported names: // Action execution
+  executeAction, // Built-in guards
+  createAuthGuard, // Built-in middleware
+  createLoggingContextMiddleware, // Built-in providers
+  createUserContextProvider, // Cache management
+  clearContextCache, // Component
+  Await, // Component Types
+  ViewTransitionLinkProps, // Components
+  Form, // Components
+  RouteErrorBoundary, // Components
+  ViewTransitionLink, // Configuration
+  createParallelRouteConfig, // Configuration
+  isRouteMaskingEnabled, // Context management
+  setCurrentRouteData, // Context providers
+  registerContextProvider, // Core
+  defer, // Core Types
+  TransitionConfig, // Creation
+  createRouteGroup, // Current route context
+  setCurrentRouteContext, // Data loading
+  loadNestedRouteData, // Data loading
+  loadParallelSlots, // Debug
+  getRouteMaskingDebugInfo, // Debug
+  getRouterContextDebugInfo, // Discovery
+  discoverRouteGroups, // Error creation
+  createRouteErrorResponse, // Error handling
+  catchRouteError, // Error recovery
+  withErrorRecovery, // Event Types
+  ViewTransitionEvent, // Execution
+  runNavigationGuards, // Fallback
+  animateFallback, // Form utilities
+  formDataToObject, // Global context
+  setGlobalContext, // Helpers
+  deferData, // Hierarchy utilities
+  getRouteIds, // History
+  restoreMaskFromHistory, // History & Performance
+  clearHistory, // Hooks
+  useActionData, // Hooks
+  useLoaderData, // Hooks
+  useRouteError, // Hooks
+  useRouteMask, // Hooks
+  useRouterContext, // Hooks
+  useSlot, // Hooks
+  useViewTransition, // Import/Export
+  exportState, // Initialization
+  initRouteMasking, // Initialization
+  initRouterContext, // Initialization
+  initRouterDevTools, // Loader execution
+  executeLoader, // Main component
+  RouterDevTools, // Manager
+  ViewTransitionManager, // Mask creation & management
+  createRouteMask, // Matching
+  matchNestedRoutes, // Matching
+  matchParallelRoutes, // Middleware
+  addContextMiddleware, // Middleware
+  executeGroupMiddleware, // Navigation
+  navigateWithTransition, // Navigation tracking
+  trackNavigation, // Navigation with masking
+  navigateWithMask, // Optimistic updates
+  applyOptimisticUpdate, // Parsing
+  parseRouteGroup, // Path utilities
+  generatePath, // Processing
+  processRouteGroups, // Registration
+  beforeEach, // Rendering
+  renderNestedRoutes, // Rendering
+  renderParallelSlots, // Route builders
+  createRoute, // Route interception
+  navigateWithInterception, // Route overrides
+  registerRouteContextOverride, // Shared Element Types
+  SharedElementOptions, // Shared Elements
+  markSharedElement, // Stack management
+  pushMask, // State Types
+  ViewTransitionState, // State access
+  getCurrentMask, // State access
+  getDevToolsState, // State management
+  setActionData, // State management
+  setRouteError, // State management
+  updateParallelRouteState, // State updates
+  updateRouteTree, // Status helpers
+  isClientError, // Streaming
+  streamDeferred, // Support Detection
+  supportsViewTransitions, // Type guards
+  isRouteErrorResponse, // Type-safe helpers
+  createTypedContext, // UI controls
+  toggleDevTools, // Utilities
+  createLoaderRequest, // Utilities
+  getNavigationDirection, // Utilities
+  getRoutesByGroup, // Utilities
+  matchesMask, // Utilities
+  parseLocation, // Utilities
+  validateContext, ActionFunction, ActionFunctionContext, ActionResult, AfterNavigationHook, AwaitProps, Breadcrumb, BreadcrumbConfig, BuilderResult, CacheStats, CachedRoute, ContextMiddleware, ContextProvider, ContextValidator, DefaultErrorBoundary, DeferredData, DeferredStatus, DeferredValue, DevToolsConfig, EnhancedLink, EnhancedLinkProps, ErrorBoundaryComponent, ErrorBoundaryProps, ErrorRecoveryOptions, FallbackBehavior, FetcherState, FormProps, GroupRoute, GuardConfig, GuardContext, InferLoaderData, InterceptConfig, InterceptedNavigationState, IntersectionOptions, LayoutChain, LayoutComponent, Link, LinkPrefetchOptions, LinkProps, LoaderFunction, LoaderFunctionContext, LoaderOptions, LoaderResult, MaskMatchStrategy, MaskRestoreOptions, MaskStackEntry, MaskedNavigationOptions, MatchedNestedRoute, MatchedRoute, MatchedSlot, MiddlewareContext, MiddlewareResult, NavigateFunction, NavigationFailure, NavigationFailureType, NavigationGuard, NavigationGuardReturn, NavigationHistoryEntry, NavigationMetrics, NavigationMode, NavigationState, NestedRouteDefinition, NestedRouteMatch, NestedRouteOptions, ObservedElement, OptimisticUpdate, Outlet, ParallelRouteConfig, ParamValue, PrefetchCacheConfig, PrefetchConfig, PrefetchLink, PrefetchManager, PrefetchMessage, PrefetchMode, PrefetchOptions, PrefetchPriority, PrefetchQueueItem, PrefetchResult, PrefetchStats, PrefetchZone, PreloadOptions, PreloadStrategy, ProcessedGroupRoute, QueryParams, QueryValue, RouteComponent, RouteComponentProps, RouteContextOverride, RouteDefinition, RouteError, RouteErrorBoundaryProps, RouteErrorContext, RouteErrorResponse, RouteGroup, RouteGroupConfig, RouteGroupMeta, RouteGroupMiddleware, RouteLoaderData, RouteLocation, RouteManifestOptions, RouteMask, RouteMatch, RouteMatchDebugInfo, RouteMatcher, RouteMeta, RouteParams, RoutePattern, RoutePerformance, RouteStateSnapshot, RouteTransitionOptions, RouteTreeNode, RouteTypeGenerationOptions, RouterContext, RouterContextConfig, RouterOptions, RouterView, SWRFetchOptions, ScrollDirection, SlotComponent, SlotComponentProps, SlotDefinition, SlotName, SmartPreloader, StreamOptions, SubmitOptions, SwRegistrationOptions, TransitionDirection, TransitionType, TypedRouterContext, URLBuilder, URLBuilderOptions, UsePrefetchLinkOptions, UsePrefetchLinkResult, UserIntentData, ValidationError, ValidationResult, ViewTransitionConfig, ViewTransitionEventDetail, ViewTransitionEventHandler, ViewTransitionOptions, VisibilityState, addRouteToGroup, afterEach, applyContextMiddleware, applyLayouts, applyRouteMask, awaitAllDeferred, beforeRoute, buildQueryString, calculateClickIntent, clearActionData, clearAllGuards, clearAllRouteErrors, clearLoaderData, clearMaskHistory, clearMaskStack, clearOptimisticUpdates, clearParallelRouteState, clearPerformance, clearRouteError, clearSwCache, cloneContext, closeInterception, closeOverlay, closeServiceWorkerPrefetch, completeNavigation, computeProvidedContext, createActionRequest, createAnalyticsGuard, createApiContextProvider, createAppRouter, createAuthMiddleware, createCatchAllRoute, createConfirmGuard, createErrorResponse, createFilterContextMiddleware, createHeaderMiddleware, createIndexRoute, createInlineServiceWorker, createIntersectionObserver, createLayoutRoute, createLoadingGuard, createLocaleContextProvider, createLocation, createLoggingMiddleware, createNestedGroups, createOutlet, createPermissionGuard, createPermissionMiddleware, createPrefetchZone, createRateLimitGuard, createRateLimitMiddleware, createRetryHandler, createRoleGuard, createRouteManifest, createRouteMatcher, createScrollGuard, createThemeContextProvider, createTitleGuard, createTransformContextMiddleware, createURLBuilder, createViewTransitionLink, defineContextMiddleware, defineContextProvider, defineRoutes, deserializeMask, deserializeRouteState, detectMaskFromHistory, disconnectAll, discoverRoutes, executeLoadersParallel, executeNestedAction, executeNestedLoaders, exportContextState, exportMaskingState, exportRouteGroups, extractGroups, extractParamNames, findLayouts, findRouteById, generateBreadcrumbs, generatePrefetchServiceWorker, generateRouteTypes, getActualRoute, getAncestorRoutes, getContextKeys, getCurrentRouteContext, getDeferredStates, getGlobalContext, getGlobalContextValue, getGuardsCount, getInterceptionHistory, getLinksInScrollPath, getMaskConfig, getMaskFromHistory, getMaskStack, getMaskStackDepth, getMaskedUrl, getNavigationStatus, getParentRoute, getPrefetchManager, getRedirectLocation, getRouteContext, getScrollDirection, getSmartPreloader, getSwCachedUrls, getViewTransitionManager, getVisibilityState, handleRouteError, hasContextKey, hasIntersected, hydrateDeferred, importState, initPrefetchManager, initServiceWorkerPrefetch, initSmartPreloader, initViewTransitions, invalidateLoaderCache, isActivePath, isApproachingViewport, isDeferred, isGroupPath, isIntercepted, isNavigationCancelled, isObserving, isRedirectResponse, isRouteMasked, isServerError, isSuccessStatus, isSwCached, joinPaths, json, markErrorHandled, matchPattern, matchRoute, mergeContexts, mergeQueryParams, mergeRouteGroups, navigate, navigateAsDrawer, navigateAsModal, normalizePath, objectToFormData, observeElement, onScrollDirectionChange, onSwMessage, parseInterception, parseParams, parseQueryString, parseURL, popMask, predictNextRoute, prefersReducedMotion, prefetchRoute, prefetchRouteWithData, preloadLink, recordRouteMatch, redirect, registerPrefetchServiceWorker, removeContextMiddleware, removeGroups, removeRouteMask, requestSwPrefetch, resetRouterContext, resetViewTransitions, resolveDeferred, resolveLinkTo, revalidate, runAfterHooks, serializeDeferred, serializeMask, serializeRouteState, setActiveTab, setCurrentRouteError, setErrorStack, setNavigationState, setOutletContext, setRouteMaskingEnabled, startViewTransition, swrFetch, throwBadRequest, throwForbidden, throwNotFound, throwResponse, throwServerError, throwUnauthorized, toggleMinimize, trackLoader, transitionLink, unobserveElement, unregisterContextProvider, unregisterRouteContextOverride, updateGlobalContext, updateGlobalContextMultiple, updateMaskConfig, updateRouteState, useActualRoute, useFetcher, useFetchers, useHasRouteError, useInterceptedNavigation, useInterception, useIsRouteMasked, useLoaderLoading, useMaskState, useMaskedUrl, useMatches, useMatchesData, useNavigation, useOptimisticUpdates, useOutletContext, usePrefetchLink, usePreload, useRoute, useRouteErrorById, useRouteErrors, useRouteLoaderData, useRouter, useRouterContextValue, useSlotByName, useSlots, useSubmit, useTransitionName, useTransitionPersist, useUpdateRouterContext, useViewTransitionEvent, validateFormData, validateRouteGroup, visualizeRouteGroups
+- Re-exported modules: ./action.js, ./defer.js, ./devtools.js, ./discovery.js, ./error-boundary.js, ./guards.js, ./high-level.js, ./intersection.js, ./layouts.js, ./link.js, ./loader.js, ./nested.js, ./parallel-routes.js, ./prefetch.js, ./route-groups.js, ./route-masking.js, ./router-context.js, ./service-worker-prefetch.js, ./smart-preload.js, ./url-builder.js, ./view-transitions.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

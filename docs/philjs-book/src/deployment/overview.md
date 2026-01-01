@@ -2,6 +2,8 @@
 
 PhilJS supports static, SSR, and hybrid deployments.
 
+![Deployment topologies](../../visuals/deployment-topologies.svg "Static/ISR, edge, and regional layouts")
+
 ## Build
 
 ```bash
@@ -38,3 +40,4 @@ export default defineConfig({
 
 - Node 24+ for SSR runtimes
 - Edge targets when using `@philjs/ssr` worker adapters
+

@@ -83,6 +83,20 @@ if (Platform.OS === 'ios') {
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-mobile/src/lib.rs
+
+### Public API
+- Public modules: android, animation, biometrics, camera, components, gestures, haptics, in_app_purchase, ios, location, navigation, notifications, permissions, platform, prelude, renderer, runtime, sensors, share, storage
+- Public items: AppState, BLACK, BLUE, Color, Constraints, EdgeInsets, FontWeight, GREEN, IntoView, KeyboardType, NativeComponent, NativeView, Orientation, Point, RED, Rect, SafeArea, Size, TRANSPARENT, TextAlign, WHITE, all, fn, from_hex, from_origin_size, horizontal, loose, new, run, run_with_config, symmetric, tight, unbounded, vertical, zero
+- Re-exports: animation::{AnimatedValue, SpringAnimation, TimingAnimation}, components::*, gestures::{GestureRecognizer, Gesture, GestureState}, haptics::{HapticFeedback, HapticStyle}, navigation::{Navigator, Route, NavigationStack}, notifications::{LocalNotification, PushNotification, NotificationHandler}, permissions::{Permission, PermissionStatus, request_permission}, platform::{Platform, PlatformInfo, DeviceInfo}, renderer::{NativeRenderer, RenderContext}, runtime::{MobileApp, MobileConfig, run, run_with_config}, storage::{SecureStorage, AsyncStorage, FileSystem}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

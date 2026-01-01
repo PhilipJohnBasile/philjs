@@ -54,9 +54,51 @@ impl From<Children> for View {
     }
 }
 
-impl<T: Into<View>> From<T> for Children {
-    fn from(view: T) -> Self {
-        Children::new(vec![view.into()])
+impl From<View> for Children {
+    fn from(view: View) -> Self {
+        Children::new(vec![view])
+    }
+}
+
+impl From<Vec<View>> for Children {
+    fn from(views: Vec<View>) -> Self {
+        Children::new(views)
+    }
+}
+
+impl From<super::Element> for Children {
+    fn from(element: super::Element) -> Self {
+        Children::new(vec![View::from(element)])
+    }
+}
+
+impl From<super::Text> for Children {
+    fn from(text: super::Text) -> Self {
+        Children::new(vec![View::from(text)])
+    }
+}
+
+impl From<super::Fragment> for Children {
+    fn from(fragment: super::Fragment) -> Self {
+        Children::new(vec![View::from(fragment)])
+    }
+}
+
+impl From<super::Dynamic> for Children {
+    fn from(dynamic: super::Dynamic) -> Self {
+        Children::new(vec![View::from(dynamic)])
+    }
+}
+
+impl From<&str> for Children {
+    fn from(value: &str) -> Self {
+        Children::new(vec![View::from(value)])
+    }
+}
+
+impl From<String> for Children {
+    fn from(value: String) -> Self {
+        Children::new(vec![View::from(value)])
     }
 }
 

@@ -103,7 +103,13 @@ export function createPlural(
       return n === 1 ? (forms[0] ?? '') : (forms[1] ?? forms[0] ?? '');
     }
     const key = rule(n);
-    const index = ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key);
+    if (forms.length === 0) return '';
+    if (forms.length === 1) return forms[0] ?? '';
+    if (forms.length === 2) {
+      return key === 'one' ? (forms[0] ?? '') : (forms[1] ?? forms[0] ?? '');
+    }
+    const order = ['zero', 'one', 'two', 'few', 'many', 'other'] as const;
+    const index = order.indexOf(key as typeof order[number]);
     return forms[index] ?? forms[forms.length - 1] ?? '';
   };
 }

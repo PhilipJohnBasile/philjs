@@ -727,13 +727,13 @@ export { useForm, validators, createField }
 // MOVE TO @philjs/i18n:
 export { I18nProvider, useI18n, useTranslation }
 
-// MOVE TO @philjs/animation:
+// MOVE TO @philjs/motion:
 export { createAnimatedValue, easings, FLIPAnimator }
 
 // MOVE TO @philjs/analytics:
 export { costTracker, usageAnalytics, performanceBudgets }
 
-// MOVE TO @philjs/data:
+// KEEP IN @philjs/core (data module):
 export { createQuery, createMutation, queryCache }
 
 // REMOVE ENTIRELY:
@@ -863,4 +863,3 @@ PhilJS has **excellent fundamentals** (fine-grained reactivity, no VDOM, great D
 **Files Analyzed:** 48 source files across 9 packages
 **Documentation Reviewed:** README.md, migration guides, example apps
 **Anti-Pattern Categories Validated:** 10/10
-

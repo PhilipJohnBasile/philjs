@@ -188,6 +188,21 @@ interface ConsentState {
 - **Path Anonymization**: Removes IDs from URL paths (e.g., `/users/123` -> `/users/[id]`)
 - **Timestamp Rounding**: Rounds timestamps to nearest minute
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./privacy-first
+- Source files: packages/philjs-analytics/src/privacy-first.ts
+
+### Public API
+- Direct exports: AggregatedMetrics, AnalyticsEvent, ConsentState, EventType, PrivacyConfig, PrivacyFirstAnalytics, WebVitalsAggregate, getAnalytics, initAnalytics, resetAnalytics, useAnalytics, useConsent
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

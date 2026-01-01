@@ -96,7 +96,7 @@ Monthly community calls where we discuss roadmap, demos, and Q&A.
 
 - **When**: First Thursday of each month at 10 AM PT
 - **Where**: [Zoom link in Discord](https://discord.gg/philjs)
-- **Archive**: [Past recordings](https://youtube.com/@philjs/community-calls)
+- **Archive**: [Past recordings](https://youtube.com/@philjs)
 
 ### Meetups ↗
 Find or organize a local PhilJS meetup in your area.
@@ -111,7 +111,7 @@ PhilJS talks and workshops at conferences worldwide.
 - JSNation 2025 (June)
 - Jamstack Conf 2025 (September)
 
-**Past talks**: [Watch on YouTube](https://youtube.com/@philjs/conference-talks)
+**Past talks**: [Watch on YouTube](https://youtube.com/@philjs)
 
 ---
 

@@ -177,6 +177,21 @@ VecStore is optimized for fast similarity search:
 - **Image Search** - Find visually similar images
 - **Anomaly Detection** - Find outliers in vector space
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-vector-store/src/index.ts
+
+### Public API
+- Direct exports: DistanceMetric, HybridSearchOptions, QueryOptions, SearchResult, StoreStats, VectorMetadata, VectorStore, VectorStoreConfig, cosineSimilarity, euclideanDistance, initVectorStore, normalizeVector
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

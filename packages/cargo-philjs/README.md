@@ -666,25 +666,25 @@ build_command = "cargo philjs build --release"
 
 ```
 my-app/
-├── src/
-│   ├── lib.rs              # Entry point
-│   ├── components/         # Reusable components
-│   │   ├── mod.rs
-│   │   ├── button.rs
-│   │   └── card.rs
-│   ├── pages/             # Route pages
-│   │   ├── mod.rs
-│   │   ├── home.rs
-│   │   └── about.rs
-│   ├── hooks/             # Custom hooks
-│   ├── stores/            # State management
-│   └── utils/             # Utilities
-├── static/                # Static assets
-│   ├── styles.css
-│   └── images/
-├── tests/                 # Integration tests
-├── Cargo.toml
-└── philjs.toml           # PhilJS configuration
+ src/
+    lib.rs              # Entry point
+    components/         # Reusable components
+       mod.rs
+       button.rs
+       card.rs
+    pages/             # Route pages
+       mod.rs
+       home.rs
+       about.rs
+    hooks/             # Custom hooks
+    stores/            # State management
+    utils/             # Utilities
+ static/                # Static assets
+    styles.css
+    images/
+ tests/                 # Integration tests
+ Cargo.toml
+ philjs.toml           # PhilJS configuration
 ```
 
 ### Development Workflow
@@ -741,6 +741,20 @@ cargo philjs build --no-optimize
 
 We welcome contributions! Please see [CONTRIBUTING.md](../../CONTRIBUTING.md) for details.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/cargo-philjs/src/main.rs
+
+### Public API
+- Public modules: (none detected)
+- Public items: BuildTarget, DeployPlatform, ProjectTemplate
+- Re-exports: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT License - see [LICENSE](../../LICENSE) for details.
@@ -761,4 +775,4 @@ MIT License - see [LICENSE](../../LICENSE) for details.
 
 ---
 
-**Built with love by the PhilJS community** 🦀
+**Built with love by the PhilJS community** 

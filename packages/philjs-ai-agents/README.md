@@ -247,6 +247,28 @@ interface ToolDefinition {
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-ai-agents/src/index.ts
+
+### Public API
+- Direct exports: // Builder
+  createAgent, // Built-in tools
+  webSearchTool, // Core classes
+  Agent, // Hooks
+  useAgent, // LLM Clients
+  OpenAIClient, // Memory
+  ConversationMemory, // Types
+  type Message, AgentBuilder, AgentConfig, AgentContext, AgentOrchestrator, AgentResponse, AgentWorkflow, AnthropicClient, EpisodicMemory, HandoffRequest, LLMClient, LLMRequest, Memory, MemoryConfig, OrchestratorConfig, SemanticMemory, StreamChunk, SupervisorConfig, SupervisorOrchestrator, ToolCall, ToolDefinition, ToolResult, UseAgentResult, WorkflowStep, calculatorTool, codeExecutorTool, useOrchestrator
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

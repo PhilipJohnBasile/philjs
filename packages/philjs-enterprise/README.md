@@ -86,6 +86,21 @@ auditLog.record({
 });
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./multi-tenancy, ./sso, ./rbac, ./audit, ./feature-flags, ./white-label
+- Source files: packages/philjs-enterprise/src/index.ts, packages/philjs-enterprise/src/multi-tenancy.ts, packages/philjs-enterprise/src/sso.ts, packages/philjs-enterprise/src/rbac.ts, packages/philjs-enterprise/src/audit.ts, packages/philjs-enterprise/src/feature-flags.ts, packages/philjs-enterprise/src/white-label.ts
+
+### Public API
+- Direct exports: AttributeMapping, AuditConfig, AuditEvent, AuditFilter, AuditLogger, AuditMetadata, AuditStorage, BrandingConfig, CustomizationConfig, DomainConfig, EmailTemplate, EvaluationContext, FeatureFlag, FeatureFlagManager, FeatureRule, FeatureVariant, LDAPConfig, MultiTenancyConfig, OAuth2Config, OIDCConfig, Permission, PermissionCondition, ProvisioningConfig, RBACConfig, RBACManager, Role, RuleCondition, SAMLConfig, SSOConfig, SSOManager, SSOProvider, SSOSession, SSOUser, Tenant, TenantBranding, TenantContext, TenantManager, TenantSettings, TenantUser, WhiteLabelConfig, WhiteLabelManager, createAuditLogger, createDefaultBranding, createDefaultTenantSettings, createFeatureFlagManager, createInMemoryStorage, createLDAPConfig, createOIDCConfig, createRBACManager, createSAMLConfig, createSSOManager, createTenantManager, createTenantMiddleware, createWhiteLabelManager, tenantKey, tenantScope, withTenantId
+- Re-exported names: (none detected)
+- Re-exported modules: ./audit.js, ./compliance.js, ./feature-flags.js, ./multi-tenancy.js, ./rbac.js, ./sso.js, ./white-label.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

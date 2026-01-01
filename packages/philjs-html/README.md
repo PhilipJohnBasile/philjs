@@ -334,6 +334,21 @@ init({
 </div>
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./attributes, ./minimal
+- Source files: packages/philjs-html/src/index.ts, packages/philjs-html/src/minimal.ts
+
+### Public API
+- Direct exports: initMinimal, minimalVersion
+- Re-exported names: PhilJSHTML, init
+- Re-exported modules: ./alpine.js, ./directives.js, ./htmx.js, ./minimal.js, ./runtime.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

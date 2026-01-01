@@ -141,14 +141,15 @@ describe('@philjs/collab', () => {
   describe('OT Functions', () => {
     it('should apply operations', () => {
       const doc = 'Hello';
-      const result = exports.applyOperation(doc, { type: 'insert', pos: 5, text: ' World' });
+      const result = exports.applyOperation(doc, { type: 'insert', position: 5, text: ' World' });
       expect(result).toBe('Hello World');
     });
 
     it('should transform operations', () => {
-      const op1 = { type: 'insert', pos: 0, text: 'A' } as const;
-      const op2 = { type: 'insert', pos: 0, text: 'B' } as const;
-      const [transformed1, transformed2] = exports.transform(op1, op2);
+      const op1 = { type: 'insert', position: 0, text: 'A' } as const;
+      const op2 = { type: 'insert', position: 0, text: 'B' } as const;
+      const transformed1 = exports.transform(op1, op2, 'left');
+      const transformed2 = exports.transform(op2, op1, 'right');
       expect(transformed1).toBeDefined();
       expect(transformed2).toBeDefined();
     });

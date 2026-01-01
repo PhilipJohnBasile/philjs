@@ -575,6 +575,21 @@ import { useSQLite, useQuery, useSync, useKVStore } from '@philjs/sqlite/hooks';
 - **IndexedDB mode**: All modern browsers
 - **OPFS mode**: Chrome 102+, Edge 102+, Firefox 111+, Safari 15.2+
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./db, ./reactive, ./sync, ./hooks
+- Source files: packages/philjs-sqlite/src/index.ts, packages/philjs-sqlite/src/db/index.ts, packages/philjs-sqlite/src/reactive/index.ts, packages/philjs-sqlite/src/sync/index.ts, packages/philjs-sqlite/src/hooks.ts
+
+### Public API
+- Direct exports: ReactiveQueryResult, SQLiteContext, SyncHookResult, closeAllDatabases, closeDatabase, getDatabase, useKVStore, useQuery, useSQLite, useSync
+- Re-exported names: ChangeRecord, ConflictResolution, Migration, MigrationManager, MigrationResult, PersistenceMode, PreparedStatement, QueryBuilder, ReactiveQuery, ReactiveQueryOptions, ReactiveQueryResult, ReactiveQueryState, Row, SQLiteConfig, SQLiteContext, SQLiteDB, SQLiteSyncEngine, SyncConfig, SyncConflict, SyncHookResult, SyncResult, TableChangeCallback, TableChangeEvent, closeAllDatabases, closeDatabase, createDatabase, createIndexedDBDatabase, createMemoryDatabase, createMigrationManager, createPersistentDatabase, createReactiveQuery, createSyncEngine, defineMigration, getBestPersistenceMode, getDatabase, isIndexedDBSupported, isOPFSSupported, migrationsFromSQL, query, useKVStore, useQuery, useSQLite, useSync
+- Re-exported modules: ./db/migrations.js, ./db/sqlite-wasm.js, ./hooks.js, ./migrations.js, ./reactive-query.js, ./reactive/reactive-query.js, ./sqlite-wasm.js, ./sync-engine.js, ./sync/sync-engine.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

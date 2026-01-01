@@ -190,6 +190,21 @@ const config: TailwindPluginConfig = {
 };
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./utils, ./content-detector, ./theme-generator
+- Source files: packages/philjs-plugin-tailwind/src/index.ts, packages/philjs-plugin-tailwind/src/utils.ts, packages/philjs-plugin-tailwind/src/content-detector.ts, packages/philjs-plugin-tailwind/src/theme-generator.ts
+
+### Public API
+- Direct exports: ClassName, ColorPalette, ContentDetector, ContentDetectorOptions, DetectedContent, TailwindPluginConfig, ThemeConfig, arbitrary, clsx, cn, container, createTailwindPlugin, createVariants, cssVarToClass, cssVarsToTheme, dark, detectContentPaths, expandContentPatterns, extractClasses, generateBorderRadiusScale, generateBrandTheme, generateBreakpoints, generateColorPalette, generateCompleteTheme, generateFontFamilies, generateShadowScale, generateSpacingScale, generateTypographyScale, isValidClass, mergeThemes, optimizeContentPatterns, presetThemes, responsive, sortClasses, tailwindUtils, validateContentPatterns, withStates
+- Re-exported names: ColorPalette, ThemeConfig, cssVarsToTheme, generateBorderRadiusScale, generateBrandTheme, generateBreakpoints, generateColorPalette, generateCompleteTheme, generateFontFamilies, generateShadowScale, generateSpacingScale, generateTypographyScale, presetThemes
+- Re-exported modules: ./content-detector.js, ./optimizer.js, ./theme-generator.js, ./utils.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

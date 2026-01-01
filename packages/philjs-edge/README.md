@@ -68,6 +68,21 @@ const cached = await edgeCache.get('key');
 const allowed = await rateLimit(request, { limit: 100 });
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./kv, ./durable, ./queue, ./d1, ./geo-routing, ./prefetch, ./streaming, ./state-replication, ./smart-cache
+- Source files: packages/philjs-edge/src/index.ts, packages/philjs-edge/src/geo-routing.ts, packages/philjs-edge/src/prefetch.ts, packages/philjs-edge/src/streaming.ts, packages/philjs-edge/src/state-replication.ts, packages/philjs-edge/src/smart-cache.ts
+
+### Public API
+- Direct exports: AccessPattern, CacheConfig, CacheEntry, CacheStats, CronJob, CronScheduler, D1Database, D1ExecResult, D1PreparedStatement, D1Result, DurableObjectState, DurableStorage, EDGE_LOCATIONS, EdgeKVOptions, EdgeNode, EdgePrefetcher, EdgeQueue, GCounter, GeoLocation, GeoPattern, GeoRouter, KVGetOptions, KVListOptions, KVListResult, KVPutOptions, KVStore, LWWRegister, LWWSet, MemoryDurableStorage, MemoryKVStore, MemoryQueue, NavigationPattern, NodeId, PNCounter, PrefetchConfig, PrefetchItem, PrefetchPrediction, QueueMessage, QueueOptions, ReplicatedState, ReplicationConfig, RoutingConfig, RoutingDecision, SSEBroadcaster, SSEEvent, SSEStream, SmartCache, StateUpdate, StreamConfig, StreamingResponse, TimePattern, Timestamp, VectorClock, cached, createChunkedStream, createCloudflareKV, createEdgePrefetcher, createGeoRouter, createProgressiveHTML, createReplicatedState, createSmartCache, createStreamingHTML, createSyncHandler, generatePrefetchHints, generatePreloadHeaders, getClientLocation, pipeStreams, useEdgeKV
+- Re-exported names: (none detected)
+- Re-exported modules: ./edge-functions.js, ./geo-routing.js, ./prefetch.js, ./rate-limiter.js, ./smart-cache.js, ./state-replication.js, ./streaming.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

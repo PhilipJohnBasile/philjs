@@ -91,4 +91,8 @@ export default defineConfig([
 
   // Serialization
   createEntry('superjson.ts', 'superjson.js'),
+
+  // TC39 Signals (native-first wrapper + polyfill)
+  createEntry('tc39-signals.ts', 'tc39-signals.js', ['./signals.js', './tc39-signals-polyfill.js']),
+  createEntry('tc39-signals-polyfill.ts', 'tc39-signals-polyfill.js', ['./signals.js']),
 ]);

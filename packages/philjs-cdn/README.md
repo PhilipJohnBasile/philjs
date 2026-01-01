@@ -272,6 +272,21 @@ interface Signal<T> {
 - Safari 13.1+
 - Edge 80+
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./global, ./esm, ./mini
+- Source files: packages/philjs-cdn/src/index.ts
+
+### Public API
+- Direct exports: PhilJS, Signal, batch, createStore, effect, html, init, memo, nextTick, onMount, render, signal, untrack
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -529,6 +529,25 @@ Convert a Zod schema to JSON Schema.
 ### `generateTypes(spec, options)`
 Generate TypeScript types from OpenAPI spec.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./swagger-ui, ./cli
+- Source files: packages/philjs-openapi/src/index.ts, packages/philjs-openapi/src/swagger-ui.ts, packages/philjs-openapi/src/cli.ts
+
+### Public API
+- Direct exports: createDocsRoutes, createSwaggerRoutes, generateTypes, main, redoc, specHandler, swaggerUI
+- Re-exported names: // JSON Schema types
+  JSONSchema, // OpenAPI specification types
+  OpenAPISpec, // PhilJS API types
+  APIRouteDefinition, // Type generation types
+  TypeGenerationOptions, APIDefinition, GeneratedTypes, OpenAPIComponents, OpenAPIEncoding, OpenAPIExample, OpenAPIExternalDocs, OpenAPIHeader, OpenAPIInfo, OpenAPILink, OpenAPIMediaType, OpenAPIOAuthFlow, OpenAPIOAuthFlows, OpenAPIOperation, OpenAPIOptions, OpenAPIParameter, OpenAPIPathItem, OpenAPIRequestBody, OpenAPIResponse, OpenAPISecurityRequirement, OpenAPISecurityScheme, OpenAPIServer, OpenAPITag, RouteContext, RouteGroup, SwaggerUIOptions, createAPI, createDocsRoutes, createSwaggerRoutes, errorResponses, extractExample, generateTypes, getSchemaDescription, group, isZodSchema, mergeAPIs, openapi, redoc, runCLI, securitySchemes, specHandler, swaggerUI, zodToJsonSchema
+- Re-exported modules: ./cli.js, ./openapi.js, ./swagger-ui.js, ./types.js, ./zod-to-schema.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

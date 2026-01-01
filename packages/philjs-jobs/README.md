@@ -550,6 +550,21 @@ See the `examples/` directory for complete examples:
 - `monitoring.ts` - Job monitoring and dashboards
 - `redis-backend.ts` - Production Redis setup
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./queue, ./scheduler, ./monitor, ./job
+- Source files: packages/philjs-jobs/src/index.ts, packages/philjs-jobs/src/queue.ts, packages/philjs-jobs/src/scheduler.ts, packages/philjs-jobs/src/monitor.ts, packages/philjs-jobs/src/job.ts
+
+### Public API
+- Direct exports: CronPatterns, DefineJobOptions, EnqueueOptions, IQueue, InMemoryQueue, Job, JobContext, JobDefinition, JobDetail, JobHandler, JobHooks, JobMetrics, JobMiddleware, JobOptions, JobRun, MetricsSnapshot, Monitor, MonitorOptions, QueueOptions, QueueStats, RedisQueue, ScheduleOptions, ScheduledJob, Scheduler, SystemHealth, Timezones, composeMiddleware, createLoggingMiddleware, createQueue, createRateLimitMiddleware, createRetryMiddleware, createValidationMiddleware, defineJob
+- Re-exported names: CronPatterns, DefineJobOptions, EnqueueOptions, IQueue, InMemoryQueue, Job, JobContext, JobDefinition, JobDetail, JobHandler, JobHooks, JobMetrics, JobMiddleware, JobMonitor, JobOptions, JobRun, JobScheduler, MetricsSnapshot, Monitor, MonitorOptions, QueueOptions, QueueStats, RedisQueue, ScheduleOptions, ScheduledJob, Scheduler, SystemHealth, Timezones, composeMiddleware, createJobQueue, createLoggingMiddleware, createQueue, createRateLimitMiddleware, createRetryMiddleware, createValidationMiddleware, defineJob
+- Re-exported modules: ./job.js, ./monitor.js, ./queue.js, ./scheduler.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -201,6 +201,21 @@ const Button = styled('button', ({ theme }) => ({
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./css-modules, ./scoped, ./css-in-js, ./vite
+- Source files: packages/philjs-styles/src/index.ts, packages/philjs-styles/src/css-modules.ts, packages/philjs-styles/src/scoped.ts, packages/philjs-styles/src/css-in-js.ts
+
+### Public API
+- Direct exports: CSSModuleClasses, ThemeProvider, bindStyles, createClassNames, createGlobalStyle, createStyled, createTheme, css, cssModules, cva, getCSSModuleConfig, importCSSModule, keyframes, setTheme, styled, subscribeToTheme, useCSSModule, useTheme
+- Re-exported names: CSSProperties, StyleObject, StyleVariant, Theme, ThemeConfig, ThemeProvider, bindStyles, classNames, clsx, createGlobalStyle, createStyled, createTheme, css, cssModules, cx, extractCriticalCSS, injectStyles, keyframes, mergeStyles, philjsStylesPlugin, styled, useCSSModule, useTheme
+- Re-exported modules: ./css-in-js.js, ./css-modules.js, ./scoped.js, ./types.js, ./utils.js, ./vite-plugin.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

@@ -299,6 +299,48 @@ createPhilJSSignalBridge(canvas, 'GameManager', 'SetDifficulty', getDifficulty);
 - `createUnitySignalBridge(name, setValue)` - Unity to PhilJS
 - `createPhilJSSignalBridge(canvas, gameObject, method, getValue)` - PhilJS to Unity
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./webgl, ./three, ./godot, ./unreal, ./unity
+- Source files: packages/philjs-3d/src/index.ts, packages/philjs-3d/src/webgl/index.ts, packages/philjs-3d/src/three/index.ts, packages/philjs-3d/src/godot/index.ts, packages/philjs-3d/src/unreal/index.ts, packages/philjs-3d/src/unity/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: // Animation
+  createAnimationLoop, // Assets
+  loadBevyAsset, // Buffers
+  createBuffer, // Camera and Math
+  mat4Identity, // Components
+  BevyEmbed, // Components
+  GodotEmbed, // Components
+  ThreeCanvas, // Components
+  UnityEmbed, // Components
+  UnrealEmbed, // Components
+  WebGLCanvas, // Context
+  createWebGLContext, // ECS Bridge
+  setSignalCreator, // Hooks
+  createBevyInstance, // Hooks
+  createGodotInstance, // Hooks
+  createPixelStreamingInstance, // Hooks
+  createUnityInstance, // Hooks
+  loadThree, // Hooks
+  useWebGL, // Primitives
+  createCube, // Shaders
+  compileShader, // Textures
+  createTextureFromImage, // Types
+  type BevyConfig, // Types
+  type GodotEngine, // Types
+  type PixelStreamingConfig, // Types
+  type ThreeModule, // Types
+  type UnityInstance, // Types
+  type WebGLContextOptions, AnimationFrameInfo, AnimationLoop, AssetBundle, AssetHandle, AssetMetadata, AssetState, BASIC_FRAGMENT_SHADER, BASIC_VERTEX_SHADER, BevyApp, BevyAssetType, BevyComponent, BevyEmbedProps, BevyEntity, BevyEvent, BevyEventData, BevyEventListener, BevyEventType, BevyFPSCounter, BevyFullscreenButton, BevyGamepadState, BevyInstance, BevyMouseButton, BevyPauseButton, BevyQuery, BevyResource, BevyState, BevyWorld, BufferInfo, Camera, CameraOptions, ChildrenComponent, ComponentBridge, ComponentType, ConsoleCommandOptions, Easing, EntityBridge, EntityGeneration, EntityId, FrameCallback, FrameInfo, GamepadAxis, GamepadButton, GamepadInputData, GlobalTransformComponent, GodotConfig, GodotEmbed, GodotEmbedProps, GodotEngine, GodotInstance, GodotJSInterface, GodotLoadingIndicator, GodotState, InputResource, KeyCode, KeyboardInputData, LoaderResult, Mat3, Mat4, MouseInputData, NameComponent, ParentComponent, PixelStreamingConfig, PixelStreamingInputEvent, PixelStreamingInstance, PrimitiveGeometry, Quat, QueryFilter, QueryResult, ResourceType, ShaderProgram, ShaderSource, SignalHandler, TEXTURED_FRAGMENT_SHADER, TEXTURED_VERTEX_SHADER, TextureInfo, TextureOptions, ThreeCamera, ThreeCanvas, ThreeCanvasProps, ThreeClock, ThreeColor, ThreeEuler, ThreeGLTF, ThreeGLTFLoader, ThreeModule, ThreeObject3D, ThreeOrthographicCamera, ThreePerspectiveCamera, ThreeQuaternion, ThreeRenderer, ThreeRendererOptions, ThreeScene, ThreeState, ThreeTexture, ThreeTextureLoader, ThreeVector3, TimeResource, TouchInputData, Transform, TransformComponent, UNLIT_FRAGMENT_SHADER, UNLIT_VERTEX_SHADER, UnityCallback, UnityConfig, UnityEmbed, UnityEmbedProps, UnityEventHandler, UnityEventType, UnityFullscreenButton, UnityInstance, UnityInstanceWrapper, UnityLoadingProgress, UnityMessage, UnityModule, UnityProgressBar, UnityState, UnrealCustomEvent, UnrealEmbed, UnrealEmbedProps, UnrealState, UnrealStatsOverlay, UseBevyEntityResult, UseBevyQueryResult, UseBevyResourceResult, UseBevyResult, UseGodotResult, UseUnityResult, UseUnrealResult, Vec2, Vec3, Vec4, VertexArrayInfo, VisibilityComponent, WebGLCanvas, WebGLCanvasProps, WebGLContextOptions, WebGLContextResult, WebGLExtensions, WebGLHookContext, WebGLState, WebRTCStats, WindowResource, addToScene, bindTexture, bindVertexArray, callGodot, cleanupWebGL, clearAsset, clearAssetCache, clearContext, compileShader, createAnimationLoop, createAnimator, createBevyEmbedElement, createBuffer, createBufferInfo, createCamera, createComponentBridge, createCone, createCube, createCubemapTexture, createCustomComponent, createCylinder, createDataTexture, createEntityBridge, createFixedTimestepLoop, createGodotBridge, createGodotEmbedElement, createGodotInstance, createNameComponent, createPhilJSSignalBridge, createPixelStreamingInstance, createPlaceholderTexture, createPlane, createProgram, createRoundedBox, createSphere, createTextureFromImage, createThreeCanvasElement, createTorus, createTransformComponent, createUnityEmbedElement, createUnityInstance, createUnitySignalBridge, createUnrealEmbedElement, createVertexArray, createVertexArrayInfo, createVisibilityComponent, createWebGLCanvasElement, createWebGLContext, defineAssetBundle, deleteBuffer, deleteProgram, deleteTexture, deleteVertexArray, deleteVertexArrayInfo, despawnEntity, disposeAllBevy, disposeAllBridges, disposeBevy, disposeGodot, disposeThree, disposeUnity, disposeUnreal, drawVertexArray, enableDefaultFeatures, findEntitiesWith, findEntityWith, getAllBevyInstances, getAssetBundle, getAssetMetadata, getBevy, getCacheCount, getCacheSize, getCachedAsset, getCachedAssetPaths, getLoadingProgress, getThree, getViewProjectionMatrix, getWebGLCapabilities, initThree, insertComponent, isAssetCached, isAssetLoaded, isBevySupported, isBundleLoaded, isWebGL2Supported, isWebGLSupported, lerp, lerpVec3, loadAssetBundle, loadGLTFAsync, loadTexture, loadTextureAsync, loadThree, mat3FromMat4, mat3InvertTranspose, mat4Identity, mat4Invert, mat4LookAt, mat4Multiply, mat4Orthographic, mat4Perspective, mat4RotateX, mat4RotateY, mat4RotateZ, mat4Scale, mat4Translate, mat4Transpose, mergeGeometries, onBevyEvent, onGodotSignal, onUnityEvent, orbitCamera, preloadAssets, preloadAssetsWithPriority, queryEntities, registerUnityCallback, removeComponent, removeFrameCallback, removeFromScene, resizeCanvas, resizeThree, sendBevyEvent, sendMessage, setCameraAspect, setCameraLookAt, setCameraPosition, setCameraTarget, setThreeCameraPosition, setUniform, setUniforms, setupInputForwarding, setupVertexAttributes, slerp, spawnEntity, startAnimationLoop, streamAsset, syncFromGodot, syncToGodot, trackEntities, trackEntity, transformGeometry, unbindTexture, unloadAssetBundle, updateBuffer, updateCameraProjection, updateCameraView, updateTexture, useActiveProgram, useAnimationFrame, useAutoResize, useBevy, useBevyEntity, useBevyQuery, useBevyResource, useCamera, useFrame, useGodot, useLoader, useProgram, useRenderPass, useShaderProgram, useThree, useUniforms, useUnity, useUnreal, useWebGL, watchAsset, zoomCamera
+- Re-exported modules: ./GodotEmbed.js, ./ThreeCanvas.js, ./UnityEmbed.js, ./UnrealEmbed.js, ./WebGLCanvas.js, ./animation.js, ./bevy/index.js, ./buffers.js, ./camera.js, ./context.js, ./godot/index.js, ./hooks.js, ./primitives.js, ./shaders.js, ./textures.js, ./three/index.js, ./types.js, ./unity/index.js, ./unreal/index.js, ./webgl/index.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

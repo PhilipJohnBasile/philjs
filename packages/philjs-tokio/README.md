@@ -106,6 +106,29 @@ async fn main() {
 #[philjs_channel] // Define bidirectional channel
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-tokio/src/lib.rs
+
+### Public API
+- Public modules: channel, interval, prelude, runtime, sync, task, timeout
+- Public items: (none detected)
+- Re-exports: channel::{channel, broadcast, watch, Channel, Sender, Receiver}, crate::channel::{channel, broadcast, watch}, crate::interval::{spawn_interval, IntervalHandle}, crate::runtime::{RuntimeBuilder, RuntimeConfig}, crate::sync::{Mutex, RwLock, Semaphore}, crate::task::{spawn_task, spawn_blocking_task, TaskHandle, TaskManager}, crate::timeout::{with_timeout, TimeoutError}, interval::{spawn_interval, IntervalHandle}, philjs::prelude::*, runtime::{RuntimeBuilder, RuntimeConfig}, sync::{Mutex, RwLock, Semaphore}, task::{spawn_task, spawn_blocking_task, TaskHandle, TaskManager}, timeout::{with_timeout, TimeoutError}, tokio::{
+        spawn,
+        time::{sleep, Duration, Instant},
+        select, join, try_join,
+    }, tokio::{
+    spawn, task::JoinHandle,
+    time::{sleep, Duration, Instant, interval as tokio_interval},
+    sync::{mpsc, oneshot, broadcast as tokio_broadcast, watch as tokio_watch},
+    select, join, try_join,
+}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

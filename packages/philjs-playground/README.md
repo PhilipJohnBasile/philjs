@@ -306,6 +306,21 @@ tutorialSteps.forEach((step, i) => {
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-playground/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: CompileResult, Console, ConsoleMessage, Editor, EditorConfig, Playground, PlaygroundConfig, Preview, PreviewConfig, compileCode, createConsole, createEditor, createPlayground, createPreview, exampleCode, transpileCode, tutorialSteps
+- Re-exported modules: ./compiler.js, ./console.js, ./editor.js, ./examples.js, ./playground.js, ./preview.js, ./types.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

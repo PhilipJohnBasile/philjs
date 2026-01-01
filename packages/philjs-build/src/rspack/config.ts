@@ -32,6 +32,8 @@ export interface RspackConfiguration {
     moduleIds?: string;
     chunkIds?: string;
     minimize?: boolean;
+    usedExports?: boolean;
+    sideEffects?: boolean;
     minimizer?: unknown[];
     splitChunks?: {
       chunks?: string;
@@ -48,6 +50,7 @@ export interface RspackConfiguration {
     hot?: boolean;
     open?: boolean;
     historyApiFallback?: boolean;
+    proxy?: Record<string, string>;
   };
   experiments?: {
     css?: boolean;
@@ -77,15 +80,40 @@ export interface RspackRule {
  */
 export interface PhilJSRspackOptions {
   /** Build mode */
-  mode: 'development' | 'production';
+  mode?: 'development' | 'production';
   /** Entry points */
-  entry: string | Record<string, string>;
+  entry?: string | Record<string, string>;
   /** Output configuration */
   output?: {
     path?: string;
     filename?: string;
     publicPath?: string;
   };
+  /** Resolve configuration overrides */
+  resolve?: {
+    extensions?: string[];
+    alias?: Record<string, string>;
+    modules?: string[];
+  };
+  /** Optimization overrides */
+  optimization?: {
+    moduleIds?: string;
+    chunkIds?: string;
+    minimize?: boolean;
+    usedExports?: boolean;
+    sideEffects?: boolean;
+    splitChunks?: {
+      chunks?: string;
+      cacheGroups?: Record<string, {
+        test?: RegExp;
+        name?: string;
+        priority?: number;
+        reuseExistingChunk?: boolean;
+      }>;
+    };
+  };
+  /** Build target */
+  target?: string | string[];
   /** PhilJS-specific options */
   philjs?: {
     /** Enable signal optimization */
@@ -104,6 +132,7 @@ export interface PhilJSRspackOptions {
     port?: number;
     hot?: boolean;
     open?: boolean;
+    proxy?: Record<string, string>;
   };
   /** Source maps */
   devtool?: string | false;

@@ -298,6 +298,21 @@ Pre-configured intensities (gCO2/kWh):
 - China: 550
 - India: 700
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-carbon/src/index.ts
+
+### Public API
+- Direct exports: CarbonBudget, CarbonConfig, CarbonForecast, CarbonIntensity, CarbonIntensityProvider, CarbonReport, CarbonTaskScheduler, DeviceEnergy, DeviceEnergyMonitor, NetworkCarbonEstimator, TaskSchedule, greenCompute, useCarbonBudget, useCarbonIntensity, useCarbonScheduler, useDeviceEnergy, useNetworkCarbon
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

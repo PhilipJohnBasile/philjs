@@ -372,6 +372,21 @@ trackTransaction(transaction: EcommerceTransaction): void
 
 Contributions are welcome! Please see the main PhilJS repository for guidelines.
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./client
+- Source files: packages/philjs-plugin-analytics/src/index.ts, packages/philjs-plugin-analytics/src/client.ts
+
+### Public API
+- Direct exports: AnalyticsEvent, AnalyticsPluginConfig, AnalyticsProvider, EcommerceTransaction, analytics, analyticsUtils, createAnalyticsPlugin, identifyUser, setUserProperties, trackEvent, trackPageView, trackTransaction
+- Re-exported names: AnalyticsContext, CustomEventOptions, EcommerceItem, EcommerceTransaction, IAnalyticsProvider, PrivacyOptions, ProviderOptions, UserIdentification, identifyUser, setUserProperties, trackEvent, trackPageView, trackTransaction
+- Re-exported modules: ./types.js, philjs-plugin-analytics/client
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

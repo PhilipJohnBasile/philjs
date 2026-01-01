@@ -319,6 +319,21 @@ function MyWidget(props) {
 2. Configure your dev server to handle file opening
 3. Ensure source maps are enabled
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-inspector/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: ComponentInfo, ComponentNavigator, HighlightOptions, INSPECTOR_STYLES, InspectorConfig, InspectorShortcuts, InspectorState, KeyboardHandler, KeyboardShortcut, SignalInfo, SourceLocation, applyStyles, clearAllShortcuts, clearComponentRegistry, destroyOverlay, extractComponentInfo, filterComponents, flashHighlight, formatPropValue, formatShortcut, getAllComponents, getAllShortcuts, getComponentAncestors, getComponentByElement, getComponentById, getComponentChildren, getCurrentHighlightedElement, getCurrentTooltipComponent, getInspector, getOverlayRoot, getSearchStats, getSignalInfo, hideSearchBox, hideTooltip, highlightElement, highlightElementHover, initInspector, initOverlay, isSearchBoxVisible, isTooltipVisible, matchesShortcut, registerShortcut, registerSignal, removeHighlight, removeHoverHighlight, searchComponents, showElementMeasurements, showSearchBox, showTooltip, startKeyboardListening, stopKeyboardListening, styleToCss, unregisterShortcut, updateComponentMetrics, updateHighlightPosition, updateTooltip
+- Re-exported modules: ./component-info.js, ./inspector.js, ./keyboard.js, ./overlay.js, ./search.js, ./styles.js, ./tooltip.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

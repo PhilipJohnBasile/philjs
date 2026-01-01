@@ -27,3 +27,42 @@ PhilJS is a TypeScript-first, signals-first framework built for the Nexus era: l
 ## Canonical standards
 
 PhilJS standards are derived from the current codebase and documentation. When you see a pattern here, treat it as the canonical PhilJS way.
+
+## Core ideas in one page
+
+- **Signals-first**: fine-grained reactivity without diffing; memos/resources for derived/async data.
+- **SSR + Islands + Streaming**: render on the server, hydrate only what matters, stream the rest.
+- **Loaders/Actions**: data and mutations live at the route boundary, enabling cache tags, revalidate hints, and optimistic flows.
+- **Adapters everywhere**: deploy to Edge (Vercel/Netlify/CF/Bun/Deno) or regional (Node/AWS) with the same primitives.
+- **Nexus-ready**: local-first, collaborative, AI-assisted patterns built in.
+
+## How to read this book
+
+- Start with Getting Started to set up toolchain and build a counter.
+- Jump to Core and Rendering to understand signals, memos, and JSX ergonomics.
+- Route/Data/Forms for real apps; SSR/Islands to go production.
+- Testing/Performance/Observability to keep quality high.
+- Integrations/Platforms/Patterns to plug into your backend and targets.
+- Nexus/GenUI when building AI and collaborative experiences.
+
+## Compatibility and versions
+
+- Node 24+ required; Node 25 supported.
+- TypeScript 6.x; use `jsxImportSource: "@philjs/core"`.
+- All examples use `@philjs/*@0.1.0`.
+- pnpm is the package manager used throughout; adapt commands for npm/yarn if needed.
+
+## What “Nexus era” means
+
+Nexus combines:
+
+- Local-first state and offline durability.
+- Edge-rendered, latency-sensitive UX.
+- AI-assisted intent handling with guardrails.
+- Collaborative presence and conflict resolution.
+
+PhilJS packages (`@philjs/core`, `@philjs/router`, `@philjs/ssr`, adapters, devtools) are designed to serve these requirements together.
+
+## Next steps
+
+Get your toolchain ready, scaffold a project, and follow the Getting Started chapters. Each later chapter includes “Try it now” snippets so you can apply concepts immediately.

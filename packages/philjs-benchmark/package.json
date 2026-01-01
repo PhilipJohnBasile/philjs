@@ -33,9 +33,9 @@
   },
   "scripts": {
     "build": "echo 'Skipping philjs-benchmark build - exports need realignment'",
-    "test": "node --test src/__tests__/**/*.test.ts",
-    "test:watch": "node --test --watch src/__tests__/**/*.test.ts",
-    "test:coverage": "node --test --experimental-test-coverage src/__tests__/**/*.test.ts",
+    "test": "node --test --import tsx src/__tests__/**/*.test.ts",
+    "test:watch": "node --test --watch --import tsx src/__tests__/**/*.test.ts",
+    "test:coverage": "node --test --experimental-test-coverage --import tsx src/__tests__/**/*.test.ts",
     "bench": "tsx src/index.ts",
     "bench:framework": "tsx src/framework-benchmark/runner.ts",
     "bench:reactivity": "tsx src/reactivity/index.ts",

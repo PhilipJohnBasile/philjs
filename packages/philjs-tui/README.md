@@ -112,6 +112,27 @@ text!("Hello")
     .border(Border::Rounded)
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Source files: packages/philjs-tui/src/lib.rs
+
+### Public API
+- Public modules: app, components, event, layout, prelude, render, style, widgets
+- Public items: TuiApp, TuiConfig, TuiError, draw, new, quit, run, run_with_config, should_quit, size
+- Re-exports: crate::{
+        run, run_with_config, TuiApp, TuiConfig, TuiError,
+        components::*,
+        layout::*,
+        style::*,
+        event::*,
+        widgets::*,
+    }, ratatui::style::{Color, Modifier, Style}
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

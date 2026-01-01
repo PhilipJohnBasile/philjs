@@ -14,7 +14,7 @@ Master PhilJS performance optimization with automatic and manual techniques.
 
 ## Table of Contents
 
-1. [Understanding PhilJS Performance](#understanding-@philjs/performance)
+1. [Understanding PhilJS Performance](#understanding-philjs-performance)
 2. [Auto-Memo Optimization](#auto-memo-optimization)
 3. [Auto-Batch Optimization](#auto-batch-optimization)
 4. [Manual Optimization Techniques](#manual-optimization-techniques)

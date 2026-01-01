@@ -93,11 +93,8 @@ where
     let (shell, suspense_points) = extract_shell_and_suspense(&view, &suspense_id);
 
     // Stream shell immediately if configured
-    let shell_stream = if config.immediate_shell {
-        stream::once(async move { shell })
-    } else {
-        stream::once(async { String::new() })
-    };
+    let shell_content = if config.immediate_shell { shell } else { String::new() };
+    let shell_stream = stream::once(async move { shell_content });
 
     // Stream suspense resolutions as they complete
     let suspense_stream = stream::iter(suspense_points)

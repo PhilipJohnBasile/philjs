@@ -64,6 +64,21 @@ initRollbar({
 
 For more information, see the [PhilJS documentation](../../docs).
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./sentry, ./logrocket, ./rollbar
+- Source files: packages/philjs-errors/src/index.ts, packages/philjs-errors/src/sentry.ts, packages/philjs-errors/src/logrocket.ts, packages/philjs-errors/src/rollbar.ts
+
+### Public API
+- Direct exports: Breadcrumb, ErrorContext, ErrorEvent, ErrorTracker, LogRocketOptions, RollbarOptions, SentryOptions, Span, TrackerOptions, UserContext, addBreadcrumb, captureError, captureMessage, createErrorBoundary, createLogRocketTracker, createRollbarTracker, createSentryTracker, getErrorTracker, getSessionURL, initErrorTracking, redact, setUser, showSentryFeedback, startSpan, trackComponentWithSentry, trackEvent, trackRouteWithSentry, trackSignalErrors, trackSignalWithSentry, withErrorTracking
+- Re-exported names: createLogRocketTracker, createRollbarTracker, createSentryTracker
+- Re-exported modules: ./logrocket.js, ./rollbar.js, ./sentry.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

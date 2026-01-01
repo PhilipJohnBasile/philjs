@@ -189,8 +189,8 @@ PhilJS compared to popular frameworks (lower is better):
 
 | Framework | create-1000-rows | update-every-10th | swap-rows | select-row |
 |-----------|------------------|-------------------|-----------|------------|
-| PhilJS 🏆 | 42.35ms | 8.52ms | 3.25ms | 2.18ms |
-| Vanilla JS 🏆 | 32.50ms | 8.50ms | 3.80ms | 2.10ms |
+| PhilJS  | 42.35ms | 8.52ms | 3.25ms | 2.18ms |
+| Vanilla JS  | 32.50ms | 8.50ms | 3.80ms | 2.10ms |
 | SolidJS | 38.50ms | 7.50ms | 11.50ms | 4.80ms |
 | Svelte | 42.80ms | 12.30ms | 15.20ms | 8.50ms |
 | Qwik | 52.30ms | 16.80ms | 20.20ms | 10.50ms |
@@ -462,6 +462,21 @@ export const myNewBenchmark: Benchmark = {
 
 export const myNewBenchmarks = [myNewBenchmark];
 ```
+
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./framework, ./reactivity, ./ssr, ./bundle, ./rust
+- Source files: packages/philjs-benchmark/src/index.ts, packages/philjs-benchmark/src/reactivity/index.ts, packages/philjs-benchmark/src/ssr/index.ts
+
+### Public API
+- Direct exports: allReactivityBenchmarks, allSSRBenchmarks, coreReactivityBenchmarks, coreSSRBenchmarks, runAllBenchmarks, runCoreReactivityBenchmarks, runCoreSSRBenchmarks, runReactivityBenchmarks, runSSRBenchmarks
+- Re-exported names: allFrameworkBenchmarks, allReactivityBenchmarks, allSSRBenchmarks, batchBenchmarks, clearRows, coreFrameworkBenchmarks, coreReactivityBenchmarks, coreSSRBenchmarks, create10000Rows, create1000Rows, createRowsBenchmarks, deleteRowBenchmarks, effectBenchmarks, hydrationBenchmarks, memoBenchmarks, progressiveHydration, removeRow, renderTimeBenchmarks, runFrameworkBenchmarks, runReactivityBenchmarks, runSSRBenchmarkSuite, selectRow, selectRowBenchmarks, signalBenchmarks, streamingBenchmarks, streamingThroughput, swapRows, swapRowsBenchmarks, updateEvery10thRow, updateRowsBenchmarks
+- Re-exported modules: ./batch.js, ./effects.js, ./framework-benchmark/create-rows.js, ./framework-benchmark/delete-row.js, ./framework-benchmark/runner.js, ./framework-benchmark/select-row.js, ./framework-benchmark/swap-rows.js, ./framework-benchmark/update-rows.js, ./hydration.js, ./memos.js, ./reactivity/batch.js, ./reactivity/effects.js, ./reactivity/index.js, ./reactivity/memos.js, ./reactivity/signals.js, ./render-time.js, ./signals.js, ./ssr/hydration.js, ./ssr/index.js, ./ssr/render-time.js, ./ssr/streaming.js, ./streaming.js, ./types.js, ./utils.js
+<!-- API_SNAPSHOT_END -->
 
 ## License
 

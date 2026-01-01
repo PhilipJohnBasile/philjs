@@ -236,6 +236,21 @@ The adaptive quality manager provides these settings:
 }
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: .
+- Source files: packages/philjs-neural/src/index.ts
+
+### Public API
+- Direct exports: AdaptiveQualityManager, ComponentPrioritizer, ComponentPriority, FrameAnalysis, LayoutMetrics, NeuralLayoutOptimizer, NeuralLayoutSuggestion, NeuralNetwork, NeuralRenderer, NeuralRendererConfig, RenderPrediction, RenderPredictor, Tensor, getNeuralRenderer, initNeuralRenderer, useAdaptiveQuality, useLayoutOptimization, useNeuralRendering, usePredictiveRendering
+- Re-exported names: (none detected)
+- Re-exported modules: (none detected)
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

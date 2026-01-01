@@ -73,6 +73,21 @@ const html = render(<WelcomeEmail name="John" />);
 await transporter.sendMail({ to, subject, html });
 ```
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./providers/*
+- Source files: packages/philjs-email/src/index.ts
+
+### Public API
+- Direct exports: (none detected)
+- Re-exported names: BulkEmailMessage, BulkEmailResult, BulkRecipient, EmailAddress, EmailAttachment, EmailClientOptions, EmailMessage, EmailProvider, EmailQueue, EmailQueueJob, EmailResult, EmailTemplate, EmailTracking, GenericTrackingWebhook, InMemoryQueue, MailgunConfig, MailgunProvider, MailgunWebhook, ProviderConfig, QueueOptions, QueueStats, ResendConfig, ResendProvider, RetryConfig, SendGridConfig, SendGridProvider, SendGridWebhook, SesConfig, SesProvider, SesWebhook, SmtpConfig, SmtpPresets, SmtpProvider, TemplateEmailMessage, TemplateProps, TemplateRegistry, TrackingEvent, TrackingEventHandler, TrackingWebhook, UnsubscribeOptions, chunk, createMailgunProvider, createQueue, createResendProvider, createSendGridProvider, createSesProvider, createSmtpProvider, createTrackingPixel, createTrackingWebhook, defaultRetryConfig, formatAddress, generateId, htmlToText, isValidEmail, normalizeAddress, parseEmails, renderReactEmail, sleep, withRetry, wrapLinksForTracking
+- Re-exported modules: ./providers/index.js, ./queue.js, ./templates/index.js, ./tracking.js, ./types.js, ./utils.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT

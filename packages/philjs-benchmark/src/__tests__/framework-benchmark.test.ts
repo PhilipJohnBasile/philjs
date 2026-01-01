@@ -9,17 +9,17 @@ import {
   runCoreBenchmarks,
   allFrameworkBenchmarks,
   coreFrameworkBenchmarks,
-} from '../framework-benchmark/runner.js';
+} from '../framework-benchmark/runner.ts';
 import {
   createRowsBenchmarks,
   create1000Rows,
   create10000Rows,
-} from '../framework-benchmark/create-rows.js';
-import { updateRowsBenchmarks, updateEvery10th } from '../framework-benchmark/update-rows.js';
-import { swapRowsBenchmarks, swapRows } from '../framework-benchmark/swap-rows.js';
-import { selectRowBenchmarks, selectRow } from '../framework-benchmark/select-row.js';
-import { deleteRowBenchmarks, deleteRow } from '../framework-benchmark/delete-row.js';
-import type { BenchmarkSuite } from '../types.js';
+} from '../framework-benchmark/create-rows.ts';
+import { updateRowsBenchmarks, updateEvery10th } from '../framework-benchmark/update-rows.ts';
+import { swapRowsBenchmarks, swapRows } from '../framework-benchmark/swap-rows.ts';
+import { selectRowBenchmarks, selectRow } from '../framework-benchmark/select-row.ts';
+import { deleteRowBenchmarks, deleteRow } from '../framework-benchmark/delete-row.ts';
+import type { BenchmarkSuite } from '../types.ts';
 
 describe('Framework Benchmark Suite', () => {
   describe('runFrameworkBenchmarks', () => {

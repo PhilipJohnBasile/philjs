@@ -373,6 +373,25 @@ memory.free(module, ptr, 1024);
 5. **Use typed signals** - Use specialized signal creators for better performance
 6. **Sync carefully** - Call syncFromRust() after Rust modifies shared memory
 
+<!-- API_SNAPSHOT_START -->
+## API Snapshot
+
+This section is generated from the package source. Run `node scripts/generate-package-atlas.mjs` to refresh.
+
+### Entry Points
+- Export keys: ., ./vite, ./codegen, ./cli
+- Source files: packages/philjs-wasm/src/index.ts, packages/philjs-wasm/src/codegen.ts, packages/philjs-wasm/src/cli.ts
+
+### Public API
+- Direct exports: BindOptions, BoundFunctions, BoundRustFunction, CodegenCLIOptions, CodegenOptions, CodegenResult, Err, None, Ok, RustEnum, RustEnumVariant, RustField, RustFunction, RustImpl, RustModule, RustOption, RustParam, RustResult, RustSignal, RustSignalOptions, RustStruct, RustToJSMapper, RustType, Some, WasmBindgenAttrs, WasmComponent, WasmComponentOptions, WasmContextValue, WasmExports, WasmLoadOptions, WasmMemoryManager, WasmModule, WasmProvider, WasmProviderProps, WasmResourceState, WbFree, WbMalloc, WbRealloc, bindRustFunctions, createBoolSignal, createF32Signal, createF64Signal, createI32Signal, createI64Signal, createRustSignal, createWasmComponent, generateBindings, generateCommand, generateComponentBinding, generateJSWrapper, generateSignalBinding, generateTypeScriptTypes, getWasmContext, getWasmModule, initWasmProvider, isWasmLoaded, loadWasm, main, parseArgs, parseRustModule, parseRustType, showHelp, showVersion, unloadWasm, unwrapOption, unwrapResult, useWasm, watchCommand
+- Re-exported names: // Code generation functions
+  generateTypeScriptTypes, // Parser functions
+  parseRustType, // Type definitions
+  type RustType, // Type mapper
+  RustToJSMapper, CodegenCLIOptions, CodegenOptions, CodegenResult, RustEnum, RustEnumVariant, RustField, RustFunction, RustImpl, RustModule, RustParam, RustStruct, ViteWasmPluginOptions, WasmBindgenAttrs, generateBindings, generateComponentBinding, generateJSWrapper, generateSignalBinding, parseRustModule, viteWasmPlugin
+- Re-exported modules: ./codegen.js, ./vite-plugin.js
+<!-- API_SNAPSHOT_END -->
+
 ## License
 
 MIT
