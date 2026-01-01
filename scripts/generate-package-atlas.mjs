@@ -37,6 +37,8 @@ const packageInfos = collectPackages(packagesDir)
 
 const nameByDir = new Map(packageInfos.map((info) => [info.dir, info.name]));
 
+updateDocsPackageIndex(path.join(repoRoot, 'docs/README.md'), packageInfos);
+
 const lines = [];
 lines.push('# Package Atlas');
 lines.push('');
@@ -140,6 +142,31 @@ function collectPackages(rootDir) {
       return null;
     })
     .filter(Boolean);
+}
+
+function updateDocsPackageIndex(readmePath, packageInfos) {
+  if (!fs.existsSync(readmePath)) {
+    return;
+  }
+
+  const markerStart = '<!-- PACKAGE_INDEX_START -->';
+  const markerEnd = '<!-- PACKAGE_INDEX_END -->';
+  let content = fs.readFileSync(readmePath, 'utf8');
+  const startIndex = content.indexOf(markerStart);
+  const endIndex = content.indexOf(markerEnd);
+  if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
+    return;
+  }
+
+  const lines = packageInfos.map(
+    (info) => `- [${info.name}](../packages/${info.dir}/README.md)`
+  );
+  const block = `\n${lines.join('\n')}\n`;
+  content =
+    content.slice(0, startIndex + markerStart.length) +
+    block +
+    content.slice(endIndex);
+  fs.writeFileSync(readmePath, content, 'utf8');
 }
 
 function extractEntryPoints(packageDir, data) {

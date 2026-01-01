@@ -3,15 +3,32 @@ dist/
 .DS_Store
 *.log
 .env
-.env.local
+.env.*
+!.env.example
 coverage/
 playwright-report/
 test-results/
 .vite/
 .cache/
-.turbo/cache/
+.turbo/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
+
+# IDE/Editor
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Build caches
+.eslintcache
+.parcelcache/
+.next/
+.nuxt/
 
 # Compiled files in src directories (should only be in dist)
 examples/**/src/**/*.js
@@ -45,8 +62,14 @@ examples/**/public/sw.d.ts.map
 !docs/philjs-book/dist/philjs-book.epub
 docs/philjs-book/dist/pandoc-test.*
 
+!docs/rust-book/dist/
+!docs/rust-book/dist/rust-book.pdf
+!docs/rust-book/dist/rust-book.epub
+docs/rust-book/dist/pandoc-test.*
+
 # Editor workspace
 docs/philjs-book/src/.obsidian/
+docs/rust-book/src/.obsidian/
 
 # Rust build artifacts for the Rust implementation
 packages/philjs-rust/target/
