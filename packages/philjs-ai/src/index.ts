@@ -488,6 +488,54 @@ export {
   type AgentStep,
 } from "./tools.js";
 
+// Prompt Caching
+export {
+  CachedAIProvider,
+  createCachedProvider,
+  createMemoryCache,
+  createRedisCache,
+  MemoryCacheStorage,
+  RedisCacheStorage,
+  withCache,
+  type CacheConfig,
+  type CacheEntry,
+  type CacheStats,
+  type CacheStorage,
+  type RedisClient,
+} from "./cache.js";
+
+// Structured Output with Zod
+export {
+  generateStructured,
+  streamStructured,
+  createStructuredGenerator,
+  extractArray,
+  extractWithFallback,
+  schemaToDescription,
+  zodToJsonSchema,
+  commonSchemas,
+  StructuredOutputError,
+  type StructuredOutputOptions,
+  type StructuredResult,
+} from "./structured.js";
+
+// Observability and Telemetry
+export {
+  ObservableAIProvider,
+  createObservableProvider,
+  calculateCost,
+  MODEL_COSTS,
+  BudgetExceededError,
+  ConsoleExporter,
+  HttpExporter,
+  FileExporter,
+  type AIMetrics,
+  type AIEvent,
+  type AIBudget,
+  type TelemetryExporter,
+  type ObservabilityConfig,
+} from "./observability.js";
+
 /**
  * Create a typed prompt specification.
  * @template TI, TO
