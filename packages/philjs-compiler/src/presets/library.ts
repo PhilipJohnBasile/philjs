@@ -33,7 +33,7 @@ export interface LibraryPresetOptions {
 
   /**
    * External dependencies (not bundled)
-   * @default ['react', 'react-dom', 'philjs-core']
+   * @default ['react', 'react-dom', '@philjs/core']
    */
   external?: string[];
 
@@ -79,7 +79,7 @@ export interface LibraryPresetOptions {
  */
 export const defaultLibraryConfig: Required<Omit<LibraryPresetOptions, 'name' | 'entry'>> = {
   formats: ['es', 'cjs'],
-  external: ['react', 'react-dom', 'preact', 'philjs-core', '@philjs/core'],
+  external: ['react', 'react-dom', 'preact', '@philjs/core', '@philjs/core'],
   dts: true,
   sourceMaps: true,
   minify: true,

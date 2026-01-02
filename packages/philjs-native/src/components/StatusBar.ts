@@ -5,7 +5,7 @@
  * Controls appearance, visibility, and network activity indicator.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformInfo } from '../runtime.js';
 
 // ============================================================================

@@ -5,7 +5,7 @@
  * handling native events, and managing native modules.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
 // ============================================================================

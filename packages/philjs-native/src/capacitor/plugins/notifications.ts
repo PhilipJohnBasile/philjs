@@ -6,7 +6,7 @@
  * handling, and local notification scheduling.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import {
   isNativePlatform,
   callPlugin,

@@ -5,7 +5,7 @@
  * automatic locale detection, and type-safe translations.
  */
 
-import type { Plugin, PluginContext } from 'philjs-core/plugin-system';
+import type { Plugin, PluginContext } from '@philjs/core/plugin-system';
 import type { I18nPluginConfig, TranslationMap, ViteI18nPluginOptions } from './types.js';
 
 /**

@@ -1,9 +1,9 @@
 /**
  * PhilJS UI - Accordion Component
  */
-import { signal, createContext, useContext } from 'philjs-core';
-import type { Signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, createContext, useContext } from '@philjs/core';
+import type { Signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 interface AccordionContextValue {
   expandedItems: () => string[];

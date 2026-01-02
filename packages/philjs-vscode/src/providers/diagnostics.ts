@@ -55,7 +55,7 @@ export class PhilJSDiagnosticsProvider implements vscode.Disposable {
     }
 
     const text = document.getText();
-    return text.includes('philjs-core') || text.includes('philjs');
+    return text.includes('@philjs/core') || text.includes('philjs');
   }
 
   private checkSignalUsage(

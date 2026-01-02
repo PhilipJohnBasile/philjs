@@ -9,7 +9,7 @@ export default {
     sourcemap: true,
   },
   external: [
-    'philjs-core',
+    '@philjs/core',
     'philjs-ssr',
     'graphql',
     '@graphql-tools/schema',

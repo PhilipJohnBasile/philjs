@@ -2,8 +2,8 @@
  * Offline support utilities
  */
 
-import { signal } from 'philjs-core';
-import type { Signal } from 'philjs-core';
+import { signal } from '@philjs/core';
+import type { Signal } from '@philjs/core';
 
 /**
  * Online/offline status signal

@@ -4,7 +4,7 @@
  * Handle light/dark mode and other appearance settings.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { Platform } from './Platform.js';
 
 // ============================================================================

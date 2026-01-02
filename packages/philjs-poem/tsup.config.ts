@@ -17,5 +17,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['philjs-core', 'philjs-ssr', 'philjs-liveview'],
+  external: ['@philjs/core', 'philjs-ssr', 'philjs-liveview'],
 });

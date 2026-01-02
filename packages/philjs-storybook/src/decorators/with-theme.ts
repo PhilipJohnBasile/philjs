@@ -4,7 +4,7 @@
  * Wraps stories with theme context
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 

@@ -3,6 +3,8 @@
  * Exports all reactivity benchmark suites and a runner.
  */
 
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { runBenchmarkSuite, formatResult, getEnvironmentInfo } from '../utils.js';
 import type { BenchmarkSuite, BenchmarkOptions } from '../types.js';
 
@@ -49,6 +51,7 @@ export async function runReactivityBenchmarks(
   options: BenchmarkOptions = {}
 ): Promise<BenchmarkSuite> {
   const verbose = options.verbose ?? true;
+  const mode = options.mode ?? 'full';
 
   if (verbose) {
     console.log('='.repeat(60));
@@ -57,28 +60,35 @@ export async function runReactivityBenchmarks(
     console.log();
   }
 
-  // Run signal benchmarks
-  if (verbose) console.log('Signal Benchmarks:\n');
-  const signalResults = await runBenchmarkSuite(signalBenchmarks, { ...options, verbose });
+  let allResults: Awaited<ReturnType<typeof runBenchmarkSuite>>;
 
-  // Run effect benchmarks
-  if (verbose) console.log('\nEffect Benchmarks:\n');
-  const effectResults = await runBenchmarkSuite(effectBenchmarks, { ...options, verbose });
+  if (mode === 'core' || mode === 'test') {
+    if (verbose) console.log('Core Reactivity Benchmarks:\n');
+    allResults = await runBenchmarkSuite(coreReactivityBenchmarks, { ...options, verbose });
+  } else {
+    // Run signal benchmarks
+    if (verbose) console.log('Signal Benchmarks:\n');
+    const signalResults = await runBenchmarkSuite(signalBenchmarks, { ...options, verbose });
 
-  // Run memo benchmarks
-  if (verbose) console.log('\nMemo Benchmarks:\n');
-  const memoResults = await runBenchmarkSuite(memoBenchmarks, { ...options, verbose });
+    // Run effect benchmarks
+    if (verbose) console.log('\nEffect Benchmarks:\n');
+    const effectResults = await runBenchmarkSuite(effectBenchmarks, { ...options, verbose });
 
-  // Run batch benchmarks
-  if (verbose) console.log('\nBatch Benchmarks:\n');
-  const batchResults = await runBenchmarkSuite(batchBenchmarks, { ...options, verbose });
+    // Run memo benchmarks
+    if (verbose) console.log('\nMemo Benchmarks:\n');
+    const memoResults = await runBenchmarkSuite(memoBenchmarks, { ...options, verbose });
 
-  const allResults = [
-    ...signalResults,
-    ...effectResults,
-    ...memoResults,
-    ...batchResults,
-  ];
+    // Run batch benchmarks
+    if (verbose) console.log('\nBatch Benchmarks:\n');
+    const batchResults = await runBenchmarkSuite(batchBenchmarks, { ...options, verbose });
+
+    allResults = [
+      ...signalResults,
+      ...effectResults,
+      ...memoResults,
+      ...batchResults,
+    ];
+  }
 
   if (verbose) {
     console.log('\n' + '='.repeat(60));
@@ -122,9 +132,10 @@ export async function runCoreReactivityBenchmarks(
 }
 
 // Run if executed directly
-const isMainModule = typeof require !== 'undefined' &&
-  require.main === module ||
-  import.meta.url.endsWith(process.argv[1]?.replace(/\\/g, '/') || '');
+const entryUrl = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 
 if (isMainModule) {
   runReactivityBenchmarks({ verbose: true })

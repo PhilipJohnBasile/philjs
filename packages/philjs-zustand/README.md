@@ -14,7 +14,7 @@ Zustand-style state management for PhilJS with fine-grained reactive signals.
 ## Installation
 
 ```bash
-npm install philjs-zustand philjs-core
+npm install philjs-zustand @philjs/core
 ```
 
 ## Basic Usage
@@ -305,7 +305,7 @@ const useStore = createStore<BearState>((set) => ({
 1. Use selectors to prevent unnecessary re-renders
 2. Memoize selector functions for better performance
 3. Use `shallow` for object selectors
-4. Batch updates with `batch()` from philjs-core
+4. Batch updates with `batch()` from @philjs/core
 5. Use slices to organize large stores
 
 <!-- API_SNAPSHOT_START -->

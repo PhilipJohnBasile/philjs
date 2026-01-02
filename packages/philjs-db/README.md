@@ -113,7 +113,7 @@ export default function App() {
 
 ```typescript
 import { usePrisma } from 'philjs-db';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function UserList() {
   const prisma = usePrisma();

@@ -4,7 +4,7 @@
  * Create mock router for testing route components
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface MockRouter {
   pathname: ReturnType<typeof signal<string>>;

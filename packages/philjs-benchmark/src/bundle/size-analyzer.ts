@@ -5,6 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { pathToFileURL } from 'node:url';
 import { getEnvironmentInfo } from '../utils.js';
 import type { BenchmarkSuite, BenchmarkResult } from '../types.js';
 
@@ -115,7 +116,7 @@ export async function estimateCoreSize(): Promise<BundleAnalysis> {
   const estimatedBrotliSize = Math.round(estimatedGzipSize * 0.85);
 
   return {
-    name: 'philjs-core',
+    name: '@philjs/core',
     rawSize: estimatedRawSize,
     minSize: estimatedMinSize,
     gzipSize: estimatedGzipSize,
@@ -248,7 +249,7 @@ export async function runBundleBenchmarks(
   // Core bundle analysis
   const coreAnalysis = await estimateCoreSize();
   if (verbose) {
-    console.log('Core Bundle (philjs-core):');
+    console.log('Core Bundle (@philjs/core):');
     console.log(`  Raw: ${(coreAnalysis.rawSize / 1024).toFixed(2)} KB`);
     console.log(`  Minified: ${(coreAnalysis.minSize / 1024).toFixed(2)} KB`);
     console.log(`  Gzip: ${(coreAnalysis.gzipSize / 1024).toFixed(2)} KB`);
@@ -382,9 +383,10 @@ export async function runBundleBenchmarks(
 }
 
 // Run if executed directly
-const isMainModule = typeof require !== 'undefined' &&
-  require.main === module ||
-  import.meta.url.endsWith(process.argv[1]?.replace(/\\/g, '/') || '');
+const entryUrl = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 
 if (isMainModule) {
   runBundleBenchmarks({ verbose: true })

@@ -243,7 +243,7 @@ export function generateTestCode(config: {
 }): string {
   const { components = 5, handlers = 10, stores = 2 } = config;
 
-  let code = `import { signal } from 'philjs-core';\nimport { $ } from 'philjs-core/lazy-handlers';\n\n`;
+  let code = `import { signal } from '@philjs/core';\nimport { $ } from '@philjs/core/lazy-handlers';\n\n`;
 
   // Generate stores
   for (let i = 0; i < stores; i++) {

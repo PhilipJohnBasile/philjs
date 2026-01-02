@@ -18,7 +18,7 @@ XState-inspired state machines for PhilJS with signal-based reactivity.
 ## Installation
 
 ```bash
-npm install philjs-xstate philjs-core
+npm install philjs-xstate @philjs/core
 ```
 
 ## Basic Usage

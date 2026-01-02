@@ -4,7 +4,7 @@
  * Get screen and window dimensions with reactive updates.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { Platform } from './Platform.js';
 
 // ============================================================================

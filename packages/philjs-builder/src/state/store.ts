@@ -2,7 +2,7 @@
  * Builder state store using PhilJS signals
  */
 
-import { signal, memo, batch, effect } from 'philjs-core';
+import { signal, memo, batch, effect } from '@philjs/core';
 import type {
   BuilderState,
   BuilderAction,

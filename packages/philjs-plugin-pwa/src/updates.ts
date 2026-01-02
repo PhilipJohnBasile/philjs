@@ -2,8 +2,8 @@
  * Service worker update notifications
  */
 
-import { signal } from 'philjs-core';
-import type { Signal } from 'philjs-core';
+import { signal } from '@philjs/core';
+import type { Signal } from '@philjs/core';
 import type { UpdateCheckResult } from './types.js';
 
 /**

@@ -15,11 +15,11 @@ export function philJSPlugin(): Plugin {
         esbuild: {
           jsxFactory: "jsx",
           jsxFragment: "Fragment",
-          jsxInject: `import { jsx, Fragment } from 'philjs-core/jsx-runtime'`,
+          jsxInject: `import { jsx, Fragment } from '@philjs/core/jsx-runtime'`,
         },
         resolve: {
           alias: {
-            "philjs-core/jsx-runtime": "philjs-core/dist/jsx-runtime.js",
+            "@philjs/core/jsx-runtime": "@philjs/core/dist/jsx-runtime.js",
           },
         },
       };
@@ -39,7 +39,7 @@ export function philJSPlugin(): Plugin {
         if (process.env["NODE_ENV"] !== "production") {
           // Inject dev-only helpers
           return {
-            code: `import { __DEV__ } from 'philjs-core';\n${code}`,
+            code: `import { __DEV__ } from '@philjs/core';\n${code}`,
             map: null,
           };
         }
@@ -74,7 +74,7 @@ export function philJSSSRPlugin(): Plugin {
     config() {
       return {
         ssr: {
-          noExternal: ["philjs-core", "philjs-router", "philjs-ssr"],
+          noExternal: ["@philjs/core", "philjs-router", "philjs-ssr"],
         },
       };
     },

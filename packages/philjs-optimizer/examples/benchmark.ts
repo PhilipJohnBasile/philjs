@@ -10,7 +10,7 @@ import type { OptimizerOptions } from '../src/types.js';
  */
 const testCases = {
   simple: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     function Counter() {
       const count = signal(0);
@@ -24,7 +24,7 @@ const testCases = {
   `,
 
   complex: `
-    import { signal, memo } from 'philjs-core';
+    import { signal, memo } from '@philjs/core';
 
     function TodoApp() {
       const todos = signal([]);
@@ -85,7 +85,7 @@ const testCases = {
  * Generate large code sample
  */
 function generateLargeCode(componentCount: number): string {
-  let code = `import { signal } from 'philjs-core';\n\n`;
+  let code = `import { signal } from '@philjs/core';\n\n`;
 
   for (let i = 0; i < componentCount; i++) {
     code += `

@@ -9,7 +9,7 @@
  * - Heartbeat/keepalive support
  */
 
-import { signal, memo, batch, type Signal, type Memo } from 'philjs-core';
+import { signal, memo, batch, type Signal, type Memo } from '@philjs/core';
 import type { DocumentNode } from 'graphql';
 
 export interface SubscriptionConfig {

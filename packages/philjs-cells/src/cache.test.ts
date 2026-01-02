@@ -13,8 +13,8 @@ import {
   inspectCache,
 } from './cache';
 
-// Mock philjs-core
-vi.mock('philjs-core', () => ({
+// Mock @philjs/core
+vi.mock('@philjs/core', () => ({
   signal: (initial: unknown) => {
     let value = initial;
     const read = () => value;

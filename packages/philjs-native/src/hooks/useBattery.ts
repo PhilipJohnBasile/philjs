@@ -6,7 +6,7 @@
  * charging state, and time estimates.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { isNativePlatform, callPlugin } from '../capacitor/index.js';
 
 // ============================================================================

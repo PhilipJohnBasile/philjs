@@ -85,7 +85,7 @@ fn Counter() -> impl IntoView {
 3. **No Hook Rules**: No "rules of hooks" to follow
 4. **Better Performance**: Updates only what changes
 5. **LiveView Support**: Server-driven UI out of the box
-6. **TypeScript Interop**: Share code with philjs-core
+6. **TypeScript Interop**: Share code with @philjs/core
 
 ### When to Keep Dioxus
 

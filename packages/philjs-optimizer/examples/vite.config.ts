@@ -37,7 +37,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor chunk
-          vendor: ['philjs-core'],
+          vendor: ['@philjs/core'],
         },
       },
     },

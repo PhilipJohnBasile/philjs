@@ -194,7 +194,7 @@ async function initProject(name?: string): Promise<void> {
       'build:web': 'philjs-native build --platform web',
     },
     dependencies: {
-      'philjs-core': '^2.0.0',
+      '@philjs/core': '^2.0.0',
       'philjs-native': '^2.0.0',
     },
     devDependencies: {
@@ -219,7 +219,7 @@ async function initProject(name?: string): Promise<void> {
       skipLibCheck: true,
       esModuleInterop: true,
       jsx: 'react-jsx',
-      jsxImportSource: 'philjs-core',
+      jsxImportSource: '@philjs/core',
       outDir: './dist',
       rootDir: './src',
     },
@@ -786,7 +786,7 @@ async function upgradeProject(): Promise<void> {
   console.log('\n  Upgrading PhilJS Native...\n');
 
   // Use spawnSync with args array
-  spawnSync('npm', ['update', 'philjs-native', 'philjs-core'], { stdio: 'inherit' });
+  spawnSync('npm', ['update', 'philjs-native', '@philjs/core'], { stdio: 'inherit' });
 
   console.log('\n  Upgrade complete!\n');
 }

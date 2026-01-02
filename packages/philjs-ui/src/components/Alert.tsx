@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Alert Component
  */
-import { signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type AlertStatus = 'info' | 'success' | 'warning' | 'error';
 type AlertVariant = 'subtle' | 'solid' | 'left-accent' | 'top-accent';

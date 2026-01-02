@@ -4,7 +4,7 @@
  * Integrates Supabase Auth with PhilJS auth system
  */
 
-import { signal, type Signal } from 'philjs-core/signals';
+import { signal, type Signal } from '@philjs/core/signals';
 import { BaseAuthProvider } from '../auth-provider.js';
 import type { User, AuthSession } from '../types.js';
 

@@ -53,11 +53,11 @@ features:
 npm create philjs@latest my-app
 
 # Or add to existing project
-npm install philjs-core
+npm install @philjs/core
 ```
 
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // Create reactive state
 const count = signal(0);

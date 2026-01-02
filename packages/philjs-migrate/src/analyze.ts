@@ -132,26 +132,26 @@ function analyzeDependencies(packageJson: any): DependencyInfo[] {
 
   const categoryMap: Record<string, { category: DependencyInfo['category']; philjs?: string }> = {
     // React ecosystem
-    'react': { category: 'framework', philjs: 'philjs-core' },
-    'react-dom': { category: 'framework', philjs: 'philjs-core' },
+    'react': { category: 'framework', philjs: '@philjs/core' },
+    'react-dom': { category: 'framework', philjs: '@philjs/core' },
     'react-router': { category: 'routing', philjs: 'philjs-router' },
     'react-router-dom': { category: 'routing', philjs: 'philjs-router' },
-    '@tanstack/react-query': { category: 'state', philjs: 'philjs-core (signals)' },
-    'redux': { category: 'state', philjs: 'philjs-core (signals)' },
-    '@reduxjs/toolkit': { category: 'state', philjs: 'philjs-core (signals)' },
-    'zustand': { category: 'state', philjs: 'philjs-core (signals)' },
-    'jotai': { category: 'state', philjs: 'philjs-core (signals)' },
-    'recoil': { category: 'state', philjs: 'philjs-core (signals)' },
-    'mobx': { category: 'state', philjs: 'philjs-core (signals)' },
+    '@tanstack/react-query': { category: 'state', philjs: '@philjs/core (signals)' },
+    'redux': { category: 'state', philjs: '@philjs/core (signals)' },
+    '@reduxjs/toolkit': { category: 'state', philjs: '@philjs/core (signals)' },
+    'zustand': { category: 'state', philjs: '@philjs/core (signals)' },
+    'jotai': { category: 'state', philjs: '@philjs/core (signals)' },
+    'recoil': { category: 'state', philjs: '@philjs/core (signals)' },
+    'mobx': { category: 'state', philjs: '@philjs/core (signals)' },
 
     // Vue ecosystem
-    'vue': { category: 'framework', philjs: 'philjs-core' },
+    'vue': { category: 'framework', philjs: '@philjs/core' },
     'vue-router': { category: 'routing', philjs: 'philjs-router' },
-    'pinia': { category: 'state', philjs: 'philjs-core (signals)' },
-    'vuex': { category: 'state', philjs: 'philjs-core (signals)' },
+    'pinia': { category: 'state', philjs: '@philjs/core (signals)' },
+    'vuex': { category: 'state', philjs: '@philjs/core (signals)' },
 
     // Svelte ecosystem
-    'svelte': { category: 'framework', philjs: 'philjs-core' },
+    'svelte': { category: 'framework', philjs: '@philjs/core' },
     'svelte-routing': { category: 'routing', philjs: 'philjs-router' },
 
     // Testing

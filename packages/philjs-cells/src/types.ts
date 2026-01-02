@@ -4,8 +4,8 @@
  * RedwoodJS-style Cells pattern for declarative data loading.
  */
 
-import type { VNode, JSXElement } from 'philjs-core';
-import type { Signal, Memo } from 'philjs-core';
+import type { VNode, JSXElement } from '@philjs/core';
+import type { Signal, Memo } from '@philjs/core';
 
 // ============================================================================
 // Core Cell Types

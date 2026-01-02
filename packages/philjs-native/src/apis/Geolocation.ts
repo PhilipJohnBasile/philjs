@@ -4,7 +4,7 @@
  * GPS location services for mobile apps.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
 // ============================================================================

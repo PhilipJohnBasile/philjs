@@ -85,7 +85,7 @@ function Counter() {
 
 **After (PhilJS):**
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -130,7 +130,7 @@ function increment() {
 
 **After (PhilJS):**
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -170,7 +170,7 @@ philjs-migrate --from svelte --source ./src
 
 **After (PhilJS):**
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);

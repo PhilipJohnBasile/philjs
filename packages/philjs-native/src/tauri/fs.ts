@@ -5,7 +5,7 @@
  * with path resolution, file watching, and streaming support.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { isTauri, getTauriInternals, invoke } from './index.js';
 import { subscribe, publish } from './events.js';
 

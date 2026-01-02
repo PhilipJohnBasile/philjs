@@ -9,7 +9,7 @@
  * - Route parameter testing
  */
 
-import type { Signal } from 'philjs-core/signals';
+import type { Signal } from '@philjs/core/signals';
 
 // Expect function type for testing utilities
 // These functions are designed to be used in test files where expect is a global

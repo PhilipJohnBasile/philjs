@@ -6,7 +6,7 @@
  * with typed events, namespaces, and reactive integration.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { listen, once, emit, isTauri, type TauriEvent } from './index.js';
 
 // ============================================================================

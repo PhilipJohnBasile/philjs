@@ -6,7 +6,7 @@
  * OS version, and hardware capabilities.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, platformInfo } from '../runtime.js';
 import { isCapacitor, getCapacitorPlatform, getDeviceInfo } from '../capacitor/index.js';
 import { isTauri, getAppInfo } from '../tauri/index.js';

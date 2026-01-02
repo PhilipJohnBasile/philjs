@@ -5,7 +5,7 @@
  * show/hide control, height tracking, and scroll behavior.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import {
   isNativePlatform,
   callPlugin,

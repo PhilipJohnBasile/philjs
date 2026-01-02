@@ -33,7 +33,7 @@ export class PhilJSCompletionProvider implements vscode.CompletionItemProvider {
 
   private isPhilJSContext(document: vscode.TextDocument, position: vscode.Position): boolean {
     const text = document.getText();
-    return text.includes('philjs-core') ||
+    return text.includes('@philjs/core') ||
            text.includes('philjs-router') ||
            text.includes('philjs-ssr') ||
            text.includes('philjs');
@@ -368,9 +368,9 @@ export class PhilJSCompletionProvider implements vscode.CompletionItemProvider {
   private getImportCompletions(): vscode.CompletionItem[] {
     return [
       this.createCompletion(
-        'philjs-core',
-        'Import from philjs-core',
-        'import { ${1:signal, computed, effect} } from \'philjs-core\';',
+        '@philjs/core',
+        'Import from @philjs/core',
+        'import { ${1:signal, computed, effect} } from \'@philjs/core\';',
         vscode.CompletionItemKind.Module,
         'Core reactive primitives.'
       ),

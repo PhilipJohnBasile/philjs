@@ -3,7 +3,7 @@
  * Signal-based hooks for file operations
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import type { StorageClient, StorageFile, UploadOptions, DownloadOptions, ListOptions, ListResult } from './index.js';
 
 // ============================================================================

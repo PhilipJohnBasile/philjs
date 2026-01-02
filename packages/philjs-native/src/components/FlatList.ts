@@ -5,7 +5,7 @@
  * Supports virtualization, pull-to-refresh, and infinite scrolling.
  */
 
-import { signal, effect, memo, type Signal } from 'philjs-core';
+import { signal, effect, memo, type Signal } from '@philjs/core';
 import { detectPlatform } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

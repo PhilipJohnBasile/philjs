@@ -6,8 +6,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { generateCacheKey, hydrateCells, getCellHydrationScript } from './context';
 import { cellCache } from './cache';
 
-// Mock philjs-core
-vi.mock('philjs-core', () => ({
+// Mock @philjs/core
+vi.mock('@philjs/core', () => ({
   signal: (initial: unknown) => {
     let value = initial;
     const read = () => value;

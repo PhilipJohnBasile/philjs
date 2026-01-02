@@ -10,7 +10,7 @@
  * - State visualization
  */
 
-import { signal, batch, type Signal } from 'philjs-core';
+import { signal, batch, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

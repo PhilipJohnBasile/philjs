@@ -5,7 +5,7 @@
     "rootDir": "./src",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

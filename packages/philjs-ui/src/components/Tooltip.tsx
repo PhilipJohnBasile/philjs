@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Tooltip Component
  */
-import { signal, effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 

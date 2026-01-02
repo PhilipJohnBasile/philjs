@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "noEmitOnError": false
   },
   "include": ["src/**/*"],

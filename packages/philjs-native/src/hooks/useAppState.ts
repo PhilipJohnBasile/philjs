@@ -6,7 +6,7 @@
  * suspend/resume, and memory warnings.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import {
   isCapacitor,
   isNativePlatform,

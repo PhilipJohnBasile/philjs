@@ -1,0 +1,69 @@
+{
+  "name": "@philjs/nexus",
+  "version": "0.1.0",
+  "description": "Unified local-first, AI-native, collaborative framework - The Nexus Architecture",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./sync": {
+      "types": "./dist/sync/index.d.ts",
+      "import": "./dist/sync/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "test": "vitest run",
+    "lint": "echo 'Lint @philjs/nexus'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*",
+    "@philjs/collab": "workspace:*",
+    "@philjs/genui": "workspace:*",
+    "@philjs/intent": "workspace:*",
+    "@philjs/ai": "workspace:*",
+    "@philjs/storage": "workspace:*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@vitest/coverage-v8": "^4.0.16",
+    "rollup": "^4.54.0",
+    "typescript": "^6.0.0",
+    "vitest": "^4.0.16"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-nexus"
+  },
+  "keywords": [
+    "philjs",
+    "nexus",
+    "local-first",
+    "ai-native",
+    "collaborative",
+    "crdt",
+    "offline-first",
+    "genui",
+    "signals"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}

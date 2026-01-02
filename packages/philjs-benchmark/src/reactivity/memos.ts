@@ -3,7 +3,7 @@
  * Tests derived value computation and caching performance.
  */
 
-import { signal, memo, effect, batch } from 'philjs-core';
+import { signal, memo, effect, batch } from '@philjs/core';
 import { gc } from '../utils.js';
 import type { Benchmark } from '../types.js';
 

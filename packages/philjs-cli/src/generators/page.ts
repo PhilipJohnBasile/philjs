@@ -134,7 +134,7 @@ function generatePageTemplate(context: TemplateContext): string {
  * ${componentName} - Page component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 ${loaderImport}${isDynamic ? `import { useParams${paramsImport.slice(2)} } from 'philjs-router';\n` : ''}${styleImport}${propsType}${paramsType}
 export function ${componentName}() {

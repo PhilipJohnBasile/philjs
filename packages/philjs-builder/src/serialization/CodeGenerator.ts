@@ -504,7 +504,7 @@ export function generateCode(
 
   if (options.format === 'tsx' || options.format === 'jsx') {
     if (options.signalBindings) {
-      imports.push(`import { signal, memo } from ${quote}philjs-core${quote}${semi}`);
+      imports.push(`import { signal, memo } from ${quote}@philjs/core${quote}${semi}`);
     }
   }
 

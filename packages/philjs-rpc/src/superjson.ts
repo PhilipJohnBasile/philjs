@@ -11,7 +11,7 @@ import {
   type SerializeOptions,
   type DeserializeOptions,
   type CustomTypeHandler,
-} from 'philjs-core/superjson';
+} from '@philjs/core/superjson';
 
 import type {
   RPCRequest,

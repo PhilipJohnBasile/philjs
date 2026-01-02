@@ -5,7 +5,7 @@
  * Follows platform conventions for iOS and Android.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

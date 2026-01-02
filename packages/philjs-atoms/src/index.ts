@@ -10,7 +10,7 @@
  * - Atom utilities (reset, freeze, etc.)
  */
 
-import { signal, memo, resource, batch, type Signal, type Memo } from 'philjs-core';
+import { signal, memo, resource, batch, type Signal, type Memo } from '@philjs/core';
 
 // ============================================================================
 // Types

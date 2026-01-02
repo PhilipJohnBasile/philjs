@@ -181,7 +181,7 @@ export function createDevelopmentViteConfig(
 
     // Optimize dependencies
     optimizeDeps: {
-      include: ['philjs-core'],
+      include: ['@philjs/core'],
       exclude: [],
 
       // Force re-optimization on changes

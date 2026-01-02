@@ -6,7 +6,7 @@
  * support for both native camera and photo library.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import {
   isCapacitor,
   isNativePlatform,

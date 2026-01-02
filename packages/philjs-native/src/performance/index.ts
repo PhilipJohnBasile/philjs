@@ -5,7 +5,7 @@
  * lazy loading, and native performance monitoring.
  */
 
-import { signal, effect, batch, memo, type Signal } from 'philjs-core';
+import { signal, effect, batch, memo, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
 // ============================================================================

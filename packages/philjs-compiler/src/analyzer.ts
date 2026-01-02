@@ -22,7 +22,7 @@ import type {
   CompilerConfig,
 } from './types.js';
 
-const PHILJS_SOURCES = ['philjs-core', 'philjs', '@philjs/core'];
+const PHILJS_SOURCES = ['@philjs/core', 'philjs', '@philjs/core'];
 const REACTIVE_PRIMITIVES = ['signal', 'memo', 'effect', 'linkedSignal', 'resource', 'batch'];
 
 export class Analyzer {

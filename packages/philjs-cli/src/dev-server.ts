@@ -25,7 +25,7 @@ export async function startDevServer(
     },
     plugins: [philJSPlugin()],
     optimizeDeps: {
-      include: ["philjs-core", "philjs-router", "philjs-ssr"],
+      include: ["@philjs/core", "philjs-router", "philjs-ssr"],
     },
   });
 

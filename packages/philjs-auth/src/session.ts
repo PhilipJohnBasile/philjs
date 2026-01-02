@@ -13,7 +13,7 @@
  * configure your server to manage tokens via HttpOnly cookies.
  */
 
-import { signal, computed, type Signal } from 'philjs-core/signals';
+import { signal, computed, type Signal } from '@philjs/core/signals';
 import type { AuthSession, AuthConfig, User } from './types.js';
 
 const DEFAULT_CONFIG: Required<AuthConfig> & { storeTokenClientSide: boolean } = {

@@ -401,7 +401,7 @@ async function hydrateComponent(
   Component: Function,
   props: Record<string, unknown>
 ): Promise<void> {
-  // This integrates with philjs-core's hydrate function
+  // This integrates with @philjs/core's hydrate function
   // For now, we'll call the component and let it take over
   try {
     const result = Component(props);

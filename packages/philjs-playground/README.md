@@ -20,7 +20,7 @@ import { createPlayground } from 'philjs-playground';
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const count = signal(0);
 
@@ -199,7 +199,7 @@ interface PreviewConfig {
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const count = signal(0);
 
@@ -222,7 +222,7 @@ const playground = createPlayground({
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const todos = signal([]);
     const input = signal('');

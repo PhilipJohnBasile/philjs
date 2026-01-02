@@ -2,7 +2,7 @@
  * Template System - Save and load design templates
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import type {
   ComponentNode,
   NodeId,

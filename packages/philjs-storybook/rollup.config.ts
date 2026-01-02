@@ -20,7 +20,7 @@ export default {
     preserveModulesRoot: 'src',
   },
   external: [
-    'philjs-core',
+    '@philjs/core',
     'philjs-router',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',

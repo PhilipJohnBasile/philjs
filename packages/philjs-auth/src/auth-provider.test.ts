@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 import { BaseAuthProvider, AuthProviderFactory } from './auth-provider.js';
 import type { User, AuthSession } from './types.js';
 

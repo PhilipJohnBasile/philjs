@@ -8,7 +8,7 @@
   },
   "imports": {
     "philjs-adapters/": "npm:philjs-adapters@^2.0.0/",
-    "philjs-core": "npm:philjs-core@^2.0.0",
+    "@philjs/core": "npm:@philjs/core@^0.1.0",
     "philjs-ssr": "npm:philjs-ssr@^2.0.0"
   },
   "compilerOptions": {

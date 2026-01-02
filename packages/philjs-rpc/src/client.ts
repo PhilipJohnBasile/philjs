@@ -3,7 +3,7 @@
  * Provides type-safe API calls with React Query-style hooks.
  */
 
-import { signal, effect, memo } from 'philjs-core';
+import { signal, effect, memo } from '@philjs/core';
 import type {
   Router,
   ProcedureDefinition,

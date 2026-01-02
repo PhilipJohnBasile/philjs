@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Card Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type CardVariant = 'elevated' | 'outlined' | 'filled';
 type CardPadding = 'none' | 'sm' | 'md' | 'lg';

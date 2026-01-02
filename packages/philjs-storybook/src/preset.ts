@@ -14,17 +14,17 @@ export const viteFinal = async (config: any) => {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
-        'react': 'philjs-core',
-        'react-dom': 'philjs-core',
-        'react/jsx-runtime': 'philjs-core/jsx-runtime',
-        'react/jsx-dev-runtime': 'philjs-core/jsx-dev-runtime',
+        'react': '@philjs/core',
+        'react-dom': '@philjs/core',
+        'react/jsx-runtime': '@philjs/core/jsx-runtime',
+        'react/jsx-dev-runtime': '@philjs/core/jsx-dev-runtime',
       },
     },
     optimizeDeps: {
       ...config.optimizeDeps,
       include: [
         ...(config.optimizeDeps?.include || []),
-        'philjs-core',
+        '@philjs/core',
         'philjs-router',
       ],
     },
@@ -32,7 +32,7 @@ export const viteFinal = async (config: any) => {
       ...config.esbuild,
       jsxFactory: 'h',
       jsxFragment: 'Fragment',
-      jsxInject: `import { h, Fragment } from 'philjs-core'`,
+      jsxInject: `import { h, Fragment } from '@philjs/core'`,
     },
   };
 };

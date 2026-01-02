@@ -705,7 +705,7 @@ console.log('PWA files generated successfully');
 
 ```typescript
 // App.tsx
-import { createEffect, onCleanup } from 'philjs-core';
+import { createEffect, onCleanup } from '@philjs/core';
 import {
   registerServiceWorker,
   initOfflineDetection,

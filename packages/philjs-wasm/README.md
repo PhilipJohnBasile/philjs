@@ -14,7 +14,7 @@ Rust/WebAssembly integration for PhilJS with reactive signals. This package make
 ## Installation
 
 ```bash
-npm install philjs-wasm philjs-core
+npm install philjs-wasm @philjs/core
 ```
 
 ## Quick Start

@@ -5,7 +5,7 @@
  * Only includes essential features.
  */
 
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 // ============================================================================
 // Minimal Directive System

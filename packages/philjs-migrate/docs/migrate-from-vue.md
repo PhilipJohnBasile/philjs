@@ -26,7 +26,7 @@ This guide helps you migrate Vue 3 Composition API applications to PhilJS. Both 
 npm uninstall vue @vue/compiler-sfc vue-router pinia
 
 # Install PhilJS
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 ```
 
 ### Update Configuration
@@ -36,7 +36,7 @@ npm install philjs-core philjs-router
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
@@ -69,7 +69,7 @@ function increment() {
 
 ```tsx
 // After (PhilJS)
-import { signal, memo, onMount } from 'philjs-core';
+import { signal, memo, onMount } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -127,7 +127,7 @@ console.log(count.value);  // Read with .value
 count.value++;             // Write with .value
 
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 console.log(count());      // Read by calling
@@ -147,7 +147,7 @@ const state = reactive({
 state.name = 'Jane';  // Direct mutation
 
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const state = signal({
   name: 'John',
@@ -171,7 +171,7 @@ const fullName = computed(() => `${firstName.value} ${lastName.value}`);
 console.log(fullName.value);  // "John Doe"
 
 // PhilJS
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const firstName = signal('John');
 const lastName = signal('Doe');
@@ -198,7 +198,7 @@ watch([firstName, lastName], ([first, last], [oldFirst, oldLast]) => {
 });
 
 // PhilJS - auto-tracked dependencies
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -226,7 +226,7 @@ watchEffect(() => {
 });
 
 // PhilJS - identical behavior
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -273,7 +273,7 @@ export default {
 
 ```tsx
 // PhilJS
-import { signal, memo, onMount } from 'philjs-core';
+import { signal, memo, onMount } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -322,7 +322,7 @@ function increment() {
 
 ```tsx
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 interface Props {
   initialValue: number;
@@ -539,7 +539,7 @@ const { count, doubled, increment } = useCounter(10);
 ```typescript
 // PhilJS Hook
 // useCounter.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 export function useCounter(initial = 0) {
   const count = signal(initial);
@@ -582,7 +582,7 @@ const theme = inject('theme');
 
 ```tsx
 // PhilJS Provider
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext('light');
 
@@ -635,7 +635,7 @@ store.increment();
 
 ```typescript
 // PhilJS Store with signals
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // Simple approach - exported signals
 export const count = signal(0);
@@ -652,7 +652,7 @@ increment();
 ```typescript
 // PhilJS Store - module pattern
 // stores/counter.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function createCounterStore() {
   const count = signal(0);
@@ -721,7 +721,7 @@ store.getters.doubled;
 
 ```typescript
 // PhilJS equivalent
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 
@@ -856,7 +856,7 @@ const AsyncComponent = defineAsyncComponent(() =>
 
 ```tsx
 // PhilJS
-import { lazy, Suspense } from 'philjs-core';
+import { lazy, Suspense } from '@philjs/core';
 
 const AsyncComponent = lazy(() => import('./HeavyComponent'));
 
@@ -882,7 +882,7 @@ function App() {
 
 ```tsx
 // PhilJS
-import { Portal } from 'philjs-core';
+import { Portal } from '@philjs/core';
 
 function Modal() {
   return (
@@ -929,7 +929,7 @@ function Animated() {
 }
 
 // Or with PhilJS animation API
-import { createAnimatedValue } from 'philjs-core';
+import { createAnimatedValue } from '@philjs/core';
 
 function Animated() {
   const show = signal(true);
@@ -950,7 +950,7 @@ function Animated() {
 ### 1. Install Dependencies
 
 ```bash
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 npm uninstall vue @vue/compiler-sfc vue-router pinia
 ```
 
@@ -963,7 +963,7 @@ export default {
   plugins: [],
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
 };
 ```
@@ -978,7 +978,7 @@ import App from './App.vue';
 createApp(App).mount('#app');
 
 // After (PhilJS)
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import App from './App';
 
 render(() => <App />, document.getElementById('app')!);

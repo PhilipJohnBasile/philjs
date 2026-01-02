@@ -79,7 +79,7 @@ function generateStoreTemplate(
  * Centralized state management using PhilJS signals.
  */
 
-import { signal, computed, effect } from 'philjs-core';
+import { signal, computed, effect } from '@philjs/core';
 ${itemType}${stateType}
 const initialState${typescript ? `: ${pascalName}State` : ''} = {
   items: [],

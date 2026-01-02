@@ -97,7 +97,7 @@ export function transform(
           const hasImport = program.node.body.some(
             (node) =>
               t.isImportDeclaration(node) &&
-              node.source.value === 'philjs-core/lazy-handlers' &&
+              node.source.value === '@philjs/core/lazy-handlers' &&
               node.specifiers.some(
                 (spec) =>
                   t.isImportSpecifier(spec) &&
@@ -110,7 +110,7 @@ export function transform(
             program.node.body.unshift(
               t.importDeclaration(
                 [t.importSpecifier(t.identifier('$$'), t.identifier('$$'))],
-                t.stringLiteral('philjs-core/lazy-handlers')
+                t.stringLiteral('@philjs/core/lazy-handlers')
               )
             );
           }
@@ -247,7 +247,7 @@ export function injectHandlerRegistrations(
   const hasImport = program.body.some(
     (node) =>
       t.isImportDeclaration(node) &&
-      node.source.value === 'philjs-core/lazy-handlers' &&
+      node.source.value === '@philjs/core/lazy-handlers' &&
       node.specifiers.some(
         (spec) =>
           t.isImportSpecifier(spec) &&
@@ -265,7 +265,7 @@ export function injectHandlerRegistrations(
             t.identifier('handlerRegistry')
           ),
         ],
-        t.stringLiteral('philjs-core/lazy-handlers')
+        t.stringLiteral('@philjs/core/lazy-handlers')
       )
     );
   }

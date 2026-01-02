@@ -345,4 +345,4 @@ Contributions are welcome! Please read the contributing guidelines first.
 ## Related Packages
 
 - [philjs-devtools](../philjs-devtools) - Development tools overlay
-- [philjs-core](../philjs-core) - Core PhilJS framework
+- [@philjs/core](../philjs-core) - Core PhilJS framework

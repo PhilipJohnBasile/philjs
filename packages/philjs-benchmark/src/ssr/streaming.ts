@@ -3,8 +3,8 @@
  * Tests streaming render performance and characteristics.
  */
 
-import { jsx, Fragment } from 'philjs-core/jsx-runtime';
-import { signal, memo } from 'philjs-core';
+import { jsx, Fragment } from '@philjs/core/jsx-runtime';
+import { signal, memo } from '@philjs/core';
 import { randomLabel, now } from '../utils.js';
 import type { Benchmark } from '../types.js';
 

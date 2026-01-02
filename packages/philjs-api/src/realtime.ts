@@ -4,7 +4,7 @@
  * Provides tRPC-style real-time subscriptions with WebSocket and SSE fallback
  */
 
-import { signal, memo, effect, type Signal, type Memo } from 'philjs-core';
+import { signal, memo, effect, type Signal, type Memo } from '@philjs/core';
 
 // ============================================================================
 // Types

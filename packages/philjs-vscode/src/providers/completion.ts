@@ -28,7 +28,7 @@ export class PhilJSCompletionProvider implements vscode.CompletionItemProvider {
 
   private isPhilJSContext(document: vscode.TextDocument, position: vscode.Position): boolean {
     const text = document.getText();
-    return text.includes('philjs-core') || text.includes('philjs');
+    return text.includes('@philjs/core') || text.includes('philjs');
   }
 
   private getPhilJSCompletions(linePrefix: string): vscode.CompletionItem[] {

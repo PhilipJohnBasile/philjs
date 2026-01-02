@@ -21,10 +21,10 @@ export {
   coreFrameworkBenchmarks,
 } from './framework-benchmark/runner.js';
 export { create1000Rows, create10000Rows, createRowsBenchmarks } from './framework-benchmark/create-rows.js';
-export { updateEvery10thRow, updateRowsBenchmarks } from './framework-benchmark/update-rows.js';
+export { updateEvery10thRow, updateEvery10th, updateRowsBenchmarks } from './framework-benchmark/update-rows.js';
 export { swapRows, swapRowsBenchmarks } from './framework-benchmark/swap-rows.js';
 export { selectRow, selectRowBenchmarks } from './framework-benchmark/select-row.js';
-export { removeRow, clearRows, deleteRowBenchmarks } from './framework-benchmark/delete-row.js';
+export { removeRow, deleteRow, clearRows, deleteRowBenchmarks } from './framework-benchmark/delete-row.js';
 
 // Reactivity Benchmarks
 export {

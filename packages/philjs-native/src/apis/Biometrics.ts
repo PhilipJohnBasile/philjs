@@ -4,7 +4,7 @@
  * Face ID, Touch ID, and Fingerprint authentication.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformSelect } from '../runtime.js';
 
 // ============================================================================

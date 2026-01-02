@@ -9,7 +9,7 @@
  * - Type-safe optimistic responses
  */
 
-import { signal, batch, type Signal } from 'philjs-core';
+import { signal, batch, type Signal } from '@philjs/core';
 import type { DocumentNode } from 'graphql';
 import type { CacheStore } from './index.js';
 

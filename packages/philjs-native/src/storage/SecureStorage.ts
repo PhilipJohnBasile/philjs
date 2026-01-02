@@ -6,7 +6,7 @@
  * Uses Keychain on iOS, Keystore on Android, and sessionStorage with encryption on web.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
 // ============================================================================

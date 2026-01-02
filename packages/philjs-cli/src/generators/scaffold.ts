@@ -167,7 +167,7 @@ async function generateListPage(
  * ${modelName} List Page
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 import { Link } from 'philjs-router';
 import { ${modelName}List } from '../../components/${modelName}/${modelName}List';
@@ -245,7 +245,7 @@ async function generateDetailPage(
  * ${modelName} Detail Page
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 import { useParams, Link } from 'philjs-router';
 import { useLoaderData } from 'philjs-router';
@@ -328,7 +328,7 @@ async function generateNewPage(
  * New ${modelName} Page
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 import { Link, useNavigate } from 'philjs-router';
 import { ${modelName}Form } from '../../../components/${modelName}/${modelName}Form';
@@ -400,7 +400,7 @@ async function generateEditPage(
  * Edit ${modelName} Page
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 import { useParams, Link, useNavigate } from 'philjs-router';
 import { useLoaderData } from 'philjs-router';
@@ -532,7 +532,7 @@ async function generateFormComponent(
  * ${modelName} Form Component
  */
 
-import { JSX, signal } from 'philjs-core';
+import { JSX, signal } from '@philjs/core';
 
 ${typescript ? `export interface ${modelName}FormData {\n${fields.map(f => `  ${f.name}${f.modifiers.includes('optional') ? '?' : ''}: ${getTypeScriptType(f.type)};`).join('\n')}\n}\n` : ''}
 ${typescript ? `export interface ${modelName}FormProps {\n  defaultValues?: Partial<${modelName}FormData>;\n  onSubmit: (data: ${modelName}FormData) => void | Promise<void>;\n  mode?: 'create' | 'edit';\n}\n` : ''}
@@ -602,7 +602,7 @@ async function generateListComponent(
  * ${modelName} List Component
  */
 
-import { JSX, signal, effect } from 'philjs-core';
+import { JSX, signal, effect } from '@philjs/core';
 import { Link } from 'philjs-router';
 
 ${typescript ? `export interface ${modelName}Item {\n  id: string;\n${fields.map(f => `  ${f.name}${f.modifiers.includes('optional') ? '?' : ''}: ${getTypeScriptType(f.type)};`).join('\n')}\n}\n` : ''}
@@ -703,7 +703,7 @@ async function generateDetailComponent(
  * ${modelName} Detail Component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 
 ${typescript ? `export interface ${modelName}Data {\n  id: string;\n${fields.map(f => `  ${f.name}${f.modifiers.includes('optional') ? '?' : ''}: ${getTypeScriptType(f.type)};`).join('\n')}\n  createdAt?: string;\n  updatedAt?: string;\n}\n` : ''}
 ${typescript ? `export interface ${modelName}DetailProps {\n  ${camelName}?: ${modelName}Data | null;\n}\n` : ''}

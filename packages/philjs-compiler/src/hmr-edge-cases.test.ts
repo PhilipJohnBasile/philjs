@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-// Mock imports for testing - these would come from philjs-core in production
+// Mock imports for testing - these would come from @philjs/core in production
 // For now, create stubs to demonstrate the test structure
 
 const hmrStateRegistry = new Map<string, any>();

@@ -27,7 +27,7 @@ npm install philjs-plugin-tailwind tailwindcss autoprefixer postcss
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from 'philjs-core';
+import { defineConfig } from '@philjs/core';
 import tailwind from 'philjs-plugin-tailwind';
 
 export default defineConfig({

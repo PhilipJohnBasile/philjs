@@ -103,7 +103,7 @@ export default function philJSCompiler(options: PhilJSRollupPluginOptions = {}):
       }
 
       // Skip non-PhilJS files (check for PhilJS imports)
-      if (!code.includes('philjs-core') && !code.includes('from "philjs')) {
+      if (!code.includes('@philjs/core') && !code.includes('from "philjs')) {
         return null;
       }
 

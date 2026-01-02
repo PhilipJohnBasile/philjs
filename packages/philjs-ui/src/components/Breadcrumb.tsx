@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Breadcrumb Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export interface BreadcrumbProps {
   children: JSX.Element | JSX.Element[];

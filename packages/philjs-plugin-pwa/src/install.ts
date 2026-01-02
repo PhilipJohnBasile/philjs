@@ -2,8 +2,8 @@
  * PWA install prompt utilities
  */
 
-import { signal } from 'philjs-core';
-import type { Signal } from 'philjs-core';
+import { signal } from '@philjs/core';
+import type { Signal } from '@philjs/core';
 import type { InstallPromptEvent } from './types.js';
 
 let deferredPrompt: InstallPromptEvent | null = null;

@@ -5,7 +5,7 @@
  * Handles notches, home indicators, and other device-specific UI elements.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformInfo } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

@@ -3,7 +3,7 @@
  */
 
 import type { z } from "zod";
-import type { VNode } from "philjs-core";
+import type { VNode } from "@philjs/core";
 import type {
   RouteDefinition,
   PathParams,

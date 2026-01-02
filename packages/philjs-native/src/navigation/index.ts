@@ -6,7 +6,7 @@
  * deep linking support, and native-like transitions.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

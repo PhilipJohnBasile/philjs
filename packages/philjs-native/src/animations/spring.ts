@@ -4,7 +4,7 @@
  * Advanced spring physics for natural-feeling animations.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

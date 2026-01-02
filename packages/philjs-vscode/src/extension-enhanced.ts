@@ -262,8 +262,8 @@ function registerCommands(context: vscode.ExtensionContext) {
 
       // Add import if needed
       const text = document.getText();
-      if (!text.includes("from 'philjs-core'") || !text.includes('memo')) {
-        const importLine = "import { memo } from 'philjs-core';\n";
+      if (!text.includes("from '@philjs/core'") || !text.includes('memo')) {
+        const importLine = "import { memo } from '@philjs/core';\n";
         edit.insert(uri, new vscode.Position(0, 0), importLine);
       }
 
@@ -316,7 +316,7 @@ function updateStatusBar(editor: vscode.TextEditor | undefined) {
 
   // Check if this is a PhilJS file
   const isPhilJSFile =
-    text.includes('philjs-core') ||
+    text.includes('@philjs/core') ||
     text.includes('philjs-router') ||
     text.includes('philjs-ssr') ||
     document.fileName.includes('/philjs/');

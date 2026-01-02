@@ -11,7 +11,7 @@ export default defineConfig({
     preserveModules: true,
     preserveModulesRoot: 'src',
   },
-  external: ['philjs-core'],
+  external: ['@philjs/core'],
   plugins: [
     nodeResolve(),
     typescript({

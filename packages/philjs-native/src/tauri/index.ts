@@ -6,7 +6,7 @@
  * cross-platform desktop applications with web technologies.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

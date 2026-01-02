@@ -5,8 +5,8 @@
  * caching, and SSR support.
  */
 
-import { createContext, useContext } from 'philjs-core';
-import type { VNode } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
+import type { VNode } from '@philjs/core';
 import type {
   CellProviderConfig,
   CellContextValue,

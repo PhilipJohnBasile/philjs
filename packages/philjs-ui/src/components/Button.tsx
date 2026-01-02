@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Button Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

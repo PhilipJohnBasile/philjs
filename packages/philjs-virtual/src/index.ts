@@ -412,7 +412,7 @@ export function VirtualList<T>(props: VirtualListProps<T>): any {
     onVisibleRangeChange,
   } = props;
 
-  // This is a template - actual implementation depends on philjs-core JSX
+  // This is a template - actual implementation depends on @philjs/core JSX
   const containerStyle: Record<string, string> = {
     height: typeof height === 'number' ? `${height}px` : height,
     width: width ? (typeof width === 'number' ? `${width}px` : width) : '100%',
@@ -677,4 +677,3 @@ export function useWindowVirtualizer(options: {
 
 export const DEFAULT_OVERSCAN = 3;
 export const DEFAULT_SCROLL_DEBOUNCE = 16; // ~60fps
-

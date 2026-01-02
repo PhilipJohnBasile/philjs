@@ -15,6 +15,8 @@ export const DEFAULT_OPTIONS: Required<BenchmarkOptions> = {
   verbose: false,
   saveResults: true,
   outputPath: './results',
+  mode: 'full',
+  useBenchmarkIterations: true,
 };
 
 /**
@@ -118,7 +120,9 @@ export async function runBenchmark(
   }
 
   // Run iterations
-  const iterations = benchmark.iterations ?? opts.iterations;
+  const iterations = opts.useBenchmarkIterations
+    ? (benchmark.iterations ?? opts.iterations)
+    : opts.iterations;
   for (let i = 0; i < iterations; i++) {
     const start = now();
     await benchmark.fn();

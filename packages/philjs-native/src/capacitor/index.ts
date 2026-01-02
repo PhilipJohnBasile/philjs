@@ -6,7 +6,7 @@
  * plugin bridging, and native API wrappers for mobile development.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

@@ -9,7 +9,7 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

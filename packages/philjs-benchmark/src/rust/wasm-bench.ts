@@ -3,7 +3,9 @@
  * Compares performance between JavaScript and WASM implementations.
  */
 
-import { signal, memo, effect, batch } from 'philjs-core';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { signal, memo, effect, batch } from '@philjs/core';
 import { now, calculateStats, getEnvironmentInfo, gc } from '../utils.js';
 import type { BenchmarkSuite, BenchmarkResult, Benchmark } from '../types.js';
 
@@ -514,9 +516,10 @@ export async function runWasmBenchmarks(
 }
 
 // Run if executed directly
-const isMainModule = typeof require !== 'undefined' &&
-  require.main === module ||
-  import.meta.url.endsWith(process.argv[1]?.replace(/\\/g, '/') || '');
+const entryUrl = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 
 if (isMainModule) {
   runWasmBenchmarks({ verbose: true })

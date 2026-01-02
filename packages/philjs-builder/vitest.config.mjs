@@ -8,12 +8,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'philjs-core': path.resolve(__dirname, '../philjs-core/src/index.ts'),
+      '@philjs/core': path.resolve(__dirname, '../philjs-core/src/index.ts'),
     },
   },
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
 });
 

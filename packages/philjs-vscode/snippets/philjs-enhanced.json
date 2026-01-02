@@ -2,7 +2,7 @@
   "PhilJS Island Component": {
     "prefix": ["pisland", "philisland"],
     "body": [
-      "import { JSX, signal } from 'philjs-core';",
+      "import { JSX, signal } from '@philjs/core';",
       "import { island } from 'philjs-islands';",
       "",
       "export default island(function ${1:ComponentName}() {",
@@ -68,7 +68,7 @@
   "PhilJS Error Boundary": {
     "prefix": ["perror", "philerror"],
     "body": [
-      "import { JSX, ErrorBoundary } from 'philjs-core';",
+      "import { JSX, ErrorBoundary } from '@philjs/core';",
       "",
       "function ErrorFallback({ error }: { error: Error }) {",
       "\treturn (",
@@ -92,7 +92,7 @@
   "PhilJS Suspense": {
     "prefix": ["psuspense", "philsuspense"],
     "body": [
-      "import { JSX, Suspense } from 'philjs-core';",
+      "import { JSX, Suspense } from '@philjs/core';",
       "",
       "function Loading() {",
       "\treturn <div>Loading...</div>;",
@@ -111,7 +111,7 @@
   "PhilJS Form": {
     "prefix": ["pform", "philform"],
     "body": [
-      "import { JSX, signal } from 'philjs-core';",
+      "import { JSX, signal } from '@philjs/core';",
       "",
       "export function ${1:FormName}() {",
       "\tconst ${2:formData} = signal({",
@@ -190,7 +190,7 @@
   "PhilJS SSR Component": {
     "prefix": ["pssr", "philssr"],
     "body": [
-      "import { JSX } from 'philjs-core';",
+      "import { JSX } from '@philjs/core';",
       "import { renderToString } from 'philjs-ssr';",
       "",
       "export async function ${1:ComponentName}Server() {",
@@ -236,7 +236,7 @@
   "PhilJS Server Component": {
     "prefix": ["pserver", "philserver"],
     "body": [
-      "import { JSX } from 'philjs-core';",
+      "import { JSX } from '@philjs/core';",
       "",
       "// Server Component - runs only on server",
       "export async function ${1:ComponentName}() {",
@@ -255,7 +255,7 @@
   "PhilJS WebSocket": {
     "prefix": ["pws", "philwebsocket"],
     "body": [
-      "import { signal, effect, onCleanup } from 'philjs-core';",
+      "import { signal, effect, onCleanup } from '@philjs/core';",
       "",
       "export function use${1:WebSocket}() {",
       "\tconst messages = signal<string[]>([]);",

@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Drawer Component
  */
-import { effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
 type DrawerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';

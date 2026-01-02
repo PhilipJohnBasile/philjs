@@ -3,8 +3,8 @@
  * Tests the framework's ability to create and render large numbers of rows.
  */
 
-import { signal, batch, effect } from 'philjs-core';
-import { jsx } from 'philjs-core/jsx-runtime';
+import { signal, batch, effect } from '@philjs/core';
+import { jsx } from '@philjs/core/jsx-runtime';
 import { randomLabel, now, createMockDOM } from '../utils.js';
 import type { RowData, Benchmark } from '../types.js';
 

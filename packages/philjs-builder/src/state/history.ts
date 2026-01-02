@@ -2,7 +2,7 @@
  * Undo/Redo history management for the builder
  */
 
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 import type { HistoryEntry, HistoryState, BuilderState } from '../types.js';
 
 // ============================================================================

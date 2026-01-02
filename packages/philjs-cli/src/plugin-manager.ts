@@ -7,7 +7,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { execSync, spawnSync } from "child_process";
 import * as pc from "picocolors";
-import type { Plugin, PluginMetadata } from "philjs-core/plugin-system";
+import type { Plugin, PluginMetadata } from "@philjs/core/plugin-system";
 
 /**
  * Validate package name to prevent command injection.
@@ -532,7 +532,7 @@ export class CLIPluginManager {
     const packageJson = await this.readPackageJson();
 
     return {
-      version: packageJson["dependencies"]?.["philjs-core"] ?? "2.0.0",
+      version: packageJson["dependencies"]?.["@philjs/core"] ?? "2.0.0",
       root: this.projectRoot,
       mode: "development" as const,
       config: {},
@@ -622,7 +622,7 @@ export class CLIPluginManager {
     }
 
     const packageJson = await this.readPackageJson();
-    const currentVersion = packageJson["dependencies"]?.["philjs-core"] ?? "2.0.0";
+    const currentVersion = packageJson["dependencies"]?.["@philjs/core"] ?? "2.0.0";
 
     // Extract major version
     const required = parseInt(requiredVersion.split(".")[0]!);

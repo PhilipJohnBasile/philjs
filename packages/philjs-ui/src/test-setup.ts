@@ -4,8 +4,8 @@
 
 import { vi } from 'vitest';
 
-// Mock philjs-core
-vi.mock('philjs-core', () => ({
+// Mock @philjs/core
+vi.mock('@philjs/core', () => ({
   signal: <T>(initial: T) => {
     let value = initial;
     const getter = () => value;

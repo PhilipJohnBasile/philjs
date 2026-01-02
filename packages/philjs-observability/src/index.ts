@@ -11,7 +11,7 @@
  * - Custom instrumentation
  */
 
-import { signal, effect, memo } from 'philjs-core';
+import { signal, effect, memo } from '@philjs/core';
 
 // ============================================================================
 // Types

@@ -5,7 +5,7 @@
  * component inspection, and debugging utilities.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformInfo } from '../runtime.js';
 
 // ============================================================================

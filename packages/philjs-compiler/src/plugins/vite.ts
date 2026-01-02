@@ -296,7 +296,7 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
       }
 
       // Skip non-PhilJS files (check for PhilJS imports)
-      if (!code.includes('philjs-core') && !code.includes('from "philjs') && !code.includes('from \'philjs')) {
+      if (!code.includes('@philjs/core') && !code.includes('from "philjs') && !code.includes('from \'philjs')) {
         return null;
       }
 
@@ -563,7 +563,7 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
         const content = await read();
 
         // Check if this is a PhilJS component file
-        const isPhilJSFile = content.includes('philjs-core') ||
+        const isPhilJSFile = content.includes('@philjs/core') ||
           content.includes('from "philjs') ||
           content.includes('from \'philjs');
 

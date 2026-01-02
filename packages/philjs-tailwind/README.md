@@ -84,7 +84,7 @@ The PhilJS preset includes:
 ## Dark Mode
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function App() {
   const isDark = signal(false);

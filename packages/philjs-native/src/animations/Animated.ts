@@ -4,7 +4,7 @@
  * Animation primitives for native mobile animations.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

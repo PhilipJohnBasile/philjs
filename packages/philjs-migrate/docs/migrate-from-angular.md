@@ -26,7 +26,7 @@ This guide helps you migrate Angular applications to PhilJS. While Angular is a 
 npm uninstall @angular/core @angular/common @angular/router @angular/forms @ngrx/store
 
 # Install PhilJS
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 ```
 
 ### Basic Component Conversion
@@ -61,7 +61,7 @@ export class CounterComponent {
 
 ```tsx
 // After (PhilJS)
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -125,7 +125,7 @@ count.set(5);              // Write
 count.update(c => c + 1);  // Update
 
 // PhilJS - almost identical!
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const count = signal(0);
 console.log(count());      // Read - same
@@ -143,7 +143,7 @@ const count = signal(0);
 const doubled = computed(() => count() * 2);
 
 // PhilJS
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 const doubled = memo(() => count() * 2);
@@ -162,7 +162,7 @@ effect(() => {
 });
 
 // PhilJS - identical!
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const count = signal(0);
 
@@ -290,7 +290,7 @@ export class MyComponent implements OnInit, OnDestroy, AfterViewInit {
 }
 
 // PhilJS
-import { onMount, onCleanup, effect } from 'philjs-core';
+import { onMount, onCleanup, effect } from '@philjs/core';
 
 function MyComponent() {
   // ngOnInit + ngAfterViewInit equivalent
@@ -356,7 +356,7 @@ export class ProfileComponent {
 
 ```tsx
 // PhilJS - Context + Signals
-import { createContext, useContext, signal } from 'philjs-core';
+import { createContext, useContext, signal } from '@philjs/core';
 
 // Create the service as a context
 interface UserContextType {
@@ -423,7 +423,7 @@ For simpler cases, you don't need context at all:
 
 ```typescript
 // stores/user.ts
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const user = signal<User | null>(null);
 
@@ -495,7 +495,7 @@ export class CounterComponent {
 ```tsx
 // PhilJS - Much simpler!
 // store.ts
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const count = signal(0);
 
@@ -546,7 +546,7 @@ export class UserEffects {
 }
 
 // PhilJS - Just use async/await
-import { signal, resource } from 'philjs-core';
+import { signal, resource } from '@philjs/core';
 
 const userId = signal<string | null>(null);
 
@@ -704,7 +704,7 @@ const routes = [
 
 ```tsx
 // PhilJS
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Form() {
   const name = signal('');
@@ -759,7 +759,7 @@ export class LoginComponent {
 
 ```tsx
 // PhilJS with useForm helper
-import { useForm, validators as v } from 'philjs-core';
+import { useForm, validators as v } from '@philjs/core';
 
 function Login() {
   const form = useForm({
@@ -828,7 +828,7 @@ function formatDate(date: Date): string {
 
 ```tsx
 // PhilJS
-import { resource } from 'philjs-core';
+import { resource } from '@philjs/core';
 
 function UserProfile() {
   const user = resource(() => fetch('/api/user').then(r => r.json()));
@@ -922,7 +922,7 @@ function Card(props: CardProps) {
 ### 1. Install Dependencies
 
 ```bash
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 npm uninstall @angular/core @angular/common @angular/router @angular/forms
 ```
 
@@ -933,7 +933,7 @@ npm uninstall @angular/core @angular/common @angular/router @angular/forms
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "experimentalDecorators": false,
     "emitDecoratorMetadata": false
   }
@@ -952,7 +952,7 @@ bootstrapApplication(AppComponent);
 
 // After (PhilJS)
 // main.tsx
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import App from './App';
 
 render(() => <App />, document.getElementById('app')!);

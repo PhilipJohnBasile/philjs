@@ -45,7 +45,7 @@ ${useSignalsText}
 ${stylesText}
 
 Return ONLY the component code in a TypeScript code block.
-Do not include imports for philjs-core - assume they are available.
+Do not include imports for @philjs/core - assume they are available.
 
 Example format:
 \`\`\`typescript
@@ -225,7 +225,7 @@ Convert:
 - ${conversionMap}
 - Component syntax to PhilJS functions
 - Event handlers to PhilJS conventions
-- Imports to philjs-core
+- Imports to @philjs/core
 
 Return:
 1. Converted PhilJS code

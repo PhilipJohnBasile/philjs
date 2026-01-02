@@ -5,7 +5,7 @@
  * Fetch wrapper with interceptors, retries, and caching.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import { NetInfo } from './NetInfo.js';
 

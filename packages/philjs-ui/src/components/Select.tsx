@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Select Component
  */
-import { signal, effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type SelectSize = 'sm' | 'md' | 'lg';
 

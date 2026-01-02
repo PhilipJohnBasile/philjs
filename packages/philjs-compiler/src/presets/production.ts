@@ -216,7 +216,7 @@ export function createProductionViteConfig(
           // Vendor chunks
           if (id.includes('node_modules')) {
             // Split large libraries into separate chunks
-            if (id.includes('philjs-core')) {
+            if (id.includes('@philjs/core')) {
               return 'vendor-philjs';
             }
             if (id.includes('react') || id.includes('preact')) {
@@ -271,7 +271,7 @@ export function createProductionViteConfig(
 
     // Optimize dependencies
     optimizeDeps: {
-      include: ['philjs-core'],
+      include: ['@philjs/core'],
       exclude: [],
     },
 

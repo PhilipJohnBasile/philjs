@@ -15,7 +15,7 @@
  * that blocks 'unsafe-eval' and avoid using this module entirely.
  */
 
-import { signal, effect, batch } from 'philjs-core';
+import { signal, effect, batch } from '@philjs/core';
 
 export type DirectiveHandler = (
   el: HTMLElement,
@@ -86,7 +86,7 @@ directive('text', (el, expression, context) => {
  * Only use with trusted content. For user-generated content, sanitize first:
  *
  * @example
- * import { sanitizeHtml } from 'philjs-core/security';
+ * import { sanitizeHtml } from '@philjs/core/security';
  * // In your data: sanitizedContent: sanitizeHtml(userContent)
  * // In HTML: <div x-html="sanitizedContent"></div>
  */

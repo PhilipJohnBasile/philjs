@@ -3,8 +3,8 @@
  */
 
 import type { z } from "zod";
-import { signal, effect, render } from "philjs-core";
-import type { VNode, JSXElement } from "philjs-core";
+import { signal, effect, render } from "@philjs/core";
+import type { VNode, JSXElement } from "@philjs/core";
 import type {
   RouterOptions,
   RouterContextType,

@@ -8,7 +8,7 @@
  * - Works without JavaScript
  */
 
-import { signal, memo, type Signal, type Memo } from 'philjs-core/signals';
+import { signal, memo, type Signal, type Memo } from '@philjs/core/signals';
 import type { FormValues } from './types.js';
 
 export interface FormActionOptions<TData = any, TError = Error> {

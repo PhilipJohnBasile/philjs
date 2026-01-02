@@ -3,7 +3,7 @@
  * Allows _layout.tsx files to wrap child routes.
  */
 
-// VNode type from philjs-core
+// VNode type from @philjs/core
 export type VNode = any;
 import { join, dirname } from "node:path";
 import { existsSync } from "node:fs";

@@ -176,14 +176,14 @@ export class PhilJSCodeActionsProvider implements vscode.CodeActionProvider {
     );
 
     const importMap: Record<string, string> = {
-      signal: 'philjs-core',
-      computed: 'philjs-core',
-      effect: 'philjs-core',
-      memo: 'philjs-core',
-      onMount: 'philjs-core',
-      onCleanup: 'philjs-core',
-      createContext: 'philjs-core',
-      useContext: 'philjs-core',
+      signal: '@philjs/core',
+      computed: '@philjs/core',
+      effect: '@philjs/core',
+      memo: '@philjs/core',
+      onMount: '@philjs/core',
+      onCleanup: '@philjs/core',
+      createContext: '@philjs/core',
+      useContext: '@philjs/core',
       Link: 'philjs-router',
       Route: 'philjs-router',
       useNavigate: 'philjs-router',

@@ -74,3 +74,6 @@ docs/rust-book/src/.obsidian/
 # Rust build artifacts (all packages)
 **/target/
 .rollup.cache/
+
+# Build tools
+tools/

@@ -26,7 +26,7 @@ This guide helps you migrate Svelte applications to PhilJS. Both frameworks shar
 npm uninstall svelte @sveltejs/kit svelte-check
 
 # Install PhilJS
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 ```
 
 ### Basic Component Conversion
@@ -53,7 +53,7 @@ npm install philjs-core philjs-router
 
 ```tsx
 // After (PhilJS)
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -114,7 +114,7 @@ export default Counter;
 
 ```tsx
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Component() {
   const count = signal(0);
@@ -142,7 +142,7 @@ function Component() {
 
 ```tsx
 // PhilJS
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Component() {
   const count = signal(0);
@@ -177,7 +177,7 @@ function Component() {
 
 ```tsx
 // PhilJS
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function Component() {
   const count = signal(0);
@@ -228,7 +228,7 @@ function Component() {
 
 ```tsx
 // PhilJS
-import { onMount, onCleanup, effect } from 'philjs-core';
+import { onMount, onCleanup, effect } from '@philjs/core';
 
 function Component() {
   onMount(() => {
@@ -338,7 +338,7 @@ function Parent() {
 
 ```tsx
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Form() {
   const name = signal('');
@@ -403,7 +403,7 @@ function Form() {
 
 ```tsx
 // PhilJS
-import { signal, resource } from 'philjs-core';
+import { signal, resource } from '@philjs/core';
 
 function Component() {
   const show = signal(true);
@@ -449,7 +449,7 @@ function Component() {
 
 ```tsx
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Component() {
   const active = signal(true);
@@ -536,7 +536,7 @@ count.set(5)
 count.update(n => n + 1)
 
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export const count = signal(0);
 
@@ -558,7 +558,7 @@ export const time = readable(new Date(), (set) => {
 });
 
 // PhilJS
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 const _time = signal(new Date());
 
@@ -582,7 +582,7 @@ import { count } from './stores';
 export const doubled = derived(count, $count => $count * 2);
 
 // PhilJS
-import { memo } from 'philjs-core';
+import { memo } from '@philjs/core';
 import { count } from './stores';
 
 export const doubled = memo(() => count() * 2);
@@ -608,7 +608,7 @@ function createCounter() {
 export const counter = createCounter();
 
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function createCounter() {
   const count = signal(0);
@@ -746,7 +746,7 @@ Svelte 5 introduces "runes" which are very similar to PhilJS signals:
 
 ```tsx
 // PhilJS
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -834,7 +834,7 @@ function Component(props: { name: string; count?: number }) {
 
 ```tsx
 // PhilJS
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const UserContext = createContext({ name: 'Guest' });
 
@@ -880,7 +880,7 @@ function Child() {
 
 ```tsx
 // PhilJS - Custom hook approach
-import { effect, onCleanup } from 'philjs-core';
+import { effect, onCleanup } from '@philjs/core';
 
 function useTooltip(text: string) {
   let ref: HTMLElement | null = null;
@@ -928,7 +928,7 @@ function Component() {
 
 ```tsx
 // PhilJS - CSS-based approach
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 function Component() {
   const visible = signal(true);
@@ -952,7 +952,7 @@ function Component() {
 // }
 
 // Or with PhilJS animation API
-import { createAnimatedValue } from 'philjs-core';
+import { createAnimatedValue } from '@philjs/core';
 
 function AnimatedComponent() {
   const visible = signal(true);
@@ -977,7 +977,7 @@ function AnimatedComponent() {
 ### 1. Install Dependencies
 
 ```bash
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 npm uninstall svelte @sveltejs/kit
 ```
 
@@ -989,7 +989,7 @@ export default {
   plugins: [], // Remove Svelte plugin
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
 };
 ```
@@ -1001,7 +1001,7 @@ export default {
 // Handled by SvelteKit
 
 // After (PhilJS)
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import App from './App';
 
 render(() => <App />, document.getElementById('app')!);

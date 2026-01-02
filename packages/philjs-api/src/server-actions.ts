@@ -582,7 +582,7 @@ export function serverAction<TInput = FormData, TOutput = unknown>(
 // Client Hooks
 // ============================================================================
 
-// Simple signal implementation for hooks (compatible with philjs-core)
+// Simple signal implementation for hooks (compatible with @philjs/core)
 type Signal<T> = {
   (): T;
   set(value: T): void;

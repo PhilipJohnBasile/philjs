@@ -161,7 +161,7 @@ packages/philjs-docs/
 - Deployment
 
 ### API Reference
-- philjs-core
+- @philjs/core
 - philjs-router
 - philjs-ssr
 - philjs-forms

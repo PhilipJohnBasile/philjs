@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { createMockSignal, createMockComputed } from './signal-mocks.js';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 describe('createMockSignal', () => {
   it('should create a mock signal with initial value', () => {

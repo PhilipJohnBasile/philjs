@@ -160,7 +160,7 @@ export interface ChatResponse {
  *     name: 'my-app',
  *     rootPath: '/path/to/project',
  *     files: new Map(),
- *     dependencies: ['philjs-core'],
+ *     dependencies: ['@philjs/core'],
  *     type: 'philjs',
  *   },
  * });

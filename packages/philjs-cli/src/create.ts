@@ -474,7 +474,7 @@ function generatePackageJson(config: ProjectConfig) {
       preview: 'vite preview',
     },
     dependencies: {
-      'philjs-core': '^0.1.0',
+      '@philjs/core': '^0.1.0',
     },
     devDependencies: {
       'vite': '^6.4.1',
@@ -589,7 +589,7 @@ function generateMainFile(config: ProjectConfig): string {
 
   const importCss = config.cssFramework === 'none' ? "\nimport './App.css';" : '';
 
-  return `import { render } from 'philjs-core';
+  return `import { render } from '@philjs/core';
 import { createRouter } from 'philjs-router';
 import App from './App';${importCss}
 
@@ -607,7 +607,7 @@ render(<App router={router} />, document.getElementById('app'));
 function generateBasicApp(config: ProjectConfig): string {
   const typeAnnotation = config.typescript ? ': { router: any }' : '';
 
-  return `${config.typescript ? "import type { JSX } from 'philjs-core';\n" : ''}import { RouterView } from 'philjs-router';
+  return `${config.typescript ? "import type { JSX } from '@philjs/core';\n" : ''}import { RouterView } from 'philjs-router';
 
 export default function App({ router }${typeAnnotation}) {
   return (
@@ -620,7 +620,7 @@ export default function App({ router }${typeAnnotation}) {
 }
 
 function generateCounterComponent(config: ProjectConfig): string {
-  return `import { signal } from 'philjs-core';
+  return `import { signal } from '@philjs/core';
 
 export function Counter() {
   const count = signal(0);
@@ -698,7 +698,7 @@ export function render(url${config.typescript ? ': string' : ''}) {
 }
 
 function generateSSREntryClient(config: ProjectConfig): string {
-  return `import { hydrate } from 'philjs-core';
+  return `import { hydrate } from '@philjs/core';
 import App from './App';
 
 hydrate(<App />, document.getElementById('app'));
@@ -844,7 +844,7 @@ export default {
     file: 'dist/index.js',
     format: 'esm',
   },
-  external: ['philjs-core'],
+  external: ['@philjs/core'],
   plugins: [
     resolve(),${config.typescript ? '\n    typescript({ tsconfig: \'./tsconfig.json\' }),' : ''}
   ],
@@ -957,7 +957,7 @@ function generateTSConfig(config: ProjectConfig) {
       module: 'ESNext',
       lib: ['ES2020', 'DOM', 'DOM.Iterable'],
       jsx: 'react-jsx',
-      jsxImportSource: 'philjs-core',
+      jsxImportSource: '@philjs/core',
       moduleResolution: 'bundler',
       resolveJsonModule: true,
       allowImportingTsExtensions: true,
@@ -995,7 +995,7 @@ function generateViteConfig(config: ProjectConfig): string {
 export default defineConfig({
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },${plugins.length > 0 ? `\n  plugins: [\n    ${plugins.join(',\n    ')}\n  ],` : ''}
   server: {
     port: 3000,
@@ -1003,7 +1003,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'esbuild',
-  },${config.template === 'ssr' || config.template === 'fullstack' ? `\n  ssr: {\n    noExternal: ['philjs-core', 'philjs-router', 'philjs-ssr'],\n  },` : ''}
+  },${config.template === 'ssr' || config.template === 'fullstack' ? `\n  ssr: {\n    noExternal: ['@philjs/core', 'philjs-router', 'philjs-ssr'],\n  },` : ''}
 });
 `;
 }

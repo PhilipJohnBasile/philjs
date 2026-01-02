@@ -5,7 +5,7 @@
  * JSON-LD structured data, sitemap generation, and robots.txt support.
  */
 
-import type { Plugin, PluginContext } from 'philjs-core/plugin-system';
+import type { Plugin, PluginContext } from '@philjs/core/plugin-system';
 import type {
   SEOPluginConfig,
   PageSEO,

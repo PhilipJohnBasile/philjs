@@ -3,7 +3,7 @@
  * Tests the framework's ability to handle selection state efficiently.
  */
 
-import { signal, batch, effect, memo } from 'philjs-core';
+import { signal, batch, effect, memo } from '@philjs/core';
 import { randomLabel, createMockDOM } from '../utils.js';
 import type { RowData, Benchmark } from '../types.js';
 

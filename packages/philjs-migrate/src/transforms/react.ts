@@ -67,7 +67,7 @@ export class ReactTransform {
   private transformImports(code: string, result: TransformResult): string {
     let transformed = code;
 
-    // Replace React import with philjs-core
+    // Replace React import with @philjs/core
     transformed = transformed.replace(
       /import\s+React(?:\s*,\s*\{([^}]+)\})?\s+from\s+['"]react['"]/g,
       (match, namedImports) => {
@@ -84,7 +84,7 @@ export class ReactTransform {
           }
         }
 
-        return `import { ${[...philjsImports].join(', ')} } from 'philjs-core'`;
+        return `import { ${[...philjsImports].join(', ')} } from '@philjs/core'`;
       }
     );
 
@@ -106,7 +106,7 @@ export class ReactTransform {
           philjsImports.add('JSX');
         }
 
-        return `import { ${[...philjsImports].join(', ')} } from 'philjs-core'`;
+        return `import { ${[...philjsImports].join(', ')} } from '@philjs/core'`;
       }
     );
 

@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 import { setAuthProvider, useUser, useAuth, useHasPermission } from './hooks.js';
 import { BaseAuthProvider } from './auth-provider.js';
 import type { User, AuthSession } from './types.js';

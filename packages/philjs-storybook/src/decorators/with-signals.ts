@@ -4,7 +4,7 @@
  * Wraps stories with signal state management utilities
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface WithSignalsOptions {
   initialState?: Record<string, any>;

@@ -5,7 +5,7 @@
  * microphone, contacts, calendar, and other native permissions.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
 // ============================================================================

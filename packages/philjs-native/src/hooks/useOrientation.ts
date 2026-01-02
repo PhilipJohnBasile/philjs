@@ -6,7 +6,7 @@
  * locking orientation and handling orientation changes.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { isCapacitor, callPlugin, isNativePlatform } from '../capacitor/index.js';
 
 // ============================================================================

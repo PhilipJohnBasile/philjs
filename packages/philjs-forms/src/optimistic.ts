@@ -5,7 +5,7 @@
  * then rolling back if the request fails.
  */
 
-import { signal, memo, batch, type Signal, type Memo } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal, type Memo } from '@philjs/core/signals';
 
 export interface OptimisticUpdate<T> {
   id: string;

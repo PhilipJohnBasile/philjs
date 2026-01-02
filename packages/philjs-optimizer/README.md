@@ -43,8 +43,8 @@ export default defineConfig({
 ### 2. Use Lazy Handlers
 
 ```tsx
-import { $ } from 'philjs-core/lazy-handlers';
-import { signal } from 'philjs-core';
+import { $ } from '@philjs/core/lazy-handlers';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -70,7 +70,7 @@ function Counter() {
 Wraps a function for automatic lazy loading.
 
 ```tsx
-import { $ } from 'philjs-core/lazy-handlers';
+import { $ } from '@philjs/core/lazy-handlers';
 
 <button onClick={$(() => console.log('clicked'))}>
   Click me
@@ -82,7 +82,7 @@ import { $ } from 'philjs-core/lazy-handlers';
 Creates a reusable lazy handler with an explicit symbol ID.
 
 ```tsx
-import { $$ } from 'philjs-core/lazy-handlers';
+import { $$ } from '@philjs/core/lazy-handlers';
 
 const handleSubmit = $$('handleContactForm', async (event) => {
   event.preventDefault();
@@ -99,7 +99,7 @@ const handleSubmit = $$('handleContactForm', async (event) => {
 Prefetch a handler before it's needed.
 
 ```tsx
-import { prefetchHandler } from 'philjs-core/lazy-handlers';
+import { prefetchHandler } from '@philjs/core/lazy-handlers';
 
 <button
   onClick={expensiveHandler}

@@ -2,7 +2,7 @@
  * Tests for utility functions.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'node:test';
+import { describe, it, beforeEach, afterEach } from 'node:test';
 import { strict as assert } from 'node:assert';
 import {
   randomLabel,

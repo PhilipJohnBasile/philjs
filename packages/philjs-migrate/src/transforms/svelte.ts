@@ -66,7 +66,7 @@ export class SvelteTransform {
  * Converted from Svelte
  */
 
-import { JSX, signal, computed, effect, onMount, onCleanup } from 'philjs-core';
+import { JSX, signal, computed, effect, onMount, onCleanup } from '@philjs/core';
 
 ${props.propsInterface}
 

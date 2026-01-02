@@ -2,7 +2,7 @@
  * Form management with reactive signals
  */
 
-import { signal, memo, batch, type Signal, type Memo } from 'philjs-core/signals';
+import { signal, memo, batch, type Signal, type Memo } from '@philjs/core/signals';
 import type {
   FormValues,
   FormErrors,

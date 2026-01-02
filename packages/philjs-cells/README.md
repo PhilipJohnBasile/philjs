@@ -198,7 +198,7 @@ function App() {
 
 ```tsx
 import { CellSSRProvider, getCellHydrationScript } from 'philjs-cells';
-import { renderToString } from 'philjs-core/render-to-string';
+import { renderToString } from '@philjs/core/render-to-string';
 
 // Server
 const ssrContext = { /* ... */ };

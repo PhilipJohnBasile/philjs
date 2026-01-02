@@ -287,7 +287,7 @@ function generateComponentTemplate(name: string, ts: boolean, withStyles: boolea
  * ${name} Component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 ${styleImport}${propsType}
 export function ${name}(${propsParam}) {
   const { children, className = '' } = props;
@@ -334,7 +334,7 @@ function generateRouteTemplate(name: string, routePath: string, ts: boolean): st
  * ${name} - Route component for /${routePath}
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { useLoaderData } from 'philjs-router';
 import type { loader } from './loader';
 ${propsType}
@@ -395,7 +395,7 @@ function generatePageTemplate(name: string, pageName: string, ts: boolean): stri
  * ${name} - Page component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 ${propsType}
 export function ${name}() {
@@ -439,7 +439,7 @@ function generateHookTemplate(name: string, ts: boolean): string {
  * ${name} - Custom hook
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ${name}(initialValue${ts ? ': string' : ''} = '')${returnType} {
   const state = signal(initialValue);
@@ -487,7 +487,7 @@ function generateStoreTemplate(storeName: string, pascalName: string, ts: boolea
  * ${pascalName} Store
  */
 
-import { signal, computed } from 'philjs-core';
+import { signal, computed } from '@philjs/core';
 ${stateType}
 const state = signal${ts ? `<${pascalName}State>` : ''}({
   items: [],

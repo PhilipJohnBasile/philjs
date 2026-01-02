@@ -3,7 +3,7 @@
  *
  * OpenGraph, Twitter Cards, JSON-LD, and more
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 import { Meta, Link } from './Head';
 import type {
   MetaConfig,

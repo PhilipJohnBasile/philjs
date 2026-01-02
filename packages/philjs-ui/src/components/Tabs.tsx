@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Tabs Component
  */
-import { signal, createContext, useContext } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, createContext, useContext } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type TabsVariant = 'line' | 'enclosed' | 'soft-rounded' | 'solid-rounded';
 export type TabsSize = 'sm' | 'md' | 'lg';

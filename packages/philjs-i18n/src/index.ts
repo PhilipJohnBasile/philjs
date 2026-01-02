@@ -4,8 +4,8 @@
  * A type-safe i18n solution for PhilJS applications
  */
 
-import type { Signal } from 'philjs-core';
-import { signal } from 'philjs-core';
+import type { Signal } from '@philjs/core';
+import { signal } from '@philjs/core';
 
 export interface TranslationMap {
   [key: string]: string | TranslationMap;

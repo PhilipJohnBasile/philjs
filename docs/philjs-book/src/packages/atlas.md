@@ -2235,7 +2235,7 @@ console.log(greeting.text);
 
 ```typescript
 import { createAIClient } from 'philjs-ai';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const ai = createAIClient({
   provider: 'openai',
@@ -3346,7 +3346,7 @@ Jotai-style atomic state management for PhilJS with signal-based reactivity.
 #### Installation
 
 ```bash
-npm install philjs-atoms philjs-core
+npm install philjs-atoms @philjs/core
 ```
 
 #### Basic Usage
@@ -4125,7 +4125,7 @@ Create your own authentication provider:
 
 ```typescript
 import { BaseAuthProvider } from 'philjs-auth';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 
 class MyAuthProvider extends BaseAuthProvider {
   readonly name = 'my-auth';
@@ -4249,7 +4249,7 @@ Options:
 
 ```typescript
 import { useAuth } from 'philjs-auth/hooks';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 
 const email = signal('');
 const password = signal('');
@@ -4796,7 +4796,7 @@ This section is generated from the package source. Run `node scripts/generate-pa
 
 ##### Public API
 - Direct exports: allReactivityBenchmarks, allSSRBenchmarks, coreReactivityBenchmarks, coreSSRBenchmarks, runAllBenchmarks, runCoreReactivityBenchmarks, runCoreSSRBenchmarks, runReactivityBenchmarks, runSSRBenchmarks
-- Re-exported names: allFrameworkBenchmarks, allReactivityBenchmarks, allSSRBenchmarks, batchBenchmarks, clearRows, coreFrameworkBenchmarks, coreReactivityBenchmarks, coreSSRBenchmarks, create10000Rows, create1000Rows, createRowsBenchmarks, deleteRowBenchmarks, effectBenchmarks, hydrationBenchmarks, memoBenchmarks, progressiveHydration, removeRow, renderTimeBenchmarks, runFrameworkBenchmarks, runReactivityBenchmarks, runSSRBenchmarkSuite, selectRow, selectRowBenchmarks, signalBenchmarks, streamingBenchmarks, streamingThroughput, swapRows, swapRowsBenchmarks, updateEvery10thRow, updateRowsBenchmarks
+- Re-exported names: allFrameworkBenchmarks, allReactivityBenchmarks, allSSRBenchmarks, batchBenchmarks, clearRows, coreFrameworkBenchmarks, coreReactivityBenchmarks, coreSSRBenchmarks, create10000Rows, create1000Rows, createRowsBenchmarks, deleteRow, deleteRowBenchmarks, effectBenchmarks, hydrationBenchmarks, memoBenchmarks, progressiveHydration, removeRow, renderTimeBenchmarks, runFrameworkBenchmarks, runReactivityBenchmarks, runSSRBenchmarkSuite, selectRow, selectRowBenchmarks, signalBenchmarks, streamingBenchmarks, streamingThroughput, swapRows, swapRowsBenchmarks, updateEvery10th, updateEvery10thRow, updateRowsBenchmarks
 - Re-exported modules: ./batch.js, ./effects.js, ./framework-benchmark/create-rows.js, ./framework-benchmark/delete-row.js, ./framework-benchmark/runner.js, ./framework-benchmark/select-row.js, ./framework-benchmark/swap-rows.js, ./framework-benchmark/update-rows.js, ./hydration.js, ./memos.js, ./reactivity/batch.js, ./reactivity/effects.js, ./reactivity/index.js, ./reactivity/memos.js, ./reactivity/signals.js, ./render-time.js, ./signals.js, ./ssr/hydration.js, ./ssr/index.js, ./ssr/render-time.js, ./ssr/streaming.js, ./streaming.js, ./types.js, ./utils.js
 
 #### License
@@ -6527,7 +6527,7 @@ function App() {
 
 ```tsx
 import { CellSSRProvider, getCellHydrationScript } from 'philjs-cells';
-import { renderToString } from 'philjs-core/render-to-string';
+import { renderToString } from '@philjs/core/render-to-string';
 
 // Server
 const ssrContext = { /* ... */ };
@@ -7700,7 +7700,7 @@ This section is generated from the package source. Run `node scripts/generate-pa
 - Keywords: philjs, signals, reactivity, framework
 - Book coverage: [../core/components.md](../core/components.md), [../core/signals.md](../core/signals.md), [../core/effects-memos.md](../core/effects-memos.md)
 
-### philjs-core
+### @philjs/core
 
 [](https://nodejs.org)
 [](https://www.typescriptlang.org)
@@ -7717,7 +7717,7 @@ Core signals, memos, and resources for PhilJS.
 #### Installation
 
 ```bash
-pnpm add philjs-core
+pnpm add @philjs/core
 ```
 
 #### Usage
@@ -7725,7 +7725,7 @@ pnpm add philjs-core
 ##### Signals
 
 ```js
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 const count = signal(0);
 
@@ -7750,7 +7750,7 @@ unsubscribe();
 ##### Memos
 
 ```js
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 
 const count = signal(10);
 const doubled = memo(() => count() * 2);
@@ -7761,7 +7761,7 @@ console.log(doubled()); // 20
 ##### Resources
 
 ```js
-import { resource } from "philjs-core";
+import { resource } from "@philjs/core";
 
 let apiData = { value: 1 };
 const data = resource(() => apiData);
@@ -7777,7 +7777,7 @@ console.log(data()); // { value: 2 }
 ##### Async Operations with Promise.withResolvers()
 
 ```js
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 const data = signal(null);
 
@@ -7803,7 +7803,7 @@ async function fetchWithTimeout(url, timeout = 5000) {
 ##### Grouping Data with Object.groupBy()
 
 ```js
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 
 const items = signal([
   { type: "fruit", name: "apple" },
@@ -7821,7 +7821,7 @@ console.log(grouped());
 ##### Resource Management with `using`
 
 ```ts
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 // Using TypeScript 6 explicit resource management
 function createManagedResource() {
@@ -9153,7 +9153,7 @@ export default function App() {
 
 ```typescript
 import { usePrisma } from 'philjs-db';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function UserList() {
   const prisma = usePrisma();
@@ -10238,7 +10238,7 @@ Debug state changes by rewinding and replaying:
 
 ```typescript
 import { initTimeTravel, debugSignal } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Initialize time-travel
 const timeTravelDebugger = initTimeTravel({
@@ -10277,7 +10277,7 @@ Track signal dependencies and values:
 
 ```typescript
 import { createSignalInspector } from 'philjs-devtools';
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const inspector = createSignalInspector();
 
@@ -10425,7 +10425,7 @@ Connect your PhilJS app to the Redux DevTools Extension:
 
 ```typescript
 import { initReduxDevTools } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Initialize Redux DevTools
 const devTools = initReduxDevTools(
@@ -11115,7 +11115,7 @@ packages/philjs-docs/
 - Deployment
 
 ##### API Reference
-- philjs-core
+- @philjs/core
 - philjs-router
 - philjs-ssr
 - philjs-forms
@@ -16001,7 +16001,7 @@ MIT
 
 #### Related Packages
 
-- [philjs-core](#pkg-philjs-core) - Core reactivity system
+- [@philjs/core](#pkg-philjs-core) - Core reactivity system
 - [philjs-ssr](#pkg-philjs-ssr) - Server-side rendering
 - [philjs-router](#pkg-philjs-router) - Routing with code splitting
 
@@ -16359,7 +16359,7 @@ Contributions are welcome! Please read the contributing guidelines first.
 #### Related Packages
 
 - [philjs-devtools](#pkg-philjs-devtools) - Development tools overlay
-- [philjs-core](#pkg-philjs-core) - Core PhilJS framework
+- [@philjs/core](#pkg-philjs-core) - Core PhilJS framework
 
 <a id="pkg-philjs-intent"></a>
 ## @philjs/intent
@@ -18728,7 +18728,7 @@ function Counter() {
 
 **After (PhilJS):**
 ```tsx
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -18773,7 +18773,7 @@ function increment() {
 
 **After (PhilJS):**
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -18813,7 +18813,7 @@ philjs-migrate --from svelte --source ./src
 
 **After (PhilJS):**
 ```tsx
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -19073,7 +19073,7 @@ Cross-platform mobile development for PhilJS. Build native iOS, Android, and Web
 #### Installation
 
 ```bash
-pnpm add philjs-native philjs-core
+pnpm add philjs-native @philjs/core
 ```
 
 #### Quick Start
@@ -19093,7 +19093,7 @@ npm start
 - **Native Performance**: Native components for each platform
 - **Familiar API**: Similar to React Native for easy adoption
 - **Type-Safe**: Full TypeScript support
-- **Signal-Based**: Reactive primitives from philjs-core
+- **Signal-Based**: Reactive primitives from @philjs/core
 
 #### Core Concepts
 
@@ -20837,8 +20837,8 @@ export default defineConfig({
 ##### 2. Use Lazy Handlers
 
 ```tsx
-import { $ } from 'philjs-core/lazy-handlers';
-import { signal } from 'philjs-core';
+import { $ } from '@philjs/core/lazy-handlers';
+import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -20864,7 +20864,7 @@ function Counter() {
 Wraps a function for automatic lazy loading.
 
 ```tsx
-import { $ } from 'philjs-core/lazy-handlers';
+import { $ } from '@philjs/core/lazy-handlers';
 
 <button onClick={$(() => console.log('clicked'))}>
   Click me
@@ -20876,7 +20876,7 @@ import { $ } from 'philjs-core/lazy-handlers';
 Creates a reusable lazy handler with an explicit symbol ID.
 
 ```tsx
-import { $$ } from 'philjs-core/lazy-handlers';
+import { $$ } from '@philjs/core/lazy-handlers';
 
 const handleSubmit = $$('handleContactForm', async (event) => {
   event.preventDefault();
@@ -20893,7 +20893,7 @@ const handleSubmit = $$('handleContactForm', async (event) => {
 Prefetch a handler before it's needed.
 
 ```tsx
-import { prefetchHandler } from 'philjs-core/lazy-handlers';
+import { prefetchHandler } from '@philjs/core/lazy-handlers';
 
 <button
   onClick={expensiveHandler}
@@ -22224,7 +22224,7 @@ import { createPlayground } from 'philjs-playground';
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const count = signal(0);
 
@@ -22403,7 +22403,7 @@ interface PreviewConfig {
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const count = signal(0);
 
@@ -22426,7 +22426,7 @@ const playground = createPlayground({
 const playground = createPlayground({
   container: '#playground',
   initialCode: `
-    import { signal } from 'philjs-core';
+    import { signal } from '@philjs/core';
 
     const todos = signal([]);
     const input = signal('');
@@ -23918,7 +23918,7 @@ console.log('PWA files generated successfully');
 
 ```typescript
 // App.tsx
-import { createEffect, onCleanup } from 'philjs-core';
+import { createEffect, onCleanup } from '@philjs/core';
 import {
   registerServiceWorker,
   initOfflineDetection,
@@ -24560,7 +24560,7 @@ setPageSEO({
     },
     {
       question: 'How do I install it?',
-      answer: 'Run pnpm add philjs-core...',
+      answer: 'Run pnpm add @philjs/core...',
     },
   ]),
 });
@@ -24690,7 +24690,7 @@ For server-side rendering, use `generatePageSEO`:
 
 ```typescript
 import { generatePageSEO } from './lib/seo';
-import { renderToString } from 'philjs-core/render-to-string';
+import { renderToString } from '@philjs/core/render-to-string';
 
 const seoHtml = generatePageSEO({
   meta: { title: 'My Page' },
@@ -24766,7 +24766,7 @@ npm install philjs-plugin-tailwind tailwindcss autoprefixer postcss
 
 ```typescript
 // philjs.config.ts
-import { defineConfig } from 'philjs-core';
+import { defineConfig } from '@philjs/core';
 import tailwind from 'philjs-plugin-tailwind';
 
 export default defineConfig({
@@ -32800,7 +32800,7 @@ The PhilJS preset includes:
 #### Dark Mode
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export default function App() {
   const isDark = signal(false);
@@ -33295,7 +33295,7 @@ describe('Counter', () => {
 ##### Testing Signals
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import { waitForSignal, signalValue } from 'philjs-testing';
 import { describe, it, expect } from 'vitest';
 
@@ -33426,7 +33426,7 @@ Inspect rendered output and signals:
 
 ```typescript
 import { render, screen, debug, debugSignals } from 'philjs-testing';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 it('debugs component output', () => {
   const count = signal(5);
@@ -34965,7 +34965,7 @@ pcomponent<Tab>
 Expands to:
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ComponentName() {
   return (
@@ -35235,7 +35235,7 @@ Rust/WebAssembly integration for PhilJS with reactive signals. This package make
 #### Installation
 
 ```bash
-npm install philjs-wasm philjs-core
+npm install philjs-wasm @philjs/core
 ```
 
 #### Quick Start
@@ -36456,7 +36456,7 @@ XState-inspired state machines for PhilJS with signal-based reactivity.
 #### Installation
 
 ```bash
-npm install philjs-xstate philjs-core
+npm install philjs-xstate @philjs/core
 ```
 
 #### Basic Usage
@@ -37074,7 +37074,7 @@ Zustand-style state management for PhilJS with fine-grained reactive signals.
 #### Installation
 
 ```bash
-npm install philjs-zustand philjs-core
+npm install philjs-zustand @philjs/core
 ```
 
 #### Basic Usage
@@ -37365,7 +37365,7 @@ const useStore = createStore<BearState>((set) => ({
 1. Use selectors to prevent unnecessary re-renders
 2. Memoize selector functions for better performance
 3. Use `shallow` for object selectors
-4. Batch updates with `batch()` from philjs-core
+4. Batch updates with `batch()` from @philjs/core
 5. Use slices to organize large stores
 
 

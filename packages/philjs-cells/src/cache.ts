@@ -5,7 +5,7 @@
  * and reactive updates via signals.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import type { CellCache, CellCacheEntry } from './types.js';
 
 // ============================================================================

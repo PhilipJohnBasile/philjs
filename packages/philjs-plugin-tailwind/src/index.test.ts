@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createTailwindPlugin, tailwindUtils } from "./index.js";
-import type { PluginContext } from "philjs-core/plugin-system";
+import type { PluginContext } from "@philjs/core/plugin-system";
 
 describe("createTailwindPlugin", () => {
   it("should create plugin with correct metadata", () => {

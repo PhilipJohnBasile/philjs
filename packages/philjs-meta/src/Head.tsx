@@ -3,8 +3,8 @@
  *
  * Manages document head tags (title, meta, link)
  */
-import { createContext, useContext, effect, signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { createContext, useContext, effect, signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 import type { LinkTag, MetaTag } from './types';
 
 interface HeadContextValue {

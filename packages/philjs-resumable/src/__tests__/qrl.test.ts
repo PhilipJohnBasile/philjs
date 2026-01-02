@@ -363,7 +363,7 @@ describe('Signal Integration', () => {
   it('should create signal$ QRL', () => {
     const qrl = signal$(42);
 
-    expect(qrl.$chunk$).toBe('philjs-core');
+    expect(qrl.$chunk$).toBe('@philjs/core');
     expect(qrl.$symbol$).toBe('signal');
     expect(qrl.$capture$).toEqual([42]);
   });
@@ -372,7 +372,7 @@ describe('Signal Integration', () => {
     const computation = () => 10 + 20;
     const qrl = computed$(computation);
 
-    expect(qrl.$chunk$).toBe('philjs-core');
+    expect(qrl.$chunk$).toBe('@philjs/core');
     expect(qrl.$symbol$).toBe('memo');
     expect(qrl.$capture$).toContain(computation);
   });

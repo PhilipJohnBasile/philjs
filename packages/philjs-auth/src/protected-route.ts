@@ -2,7 +2,7 @@
  * Protected route component for authentication-required pages
  */
 
-import { effect, type Signal } from 'philjs-core/signals';
+import { effect, type Signal } from '@philjs/core/signals';
 import type { ProtectedRouteConfig } from './types.js';
 import { getDefaultSessionManager } from './session.js';
 

@@ -56,7 +56,7 @@
   "PhilJS Component": {
     "prefix": ["pfc", "philcomponent"],
     "body": [
-      "import { JSX } from 'philjs-core';",
+      "import { JSX } from '@philjs/core';",
       "",
       "export interface ${1:ComponentName}Props {",
       "\tchildren?: JSX.Element;",
@@ -78,7 +78,7 @@
   "PhilJS Component with Signal": {
     "prefix": ["pfcs", "philcomponentsignal"],
     "body": [
-      "import { JSX, signal } from 'philjs-core';",
+      "import { JSX, signal } from '@philjs/core';",
       "",
       "export function ${1:ComponentName}() {",
       "\tconst ${2:count} = signal(${3:0});",
@@ -98,7 +98,7 @@
   "PhilJS Memo Component": {
     "prefix": ["pmemo", "philmemo"],
     "body": [
-      "import { JSX, memo } from 'philjs-core';",
+      "import { JSX, memo } from '@philjs/core';",
       "",
       "export interface ${1:ComponentName}Props {",
       "\t${2:propName}: ${3:string};",
@@ -119,7 +119,7 @@
   "PhilJS Context": {
     "prefix": ["pctx", "philcontext"],
     "body": [
-      "import { createContext, useContext, JSX } from 'philjs-core';",
+      "import { createContext, useContext, JSX } from '@philjs/core';",
       "",
       "interface ${1:ContextName}Value {",
       "\t${2:value}: ${3:string};",
@@ -152,7 +152,7 @@
   "PhilJS Custom Hook": {
     "prefix": ["phook", "philhook"],
     "body": [
-      "import { signal } from 'philjs-core';",
+      "import { signal } from '@philjs/core';",
       "",
       "export function use${1:HookName}(initialValue${2:: string} = ${3:''}) {",
       "\tconst state = signal(initialValue);",
@@ -172,7 +172,7 @@
   "PhilJS Store": {
     "prefix": ["pstore", "philstore"],
     "body": [
-      "import { signal, computed } from 'philjs-core';",
+      "import { signal, computed } from '@philjs/core';",
       "",
       "interface ${1:StoreName}State {",
       "\t${2:items}: ${3:string}[];",
@@ -215,7 +215,7 @@
   "PhilJS Route": {
     "prefix": ["proute", "philroute"],
     "body": [
-      "import { JSX } from 'philjs-core';",
+      "import { JSX } from '@philjs/core';",
       "import { useLoaderData } from 'philjs-router';",
       "",
       "export async function loader() {",
@@ -240,7 +240,7 @@
   "PhilJS Page with SEO": {
     "prefix": ["ppage", "philpage"],
     "body": [
-      "import { JSX } from 'philjs-core';",
+      "import { JSX } from '@philjs/core';",
       "import { Head, Title, Meta } from 'philjs-meta';",
       "",
       "export function ${1:PageName}Page() {",
@@ -264,9 +264,9 @@
   "PhilJS Import Core": {
     "prefix": ["ipc", "importphilcore"],
     "body": [
-      "import { ${1:signal, computed, effect} } from 'philjs-core';"
+      "import { ${1:signal, computed, effect} } from '@philjs/core';"
     ],
-    "description": "Import from philjs-core"
+    "description": "Import from @philjs/core"
   },
   "PhilJS Import Router": {
     "prefix": ["ipr", "importphilrouter"],

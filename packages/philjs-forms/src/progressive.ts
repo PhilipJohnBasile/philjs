@@ -4,7 +4,7 @@
  * Ensure forms work without JavaScript, then enhance with JS when available.
  */
 
-import { signal, effect, type Signal } from 'philjs-core/signals';
+import { signal, effect, type Signal } from '@philjs/core/signals';
 
 /**
  * Detect if JavaScript is available

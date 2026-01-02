@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Spinner and Progress Components
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type ProgressSize = 'xs' | 'sm' | 'md' | 'lg';

@@ -10,7 +10,7 @@
  * - Multiplayer state
  */
 
-import { signal, effect, batch, memo } from 'philjs-core';
+import { signal, effect, batch, memo } from '@philjs/core';
 
 // ============================================================================
 // Types

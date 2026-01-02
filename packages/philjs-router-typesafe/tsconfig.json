@@ -9,9 +9,9 @@
     "strictNullChecks": false,
     "noImplicitReturns": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core",
+    "jsxImportSource": "@philjs/core",
     "paths": {
-      "philjs-core": ["../philjs-core/dist/index.d.ts"],
+      "@philjs/core": ["../philjs-core/dist/index.d.ts"],
       "zod": ["../../node_modules/zod/lib/index.d.ts"]
     },
     "baseUrl": "."

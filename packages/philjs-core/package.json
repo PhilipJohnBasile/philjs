@@ -142,7 +142,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
-    "lint": "echo 'Lint philjs-core'",
+    "lint": "echo 'Lint @philjs/core'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -15,11 +15,11 @@ export default defineConfig({
     entryFileNames: '[name].js',
   },
   external: [
-    'philjs-core',
-    'philjs-core/signals',
-    'philjs-core/jsx-runtime',
-    'philjs-core/context',
-    'philjs-core/error-boundary',
+    '@philjs/core',
+    '@philjs/core/signals',
+    '@philjs/core/jsx-runtime',
+    '@philjs/core/context',
+    '@philjs/core/error-boundary',
     'philjs-graphql',
   ],
   plugins: [

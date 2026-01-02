@@ -4,7 +4,7 @@
  * Query and monitor accessibility settings and screen reader status.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { Platform } from '../platform/Platform.js';
 
 // ============================================================================

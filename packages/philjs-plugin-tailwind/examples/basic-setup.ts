@@ -3,7 +3,7 @@
  * Shows how to configure the plugin with minimal options
  */
 
-import { defineConfig } from "philjs-core";
+import { defineConfig } from "@philjs/core";
 import tailwind from "philjs-plugin-tailwind";
 
 export default defineConfig({

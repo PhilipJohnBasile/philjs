@@ -3,6 +3,8 @@
  * Runs all framework benchmarks and generates results.
  */
 
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import {
   runBenchmarkSuite,
   formatResult,
@@ -84,7 +86,7 @@ async function measureStartupTime(): Promise<BenchmarkResult> {
     const start = performance.now();
 
     // Simulate app startup - import and initialize
-    const { signal, effect, memo } = await import('philjs-core');
+    const { signal, effect, memo } = await import('@philjs/core');
 
     // Create initial reactive state
     const count = signal(0);
@@ -203,7 +205,7 @@ export async function runFrameworkBenchmarks(
   if (verbose) console.log('\nRunning memory benchmarks...\n');
 
   const memoryResult = await measureMemory('memory-1000-rows', async () => {
-    const { signal, effect } = await import('philjs-core');
+    const { signal, effect } = await import('@philjs/core');
     const rows = signal<any[]>([]);
     for (let i = 0; i < 1000; i++) {
       rows.set([...rows(), { id: i, label: `Row ${i}` }]);
@@ -258,9 +260,10 @@ export async function runCoreBenchmarks(
 }
 
 // Run if executed directly
-const isMainModule = typeof require !== 'undefined' &&
-  require.main === module ||
-  import.meta.url.endsWith(process.argv[1]?.replace(/\\/g, '/') || '');
+const entryUrl = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 
 if (isMainModule) {
   runFrameworkBenchmarks({ verbose: true })

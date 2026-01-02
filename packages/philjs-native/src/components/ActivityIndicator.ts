@@ -4,7 +4,7 @@
  * A loading indicator component for showing pending operations.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

@@ -5,7 +5,7 @@
  * On press, the opacity of the wrapped view is decreased.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

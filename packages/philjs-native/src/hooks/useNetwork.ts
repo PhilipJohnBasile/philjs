@@ -5,7 +5,7 @@
  * speed estimation, and online/offline detection.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { isCapacitor, callPlugin, isNativePlatform, addLifecycleListener } from '../capacitor/index.js';
 
 // ============================================================================

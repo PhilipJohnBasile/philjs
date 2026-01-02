@@ -5,7 +5,7 @@
  * For more control over styling, use TouchableOpacity or Pressable.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformSelect } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

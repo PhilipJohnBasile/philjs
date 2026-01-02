@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Toast Component
  */
-import { signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type ToastStatus = 'info' | 'success' | 'warning' | 'error';
 export type ToastPosition =

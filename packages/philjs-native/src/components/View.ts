@@ -5,7 +5,7 @@
  * A container that supports flexbox layout, styling, and touch handling.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle, NativeStyle } from '../styles.js';
 

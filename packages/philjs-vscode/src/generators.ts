@@ -27,7 +27,7 @@ export async function createComponent(name: string): Promise<void> {
  * ${pascalName} Component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 
 export interface ${pascalName}Props {
   children?: JSX.Element;
@@ -107,7 +107,7 @@ export async function createRoute(name: string): Promise<void> {
  * ${pascalName} - Route component for /${kebabName}
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { useLoaderData } from 'philjs-router';
 import type { loader } from './loader';
 
@@ -174,7 +174,7 @@ export async function createPage(name: string): Promise<void> {
  * ${pascalName} - Page component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { Head, Title, Meta } from 'philjs-meta';
 
 export function ${pascalName}() {
@@ -229,7 +229,7 @@ export async function createHook(name: string): Promise<void> {
  * ${hookName} - Custom hook
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export function ${hookName}(initialValue: string = ''): {
   value: string;
@@ -282,7 +282,7 @@ export async function createStore(name: string): Promise<void> {
  * ${pascalName} Store
  */
 
-import { signal, computed } from 'philjs-core';
+import { signal, computed } from '@philjs/core';
 
 interface ${pascalName}State {
   items: string[];

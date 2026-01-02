@@ -29,8 +29,8 @@ export interface ProcessedStack {
  * Framework internal patterns to filter out
  */
 const FRAMEWORK_PATTERNS = [
-  /philjs-core\/dist/,
-  /philjs-core\/src/,
+  /@philjs\/core\/dist/,
+  /@philjs\/core\/src/,
   /node_modules\/philjs/,
   /@philjs\//,
   /jsx-runtime/,

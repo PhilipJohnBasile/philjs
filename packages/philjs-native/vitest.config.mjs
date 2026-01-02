@@ -4,12 +4,12 @@ import { resolve } from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      'philjs-core': resolve(__dirname, '../philjs-core/src/index.ts'),
+      '@philjs/core': resolve(__dirname, '../philjs-core/src/index.ts'),
     },
   },
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
   test: {
     globals: true,

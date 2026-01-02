@@ -4,7 +4,7 @@
  * Unified interface for authentication providers
  */
 
-import type { Signal } from 'philjs-core/signals';
+import type { Signal } from '@philjs/core/signals';
 import type { User, AuthSession } from './types.js';
 
 /**

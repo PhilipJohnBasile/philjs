@@ -67,6 +67,8 @@ export interface BenchmarkOptions {
   verbose?: boolean;
   saveResults?: boolean;
   outputPath?: string;
+  mode?: 'full' | 'core' | 'test';
+  useBenchmarkIterations?: boolean;
 }
 
 export interface RowData {

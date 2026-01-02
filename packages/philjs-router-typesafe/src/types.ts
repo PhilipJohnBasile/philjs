@@ -4,7 +4,7 @@
  */
 
 import type { z } from "zod";
-import type { VNode, JSXElement } from "philjs-core";
+import type { VNode, JSXElement } from "@philjs/core";
 
 // =============================================================================
 // Path Parameter Extraction Types

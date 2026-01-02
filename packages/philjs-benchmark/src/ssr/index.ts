@@ -3,6 +3,8 @@
  * Exports all SSR benchmark suites and a runner.
  */
 
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { runBenchmarkSuite, formatResult, getEnvironmentInfo } from '../utils.js';
 import type { BenchmarkSuite, BenchmarkOptions } from '../types.js';
 
@@ -129,9 +131,10 @@ export async function runCoreSSRBenchmarks(
 }
 
 // Run if executed directly
-const isMainModule = typeof require !== 'undefined' &&
-  require.main === module ||
-  import.meta.url.endsWith(process.argv[1]?.replace(/\\/g, '/') || '');
+const entryUrl = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 
 if (isMainModule) {
   runSSRBenchmarks({ verbose: true })

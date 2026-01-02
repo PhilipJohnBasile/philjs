@@ -120,14 +120,15 @@ export function signal<T>(initialValue: T): Signal<T> {
     value = newValue;
 
     // Notify all subscribers
+    const toNotify = Array.from(subscribers);
     if (batchDepth > 0) {
       // Queue updates for batching
-      for (const computation of subscribers) {
+      for (const computation of toNotify) {
         batchedUpdates.add(computation.execute);
       }
     } else {
       // Execute immediately
-      for (const computation of subscribers) {
+      for (const computation of toNotify) {
         computation.execute();
       }
     }
@@ -185,7 +186,7 @@ export function memo<T>(calc: () => T): Memo<T> {
     execute: () => {
       isStale = true;
       // Notify subscribers that we're stale
-      for (const sub of subscribers) {
+      for (const sub of Array.from(subscribers)) {
         sub.execute();
       }
     },
@@ -282,7 +283,7 @@ export function linkedSignal<T>(
       }
 
       // Notify subscribers
-      for (const sub of subscribers) {
+      for (const sub of Array.from(subscribers)) {
         sub.execute();
       }
     },
@@ -330,12 +331,13 @@ export function linkedSignal<T>(
     isStale = false;
 
     // Notify all subscribers
+    const toNotify = Array.from(subscribers);
     if (batchDepth > 0) {
-      for (const subscriber of subscribers) {
+      for (const subscriber of toNotify) {
         batchedUpdates.add(subscriber.execute);
       }
     } else {
-      for (const subscriber of subscribers) {
+      for (const subscriber of toNotify) {
         subscriber.execute();
       }
     }
@@ -349,12 +351,13 @@ export function linkedSignal<T>(
     read();
 
     // Notify subscribers about the reset
+    const toNotify = Array.from(subscribers);
     if (batchDepth > 0) {
-      for (const subscriber of subscribers) {
+      for (const subscriber of toNotify) {
         batchedUpdates.add(subscriber.execute);
       }
     } else {
-      for (const subscriber of subscribers) {
+      for (const subscriber of toNotify) {
         subscriber.execute();
       }
     }
@@ -650,7 +653,9 @@ export function createRoot<T>(fn: (dispose: () => void) => T): T {
 
 function disposeOwner(owner: Owner): void {
   owner.owned.forEach(child => disposeOwner(child));
+  owner.owned = [];
   owner.cleanups.forEach(cleanup => cleanup());
+  owner.cleanups = [];
 }
 
 // ============================================================================

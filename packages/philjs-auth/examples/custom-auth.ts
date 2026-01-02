@@ -4,7 +4,7 @@
  * This example shows how to set up custom authentication with PhilJS
  */
 
-import { signal, type Signal } from 'philjs-core/signals';
+import { signal, type Signal } from '@philjs/core/signals';
 import { BaseAuthProvider, setAuthProvider } from 'philjs-auth';
 import { startSessionRefresh } from 'philjs-auth/session-refresh';
 import type { User, AuthSession } from 'philjs-auth';

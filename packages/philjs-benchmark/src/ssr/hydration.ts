@@ -3,8 +3,8 @@
  * Tests client-side hydration performance.
  */
 
-import { jsx, Fragment } from 'philjs-core/jsx-runtime';
-import { signal, effect, memo } from 'philjs-core';
+import { jsx, Fragment } from '@philjs/core/jsx-runtime';
+import { signal, effect, memo } from '@philjs/core';
 import { createMockDOM, randomLabel } from '../utils.js';
 import type { Benchmark } from '../types.js';
 

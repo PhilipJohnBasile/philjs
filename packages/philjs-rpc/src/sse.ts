@@ -3,7 +3,7 @@
  * Provides a fallback when WebSocket is unavailable with the same API.
  */
 
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import type {
   RPCError,
   UseSubscriptionOptions,

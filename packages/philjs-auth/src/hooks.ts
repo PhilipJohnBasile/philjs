@@ -4,7 +4,7 @@
  * React-style hooks for authentication
  */
 
-import { computed } from 'philjs-core/signals';
+import { computed } from '@philjs/core/signals';
 import type { AuthProvider } from './auth-provider.js';
 import type { User, AuthSession } from './types.js';
 

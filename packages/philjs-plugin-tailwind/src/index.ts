@@ -3,7 +3,7 @@
  * Automatic Tailwind CSS setup and optimization
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 import * as path from "path";
 import * as fs from "fs/promises";
 

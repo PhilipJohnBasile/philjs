@@ -379,7 +379,7 @@ function generateClerkProvider(ts: boolean): string {
 
 import { ClerkProvider } from '@clerk/clerk-react';
 import { clerkConfig } from './config${ts ? '.js' : ''}';
-${ts ? `import type { JSX } from 'philjs-core';\n` : ''}
+${ts ? `import type { JSX } from '@philjs/core';\n` : ''}
 ${ts ? `interface AuthProviderProps {
   children: JSX.Element;
 }
@@ -406,7 +406,7 @@ function generateAuth0Provider(ts: boolean): string {
 
 import { Auth0Provider } from '@auth0/auth0-react';
 import { auth0Config } from './config${ts ? '.js' : ''}';
-${ts ? `import type { JSX } from 'philjs-core';\n` : ''}
+${ts ? `import type { JSX } from '@philjs/core';\n` : ''}
 ${ts ? `interface AuthProviderProps {
   children: JSX.Element;
 }
@@ -436,11 +436,11 @@ function generateSupabaseProvider(ts: boolean): string {
  * Provides Supabase auth context to the app
  */
 
-import { createContext, useEffect } from 'philjs-core';
-import { signal } from 'philjs-core/signals';
+import { createContext, useEffect } from '@philjs/core';
+import { signal } from '@philjs/core/signals';
 import { createClient } from '@supabase/supabase-js';
 import { supabaseConfig } from './config${ts ? '.js' : ''}';
-${ts ? `import type { JSX } from 'philjs-core';
+${ts ? `import type { JSX } from '@philjs/core';
 import type { SupabaseClient, User, Session } from '@supabase/supabase-js';
 
 interface SupabaseAuthContext {
@@ -519,7 +519,7 @@ function generateNextAuthProvider(ts: boolean): string {
  */
 
 import { SessionProvider } from 'next-auth/react';
-${ts ? `import type { JSX } from 'philjs-core';
+${ts ? `import type { JSX } from '@philjs/core';
 import type { Session } from 'next-auth';
 
 interface AuthProviderProps {
@@ -544,10 +544,10 @@ function generateCustomProvider(ts: boolean): string {
  * Manages custom authentication state
  */
 
-import { createContext, useEffect } from 'philjs-core';
-import { signal, computed } from 'philjs-core/signals';
+import { createContext, useEffect } from '@philjs/core';
+import { signal, computed } from '@philjs/core/signals';
 import { authConfig } from './config${ts ? '.js' : ''}';
-${ts ? `import type { JSX } from 'philjs-core';
+${ts ? `import type { JSX } from '@philjs/core';
 import type { User } from './config${ts ? '.js' : ''}';
 
 interface AuthContextValue {
@@ -883,7 +883,7 @@ function generateSupabaseHooks(ts: boolean): string {
  * Supabase Authentication Hooks
  */
 
-import { useContext } from 'philjs-core';
+import { useContext } from '@philjs/core';
 import { SupabaseAuthContext, supabase } from './AuthProvider${ts ? '.js' : ''}';
 ${ts ? `import type { User } from './config.js';\n` : ''}
 /**
@@ -994,7 +994,7 @@ function generateCustomHooks(ts: boolean): string {
  * Custom Authentication Hooks
  */
 
-import { useContext } from 'philjs-core';
+import { useContext } from '@philjs/core';
 import { AuthContext } from './AuthProvider${ts ? '.js' : ''}';
 ${ts ? `import type { User } from './config.js';\n` : ''}
 /**
@@ -1079,9 +1079,9 @@ async function generateLoginForm(
  * Login Form Component
  */
 
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 import { useAuth } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';\n` : ''}
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const emailSignal = signal('');
 const passwordSignal = signal('');
 const errorSignal = signal${ext.startsWith('t') ? '<string | null>' : ''}(null);
@@ -1192,9 +1192,9 @@ async function generateSignupForm(
  * Signup Form Component
  */
 
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 import { useAuth } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';\n` : ''}
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const nameSignal = signal('');
 const emailSignal = signal('');
 const passwordSignal = signal('');
@@ -1340,8 +1340,8 @@ async function generatePasswordReset(
  * Password Reset Component
  */
 
-import { signal } from 'philjs-core/signals';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';\n` : ''}
+import { signal } from '@philjs/core/signals';
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const emailSignal = signal('');
 const successSignal = signal(false);
 const errorSignal = signal${ext.startsWith('t') ? '<string | null>' : ''}(null);
@@ -1466,9 +1466,9 @@ async function generateProfileForm(
  * Profile Form Component
  */
 
-import { signal, useEffect } from 'philjs-core';
+import { signal, useEffect } from '@philjs/core';
 import { useUser } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';\n` : ''}
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const nameSignal = signal('');
 const emailSignal = signal('');
 const successSignal = signal(false);
@@ -1598,7 +1598,7 @@ async function generateProtectedRouteUtils(
  */
 
 import { useAuth } from './hooks${ext.startsWith('t') ? '.js' : ''}';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';
 
 interface ProtectedRouteProps {
   children: JSX.Element;
@@ -1716,7 +1716,7 @@ async function generateAuthGuard(
  */
 
 import { useAuth } from './hooks${ext.startsWith('t') ? '.js' : ''}';
-${ext.startsWith('t') ? `import type { JSX } from 'philjs-core';
+${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';
 
 interface AuthGuardProps {
   children: JSX.Element;

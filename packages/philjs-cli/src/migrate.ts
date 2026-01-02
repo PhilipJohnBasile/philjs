@@ -156,7 +156,7 @@ async function migrateFromReact(): Promise<void> {
   if (!pkg['dependencies']) {
     pkg['dependencies'] = {};
   }
-  pkg['dependencies']['philjs-core'] = '^2.0.0';
+  pkg['dependencies']['@philjs/core'] = '^2.0.0';
   pkg['dependencies']['philjs-router'] = '^2.0.0';
 
   await writePackageJson(pkg);
@@ -195,7 +195,7 @@ async function migrateFromVue(): Promise<void> {
   if (!pkg['dependencies']) {
     pkg['dependencies'] = {};
   }
-  pkg['dependencies']['philjs-core'] = '^2.0.0';
+  pkg['dependencies']['@philjs/core'] = '^2.0.0';
   pkg['dependencies']['philjs-router'] = '^2.0.0';
 
   await writePackageJson(pkg);
@@ -227,7 +227,7 @@ async function migrateFromSvelte(): Promise<void> {
   if (!pkg['dependencies']) {
     pkg['dependencies'] = {};
   }
-  pkg['dependencies']['philjs-core'] = '^2.0.0';
+  pkg['dependencies']['@philjs/core'] = '^2.0.0';
   pkg['dependencies']['philjs-router'] = '^2.0.0';
 
   await writePackageJson(pkg);
@@ -320,7 +320,7 @@ async function updateImportsInFile(filePath: string): Promise<void> {
           .filter((i: string | null): i is string => i !== null && philjsHooks.includes(i));
 
         if (mappedImports.length > 0) {
-          return `import { ${[...new Set(mappedImports)].join(', ')} } from 'philjs-core'`;
+          return `import { ${[...new Set(mappedImports)].join(', ')} } from '@philjs/core'`;
         }
         return '';
       }

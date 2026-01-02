@@ -4,7 +4,7 @@
  * Create mock signals for testing
  */
 
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 /**
  * Create a mock signal with initial value

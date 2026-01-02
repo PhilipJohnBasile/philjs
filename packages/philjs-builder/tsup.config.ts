@@ -15,9 +15,9 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['philjs-core'],
+  external: ['@philjs/core'],
   esbuildOptions(options) {
     options.jsx = 'automatic';
-    options.jsxImportSource = 'philjs-core';
+    options.jsxImportSource = '@philjs/core';
   },
 });

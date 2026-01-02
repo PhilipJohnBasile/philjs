@@ -542,9 +542,9 @@ export function inlineQRL<T>(value: T): QRL<T> {
 export function signal$<T>(
   initialValue: T
 ): QRL<{ value: T; set: (v: T | ((prev: T) => T)) => void }> {
-  // This will be transformed by the compiler to use philjs-core signals
+  // This will be transformed by the compiler to use @philjs/core signals
   return createQRL({
-    chunk: 'philjs-core',
+    chunk: '@philjs/core',
     symbol: 'signal',
     capture: [initialValue],
     captureNames: ['initialValue'],
@@ -559,7 +559,7 @@ export function computed$<T>(
   captures?: unknown[]
 ): QRL<{ (): T }> {
   return createQRL({
-    chunk: 'philjs-core',
+    chunk: '@philjs/core',
     symbol: 'memo',
     capture: [computation, ...(captures || [])],
     captureNames: ['computation'],

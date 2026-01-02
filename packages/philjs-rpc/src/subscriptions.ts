@@ -3,7 +3,7 @@
  * Provides real-time data streaming with automatic reconnection and lifecycle hooks.
  */
 
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 import type {
   RPCError,
   ProcedureContext,

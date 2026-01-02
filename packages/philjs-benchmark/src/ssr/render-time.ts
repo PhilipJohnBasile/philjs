@@ -3,8 +3,8 @@
  * Tests server-side rendering performance.
  */
 
-import { jsx, Fragment } from 'philjs-core/jsx-runtime';
-import { signal, memo } from 'philjs-core';
+import { jsx, Fragment } from '@philjs/core/jsx-runtime';
+import { signal, memo } from '@philjs/core';
 import { now, randomLabel } from '../utils.js';
 import type { Benchmark } from '../types.js';
 

@@ -6,7 +6,7 @@
  * including multi-window support, positioning, and state management.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import {
   isTauri,
   getTauriInternals,

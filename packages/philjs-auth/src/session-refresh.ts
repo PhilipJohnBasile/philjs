@@ -4,7 +4,7 @@
  * Automatic token refresh and session management
  */
 
-import { signal, computed } from 'philjs-core/signals';
+import { signal, computed } from '@philjs/core/signals';
 import type { AuthSession } from './types.js';
 import { getAuthProvider } from './hooks.js';
 

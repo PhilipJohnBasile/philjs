@@ -4,7 +4,7 @@
  * Custom renderer that integrates PhilJS components with Storybook
  */
 
-import { render as philJSRender } from 'philjs-core';
+import { render as philJSRender } from '@philjs/core';
 
 // Component type - generic function component type
 type ComponentType<P = any> = (props: P) => any;

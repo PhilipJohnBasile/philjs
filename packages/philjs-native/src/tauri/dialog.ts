@@ -6,7 +6,7 @@
  * message boxes, and confirmation dialogs.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import { isTauri, getTauriInternals, invoke } from './index.js';
 
 // ============================================================================

@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Input Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type InputSize = 'sm' | 'md' | 'lg';
 type InputVariant = 'outline' | 'filled' | 'flushed';

@@ -76,7 +76,7 @@ function generateContextTemplate(name: string, camelName: string, typescript: bo
  * Provides ${camelName} state and actions to child components.
  */
 
-import { JSX, createContext, signal } from 'philjs-core';
+import { JSX, createContext, signal } from '@philjs/core';
 
 ${typescript ? `export interface ${name}State {\n  // Add your state properties here\n  value: string;\n  isLoading: boolean;\n}\n` : ''}
 ${typescript ? `export interface ${name}Actions {\n  // Add your action methods here\n  setValue: (value: string) => void;\n  setLoading: (loading: boolean) => void;\n  reset: () => void;\n}\n` : ''}
@@ -131,7 +131,7 @@ function generateHookTemplate(name: string, camelName: string, typescript: boole
  * use${name} - Hook to access ${name} context
  */
 
-import { useContext } from 'philjs-core';
+import { useContext } from '@philjs/core';
 import { ${name}Context } from './${name}Context';
 ${typescript ? `import type { ${name}ContextValue } from './${name}Context';\n` : ''}
 export function use${name}()${typescript ? `: ${name}ContextValue` : ''} {

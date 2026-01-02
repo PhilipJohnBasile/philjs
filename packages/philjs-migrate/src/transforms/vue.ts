@@ -80,7 +80,7 @@ export class VueTransform {
  * Converted from Vue SFC
  */
 
-import { JSX, signal, computed, effect, onMount, onCleanup } from 'philjs-core';
+import { JSX, signal, computed, effect, onMount, onCleanup } from '@philjs/core';
 
 ${transformedScript}
 
@@ -193,7 +193,7 @@ ${style ? `/* Styles - consider using CSS modules or Tailwind */\n/*\n${style}\n
           }
         }
 
-        return `import { ${[...philjsImports].join(', ')} } from 'philjs-core'`;
+        return `import { ${[...philjsImports].join(', ')} } from '@philjs/core'`;
       }
     );
   }

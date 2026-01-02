@@ -1,4 +1,4 @@
-# philjs-core
+# @philjs/core
 
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
 [![TypeScript Version](https://img.shields.io/badge/typescript-%3E%3D6-blue)](https://www.typescriptlang.org)
@@ -15,7 +15,7 @@ Core signals, memos, and resources for PhilJS.
 ## Installation
 
 ```bash
-pnpm add philjs-core
+pnpm add @philjs/core
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ pnpm add philjs-core
 ### Signals
 
 ```js
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 const count = signal(0);
 
@@ -48,7 +48,7 @@ unsubscribe();
 ### Memos
 
 ```js
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 
 const count = signal(10);
 const doubled = memo(() => count() * 2);
@@ -59,7 +59,7 @@ console.log(doubled()); // 20
 ### Resources
 
 ```js
-import { resource } from "philjs-core";
+import { resource } from "@philjs/core";
 
 let apiData = { value: 1 };
 const data = resource(() => apiData);
@@ -75,7 +75,7 @@ console.log(data()); // { value: 2 }
 ### Async Operations with Promise.withResolvers()
 
 ```js
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 const data = signal(null);
 
@@ -101,7 +101,7 @@ async function fetchWithTimeout(url, timeout = 5000) {
 ### Grouping Data with Object.groupBy()
 
 ```js
-import { signal, memo } from "philjs-core";
+import { signal, memo } from "@philjs/core";
 
 const items = signal([
   { type: "fruit", name: "apple" },
@@ -119,7 +119,7 @@ console.log(grouped());
 ### Resource Management with `using`
 
 ```ts
-import { signal } from "philjs-core";
+import { signal } from "@philjs/core";
 
 // Using TypeScript 6 explicit resource management
 function createManagedResource() {

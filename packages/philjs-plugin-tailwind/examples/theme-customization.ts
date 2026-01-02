@@ -3,7 +3,7 @@
  * Shows how to use the theme generator utilities
  */
 
-import { defineConfig } from "philjs-core";
+import { defineConfig } from "@philjs/core";
 import { createTailwindPlugin } from "philjs-plugin-tailwind";
 import {
   generateBrandTheme,

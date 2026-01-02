@@ -3,8 +3,8 @@
  *
  * Provides theming context including dark mode support
  */
-import { createContext, useContext, signal, effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { createContext, useContext, signal, effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 import { defaultTheme } from './tokens';
 import type { Theme } from './tokens';
 

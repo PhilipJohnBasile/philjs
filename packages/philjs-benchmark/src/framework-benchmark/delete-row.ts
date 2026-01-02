@@ -3,7 +3,7 @@
  * Tests the framework's ability to handle deletions efficiently.
  */
 
-import { signal, batch, effect } from 'philjs-core';
+import { signal, batch, effect } from '@philjs/core';
 import { randomLabel, createMockDOM } from '../utils.js';
 import type { RowData, Benchmark } from '../types.js';
 
@@ -225,6 +225,8 @@ export const removeRow: Benchmark = {
     table.deleteRandom();
   },
 };
+
+export const deleteRow = removeRow;
 
 /**
  * Remove row with keyed reconciliation.

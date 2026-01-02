@@ -3,7 +3,7 @@
  * Universal analytics integration for multiple providers
  */
 
-import type { Plugin, PluginContext } from "philjs-core/plugin-system";
+import type { Plugin, PluginContext } from "@philjs/core/plugin-system";
 
 /**
  * Analytics provider types

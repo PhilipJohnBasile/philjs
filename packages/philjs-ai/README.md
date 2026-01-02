@@ -58,7 +58,7 @@ console.log(greeting.text);
 
 ```typescript
 import { createAIClient } from 'philjs-ai';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 const ai = createAIClient({
   provider: 'openai',

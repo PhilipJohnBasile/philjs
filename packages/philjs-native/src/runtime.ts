@@ -5,7 +5,7 @@
  * Provides platform detection, native bridge communication, and app lifecycle management.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Platform Detection
@@ -496,12 +496,12 @@ export function createNativeApp(config: NativeAppConfig): NativeApp {
       if (isRendered) return;
       isRendered = true;
 
-      // This would integrate with philjs-core's render system
+      // This would integrate with @philjs/core's render system
       // For native, we'd send the component tree to the native layer
       const platform = detectPlatform();
 
       if (platform === 'web') {
-        // Web rendering - would use philjs-core hydrate/render
+        // Web rendering - would use @philjs/core hydrate/render
         console.log('[PhilJS Native] Rendering in web mode');
       } else {
         // Native rendering - send to native bridge

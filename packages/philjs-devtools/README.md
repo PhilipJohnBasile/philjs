@@ -48,7 +48,7 @@ Debug state changes by rewinding and replaying:
 
 ```typescript
 import { initTimeTravel, debugSignal } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Initialize time-travel
 const timeTravelDebugger = initTimeTravel({
@@ -87,7 +87,7 @@ Track signal dependencies and values:
 
 ```typescript
 import { createSignalInspector } from 'philjs-devtools';
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 const inspector = createSignalInspector();
 
@@ -235,7 +235,7 @@ Connect your PhilJS app to the Redux DevTools Extension:
 
 ```typescript
 import { initReduxDevTools } from 'philjs-devtools';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 // Initialize Redux DevTools
 const devTools = initReduxDevTools(

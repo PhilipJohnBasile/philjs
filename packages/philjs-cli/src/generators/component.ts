@@ -113,7 +113,7 @@ function generateComponentTemplate(context: TemplateContext): string {
  * ${pascalName} Component
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 ${styleImport}${propsType}
 export function ${pascalName}(${propsParam}) {
   const { children, className = '' } = props;

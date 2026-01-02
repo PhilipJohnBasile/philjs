@@ -2,8 +2,21 @@ import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import { defineConfig } from 'rollup';
 
+const expandExternal = (items) => {
+  const expanded = [];
+  for (const item of items) {
+    expanded.push(item);
+    if (typeof item === 'string' && item.startsWith('./') && item.endsWith('.js')) {
+      const base = item.slice(2, -3);
+      const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      expanded.push(new RegExp(`[\\\\/]${escaped}\\.(?:ts|tsx|js)$`));
+    }
+  }
+  return expanded;
+};
+
 // Helper to create optimized entry point config
-const createEntry = (input, output, external = []) => ({
+const createEntry = (input, output, extraExternal = []) => ({
   input: `src/${input}`,
   output: {
     file: `dist/${output}`,
@@ -32,15 +45,16 @@ const createEntry = (input, output, external = []) => ({
       composite: false
     })
   ],
-  external: [
+  external: expandExternal([
     /^node:/,
     /^philjs-/,
+    /^@philjs\//,
     'fast-glob',
     'fs/promises',
     'path',
     'fs',
-    ...external
-  ],
+    ...extraExternal
+  ]),
   // Aggressive tree-shaking for smaller bundles
   treeshake: {
     moduleSideEffects: false,

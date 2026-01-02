@@ -8,7 +8,7 @@
  * - Generic adapters
  */
 
-import { signal, memo } from 'philjs-core';
+import { signal, memo } from '@philjs/core';
 
 // ============================================================================
 // Types

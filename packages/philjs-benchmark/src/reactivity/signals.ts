@@ -3,7 +3,7 @@
  * Tests the core reactivity primitives performance.
  */
 
-import { signal, memo, batch, untrack } from 'philjs-core';
+import { signal, memo, batch, untrack } from '@philjs/core';
 import { now, calculateStats, gc } from '../utils.js';
 import type { Benchmark, BenchmarkResult } from '../types.js';
 

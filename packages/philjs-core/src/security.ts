@@ -316,14 +316,33 @@ export function safeJsonParse<T = unknown>(
     return reviver ? reviver(key, value) : value;
   });
 
-  // Additional safeguard: Remove dangerous properties
-  if (parsed && typeof parsed === 'object') {
-    delete (parsed as any).__proto__;
-    delete (parsed as any).constructor;
-    delete (parsed as any).prototype;
+  return sanitizeParsedValue(parsed) as T;
+}
+
+function sanitizeParsedValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sanitizeParsedValue);
   }
 
-  return parsed as T;
+  if (!isPlainObject(value)) {
+    return value;
+  }
+
+  const safe = Object.create(null) as Record<string, unknown>;
+  for (const [key, entry] of Object.entries(value)) {
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      continue;
+    }
+    safe[key] = sanitizeParsedValue(entry);
+  }
+
+  return safe;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== 'object') return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
 }
 
 /**

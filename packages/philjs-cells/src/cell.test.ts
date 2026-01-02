@@ -10,8 +10,8 @@ import type { CellDefinition, VNode } from './types';
 // Test helper: null VNode for test components
 const nullVNode = null as unknown as VNode;
 
-// Mock philjs-core
-vi.mock('philjs-core', () => ({
+// Mock @philjs/core
+vi.mock('@philjs/core', () => ({
   signal: (initial: unknown) => {
     let value = initial;
     const read = () => value;

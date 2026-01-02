@@ -382,6 +382,6 @@ MIT
 
 ## Related Packages
 
-- [philjs-core](../philjs-core) - Core reactivity system
+- [@philjs/core](../philjs-core) - Core reactivity system
 - [philjs-ssr](../philjs-ssr) - Server-side rendering
 - [philjs-router](../philjs-router) - Routing with code splitting

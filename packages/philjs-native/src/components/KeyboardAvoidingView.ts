@@ -5,7 +5,7 @@
  * when the keyboard appears to keep content visible.
  */
 
-import { signal, effect, batch, type Signal } from 'philjs-core';
+import { signal, effect, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ViewStyle } from '../styles.js';
 

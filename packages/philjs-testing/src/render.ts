@@ -105,7 +105,7 @@ export function render(
 
   try {
     // Import PhilJS render dynamically to avoid hard dependency
-    const philjs = (globalThis as any).__PHILJS__ || require('philjs-core');
+    const philjs = (globalThis as any).__PHILJS__ || require('@philjs/core');
 
     if (hydrate && philjs.hydrate) {
       philjs.hydrate(componentToRender, container);

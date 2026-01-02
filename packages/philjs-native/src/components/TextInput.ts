@@ -5,7 +5,7 @@
  * Supports various keyboard types, secure entry, and multiline.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { TextStyle, ViewStyle } from '../styles.js';
 

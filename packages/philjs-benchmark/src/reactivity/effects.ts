@@ -3,7 +3,7 @@
  * Tests effect creation, execution, and cleanup performance.
  */
 
-import { signal, effect, batch, onCleanup, createRoot } from 'philjs-core';
+import { signal, effect, batch, onCleanup, createRoot } from '@philjs/core';
 import { gc } from '../utils.js';
 import type { Benchmark } from '../types.js';
 

@@ -5,7 +5,7 @@
  * Supports remote URLs, local assets, and various resize modes.
  */
 
-import { signal, effect, type Signal } from 'philjs-core';
+import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 import type { ImageStyle } from '../styles.js';
 

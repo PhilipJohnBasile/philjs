@@ -5,7 +5,7 @@
  * Utilities for detecting and responding to platform-specific features.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

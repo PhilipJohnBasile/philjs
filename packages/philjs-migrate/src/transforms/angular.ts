@@ -102,10 +102,10 @@ export class AngularTransform {
         }
 
         if (philjsImports.size === 1 && philjsImports.has('JSX')) {
-          return `import { signal, memo, effect, onMount, onCleanup, createContext, useContext, JSX } from 'philjs-core'`;
+          return `import { signal, memo, effect, onMount, onCleanup, createContext, useContext, JSX } from '@philjs/core'`;
         }
 
-        return `import { ${[...philjsImports].join(', ')} } from 'philjs-core'`;
+        return `import { ${[...philjsImports].join(', ')} } from '@philjs/core'`;
       }
     );
 
@@ -129,9 +129,9 @@ export class AngularTransform {
           type: 'ngrx-store',
           description: 'NgRx store should be migrated to PhilJS signals. See migration guide.',
           originalCode: match,
-          suggestedCode: `import { signal, memo, createContext } from 'philjs-core'`,
+          suggestedCode: `import { signal, memo, createContext } from '@philjs/core'`,
         });
-        return `// NgRx replaced with signals - see migration guide\nimport { signal, memo, createContext } from 'philjs-core'`;
+        return `// NgRx replaced with signals - see migration guide\nimport { signal, memo, createContext } from '@philjs/core'`;
       }
     );
 

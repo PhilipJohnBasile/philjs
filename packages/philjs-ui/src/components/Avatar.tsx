@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Avatar Component
  */
-import { signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 type AvatarStatus = 'online' | 'offline' | 'busy' | 'away';

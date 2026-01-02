@@ -26,7 +26,7 @@ suite('PhilJS Extension Test Suite', () => {
     test('Should provide signal completions', async () => {
       const document = await vscode.workspace.openTextDocument({
         language: 'typescript',
-        content: 'import { signal } from "philjs-core";\nconst count = sig',
+        content: 'import { signal } from "@philjs/core";\nconst count = sig',
       });
 
       const position = new vscode.Position(1, 17);
@@ -46,7 +46,7 @@ suite('PhilJS Extension Test Suite', () => {
     test('Should provide JSX completions', async () => {
       const document = await vscode.workspace.openTextDocument({
         language: 'typescriptreact',
-        content: 'import { signal } from "philjs-core";\nfunction App() { return <',
+        content: 'import { signal } from "@philjs/core";\nfunction App() { return <',
       });
 
       const position = new vscode.Position(1, 31);
@@ -69,7 +69,7 @@ suite('PhilJS Extension Test Suite', () => {
     test('Should provide hover for signal', async () => {
       const document = await vscode.workspace.openTextDocument({
         language: 'typescript',
-        content: 'import { signal } from "philjs-core";\nconst count = signal(0);',
+        content: 'import { signal } from "@philjs/core";\nconst count = signal(0);',
       });
 
       const position = new vscode.Position(1, 14); // Position on 'signal'
@@ -86,7 +86,7 @@ suite('PhilJS Extension Test Suite', () => {
     test('Should provide hover for computed', async () => {
       const document = await vscode.workspace.openTextDocument({
         language: 'typescript',
-        content: 'import { computed } from "philjs-core";\nconst doubled = computed(() => 2);',
+        content: 'import { computed } from "@philjs/core";\nconst doubled = computed(() => 2);',
       });
 
       const position = new vscode.Position(1, 16); // Position on 'computed'

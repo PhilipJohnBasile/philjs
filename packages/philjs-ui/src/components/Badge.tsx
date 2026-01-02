@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Badge Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type BadgeColor = 'gray' | 'red' | 'orange' | 'yellow' | 'green' | 'teal' | 'blue' | 'cyan' | 'purple' | 'pink';
 type BadgeVariant = 'solid' | 'subtle' | 'outline';

@@ -9,7 +9,7 @@
  * - Any form that doesn't navigate
  */
 
-import { signal, memo, type Signal } from 'philjs-core/signals';
+import { signal, memo, type Signal } from '@philjs/core/signals';
 
 export type FetcherMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

@@ -4,7 +4,7 @@
  * Mock loaders and actions for route components
  */
 
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 export interface MockLoader<T = any> {
   data: ReturnType<typeof signal<T | null>>;

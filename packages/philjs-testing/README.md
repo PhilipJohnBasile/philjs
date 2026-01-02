@@ -60,7 +60,7 @@ describe('Counter', () => {
 ### Testing Signals
 
 ```typescript
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 import { waitForSignal, signalValue } from 'philjs-testing';
 import { describe, it, expect } from 'vitest';
 
@@ -191,7 +191,7 @@ Inspect rendered output and signals:
 
 ```typescript
 import { render, screen, debug, debugSignals } from 'philjs-testing';
-import { signal } from 'philjs-core';
+import { signal } from '@philjs/core';
 
 it('debugs component output', () => {
   const count = signal(5);

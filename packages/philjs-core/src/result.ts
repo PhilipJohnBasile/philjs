@@ -23,13 +23,10 @@ export function Err<E>(error: E): Result<never, E> {
 }
 
 export function isResult<T, E>(value: unknown): value is Result<T, E> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    (value as any).ok !== undefined &&
-    (typeof (value as any).ok === "boolean") &&
-    (value as any).ok ? "value" in (value as any) : "error" in (value as any)
-  );
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as any;
+  if (typeof candidate.ok !== "boolean") return false;
+  return candidate.ok ? "value" in candidate : "error" in candidate;
 }
 
 export function isOk<T, E>(result: Result<T, E>): result is Ok<T> {

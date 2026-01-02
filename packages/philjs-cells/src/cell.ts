@@ -13,8 +13,8 @@ import {
   createElement,
   type Signal,
   type Memo,
-} from 'philjs-core';
-import type { VNode, JSXElement } from 'philjs-core';
+} from '@philjs/core';
+import type { VNode, JSXElement } from '@philjs/core';
 
 import type {
   CellDefinition,

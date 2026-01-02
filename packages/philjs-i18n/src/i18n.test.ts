@@ -5,8 +5,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createI18n, createPlural, pluralRules, type I18n, type TranslationMap } from './index.js';
 
-// Mock the signal from philjs-core
-vi.mock('philjs-core', () => ({
+// Mock the signal from @philjs/core
+vi.mock('@philjs/core', () => ({
   signal: (initialValue: any) => {
     let value = initialValue;
     const sig = () => value;

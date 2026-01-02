@@ -30,9 +30,9 @@ export interface MigrationError {
 // Transform maps
 const REACT_TRANSFORMS = {
   imports: {
-    'react': 'philjs-core',
-    'react-dom': 'philjs-core',
-    'react-dom/client': 'philjs-core',
+    'react': '@philjs/core',
+    'react-dom': '@philjs/core',
+    'react-dom/client': '@philjs/core',
   },
   hooks: {
     'useState': 'signal',
@@ -53,8 +53,8 @@ const REACT_TRANSFORMS = {
 
 const VUE_TRANSFORMS = {
   imports: {
-    'vue': 'philjs-core',
-    '@vue/reactivity': 'philjs-core',
+    'vue': '@philjs/core',
+    '@vue/reactivity': '@philjs/core',
   },
   api: {
     'ref': 'signal',

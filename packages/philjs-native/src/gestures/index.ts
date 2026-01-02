@@ -5,7 +5,7 @@
  * Works on both touch and pointer devices.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 
 // ============================================================================
 // Types

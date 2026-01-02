@@ -243,7 +243,7 @@ Create your own authentication provider:
 
 ```typescript
 import { BaseAuthProvider } from 'philjs-auth';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 
 class MyAuthProvider extends BaseAuthProvider {
   readonly name = 'my-auth';
@@ -367,7 +367,7 @@ Options:
 
 ```typescript
 import { useAuth } from 'philjs-auth/hooks';
-import { signal } from 'philjs-core/signals';
+import { signal } from '@philjs/core/signals';
 
 const email = signal('');
 const password = signal('');

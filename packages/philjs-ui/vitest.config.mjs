@@ -15,7 +15,7 @@ export default defineConfig({
   },
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'philjs-core',
+    jsxImportSource: '@philjs/core',
   },
 });
 

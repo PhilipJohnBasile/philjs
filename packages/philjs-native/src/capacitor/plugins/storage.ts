@@ -5,7 +5,7 @@
  * with fallback to web storage APIs.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import {
   isNativePlatform,
   callPlugin,

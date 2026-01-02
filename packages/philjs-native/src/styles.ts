@@ -5,7 +5,7 @@
  * Similar to React Native's StyleSheet.
  */
 
-import { signal, memo, type Signal } from 'philjs-core';
+import { signal, memo, type Signal } from '@philjs/core';
 import { detectPlatform, platformInfo, platformSelect } from './runtime.js';
 
 // ============================================================================

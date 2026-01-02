@@ -70,7 +70,7 @@ function generateHookTemplate(name: string, typescript: boolean): string {
  * ${name} - Custom hook
  */
 
-import { signal, computed } from 'philjs-core';
+import { signal, computed } from '@philjs/core';
 
 ${typescript ? `export interface ${name}Options {\n  initialValue?: string;\n}\n` : ''}
 ${typescript ? `export interface ${name}Return {\n  value: string;\n  setValue: (value: string) => void;\n  reset: () => void;\n}\n` : ''}

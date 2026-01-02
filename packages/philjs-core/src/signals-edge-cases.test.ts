@@ -314,7 +314,8 @@ describe('Multiple Subscribers and Notification', () => {
     spy2.mockClear();
     count.set(2);
     expect(spy1).toHaveBeenCalled();
-    expect(spy2).toHaveBeenCalled();
+    // Nested effects are disposed on parent re-run, so the new subscriber won't persist.
+    expect(spy2).not.toHaveBeenCalled();
   });
 });
 

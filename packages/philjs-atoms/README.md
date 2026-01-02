@@ -17,7 +17,7 @@ Jotai-style atomic state management for PhilJS with signal-based reactivity.
 ## Installation
 
 ```bash
-npm install philjs-atoms philjs-core
+npm install philjs-atoms @philjs/core
 ```
 
 ## Basic Usage

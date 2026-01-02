@@ -12,7 +12,7 @@ import {
   waitForSignalValue,
   assertSignalHistory,
 } from 'philjs-testing';
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 
 describe('Signal Testing Patterns', () => {
   describe('Mock Signals', () => {

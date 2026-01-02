@@ -5,7 +5,7 @@
  * Provides seamless navigation with native transitions.
  */
 
-import { signal, effect, memo, batch, type Signal } from 'philjs-core';
+import { signal, effect, memo, batch, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge, platformSelect } from './runtime.js';
 import type { ViewStyle } from './styles.js';
 

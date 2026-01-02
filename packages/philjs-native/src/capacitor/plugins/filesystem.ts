@@ -6,7 +6,7 @@
  * files and directories on the device.
  */
 
-import { signal, type Signal } from 'philjs-core';
+import { signal, type Signal } from '@philjs/core';
 import {
   isCapacitor,
   isNativePlatform,

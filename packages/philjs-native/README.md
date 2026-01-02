@@ -15,7 +15,7 @@ Cross-platform mobile development for PhilJS. Build native iOS, Android, and Web
 ## Installation
 
 ```bash
-pnpm add philjs-native philjs-core
+pnpm add philjs-native @philjs/core
 ```
 
 ## Quick Start
@@ -35,7 +35,7 @@ npm start
 - **Native Performance**: Native components for each platform
 - **Familiar API**: Similar to React Native for easy adoption
 - **Type-Safe**: Full TypeScript support
-- **Signal-Based**: Reactive primitives from philjs-core
+- **Signal-Based**: Reactive primitives from @philjs/core
 
 ## Core Concepts
 

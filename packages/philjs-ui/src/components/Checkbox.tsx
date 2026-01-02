@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Checkbox Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type CheckboxSize = 'sm' | 'md' | 'lg';
 type Orientation = 'vertical' | 'horizontal';

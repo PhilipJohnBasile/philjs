@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Dropdown Component
  */
-import { signal, effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type DropdownPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
 

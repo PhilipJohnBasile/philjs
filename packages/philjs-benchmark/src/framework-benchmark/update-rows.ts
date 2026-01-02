@@ -3,7 +3,7 @@
  * Tests the framework's ability to perform partial updates efficiently.
  */
 
-import { signal, batch, effect } from 'philjs-core';
+import { signal, batch, effect } from '@philjs/core';
 import { randomLabel, createMockDOM } from '../utils.js';
 import type { RowData, Benchmark } from '../types.js';
 
@@ -142,6 +142,8 @@ export const updateEvery10thRow: Benchmark = {
     table.updateEvery10th();
   },
 };
+
+export const updateEvery10th = updateEvery10thRow;
 
 /**
  * Update every 10th row with batching benchmark (1,000 rows).

@@ -5,7 +5,7 @@
  * storage, and reactive translation helpers.
  */
 
-import { signal, memo } from 'philjs-core/signals';
+import { signal, memo } from '@philjs/core/signals';
 import type { TranslationMap, I18nContextValue, LocaleConfig, PluralRules } from './types.js';
 
 /**

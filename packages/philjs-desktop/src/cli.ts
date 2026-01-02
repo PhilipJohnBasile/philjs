@@ -254,7 +254,7 @@ async function initProject(options: CLIOptions): Promise<void> {
       'tauri:build': 'tauri build',
     },
     dependencies: {
-      'philjs-core': 'workspace:*',
+      '@philjs/core': 'workspace:*',
       'philjs-desktop': 'workspace:*',
     },
     devDependencies: {

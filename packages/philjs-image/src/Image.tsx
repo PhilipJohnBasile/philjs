@@ -5,7 +5,7 @@
  * responsive sizing, lazy loading, and blur placeholders.
  */
 
-import { signal, memo, effect } from 'philjs-core';
+import { signal, memo, effect } from '@philjs/core';
 import type { ImageProps, OptimizedImage } from './types';
 import { generateSrcSet, generateBlurDataURL, isExternalUrl } from './utils';
 

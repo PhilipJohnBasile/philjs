@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Radio Component
  */
-import { signal, createContext, useContext } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal, createContext, useContext } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type RadioSize = 'sm' | 'md' | 'lg';
 type Orientation = 'vertical' | 'horizontal';

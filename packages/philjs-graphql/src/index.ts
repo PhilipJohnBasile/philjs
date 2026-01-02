@@ -11,8 +11,8 @@
  * - Advanced error handling with retry logic
  */
 
-import type { Signal } from 'philjs-core';
-import { signal, resource, memo, batch } from 'philjs-core';
+import type { Signal } from '@philjs/core';
+import { signal, resource, memo, batch } from '@philjs/core';
 import { defineLoader, defineAction } from 'philjs-ssr';
 import type { DocumentNode } from 'graphql';
 

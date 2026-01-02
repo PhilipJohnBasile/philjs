@@ -30,7 +30,7 @@ This comprehensive guide helps you migrate your React application to PhilJS. Phi
 npm uninstall react react-dom @types/react @types/react-dom
 
 # Install PhilJS
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 ```
 
 ### Update tsconfig.json
@@ -39,7 +39,7 @@ npm install philjs-core philjs-router
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
@@ -65,7 +65,7 @@ function Counter() {
 }
 
 // After (PhilJS)
-import { signal, effect } from 'philjs-core';
+import { signal, effect } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
@@ -217,7 +217,7 @@ useEffect(() => {
 }, []);
 
 // PhilJS - use onMount for explicit mount behavior
-import { onMount } from 'philjs-core';
+import { onMount } from '@philjs/core';
 
 onMount(() => {
   console.log('Mounted');
@@ -335,7 +335,7 @@ function Child() {
 }
 
 // PhilJS - same API!
-import { createContext, useContext } from 'philjs-core';
+import { createContext, useContext } from '@philjs/core';
 
 const ThemeContext = createContext('light');
 
@@ -359,7 +359,7 @@ PhilJS has a special helper for reactive context:
 
 ```tsx
 // PhilJS - reactive context with signals
-import { createSignalContext } from 'philjs-core';
+import { createSignalContext } from '@philjs/core';
 
 const CountContext = createSignalContext(0);
 
@@ -720,7 +720,7 @@ function Form() {
 }
 
 // PhilJS with useForm helper
-import { useForm, validators as v } from 'philjs-core';
+import { useForm, validators as v } from '@philjs/core';
 
 function Form() {
   const form = useForm({
@@ -761,7 +761,7 @@ function UserProfile({ userId }) {
 }
 
 // PhilJS with resource
-import { resource, signal } from 'philjs-core';
+import { resource, signal } from '@philjs/core';
 
 function UserProfile(props: { userId: number }) {
   const user = resource(async () => {
@@ -868,7 +868,7 @@ npx philjs-migrate --from react --source ./src --output ./src-migrated
 ### 1. Install Dependencies
 
 ```bash
-npm install philjs-core philjs-router
+npm install @philjs/core philjs-router
 npm uninstall react react-dom @types/react @types/react-dom
 ```
 
@@ -879,7 +879,7 @@ npm uninstall react react-dom @types/react @types/react-dom
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "philjs-core"
+    "jsxImportSource": "@philjs/core"
   }
 }
 ```
@@ -894,7 +894,7 @@ import App from './App';
 createRoot(document.getElementById('root')!).render(<App />);
 
 // After (PhilJS)
-import { render } from 'philjs-core';
+import { render } from '@philjs/core';
 import App from './App';
 
 render(() => <App />, document.getElementById('root')!);
@@ -904,7 +904,7 @@ render(() => <App />, document.getElementById('root')!);
 
 Start with leaf components (no children) and work up:
 
-1. Change imports from `react` to `philjs-core`
+1. Change imports from `react` to `@philjs/core`
 2. Convert `useState` to `signal`
 3. Convert `useEffect` to `effect`
 4. Convert `useMemo` to `memo`

@@ -145,7 +145,7 @@ async function checkPhilJSProject(): Promise<boolean> {
     const pkgPath = path.join(process.cwd(), 'package.json');
     const pkgContent = await fs.readFile(pkgPath, 'utf-8');
     const pkg = JSON.parse(pkgContent);
-    return pkg.dependencies && 'philjs-core' in pkg.dependencies;
+    return pkg.dependencies && '@philjs/core' in pkg.dependencies;
   } catch {
     return false;
   }
@@ -196,7 +196,7 @@ async function addSSR(): Promise<void> {
 
   // Update vite config
   await updateViteConfig(isTS, (config) => {
-    return config + `\n  ssr: {\n    noExternal: ['philjs-core', 'philjs-router', 'philjs-ssr'],\n  },`;
+    return config + `\n  ssr: {\n    noExternal: ['@philjs/core', 'philjs-router', 'philjs-ssr'],\n  },`;
   });
   console.log(pc.green('  ✓ Updated vite.config'));
 
@@ -559,7 +559,7 @@ async function addAuth(): Promise<void> {
 
   await fs.writeFile(
     path.join(process.cwd(), 'src', 'lib', `auth.${ext}`),
-    `import { signal } from 'philjs-core';
+    `import { signal } from '@philjs/core';
 
 ${isTS ? `interface User {
   id: string;
@@ -670,7 +670,7 @@ export function render(url${isTS ? ': string' : ''}) {
 }
 
 function generateSSREntryClient(isTS: boolean): string {
-  return `import { hydrate } from 'philjs-core';
+  return `import { hydrate } from '@philjs/core';
 import App from './App';
 
 hydrate(<App />, document.getElementById('app'));
@@ -744,7 +744,7 @@ createServer();
 }
 
 function generateExampleIsland(isTS: boolean): string {
-  return `import { signal } from 'philjs-core';
+  return `import { signal } from '@philjs/core';
 import { Island } from 'philjs-islands';
 
 export default function ExampleIsland() {

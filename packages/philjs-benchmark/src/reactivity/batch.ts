@@ -3,7 +3,7 @@
  * Tests batching performance and its impact on reactivity.
  */
 
-import { signal, effect, batch, memo } from 'philjs-core';
+import { signal, effect, batch, memo } from '@philjs/core';
 import type { Benchmark } from '../types.js';
 
 /**

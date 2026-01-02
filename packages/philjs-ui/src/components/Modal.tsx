@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Modal Component
  */
-import { effect } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { effect } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 type ConfirmVariant = 'info' | 'warning' | 'danger';

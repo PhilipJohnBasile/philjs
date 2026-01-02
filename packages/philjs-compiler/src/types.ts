@@ -125,7 +125,7 @@ export interface FileAnalysis {
 export interface PhilJSImport {
   name: string;
   alias?: string;
-  source: 'philjs-core' | 'philjs' | string;
+  source: '@philjs/core' | 'philjs' | string;
 }
 
 export interface OptimizationOpportunity {

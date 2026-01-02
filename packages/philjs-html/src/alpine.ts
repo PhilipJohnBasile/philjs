@@ -4,7 +4,7 @@
  * Full Alpine.js-compatible directive system using PhilJS signals.
  */
 
-import { signal, effect, batch, memo } from 'philjs-core';
+import { signal, effect, batch, memo } from '@philjs/core';
 import { directive, initDirectives, processElement, type DirectiveContext } from './directives.js';
 
 // ============================================================================

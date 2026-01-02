@@ -188,7 +188,7 @@ setPageSEO({
     },
     {
       question: 'How do I install it?',
-      answer: 'Run pnpm add philjs-core...',
+      answer: 'Run pnpm add @philjs/core...',
     },
   ]),
 });
@@ -318,7 +318,7 @@ For server-side rendering, use `generatePageSEO`:
 
 ```typescript
 import { generatePageSEO } from './lib/seo';
-import { renderToString } from 'philjs-core/render-to-string';
+import { renderToString } from '@philjs/core/render-to-string';
 
 const seoHtml = generatePageSEO({
   meta: { title: 'My Page' },

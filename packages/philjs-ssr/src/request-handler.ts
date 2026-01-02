@@ -48,7 +48,7 @@ export type RenderOptions = {
   match: RouteMatcher;
   /** Base URL for the application */
   baseUrl?: string;
-  /** Custom renderer (defaults to philjs-core renderToString) */
+  /** Custom renderer (defaults to @philjs/core renderToString) */
   render?: (component: VNode) => Promise<string> | string;
 };
 

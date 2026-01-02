@@ -1,8 +1,8 @@
 /**
  * PhilJS UI - Switch Component
  */
-import { signal } from 'philjs-core';
-import type { JSX } from 'philjs-core/jsx-runtime';
+import { signal } from '@philjs/core';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type SwitchSize = 'sm' | 'md' | 'lg';
 

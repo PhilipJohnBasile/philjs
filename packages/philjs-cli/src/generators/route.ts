@@ -100,7 +100,7 @@ function generateRouteTemplate(
  * ${name} - Route component for /${routePath}
  */
 
-import { JSX } from 'philjs-core';
+import { JSX } from '@philjs/core';
 import { useLoaderData${isDynamic ? ', useParams' : ''} } from 'philjs-router';
 import type { loader } from './loader';
 ${propsType}${paramsType}

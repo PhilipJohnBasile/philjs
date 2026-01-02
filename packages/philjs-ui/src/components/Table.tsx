@@ -1,7 +1,7 @@
 /**
  * PhilJS UI - Table Component
  */
-import type { JSX } from 'philjs-core/jsx-runtime';
+import type { JSX } from '@philjs/core/jsx-runtime';
 
 export type TableVariant = 'simple' | 'striped' | 'unstyled';
 export type TableSize = 'sm' | 'md' | 'lg';

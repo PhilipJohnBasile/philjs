@@ -125,7 +125,7 @@ describe('CodeGenerator', () => {
         quotes: 'single',
       });
 
-      expect(result.code).toContain("'philjs-core'");
+      expect(result.code).toContain("'@philjs/core'");
     });
 
     it('should use double quotes when specified', () => {
@@ -134,7 +134,7 @@ describe('CodeGenerator', () => {
         quotes: 'double',
       });
 
-      expect(result.code).toContain('"philjs-core"');
+      expect(result.code).toContain('"@philjs/core"');
     });
 
     it('should include semicolons when specified', () => {
