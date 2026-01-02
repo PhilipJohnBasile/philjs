@@ -133,6 +133,8 @@ pnpm typecheck
 
 PhilJS is under active development. Core functionality is implemented but APIs may change.
 
+- **Improvement report**: [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) (5-min read)
+- **Detailed analysis**: [PRODUCT_IMPROVEMENT_REPORT.md](./PRODUCT_IMPROVEMENT_REPORT.md)
 - Audit report: [PHILJS_DEEP_AUDIT_DECEMBER_2025.md](./PHILJS_DEEP_AUDIT_DECEMBER_2025.md)
 - Documentation: [docs/](./docs)
 
