@@ -77,3 +77,17 @@ docs/rust-book/src/.obsidian/
 
 # Build tools
 tools/
+
+# Test artifacts
+**/tests/screenshots/
+**/test-migrations/
+**/playwright-report/
+**/test-results/
+
+# Debug test files (keep the actual debug.md docs)
+**/tests/*debug*.spec.ts
+
+# Lock files (keep Cargo.lock for reproducible Rust builds)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
