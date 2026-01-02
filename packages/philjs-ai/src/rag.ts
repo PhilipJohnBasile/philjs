@@ -104,59 +104,404 @@ export interface PineconeConfig {
   apiKey: string;
   environment: string;
   indexName: string;
+  namespace?: string;
+  baseUrl?: string;
 }
 
+/**
+ * Pinecone Vector Store
+ *
+ * Full implementation using Pinecone REST API.
+ * Supports serverless and pod-based indexes.
+ *
+ * @example
+ * ```typescript
+ * const store = new PineconeVectorStore({
+ *   apiKey: process.env.PINECONE_API_KEY!,
+ *   environment: 'us-east-1',
+ *   indexName: 'my-index',
+ * });
+ * ```
+ */
 export class PineconeVectorStore implements VectorStore {
   name = 'pinecone';
   private config: PineconeConfig;
+  private baseUrl: string;
+  private namespace: string;
 
   constructor(config: PineconeConfig) {
     this.config = config;
+    this.namespace = config.namespace || '';
+    // Pinecone serverless URL format
+    this.baseUrl = config.baseUrl ||
+      `https://${config.indexName}-${config.environment}.svc.pinecone.io`;
+  }
+
+  private async request<T>(
+    endpoint: string,
+    method: 'GET' | 'POST' | 'DELETE' = 'GET',
+    body?: unknown
+  ): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method,
+      headers: {
+        'Api-Key': this.config.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Pinecone API error: ${response.status} - ${error}`);
+    }
+
+    return response.json();
   }
 
   async add(documents: Document[]): Promise<void> {
-    // Would integrate with Pinecone SDK
-    console.log(`Adding ${documents.length} documents to Pinecone`);
+    if (documents.length === 0) return;
+
+    // Validate all documents have embeddings
+    for (const doc of documents) {
+      if (!doc.embedding) {
+        throw new Error(`Document ${doc.id} missing embedding`);
+      }
+    }
+
+    // Pinecone upsert format
+    const vectors = documents.map(doc => ({
+      id: doc.id,
+      values: doc.embedding!,
+      metadata: {
+        content: doc.content,
+        ...doc.metadata,
+      },
+    }));
+
+    // Batch upserts (Pinecone limit is 100 vectors per request)
+    const batchSize = 100;
+    for (let i = 0; i < vectors.length; i += batchSize) {
+      const batch = vectors.slice(i, i + batchSize);
+      await this.request('/vectors/upsert', 'POST', {
+        vectors: batch,
+        namespace: this.namespace,
+      });
+    }
   }
 
   async search(query: number[], topK = 5): Promise<SearchResult[]> {
-    // Would query Pinecone
-    return [];
+    const response = await this.request<{
+      matches: Array<{
+        id: string;
+        score: number;
+        metadata?: Record<string, unknown>;
+      }>;
+    }>('/query', 'POST', {
+      vector: query,
+      topK,
+      includeMetadata: true,
+      namespace: this.namespace,
+    });
+
+    return response.matches.map(match => ({
+      document: {
+        id: match.id,
+        content: (match.metadata?.content as string) || '',
+        metadata: match.metadata,
+        embedding: undefined, // Not returned by query
+      },
+      score: match.score,
+    }));
   }
 
   async delete(ids: string[]): Promise<void> {
-    // Would delete from Pinecone
+    if (ids.length === 0) return;
+
+    await this.request('/vectors/delete', 'POST', {
+      ids,
+      namespace: this.namespace,
+    });
   }
 
   async clear(): Promise<void> {
-    // Would clear index
+    await this.request('/vectors/delete', 'POST', {
+      deleteAll: true,
+      namespace: this.namespace,
+    });
+  }
+
+  /**
+   * Get index statistics
+   */
+  async stats(): Promise<{
+    totalVectorCount: number;
+    dimension: number;
+    namespaces: Record<string, { vectorCount: number }>;
+  }> {
+    return this.request('/describe_index_stats', 'POST', {});
+  }
+
+  /**
+   * Fetch vectors by ID
+   */
+  async fetch(ids: string[]): Promise<Map<string, Document>> {
+    const response = await this.request<{
+      vectors: Record<string, {
+        id: string;
+        values: number[];
+        metadata?: Record<string, unknown>;
+      }>;
+    }>('/vectors/fetch', 'POST', {
+      ids,
+      namespace: this.namespace,
+    });
+
+    const result = new Map<string, Document>();
+    for (const [id, vector] of Object.entries(response.vectors)) {
+      result.set(id, {
+        id,
+        content: (vector.metadata?.content as string) || '',
+        metadata: vector.metadata,
+        embedding: vector.values,
+      });
+    }
+    return result;
   }
 }
 
 export interface ChromaConfig {
   url: string;
   collectionName: string;
+  tenant?: string;
+  database?: string;
 }
 
+/**
+ * ChromaDB Vector Store
+ *
+ * Full implementation using Chroma REST API.
+ * Supports local and cloud Chroma instances.
+ *
+ * @example
+ * ```typescript
+ * const store = new ChromaVectorStore({
+ *   url: 'http://localhost:8000',
+ *   collectionName: 'my-collection',
+ * });
+ * ```
+ */
 export class ChromaVectorStore implements VectorStore {
   name = 'chroma';
   private config: ChromaConfig;
+  private collectionId: string | null = null;
+  private tenant: string;
+  private database: string;
 
   constructor(config: ChromaConfig) {
     this.config = config;
+    this.tenant = config.tenant || 'default_tenant';
+    this.database = config.database || 'default_database';
+  }
+
+  private get baseUrl(): string {
+    return `${this.config.url}/api/v1`;
+  }
+
+  private async request<T>(
+    endpoint: string,
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
+    body?: unknown
+  ): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Chroma API error: ${response.status} - ${error}`);
+    }
+
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  /**
+   * Ensure collection exists and get its ID
+   */
+  private async ensureCollection(): Promise<string> {
+    if (this.collectionId) return this.collectionId;
+
+    try {
+      // Try to get existing collection
+      const collection = await this.request<{ id: string }>(
+        `/collections/${this.config.collectionName}?tenant=${this.tenant}&database=${this.database}`
+      );
+      this.collectionId = collection.id;
+    } catch {
+      // Create collection if it doesn't exist
+      const collection = await this.request<{ id: string }>(
+        `/collections?tenant=${this.tenant}&database=${this.database}`,
+        'POST',
+        { name: this.config.collectionName }
+      );
+      this.collectionId = collection.id;
+    }
+
+    return this.collectionId;
   }
 
   async add(documents: Document[]): Promise<void> {
-    // Would integrate with ChromaDB
-    console.log(`Adding ${documents.length} documents to Chroma`);
+    if (documents.length === 0) return;
+
+    const collectionId = await this.ensureCollection();
+
+    // Validate embeddings
+    for (const doc of documents) {
+      if (!doc.embedding) {
+        throw new Error(`Document ${doc.id} missing embedding`);
+      }
+    }
+
+    // Chroma add format
+    await this.request(
+      `/collections/${collectionId}/add`,
+      'POST',
+      {
+        ids: documents.map(d => d.id),
+        embeddings: documents.map(d => d.embedding!),
+        documents: documents.map(d => d.content),
+        metadatas: documents.map(d => d.metadata || {}),
+      }
+    );
   }
 
   async search(query: number[], topK = 5): Promise<SearchResult[]> {
-    return [];
+    const collectionId = await this.ensureCollection();
+
+    const response = await this.request<{
+      ids: string[][];
+      distances: number[][];
+      documents: (string | null)[][];
+      metadatas: (Record<string, unknown> | null)[][];
+    }>(
+      `/collections/${collectionId}/query`,
+      'POST',
+      {
+        query_embeddings: [query],
+        n_results: topK,
+        include: ['documents', 'metadatas', 'distances'],
+      }
+    );
+
+    // Chroma returns nested arrays (one per query)
+    const ids = response.ids[0] || [];
+    const distances = response.distances[0] || [];
+    const documents = response.documents[0] || [];
+    const metadatas = response.metadatas[0] || [];
+
+    return ids.map((id, i) => ({
+      document: {
+        id,
+        content: documents[i] || '',
+        metadata: metadatas[i] || undefined,
+      },
+      // Chroma returns L2 distance, convert to similarity score (0-1)
+      score: 1 / (1 + (distances[i] || 0)),
+    }));
   }
 
-  async delete(ids: string[]): Promise<void> {}
-  async clear(): Promise<void> {}
+  async delete(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+
+    const collectionId = await this.ensureCollection();
+
+    await this.request(
+      `/collections/${collectionId}/delete`,
+      'POST',
+      { ids }
+    );
+  }
+
+  async clear(): Promise<void> {
+    try {
+      // Delete and recreate collection
+      await this.request(
+        `/collections/${this.config.collectionName}?tenant=${this.tenant}&database=${this.database}`,
+        'DELETE'
+      );
+      this.collectionId = null;
+    } catch {
+      // Collection might not exist
+    }
+  }
+
+  /**
+   * Get collection info
+   */
+  async info(): Promise<{ id: string; name: string; count: number }> {
+    const collectionId = await this.ensureCollection();
+    const count = await this.request<number>(
+      `/collections/${collectionId}/count`
+    );
+    return {
+      id: collectionId,
+      name: this.config.collectionName,
+      count,
+    };
+  }
+
+  /**
+   * Update documents
+   */
+  async update(documents: Document[]): Promise<void> {
+    if (documents.length === 0) return;
+
+    const collectionId = await this.ensureCollection();
+
+    await this.request(
+      `/collections/${collectionId}/update`,
+      'POST',
+      {
+        ids: documents.map(d => d.id),
+        embeddings: documents.filter(d => d.embedding).map(d => d.embedding),
+        documents: documents.map(d => d.content),
+        metadatas: documents.map(d => d.metadata || {}),
+      }
+    );
+  }
+
+  /**
+   * Get documents by ID
+   */
+  async get(ids: string[]): Promise<Document[]> {
+    const collectionId = await this.ensureCollection();
+
+    const response = await this.request<{
+      ids: string[];
+      documents: (string | null)[];
+      metadatas: (Record<string, unknown> | null)[];
+      embeddings: (number[] | null)[];
+    }>(
+      `/collections/${collectionId}/get`,
+      'POST',
+      {
+        ids,
+        include: ['documents', 'metadatas', 'embeddings'],
+      }
+    );
+
+    return response.ids.map((id, i) => ({
+      id,
+      content: response.documents[i] || '',
+      metadata: response.metadatas[i] || undefined,
+      embedding: response.embeddings[i] || undefined,
+    }));
+  }
 }
 
 export interface QdrantConfig {

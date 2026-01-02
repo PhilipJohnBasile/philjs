@@ -24,6 +24,10 @@ export interface AIProvider {
   name: string;
   generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
   generateStreamCompletion?(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
+  /** Analyze images with vision capabilities */
+  analyzeImage?(image: ImageInput, prompt: string, options?: VisionOptions): Promise<VisionResult>;
+  /** Embed texts for vector search */
+  embed?(texts: string[]): Promise<number[][]>;
 }
 
 export interface CompletionOptions {
@@ -32,6 +36,60 @@ export interface CompletionOptions {
   maxTokens?: number;
   stopSequences?: string[];
   systemPrompt?: string;
+}
+
+// ============================================================================
+// Vision Types
+// ============================================================================
+
+/**
+ * Image input for vision models
+ */
+export type ImageInput =
+  | { type: 'url'; url: string }
+  | { type: 'base64'; data: string; mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' }
+  | { type: 'file'; path: string };
+
+/**
+ * Options for vision analysis
+ */
+export interface VisionOptions {
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  systemPrompt?: string;
+  /** Detail level for image analysis */
+  detail?: 'low' | 'high' | 'auto';
+  /** Multiple images to analyze together */
+  additionalImages?: ImageInput[];
+}
+
+/**
+ * Result from vision analysis
+ */
+export interface VisionResult {
+  content: string;
+  usage: {
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+  };
+  /** Detected objects or entities */
+  detections?: VisionDetection[];
+}
+
+/**
+ * Detected object or entity in an image
+ */
+export interface VisionDetection {
+  label: string;
+  confidence: number;
+  boundingBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 }
 
 export interface AIConfig {

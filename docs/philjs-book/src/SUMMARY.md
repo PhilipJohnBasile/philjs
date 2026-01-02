@@ -260,6 +260,10 @@
 - [SEO and Discoverability](./seo/overview.md)
 - [Charts, Graphics, and Diagrams](./visuals/charts.md)
 
+# Tutorials
+
+- [Building a Notion Clone](./tutorials/notion-clone.md)
+
 # Nexus Architecture
 
 - [What is Nexus?](./nexus/overview.md)
