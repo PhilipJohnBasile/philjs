@@ -413,7 +413,7 @@ describe('MigrationManager', () => {
 
       expect(fs.writeFile).toHaveBeenCalled();
       expect(filepath).toContain('create_users');
-      expect(filepath).toEndWith('.ts');
+      expect(filepath).toMatch(/\.ts$/);
     });
 
     it('should sanitize migration name', async () => {

@@ -41,6 +41,9 @@ export class DeadCodeEliminator {
     };
 
     // Build set of unused bindings
+    const bindingIndex = new Map(
+      analysis.bindings.map((b: ReactiveBinding) => [b.name, b] as const)
+    );
     const unusedBindings = new Set(
       analysis.bindings
         .filter((b: ReactiveBinding) => !b.isUsed)
@@ -63,7 +66,9 @@ export class DeadCodeEliminator {
         if (!t.isIdentifier(path.node.id)) return;
 
         const name = path.node.id.name;
-        const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === name);
+        if (!unusedBindings.has(name)) return;
+
+        const binding = bindingIndex.get(name);
 
         if (binding && !binding.isUsed && self.isSafeToRemove(binding)) {
           // Track what we're removing
@@ -90,24 +95,6 @@ export class DeadCodeEliminator {
             report.totalRemoved++;
           } else {
             // Just remove this declarator
-            path.remove();
-            report.totalRemoved++;
-          }
-        }
-      },
-
-      // Remove unused function declarations
-      FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
-        if (!path.node.id) return;
-
-        const name = path.node.id.name;
-
-        // Check if this is an unused component
-        const isComponent = /^[A-Z]/.test(name);
-        if (isComponent) {
-          const binding = path.scope.getBinding(name);
-          if (binding && !binding.referenced) {
-            report.unusedComponents.push(name);
             path.remove();
             report.totalRemoved++;
           }

@@ -52,6 +52,8 @@ interface AtomState<Value> {
 class Store {
   private atomStates = new WeakMap<Atom<any>, AtomState<any>>();
   private dependencyMap = new WeakMap<Atom<any>, Set<Atom<any>>>();
+  private batchDepth = 0;
+  private pendingInvalidations = new Set<Atom<any>>();
 
   public get<Value>(atom: Atom<Value>): Value {
     const atomState = this.getAtomState(atom);
@@ -115,6 +117,34 @@ class Store {
   }
 
   public invalidate<Value>(atom: Atom<Value>): void {
+    if (this.batchDepth > 0) {
+      this.pendingInvalidations.add(atom);
+      return;
+    }
+    this.invalidateNow(atom, new Set());
+  }
+
+  public batch<T>(fn: () => T): T {
+    this.batchDepth++;
+    try {
+      return fn();
+    } finally {
+      this.batchDepth--;
+      if (this.batchDepth === 0 && this.pendingInvalidations.size > 0) {
+        const toInvalidate = Array.from(this.pendingInvalidations);
+        this.pendingInvalidations.clear();
+        const visited = new Set<Atom<any>>();
+        for (const pending of toInvalidate) {
+          this.invalidateNow(pending, visited);
+        }
+      }
+    }
+  }
+
+  private invalidateNow<Value>(atom: Atom<Value>, visited: Set<Atom<any>>): void {
+    if (visited.has(atom)) return;
+    visited.add(atom);
+
     const atomState = this.atomStates.get(atom);
     if (!atomState) return;
 
@@ -127,7 +157,7 @@ class Store {
     const dependents = this.dependencyMap.get(atom);
     if (dependents) {
       for (const dependent of dependents) {
-        this.invalidate(dependent);
+        this.invalidateNow(dependent, visited);
       }
     }
   }
@@ -496,10 +526,15 @@ export function atomWithStorage<Value>(
   initialValue: Value,
   storage: Storage = typeof window !== 'undefined' ? localStorage : ({} as Storage)
 ): PrimitiveAtom<Value> {
+  const canUseStorage =
+    storage &&
+    typeof storage.getItem === 'function' &&
+    typeof storage.setItem === 'function';
+
   // Try to load from storage
   let storedValue = initialValue;
   try {
-    const item = storage.getItem(key);
+    const item = canUseStorage ? storage.getItem(key) : null;
     if (item) {
       storedValue = JSON.parse(item);
     }
@@ -508,24 +543,24 @@ export function atomWithStorage<Value>(
   }
 
   const baseAtom = atom(storedValue);
-  const valueSignal = signal(storedValue);
 
   return {
-    read: () => valueSignal(),
+    read: (get) => get(baseAtom),
     write: (get, set, arg) => {
+      const current = get(baseAtom);
       const nextValue =
-        typeof arg === 'function' ? (arg as (prev: Value) => Value)(valueSignal()) : arg;
+        typeof arg === 'function' ? (arg as (prev: Value) => Value)(current) : arg;
 
-      valueSignal.set(nextValue);
+      set(baseAtom as any, nextValue);
 
       // Persist to storage
       try {
-        storage.setItem(key, JSON.stringify(nextValue));
+        if (canUseStorage) {
+          storage.setItem(key, JSON.stringify(nextValue));
+        }
       } catch (error) {
         console.error('Failed to save to storage:', error);
       }
-
-      defaultStore.invalidate(baseAtom);
     },
   };
 }
@@ -629,5 +664,5 @@ export function splitAtom<Value, Args extends unknown[], Result>(
  * ```
  */
 export function batchAtoms<T>(fn: () => T): T {
-  return batch(fn);
+  return defaultStore.batch(() => batch(fn));
 }

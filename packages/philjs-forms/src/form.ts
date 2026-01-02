@@ -247,25 +247,27 @@ export class Form<T extends FormValues = FormValues> {
     }
     this.setTouched(touched);
 
-    // Validate
-    const errors = await this.validate();
-    const hasErrors = Object.values(errors).some(error => error);
-
-    if (hasErrors) {
-      return;
-    }
-
-    // Submit
     this.isSubmittingSignal.set(true);
-    this.submitCountSignal.set(this.submitCountSignal() + 1);
-
     try {
-      if (this.config.onSubmit) {
-        await this.config.onSubmit(values);
+      // Validate
+      const errors = await this.validate();
+      const hasErrors = Object.values(errors).some(error => error);
+
+      if (hasErrors) {
+        return;
       }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      throw error;
+
+      // Submit
+      this.submitCountSignal.set(this.submitCountSignal() + 1);
+
+      if (this.config.onSubmit) {
+        try {
+          await this.config.onSubmit(values);
+        } catch (error) {
+          console.error('Form submission error:', error);
+          throw error;
+        }
+      }
     } finally {
       this.isSubmittingSignal.set(false);
     }

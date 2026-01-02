@@ -23,7 +23,7 @@ import {
   type ListResult,
   type SignedUrlOptions,
   type CopyOptions,
-} from '../index.js';
+} from '../client.js';
 import { detectMimeType } from '../utils/mime.js';
 
 /**
@@ -369,3 +369,4 @@ export class GCSStorageClient extends StorageClient {
     return `https://storage.googleapis.com/${this.config.bucket}/${fullKey}`;
   }
 }
+

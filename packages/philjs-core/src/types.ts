@@ -46,6 +46,7 @@ export interface Subscribable<T> {
  */
 export interface Signal<T> {
   (): T;
+  get: () => T;
   set: Setter<T>;
   subscribe: (fn: (value: T) => void) => () => void;
   peek: () => T;
@@ -57,6 +58,7 @@ export interface Signal<T> {
  */
 export interface Memo<T> {
   (): T;
+  get: () => T;
   subscribe?: (fn: (value: T) => void) => () => void;
 }
 
@@ -67,6 +69,7 @@ export interface Memo<T> {
  */
 export interface LinkedSignal<T> {
   (): T;
+  get: () => T;
   set: Setter<T>;
   reset: () => void;
   isOverridden: () => boolean;
@@ -89,6 +92,7 @@ export interface LinkedSignalOptions {
  */
 export interface Resource<T> {
   (): T;
+  get: () => T;
   refresh: () => void;
   loading: () => boolean;
   error: () => Error | null;

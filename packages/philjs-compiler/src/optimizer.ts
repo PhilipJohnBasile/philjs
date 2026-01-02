@@ -68,7 +68,7 @@ export class Optimizer {
       optimizationsApplied.push(...batchOpts);
     }
 
-    if (this.config.deadCodeElimination !== false) {
+    if (this.config.deadCodeElimination !== false && !this.config.development) {
       const dceReport = this.deadCodeEliminator.eliminate(ast, analysis);
       if (dceReport.totalRemoved > 0) {
         optimizationsApplied.push(
@@ -258,26 +258,30 @@ export class Optimizer {
     let count = 0;
 
     traverse(ast, {
-      // Optimize string concatenation
-      BinaryExpression: (path: NodePath<t.BinaryExpression>) => {
-        if (path.node.operator === '+') {
-          const { left, right } = path.node;
+      // Optimize string concatenation (post-order to catch nested literals)
+      BinaryExpression: {
+        exit(path: NodePath<t.BinaryExpression>) {
+          if (path.node.operator === '+') {
+            const { left, right } = path.node;
 
-          // Concatenate string literals
-          if (t.isStringLiteral(left) && t.isStringLiteral(right)) {
-            path.replaceWith(t.stringLiteral(left.value + right.value));
-            count++;
+            // Concatenate string literals
+            if (t.isStringLiteral(left) && t.isStringLiteral(right)) {
+              path.replaceWith(t.stringLiteral(left.value + right.value));
+              count++;
+            }
           }
-        }
+        },
       },
 
       // Optimize template literals with no expressions
-      TemplateLiteral: (path: NodePath<t.TemplateLiteral>) => {
-        if (path.node.expressions.length === 0) {
-          const str = path.node.quasis[0]!.value.cooked || '';
-          path.replaceWith(t.stringLiteral(str));
-          count++;
-        }
+      TemplateLiteral: {
+        exit(path: NodePath<t.TemplateLiteral>) {
+          if (path.node.expressions.length === 0) {
+            const str = path.node.quasis[0]!.value.cooked || '';
+            path.replaceWith(t.stringLiteral(str));
+            count++;
+          }
+        },
       },
     });
 

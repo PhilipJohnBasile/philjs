@@ -1,5 +1,40 @@
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createStore, persist, devtools, immer, shallow, combine } from './index';
+
+const createMemoryStorage = (): Storage => {
+  const store = new Map<string, string>();
+  return {
+    get length() {
+      return store.size;
+    },
+    clear: () => {
+      store.clear();
+    },
+    getItem: (key: string) => store.get(key) ?? null,
+    key: (index: number) => Array.from(store.keys())[index] ?? null,
+    removeItem: (key: string) => {
+      store.delete(key);
+    },
+    setItem: (key: string, value: string) => {
+      store.set(key, value);
+    },
+  } as Storage;
+};
+
+const ensureTestStorage = () => {
+  if (typeof window === 'undefined') {
+    (globalThis as any).window = globalThis;
+  }
+  if (!globalThis.localStorage || typeof globalThis.localStorage.clear !== 'function') {
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: createMemoryStorage(),
+      configurable: true,
+    });
+  }
+};
+
+ensureTestStorage();
 
 describe('philjs-zustand', () => {
   describe('createStore', () => {
@@ -111,6 +146,7 @@ describe('philjs-zustand', () => {
 
   describe('persist middleware', () => {
     beforeEach(() => {
+      ensureTestStorage();
       localStorage.clear();
     });
 

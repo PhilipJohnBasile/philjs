@@ -17,7 +17,7 @@ import {
   type ListResult,
   type SignedUrlOptions,
   type CopyOptions,
-} from '../index.js';
+} from '../client.js';
 import { detectMimeType } from '../utils/mime.js';
 
 interface StoredFile {
@@ -379,3 +379,4 @@ export class MemoryStorageClient extends StorageClient {
     this.currentSize += sizeDelta;
   }
 }
+

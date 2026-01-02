@@ -154,7 +154,12 @@ function subscribeToCache(key: string, callback: () => void): () => void {
   }
   subscribers.get(key)!.add(callback);
   return () => {
-    subscribers.get(key)?.delete(callback);
+    const set = subscribers.get(key);
+    if (!set) return;
+    set.delete(callback);
+    if (set.size === 0) {
+      subscribers.delete(key);
+    }
   };
 }
 

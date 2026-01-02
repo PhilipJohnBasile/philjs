@@ -90,47 +90,59 @@ export class CodeSplitter {
    * Analyze a single route component
    */
   private analyzeRouteComponent(code: string, filePath: string) {
-    const ast = parse(code, {
-      sourceType: 'module',
-      plugins: ['typescript', 'jsx'],
-      sourceFilename: filePath,
-    });
-
     const analysis = {
-      size: code.split('\n').length,
+      size: countLines(code),
+      byteSize: Buffer.byteLength(code, 'utf8'),
       hasHeavyDependencies: false,
       dependencies: [] as string[],
       isLazy: false,
     };
+    const heavyDeps = [
+      'chart.js',
+      'd3',
+      'three',
+      '@tensorflow',
+      'monaco-editor',
+      'pdf',
+      'video.js',
+    ];
 
-    traverse(ast, {
-      ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
-        const source = path.node.source.value;
+    try {
+      const ast = parse(code, {
+        sourceType: 'module',
+        plugins: ['typescript', 'jsx'],
+        sourceFilename: filePath,
+      });
+
+      traverse(ast, {
+        ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
+          const source = path.node.source.value;
+          analysis.dependencies.push(source);
+
+          if (heavyDeps.some(dep => source.includes(dep))) {
+            analysis.hasHeavyDependencies = true;
+          }
+        },
+
+        CallExpression(path: NodePath<t.CallExpression>) {
+          // Check if already using lazy loading
+          if (t.isIdentifier(path.node.callee) && path.node.callee.name === 'lazy') {
+            analysis.isLazy = true;
+          }
+        },
+      });
+    } catch {
+      const importMatches = code.matchAll(/from\s+['"]([^'"]+)['"]/g);
+      for (const match of importMatches) {
+        const source = match[1];
+        if (!source) continue;
         analysis.dependencies.push(source);
-
-        // Check for heavy dependencies
-        const heavyDeps = [
-          'chart.js',
-          'd3',
-          'three',
-          '@tensorflow',
-          'monaco-editor',
-          'pdf',
-          'video.js',
-        ];
-
         if (heavyDeps.some(dep => source.includes(dep))) {
           analysis.hasHeavyDependencies = true;
         }
-      },
-
-      CallExpression(path: NodePath<t.CallExpression>) {
-        // Check if already using lazy loading
-        if (t.isIdentifier(path.node.callee) && path.node.callee.name === 'lazy') {
-          analysis.isLazy = true;
-        }
-      },
-    });
+      }
+      analysis.isLazy = /(?:^|[^\w])lazy\s*\(/.test(code);
+    }
 
     return analysis;
   }
@@ -139,17 +151,22 @@ export class CodeSplitter {
    * Determine if a route should be code-split
    */
   private shouldSplit(analysis: any): boolean {
+    const byteSize = typeof analysis.byteSize === 'number' ? analysis.byteSize : 0;
+
+    // Don't split if already lazy
+    if (analysis.isLazy) return false;
+
     // Always split if it has heavy dependencies
     if (analysis.hasHeavyDependencies) return true;
 
     // Split if component is large (>200 LOC)
     if (analysis.size > 200) return true;
 
-    // Don't split if already lazy
-    if (analysis.isLazy) return false;
+    // Split if file is large even without many lines (e.g., minified or generated)
+    if (byteSize > 250) return true;
 
     // Don't split very small components (<50 LOC)
-    if (analysis.size < 50) return false;
+    if (analysis.size < 50 && byteSize < 250) return false;
 
     return true;
   }
@@ -265,6 +282,17 @@ export class CodeSplitter {
   ): string[] {
     return boundaries.map(b => b.filePath);
   }
+}
+
+function countLines(code: string): number {
+  if (code.length === 0) return 1;
+  let lines = 1;
+  for (let i = 0; i < code.length; i++) {
+    if (code.charCodeAt(i) === 10) {
+      lines++;
+    }
+  }
+  return lines;
 }
 
 /**

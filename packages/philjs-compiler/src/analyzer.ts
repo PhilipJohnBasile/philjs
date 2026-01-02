@@ -166,20 +166,21 @@ export class Analyzer {
    * Analyze dependencies between reactive bindings
    */
   private analyzeDependencies(ast: t.File, analysis: FileAnalysis): void {
-    const bindingNames = new Set(analysis.bindings.map((b: ReactiveBinding) => b.name));
+    const bindingIndex = new Map(analysis.bindings.map((b: ReactiveBinding) => [b.name, b] as const));
+    const bindingNames = new Set(bindingIndex.keys());
 
     traverse(ast, {
       CallExpression: (path: NodePath<t.CallExpression>) => {
         // Find signal reads (calls like `count()`)
         if (t.isIdentifier(path.node.callee) && bindingNames.has(path.node.callee.name)) {
           const signalName = path.node.callee.name;
-          const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === signalName);
+          const binding = bindingIndex.get(signalName);
 
           if (binding) {
             binding.isUsed = true;
 
             // Find containing reactive context
-            const containingBinding = this.findContainingReactiveContext(path, analysis);
+            const containingBinding = this.findContainingReactiveContext(path, bindingIndex);
             if (containingBinding && containingBinding.name !== signalName) {
               containingBinding.dependencies.push(signalName);
               binding.dependents.push(containingBinding.name);
@@ -195,7 +196,7 @@ export class Analyzer {
    */
   private findContainingReactiveContext(
     path: NodePath,
-    analysis: FileAnalysis
+    bindingIndex: Map<string, ReactiveBinding>
   ): ReactiveBinding | null {
     let current = path.parentPath;
 
@@ -204,7 +205,7 @@ export class Analyzer {
         const callee = current.node.callee;
 
         if (t.isIdentifier(callee)) {
-          const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === callee.name);
+          const binding = bindingIndex.get(callee.name);
           if (binding) return binding;
         }
       }
@@ -214,7 +215,7 @@ export class Analyzer {
       if (t.isVariableDeclarator(current.node) && t.isIdentifier(current.node.id)) {
         const node = current.node as t.VariableDeclarator;
         const id = node.id as t.Identifier;
-        const binding = analysis.bindings.find((b: ReactiveBinding) => b.name === id.name);
+        const binding = bindingIndex.get(id.name);
         if (binding) return binding;
       }
 
@@ -495,10 +496,12 @@ export class Analyzer {
    * Generate warnings about potential issues
    */
   private generateWarnings(analysis: FileAnalysis): void {
+    const bindingIndex = new Map(analysis.bindings.map((b: ReactiveBinding) => [b.name, b] as const));
+
     // Warn about diamond dependencies
     analysis.bindings.forEach((binding: ReactiveBinding) => {
       if (binding.dependencies.length > 1) {
-        const sharedDeps = this.findSharedDependencies(binding, analysis);
+        const sharedDeps = this.findSharedDependencies(binding, bindingIndex);
         if (sharedDeps.length > 0) {
           const warning: CompilerWarning = {
             type: 'performance',
@@ -565,7 +568,7 @@ export class Analyzer {
     analysis.bindings
       .filter((b: ReactiveBinding) => b.type === 'memo')
       .forEach((binding: ReactiveBinding) => {
-        const depth = this.getMemoDepth(binding, analysis, new Set());
+        const depth = this.getMemoDepth(binding, bindingIndex, new Set());
         if (depth > 4) {
           const warning: CompilerWarning = {
             type: 'performance',
@@ -610,7 +613,11 @@ export class Analyzer {
   /**
    * Get the depth of a memo in the dependency chain
    */
-  private getMemoDepth(binding: ReactiveBinding, analysis: FileAnalysis, visited: Set<string>): number {
+  private getMemoDepth(
+    binding: ReactiveBinding,
+    bindingIndex: Map<string, ReactiveBinding>,
+    visited: Set<string>
+  ): number {
     if (visited.has(binding.name)) return 0;
     visited.add(binding.name);
 
@@ -618,9 +625,9 @@ export class Analyzer {
 
     let maxDepth = 0;
     for (const dep of binding.dependencies) {
-      const depBinding = analysis.bindings.find((b: ReactiveBinding) => b.name === dep);
+      const depBinding = bindingIndex.get(dep);
       if (depBinding && depBinding.type === 'memo') {
-        const depth = this.getMemoDepth(depBinding, analysis, visited);
+        const depth = this.getMemoDepth(depBinding, bindingIndex, visited);
         maxDepth = Math.max(maxDepth, depth);
       }
     }
@@ -633,13 +640,13 @@ export class Analyzer {
    */
   private findSharedDependencies(
     binding: ReactiveBinding,
-    analysis: FileAnalysis
+    bindingIndex: Map<string, ReactiveBinding>
   ): string[] {
     const deps = binding.dependencies;
     const shared: string[] = [];
 
     deps.forEach((dep: string) => {
-      const depBinding = analysis.bindings.find((b: ReactiveBinding) => b.name === dep);
+      const depBinding = bindingIndex.get(dep);
       if (depBinding) {
         const overlap = depBinding.dependencies.filter((d: string) => deps.includes(d));
         shared.push(...overlap);
@@ -687,6 +694,7 @@ export class Analyzer {
       plugins: ['typescript', 'jsx'],
     });
 
+    const dependencySet = new Set<string>();
     const metrics: BundleMetrics = {
       totalSize: Buffer.byteLength(code, 'utf8'),
       imports: 0,
@@ -703,9 +711,7 @@ export class Analyzer {
       ImportDeclaration: (path: NodePath<t.ImportDeclaration>) => {
         metrics.imports++;
         const source = path.node.source.value;
-        if (!metrics.dependencies.includes(source)) {
-          metrics.dependencies.push(source);
-        }
+        dependencySet.add(source);
       },
 
       ExportDeclaration: () => {
@@ -742,6 +748,10 @@ export class Analyzer {
         }
       },
     });
+
+    if (dependencySet.size > 0) {
+      metrics.dependencies = Array.from(dependencySet);
+    }
 
     return metrics;
   }

@@ -38,6 +38,8 @@ export class ValidationError extends Error {
   }
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Validate data against a schema
  */
@@ -116,14 +118,13 @@ export function validate(
           break;
 
         case 'email':
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (typeof value !== 'string' || !emailRegex.test(value)) {
+          if (typeof value !== 'string' || !EMAIL_REGEX.test(value)) {
             fieldErrors.push(`${key} must be a valid email address`);
           }
           break;
 
         case 'url':
-          if (URL.parse(value as string) === null) {
+          if (typeof value !== 'string' || !URL.canParse(value)) {
             fieldErrors.push(`${key} must be a valid URL`);
           }
           break;

@@ -30,14 +30,17 @@ export class GA4Provider implements IAnalyticsProvider {
     // Check if DNT is enabled
     if (config.privacy?.respectDnt && this.isDNTEnabled()) {
       console.log("[GA4] Do Not Track is enabled, analytics disabled");
+      this.loaded = false;
       return;
     }
 
     // Initialize dataLayer
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag() {
-      window.dataLayer.push(arguments);
-    };
+    if (typeof window.gtag !== "function") {
+      window.gtag = function gtag() {
+        window.dataLayer.push(arguments);
+      };
+    }
 
     // Set timestamp
     window.gtag("js", new Date());
@@ -61,6 +64,9 @@ export class GA4Provider implements IAnalyticsProvider {
     }
 
     window.gtag("config", config.trackingId, gtagConfig);
+
+    // Allow event tracking immediately; gtag queues until script loads.
+    this.loaded = true;
 
     // Load GA4 script
     this.loadScript();

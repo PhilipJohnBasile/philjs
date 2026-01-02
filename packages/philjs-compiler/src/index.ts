@@ -134,6 +134,21 @@ export function transform(
   filePath: string,
   config: CompilerConfig = {}
 ): TransformResult {
+  const hasPhilJSImport =
+    code.includes('@philjs/core') ||
+    code.includes('philjs-core') ||
+    code.includes('from \"philjs') ||
+    code.includes("from 'philjs");
+
+  if (!hasPhilJSImport) {
+    return {
+      code,
+      map: null,
+      optimizations: [],
+      warnings: [],
+    };
+  }
+
   const optimizer = new Optimizer(config);
   return optimizer.optimize(code, filePath);
 }

@@ -188,7 +188,7 @@ export function NotFoundPage(props: {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Page Not Found</title>
+  <title>${escapeHtml(appName)} - 404 - Page Not Found</title>
   <style>
     * {
       margin: 0;
@@ -244,6 +244,7 @@ export function NotFoundPage(props: {
       line-height: 1.6;
     }
 
+    ${url ? `
     .url-box {
       background: rgba(255, 255, 255, 0.1);
       padding: 1rem;
@@ -253,6 +254,7 @@ export function NotFoundPage(props: {
       color: rgba(255, 255, 255, 0.8);
       font-family: 'Courier New', monospace;
     }
+    ` : ''}
 
     .actions {
       display: flex;
@@ -306,7 +308,7 @@ export function NotFoundPage(props: {
 <body>
   <div class="container">
     <div class="error-code">404</div>
-    <h1 class="error-title">Page Not Found</h1>
+    <h1 class="error-title">${escapeHtml(appName)} - Page Not Found</h1>
     <p class="error-message">
       Sorry, we couldn't find the page you're looking for.
       It might have been moved or deleted.

@@ -145,6 +145,7 @@ export function signal<T>(initialValue: T): Signal<T> {
 
   // Peek reads the value without tracking dependencies
   read.peek = () => value;
+  read.get = read;
 
   // Register signal for HMR tracking (development only)
   if (isDev && activeSignals && hmrStateRegistry) {
@@ -234,6 +235,7 @@ export function memo<T>(calc: () => T): Memo<T> {
 
   // Initialize the memo
   read();
+  read.get = read;
 
   return read;
 }
@@ -364,6 +366,7 @@ export function linkedSignal<T>(
   };
 
   read.isOverridden = () => isOverridden;
+  read.get = read;
 
   // Initialize
   read();
@@ -725,6 +728,7 @@ export function resource<T>(fetcher: ResourceFetcher<T>): Resource<T> {
   read.refresh = refresh;
   read.loading = () => loading();
   read.error = () => error();
+  read.get = read;
 
   return read;
 }

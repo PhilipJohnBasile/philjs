@@ -25,7 +25,7 @@ import {
   type ListResult,
   type SignedUrlOptions,
   type CopyOptions,
-} from '../index.js';
+} from '../client.js';
 import { detectMimeType } from '../utils/mime.js';
 
 /**
@@ -412,3 +412,4 @@ export class AzureStorageClient extends StorageClient {
     return blobClient.url;
   }
 }
+

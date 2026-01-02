@@ -95,6 +95,18 @@ export interface EdgeMiddlewareConfig {
   runtime?: 'edge' | 'nodejs';
 }
 
+const removedHeadersKey = Symbol('removedHeaders');
+
+function getRemovedHeaders(context: EdgeContext): Set<string> {
+  const stored = (context as any)[removedHeadersKey] as Set<string> | undefined;
+  if (stored) {
+    return stored;
+  }
+  const created = new Set<string>();
+  (context as any)[removedHeadersKey] = created;
+  return created;
+}
+
 // ============================================================================
 // Cookie Store Implementation
 // ============================================================================
@@ -155,10 +167,12 @@ class CookieStoreImpl implements CookieStore {
 function createEdgeContext(
   request: Request,
   geo: GeolocationData,
-  platform?: unknown
+  platform?: unknown,
+  fetcher?: (request: Request) => Promise<Response> | Response
 ): EdgeContext & { executeNext: (middleware: EdgeMiddleware[]) => Promise<Response> } {
   const url = new URL(request.url);
   const cookieStore = new CookieStoreImpl(request.headers.get('cookie'));
+  const effectiveFetch = fetcher ?? fetch;
 
   let rewriteUrl: URL | null = null;
   let redirectResponse: Response | null = null;
@@ -235,11 +249,11 @@ function createEdgeContext(
         // All middleware executed, handle rewrite or pass through
         if (rewriteUrl) {
           const rewriteRequest = new Request(rewriteUrl, request);
-          return fetch(rewriteRequest);
+          return await effectiveFetch(rewriteRequest);
         }
 
         // Default: fetch the original request
-        return fetch(request);
+        return await effectiveFetch(request);
       };
 
       const response = await dispatch();
@@ -276,11 +290,12 @@ export async function executeEdgeMiddleware(
   options: {
     geo?: GeolocationData;
     platform?: unknown;
+    fetch?: (request: Request) => Promise<Response> | Response;
   } = {}
 ): Promise<Response> {
   const middlewareArray = Array.isArray(middlewares) ? middlewares : [middlewares];
   const geo = options.geo || await detectGeolocation(request);
-  const context = createEdgeContext(request, geo, options.platform);
+  const context = createEdgeContext(request, geo, options.platform, options.fetch);
 
   return context.executeNext(middlewareArray);
 }
@@ -290,27 +305,32 @@ export async function executeEdgeMiddleware(
  */
 export function composeEdgeMiddleware(...middlewares: EdgeMiddleware[]): EdgeMiddleware {
   return async (context) => {
-    let index = 0;
+    const baseNext = context.next;
+    let index = -1;
 
-    const dispatch = async (): Promise<Response> => {
-      if (index >= middlewares.length) {
-        return context.next();
+    const dispatch = async (i: number): Promise<Response> => {
+      if (i <= index) {
+        throw new Error('next() called multiple times');
+      }
+      index = i;
+
+      const middleware = middlewares[i];
+      if (!middleware) {
+        return baseNext();
       }
 
-      const middleware = middlewares[index++];
       const oldNext = context.next;
+      context.next = () => dispatch(i + 1);
 
-      context.next = async () => {
-        const result = await dispatch();
-        return result;
-      };
-
-      const result = await middleware!(context);
-      context.next = oldNext;
-      return result instanceof Response ? result : await dispatch();
+      try {
+        const result = await middleware(context);
+        return result instanceof Response ? result : await dispatch(i + 1);
+      } finally {
+        context.next = oldNext;
+      }
     };
 
-    return dispatch();
+    return dispatch(0);
   };
 }
 
@@ -419,8 +439,10 @@ export function addHeadersMiddleware(headers: Record<string, string>): EdgeMiddl
   return async (context) => {
     const response = await context.next();
     const newHeaders = new Headers(response.headers);
+    const removed = getRemovedHeaders(context);
 
     for (const [key, value] of Object.entries(headers)) {
+      if (removed.has(key.toLowerCase())) continue;
       newHeaders.set(key, value);
     }
 
@@ -437,6 +459,9 @@ export function addHeadersMiddleware(headers: Record<string, string>): EdgeMiddl
  */
 export function removeHeadersMiddleware(headers: string[]): EdgeMiddleware {
   return async (context) => {
+    const removed = getRemovedHeaders(context);
+    headers.forEach((header) => removed.add(header.toLowerCase()));
+
     const response = await context.next();
     const newHeaders = new Headers(response.headers);
 

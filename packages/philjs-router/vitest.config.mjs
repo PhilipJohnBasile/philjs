@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    resolveSnapshotPath: (testPath: string, snapExt: string) =>
+    resolveSnapshotPath: (testPath, snapExt) =>
       testPath.replace(/\.test\.([tj]s)x?$/, `.test${snapExt}`),
   },
   resolve: {

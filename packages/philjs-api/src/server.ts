@@ -275,10 +275,11 @@ export async function createAPIContext(
   params: Record<string, string> = {},
   platform?: unknown
 ): Promise<APIContext> {
+  const rawRequest = request.clone();
   const url = new URL(request.url);
   const query = Object.fromEntries(url.searchParams);
   const body = await parseBody(request);
-  const rawBody = request.body ? await request.text() : null;
+  const rawBody = request.body ? await rawRequest.text() : null;
 
   const cookies = new Map<string, string>();
   const cookieHeader = request.headers.get('cookie');

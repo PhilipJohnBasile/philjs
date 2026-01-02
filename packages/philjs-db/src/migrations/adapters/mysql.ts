@@ -138,8 +138,8 @@ export class MySQLMigrationAdapter {
 }
 
 class MySQLTableBuilder implements TableBuilder {
-  private columns: string[] = [];
-  private constraints: string[] = [];
+  private columns: Array<() => string> = [];
+  private constraints: Array<() => string> = [];
   private alterations: string[] = [];
   private engine: string = 'InnoDB';
   private charset: string = 'utf8mb4';
@@ -222,17 +222,17 @@ class MySQLTableBuilder implements TableBuilder {
 
   primary(columns: string | string[]): void {
     const cols = Array.isArray(columns) ? columns : [columns];
-    this.constraints.push(`PRIMARY KEY (${cols.map((c) => `\`${c}\``).join(', ')})`);
+    this.constraints.push(() => `PRIMARY KEY (${cols.map((c) => `\`${c}\``).join(', ')})`);
   }
 
   unique(columns: string | string[]): void {
     const cols = Array.isArray(columns) ? columns : [columns];
-    this.constraints.push(`UNIQUE KEY (${cols.map((c) => `\`${c}\``).join(', ')})`);
+    this.constraints.push(() => `UNIQUE KEY (${cols.map((c) => `\`${c}\``).join(', ')})`);
   }
 
   index(columns: string | string[]): void {
     const cols = Array.isArray(columns) ? columns : [columns];
-    this.constraints.push(`INDEX (${cols.map((c) => `\`${c}\``).join(', ')})`);
+    this.constraints.push(() => `INDEX (${cols.map((c) => `\`${c}\``).join(', ')})`);
   }
 
   foreign(column: string): ForeignKeyBuilder {
@@ -270,12 +270,20 @@ class MySQLTableBuilder implements TableBuilder {
     this.alterations.push(`ALTER TABLE \`${this.tableName}\` DROP FOREIGN KEY \`${constraintName}\``);
   }
 
-  addColumn(definition: string): void {
-    this.columns.push(definition);
+  addColumn(definition: string | (() => string)): void {
+    if (typeof definition === 'string') {
+      this.columns.push(() => definition);
+    } else {
+      this.columns.push(definition);
+    }
   }
 
-  addConstraint(constraint: string): void {
-    this.constraints.push(constraint);
+  addConstraint(constraint: string | (() => string)): void {
+    if (typeof constraint === 'string') {
+      this.constraints.push(() => constraint);
+    } else {
+      this.constraints.push(constraint);
+    }
   }
 
   addAlteration(alteration: string): void {
@@ -284,7 +292,7 @@ class MySQLTableBuilder implements TableBuilder {
 
   toSQL(): string {
     if (this.mode === 'create') {
-      const allDefinitions = [...this.columns, ...this.constraints];
+      const allDefinitions = [...this.columns, ...this.constraints].map((def) => def());
       let sql = `CREATE TABLE \`${this.tableName}\` (\n  ${allDefinitions.join(',\n  ')}\n)`;
       sql += ` ENGINE=${this.engine} DEFAULT CHARSET=${this.charset} COLLATE=${this.collate}`;
 
@@ -295,7 +303,7 @@ class MySQLTableBuilder implements TableBuilder {
       return sql;
     } else {
       const statements = this.columns.map(
-        (col) => `ALTER TABLE \`${this.tableName}\` ADD COLUMN ${col}`
+        (col) => `ALTER TABLE \`${this.tableName}\` ADD COLUMN ${col()}`
       );
 
       return [...statements, ...this.alterations].join(';\n');
@@ -306,6 +314,7 @@ class MySQLTableBuilder implements TableBuilder {
 class MySQLColumnBuilder implements ColumnBuilder {
   private definition: string;
   private autoInc: boolean = false;
+  private registered = false;
 
   constructor(
     private table: MySQLTableBuilder,
@@ -314,6 +323,13 @@ class MySQLColumnBuilder implements ColumnBuilder {
     private mode: 'create' | 'alter'
   ) {
     this.definition = `\`${name}\` ${type}`;
+    this.register();
+  }
+
+  private register(): void {
+    if (this.registered) return;
+    this.table.addColumn(() => this.definition);
+    this.registered = true;
   }
 
   primary(): this {
@@ -379,7 +395,7 @@ class MySQLColumnBuilder implements ColumnBuilder {
   }
 
   build(): void {
-    this.table.addColumn(this.definition);
+    // Columns are registered on construction for fluent chaining.
   }
 }
 
@@ -389,6 +405,7 @@ class MySQLForeignKeyBuilder implements ForeignKeyBuilder {
   private refColumn?: string;
   private deleteAction?: string;
   private updateAction?: string;
+  private constraintRegistered = false;
 
   constructor(
     private table: MySQLTableBuilder,
@@ -399,38 +416,44 @@ class MySQLForeignKeyBuilder implements ForeignKeyBuilder {
 
   references(column: string): this {
     this.refColumn = column;
+    this.registerConstraint();
     return this;
   }
 
   inTable(table: string): this {
     this.refTable = table;
-    this.build();
+    this.registerConstraint();
     return this;
   }
 
   onDelete(action: string): this {
     this.deleteAction = action;
+    this.registerConstraint();
     return this;
   }
 
   onUpdate(action: string): this {
     this.updateAction = action;
+    this.registerConstraint();
     return this;
   }
 
-  private build(): void {
-    if (!this.refTable || !this.refColumn) return;
+  private registerConstraint(): void {
+    if (this.constraintRegistered || !this.refTable || !this.refColumn) return;
 
-    let constraint = `FOREIGN KEY (\`${this.column}\`) REFERENCES \`${this.refTable}\` (\`${this.refColumn}\`)`;
+    this.table.addConstraint(() => {
+      let constraint = `FOREIGN KEY (\`${this.column}\`) REFERENCES \`${this.refTable}\` (\`${this.refColumn}\`)`;
 
-    if (this.deleteAction) {
-      constraint += ` ON DELETE ${this.deleteAction}`;
-    }
+      if (this.deleteAction) {
+        constraint += ` ON DELETE ${this.deleteAction}`;
+      }
 
-    if (this.updateAction) {
-      constraint += ` ON UPDATE ${this.updateAction}`;
-    }
+      if (this.updateAction) {
+        constraint += ` ON UPDATE ${this.updateAction}`;
+      }
 
-    this.table.addConstraint(constraint);
+      return constraint;
+    });
+    this.constraintRegistered = true;
   }
 }

@@ -10,94 +10,312 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 // Mock imports for testing - these would come from @philjs/core in production
 // For now, create stubs to demonstrate the test structure
 
-const hmrStateRegistry = new Map<string, any>();
-const activeSignals = new Set<any>();
-const activeEffects = new Set<any>();
+type EffectCleanup = () => void;
+type EffectFn = () => void | EffectCleanup;
+
+type Computation = {
+  id: number;
+  run: () => void;
+  cleanup?: EffectCleanup;
+  deps: Set<SignalHandle>;
+  disposed: boolean;
+};
+
+type SignalHandle = {
+  id: number;
+  get: () => any;
+  set: (next: any) => void;
+  peek: () => any;
+  initialValue: any;
+  subscribers: Set<Computation>;
+  updatedDuringHMR: boolean;
+};
+
+type HMRSnapshotEntry = {
+  id: number;
+  value: any;
+  initialValue: any;
+};
+
+const hmrStateRegistry = new Map<number, any>();
+const activeSignals = new Set<SignalHandle>();
+const activeEffects = new Set<Computation>();
 let hmrInProgress = false;
-let hmrStateSnapshot: Map<string, any> | null = null;
+let hmrStateSnapshot: Map<number, any> | null = null;
+let hmrSnapshotEntries: HMRSnapshotEntry[] | null = null;
+let signalIdCounter = 0;
+let effectIdCounter = 0;
+
+let currentComputation: Computation | null = null;
+let batchDepth = 0;
+const pendingComputations = new Set<Computation>();
+
+function trackSignalDependency(signal: SignalHandle) {
+  if (currentComputation && !currentComputation.disposed) {
+    signal.subscribers.add(currentComputation);
+    currentComputation.deps.add(signal);
+  }
+}
+
+function cleanupComputationDeps(computation: Computation) {
+  for (const dep of computation.deps) {
+    dep.subscribers.delete(computation);
+  }
+  computation.deps.clear();
+}
+
+function scheduleComputation(computation: Computation) {
+  if (computation.disposed) return;
+  if (batchDepth > 0) {
+    pendingComputations.add(computation);
+  } else {
+    computation.run();
+  }
+}
+
+function flushComputations() {
+  if (pendingComputations.size === 0) return;
+  const toRun = Array.from(pendingComputations);
+  pendingComputations.clear();
+  for (const computation of toRun) {
+    computation.run();
+  }
+}
 
 // Signal implementation stub
 export function signal<T>(initialValue: T) {
   let value = initialValue;
-  const subscribers = new Set<any>();
-  const id = `signal_${Math.random()}`;
+  const subscribers = new Set<Computation>();
+  const id = signalIdCounter++;
 
-  const read = (() => value) as any;
-  read.set = (nextValue: any) => {
-    value = typeof nextValue === 'function' ? nextValue(value) : nextValue;
-    hmrStateRegistry.set(id, value);
-    subscribers.forEach(sub => sub());
+  const handle: SignalHandle = {
+    id,
+    get: () => value,
+    set: (next: any) => {
+      const nextValue = typeof next === 'function' ? next(value) : next;
+      if (Object.is(value, nextValue)) return;
+      value = nextValue;
+      if (hmrInProgress) {
+        handle.updatedDuringHMR = true;
+      }
+      hmrStateRegistry.set(id, value);
+      for (const subscriber of Array.from(subscribers)) {
+        scheduleComputation(subscriber);
+      }
+    },
+    peek: () => value,
+    initialValue,
+    subscribers,
+    updatedDuringHMR: false,
   };
-  read.peek = () => value;
 
-  activeSignals.add({ id, get: () => value, set: read.set });
+  const read = (() => {
+    trackSignalDependency(handle);
+    return value;
+  }) as any;
+
+  read.set = handle.set;
+  read.peek = handle.peek;
+
+  activeSignals.add(handle);
   hmrStateRegistry.set(id, initialValue);
 
   return read;
 }
 
 // Effect implementation stub
-export function effect(fn: any) {
-  const id = `effect_${Math.random()}`;
-  const dispose = () => {
-    activeEffects.delete(effectHandle);
+export function effect(fn: EffectFn) {
+  const computation: Computation = {
+    id: effectIdCounter++,
+    run: () => {},
+    deps: new Set(),
+    disposed: false,
   };
-  const effectHandle = { id, dispose };
-  activeEffects.add(effectHandle);
-  fn();
+
+  const run = () => {
+    if (computation.disposed) return;
+    cleanupComputationDeps(computation);
+    if (computation.cleanup) {
+      computation.cleanup();
+      computation.cleanup = undefined;
+    }
+    const prev = currentComputation;
+    currentComputation = computation;
+    try {
+      const cleanup = fn();
+      if (typeof cleanup === 'function') {
+        computation.cleanup = cleanup;
+      }
+    } finally {
+      currentComputation = prev;
+    }
+  };
+
+  computation.run = run;
+  activeEffects.add(computation);
+  run();
+
+  const dispose = () => {
+    if (computation.disposed) return;
+    computation.disposed = true;
+    cleanupComputationDeps(computation);
+    if (computation.cleanup) {
+      computation.cleanup();
+      computation.cleanup = undefined;
+    }
+    activeEffects.delete(computation);
+  };
+
   return dispose;
 }
 
 // Memo implementation stub
 export function memo<T>(fn: () => T) {
-  let value = fn();
-  return (() => value) as any;
+  return (() => fn()) as any;
 }
 
 // Batch implementation stub
 export function batch<T>(fn: () => T): T {
-  return fn();
+  batchDepth++;
+  try {
+    return fn();
+  } finally {
+    batchDepth--;
+    if (batchDepth === 0) {
+      flushComputations();
+    }
+  }
 }
 
 // HMR API implementations
-export function snapshotHMRState(options: any = {}): Map<string, any> {
-  const snapshot = new Map();
+export function snapshotHMRState(options: any = {}): Map<number, any> {
+  const snapshot = new Map<number, any>();
   hmrInProgress = true;
+  hmrSnapshotEntries = [];
 
   for (const sig of activeSignals) {
-    snapshot.set(sig.id, sig.get());
+    const value = sig.get();
+    snapshot.set(sig.id, value);
+    hmrStateRegistry.set(sig.id, value);
+    hmrSnapshotEntries.push({
+      id: sig.id,
+      value,
+      initialValue: sig.initialValue,
+    });
+    sig.updatedDuringHMR = false;
   }
 
   hmrStateSnapshot = snapshot;
   return snapshot;
 }
 
-export function restoreHMRState(options: any = {}): void {
-  for (const sig of activeSignals) {
-    if (hmrStateRegistry.has(sig.id)) {
-      sig.set(hmrStateRegistry.get(sig.id));
+function findSnapshotMatch(
+  entries: HMRSnapshotEntry[],
+  used: Set<number>,
+  initialValue: any
+): number | null {
+  let fallback = -1;
+  for (let i = 0; i < entries.length; i++) {
+    if (used.has(i)) continue;
+    if (fallback === -1) {
+      fallback = i;
+    }
+    if (Object.is(entries[i]?.initialValue, initialValue)) {
+      return i;
     }
   }
-  hmrInProgress = false;
+  return fallback === -1 ? null : fallback;
 }
 
-export function rollbackHMRState(snapshot: Map<string, any>, options: any = {}): void {
-  for (const [id, value] of snapshot) {
+export function restoreHMRState(options: any = {}): void {
+  const snapshot = hmrStateSnapshot;
+  const snapshotEntries = hmrSnapshotEntries;
+  const usedEntries = new Set<number>();
+  hmrInProgress = false;
+
+  if (!snapshot) {
+    return;
+  }
+
+  batch(() => {
     for (const sig of activeSignals) {
-      if (sig.id === id) {
-        sig.set(value);
-        break;
+      if (sig.updatedDuringHMR) {
+        sig.updatedDuringHMR = false;
+        continue;
+      }
+
+      if (snapshot.has(sig.id)) {
+        try {
+          sig.set(snapshot.get(sig.id));
+        } catch {
+          // Ignore individual restore failures
+        }
+        sig.updatedDuringHMR = false;
+        continue;
+      }
+
+      if (!snapshotEntries || snapshotEntries.length === 0) {
+        sig.updatedDuringHMR = false;
+        continue;
+      }
+
+      const matchIndex = findSnapshotMatch(
+        snapshotEntries,
+        usedEntries,
+        sig.initialValue
+      );
+
+      if (matchIndex === null) {
+        sig.updatedDuringHMR = false;
+        continue;
+      }
+
+      try {
+        const nextValue = snapshotEntries[matchIndex]?.value;
+        sig.set(nextValue);
+        hmrStateRegistry.set(sig.id, nextValue);
+        usedEntries.add(matchIndex);
+      } catch {
+        // Ignore individual restore failures
+      } finally {
+        sig.updatedDuringHMR = false;
       }
     }
-    hmrStateRegistry.set(id, value);
-  }
+  });
+}
+
+export function rollbackHMRState(snapshot: Map<number, any>, options: any = {}): void {
   hmrInProgress = false;
+  batch(() => {
+    for (const [id, value] of snapshot) {
+      hmrStateRegistry.set(id, value);
+    }
+    for (const sig of activeSignals) {
+      if (snapshot.has(sig.id)) {
+        try {
+          sig.set(snapshot.get(sig.id));
+        } catch {
+          // Continue rollback for other signals
+        }
+      }
+      sig.updatedDuringHMR = false;
+    }
+  });
 }
 
 export function cleanupHMREffects(options: any = {}): void {
   const effects = Array.from(activeEffects);
-  for (const eff of effects) {
-    eff.dispose();
+  for (const effectHandle of effects) {
+    try {
+      effectHandle.disposed = true;
+      cleanupComputationDeps(effectHandle);
+      if (effectHandle.cleanup) {
+        effectHandle.cleanup();
+        effectHandle.cleanup = undefined;
+      }
+    } finally {
+      activeEffects.delete(effectHandle);
+    }
   }
 }
 
@@ -106,7 +324,13 @@ export function clearHMRState(): void {
   activeSignals.clear();
   activeEffects.clear();
   hmrStateSnapshot = null;
+  hmrSnapshotEntries = null;
   hmrInProgress = false;
+  signalIdCounter = 0;
+  effectIdCounter = 0;
+  currentComputation = null;
+  batchDepth = 0;
+  pendingComputations.clear();
 }
 
 export function getHMRStats() {

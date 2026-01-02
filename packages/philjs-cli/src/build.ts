@@ -6,7 +6,7 @@ import { build as viteBuild } from "vite";
 import * as pc from "picocolors";
 import { philJSPlugin, philJSSSRPlugin } from "./vite-plugin.js";
 import { performanceBudgets } from "@philjs/core";
-import { buildStaticSite } from "philjs-ssr";
+import { buildStaticSite } from "@philjs/ssr";
 import * as fs from "fs/promises";
 import * as path from "path";
 
@@ -42,7 +42,7 @@ export async function buildProduction(options: BuildOptions): Promise<void> {
           manualChunks: {
             // Vendor splitting
             vendor: ["@philjs/core"],
-            router: ["philjs-router"],
+            router: ["@philjs/router"],
           },
         },
       },

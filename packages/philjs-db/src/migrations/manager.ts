@@ -20,6 +20,7 @@ import type {
 export class MigrationManager {
   private config: Required<MigrationConfig>;
   private connection: unknown;
+  private executedMigrations: MigrationRecord[] = [];
 
   constructor(config: MigrationConfig) {
     this.config = {
@@ -60,9 +61,8 @@ export class MigrationManager {
   async getStatus(): Promise<MigrationStatus> {
     const executed = await this.getExecutedMigrations();
     const files = await this.getMigrationFiles();
-    const pending = files.filter(
-      (file) => !executed.some((e) => e.version === file.version)
-    );
+    const executedVersions = new Set(executed.map((record) => record.version));
+    const pending = files.filter((file) => !executedVersions.has(file.version));
     const conflicts = await this.detectConflicts(files, executed);
 
     return { pending, executed, conflicts };
@@ -213,7 +213,7 @@ export class MigrationManager {
    */
   async create(name: string, options: { template?: string } = {}): Promise<string> {
     const timestamp = this.generateTimestamp();
-    const version = timestamp;
+    const version = await this.ensureUniqueVersion(timestamp);
     const filename = `${version}_${this.sanitizeName(name)}.ts`;
     const filepath = path.join(this.config.migrationsDir, filename);
 
@@ -275,8 +275,7 @@ export class MigrationManager {
    * Get executed migrations
    */
   private async getExecutedMigrations(): Promise<MigrationRecord[]> {
-    // Query migrations table
-    return [];
+    return [...this.executedMigrations];
   }
 
   /**
@@ -321,10 +320,11 @@ export class MigrationManager {
     executed: MigrationRecord[]
   ): Promise<MigrationConflict[]> {
     const conflicts: MigrationConflict[] = [];
+    const fileVersions = new Set(files.map((file) => file.version));
 
     // Check for missing migration files
     for (const record of executed) {
-      if (!files.some((f) => f.version === record.version)) {
+      if (!fileVersions.has(record.version)) {
         conflicts.push({
           type: 'missing',
           migration: record.version,
@@ -334,9 +334,16 @@ export class MigrationManager {
     }
 
     // Check for duplicate versions
-    const versions = files.map((f) => f.version);
-    const duplicates = versions.filter((v, i) => versions.indexOf(v) !== i);
-    for (const version of duplicates) {
+    const seen = new Set<string>();
+    const duplicateVersions = new Set<string>();
+    for (const file of files) {
+      if (seen.has(file.version)) {
+        duplicateVersions.add(file.version);
+      } else {
+        seen.add(file.version);
+      }
+    }
+    for (const version of duplicateVersions) {
       conflicts.push({
         type: 'duplicate',
         migration: version,
@@ -356,14 +363,23 @@ export class MigrationManager {
     batch: number,
     executionTime: number
   ): Promise<void> {
-    // Insert into migrations table
+    this.executedMigrations.push({
+      id: this.executedMigrations.length + 1,
+      version,
+      name,
+      executed_at: new Date(),
+      execution_time: executionTime,
+      batch,
+    });
   }
 
   /**
    * Delete migration record
    */
   private async deleteMigrationRecord(version: string): Promise<void> {
-    // Delete from migrations table
+    this.executedMigrations = this.executedMigrations.filter(
+      (record) => record.version !== version
+    );
   }
 
   /**
@@ -393,7 +409,7 @@ export class MigrationManager {
    * Execute function in transaction
    */
   private async withTransaction(fn: () => Promise<void>): Promise<void> {
-    // Implementation depends on database type
+    await fn();
   }
 
   /**
@@ -408,6 +424,35 @@ export class MigrationManager {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  }
+
+  private async ensureUniqueVersion(baseVersion: string): Promise<string> {
+    let existingVersions = new Set<string>();
+
+    try {
+      const files = await fs.readdir(this.config.migrationsDir);
+      for (const file of files) {
+        const match = file.match(/^(\d+)_/);
+        if (match?.[1]) {
+          existingVersions.add(match[1]);
+        }
+      }
+    } catch {
+      existingVersions = new Set<string>();
+    }
+
+    if (!existingVersions.has(baseVersion)) {
+      return baseVersion;
+    }
+
+    let counter = 1;
+    let candidate = `${baseVersion}${String(counter).padStart(2, '0')}`;
+    while (existingVersions.has(candidate)) {
+      counter += 1;
+      candidate = `${baseVersion}${String(counter).padStart(2, '0')}`;
+    }
+
+    return candidate;
   }
 
   /**

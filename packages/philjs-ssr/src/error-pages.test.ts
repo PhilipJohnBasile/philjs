@@ -377,12 +377,13 @@ describe('Error Pages', () => {
     });
 
     it('should handle children', () => {
+      const child = { type: 'a', props: { href: '/', children: 'Go Home' } };
       const element = ErrorPage({
         statusCode: 404,
-        children: { type: 'a', props: { href: '/', children: 'Go Home' } },
+        children: child,
       });
 
-      expect(element.props.children).toContain({ type: 'a', props: { href: '/', children: 'Go Home' } });
+      expect(element.props.children).toContain(child);
     });
 
     it('should filter out falsy values', () => {

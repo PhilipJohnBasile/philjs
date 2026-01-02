@@ -23,20 +23,26 @@ export const defaultRetryConfig: Required<RetryConfig> = {
  */
 export function normalizeAddress(address: string | EmailAddress): EmailAddress {
   if (typeof address === 'string') {
-    // Parse "Name <email@example.com>" format
-    const match = address.match(/^(?:"?([^"<]*)"?\s*)?<?([^>]+)>?$/);
-    if (match) {
-      const [, name, email] = match;
-      const trimmedName = name?.trim();
-      const result: EmailAddress = {
-        email: email?.trim() || address.trim(),
-      };
-      if (trimmedName) {
-        result.name = trimmedName;
+    const trimmed = address.trim();
+    const angleStart = trimmed.indexOf('<');
+    const angleEnd = trimmed.lastIndexOf('>');
+
+    if (angleStart !== -1 && angleEnd !== -1 && angleEnd > angleStart) {
+      const namePart = trimmed.slice(0, angleStart).trim();
+      const emailPart = trimmed.slice(angleStart + 1, angleEnd).trim();
+      const result: EmailAddress = { email: emailPart || trimmed };
+
+      if (namePart) {
+        const unquotedName = namePart.replace(/^"(.*)"$/, '$1').trim();
+        if (unquotedName) {
+          result.name = unquotedName;
+        }
       }
+
       return result;
     }
-    return { email: address.trim() };
+
+    return { email: trimmed.replace(/^"(.*)"$/, '$1').trim() };
   }
   return address;
 }

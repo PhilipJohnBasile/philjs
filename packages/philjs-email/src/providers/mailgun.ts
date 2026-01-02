@@ -1,6 +1,25 @@
-import Mailgun from 'mailgun.js';
-import formData from 'form-data';
-import type { IMailgunClient, MailgunMessageData } from 'mailgun.js/Interfaces';
+type MailgunMessageData = Record<string, unknown> & {
+  from: string;
+  to: string | string[];
+  subject?: string;
+  text?: string;
+  html?: string;
+  cc?: string | string[];
+  bcc?: string | string[];
+  template?: string;
+  attachment?: Array<{ filename: string; data: unknown; contentType?: string }>;
+  inline?: Array<{ filename: string; data: unknown; contentType?: string }>;
+  [key: string]: unknown;
+};
+
+type MailgunClient = {
+  messages: {
+    create: (domain: string, data: MailgunMessageData) => Promise<{ id: string } & Record<string, unknown>>;
+  };
+  domains: {
+    get: (domain: string) => Promise<unknown>;
+  };
+};
 import type {
   EmailProvider,
   EmailMessage,
@@ -25,18 +44,36 @@ import { renderReactEmail, formatAddress, normalizeAddress, withRetry } from '..
  */
 export class MailgunProvider implements EmailProvider {
   readonly name = 'mailgun';
-  private client: IMailgunClient;
+  private clientPromise: Promise<MailgunClient> | null = null;
   private config: MailgunConfig;
 
   constructor(config: MailgunConfig) {
     this.config = config;
+  }
 
-    const mailgun = new Mailgun(formData);
-    this.client = mailgun.client({
-      username: 'api',
-      key: config.apiKey,
-      url: config.eu ? 'https://api.eu.mailgun.net' : undefined,
-    });
+  private async getClient(): Promise<MailgunClient> {
+    if (!this.clientPromise) {
+      this.clientPromise = (async () => {
+        try {
+          const mailgunModule = await import('mailgun.js');
+          const formDataModule = await import('form-data');
+          const MailgunCtor = (mailgunModule as any).default ?? mailgunModule;
+          const formDataCtor = (formDataModule as any).default ?? formDataModule;
+          const mailgun = new MailgunCtor(formDataCtor);
+          return mailgun.client({
+            username: 'api',
+            key: this.config.apiKey,
+            url: this.config.eu ? 'https://api.eu.mailgun.net' : undefined,
+          }) as MailgunClient;
+        } catch (error) {
+          throw new Error(
+            'Mailgun provider requires optional dependencies: install `mailgun.js` and `form-data`.'
+          );
+        }
+      })();
+    }
+
+    return this.clientPromise;
   }
 
   /**
@@ -45,6 +82,7 @@ export class MailgunProvider implements EmailProvider {
   async send(message: EmailMessage): Promise<EmailResult> {
     const sendFn = async (): Promise<EmailResult> => {
       try {
+        const client = await this.getClient();
         // Render React template if provided
         let html = message.html;
         let text = message.text;
@@ -163,7 +201,7 @@ export class MailgunProvider implements EmailProvider {
           mgMessage['o:testmode'] = 'yes';
         }
 
-        const response = await this.client.messages.create(
+        const response = await client.messages.create(
           this.config.domain,
           mgMessage
         );
@@ -203,6 +241,7 @@ export class MailgunProvider implements EmailProvider {
    * Mailgun supports up to 1000 recipients per request
    */
   async sendBulk(message: BulkEmailMessage): Promise<BulkEmailResult> {
+    const client = await this.getClient();
     const results: EmailResult[] = [];
     const batchSize = 1000;
 
@@ -251,7 +290,7 @@ export class MailgunProvider implements EmailProvider {
           mgMessage['o:testmode'] = 'yes';
         }
 
-        const response = await this.client.messages.create(
+        const response = await client.messages.create(
           this.config.domain,
           mgMessage
         );
@@ -291,6 +330,7 @@ export class MailgunProvider implements EmailProvider {
     message: TemplateEmailMessage<T>
   ): Promise<EmailResult> {
     try {
+      const client = await this.getClient();
       const from = message.from ?? this.config.defaultFrom;
       if (!from) {
         throw new Error('From address is required');
@@ -332,7 +372,7 @@ export class MailgunProvider implements EmailProvider {
         mgMessage['o:testmode'] = 'yes';
       }
 
-      const response = await this.client.messages.create(
+      const response = await client.messages.create(
         this.config.domain,
         mgMessage
       );
@@ -357,7 +397,8 @@ export class MailgunProvider implements EmailProvider {
    */
   async verify(): Promise<boolean> {
     try {
-      await this.client.domains.get(this.config.domain);
+      const client = await this.getClient();
+      await client.domains.get(this.config.domain);
       return true;
     } catch {
       return false;

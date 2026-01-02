@@ -67,6 +67,13 @@ function constantTimeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+function createTokenId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+}
+
 /**
  * HMAC SHA-256 signing (browser-compatible)
  */
@@ -222,7 +229,7 @@ export class JWTManager {
     // Remove JWT-specific claims
     const { iat, exp, iss, aud, ...userPayload } = payload;
 
-    return this.create(userPayload);
+    return this.create({ ...userPayload, jti: createTokenId() });
   }
 }
 

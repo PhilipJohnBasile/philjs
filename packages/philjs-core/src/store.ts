@@ -149,8 +149,9 @@ export function createStore<T extends StoreNode>(
     }
 
     // Notify child paths
+    const changedPrefix = `${changedPath}.`;
     for (const [path, pathSig] of signals) {
-      if (path.startsWith(changedPath + '.')) {
+      if (path.startsWith(changedPrefix)) {
         pathSig.set(getValueAtPath(state, path));
       }
     }
@@ -437,7 +438,7 @@ export function createStore<T extends StoreNode>(
  */
 function getValueAtPath(obj: any, path: string): any {
   if (!path) return obj;
-  const parts = path.split('.');
+  const parts = getPathSegments(path);
   let current = obj;
   for (const part of parts) {
     if (current === null || current === undefined) return undefined;
@@ -492,7 +493,7 @@ function persistState<T extends StoreNode>(state: T, config: PersistConfig<T>): 
  * Set nested value
  */
 function setNestedValue(obj: any, path: string, value: any): void {
-  const parts = path.split('.');
+  const parts = getPathSegments(path);
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i]!;
@@ -502,6 +503,17 @@ function setNestedValue(obj: any, path: string, value: any): void {
     current = current[part];
   }
   current[parts[parts.length - 1]!] = value;
+}
+
+const pathSegmentsCache = new Map<string, string[]>();
+
+function getPathSegments(path: string): string[] {
+  let segments = pathSegmentsCache.get(path);
+  if (!segments) {
+    segments = path.split('.');
+    pathSegmentsCache.set(path, segments);
+  }
+  return segments;
 }
 
 /**

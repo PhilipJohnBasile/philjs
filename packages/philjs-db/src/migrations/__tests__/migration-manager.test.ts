@@ -3,18 +3,23 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import * as fs from 'fs/promises';
+import * as os from 'os';
+import * as path from 'path';
 import { MigrationManager } from '../manager';
 import type { MigrationConfig } from '../types';
 
 describe('MigrationManager', () => {
   let manager: MigrationManager;
   let config: MigrationConfig;
+  let tempDir = '';
 
   beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'philjs-db-'));
     config = {
       type: 'sqlite',
       connection: ':memory:',
-      migrationsDir: './test-migrations',
+      migrationsDir: path.join(tempDir, 'migrations'),
       tableName: 'migrations',
       transactional: true,
     };
@@ -24,7 +29,10 @@ describe('MigrationManager', () => {
   });
 
   afterEach(async () => {
-    // Cleanup
+    if (tempDir) {
+      await fs.rm(tempDir, { recursive: true, force: true });
+      tempDir = '';
+    }
   });
 
   describe('initialize', () => {
@@ -98,8 +106,10 @@ describe('MigrationManager', () => {
     });
 
     it('should respect to option', async () => {
-      const result = await manager.migrate({ to: '20240101000000' });
-      // Verify migrations up to version
+      const filepath = await manager.create('first_migration');
+      const version = path.basename(filepath).split('_')[0] ?? '';
+      const result = await manager.migrate({ to: version });
+      expect(result.migrations).toContain(version);
     });
 
     it('should use transactions when configured', async () => {
@@ -132,9 +142,13 @@ describe('MigrationManager', () => {
     });
 
     it('should rollback to specific version', async () => {
+      const first = await manager.create('first_migration');
+      await manager.create('second_migration');
+      const version = path.basename(first).split('_')[0] ?? '';
+
       await manager.migrate();
-      const result = await manager.rollback({ to: '20240101000000' });
-      // Verify rollback
+      const result = await manager.rollback({ to: version });
+      expect(result.success).toBe(true);
     });
 
     it('should rollback specific number of steps', async () => {
@@ -227,14 +241,26 @@ describe('MigrationManager', () => {
 
   describe('error handling', () => {
     it('should handle database connection errors', async () => {
-      // Disconnect database
-      await expect(manager.migrate()).rejects.toThrow();
+      const statusSpy = vi
+        .spyOn(manager as any, 'getStatus')
+        .mockRejectedValueOnce(new Error('Connection failed'));
+
+      await expect(manager.migrate()).rejects.toThrow('Connection failed');
+
+      statusSpy.mockRestore();
     });
 
     it('should handle invalid migration files', async () => {
-      // Create invalid migration
+      await manager.create('invalid_migration');
+      const runSpy = vi
+        .spyOn(manager as any, 'runMigration')
+        .mockRejectedValueOnce(new Error('Invalid migration'));
+
       const result = await manager.migrate();
       expect(result.success).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+
+      runSpy.mockRestore();
     });
 
     it('should handle transaction errors', async () => {

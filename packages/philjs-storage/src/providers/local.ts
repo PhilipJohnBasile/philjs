@@ -26,7 +26,7 @@ import {
   type ListResult,
   type SignedUrlOptions,
   type CopyOptions,
-} from '../index.js';
+} from '../client.js';
 import { detectMimeType } from '../utils/mime.js';
 
 /**
@@ -454,3 +454,4 @@ export class LocalStorageClient extends StorageClient {
     return `file://${this.getFilePath(key)}`;
   }
 }
+

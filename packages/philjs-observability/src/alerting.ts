@@ -478,7 +478,7 @@ export class AlertManager {
       ?? `${alert.message}\nSeverity: ${alert.severity}\nValue: ${alert.value}\nThreshold: ${alert.threshold}`;
 
     const html = (channel.config['html'] as string | undefined)
-      ?? `<strong>${escapeHtml(alert.ruleName)}</strong><p>${escapeHtml(alert.message)}</p>`;
+      ?? `<strong>${this.escapeHtml(alert.ruleName)}</strong><p>${this.escapeHtml(alert.message)}</p>`;
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -507,14 +507,14 @@ export class AlertManager {
     });
   }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   private async sendPagerDutyNotification(channel: NotificationChannel, alert: Alert): Promise<void> {
     const routingKey = channel.config['routingKey'] as string;

@@ -29,7 +29,7 @@ import {
   type ListResult,
   type SignedUrlOptions,
   type CopyOptions,
-} from '../index.js';
+} from '../client.js';
 import { detectMimeType } from '../utils/mime.js';
 
 /**
@@ -401,3 +401,4 @@ export class S3StorageClient extends StorageClient {
     return `https://${this.config.bucket}.s3.${this.config.region || 'us-east-1'}.amazonaws.com/${fullKey}`;
   }
 }
+

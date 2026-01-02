@@ -52,6 +52,8 @@ const a2uiAccessibilitySchema = z.object({
 /**
  * Zod schema for A2UI Condition
  */
+let a2uiComponentSchema: z.ZodType<A2UIComponent>;
+
 const a2uiConditionSchema = z.object({
   expression: z.string(),
   fallback: z.lazy(() => a2uiComponentSchema).optional(),
@@ -71,18 +73,20 @@ const a2uiIterationSchema = z.object({
 /**
  * Zod schema for A2UI Component
  */
-const a2uiComponentSchema: z.ZodType<A2UIComponent> = z.object({
-  id: z.string().min(1),
-  type: z.string().min(1),
-  props: z.record(z.unknown()),
-  children: z.lazy(() => z.array(a2uiComponentSchema)).optional(),
-  slot: z.string().optional(),
-  when: a2uiConditionSchema.optional(),
-  each: a2uiIterationSchema.optional(),
-  className: z.string().optional(),
-  style: z.record(z.union([z.string(), z.number()])).optional(),
-  a11y: a2uiAccessibilitySchema.optional(),
-});
+a2uiComponentSchema = z.lazy(() =>
+  z.object({
+    id: z.string().min(1),
+    type: z.string().min(1),
+    props: z.record(z.unknown()),
+    children: z.array(a2uiComponentSchema).optional(),
+    slot: z.string().optional(),
+    when: a2uiConditionSchema.optional(),
+    each: a2uiIterationSchema.optional(),
+    className: z.string().optional(),
+    style: z.record(z.union([z.string(), z.number()])).optional(),
+    a11y: a2uiAccessibilitySchema.optional(),
+  })
+);
 
 /**
  * Zod schema for A2UI Binding

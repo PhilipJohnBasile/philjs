@@ -16,6 +16,50 @@
 import { signal, computed, type Signal } from '@philjs/core/signals';
 import type { AuthSession, AuthConfig, User } from './types.js';
 
+type StorageLike = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+  clear: () => void;
+};
+
+const createMemoryStorage = (): StorageLike => {
+  const store = new Map<string, string>();
+  return {
+    getItem: (key) => (store.has(key) ? store.get(key)! : null),
+    setItem: (key, value) => {
+      store.set(key, value);
+    },
+    removeItem: (key) => {
+      store.delete(key);
+    },
+    clear: () => {
+      store.clear();
+    },
+  };
+};
+
+const memoryStorage = createMemoryStorage();
+
+const ensureLocalStorage = (): StorageLike | null => {
+  if (typeof globalThis === 'undefined') return null;
+  const existing = (globalThis as { localStorage?: Partial<StorageLike> }).localStorage;
+  if (
+    existing &&
+    typeof existing.getItem === 'function' &&
+    typeof existing.setItem === 'function' &&
+    typeof existing.removeItem === 'function' &&
+    typeof existing.clear === 'function'
+  ) {
+    return existing as StorageLike;
+  }
+
+  (globalThis as { localStorage?: StorageLike }).localStorage = memoryStorage;
+  return memoryStorage;
+};
+
+ensureLocalStorage();
+
 const DEFAULT_CONFIG: Required<AuthConfig> & { storeTokenClientSide: boolean } = {
   sessionKey: 'philjs_session',
   tokenKey: 'philjs_token',
@@ -147,13 +191,14 @@ export class SessionManager {
    * Load session from storage
    */
   private loadSession(): AuthSession {
-    if (typeof window === 'undefined') {
+    const storage = ensureLocalStorage();
+    if (!storage) {
       return { user: null };
     }
 
     try {
       // Try localStorage first
-      const stored = localStorage.getItem(this.config.sessionKey!);
+      const stored = storage.getItem(this.config.sessionKey!);
       if (stored) {
         const session: AuthSession = JSON.parse(stored);
 
@@ -161,6 +206,10 @@ export class SessionManager {
         if (session.expiresAt && Date.now() >= session.expiresAt) {
           this.removeSession();
           return { user: null };
+        }
+
+        if (!this.config.storeTokenClientSide) {
+          session.token = undefined;
         }
 
         return session;
@@ -175,6 +224,10 @@ export class SessionManager {
         if (session.expiresAt && Date.now() >= session.expiresAt) {
           this.removeSession();
           return { user: null };
+        }
+
+        if (!this.config.storeTokenClientSide) {
+          session.token = undefined;
         }
 
         return session;
@@ -193,7 +246,8 @@ export class SessionManager {
    * By default, tokens are excluded from client-side storage to prevent XSS token theft.
    */
   private saveSession(session: AuthSession): void {
-    if (typeof window === 'undefined') return;
+    const storage = ensureLocalStorage();
+    if (!storage) return;
 
     try {
       // Create a session copy, optionally excluding the token for security
@@ -204,11 +258,13 @@ export class SessionManager {
       const serialized = JSON.stringify(sessionToStore);
 
       // Save to localStorage
-      localStorage.setItem(this.config.sessionKey!, serialized);
+      storage.setItem(this.config.sessionKey!, serialized);
 
       // Save to cookie for SSR (user info only, not tokens)
-      const cookieSession = { ...session, token: undefined };
-      this.setCookie(this.config.cookieName!, JSON.stringify(cookieSession), session.expiresAt);
+      if (typeof document !== 'undefined') {
+        const cookieSession = { ...session, token: undefined };
+        this.setCookie(this.config.cookieName!, JSON.stringify(cookieSession), session.expiresAt);
+      }
     } catch (error) {
       console.error('Failed to save session:', error);
     }
@@ -218,11 +274,14 @@ export class SessionManager {
    * Remove session from storage
    */
   private removeSession(): void {
-    if (typeof window === 'undefined') return;
+    const storage = ensureLocalStorage();
+    if (!storage) return;
 
     try {
-      localStorage.removeItem(this.config.sessionKey!);
-      this.deleteCookie(this.config.cookieName!);
+      storage.removeItem(this.config.sessionKey!);
+      if (typeof document !== 'undefined') {
+        this.deleteCookie(this.config.cookieName!);
+      }
     } catch (error) {
       console.error('Failed to remove session:', error);
     }
@@ -232,6 +291,7 @@ export class SessionManager {
    * Set a cookie
    */
   private setCookie(name: string, value: string, expiresAt?: number): void {
+    if (typeof document === 'undefined') return;
     const encoded = encodeURIComponent(value);
     const expires = expiresAt ? new Date(expiresAt).toUTCString() : '';
 
@@ -249,6 +309,7 @@ export class SessionManager {
    * Get a cookie value
    */
   private getCookie(name: string): string | null {
+    if (typeof document === 'undefined') return null;
     const matches = document.cookie.match(new RegExp(
       `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`
     ));
@@ -259,6 +320,7 @@ export class SessionManager {
    * Delete a cookie
    */
   private deleteCookie(name: string): void {
+    if (typeof document === 'undefined') return;
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   }
 }

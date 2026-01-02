@@ -188,6 +188,40 @@ function getDefaultStore(): CacheStore {
   return defaultStore;
 }
 
+async function bufferCachedResponse(
+  response: Response,
+  options?: CacheOptions
+): Promise<Response> {
+  const body = await response.arrayBuffer();
+  const headers = new Headers(response.headers);
+  headers.set('X-Cached-At', Date.now().toString());
+  if (options?.ttl) {
+    headers.set('X-Cache-TTL', options.ttl.toString());
+  }
+  if (options?.tags) {
+    headers.set('X-Cache-Tags', options.tags.join(','));
+  }
+
+  return new Response(body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+async function cloneCachedResponse(cached: Response): Promise<Response> {
+  try {
+    return cached.clone();
+  } catch {
+    const body = await cached.arrayBuffer();
+    return new Response(body, {
+      status: cached.status,
+      statusText: cached.statusText,
+      headers: cached.headers,
+    });
+  }
+}
+
 /**
  * Edge caching middleware
  */
@@ -216,6 +250,7 @@ export function edgeCacheMiddleware(options: CacheOptions & {
     const cached = await store.get(cacheKey);
 
     if (cached) {
+      const cachedResponse = await cloneCachedResponse(cached);
       const age = Date.now() - parseInt(cached.headers.get('X-Cached-At') || '0', 10);
       const ttl = parseInt(cached.headers.get('X-Cache-TTL') || '0', 10) * 1000;
       const swr = (options.swr || 0) * 1000;
@@ -226,9 +261,9 @@ export function edgeCacheMiddleware(options: CacheOptions & {
         headers.set('X-Cache', 'HIT');
         headers.set('Age', Math.floor(age / 1000).toString());
 
-        return new Response(cached.body, {
-          status: cached.status,
-          statusText: cached.statusText,
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          statusText: cachedResponse.statusText,
           headers,
         });
       }
@@ -240,9 +275,9 @@ export function edgeCacheMiddleware(options: CacheOptions & {
         headers.set('X-Cache', 'STALE');
         headers.set('Age', Math.floor(age / 1000).toString());
 
-        const staleResponse = new Response(cached.body, {
-          status: cached.status,
-          statusText: cached.statusText,
+        const staleResponse = new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          statusText: cachedResponse.statusText,
           headers,
         });
 
@@ -258,13 +293,15 @@ export function edgeCacheMiddleware(options: CacheOptions & {
 
     // Only cache successful responses
     if (response.status >= 200 && response.status < 300) {
-      // Clone response for caching
+      // Clone response for caching and attach metadata
       const responseClone = response.clone();
 
       // Cache in background (don't await)
-      store.put(cacheKey, responseClone, options).catch((err) => {
-        console.error('Edge cache error:', err);
-      });
+      bufferCachedResponse(responseClone, options)
+        .then((cachedResponse) => store.put(cacheKey, cachedResponse, options))
+        .catch((err) => {
+          console.error('Edge cache error:', err);
+        });
 
       const headers = new Headers(response.headers);
       headers.set('X-Cache', 'MISS');
@@ -394,7 +431,8 @@ export function generateETag(content: string | ArrayBuffer): string {
     hash = hash & hash;
   }
 
-  return `"${hash.toString(36)}"`;
+  const normalized = (hash >>> 0).toString(36);
+  return `"${normalized}"`;
 }
 
 /**

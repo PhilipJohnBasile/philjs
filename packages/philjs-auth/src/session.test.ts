@@ -11,7 +11,7 @@ describe('SessionManager', () => {
 
   it('should initialize with no user', () => {
     expect(sessionManager.session().user).toBeNull();
-    expect(sessionManager.isAuthenticated()()).toBe(false);
+    expect(sessionManager.isAuthenticated()).toBe(false);
   });
 
   it('should set session', () => {
@@ -20,7 +20,7 @@ describe('SessionManager', () => {
 
     expect(sessionManager.session().user).toEqual(user);
     expect(sessionManager.session().token).toBe('token123');
-    expect(sessionManager.isAuthenticated()()).toBe(true);
+    expect(sessionManager.isAuthenticated()).toBe(true);
   });
 
   it('should update user', () => {
@@ -40,7 +40,7 @@ describe('SessionManager', () => {
     sessionManager.clearSession();
 
     expect(sessionManager.session().user).toBeNull();
-    expect(sessionManager.isAuthenticated()()).toBe(false);
+    expect(sessionManager.isAuthenticated()).toBe(false);
   });
 
   it('should detect expired session', () => {
@@ -48,7 +48,7 @@ describe('SessionManager', () => {
     sessionManager.setSession(user, 'token', -1000); // Expired
 
     expect(sessionManager.isExpired()).toBe(true);
-    expect(sessionManager.isAuthenticated()()).toBe(false);
+    expect(sessionManager.isAuthenticated()).toBe(false);
   });
 
   it('should refresh session', () => {
@@ -64,8 +64,9 @@ describe('SessionManager', () => {
   });
 
   it('should persist session to localStorage', () => {
+    const manager = new SessionManager({ storeTokenClientSide: true });
     const user = { id: '1', email: 'test@example.com', name: 'Test User' };
-    sessionManager.setSession(user, 'token123');
+    manager.setSession(user, 'token123');
 
     const stored = localStorage.getItem('philjs_session');
     expect(stored).toBeTruthy();
@@ -85,7 +86,7 @@ describe('SessionManager', () => {
 
     localStorage.setItem('philjs_session', JSON.stringify(session));
 
-    const newManager = new SessionManager();
+    const newManager = new SessionManager({ storeTokenClientSide: true });
     expect(newManager.session().user).toEqual(user);
     expect(newManager.session().token).toBe('token123');
   });

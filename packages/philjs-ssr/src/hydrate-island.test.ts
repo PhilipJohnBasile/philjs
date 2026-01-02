@@ -1,6 +1,7 @@
 /**
  * Tests for selective island hydration.
  */
+// @vitest-environment jsdom
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {

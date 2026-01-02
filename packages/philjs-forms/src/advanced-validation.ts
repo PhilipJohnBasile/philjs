@@ -71,6 +71,62 @@ export interface FieldValidationResult {
   asyncPending: boolean;
 }
 
+const createAbortError = (): Error => {
+  const error = new Error('Validation aborted');
+  error.name = 'AbortError';
+  return error;
+};
+
+const waitForDelay = (ms: number, signal: AbortSignal): Promise<void> => {
+  if (signal.aborted) {
+    return Promise.reject(createAbortError());
+  }
+  if (ms <= 0) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      cleanup();
+      reject(createAbortError());
+    };
+    const timeout = setTimeout(() => {
+      cleanup();
+      resolve();
+    }, ms);
+    const cleanup = () => {
+      clearTimeout(timeout);
+      signal.removeEventListener('abort', onAbort);
+    };
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+};
+
+const raceWithAbort = <T>(promise: Promise<T>, signal: AbortSignal): Promise<T> => {
+  if (signal.aborted) {
+    return Promise.reject(createAbortError());
+  }
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      cleanup();
+      reject(createAbortError());
+    };
+    const cleanup = () => {
+      signal.removeEventListener('abort', onAbort);
+    };
+    signal.addEventListener('abort', onAbort, { once: true });
+    promise.then(
+      (value) => {
+        cleanup();
+        resolve(value);
+      },
+      (error) => {
+        cleanup();
+        reject(error);
+      }
+    );
+  });
+};
+
 // =============================================================================
 // Advanced Validators
 // =============================================================================
@@ -125,15 +181,24 @@ export const advancedValidators = {
     validate: (value) => {
       if (!value) return true;
 
-      let strength = 0;
-      if (value.length >= 8) strength++;
-      if (value.length >= 12) strength++;
-      if (/[a-z]/.test(value) && /[A-Z]/.test(value)) strength++;
-      if (/\d/.test(value)) strength++;
-      if (/[!@#$%^&*(),.?":{}|<>]/.test(value)) strength++;
+      const hasLower = /[a-z]/.test(value);
+      const hasUpper = /[A-Z]/.test(value);
+      const hasNumber = /\d/.test(value);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      const length = value.length;
 
-      const required = { weak: 1, medium: 2, strong: 3, 'very-strong': 4 };
-      return strength >= required[minStrength];
+      switch (minStrength) {
+        case 'weak':
+          return length >= 8;
+        case 'medium':
+          return length >= 8 && hasLower && hasUpper && hasNumber;
+        case 'strong':
+          return length >= 8 && hasLower && hasUpper && hasNumber && hasSpecial;
+        case 'very-strong':
+          return length >= 12 && hasLower && hasUpper && hasNumber && hasSpecial;
+        default:
+          return false;
+      }
     },
     message: message || `Password must be ${minStrength} or stronger`,
   }),
@@ -149,7 +214,8 @@ export const advancedValidators = {
     validate: (value) => {
       if (!value) return true;
 
-      const files = value instanceof FileList
+      const supportsFileList = typeof FileList !== 'undefined';
+      const files = supportsFileList && value instanceof FileList
         ? Array.from(value)
         : Array.isArray(value) ? value : [value];
 
@@ -191,7 +257,7 @@ export const advancedValidators = {
       if (options.max && date > options.max) return false;
 
       if (options.excludeWeekends) {
-        const day = date.getDay();
+        const day = date.getUTCDay();
         if (day === 0 || day === 6) return false;
       }
 
@@ -362,7 +428,18 @@ export class SchemaValidator<T extends FormValues = FormValues> {
     const fieldResults = new Map<keyof T, FieldValidationResult>();
 
     // Validate each field
-    for (const [field, rules] of Object.entries(this.schema.rules || {})) {
+    const fields = new Set<string>();
+    for (const field of Object.keys(this.schema.rules || {})) {
+      fields.add(field);
+    }
+    for (const field of Object.keys(this.schema.asyncRules || {})) {
+      fields.add(field);
+    }
+    for (const field of Object.keys(this.schema.conditionalRules || {})) {
+      fields.add(field);
+    }
+
+    for (const field of fields) {
       const value = values[field as keyof T];
       const result = await this.validateField(field as keyof T, value, values, context);
 
@@ -431,7 +508,9 @@ export class SchemaValidator<T extends FormValues = FormValues> {
       for (const { when, rule } of conditionalRules) {
         if (when(allValues) && !rule.validate(value, allValues)) {
           result.valid = false;
-          result.error = rule.message;
+          result.error = typeof rule.message === 'function'
+            ? rule.message(value)
+            : rule.message;
           return result;
         }
       }
@@ -453,14 +532,22 @@ export class SchemaValidator<T extends FormValues = FormValues> {
       const ruleArray = Array.isArray(asyncRules) ? asyncRules : [asyncRules];
       for (const rule of ruleArray) {
         try {
-          const valid = await rule.validate(value, allValues, {
-            fieldName: field as string,
-            touched: context?.touched ?? false,
-            dirty: context?.dirty ?? false,
-            submitting: context?.submitting ?? false,
-            submitted: context?.submitted ?? false,
-            signal: controller.signal,
-          });
+          await waitForDelay(rule.debounce ?? 0, controller.signal);
+          if (controller.signal.aborted) {
+            throw createAbortError();
+          }
+
+          const valid = await raceWithAbort(
+            Promise.resolve(rule.validate(value, allValues, {
+              fieldName: field as string,
+              touched: context?.touched ?? false,
+              dirty: context?.dirty ?? false,
+              submitting: context?.submitting ?? false,
+              submitted: context?.submitted ?? false,
+              signal: controller.signal,
+            })),
+            controller.signal
+          );
 
           if (!valid) {
             result.valid = false;

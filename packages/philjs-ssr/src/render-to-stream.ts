@@ -173,7 +173,8 @@ async function streamPendingBoundaries(
 async function renderVNodeToString(
   vnode: VNode,
   ctx: StreamContext,
-  isShell: boolean
+  isShell: boolean,
+  allowSuspend = false
 ): Promise<string> {
   if (vnode == null || vnode === false || vnode === true) {
     return "";
@@ -189,7 +190,7 @@ async function renderVNodeToString(
 
   if (Array.isArray(vnode)) {
     const parts = await Promise.all(
-      vnode.map((child) => renderVNodeToString(child, ctx, isShell))
+      vnode.map((child) => renderVNodeToString(child, ctx, isShell, allowSuspend))
     );
     return parts.join("");
   }
@@ -202,7 +203,7 @@ async function renderVNodeToString(
 
   // Handle Fragment
   if (type === Fragment) {
-    return renderVNodeToString(props['children'] as VNode, ctx, isShell);
+    return renderVNodeToString(props['children'] as VNode, ctx, isShell, allowSuspend);
   }
 
   // Handle Suspense
@@ -218,17 +219,26 @@ async function renderVNodeToString(
   // Handle function components
   if (typeof type === "function") {
     try {
-      const result = await type(props);
+      const result = type(props);
+      if (isPromiseLike(result)) {
+        if (isShell && allowSuspend) {
+          throw result;
+        }
+        return renderVNodeToString(await result, ctx, isShell, allowSuspend);
+      }
 
       // Check if this component should be an interactive island
       if (ctx.selectiveHydration && ctx.interactiveComponents.has(type)) {
         return renderAsIsland(type, props, result, ctx, isShell);
       }
 
-      return renderVNodeToString(result, ctx, isShell);
+      return renderVNodeToString(result, ctx, isShell, allowSuspend);
     } catch (error) {
       // If component throws a promise, it's async
       if (isPromiseLike(error)) {
+        if (allowSuspend) {
+          throw error;
+        }
         if (isShell) {
           // During shell render, create a placeholder
           const id = `s${ctx.suspenseCounter++}`;
@@ -238,7 +248,7 @@ async function renderVNodeToString(
         // During boundary resolution, await the promise
         await error;
         const result = await type(props);
-        return renderVNodeToString(result, ctx, isShell);
+        return renderVNodeToString(result, ctx, isShell, allowSuspend);
       }
       throw error;
     }
@@ -246,7 +256,7 @@ async function renderVNodeToString(
 
   // Handle HTML elements
   if (typeof type === "string") {
-    return renderElement(type, props, ctx, isShell);
+    return renderElement(type, props, ctx, isShell, allowSuspend);
   }
 
   return "";
@@ -267,14 +277,17 @@ async function renderSuspense(
   if (isShell) {
     // Try to render children
     try {
-      const content = await renderVNodeToString(children, ctx, isShell);
+      const content = await renderVNodeToString(children, ctx, isShell, true);
       return content;
     } catch (error) {
       if (isPromiseLike(error)) {
         // Async content - show fallback and schedule streaming
-        ctx.pendingBoundaries.set(id, (error as Promise<any>).then(() => children) as Promise<VNode>);
+        const boundaryPromise = (error as Promise<any>).then((resolved) => {
+          return resolved === undefined ? children : resolved;
+        });
+        ctx.pendingBoundaries.set(id, boundaryPromise as Promise<VNode>);
         const fallbackHtml = fallback
-          ? await renderVNodeToString(fallback as VNode, ctx, isShell)
+          ? await renderVNodeToString(fallback as VNode, ctx, isShell, true)
           : "<!-- loading -->";
         return `<template id="${id}-placeholder">${fallbackHtml}</template>`;
       }
@@ -282,7 +295,7 @@ async function renderSuspense(
     }
   } else {
     // We're already resolving a boundary
-    return renderVNodeToString(children as VNode, ctx, isShell);
+    return renderVNodeToString(children as VNode, ctx, isShell, true);
   }
 }
 
@@ -319,7 +332,7 @@ async function renderAsIsland(
   // Serialize props for hydration (excluding functions and DOM nodes)
   const serializedProps = serializeProps(props);
 
-  return `<div data-island="${id}" data-component="${type.name || 'anonymous'}" data-props='${escapeAttr(serializedProps)}'>${content}</div>`;
+  return `<div data-island="${id}" data-component="${type.name || 'anonymous'}" data-props='${escapeAttrJson(serializedProps)}'>${content}</div>`;
 }
 
 /**
@@ -329,7 +342,8 @@ async function renderElement(
   tag: string,
   props: Record<string, any>,
   ctx: StreamContext,
-  isShell: boolean
+  isShell: boolean,
+  allowSuspend: boolean
 ): Promise<string> {
   const { children, ...attrs } = props;
   const attrsString = renderAttrs(attrs);
@@ -339,7 +353,7 @@ async function renderElement(
     return openTag;
   }
 
-  const childrenString = await renderVNodeToString(children, ctx, isShell);
+  const childrenString = await renderVNodeToString(children, ctx, isShell, allowSuspend);
   return `${openTag}${childrenString}</${tag}>`;
 }
 
@@ -347,34 +361,37 @@ async function renderElement(
  * Render element attributes to string.
  */
 function renderAttrs(attrs: Record<string, any>): string {
-  return Object.entries(attrs)
-    .filter(([key, value]) => {
-      if (value == null || value === false) return false;
-      if (typeof value === "function") return false;
-      if (key.startsWith("__")) return false;
-      return true;
-    })
-    .map(([key, value]) => {
-      const attrName = key === "className" ? "class" : key === "htmlFor" ? "for" : key;
+  const parts: string[] = [];
 
-      if (BOOLEAN_ATTRS.has(attrName)) {
-        return value ? attrName : "";
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value == null || value === false) continue;
+    if (typeof value === "function") continue;
+    if (key.startsWith("__")) continue;
+
+    const attrName = key === "className" ? "class" : key === "htmlFor" ? "for" : key;
+
+    if (BOOLEAN_ATTRS.has(attrName)) {
+      if (value) {
+        parts.push(attrName);
       }
+      continue;
+    }
 
-      if (attrName === "style" && typeof value === "object") {
-        const styleString = Object.entries(value)
-          .map(([prop, val]) => {
-            const cssProp = prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
-            return `${cssProp}:${val}`;
-          })
-          .join(";");
-        return `style="${escapeAttr(styleString)}"`;
-      }
+    if (attrName === "style" && typeof value === "object") {
+      const styleString = Object.entries(value)
+        .map(([prop, val]) => {
+          const cssProp = prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
+          return `${cssProp}:${val}`;
+        })
+        .join(";");
+      parts.push(`style="${escapeAttr(styleString)}"`);
+      continue;
+    }
 
-      return `${attrName}="${escapeAttr(String(value))}"`;
-    })
-    .filter(Boolean)
-    .join(" ");
+    parts.push(`${attrName}="${escapeAttr(String(value))}"`);
+  }
+
+  return parts.join(" ");
 }
 
 /**
@@ -463,5 +480,15 @@ function escapeAttr(str: string): string {
   return str
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Escape attribute values that are wrapped in single quotes.
+ * Keeps double quotes for JSON readability in data-props.
+ */
+function escapeAttrJson(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
     .replace(/'/g, "&#39;");
 }

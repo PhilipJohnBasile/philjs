@@ -278,23 +278,23 @@ function renderToStreamV2(
   };
 
   const flushBoundaries = async () => {
-    if (!config.outOfOrder) {
-      // FIFO mode - wait for boundaries in order
-      return;
-    }
-
-    // Out-of-order mode - flush any completed boundaries
+    // Flush any completed boundaries
     const toFlush: BoundaryState[] = [];
 
     for (const [id, boundary] of Array.from(ctx.boundaries.entries())) {
-      if (boundary.status === 'complete' && !ctx.completed.includes(id)) {
+      if (
+        (boundary.status === 'complete' || boundary.status === 'error') &&
+        !ctx.completed.includes(id)
+      ) {
         toFlush.push(boundary);
       }
     }
 
-    // Sort by priority or completion time
+    // Sort by priority or FIFO order
     if (config.priority === 'priority') {
-      toFlush.sort((a, b) => b.priority - a.priority);
+      toFlush.sort((a, b) => b.priority - a.priority || Number(a.id) - Number(b.id));
+    } else if (!config.outOfOrder) {
+      toFlush.sort((a, b) => Number(a.id) - Number(b.id));
     }
 
     for (const boundary of toFlush) {
@@ -344,7 +344,7 @@ function renderToStreamV2(
 }
 
 async function renderNodeV2(node: VNode | null | undefined, ctx: StreamingV2Context): Promise<string> {
-  if (node == null) return '';
+  if (node == null || node === false || node === true) return '';
 
   if (typeof node === 'string' || typeof node === 'number') {
     return escapeHtml(String(node));
@@ -368,13 +368,18 @@ async function renderNodeV2(node: VNode | null | undefined, ctx: StreamingV2Cont
   // Handle components
   if (typeof node.type === 'function') {
     const result = node.type(node.props);
+    if (result && typeof (result as Promise<unknown>).then === 'function') {
+      return renderNodeV2(await result, ctx);
+    }
     return renderNodeV2(result, ctx);
   }
 
   // Handle elements
-  const { type, props, children } = node as any;
+  const { type, props } = node as any;
   const attrs = renderAttributes(props, ctx);
-  const childHtml = await renderChildrenV2(children, ctx);
+  const innerHtml = props?.dangerouslySetInnerHTML?.__html;
+  const childHtml =
+    innerHtml !== undefined ? String(innerHtml) : await renderChildrenV2(props?.children, ctx);
 
   if (voidElements.has(type)) {
     return `<${type}${attrs}>`;
@@ -428,7 +433,7 @@ async function renderSuspenseV2(node: JSXElement, ctx: StreamingV2Context): Prom
 }
 
 async function renderChildrenV2(children: any, ctx: StreamingV2Context): Promise<string> {
-  if (!children) return '';
+  if (children == null || children === false || children === true) return '';
   if (Array.isArray(children)) {
     const parts = await Promise.all(children.flat(Infinity).map(c => renderNodeV2(c, ctx)));
     return parts.join('');

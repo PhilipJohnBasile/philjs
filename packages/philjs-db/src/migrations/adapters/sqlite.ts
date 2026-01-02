@@ -139,8 +139,8 @@ export class SQLiteMigrationAdapter {
 }
 
 class SQLiteTableBuilder implements TableBuilder {
-  private columns: string[] = [];
-  private constraints: string[] = [];
+  private columns: Array<() => string> = [];
+  private constraints: Array<() => string> = [];
   private alterations: string[] = [];
 
   constructor(
@@ -221,12 +221,12 @@ class SQLiteTableBuilder implements TableBuilder {
 
   primary(columns: string | string[]): void {
     const cols = Array.isArray(columns) ? columns : [columns];
-    this.constraints.push(`PRIMARY KEY (${cols.map((c) => `"${c}"`).join(', ')})`);
+    this.constraints.push(() => `PRIMARY KEY (${cols.map((c) => `"${c}"`).join(', ')})`);
   }
 
   unique(columns: string | string[]): void {
     const cols = Array.isArray(columns) ? columns : [columns];
-    this.constraints.push(`UNIQUE (${cols.map((c) => `"${c}"`).join(', ')})`);
+    this.constraints.push(() => `UNIQUE (${cols.map((c) => `"${c}"`).join(', ')})`);
   }
 
   index(columns: string | string[]): void {
@@ -269,12 +269,20 @@ class SQLiteTableBuilder implements TableBuilder {
     this.alterations.push(`-- Warning: SQLite doesn't support DROP FOREIGN KEY`);
   }
 
-  addColumn(definition: string): void {
-    this.columns.push(definition);
+  addColumn(definition: string | (() => string)): void {
+    if (typeof definition === 'string') {
+      this.columns.push(() => definition);
+    } else {
+      this.columns.push(definition);
+    }
   }
 
-  addConstraint(constraint: string): void {
-    this.constraints.push(constraint);
+  addConstraint(constraint: string | (() => string)): void {
+    if (typeof constraint === 'string') {
+      this.constraints.push(() => constraint);
+    } else {
+      this.constraints.push(constraint);
+    }
   }
 
   addAlteration(alteration: string): void {
@@ -283,7 +291,7 @@ class SQLiteTableBuilder implements TableBuilder {
 
   toSQL(): string {
     if (this.mode === 'create') {
-      const allDefinitions = [...this.columns, ...this.constraints];
+      const allDefinitions = [...this.columns, ...this.constraints].map((def) => def());
       let sql = `CREATE TABLE "${this.tableName}" (\n  ${allDefinitions.join(',\n  ')}\n)`;
 
       if (this.alterations.length > 0) {
@@ -293,7 +301,7 @@ class SQLiteTableBuilder implements TableBuilder {
       return sql;
     } else {
       const statements = this.columns.map(
-        (col) => `ALTER TABLE "${this.tableName}" ADD COLUMN ${col}`
+        (col) => `ALTER TABLE "${this.tableName}" ADD COLUMN ${col()}`
       );
 
       return [...statements, ...this.alterations].join(';\n');
@@ -304,6 +312,7 @@ class SQLiteTableBuilder implements TableBuilder {
 class SQLiteColumnBuilder implements ColumnBuilder {
   private definition: string;
   private checkConstraint?: string;
+  private registered = false;
 
   constructor(
     private table: SQLiteTableBuilder,
@@ -312,6 +321,20 @@ class SQLiteColumnBuilder implements ColumnBuilder {
     private mode: 'create' | 'alter'
   ) {
     this.definition = `"${name}" ${type}`;
+    this.register();
+  }
+
+  private register(): void {
+    if (this.registered) return;
+    this.table.addColumn(() => this.getDefinition());
+    this.registered = true;
+  }
+
+  private getDefinition(): string {
+    if (!this.checkConstraint) {
+      return this.definition;
+    }
+    return `${this.definition} CHECK (${this.checkConstraint})`;
   }
 
   primary(): this {
@@ -382,10 +405,7 @@ class SQLiteColumnBuilder implements ColumnBuilder {
   }
 
   build(): void {
-    if (this.checkConstraint) {
-      this.definition += ` CHECK (${this.checkConstraint})`;
-    }
-    this.table.addColumn(this.definition);
+    // Columns are registered on construction for fluent chaining.
   }
 }
 
@@ -395,6 +415,7 @@ class SQLiteForeignKeyBuilder implements ForeignKeyBuilder {
   private refColumn?: string;
   private deleteAction?: string;
   private updateAction?: string;
+  private constraintRegistered = false;
 
   constructor(
     private table: SQLiteTableBuilder,
@@ -405,38 +426,44 @@ class SQLiteForeignKeyBuilder implements ForeignKeyBuilder {
 
   references(column: string): this {
     this.refColumn = column;
+    this.registerConstraint();
     return this;
   }
 
   inTable(table: string): this {
     this.refTable = table;
-    this.build();
+    this.registerConstraint();
     return this;
   }
 
   onDelete(action: string): this {
     this.deleteAction = action;
+    this.registerConstraint();
     return this;
   }
 
   onUpdate(action: string): this {
     this.updateAction = action;
+    this.registerConstraint();
     return this;
   }
 
-  private build(): void {
-    if (!this.refTable || !this.refColumn) return;
+  private registerConstraint(): void {
+    if (this.constraintRegistered || !this.refTable || !this.refColumn) return;
 
-    let constraint = `FOREIGN KEY ("${this.column}") REFERENCES "${this.refTable}" ("${this.refColumn}")`;
+    this.table.addConstraint(() => {
+      let constraint = `FOREIGN KEY ("${this.column}") REFERENCES "${this.refTable}" ("${this.refColumn}")`;
 
-    if (this.deleteAction) {
-      constraint += ` ON DELETE ${this.deleteAction}`;
-    }
+      if (this.deleteAction) {
+        constraint += ` ON DELETE ${this.deleteAction}`;
+      }
 
-    if (this.updateAction) {
-      constraint += ` ON UPDATE ${this.updateAction}`;
-    }
+      if (this.updateAction) {
+        constraint += ` ON UPDATE ${this.updateAction}`;
+      }
 
-    this.table.addConstraint(constraint);
+      return constraint;
+    });
+    this.constraintRegistered = true;
   }
 }

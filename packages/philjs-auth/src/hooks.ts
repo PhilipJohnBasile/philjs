@@ -4,7 +4,6 @@
  * React-style hooks for authentication
  */
 
-import { computed } from '@philjs/core/signals';
 import type { AuthProvider } from './auth-provider.js';
 import type { User, AuthSession } from './types.js';
 
@@ -110,17 +109,21 @@ export function useAuthLoading(): boolean {
  */
 export function useAuth() {
   const provider = getAuthProvider();
-  const user = useUser();
-  const session = useSession();
-  const isLoading = useAuthLoading();
-  const isAuthenticated = computed(() => !!user);
 
   return {
     // State
-    user,
-    session,
-    isAuthenticated: isAuthenticated(),
-    isLoading,
+    get user() {
+      return provider.user();
+    },
+    get session() {
+      return provider.session();
+    },
+    get isAuthenticated() {
+      return !!provider.user();
+    },
+    get isLoading() {
+      return provider.loading();
+    },
     provider,
 
     // Methods

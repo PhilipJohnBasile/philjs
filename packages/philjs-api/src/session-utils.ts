@@ -293,6 +293,7 @@ export function sessionTimeoutMiddleware<T extends SessionData & { lastActivity?
 
     // Update last activity
     session.set('lastActivity' as keyof T, Date.now() as T[keyof T]);
+    await storage.commitSession(session);
 
     const response = await next(request);
 
@@ -344,22 +345,38 @@ export async function regenerateSession<T extends SessionData>(
   oldSession: Session<T>
 ): Promise<Session<T>> {
   // Get the data
-  const data = { ...oldSession.data };
+  const data = { ...oldSession.data } as T;
+  const flashData: Partial<T> = {};
 
-  // Create new session with same data
-  const newSession: Session<T> = {
+  return {
     id: generateNewSessionId(),
     data,
-    get: oldSession.get.bind(oldSession),
-    set: oldSession.set.bind(oldSession),
-    delete: oldSession.delete.bind(oldSession),
-    has: oldSession.has.bind(oldSession),
-    clear: oldSession.clear.bind(oldSession),
-    flash: oldSession.flash.bind(oldSession),
-    getFlash: oldSession.getFlash.bind(oldSession),
+    get(key) {
+      return data[key];
+    },
+    set(key, value) {
+      data[key] = value;
+    },
+    delete(key) {
+      delete data[key];
+    },
+    has(key) {
+      return key in data;
+    },
+    clear() {
+      for (const key of Object.keys(data)) {
+        delete data[key as keyof T];
+      }
+    },
+    flash(key, value) {
+      flashData[key] = value;
+    },
+    getFlash(key) {
+      const value = flashData[key];
+      delete flashData[key];
+      return value;
+    },
   };
-
-  return newSession;
 }
 
 /**

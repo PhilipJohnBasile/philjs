@@ -10,6 +10,9 @@ import {
   multivariateTestingMiddleware,
   calculateSignificance,
   selectVariantDeterministic,
+  useVariant,
+  isVariant,
+  getActiveExperiments,
   type Experiment,
   type Variant,
 } from './edge-ab-testing.js';
@@ -455,8 +458,6 @@ describe('Edge A/B Testing', () => {
           },
         },
       };
-
-      const { useVariant, isVariant, getActiveExperiments } = require('./edge-ab-testing.js');
 
       const result = useVariant('test-1');
       expect(result.variant).toBe('Control');

@@ -2,19 +2,24 @@
  * Integration Tests - Full migration workflow
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import * as fs from 'fs/promises';
+import * as os from 'os';
+import * as path from 'path';
 import { MigrationManager } from '../manager';
 import type { MigrationConfig } from '../types';
 
 describe('Migration Integration Tests', () => {
   let manager: MigrationManager;
   let config: MigrationConfig;
+  let tempDir = '';
 
-  beforeAll(async () => {
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'philjs-db-'));
     config = {
       type: 'sqlite',
       connection: ':memory:',
-      migrationsDir: './test-migrations',
+      migrationsDir: path.join(tempDir, 'migrations'),
       tableName: 'migrations',
       transactional: true,
     };
@@ -23,8 +28,11 @@ describe('Migration Integration Tests', () => {
     await manager.initialize();
   });
 
-  afterAll(async () => {
-    // Cleanup
+  afterEach(async () => {
+    if (tempDir) {
+      await fs.rm(tempDir, { recursive: true, force: true });
+      tempDir = '';
+    }
   });
 
   describe('Full migration lifecycle', () => {

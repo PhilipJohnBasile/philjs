@@ -194,14 +194,13 @@ export function buildQueryString(params: QueryParams, encode = true): string {
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null) continue;
 
+    const encodedKey = encode ? encodeURIComponent(key) : key;
     if (Array.isArray(value)) {
       for (const item of value) {
-        const encodedKey = encode ? encodeURIComponent(key) : key;
         const encodedValue = encode ? encodeURIComponent(String(item)) : String(item);
         parts.push(`${encodedKey}=${encodedValue}`);
       }
     } else {
-      const encodedKey = encode ? encodeURIComponent(key) : key;
       const encodedValue = encode ? encodeURIComponent(String(value)) : String(value);
       parts.push(`${encodedKey}=${encodedValue}`);
     }
@@ -220,17 +219,22 @@ export function parseQueryString(queryString: string): QueryParams {
   const params: QueryParams = {};
 
   for (const part of query.split('&')) {
-    const [key, value] = part.split('=').map(decodeURIComponent);
+    if (!part) continue;
+    const eqIndex = part.indexOf('=');
+    const rawKey = eqIndex === -1 ? part : part.slice(0, eqIndex);
+    const rawValue = eqIndex === -1 ? '' : part.slice(eqIndex + 1);
+    const key = decodeURIComponent(rawKey);
+    const value = decodeURIComponent(rawValue);
 
     if (!key) continue;
 
-    if (key in params) {
+    if (Object.hasOwn(params, key)) {
       // Convert to array if multiple values
       const existing = params[key];
       if (Array.isArray(existing)) {
-        (existing as string[]).push(value!);
+        (existing as string[]).push(value);
       } else {
-        params[key] = [existing as string, value!];
+        params[key] = [existing as string, value];
       }
     } else {
       params[key] = value;
@@ -351,16 +355,16 @@ function defaultTransform(segment: string): string {
  * Extract parameter names from a route pattern
  */
 export function extractParamNames(pattern: string): string[] {
-  const names: string[] = [];
+  const names = new Set<string>();
 
   // Match :param and [param] patterns
   const matches = pattern.matchAll(/[:[\]]([a-zA-Z_][a-zA-Z0-9_]*)\??/g);
 
   for (const match of matches) {
-    names.push(match[1]!);
+    names.add(match[1]!);
   }
 
-  return [...new Set(names)];
+  return [...names];
 }
 
 /**

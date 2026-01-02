@@ -16,13 +16,7 @@
  * ```
  */
 
-import type {
-  SignalState,
-  SignalComputed,
-  SignalWatcher
-} from './tc39-signals-polyfill.js';
-
-export type { SignalState, SignalComputed, SignalWatcher };
+export type { SignalState, SignalComputed, SignalWatcher } from './tc39-signals-polyfill.js';
 
 type SignalNamespace = typeof import('./tc39-signals-polyfill.js').Signal;
 

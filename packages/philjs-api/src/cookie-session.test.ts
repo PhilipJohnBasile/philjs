@@ -239,7 +239,7 @@ describe('Cookie Session Storage', () => {
 
       const request = new Request('http://localhost/');
 
-      expect(async () => {
+      return expect(async () => {
         const session = await storage.getSession(request);
         storage.generateCSRF(session);
       }).rejects.toThrow('CSRF protection is not enabled');

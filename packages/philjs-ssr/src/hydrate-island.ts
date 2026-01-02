@@ -80,9 +80,16 @@ export function hydrateAllIslands(): void {
 
   islands.forEach((element) => {
     const islandId = element.getAttribute("data-island");
-    if (islandId && !registry.hydrated.has(islandId)) {
-      hydrateIsland(islandId);
+    if (!islandId) {
+      return;
     }
+
+    if (registry.hydrated.has(islandId)) {
+      console.warn(`Island ${islandId} already hydrated`);
+      return;
+    }
+
+    hydrateIsland(islandId);
   });
 }
 
@@ -103,17 +110,28 @@ export function hydrateIslandOnVisible(
     return;
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          hydrateIsland(islandId);
-          observer.disconnect();
-        }
-      });
-    },
-    options || { rootMargin: "50px" }
-  );
+  const Observer = (globalThis as any).IntersectionObserver;
+  if (typeof Observer !== "function") {
+    console.warn("IntersectionObserver is not available");
+    return;
+  }
+
+  const observerOptions = options || { rootMargin: "50px" };
+  let observer: IntersectionObserver;
+  const callback = (entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        hydrateIsland(islandId);
+        observer.disconnect();
+      }
+    });
+  };
+
+  if (Observer.prototype && "observe" in Observer.prototype) {
+    observer = new Observer(callback, observerOptions);
+  } else {
+    observer = Observer(callback, observerOptions);
+  }
 
   observer.observe(element);
 }
@@ -289,7 +307,9 @@ function hydrateNode(vnode: VNode, ctx: HydrationContext): void {
 
   // Handle HTML elements
   if (typeof type === "string") {
-    const element = ctx.currentNode as Element;
+    const elementNode = skipWhitespaceNodes(ctx.currentNode);
+    ctx.currentNode = elementNode;
+    const element = elementNode as Element;
 
     if (!element || element.nodeName.toLowerCase() !== type.toLowerCase()) {
       console.warn(
@@ -405,4 +425,16 @@ export function getIslandStatus(islandId: string): {
 export function clearIslands(): void {
   registry.components.clear();
   registry.hydrated.clear();
+}
+
+function skipWhitespaceNodes(node: Node | null): Node | null {
+  let current = node;
+  while (
+    current &&
+    current.nodeType === Node.TEXT_NODE &&
+    current.textContent?.trim() === ""
+  ) {
+    current = current.nextSibling;
+  }
+  return current;
 }

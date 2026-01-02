@@ -247,6 +247,7 @@ describe('Geolocation', () => {
       const request = new Request('https://example.com/');
       const response = await executeEdgeMiddleware(request, middleware, {
         geo: { country: 'US' },
+        fetch: () => new Response('OK'),
       });
 
       expect(response.status).toBe(200);
@@ -264,6 +265,7 @@ describe('Geolocation', () => {
       const request = new Request('https://example.com/api/users');
       const response = await executeEdgeMiddleware(request, middleware, {
         geo: { country: 'GB' },
+        fetch: () => new Response('OK'),
       });
 
       expect(response.status).toBe(200);
