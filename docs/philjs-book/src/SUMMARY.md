@@ -429,6 +429,48 @@
 - [@philjs/swift](./packages/swift/overview.md)
 - [@philjs/zig](./packages/zig/overview.md)
 
+# The Omni-Framework (New in 2026)
+
+## Phase 1: Adapters & Standard Lib
+- [@philjs/backend-adapters](./packages/adapters/backend.md)
+- [@philjs/frontend-adapters](./packages/adapters/frontend.md)
+- [@philjs/integration](./packages/adapters/integration.md)
+- [@philjs/polyglot](./packages/adapters/polyglot.md)
+- [@philjs/ui](./packages/ui/overview.md)
+
+
+## Autonomous Core
+- [@philjs/ai](./packages/ai/overview.md)
+  - [Agents](./packages/ai/agents.md)
+- [@philjs/test](./packages/testing/overview.md)
+  - [Generative Testing](./packages/testing/fuzz-ai.md)
+- [@philjs/edge](./packages/edge/overview.md)
+  - [Quantization](./packages/edge/quantization.md)
+- [@philjs/self-healing](./packages/core/self-healing.md)
+
+## AutoOps (Autonomous Operations)
+- [@philjs/deploy](./packages/deployment/auto-deploy.md)
+- [@philjs/security](./packages/security/auto-patch.md)
+- [@philjs/docs](./packages/docs/auto-doc.md)
+- [@philjs/perf](./packages/perf/auto-optimize.md)
+- [@philjs/a11y](./packages/a11y-ai/auto-fix.md)
+- [@philjs/i18n](./packages/i18n/auto-translate.md)
+- [@philjs/db](./packages/db/auto-index.md)
+
+## The Scientific Frontier
+- [@philjs/science](./packages/science/overview.md)
+- [@philjs/bio](./packages/bio/overview.md)
+- [@philjs/astro](./packages/astro/overview.md)
+- [@philjs/geo](./packages/geo/overview.md)
+- [@philjs/fin](./packages/fin/overview.md)
+
+## Future Tech (Human Interface)
+- [@philjs/neuro](./packages/neuro/overview.md)
+- [@philjs/robotics](./packages/robotics/overview.md)
+- [@philjs/ar](./packages/xr/holograms.md)
+- [@philjs/crypto](./packages/quantum/post-quantum.md)
+- [@philjs/social](./packages/social/activitypub.md)
+
 ## Rust Ecosystem
 
 - [@philjs/rust](./packages/rust/overview.md)
