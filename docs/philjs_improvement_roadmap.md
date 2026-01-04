@@ -117,7 +117,7 @@
 | 19 | ✅ **Chakra Theme System** | `packages/philjs-theme/` | 16h | Done |
 | 20 | **DaisyUI Presets** | `packages/philjs-shadcn/src/presets/daisy.ts` | 12h | Low |
 | 21 | **Ant Design Enterprise** | `packages/philjs-antd/` | 40h | Low |
-| 22 | **React Aria A11y Primitives** | `packages/philjs-a11y-primitives/` | 16h | Medium |
+| 22 | ✅ **React Aria A11y Primitives** | `packages/philjs-a11y-primitives/` | 16h | Done |
 
 ### Database & Backend
 
@@ -175,7 +175,7 @@
 |:--|:-----|:------|:-------|:---------|
 | 48 | ✅ **Playwright Plugin** | `packages/philjs-playwright/` | 8h | Done |
 | 49 | ✅ **Storybook Integration** | `packages/philjs-storybook/` | 8h | Done |
-| 50 | **Chromatic Visual Testing** | `packages/philjs-chromatic/` | 4h | Low |
+| 50 | ✅ **Chromatic Visual Testing** | `packages/philjs-chromatic/` | 4h | Done |
 
 ### Developer Tools
 
@@ -191,7 +191,7 @@
 | # | Item | Files | Effort | Priority |
 |:--|:-----|:------|:-------|:---------|
 | 55 | ✅ **Docker Templates** | `templates/docker/` | 4h | Done |
-| 56 | **Kubernetes Guides** | `docs/philjs-book/src/deployment/kubernetes.md` | 8h | Medium |
+| 56 | ✅ **Kubernetes Guides** | `docs/philjs-book/src/deployment/kubernetes.md` | 8h | Done |
 | 57 | ✅ **Terraform Modules** | `templates/terraform/` | 12h | Done |
 | 58 | ✅ **GitHub Actions Templates** | `templates/github-actions/` | 4h | Done |
 | 59 | ✅ **Fly.io Adapter** | `packages/philjs-fly/` | 4h | Done |
@@ -204,9 +204,9 @@
 | 61 | **Alpine.js API Parity** | `packages/philjs-alpine/src/directives.ts` | 8h | Medium |
 | 62 | **HTMX Full hx-* Coverage** | `packages/philjs-htmx/src/attributes.ts` | 8h | Medium |
 | 63 | ✅ **Angular DI Container** | `packages/philjs-di/` | 16h | Done |
-| 64 | **Qwik Resumability Parity** | `packages/philjs-ssr/src/resumable.ts` | 12h | High |
-| 65 | **React 19 Compiler Study** | `docs/philjs-book/src/advanced/react19-compat.md` | 8h | Medium |
-| 66 | **Hotwire Streaming** | `packages/philjs-turbo/` | 12h | Low |
+| 64 | ✅ **Qwik Resumability Parity** | `packages/philjs-ssr/src/resumable.ts` | 12h | Done |
+| 65 | ✅ **React 19 Compiler Study** | `docs/philjs-book/src/advanced/react19-compat.md` | 8h | Done |
+| 66 | ✅ **Hotwire Streaming** | `packages/philjs-turbo/` | 12h | Done |
 
 ### Mobile & Desktop
 
