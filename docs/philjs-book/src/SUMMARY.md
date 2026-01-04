@@ -160,6 +160,7 @@
 # Architecture
 
 - [Architecture Overview](./architecture/overview.md)
+- [Visual Architecture](./architecture/visuals.md)
 - [Runtime Internals](./architecture/runtime.md)
 - [Data Modeling](./architecture/data-modeling.md)
 
