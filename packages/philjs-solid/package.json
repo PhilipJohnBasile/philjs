@@ -1,0 +1,9 @@
+{
+    "name": "@philjs/solid",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "src/index.ts",
+    "peerDependencies": {
+        "solid-js": "^1.0.0"
+    }
+}

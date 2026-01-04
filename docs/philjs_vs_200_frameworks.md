@@ -97,7 +97,7 @@ PhilJS is a **next-generation universal super-framework** with **42 unique innov
 | **Remix** | Self-Healing, AI, Resumability | Study loader/action patterns |
 | **Astro** | ✅ Has Islands Architecture | Ensure Island hydration parity |
 | **Analog** | More mature, wider ecosystem | Monitor for Angular-specific patterns |
-| **SolidStart** | UCP, Self-Healing extras | Already comparable |
+| **SolidStart** | UCP, Self-Healing extras | ✅ Added `@philjs/solid` parity layer |
 | **Gatsby** | More modern, lighter weight | Already superior |
 | **Eleventy** | Full framework vs SSG only | ✅ Added pure SSG mode |
 | **Fresh** | ✅ Has Deno support | Already comparable |
@@ -250,11 +250,11 @@ PhilJS is a **next-generation universal super-framework** with **42 unique innov
 |:-----------|:-----------------|:--------------------------|
 | **Express.js** | ✅ Node.js support | ✅ Created `@philjs/express` middleware |
 | **Fastify** | ✅ Node.js support | ✅ Added `@philjs/fastify` plugin |
-| **Koa** | ✅ Node.js support | Add Koa middleware |
-| **hapi** | ✅ Node.js support | Add hapi plugin |
+| **Koa** | ✅ Node.js support | ✅ Added `@philjs/koa` middleware |
+| **hapi** | ✅ Node.js support | ✅ Added `@philjs/hapi` plugin |
 | **NestJS** | ✅ Node.js support | ✅ Added `@philjs/di` NestJS compat layer |
 | **Hono** | Edge-first | ✅ Added `@philjs/hono` middleware |
-| **Elysia** | Bun-first | Study their approach |
+| **Elysia** | Bun-first | ✅ Added `@philjs/elysia` plugin |
 | **Actix Web** | ✅ Has `@philjs/actix` | Already integrated |
 | **Rocket** | ✅ Has `@philjs/rocket` | Already integrated |
 | **Gin** | Go server | ✅ Has `@philjs/go` |
@@ -305,7 +305,7 @@ PhilJS is a **next-generation universal super-framework** with **42 unique innov
 | **smolagents** | Lightweight agents | ✅ Added `@philjs/ai-agents` stub |
 | **Promptflow** | Flow-based AI | ✅ Added `@philjs/ai` Promptflow stub |
 | **Semantic Kernel** | Enterprise AI | ✅ Added `@philjs/ai` Semantic Kernel stub |
-| **Microsoft Agent Framework** | Enterprise agents | Study patterns |
+| **Microsoft Agent Framework** | Enterprise agents | ✅ Added `@philjs/ai-agents` MS Agent pattern |
 | **Helicone** | LLM observability | ✅ Added `@philjs/ai` Helicone adapter |
 | **LiteLLM** | Multi-provider | ✅ Has multi-provider |
 | **assistant-ui** | Chat UI | ✅ Has `@philjs/llm-ui` |
@@ -421,16 +421,7 @@ Based on the analysis, here's the current status:
 32. ~~**Electron Support**~~ - ✅ Created `@philjs/electron`
 
 ### 🟡 REMAINING GAPS (Low Priority)
-
-#### Future Enhancements
-| Item | Description | Effort |
-|:-----|:------------|:-------|
-| **Koa/Hapi Middleware** | Adapters for legacy Node.js frameworks | 8h |
-| **Elysia Integration** | Bun-first optimizations | 12h |
-| **Microsoft Agent Framework** | Deep enterprise agent patterns | 20h |
-| **SolidStart Parity** | Match specific SolidStart routing features | 8h |
-
-*All other priority improvements have been completed or have research stubs.*
+*All priority improvements have been completed or have research stubs.*
 
 ---
 
