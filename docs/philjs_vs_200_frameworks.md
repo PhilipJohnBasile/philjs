@@ -23,6 +23,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Alpine.js** | PhilJS offers similar "sprinkle-in" interactivity via `@philjs/alpine` but backed by a compiled Rust core, making it 50x faster for heavy DOM updates. | **IMPLEMENTED:** `@philjs/alpine` drop-in mode. |
 | **Analog** | Analog adds full-stack to Angular; PhilJS provides the same for *any* framework via UCP, plus superior fine-grained signals without Zone.js. | Monitor Analog's "Nitro" integration for any unique edge features. |
 | **Angular** | PhilJS uses true fine-grained signals (like Angular 17+) but without the legacy weight of NgModules or RxJS enforcement. Rust compiler is faster than `ng build`. | **IMPLEMENTED:** `@philjs/di` enhanced with InjectionToken/Optional. |
+| **Zone.js** | Angular's change detection. PhilJS eliminates the need for Zone.js by using fine-grained Signals for updates. | No Zone.js required—cleaner stack traces. |
 | **Aurelia** | PhilJS matches Aurelia's standards-focus but provides a massive ecosystem compatibility layer that Aurelia lacks. | Monitor standards (Web Components) to ensure PhilJS remains the best authoring tool. |
 | **Backbone** | PhilJS provides the structured MVC model Backbone users love but with modern reactivity, removing all boilerplate listener code. | **IMPLEMENTED:** `@philjs/migration-utils` for auto-conversion. |
 | **Ember** | PhilJS has "convention over configuration" options like Ember but eliminates the "Ember Object" model overhead using standard proxies. | **IMPLEMENTED:** `@philjs/migration-utils` (Ember pattern detection). |
@@ -96,6 +97,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Rocket** | PhilJS leverages similar type-safety guarantees. | Maintain Rust ecosystem alignment. |
 | **Ruby on Rails** | PhilJS offers a "Rails-like" DX (batteries included) but for the node ecosystem. Interops via `@philjs/ruby`. | Add "ActiveRecord" style ORM wrapper if user demand rises. |
 | **Spring Boot** | PhilJS brings modern frontend dev to Java monoliths via `@philjs/java`. | **IMPLEMENTED:** `@philjs/migration-utils` (Java Adapter Stubs). |
+| **Maven / Gradle** | Java build tools. PhilJS provides plugins for both to serve as a BFF layer. | **IMPLEMENTED:** Maven/Gradle plugin stubs. |
 | **Symfony** | Similar to Laravel; PhilJS replaces Twig with modern Components. | Support Symfony UX constraints. |
 
 ---
