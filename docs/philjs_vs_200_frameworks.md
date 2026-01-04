@@ -180,6 +180,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Panda CSS / UnoCSS / vanilla-extract** | Modern zero-runtime CSS is the preferred way. Adapters exist for all 3. | Benchmark build times for large atomic CSS generation. |
 | **shadcn/ui** | PhilJS has a `philjs add shadcn` command to scaffold accessible components into your project. | Keep component registry synced with ui.shadcn.com. |
 | **Tailwind CSS** | Native support. PhilJS template compiler optimizes Tailwind class strings (deduplication). | Support Tailwind v4 "oxide" engine features. |
+| **StyleX** | Meta's atomic CSS-in-JS. PhilJS compiler can perform the same zero-runtime extraction. | Benchmark StyleX build output vs PhilJS Native Styles. |
 
 ---
 
@@ -204,6 +205,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Oxc** | The Oxford Compiler. PhilJS uses Oxc for blazing fast linting and AST transformation in the CLI. | Replace Babel parser with Oxc entirely. |
 | **VoidZero** | The new toolchain from Evan You. PhilJS is designed to be VoidZero-compatible Day 1. | Align configuration schema with VoidZero. |
 | **npm / pnpm / yarn** | All supported. `philjs-cli` respects lockfile detection. | Enforce pnpm for monorepos due to speed/efficiency. |
+| **Lerna** | Supported for legacy repositories via `@philjs/monorepo`. | Automate Lerna -> PhilJS Workspace migration. |
+| **Moon** | Rust-based task runner. PhilJS aligns with Moon's "hashing" philosophy for caching. | Add `moon.yml` generation to CLI. |
+| **Nx** | PhilJS offers "Project Crystal" like inference for graph dependencies without the plugin weight. | Ensure `nx console` works with PhilJS projects. |
 | **Parcel** | PhilJS offers a similar "Zero Config" experience but with more power. | Keep config files optional. |
 | **Rollup** | Used for production builds to ensure efficient tree-shaking. | Optimize chunk splitting strategies for HTTP/3. |
 | **Turbo** | PhilJS Monorepo support aligns with Turborepo caching mental models. | Integrate "Remote Caching" into standard CLI. |
@@ -257,6 +261,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
 | **Git / GitHub / GitLab** | `@philjs/git` provides programmatic access for custom devtools. | Add "Open in GitHub" feature for every component in DevTools. |
 | **VS Code / WebStorm / Zed** | Extensions available. "Go to Definition" works across framework boundaries. | **IMPLEMENTED:** Settings for "Refactor" actions added. |
+| **Cursor** | The AI-first code editor. PhilJS ships a `.cursorrules` file optimized for explaining Signals to the LLM. | **IMPLEMENTED:** `.cursorrules` generator. |
+| **Windsurf** | Codium's agentic IDE. PhilJS project structure is optimized for Windsurf's "Cascades". | Test deep context retrieval in Windsurf. |
+| **Project IDX / StackBlitz** | PhilJS templates load in <2s in Web Containers due to zero-install architecture option. | Maintain "Open in StackBlitz" buttons in docs. |
 
 ---
 
