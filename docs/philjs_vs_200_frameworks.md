@@ -88,6 +88,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Actix Web (Rust)** | PhilJS Core is Rust. For heavy compute, PhilJS can delegate to Actix-like handlers running in the same binary (SSR). | **IMPLEMENTED:** `@philjs/rust-bridge` for easy WASM/Rust loading. |
 | **ASP.NET Core** | PhilJS offers a bridge (`@philjs/dotnet`) to serve as the view layer, replacing Razor with modern components. | **IMPLEMENTED:** `@philjs/migration-utils` (C# Adapter Stubs). |
+| **SignalR** | Real-time .NET hub protocol. PhilJS integrates SignalR hubs via `@philjs/dotnet` for live data push without polling. | **IMPLEMENTED:** `@philjs/dotnet` SignalR bridge. |
 | **Django / Flask / FastAPI** | PhilJS replaces template engines (Jinja) with React/Vue components via `@philjs/python`. Python handles data, PhilJS handles UI. | Improve shared typing (Pydantic -> TypeScript generation). |
 | **Fiber / Gin (Go)** | PhilJS provides Go templates allowing Go to server-render PhilJS components (`@philjs/go`). | Benchmark concurrent connection handling vs Go routines. |
 | **Laravel** | PhilJS integrates as a replacement for Livewire/Blade (`@philjs/php`), offering true SPA capabilities where Livewire falters. | Add "Inertia.js" style protocol adapter natively. |
