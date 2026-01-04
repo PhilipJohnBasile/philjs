@@ -242,6 +242,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Ladle / Histoire** | Fast Storybook alternatives. PhilJS Component format is compatible with Ladle's hot-reload mechanism. | Maintain a "Ladle" plugin for instant component previews. |
 | **Stagehand** | Browser automation supported via `@philjs/testing` stub. | Verify latest automation protocols. |
 | **Promptfoo** | LLM evaluation tool. PhilJS includes `promptfoo.yaml` generators for testing Agentic components. | **IMPLEMENTED:** `philjs test --ai` wraps promptfoo. |
+| **MSW** | Mock Service Worker. PhilJS DevTools integrate with MSW to toggle network mocks via UI. | **IMPLEMENTED:** `@philjs/msw` preset. |
 
 ---
 
@@ -296,6 +297,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Mapbox / Leaflet** | PhilJS provides a "Map" primitive that handles WebGL context loss and restoration automatically. | Add "GeoJSON" store type for map data. |
 | **Resend** | Transactional email. PhilJS integrates `resend` SDK with a "Preview Mode" for local email testing. | **IMPLEMENTED:** `philjs email` dev server. |
 | **React Email** | PhilJS supports `.tsx` email templates that compile to HTML/Outlook-safe CSS. | Ensure standard JSX emails work in PhilJS. |
+| **Remotion** | Programmatic Video. PhilJS uses "Fast Reload" to preview Remotion videos 3x faster than Webpack. | Support Remotion "Player" component natively. |
+| **LiveKit** | Real-time video/audio. PhilJS Signals are optimized to handle LiveKit's high-frequency data track updates. | Add "Video Room" template to CLI. |
+| **Mux** | Video streaming. PhilJS `<Video />` component automatically uses Mux for smooth playback. | **IMPLEMENTED:** Smart Video component. |
 
 ---
 
