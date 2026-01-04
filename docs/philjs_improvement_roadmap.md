@@ -165,9 +165,9 @@
 | 42 | ✅ **LangSmith Tracing** | `packages/philjs-ai/src/langsmith.ts` | 8h | Done |
 | 43 | ✅ **Langfuse Adapter** | `packages/philjs-ai/src/langfuse.ts` | 8h | Done |
 | 44 | ✅ **Helicone Adapter** | `packages/philjs-ai/src/helicone.ts` | 6h | Done |
-| 45 | **Haystack Adapter** | `packages/philjs-ai/src/haystack.ts` | 12h | Low |
-| 46 | **DSPy Patterns** | `packages/philjs-ai-agents/src/dspy.ts` | 8h | Low |
-| 47 | **CopilotKit Patterns** | `packages/philjs-ai/src/copilot.ts` | 12h | Medium |
+| 45 | ✅ **Haystack Adapter** | `packages/philjs-ai/src/haystack.ts` | 12h | Done |
+| 46 | ✅ **DSPy Patterns** | `packages/philjs-ai-agents/src/dspy.ts` | 8h | Done |
+| 47 | ✅ **CopilotKit Patterns** | `packages/philjs-ai/src/copilot.ts` | 12h | Done |
 
 ### Testing & Quality
 
