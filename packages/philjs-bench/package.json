@@ -1,0 +1,12 @@
+{
+    "name": "@philjs/bench",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "src/index.ts",
+    "scripts": {
+        "bench": "ts-node src/index.ts"
+    },
+    "dependencies": {
+        "@philjs/core": "workspace:*"
+    }
+}

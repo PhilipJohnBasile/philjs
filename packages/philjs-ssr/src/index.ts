@@ -6,6 +6,23 @@ export * from "./security.js";
 export * from "./hints.js";
 export { handleRequest } from "./request-handler.js";
 export type { RouteModule, RequestContext, RenderOptions } from "./request-handler.js";
+// Basic SSR render function
+export function renderToString(vnode: any) {
+  if (typeof vnode === 'string') return vnode;
+  // Stub implementation
+  const props = vnode.props || {};
+  let out = `<${vnode.type}`;
+
+  if (props.shadowRootMode) {
+    out += `><template shadowrootmode="${props.shadowRootMode}">`;
+    out += props.children ? props.children.map(renderToString).join('') : '';
+    out += `</template></${vnode.type}>`;
+    return out;
+  }
+
+  out += `>${props.children ? props.children.map(renderToString).join('') : ''}</${vnode.type}>`;
+  return out;
+}
 export { renderToStreamingResponse, Suspense } from "./streaming.js";
 export type { StreamContext } from "./streaming.js";
 export { csrfProtection, generateCSRFToken, csrfField, extractCSRFToken } from "./csrf.js";
