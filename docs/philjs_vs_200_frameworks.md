@@ -291,6 +291,10 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Fly.io** | Global edge compute. PhilJS Docker image is optimized for Fly.io multi-region deployments. | Add `fly.toml` generator to CLI. |
 | **Render** | Easy PaaS. PhilJS auto-detects Render's `render.yaml` and configures accordingly. | **IMPLEMENTED:** Render blueprint template. |
 | **AWS Lambda** | Serverless compute. PhilJS SSR can run as a Lambda function via `@philjs/aws`. | Optimize bundle for Lambda cold start times. |
+| **Firebase** | Google's BaaS. PhilJS integrates with Firestore and Firebase Auth via `@philjs/firebase`. | **IMPLEMENTED:** Real-time Firestore listeners as Signals. |
+| **GCP Cloud Run** | Containerized serverless. PhilJS Dockerfile is optimized for Cloud Run concurrency. | Add `gcloud run deploy` integration. |
+| **Azure Functions** | Microsoft's serverless. PhilJS supports Azure via `@philjs/azure` adapter. | Improve Azure Static Web Apps integration. |
+| **DigitalOcean App Platform** | Simple PaaS. PhilJS auto-detects and configures DOAP deployments. | **IMPLEMENTED:** DigitalOcean deploy button. |
 | **ESLint / Prettier** | `philjs-lint` configures these specifically for Signals usage (preventing common pitfalls). | Add custom rule for "No Effect Side-Effects". |
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
 | **Git / GitHub / GitLab** | `@philjs/git` provides programmatic access for custom devtools. | Add "Open in GitHub" feature for every component in DevTools. |
