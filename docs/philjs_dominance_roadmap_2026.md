@@ -95,6 +95,8 @@
 - [x] **Deep Backend**: Scaffolding for Trigger.dev (Jobs) and BetterAuth (Auth). (Implemented scaffolds)
 - [x] **Modern Data**: Drivers for Turso, Neon, and SurrealDB. (Implemented adapters)
 - [x] **Creative**: Support for Remotion Video and LiveKit Realtime. (Components added)
+- [x] **Commerce & Web3**: Stripe, Lemon Squeezy, and Wagmi/Viem hooks. (Wrappers implemented)
+- [x] **Observability**: Sentry, Datadog, and OpenTelemetry auto-instrumentation. (Middleware added)
 
 ---
 
