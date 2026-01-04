@@ -14,6 +14,7 @@ const _TEMPLATES = {
   dashboard: "Admin dashboard with charts and tables",
   blog: "Blog with markdown and SEO",
   saas: "SaaS starter with auth and billing",
+  "p-stack": "The PhilJS Stack: tRPC + Tailwind + Drizzle + Auth",
 };
 
 async function main() {

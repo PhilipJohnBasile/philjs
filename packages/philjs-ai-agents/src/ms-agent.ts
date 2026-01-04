@@ -1,10 +1,27 @@
 
-// Microsoft Agent Framework Pattern Stub
+export interface Agent {
+    name: string;
+    role: string;
+    execute: (task: string) => Promise<string>;
+}
 
-export class Agent {
-    constructor(public name: string, public role: string) { }
+export class HierarchicalTeam implements Agent {
+    name: string;
+    role: string = 'Manager';
+    workers: Agent[];
 
-    async runExample() {
-        console.log(`Agent ${this.name} running`);
+    constructor(name: string, workers: Agent[]) {
+        this.name = name;
+        this.workers = workers;
+    }
+
+    async execute(task: string): Promise<string> {
+        console.log(`[Manager ${this.name}] Received task: ${task}`);
+        // Simple round-robin delegation for now
+        // In real implementation, uses an LLM to decide which worker to call
+        const worker = this.workers[0];
+        console.log(`[Manager ${this.name}] Delegating to ${worker.name}...`);
+        const result = await worker.execute(task);
+        return `[Manager] Overseen result: ${result}`;
     }
 }
