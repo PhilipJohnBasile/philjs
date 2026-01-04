@@ -149,6 +149,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Prisma** | PhilJS allows using Prisma models to generate Client-Side validation schemas automatically. | Maintain `prisma generate` hooks. |
 | **Sequelize / TypeORM** | Supported via adapters (`@philjs/sequelize`, `@philjs/typeorm`). | Support legacy decorators for migration ease. |
 | **Supabase** | PhilJS offers "Supabase Prime" integration - instant auth/db setup with one CLI command. | Deepen "Edge Function" local emulation. |
+| **Neon** | Serverless Postgres. PhilJS connection pooling `(@philjs/db)` handles Neon's websocket driver automatically. | **IMPLEMENTED:** Native Neon connection pooler. |
+| **Turso** | LibSQL edge database. PhilJS ships a `philjs-turso` adapter for replicating databases to the client. | **IMPLEMENTED:** Client-side replication via WASM. |
+| **SurrealDB** | Multi-model DB. PhilJS supports Surreal's Websocket protocol for real-time apps. | Add "Live Query" hooks for SurrealDB. |
 | **Appwrite** | Open-source alternative to Firebase. PhilJS has a provider for Appwrite Auth. | Maintain strict typing for Appwrite Documents. |
 | **PocketBase** | Go-based backend. PhilJS works perfectly with the single binary philosophy. | Add `pocketbase-typegen` integration into CLI. |
 | **PayloadCMS** | Best headless CMS for TypeScript. PhilJS handles Payload's generic types perfectly. | Support Payload 3.0 Next.js-free mode. |
@@ -227,6 +230,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Jest / Vitest** | Vitest is default (Vite-native). Jest supported for legacy. | Ensure "Time Travel" testing works with Signals. |
 | **Playwright** | Recommended E2E tool. `@philjs/playwright` includes specialized selectors for PhilJS components. | **IMPLEMENTED:** `@philjs/self-healing` (AI Selectors). |
 | **Stagehand** | Browser automation supported via `@philjs/testing` stub. | Verify latest automation protocols. |
+| **Promptfoo** | LLM evaluation tool. PhilJS includes `promptfoo.yaml` generators for testing Agentic components. | **IMPLEMENTED:** `philjs test --ai` wraps promptfoo. |
 
 ---
 
@@ -273,6 +277,8 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **MEAN / MERN / MEAN Stack** | PhilJS replaces the UI layer (A/R) while playing nicely with Mongo/Express/Node. | **IMPLEMENTED:** `mern` template in CLI. |
 | **T3 Stack / T4 App** | PhilJS + tRPC + Tailwind + Prisma is the "P-Stack", offering the same cohesion. | **IMPLEMENTED:** `p-stack` template in `create-philjs`. |
+| **BetterAuth** | The new standard for open source auth. PhilJS is the *first* framework to ship BetterAuth as the default. | **IMPLEMENTED:** `auth` scaffolding uses BetterAuth. |
+| **Clerk / Kinde** | PhilJS provides `<SignedIn />` and `<UserButton />` components that work with any provider. | Support Clerk "Elements" custom styling. |
 
 ---
 
