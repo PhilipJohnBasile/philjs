@@ -152,6 +152,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Supabase** | PhilJS offers "Supabase Prime" integration - instant auth/db setup with one CLI command. | Deepen "Edge Function" local emulation. |
 | **Neon** | Serverless Postgres. PhilJS connection pooling `(@philjs/db)` handles Neon's websocket driver automatically. | **IMPLEMENTED:** Native Neon connection pooler. |
 | **Turso** | LibSQL edge database. PhilJS ships a `philjs-turso` adapter for replicating databases to the client. | **IMPLEMENTED:** Client-side replication via WASM. |
+| **ElectricSQL / Jazz / Zero / Replicache** | Local-First Sync engines. PhilJS Signals are designed to merge conflicting updates from these engines automatically. | Benchmark "Offline Mode" sync speeds. |
 | **SurrealDB** | Multi-model DB. PhilJS supports Surreal's Websocket protocol for real-time apps. | Add "Live Query" hooks for SurrealDB. |
 | **Appwrite** | Open-source alternative to Firebase. PhilJS has a provider for Appwrite Auth. | Maintain strict typing for Appwrite Documents. |
 | **PocketBase** | Go-based backend. PhilJS works perfectly with the single binary philosophy. | Add `pocketbase-typegen` integration into CLI. |
@@ -270,6 +271,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
 | **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | **IMPLEMENTED:** `@philjs/durable` (Durable Objects). |
+| **PartyKit** | Real-time collaboration. PhilJS supports PartyKit rooms as native `useParty()` hooks. | Add "Multiplayer Cursor" component. |
 | **Docker / Kubernetes** | Production-ready `Dockerfile` and Helm charts included (`philjs deploy --k8s`). | Optimize container image size (Target <50MB). |
 | **Coolify** | Self-hosted PaaS. PhilJS provides a `coolify.yaml` for one-click self-hosting. | **IMPLEMENTED:** Coolify deploy blueprint. |
 | **Railway** | PhilJS detects `railway.toml` or `nixpacks` automatically. | Support Railway "Priority Boarding" builds. |
@@ -284,6 +286,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Cursor** | The AI-first code editor. PhilJS ships a `.cursorrules` file optimized for explaining Signals to the LLM. | **IMPLEMENTED:** `.cursorrules` generator. |
 | **Windsurf** | Codium's agentic IDE. PhilJS project structure is optimized for Windsurf's "Cascades". | Test deep context retrieval in Windsurf. |
 | **Project IDX / StackBlitz** | PhilJS templates load in <2s in Web Containers due to zero-install architecture option. | Maintain "Open in StackBlitz" buttons in docs. |
+| **Sandpack / WebContainer** | Browser-based Node.js. PhilJS CLI can run *inside* the browser for interactive tutorials. | **IMPLEMENTED:** Interactive Tutorials via WebContainer. |
 
 ---
 
