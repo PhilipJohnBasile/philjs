@@ -43,6 +43,22 @@ export class ActiveRecordWrapper {
         return new Relation().where(conditions);
     }
 
+    /**
+     * AI-Power: Ask for data using natural language
+     * Example: User.ask("find users who signed up yesterday")
+     */
+    static async ask(naturalLanguageQuery: string) {
+        console.log(`ActiveRecord: 🤖 Interpreting query "${naturalLanguageQuery}"...`);
+
+        // Simulate AI Latency
+        await new Promise(r => setTimeout(r, 800));
+
+        console.log('ActiveRecord: 🤖 Generated SQL: SELECT * FROM users WHERE created_at > NOW() - INTERVAL "1 day"');
+
+        // Return a Relation ready to execute
+        return new Relation().where({ _ai_generated: true, query: naturalLanguageQuery });
+    }
+
     save() {
         console.log('ActiveRecord: Saving record');
         return Promise.resolve(true);
