@@ -1,75 +1,9 @@
 {
   "name": "@philjs/cells",
-  "version": "0.1.0",
-  "description": "RedwoodJS-style Cells pattern for PhilJS - Declarative data loading components",
+  "version": "0.0.1",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./cell": {
-      "types": "./dist/cell.d.ts",
-      "import": "./dist/cell.js"
-    },
-    "./context": {
-      "types": "./dist/context.d.ts",
-      "import": "./dist/context.js"
-    },
-    "./cache": {
-      "types": "./dist/cache.d.ts",
-      "import": "./dist/cache.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "lint": "echo 'Lint philjs-cells'",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@philjs/core": "workspace:*"
-  },
-  "devDependencies": {
-    "rollup": "^4.54.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16",
-    "@types/node": "^25.0.0"
-  },
+  "main": "src/index.ts",
   "peerDependencies": {
-    "@philjs/graphql": "workspace:*"
-  },
-  "peerDependenciesMeta": {
-    "@philjs/graphql": {
-      "optional": true
-    }
-  },
-  "sideEffects": false,
-  "license": "MIT",
-  "author": "PhilJS Team",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
-    "directory": "packages/philjs-cells"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
-  },
-  "homepage": "https://github.com/yourusername/philjs#readme",
-  "keywords": [
-    "philjs",
-    "cells",
-    "data-loading",
-    "declarative",
-    "redwoodjs"
-  ],
-  "engines": {
-    "node": ">=24"
+    "@philjs/core": "workspace:*"
   }
 }
-
