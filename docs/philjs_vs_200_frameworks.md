@@ -286,6 +286,19 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 ---
 
+## 17. Creative & Communication
+
+| Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
+|:-----------|:-----------------------------|:-------------------------|
+| **Framer Motion** | PhilJS ships `<Motion />` primitives that map to Web Animations API for 60fps off-main-thread animations. | **IMPLEMENTED:** Layout animations (shared element transitions). |
+| **GSAP** | Pure JS animation. PhilJS lifecycle hooks (`onMount`) are optimized for GSAP timelines to prevent memory leaks. | Support "ScrollTrigger" natively in the router. |
+| **Three.js / R3F** | PhilJS offers a `<Canvas3D />` component that bridges Signals to the Three.js render loop without React overhead. | Benchmark 3D scene frame rates vs R3F. |
+| **Mapbox / Leaflet** | PhilJS provides a "Map" primitive that handles WebGL context loss and restoration automatically. | Add "GeoJSON" store type for map data. |
+| **Resend** | Transactional email. PhilJS integrates `resend` SDK with a "Preview Mode" for local email testing. | **IMPLEMENTED:** `philjs email` dev server. |
+| **React Email** | PhilJS supports `.tsx` email templates that compile to HTML/Outlook-safe CSS. | Ensure standard JSX emails work in PhilJS. |
+
+---
+
 ## 16. Stacks
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
