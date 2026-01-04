@@ -25,7 +25,7 @@
     "eslint-plugin-security": "^3.0.1"
   },
   "devDependencies": {
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "sideEffects": false,
   "license": "MIT",
@@ -43,3 +43,4 @@
     "node": ">=24"
   }
 }
+

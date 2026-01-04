@@ -122,7 +122,7 @@
     "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "@types/node": "^25.0.0",
     "@types/express": "^5.0.6",
     "vitest": "^4.0.16"
@@ -206,3 +206,4 @@
     "node": ">=24"
   }
 }
+

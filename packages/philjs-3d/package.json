@@ -55,7 +55,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "jsdom": "^27.4.0",
     "three": "^0.182.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "license": "MIT",
@@ -86,3 +86,4 @@
     "node": ">=24"
   }
 }
+

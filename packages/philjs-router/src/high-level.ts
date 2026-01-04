@@ -566,14 +566,52 @@ async function renderCurrentRoute(
   const ssrDataCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_DATA__ ||= {}) : undefined;
   const ssrErrorCache = typeof window !== "undefined" ? ((window as any).__PHILJS_ROUTE_ERROR__ ||= {}) : undefined;
 
-  // Load all route data in parallel (no waterfall!)
-  const loadedMatches = await loadAllRouteData(
-    matches,
-    url,
-    ssrDataCache,
-    ssrErrorCache,
-    forceRevalidate
-  );
+  const hasLoader = matches.some((match) => Boolean(match.entry.module.loader));
+  const hasSsrCache =
+    !forceRevalidate &&
+    ((ssrDataCache && cacheKey in ssrDataCache) ||
+      (ssrErrorCache && cacheKey in ssrErrorCache));
+
+  let loadedMatches: Array<{
+    match: MatchedRoute;
+    entry: InternalRouteEntry;
+    loaderData?: any;
+    error?: any;
+  }>;
+
+  if (hasSsrCache) {
+    const ssrData = ssrDataCache?.[cacheKey];
+    const ssrError = ssrErrorCache?.[cacheKey];
+    if (ssrDataCache && cacheKey in ssrDataCache) {
+      delete ssrDataCache[cacheKey];
+    }
+    if (ssrErrorCache && cacheKey in ssrErrorCache) {
+      delete ssrErrorCache[cacheKey];
+    }
+
+    loadedMatches = matches.map((m, i) => ({
+      match: m.match,
+      entry: m.entry,
+      loaderData: i === matches.length - 1 ? ssrData : undefined,
+      error: i === matches.length - 1 ? ssrError : undefined,
+    }));
+  } else if (!hasLoader) {
+    loadedMatches = matches.map((m) => ({
+      match: m.match,
+      entry: m.entry,
+      loaderData: undefined,
+      error: undefined,
+    }));
+  } else {
+    // Load all route data in parallel (no waterfall!)
+    loadedMatches = await loadAllRouteData(
+      matches,
+      url,
+      ssrDataCache,
+      ssrErrorCache,
+      forceRevalidate
+    );
+  }
 
   // Get leaf route data
   const leafData = loadedMatches[loadedMatches.length - 1];

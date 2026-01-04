@@ -5,15 +5,28 @@
 import type { TauriContext, AppInfo, EventCallback, UnlistenFn } from './types.js';
 
 // Check if we're in a Tauri environment
+function getTauriRoot(): Window | typeof globalThis | null {
+  if (typeof window !== 'undefined') return window;
+  if (typeof globalThis !== 'undefined') return globalThis;
+  return null;
+}
+
 function checkTauriEnvironment(): boolean {
-  if (typeof window === 'undefined') return false;
-  return '__TAURI__' in window || '__TAURI_INTERNALS__' in window;
+  const root = getTauriRoot();
+  if (!root) return false;
+  return '__TAURI__' in root || '__TAURI_INTERNALS__' in root;
 }
 
 // Get Tauri internals
 function getTauriInternals(): any {
-  if (typeof window === 'undefined') return null;
-  return (window as any).__TAURI_INTERNALS__ || (window as any).__TAURI__;
+  const root = getTauriRoot();
+  if (!root) return null;
+  return (root as any).__TAURI_INTERNALS__ || (root as any).__TAURI__;
+}
+
+function getTauriEvents(): any {
+  const root = getTauriRoot();
+  return root ? (root as any).__TAURI_EVENTS__ : null;
 }
 
 // Current Tauri context
@@ -34,14 +47,24 @@ export async function initTauriContext(): Promise<TauriContext> {
   }
 
   const internals = getTauriInternals();
+  const events = getTauriEvents();
 
   // Get app info
   let appInfo: AppInfo;
   try {
+    const safeInvoke = async (command: string, fallback: string) => {
+      if (!internals?.invoke) return fallback;
+      try {
+        const result = await Promise.resolve(internals.invoke(command));
+        return result ?? fallback;
+      } catch {
+        return fallback;
+      }
+    };
     const [name, version, tauriVersion] = await Promise.all([
-      internals.invoke('plugin:app|name').catch(() => 'Unknown'),
-      internals.invoke('plugin:app|version').catch(() => '0.0.0'),
-      internals.invoke('plugin:app|tauri_version').catch(() => '2.0.0'),
+      safeInvoke('plugin:app|name', 'Unknown'),
+      safeInvoke('plugin:app|version', '0.0.0'),
+      safeInvoke('plugin:app|tauri_version', '2.0.0'),
     ]);
     appInfo = { name, version, tauriVersion };
   } catch {
@@ -54,14 +77,24 @@ export async function initTauriContext(): Promise<TauriContext> {
       return internals.invoke(command, args);
     },
     listen: async <T>(event: string, callback: EventCallback<T>): Promise<UnlistenFn> => {
+      if (events?.listen) {
+        return await Promise.resolve(events.listen(event, callback as any));
+      }
       const { listen } = await import('@tauri-apps/api/event');
       return listen(event, callback as any);
     },
     once: async <T>(event: string, callback: EventCallback<T>): Promise<UnlistenFn> => {
+      if (events?.once) {
+        return await Promise.resolve(events.once(event, callback as any));
+      }
       const { once } = await import('@tauri-apps/api/event');
       return once(event, callback as any);
     },
     emit: async (event: string, payload?: unknown): Promise<void> => {
+      if (events?.emit) {
+        await Promise.resolve(events.emit(event, payload));
+        return;
+      }
       const { emit } = await import('@tauri-apps/api/event');
       return emit(event, payload);
     },

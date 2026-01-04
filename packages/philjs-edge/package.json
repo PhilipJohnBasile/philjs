@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251225.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "keywords": [
@@ -76,3 +76,4 @@
     "node": ">=24"
   }
 }
+

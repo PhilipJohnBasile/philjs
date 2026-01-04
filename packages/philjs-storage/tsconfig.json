@@ -5,7 +5,8 @@
     "rootDir": "./src",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "strict": false
+    "strict": false,
+    "exactOptionalPropertyTypes": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

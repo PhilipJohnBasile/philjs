@@ -54,8 +54,9 @@ export function calculateClickIntent(
     y: linkBounds.top + linkBounds.height / 2,
   };
 
-  const distance = Math.sqrt(
-    Math.pow(mousePos.x - linkCenter.x, 2) + Math.pow(mousePos.y - linkCenter.y, 2)
+  const distance = Math.hypot(
+    mousePos.x - linkCenter.x,
+    mousePos.y - linkCenter.y
   );
 
   // Normalize distance (closer = higher score)
@@ -68,8 +69,9 @@ export function calculateClickIntent(
     y: linkCenter.y - mousePos.y,
   };
 
-  const velocityMagnitude = Math.sqrt(
-    mouseVelocity.x ** 2 + mouseVelocity.y ** 2
+  const velocityMagnitude = Math.hypot(
+    mouseVelocity.x,
+    mouseVelocity.y
   );
 
   let directionScore = 0;
@@ -77,8 +79,9 @@ export function calculateClickIntent(
     // Dot product of velocity and vector to link
     const dotProduct =
       mouseVelocity.x * vectorToLink.x + mouseVelocity.y * vectorToLink.y;
-    const vectorMagnitude = Math.sqrt(
-      vectorToLink.x ** 2 + vectorToLink.y ** 2
+    const vectorMagnitude = Math.hypot(
+      vectorToLink.x,
+      vectorToLink.y
     );
 
     // Cosine similarity (-1 to 1, where 1 is directly toward)
@@ -131,6 +134,7 @@ export function predictNextRoute(
 
 export class SmartPreloader {
   private queue: PreloadQueueItem[] = [];
+  private queueStart = 0;
   private loading = new Set<string>();
   private loaded = new Set<string>();
   private options: Required<PreloadOptions>;
@@ -139,6 +143,7 @@ export class SmartPreloader {
   private lastMousePos = { x: 0, y: 0 };
   private mouseVelocity = { x: 0, y: 0 };
   private visitHistory: string[] = [];
+  private intentFrame: number | null = null;
 
   private observers = new Map<Element, IntersectionObserver>();
   private hoverTimers = new Map<string, number>();
@@ -178,8 +183,20 @@ export class SmartPreloader {
 
       // Check intent for all visible links
       if (this.options.strategy === "intent") {
-        this.checkIntentForVisibleLinks();
+        this.scheduleIntentCheck();
       }
+    });
+  }
+
+  private scheduleIntentCheck() {
+    if (typeof requestAnimationFrame !== "function") {
+      this.checkIntentForVisibleLinks();
+      return;
+    }
+    if (this.intentFrame !== null) return;
+    this.intentFrame = requestAnimationFrame(() => {
+      this.intentFrame = null;
+      this.checkIntentForVisibleLinks();
     });
   }
 
@@ -284,6 +301,7 @@ export class SmartPreloader {
     const priorityScore = this.calculatePriority(url, options);
 
     // Add to queue
+    this.compactQueue();
     this.queue.push({
       url,
       priority: priorityScore,
@@ -323,21 +341,41 @@ export class SmartPreloader {
   }
 
   private async processQueue(): Promise<void> {
-    // Respect max concurrent limit
-    while (this.queue.length > 0 && this.loading.size < this.options.maxConcurrent) {
-      const item = this.queue.shift();
-      if (!item) break;
+    while (this.queueStart < this.queue.length) {
+      const tasks: Array<Promise<void>> = [];
 
-      this.loading.add(item.url);
-
-      try {
-        await this.fetchRoute(item.url);
-        this.loaded.add(item.url);
-      } catch (error) {
-        console.warn(`Failed to preload ${item.url}:`, error);
-      } finally {
-        this.loading.delete(item.url);
+      while (
+        this.queueStart < this.queue.length &&
+        this.loading.size < this.options.maxConcurrent
+      ) {
+        const item = this.queue[this.queueStart++];
+        if (!item) break;
+        tasks.push(this.preloadItem(item));
       }
+
+      if (tasks.length === 0) {
+        break;
+      }
+
+      await Promise.all(tasks);
+    }
+
+    if (this.queueStart >= this.queue.length) {
+      this.queue = [];
+      this.queueStart = 0;
+    }
+  }
+
+  private async preloadItem(item: PreloadQueueItem): Promise<void> {
+    this.loading.add(item.url);
+
+    try {
+      await this.fetchRoute(item.url);
+      this.loaded.add(item.url);
+    } catch (error) {
+      console.warn(`Failed to preload ${item.url}:`, error);
+    } finally {
+      this.loading.delete(item.url);
     }
   }
 
@@ -387,7 +425,7 @@ export class SmartPreloader {
     return {
       loaded: this.loaded.size,
       loading: this.loading.size,
-      queued: this.queue.length,
+      queued: this.queue.length - this.queueStart,
       visitHistory: this.visitHistory.length,
     };
   }
@@ -397,12 +435,17 @@ export class SmartPreloader {
    */
   public clear() {
     this.queue = [];
+    this.queueStart = 0;
     this.loading.clear();
     this.loaded.clear();
     this.hoverTimers.forEach((timer) => clearTimeout(timer));
     this.hoverTimers.clear();
     this.observers.forEach((observer) => observer.disconnect());
     this.observers.clear();
+    if (this.intentFrame !== null && typeof cancelAnimationFrame === "function") {
+      cancelAnimationFrame(this.intentFrame);
+    }
+    this.intentFrame = null;
   }
 
   /**
@@ -411,6 +454,12 @@ export class SmartPreloader {
   public destroy() {
     this.clear();
     this.visitHistory = [];
+  }
+
+  private compactQueue(): void {
+    if (this.queueStart === 0) return;
+    this.queue = this.queue.slice(this.queueStart);
+    this.queueStart = 0;
   }
 }
 

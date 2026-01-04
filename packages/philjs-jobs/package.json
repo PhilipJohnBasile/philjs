@@ -69,10 +69,11 @@
     "@types/node": "^25.0.0",
     "bullmq": "^5.66.3",
     "ioredis": "^5.8.2",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=24"
   }
 }
+

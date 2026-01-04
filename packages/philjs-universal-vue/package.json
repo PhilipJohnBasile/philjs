@@ -1,0 +1,53 @@
+{
+  "name": "@philjs/universal-vue",
+  "version": "0.1.0",
+  "description": "Vue 3 adapter for PhilJS Universal Component Protocol",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./composables": {
+      "types": "./dist/composables/index.d.ts",
+      "import": "./dist/composables/index.js",
+      "require": "./dist/composables/index.cjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js",
+      "require": "./dist/plugin.cjs"
+    }
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["philjs", "universal", "vue", "vue3", "adapter", "cross-framework", "signals", "composables"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "@philjs/universal": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  },
+  "devDependencies": {
+    "vue": "^3.5.15",
+    "tsup": "^8.5.1",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

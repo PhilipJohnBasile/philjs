@@ -92,6 +92,7 @@ export interface APIResponse {
  * Create an API handler from route handlers
  */
 export function createAPIHandler(handlers: RouteHandler): APIHandler {
+  const allowHeader = Object.keys(handlers).join(', ');
   return async (context) => {
     const method = context.request.method.toUpperCase() as keyof RouteHandler;
     const handler = handlers[method];
@@ -103,7 +104,7 @@ export function createAPIHandler(handlers: RouteHandler): APIHandler {
           status: 405,
           headers: {
             'Content-Type': 'application/json',
-            Allow: Object.keys(handlers).join(', '),
+            Allow: allowHeader,
           },
         }
       );

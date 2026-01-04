@@ -34,10 +34,11 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=24"
   }
 }
+

@@ -144,7 +144,12 @@ export default createRspackConfig(presets.production('./src/index.ts'));
         configs['rslib.config.ts'] = `
 import { createRslibConfig, rslibPresets } from '@philjs/build/rslib';
 
-export default createRslibConfig(rslibPresets.library('./src/index.ts'));
+export default createRslibConfig({
+  ...rslibPresets.library,
+  source: {
+    entry: './src/index.ts',
+  },
+});
 `;
         break;
 

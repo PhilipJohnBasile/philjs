@@ -37,10 +37,11 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^5.5.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0"
   },
   "engines": {
     "node": ">=24"
   }
 }
+

@@ -130,10 +130,10 @@
     "@types/node": "^25.0.0",
     "@types/vscode": "^1.85.0",
     "tsx": "^4.19.1",
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "peerDependencies": {
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "files": [
     "dist",
@@ -154,3 +154,4 @@
   },
   "homepage": "https://github.com/yourusername/philjs#readme"
 }
+

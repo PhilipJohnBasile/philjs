@@ -5,6 +5,7 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { pathToFileURL } from 'url';
 import type {
   Migration,
   MigrationConfig,
@@ -258,7 +259,7 @@ export class MigrationManager {
    */
   private async loadMigration(filepath: string): Promise<Migration> {
     // Dynamic import of migration file
-    const module = await import(filepath);
+    const module = await import(pathToFileURL(filepath).href);
     return module.default || module;
   }
 
@@ -282,10 +283,13 @@ export class MigrationManager {
    * Get migration files from directory
    */
   private async getMigrationFiles(): Promise<MigrationFile[]> {
-    const files = await fs.readdir(this.config.migrationsDir);
+    const entries = await fs.readdir(this.config.migrationsDir, { withFileTypes: true });
     const migrationFiles: MigrationFile[] = [];
 
-    for (const file of files) {
+    for (const entry of entries) {
+      const file = typeof entry === 'string' ? entry : entry.name;
+      const isFile = typeof entry === 'string' ? true : entry.isFile();
+      if (!isFile) continue;
       if (!file.endsWith('.ts') && !file.endsWith('.js')) continue;
 
       const match = file.match(/^(\d+)_(.+)\.(ts|js)$/);
@@ -430,9 +434,12 @@ export class MigrationManager {
     let existingVersions = new Set<string>();
 
     try {
-      const files = await fs.readdir(this.config.migrationsDir);
-      for (const file of files) {
-        const match = file.match(/^(\d+)_/);
+      const entries = await fs.readdir(this.config.migrationsDir, { withFileTypes: true });
+      for (const entry of entries) {
+        const name = typeof entry === 'string' ? entry : entry.name;
+        const isFile = typeof entry === 'string' ? true : entry.isFile();
+        if (!isFile) continue;
+        const match = name.match(/^(\d+)_/);
         if (match?.[1]) {
           existingVersions.add(match[1]);
         }

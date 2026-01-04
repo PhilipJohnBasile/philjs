@@ -197,17 +197,22 @@ export function applyRouteMask(
   if (options?.nested) {
     const stack = maskStackSignal();
     const currentMask = currentMaskSignal();
+    const needsBaseEntry = Boolean(currentMask && stack.length === 0);
+    const requiredSlots = needsBaseEntry ? 2 : 1;
 
-    if (stack.length >= config.maxStackDepth) {
+    if (stack.length + requiredSlots > config.maxStackDepth) {
       console.warn(
         `[RouteMasking] Max mask stack depth (${config.maxStackDepth}) reached`
       );
       return;
     }
 
-    const parentId = currentMask
-      ? stack[stack.length - 1]?.id
-      : undefined;
+    const updatedStack = [...stack];
+    if (needsBaseEntry && currentMask) {
+      updatedStack.push({ id: generateMaskId(), mask: currentMask });
+    }
+    const parentId =
+      updatedStack.length > 0 ? updatedStack[updatedStack.length - 1]!.id : undefined;
 
     const entry: MaskStackEntry = {
       id: generateMaskId(),
@@ -217,7 +222,7 @@ export function applyRouteMask(
       entry.parentId = parentId;
     }
 
-    maskStackSignal.set([...stack, entry]);
+    maskStackSignal.set([...updatedStack, entry]);
   }
 
   // Update current mask
@@ -343,6 +348,7 @@ export function navigateWithMask(
 
   applyRouteMask(mask, {
     push: !options?.replace,
+    nested: Boolean(options?.preserveMask && currentMaskSignal()),
   });
 
   // Trigger actual navigation to the route

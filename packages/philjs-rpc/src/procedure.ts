@@ -259,7 +259,8 @@ export async function executeProcedure<
       input: validatedInput,
       type,
       path,
-      handler: async () => handler({ input: validatedInput, ctx }),
+      handler: async (ctxFromMiddleware) =>
+        handler({ input: validatedInput, ctx: ctxFromMiddleware as TContext }),
     });
 
     if (!result.ok) {

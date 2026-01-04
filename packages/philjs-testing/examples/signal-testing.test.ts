@@ -11,7 +11,7 @@ import {
   waitForSignal,
   waitForSignalValue,
   assertSignalHistory,
-} from 'philjs-testing';
+} from '@philjs/testing';
 import { signal, memo, effect } from '@philjs/core';
 
 describe('Signal Testing Patterns', () => {

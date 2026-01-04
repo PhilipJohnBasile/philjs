@@ -55,7 +55,7 @@
     "@types/node": "^25.0.0",
     "@philjs/core": "workspace:*",
     "rollup": "^4.54.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
   },
@@ -86,3 +86,4 @@
     "node": ">=24"
   }
 }
+

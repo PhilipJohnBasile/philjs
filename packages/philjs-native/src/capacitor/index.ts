@@ -136,9 +136,16 @@ export function getCapacitor(): any {
 // ============================================================================
 
 /**
- * Plugin registry
+ * Plugin registry - use getter to ensure it's initialized before use
  */
-const pluginRegistry = new Map<string, CapacitorPlugin>();
+let _pluginRegistry: Map<string, CapacitorPlugin> | null = null;
+
+function getPluginRegistry(): Map<string, CapacitorPlugin> {
+  if (!_pluginRegistry) {
+    _pluginRegistry = new Map<string, CapacitorPlugin>();
+  }
+  return _pluginRegistry;
+}
 
 /**
  * Callback registry for async operations
@@ -178,7 +185,7 @@ export function registerPlugin<T>(
     plugin.instance = config.web;
   }
 
-  pluginRegistry.set(name, plugin);
+  getPluginRegistry().set(name, plugin);
   return plugin;
 }
 
@@ -186,7 +193,7 @@ export function registerPlugin<T>(
  * Get a registered plugin
  */
 export function getPlugin<T>(name: string): T | undefined {
-  const plugin = pluginRegistry.get(name);
+  const plugin = getPluginRegistry().get(name);
   return plugin?.instance as T | undefined;
 }
 
@@ -194,7 +201,7 @@ export function getPlugin<T>(name: string): T | undefined {
  * Check if plugin is available
  */
 export function hasPlugin(name: string): boolean {
-  return pluginRegistry.has(name);
+  return getPluginRegistry().has(name);
 }
 
 /**

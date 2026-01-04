@@ -56,7 +56,7 @@ export async function executeMiddlewareChain<TContext extends ProcedureContext>(
     input: unknown;
     type: ProcedureType;
     path: string;
-    handler: () => Promise<unknown>;
+    handler: (ctx: TContext) => Promise<unknown>;
   }
 ): Promise<MiddlewareResult> {
   const { ctx, input, type, path, handler } = opts;
@@ -64,7 +64,7 @@ export async function executeMiddlewareChain<TContext extends ProcedureContext>(
   // If no middlewares, execute handler directly
   if (middlewares.length === 0) {
     try {
-      const data = await handler();
+      const data = await handler(ctx);
       return { ok: true, data };
     } catch (error) {
       return {
@@ -86,7 +86,7 @@ export async function executeMiddlewareChain<TContext extends ProcedureContext>(
     // If we've exhausted all middlewares, run the handler
     if (index >= middlewares.length) {
       try {
-        const data = await handler();
+        const data = await handler(currentCtx);
         return { ok: true, data };
       } catch (error) {
         return {

@@ -106,7 +106,7 @@ export interface ControlConfig {
  */
 export function createStory<P = Record<string, unknown>>(
   config: StoryConfig<P>
-): StoryMeta<P> {
+): { meta: StoryMeta<P>; story: (variant?: Partial<StoryConfig<P>>) => StoryVariant<P> } {
   const {
     component,
     title,
@@ -117,7 +117,7 @@ export function createStory<P = Record<string, unknown>>(
     tags,
   } = config;
 
-  return {
+  const meta: StoryMeta<P> = {
     component,
     title: title || getComponentName(component),
     ...(args !== undefined && { args }),
@@ -127,7 +127,12 @@ export function createStory<P = Record<string, unknown>>(
       ...parameters,
     },
     ...(decorators !== undefined && { decorators }),
-    ...(tags !== undefined && { tags }),
+    tags: tags ?? ['autodocs'],
+  };
+
+  return {
+    meta,
+    story: (variant = {}) => createVariant<P>(variant),
   };
 }
 
@@ -181,6 +186,29 @@ export interface StoryVariant<P = Record<string, unknown>> {
   argTypes?: Record<string, ArgTypeConfig>;
   parameters?: Record<string, unknown>;
   decorators?: Array<(story: () => unknown) => unknown>;
+}
+
+/**
+ * Create args helper (identity with shallow copy).
+ */
+export function createArgs<P extends Record<string, unknown>>(args: P): P {
+  return { ...args };
+}
+
+/**
+ * Create argTypes helper (identity with shallow copy).
+ */
+export function createArgTypes(
+  argTypes: Record<string, ArgTypeConfig>
+): Record<string, ArgTypeConfig> {
+  return { ...argTypes };
+}
+
+/**
+ * Create parameters helper (identity with shallow copy).
+ */
+export function createParameters<T extends Record<string, unknown>>(parameters: T): T {
+  return { ...parameters };
 }
 
 export default createStory;

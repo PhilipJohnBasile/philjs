@@ -37,9 +37,11 @@ export function createVueWrapper(
   props: VuePropDef[],
   emits: string[] = []
 ) {
+  // Convert kebab-case to PascalCase (e.g., 'hollow-accordion-item' -> 'HollowAccordionItem')
   const displayName = tagName
-    .replace('hollow-', 'Hollow')
-    .replace(/-./g, (x) => x[1]!.toUpperCase());
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
 
   return {
     name: displayName,

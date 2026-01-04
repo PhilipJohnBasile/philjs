@@ -103,7 +103,15 @@ export function Dashboard() {
 - Optimize where it actually matters
 - Make business-driven technical decisions
 
-### 4. **TypeScript 6 First**
+### 4. **Self-Healing Runtime (Unique)**
+
+PhilJS is the only framework with a **Self-Healing Runtime**. It wraps your application in a supervisor process that detects crashes, memory leaks, and unhandled exceptions.
+
+- **Circuit Breakers**: If a component fails repeatedly, it is isolated (like a blown fuse) so the rest of your app keeps running.
+- **Auto-Recovery**: PhilJS attempts to "hot-patch" or restart the crashed component without reloading the page.
+- **Predictive AI**: The runtime analyzes error patterns to predict and prevent crashes *before* they happen.
+
+### 5. **TypeScript 6 First**
 
 PhilJS is written in TypeScript and designed for TypeScript 6+. Every API is fully typed with excellent inference and leverages the latest TypeScript features.
 
@@ -138,7 +146,7 @@ function createStore<T>(initial: NoInfer<T>): Store<T> {
 - Improved const type parameters
 - Better auto-imports and go-to-definition
 
-### 5. **Server Functions = Zero Boilerplate APIs**
+### 6. **Server Functions = Zero Boilerplate APIs**
 
 Call server code from your components like regular functions - PhilJS handles everything.
 
@@ -169,7 +177,7 @@ export function UserProfile({ userId }: { userId: number }) {
 
 Just call the function. PhilJS handles the network request, serialization, error handling, and type safety automatically.
 
-### 6. **Islands Architecture for Maximum Performance**
+### 7. **Islands Architecture for Maximum Performance**
 
 Use **islands** to ship minimal JavaScript. Only interactive components get hydrated - the rest is pure HTML.
 
@@ -190,7 +198,7 @@ Use **islands** to ship minimal JavaScript. Only interactive components get hydr
 - Better Core Web Vitals
 - Lower bounce rates
 
-### 7. **Batteries Included**
+### 8. **Batteries Included**
 
 PhilJS comes with everything you need:
 

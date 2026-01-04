@@ -95,36 +95,37 @@ const statusBarState = signal<StatusBarState>({
 export function StatusBar(props: StatusBarProps): any {
   const platform = detectPlatform();
 
-  // Update state based on props
-  effect(() => {
-    const newState: Partial<StatusBarState> = {};
+  // Update state based on props (use direct assignment to avoid effect loop)
+  const newState: Partial<StatusBarState> = {};
 
-    if (props.hidden !== undefined) {
-      newState.hidden = props.hidden;
-    }
-    if (props.barStyle !== undefined) {
-      newState.barStyle = props.barStyle;
-    }
-    if (props.translucent !== undefined) {
-      newState.translucent = props.translucent;
-    }
-    if (props.backgroundColor !== undefined) {
-      newState.backgroundColor = props.backgroundColor;
-    }
-    if (props.networkActivityIndicatorVisible !== undefined) {
-      newState.networkActivityIndicatorVisible = props.networkActivityIndicatorVisible;
-    }
+  if (props.hidden !== undefined) {
+    newState.hidden = props.hidden;
+  }
+  if (props.barStyle !== undefined) {
+    newState.barStyle = props.barStyle;
+  }
+  if (props.translucent !== undefined) {
+    newState.translucent = props.translucent;
+  }
+  if (props.backgroundColor !== undefined) {
+    newState.backgroundColor = props.backgroundColor;
+  }
+  if (props.networkActivityIndicatorVisible !== undefined) {
+    newState.networkActivityIndicatorVisible = props.networkActivityIndicatorVisible;
+  }
 
-    statusBarState.set({ ...statusBarState(), ...newState });
+  // Get current state without tracking and merge
+  const currentState = statusBarState();
+  const mergedState = { ...currentState, ...newState };
+  statusBarState.set(mergedState);
 
-    // Apply to web
-    if (platform === 'web') {
-      applyWebStatusBar(statusBarState());
-    } else {
-      // Apply to native
-      nativeBridge.call('StatusBar', 'update', statusBarState());
-    }
-  });
+  // Apply to web
+  if (platform === 'web') {
+    applyWebStatusBar(mergedState);
+  } else {
+    // Apply to native
+    nativeBridge.call('StatusBar', 'update', mergedState);
+  }
 
   // StatusBar renders nothing visible
   return null;

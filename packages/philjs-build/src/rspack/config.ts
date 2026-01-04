@@ -169,14 +169,47 @@ export interface SharedModuleConfig {
 }
 
 /**
+ * Rspack plugin options for PhilJS build integration.
+ */
+export interface RspackPluginOptions {
+  /** Build mode */
+  mode?: 'development' | 'production';
+  /** Enable minification */
+  minify?: boolean;
+  /** Source map mode */
+  sourcemap?: boolean | 'inline' | 'hidden' | 'nosources';
+  /** Compilation target */
+  target?: 'es2020' | 'es2021' | 'es2022' | 'es2023' | 'es2024' | 'esnext';
+  /** Enable signal optimization */
+  signals?: boolean;
+  /** JSX handling */
+  jsx?: 'transform' | 'preserve';
+  /** Auto-memoization */
+  autoMemo?: boolean;
+  /** Tree-shaking mode */
+  treeshake?: 'aggressive' | 'standard';
+}
+
+const DEFAULT_ENTRY = './src/index.ts';
+const DEFAULT_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js', '.json'];
+
+const DEFAULT_PLUGIN_OPTIONS: Required<Pick<RspackPluginOptions, 'mode' | 'minify' | 'sourcemap' | 'target'>> = {
+  mode: 'development',
+  minify: false,
+  sourcemap: true,
+  target: 'es2024',
+};
+
+/**
  * Create Rspack configuration for PhilJS
  */
-export function createRspackConfig(options: PhilJSRspackOptions): RspackConfiguration {
-  const isDev = options.mode === 'development';
+export function createRspackConfig(options: PhilJSRspackOptions = {}): RspackConfiguration {
+  const mode = options.mode ?? 'development';
+  const isDev = mode === 'development';
 
   const config: RspackConfiguration = {
-    mode: options.mode,
-    entry: options.entry,
+    mode,
+    entry: options.entry ?? DEFAULT_ENTRY,
     output: {
       path: options.output?.path ?? 'dist',
       filename: options.output?.filename ?? (isDev ? '[name].js' : '[name].[contenthash].js'),
@@ -271,6 +304,7 @@ export function createRspackConfig(options: PhilJSRspackOptions): RspackConfigur
           hot: options.devServer?.hot ?? true,
           open: options.devServer?.open ?? false,
           historyApiFallback: true,
+          proxy: options.devServer?.proxy,
         }
       : undefined,
     devtool: options.devtool ?? (isDev ? 'eval-source-map' : 'source-map'),
@@ -281,7 +315,42 @@ export function createRspackConfig(options: PhilJSRspackOptions): RspackConfigur
       },
     },
     cache: isDev ? { type: 'memory' } : false,
-    target: ['web', 'es2024'],
+    target: options.target ?? 'web',
+  };
+
+  config.resolve = {
+    extensions: options.resolve?.extensions ?? DEFAULT_EXTENSIONS,
+    alias: {
+      '@philjs/core': '@philjs/core',
+      ...(options.resolve?.alias ?? {}),
+    },
+    modules: options.resolve?.modules,
+  };
+
+  config.optimization = {
+    moduleIds: options.optimization?.moduleIds ?? 'deterministic',
+    chunkIds: options.optimization?.chunkIds ?? 'deterministic',
+    minimize: options.optimization?.minimize ?? !isDev,
+    usedExports: options.optimization?.usedExports ?? !isDev,
+    sideEffects: options.optimization?.sideEffects ?? !isDev,
+    splitChunks: {
+      chunks: options.optimization?.splitChunks?.chunks ?? 'all',
+      cacheGroups: {
+        philjs: {
+          test: /[\\/]node_modules[\\/]@philjs[\\/]/,
+          name: 'philjs-vendor',
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          priority: 10,
+          reuseExistingChunk: true,
+        },
+        ...(options.optimization?.splitChunks?.cacheGroups ?? {}),
+      },
+    },
   };
 
   // Add external dependencies
@@ -296,9 +365,19 @@ export function createRspackConfig(options: PhilJSRspackOptions): RspackConfigur
   }
 
   // Add PhilJS optimization plugin
-  if (options.philjs) {
+  if (options.philjs !== false) {
     config.plugins = config.plugins || [];
-    config.plugins.push(createPhilJSPlugin(options.philjs));
+    config.plugins.push(philJSRspackPlugin({
+      ...DEFAULT_PLUGIN_OPTIONS,
+      mode,
+      minify: !isDev,
+      sourcemap: options.devtool !== false,
+      target: typeof options.target === 'string' ? (options.target as RspackPluginOptions['target']) : DEFAULT_PLUGIN_OPTIONS.target,
+      ...(options.philjs ?? {}),
+    }));
+    if (options.philjs && typeof options.philjs === 'object') {
+      config.plugins.push(createPhilJSPlugin(options.philjs));
+    }
   }
 
   return config;
@@ -348,6 +427,55 @@ export function createPhilJSPlugin(options: PhilJSRspackOptions['philjs']): unkn
       // This is a placeholder for the actual Rspack plugin
     },
   };
+}
+
+/**
+ * Create PhilJS Rspack plugin (compat wrapper).
+ */
+export function philJSRspackPlugin(options: RspackPluginOptions = {}): unknown {
+  const merged = {
+    ...DEFAULT_PLUGIN_OPTIONS,
+    ...options,
+  };
+
+  return {
+    name: 'philjs-rspack-plugin',
+    apply(_compiler: unknown) {
+      // Placeholder for real plugin integration.
+      void merged;
+    },
+  };
+}
+
+/**
+ * Deep merge Rspack configurations.
+ */
+export function mergeRspackConfig<T extends Record<string, unknown>>(
+  ...configs: Array<T | undefined>
+): T {
+  const result: Record<string, unknown> = {};
+
+  for (const config of configs) {
+    if (!config) continue;
+    for (const [key, value] of Object.entries(config)) {
+      if (value === undefined) continue;
+
+      const existing = result[key];
+      if (Array.isArray(existing) && Array.isArray(value)) {
+        result[key] = [...existing, ...value];
+      } else if (isPlainObject(existing) && isPlainObject(value)) {
+        result[key] = mergeRspackConfig(existing as Record<string, unknown>, value as Record<string, unknown>);
+      } else {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result as T;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
 /**
@@ -429,3 +557,8 @@ export const presets = {
     },
   }),
 };
+
+/**
+ * Default Rspack configuration (development mode).
+ */
+export const defaultRspackConfig = createRspackConfig();

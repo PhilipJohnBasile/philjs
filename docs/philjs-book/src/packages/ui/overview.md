@@ -1,6 +1,15 @@
-# @philjs/ui - Component Library
+# @philjs/ui
 
-The `@philjs/ui` package provides a comprehensive set of accessible, customizable UI components built with PhilJS signals and modern CSS.
+The official UI component library for PhilJS featuring 20+ production-ready components with dark mode support, comprehensive accessibility, and full theming capabilities.
+
+## Features
+
+- **20+ Production Components**: Buttons, inputs, modals, tables, and more
+- **Dark Mode Support**: Built-in light/dark/system theme switching with persistence
+- **Full Accessibility**: ARIA compliant with keyboard navigation and focus management
+- **Design Tokens**: Customizable colors, spacing, typography, shadows, and more
+- **TypeScript First**: Complete type definitions for all components and props
+- **Signal Integration**: Built on PhilJS signals for reactive state management
 
 ## Installation
 
@@ -12,582 +21,199 @@ pnpm add @philjs/ui
 bun add @philjs/ui
 ```
 
-## Features
-
-- **40+ Components** - Buttons, forms, modals, tables, and more
-- **Accessible by Default** - WCAG 2.1 AA compliant
-- **Themeable** - CSS variables and design tokens
-- **Tree-Shakeable** - Import only what you use
-- **TypeScript First** - Full type safety
-- **Headless Options** - Unstyled variants available
-
 ## Quick Start
 
 ```tsx
-import { Button, Card, Input, Modal, toast } from '@philjs/ui';
+import { ThemeProvider, Button, Input, Card, CardBody, CardTitle } from '@philjs/ui';
+import '@philjs/ui/styles.css';
 
 function App() {
-  const isOpen = signal(false);
-
   return (
-    <div>
+    <ThemeProvider>
       <Card>
-        <Card.Header>
-          <Card.Title>Welcome</Card.Title>
-        </Card.Header>
-        <Card.Content>
-          <Input
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-          />
-          <Button onClick={() => isOpen.set(true)}>
-            Open Modal
-          </Button>
-        </Card.Content>
+        <CardTitle>Welcome</CardTitle>
+        <CardBody>
+          <Input label="Email" placeholder="Enter your email" />
+          <Button color="primary">Submit</Button>
+        </CardBody>
       </Card>
-
-      <Modal open={isOpen()} onClose={() => isOpen.set(false)}>
-        <Modal.Header>Confirmation</Modal.Header>
-        <Modal.Body>Are you sure?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="ghost" onClick={() => isOpen.set(false)}>
-            Cancel
-          </Button>
-          <Button onClick={() => {
-            toast.success('Confirmed!');
-            isOpen.set(false);
-          }}>
-            Confirm
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+    </ThemeProvider>
   );
 }
 ```
 
 ## Component Categories
 
-### Layout
+### Form Components
 
-```tsx
-import {
-  Box,
-  Container,
-  Flex,
-  Grid,
-  Stack,
-  Divider,
-  AspectRatio,
-  Center
-} from '@philjs/ui';
+| Component | Description |
+|-----------|-------------|
+| [Input](./forms.md#input) | Text input with labels, validation, and icons |
+| [Textarea](./forms.md#textarea) | Multi-line text input with resize options |
+| [Select](./forms.md#select) | Single-selection dropdown |
+| [MultiSelect](./forms.md#multiselect) | Multiple-selection dropdown with tags |
+| [Checkbox](./forms.md#checkbox) | Checkbox with indeterminate state support |
+| [CheckboxGroup](./forms.md#checkboxgroup) | Group of related checkboxes |
+| [Radio](./forms.md#radio) | Radio button for single selection |
+| [RadioGroup](./forms.md#radiogroup) | Group of radio buttons |
+| [Switch](./forms.md#switch) | Toggle switch for boolean values |
 
-// Flexbox layout
-<Flex gap={4} align="center" justify="between">
-  <Logo />
-  <Nav />
-  <UserMenu />
-</Flex>
+### Button Components
 
-// Grid layout
-<Grid cols={3} gap={4}>
-  {items.map(item => <Card key={item.id}>{item.name}</Card>)}
-</Grid>
+| Component | Description |
+|-----------|-------------|
+| [Button](./buttons.md#button) | Primary action component with variants and sizes |
+| [IconButton](./buttons.md#iconbutton) | Icon-only button with required aria-label |
+| [ButtonGroup](./buttons.md#buttongroup) | Grouped buttons with attached styling |
 
-// Stack (vertical)
-<Stack gap={2}>
-  <Input label="Name" />
-  <Input label="Email" />
-  <Button>Submit</Button>
-</Stack>
+### Feedback Components
 
-// Container with max-width
-<Container size="lg" padding={4}>
-  <Content />
-</Container>
-```
+| Component | Description |
+|-----------|-------------|
+| [Alert](./feedback.md#alert) | Contextual feedback with status variants |
+| [Toast](./feedback.md#toast) | Temporary notification system |
+| [Spinner](./feedback.md#spinner) | Loading indicator |
+| [Progress](./feedback.md#progress) | Linear progress bar |
+| [CircularProgress](./feedback.md#circularprogress) | Circular progress indicator |
+| [Skeleton](./feedback.md#skeleton) | Content loading placeholder |
 
-### Forms
+### Data Display Components
 
-```tsx
-import {
-  Input,
-  Textarea,
-  Select,
-  Checkbox,
-  Radio,
-  Switch,
-  Slider,
-  DatePicker,
-  TimePicker,
-  FileUpload,
-  FormField,
-  FormLabel,
-  FormError
-} from '@philjs/ui';
+| Component | Description |
+|-----------|-------------|
+| [Card](./data-display.md#card) | Content container with header, body, footer |
+| [Table](./data-display.md#table) | Data table with sorting support |
+| [Avatar](./data-display.md#avatar) | User avatar with fallback initials |
+| [AvatarGroup](./data-display.md#avatargroup) | Stacked avatars with overflow |
+| [Badge](./data-display.md#badge) | Status badge with color variants |
+| [StatusIndicator](./data-display.md#statusindicator) | Online/offline status dot |
+| [NotificationBadge](./data-display.md#notificationbadge) | Notification count badge |
 
-// Text input with all states
-<Input
-  label="Username"
-  placeholder="Enter username"
-  helperText="Must be 3-20 characters"
-  error={errors.username}
-  required
-  leftIcon={<UserIcon />}
-  rightElement={<CheckIcon />}
-/>
+### Overlay Components
 
-// Select with search
-<Select
-  label="Country"
-  options={countries}
-  searchable
-  placeholder="Select a country"
-  onChange={setCountry}
-/>
+| Component | Description |
+|-----------|-------------|
+| [Modal](./overlays.md#modal) | Dialog window with focus trapping |
+| [ConfirmDialog](./overlays.md#confirmdialog) | Confirmation modal preset |
+| [Drawer](./overlays.md#drawer) | Slide-out panel from any edge |
+| [Tooltip](./overlays.md#tooltip) | Hover information tooltip |
+| [Popover](./overlays.md#popover) | Interactive popover content |
+| [Dropdown](./overlays.md#dropdown) | Dropdown menu with items |
 
-// Checkbox group
-<Checkbox.Group
-  label="Interests"
-  options={['Sports', 'Music', 'Art', 'Technology']}
-  value={interests()}
-  onChange={setInterests}
-/>
+### Navigation Components
 
-// File upload with drag & drop
-<FileUpload
-  accept="image/*"
-  maxSize={5 * 1024 * 1024}
-  multiple
-  onUpload={handleUpload}
-  onError={handleError}
->
-  <FileUpload.Dropzone>
-    <p>Drag files here or click to upload</p>
-  </FileUpload.Dropzone>
-  <FileUpload.List />
-</FileUpload>
-```
-
-### Buttons
-
-```tsx
-import { Button, IconButton, ButtonGroup } from '@philjs/ui';
-
-// Variants
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="link">Link</Button>
-<Button variant="danger">Danger</Button>
-
-// Sizes
-<Button size="xs">Extra Small</Button>
-<Button size="sm">Small</Button>
-<Button size="md">Medium</Button>
-<Button size="lg">Large</Button>
-
-// States
-<Button loading>Loading</Button>
-<Button disabled>Disabled</Button>
-
-// With icons
-<Button leftIcon={<PlusIcon />}>Add Item</Button>
-<Button rightIcon={<ArrowIcon />}>Continue</Button>
-
-// Icon button
-<IconButton
-  icon={<TrashIcon />}
-  aria-label="Delete"
-  variant="ghost"
-/>
-
-// Button group
-<ButtonGroup>
-  <Button>Left</Button>
-  <Button>Center</Button>
-  <Button>Right</Button>
-</ButtonGroup>
-```
-
-### Feedback
-
-```tsx
-import {
-  Alert,
-  Toast,
-  toast,
-  Progress,
-  Spinner,
-  Skeleton,
-  Badge,
-  Tag
-} from '@philjs/ui';
-
-// Alert
-<Alert status="success" title="Success!">
-  Your changes have been saved.
-</Alert>
-
-<Alert status="error" closable onClose={dismiss}>
-  Something went wrong. Please try again.
-</Alert>
-
-// Toast notifications
-toast.success('Item saved successfully');
-toast.error('Failed to save');
-toast.info('New message received');
-toast.warning('Low disk space');
-toast.promise(saveData(), {
-  loading: 'Saving...',
-  success: 'Saved!',
-  error: 'Failed to save'
-});
-
-// Progress
-<Progress value={progress()} max={100} />
-<Progress indeterminate />
-
-// Spinner
-<Spinner size="lg" />
-<Spinner label="Loading data..." />
-
-// Skeleton
-<Skeleton height={20} />
-<Skeleton.Text lines={3} />
-<Skeleton.Avatar size="lg" />
-<Skeleton.Card />
-
-// Badge
-<Badge>New</Badge>
-<Badge variant="success">Active</Badge>
-<Badge variant="warning" dot>Pending</Badge>
-
-// Tag
-<Tag>React</Tag>
-<Tag closable onClose={removeTag}>TypeScript</Tag>
-```
-
-### Overlays
-
-```tsx
-import {
-  Modal,
-  Drawer,
-  Dialog,
-  Popover,
-  Tooltip,
-  Menu,
-  DropdownMenu,
-  ContextMenu
-} from '@philjs/ui';
-
-// Modal
-<Modal
-  open={isOpen()}
-  onClose={() => isOpen.set(false)}
-  size="md"
-  closeOnOverlayClick
-  closeOnEscape
->
-  <Modal.Header>Edit Profile</Modal.Header>
-  <Modal.Body>
-    <Form />
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="ghost" onClick={close}>Cancel</Button>
-    <Button onClick={save}>Save</Button>
-  </Modal.Footer>
-</Modal>
-
-// Drawer
-<Drawer
-  open={drawerOpen()}
-  onClose={() => drawerOpen.set(false)}
-  placement="right"
-  size="md"
->
-  <Drawer.Header>Settings</Drawer.Header>
-  <Drawer.Body>
-    <SettingsForm />
-  </Drawer.Body>
-</Drawer>
-
-// Tooltip
-<Tooltip content="More information">
-  <IconButton icon={<InfoIcon />} />
-</Tooltip>
-
-// Popover
-<Popover>
-  <Popover.Trigger>
-    <Button>Open Popover</Button>
-  </Popover.Trigger>
-  <Popover.Content>
-    <p>Popover content here</p>
-  </Popover.Content>
-</Popover>
-
-// Dropdown menu
-<DropdownMenu>
-  <DropdownMenu.Trigger>
-    <Button>Actions</Button>
-  </DropdownMenu.Trigger>
-  <DropdownMenu.Content>
-    <DropdownMenu.Item onSelect={edit}>Edit</DropdownMenu.Item>
-    <DropdownMenu.Item onSelect={duplicate}>Duplicate</DropdownMenu.Item>
-    <DropdownMenu.Separator />
-    <DropdownMenu.Item onSelect={remove} variant="danger">
-      Delete
-    </DropdownMenu.Item>
-  </DropdownMenu.Content>
-</DropdownMenu>
-
-// Context menu
-<ContextMenu>
-  <ContextMenu.Trigger>
-    <div class="right-click-area">Right click here</div>
-  </ContextMenu.Trigger>
-  <ContextMenu.Content>
-    <ContextMenu.Item>Copy</ContextMenu.Item>
-    <ContextMenu.Item>Paste</ContextMenu.Item>
-  </ContextMenu.Content>
-</ContextMenu>
-```
-
-### Navigation
-
-```tsx
-import {
-  Tabs,
-  Breadcrumb,
-  Pagination,
-  Stepper,
-  NavMenu,
-  Sidebar
-} from '@philjs/ui';
-
-// Tabs
-<Tabs defaultValue="overview">
-  <Tabs.List>
-    <Tabs.Tab value="overview">Overview</Tabs.Tab>
-    <Tabs.Tab value="analytics">Analytics</Tabs.Tab>
-    <Tabs.Tab value="settings">Settings</Tabs.Tab>
-  </Tabs.List>
-  <Tabs.Panel value="overview"><Overview /></Tabs.Panel>
-  <Tabs.Panel value="analytics"><Analytics /></Tabs.Panel>
-  <Tabs.Panel value="settings"><Settings /></Tabs.Panel>
-</Tabs>
-
-// Breadcrumb
-<Breadcrumb>
-  <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-  <Breadcrumb.Item href="/products">Products</Breadcrumb.Item>
-  <Breadcrumb.Item current>Product Details</Breadcrumb.Item>
-</Breadcrumb>
-
-// Pagination
-<Pagination
-  total={100}
-  pageSize={10}
-  currentPage={page()}
-  onChange={setPage}
-  showSizeChanger
-  showQuickJumper
-/>
-
-// Stepper
-<Stepper activeStep={step()}>
-  <Stepper.Step title="Account" description="Create account" />
-  <Stepper.Step title="Profile" description="Set up profile" />
-  <Stepper.Step title="Confirm" description="Review & confirm" />
-</Stepper>
-```
-
-### Data Display
-
-```tsx
-import {
-  Table,
-  DataTable,
-  List,
-  Tree,
-  Timeline,
-  Avatar,
-  AvatarGroup,
-  Stat,
-  Code,
-  Kbd
-} from '@philjs/ui';
-
-// Data table with sorting, filtering, pagination
-<DataTable
-  data={users()}
-  columns={[
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'email', header: 'Email', sortable: true },
-    { key: 'role', header: 'Role', filterable: true },
-    {
-      key: 'actions',
-      header: '',
-      render: (row) => <ActionMenu user={row} />
-    }
-  ]}
-  selectable
-  onSelectionChange={setSelected}
-  pagination={{ pageSize: 10 }}
-/>
-
-// Avatar
-<Avatar src={user.avatar} name={user.name} size="lg" />
-<AvatarGroup max={3}>
-  {users.map(u => <Avatar key={u.id} src={u.avatar} />)}
-</AvatarGroup>
-
-// Stats
-<Stat>
-  <Stat.Label>Total Revenue</Stat.Label>
-  <Stat.Number>$45,231</Stat.Number>
-  <Stat.Change type="increase">12%</Stat.Change>
-</Stat>
-
-// Timeline
-<Timeline>
-  <Timeline.Item icon={<CheckIcon />} color="green">
-    Order confirmed
-  </Timeline.Item>
-  <Timeline.Item icon={<TruckIcon />} color="blue">
-    Shipped
-  </Timeline.Item>
-  <Timeline.Item icon={<PackageIcon />} pending>
-    Delivered
-  </Timeline.Item>
-</Timeline>
-
-// Code block
-<Code language="tsx" showLineNumbers copyable>
-  {codeString}
-</Code>
-
-// Keyboard shortcut
-<Kbd>⌘</Kbd> + <Kbd>K</Kbd>
-```
+| Component | Description |
+|-----------|-------------|
+| [Tabs](./navigation.md#tabs) | Tabbed navigation with panels |
+| [Accordion](./navigation.md#accordion) | Collapsible content panels |
+| [Breadcrumb](./navigation.md#breadcrumb) | Navigation breadcrumb trail |
 
 ## Theming
 
-### CSS Variables
-
-```css
-:root {
-  /* Colors */
-  --phil-primary: #3b82f6;
-  --phil-secondary: #6b7280;
-  --phil-success: #10b981;
-  --phil-warning: #f59e0b;
-  --phil-error: #ef4444;
-
-  /* Typography */
-  --phil-font-sans: 'Inter', sans-serif;
-  --phil-font-mono: 'JetBrains Mono', monospace;
-
-  /* Spacing */
-  --phil-space-1: 0.25rem;
-  --phil-space-2: 0.5rem;
-  --phil-space-4: 1rem;
-
-  /* Radii */
-  --phil-radius-sm: 0.25rem;
-  --phil-radius-md: 0.375rem;
-  --phil-radius-lg: 0.5rem;
-
-  /* Shadows */
-  --phil-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --phil-shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-/* Dark mode */
-[data-theme="dark"] {
-  --phil-primary: #60a5fa;
-  --phil-bg: #1f2937;
-  --phil-text: #f9fafb;
-}
-```
-
-### Theme Provider
+All components support theming through the `ThemeProvider`:
 
 ```tsx
-import { ThemeProvider, useTheme } from '@philjs/ui';
+import { ThemeProvider, useColorMode, Button } from '@philjs/ui';
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="system">
-      <MyApp />
+    <ThemeProvider defaultColorMode="system">
+      <YourApp />
     </ThemeProvider>
   );
 }
 
 function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { isDark, toggleColorMode } = useColorMode();
 
   return (
-    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+    <Button onClick={toggleColorMode}>
+      {isDark() ? 'Switch to Light' : 'Switch to Dark'}
     </Button>
   );
 }
 ```
 
+See the [Theming Guide](./theming.md) for complete customization options including design tokens for colors, spacing, typography, shadows, and breakpoints.
+
 ## Accessibility
 
-All components are accessible by default:
+All PhilJS UI components are built with accessibility as a core principle:
 
-- Proper ARIA attributes
-- Keyboard navigation
-- Focus management
-- Screen reader support
-- High contrast mode support
+- **Keyboard Navigation**: Full keyboard support for all interactive components
+- **ARIA Attributes**: Proper roles, states, and properties
+- **Focus Management**: Automatic focus trapping in modals and drawers
+- **Screen Reader Support**: Live regions for toasts and alerts
+- **Color Contrast**: WCAG 2.1 AA compliant color combinations
 
-```tsx
-// Example: Accessible modal
-<Modal>
-  {/* Automatically handles:
-    - role="dialog"
-    - aria-modal="true"
-    - aria-labelledby (linked to header)
-    - aria-describedby (linked to body)
-    - Focus trap
-    - Escape to close
-    - Return focus on close
-  */}
-</Modal>
-```
+See the [Accessibility Guide](./accessibility.md) for detailed information on each component's accessibility features.
 
-## TypeScript
+## TypeScript Support
 
-All components are fully typed:
+All components export their prop types for full TypeScript integration:
 
 ```tsx
 import type {
   ButtonProps,
+  ButtonVariant,
+  ButtonSize,
+  ButtonColor,
   InputProps,
+  InputSize,
+  InputVariant,
   ModalProps,
+  ModalSize,
   SelectOption
 } from '@philjs/ui';
 
-// Props are fully typed
-const buttonProps: ButtonProps = {
-  variant: 'primary',
-  size: 'md',
-  loading: false,
-  onClick: () => {}
-};
+// Use types for your own components
+interface MyFormProps {
+  buttonVariant: ButtonVariant;
+  inputSize: InputSize;
+  onSubmit: ButtonProps['onClick'];
+}
+
+// Type-safe options
+const options: SelectOption[] = [
+  { value: 'opt1', label: 'Option 1' },
+  { value: 'opt2', label: 'Option 2', disabled: true }
+];
 ```
+
+## Package Exports
+
+The package provides multiple entry points:
+
+```tsx
+// Main entry - all components
+import { Button, Input, Modal, toast } from '@philjs/ui';
+
+// Theme utilities only
+import { ThemeProvider, useTheme, useColorMode } from '@philjs/ui/theme';
+
+// Design tokens
+import { colors, spacing, fontSize, defaultTheme } from '@philjs/ui';
+
+// Styles
+import '@philjs/ui/styles.css';
+```
+
+## Browser Support
+
+PhilJS UI supports all modern browsers:
+
+- Chrome 90+
+- Firefox 90+
+- Safari 14+
+- Edge 90+
 
 ## Next Steps
 
-- [Theming Guide](./theming.md)
-- [Accessibility](./accessibility.md)
-- [Form Components](./forms.md)
-- [Data Display](./data-display.md)
+- [Theming Guide](./theming.md) - Customize colors, fonts, and design tokens
+- [Form Components](./forms.md) - Build accessible forms
+- [Button Components](./buttons.md) - Action buttons and groups
+- [Feedback Components](./feedback.md) - Alerts, toasts, and loading states
+- [Data Display](./data-display.md) - Cards, tables, and avatars
+- [Overlay Components](./overlays.md) - Modals, drawers, and tooltips
+- [Navigation](./navigation.md) - Tabs, accordions, and breadcrumbs
+- [Accessibility Guide](./accessibility.md) - A11y best practices

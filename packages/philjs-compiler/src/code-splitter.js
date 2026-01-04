@@ -1,0 +1,239 @@
+/**
+ * PhilJS Compiler - Automatic Code Splitting
+ * Analyzes routes and creates optimal code splitting boundaries
+ */
+import { parse } from '@babel/parser';
+import * as _traverse from '@babel/traverse';
+import * as t from '@babel/types';
+// Handle both ESM and CJS exports - babel traverse exports default as the traverse function
+const traverse = _traverse.default;
+export class CodeSplitter {
+    config;
+    constructor(config = {}) {
+        this.config = config;
+    }
+    /**
+     * Analyze a routes directory and determine splitting boundaries
+     */
+    analyzeRoutes(routesDir, files) {
+        const boundaries = [];
+        const recommendations = [];
+        files.forEach((code, filePath) => {
+            // Check if this is a route file
+            if (!this.isRouteFile(filePath, routesDir))
+                return;
+            const route = this.filePathToRoute(filePath, routesDir);
+            const analysis = this.analyzeRouteComponent(code, filePath);
+            // Determine if this route should be code-split
+            if (this.shouldSplit(analysis)) {
+                boundaries.push({
+                    route,
+                    filePath,
+                    lazyImport: this.generateLazyImport(filePath, route),
+                    estimatedSize: analysis.size,
+                    dependencies: analysis.dependencies,
+                    priority: this.calculatePriority(route, analysis),
+                });
+                recommendations.push(`Route "${route}" (${analysis.size} LOC) should be lazy-loaded`);
+            }
+        });
+        // Sort by priority
+        boundaries.sort((a, b) => {
+            const priorityOrder = { high: 0, medium: 1, low: 2 };
+            return priorityOrder[a.priority] - priorityOrder[b.priority];
+        });
+        return {
+            boundaries,
+            totalChunks: boundaries.length,
+            estimatedSavings: this.calculateEstimatedSavings(boundaries),
+            recommendations,
+        };
+    }
+    /**
+     * Analyze a single route component
+     */
+    analyzeRouteComponent(code, filePath) {
+        const analysis = {
+            size: countLines(code),
+            byteSize: Buffer.byteLength(code, 'utf8'),
+            hasHeavyDependencies: false,
+            dependencies: [],
+            isLazy: false,
+        };
+        const heavyDeps = [
+            'chart.js',
+            'd3',
+            'three',
+            '@tensorflow',
+            'monaco-editor',
+            'pdf',
+            'video.js',
+        ];
+        try {
+            const ast = parse(code, {
+                sourceType: 'module',
+                plugins: ['typescript', 'jsx'],
+                sourceFilename: filePath,
+            });
+            traverse(ast, {
+                ImportDeclaration(path) {
+                    const source = path.node.source.value;
+                    analysis.dependencies.push(source);
+                    if (heavyDeps.some(dep => source.includes(dep))) {
+                        analysis.hasHeavyDependencies = true;
+                    }
+                },
+                CallExpression(path) {
+                    // Check if already using lazy loading
+                    if (t.isIdentifier(path.node.callee) && path.node.callee.name === 'lazy') {
+                        analysis.isLazy = true;
+                    }
+                },
+            });
+        }
+        catch {
+            const importMatches = code.matchAll(/from\s+['"]([^'"]+)['"]/g);
+            for (const match of importMatches) {
+                const source = match[1];
+                if (!source)
+                    continue;
+                analysis.dependencies.push(source);
+                if (heavyDeps.some(dep => source.includes(dep))) {
+                    analysis.hasHeavyDependencies = true;
+                }
+            }
+            analysis.isLazy = /(?:^|[^\w])lazy\s*\(/.test(code);
+        }
+        return analysis;
+    }
+    /**
+     * Determine if a route should be code-split
+     */
+    shouldSplit(analysis) {
+        const byteSize = typeof analysis.byteSize === 'number' ? analysis.byteSize : 0;
+        // Don't split if already lazy
+        if (analysis.isLazy)
+            return false;
+        // Always split if it has heavy dependencies
+        if (analysis.hasHeavyDependencies)
+            return true;
+        // Split if component is large (>200 LOC)
+        if (analysis.size > 200)
+            return true;
+        // Split if file is large even without many lines (e.g., minified or generated)
+        if (byteSize > 250)
+            return true;
+        // Don't split very small components (<50 LOC)
+        if (analysis.size < 50 && byteSize < 250)
+            return false;
+        return true;
+    }
+    /**
+     * Calculate priority for preloading
+     */
+    calculatePriority(route, analysis) {
+        // High priority for index/home routes
+        if (route === '/' || route === '/index')
+            return 'high';
+        // Medium priority for top-level routes
+        if (route.split('/').length === 2)
+            return 'medium';
+        // Low priority for deeply nested routes
+        return 'low';
+    }
+    /**
+     * Generate a lazy import statement
+     */
+    generateLazyImport(filePath, route) {
+        const componentName = this.routeToComponentName(route);
+        return `const ${componentName} = /*#__PURE__*/ lazy(() => import('${filePath}'));`;
+    }
+    /**
+     * Convert route to component name
+     */
+    routeToComponentName(route) {
+        return route
+            .split('/')
+            .filter(Boolean)
+            .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+            .join('') || 'Index';
+    }
+    /**
+     * Convert file path to route
+     */
+    filePathToRoute(filePath, routesDir) {
+        // Remove routesDir prefix and extension
+        let route = filePath
+            .replace(routesDir, '')
+            .replace(/\\/g, '/')
+            .replace(/\.(tsx?|jsx?)$/, '');
+        // Convert index files to directory route
+        route = route.replace(/\/index$/, '');
+        // Convert [param] to :param for route params
+        route = route.replace(/\[([^\]]+)\]/g, ':$1');
+        return route || '/';
+    }
+    /**
+     * Check if file is a route file
+     */
+    isRouteFile(filePath, routesDir) {
+        // Must be in routes directory
+        if (!filePath.includes(routesDir))
+            return false;
+        // Must be a component file
+        if (!/\.(tsx?|jsx?)$/.test(filePath))
+            return false;
+        // Exclude layout files, middleware, etc.
+        if (filePath.includes('_layout') || filePath.includes('_middleware')) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * Calculate estimated bundle size savings
+     */
+    calculateEstimatedSavings(boundaries) {
+        // Rough estimate: 50 bytes per line of code
+        return boundaries.reduce((total, boundary) => {
+            return total + boundary.estimatedSize * 50;
+        }, 0);
+    }
+    /**
+     * Generate rollup/vite manual chunks configuration
+     */
+    static /*#__PURE__*/ generateManualChunks(boundaries) {
+        const chunks = {};
+        boundaries.forEach(boundary => {
+            const chunkName = boundary.route
+                .replace(/^\//, '')
+                .replace(/\//g, '-')
+                .replace(/:/g, '_') || 'index';
+            chunks[`routes/${chunkName}`] = [boundary.filePath];
+        });
+        return chunks;
+    }
+    /**
+     * Generate vite dynamic import optimization
+     */
+    static /*#__PURE__*/ generateViteDynamicImports(boundaries) {
+        return boundaries.map(b => b.filePath);
+    }
+}
+function countLines(code) {
+    if (code.length === 0)
+        return 1;
+    let lines = 1;
+    for (let i = 0; i < code.length; i++) {
+        if (code.charCodeAt(i) === 10) {
+            lines++;
+        }
+    }
+    return lines;
+}
+/**
+ * Create a new code splitter instance
+ */
+export const createCodeSplitter = /*#__PURE__*/ function createCodeSplitter(config) {
+    return new CodeSplitter(config);
+};
+//# sourceMappingURL=code-splitter.js.map

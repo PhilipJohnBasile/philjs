@@ -1,0 +1,145 @@
+/**
+ * PhilJS LogRocket Integration
+ *
+ * Session replay and error tracking with LogRocket.
+ */
+let LogRocket = null;
+/**
+ * Create a LogRocket error tracker
+ */
+export function createLogRocketTracker() {
+    return {
+        init(options) {
+            const initLogRocket = async () => {
+                if (typeof window !== 'undefined') {
+                    LogRocket = (await import('logrocket')).default;
+                    LogRocket.init(options.appId || options.dsn, {
+                        release: options.release,
+                        console: {
+                            isEnabled: options.console?.isEnabled ?? true,
+                            shouldAggregateConsoleErrors: options.console?.shouldAggregateConsoleErrors ?? true,
+                        },
+                        network: {
+                            requestSanitizer: options.network?.requestSanitizer,
+                            responseSanitizer: options.network?.responseSanitizer,
+                        },
+                        dom: {
+                            inputSanitizer: options.dom?.inputSanitizer ?? true,
+                            textSanitizer: options.dom?.textSanitizer,
+                        },
+                    });
+                    // Add PhilJS context
+                    LogRocket.track('PhilJS Initialized', {
+                        version: '0.1.0',
+                        environment: options.environment,
+                    });
+                    console.log('[PhilJS] LogRocket initialized');
+                }
+            };
+            initLogRocket().catch(console.error);
+        },
+        captureError(error, context) {
+            if (!LogRocket) {
+                console.error('[LogRocket not initialized]', error);
+                return;
+            }
+            LogRocket.captureException(error, {
+                tags: {
+                    component: context?.component,
+                    signal: context?.signal,
+                    route: context?.route,
+                    ...context?.tags,
+                },
+                extra: context?.extra,
+            });
+        },
+        captureMessage(message, level, context) {
+            if (!LogRocket) {
+                console.log('[LogRocket not initialized]', message);
+                return;
+            }
+            LogRocket.track(message, {
+                level: level || 'info',
+                ...context?.extra,
+                ...context?.tags,
+            });
+        },
+        setUser(user) {
+            if (!LogRocket)
+                return;
+            if (user) {
+                LogRocket.identify(user.id || 'anonymous', {
+                    email: user.email,
+                    name: user.username,
+                    ...user,
+                });
+            }
+        },
+        addBreadcrumb(breadcrumb) {
+            if (!LogRocket)
+                return;
+            LogRocket.track(breadcrumb.message || breadcrumb.category || 'breadcrumb', {
+                type: breadcrumb.type,
+                category: breadcrumb.category,
+                level: breadcrumb.level,
+                ...breadcrumb.data,
+            });
+        },
+        startSpan(name, op) {
+            const start = performance.now();
+            return {
+                name,
+                op,
+                finish() {
+                    if (LogRocket) {
+                        LogRocket.track(`${op}:${name}`, {
+                            duration: performance.now() - start,
+                        });
+                    }
+                },
+                setTag(key, value) {
+                    // LogRocket doesn't have span tags, track as event
+                },
+                setData(key, value) {
+                    // LogRocket doesn't have span data, track as event
+                },
+            };
+        },
+        async flush() {
+            // LogRocket auto-flushes
+            return true;
+        },
+    };
+}
+/**
+ * Get LogRocket session URL
+ */
+export function getSessionURL() {
+    return new Promise((resolve) => {
+        if (!LogRocket) {
+            resolve(null);
+            return;
+        }
+        LogRocket.getSessionURL((url) => {
+            resolve(url);
+        });
+    });
+}
+/**
+ * Track custom event
+ */
+export function trackEvent(name, properties) {
+    if (LogRocket) {
+        LogRocket.track(name, properties);
+    }
+}
+/**
+ * Redact sensitive data
+ */
+export function redact(selector) {
+    if (LogRocket) {
+        LogRocket.redactElement(selector);
+    }
+}
+export default createLogRocketTracker;
+//# sourceMappingURL=logrocket.js.map

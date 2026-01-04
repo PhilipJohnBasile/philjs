@@ -130,6 +130,7 @@ export function render(
     debug: (el = baseElement) => debug(el),
     rerender: (newUI: any) => {
       const toRender = Wrapper ? Wrapper({ children: newUI }) : newUI;
+      container.innerHTML = '';
       renderToContainer(toRender, container);
     },
     unmount: () => {

@@ -1,0 +1,159 @@
+/**
+ * PhilJS Export
+ *
+ * Data export utilities for CSV, Excel, JSON, XML, YAML, and PDF formats
+ */
+// Re-export formats
+export * from './formats/index.js';
+// Re-export utils
+export * from './utils/index.js';
+// Re-export components
+export * from './components/index.js';
+// Re-export hooks
+export * from './hooks.js';
+/**
+ * Download a file to the user's device
+ */
+export function downloadFile(blob, filename, _mimeType) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+/**
+ * Export data to CSV and optionally download
+ */
+export async function exportToCSV(data, options = {}) {
+    const { toCSV, createCSVBlob } = await import('./formats/csv.js');
+    const csv = toCSV(data);
+    const blob = createCSVBlob(csv);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.csv');
+    }
+    return blob;
+}
+/**
+ * Export data to Excel and optionally download
+ */
+export async function exportToExcel(data, options = {}) {
+    const { toExcelBlob } = await import('./formats/excel.js');
+    const blob = toExcelBlob([{ name: options.sheetName || 'Sheet1', data }], options);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.xlsx');
+    }
+    return blob;
+}
+/**
+ * Export data to JSON and optionally download
+ */
+export async function exportToJSON(data, options = {}) {
+    const { toJSON, createJSONBlob } = await import('./formats/json.js');
+    const json = toJSON(data);
+    const blob = createJSONBlob(json);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.json');
+    }
+    return blob;
+}
+/**
+ * Export data to XML and optionally download
+ */
+export async function exportToXML(data, options = {}) {
+    const { toXML, createXMLBlob } = await import('./formats/xml.js');
+    const xml = toXML(data);
+    const blob = createXMLBlob(xml);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.xml');
+    }
+    return blob;
+}
+/**
+ * Export data to YAML and optionally download
+ */
+export async function exportToYAML(data, options = {}) {
+    const { toYAML, createYAMLBlob } = await import('./formats/yaml.js');
+    const yaml = toYAML(data);
+    const blob = createYAMLBlob(yaml);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.yaml');
+    }
+    return blob;
+}
+/**
+ * Export data to PDF with table layout and configurable formatting
+ */
+export async function exportToPDF(data, options = {}) {
+    const [{ jsPDF }, autoTableModule] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+    ]);
+    const autoTable = autoTableModule.default ?? autoTableModule;
+    const orientation = options.orientation ?? 'portrait';
+    const format = options.pageSize ?? 'a4';
+    const doc = new jsPDF({
+        orientation,
+        format,
+        unit: 'pt',
+    });
+    options.onProgress?.(0);
+    const rows = Array.isArray(data) ? data : [data];
+    const columns = options.columns && options.columns.length > 0
+        ? options.columns
+        : rows.length > 0 && typeof rows[0] === 'object' && rows[0] !== null
+            ? Object.keys(rows[0])
+            : ['value'];
+    if (options.title) {
+        doc.setFontSize(18);
+        doc.text(options.title, 40, 40);
+    }
+    const body = rows.map((row) => {
+        if (typeof row !== 'object' || row === null) {
+            return [String(row)];
+        }
+        const record = row;
+        return columns.map((col) => formatCell(record[col]));
+    });
+    const startY = options.title ? 60 : 40;
+    autoTable(doc, {
+        head: [columns],
+        body,
+        startY,
+        styles: {
+            fontSize: 10,
+            cellPadding: 6,
+        },
+        headStyles: {
+            fillColor: [31, 41, 55],
+            textColor: [255, 255, 255],
+        },
+    });
+    options.onProgress?.(80);
+    const blob = doc.output('blob');
+    options.onProgress?.(100);
+    if (options.download !== false) {
+        downloadFile(blob, options.filename || 'export.pdf');
+    }
+    return blob;
+}
+function formatCell(value) {
+    if (value === null || value === undefined)
+        return '';
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+        return String(value);
+    }
+    if (value instanceof Date)
+        return value.toISOString();
+    try {
+        return JSON.stringify(value);
+    }
+    catch {
+        return String(value);
+    }
+}
+//# sourceMappingURL=index.js.map

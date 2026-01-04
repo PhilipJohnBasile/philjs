@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@philjs/cli": "^0.1.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16",
     "@types/node": "^25.0.0"
   },
@@ -24,3 +24,4 @@
     "node": ">=24"
   }
 }
+

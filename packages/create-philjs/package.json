@@ -33,7 +33,7 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "@philjs/router": "^0.1.0",
+    "@philjs/router": "workspace:*",
     "chalk": "^5.3.0",
     "commander": "^14.0.2",
     "enquirer": "^2.4.1",
@@ -46,9 +46,10 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.0.0",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "engines": {
     "node": ">=24"
   }
 }
+

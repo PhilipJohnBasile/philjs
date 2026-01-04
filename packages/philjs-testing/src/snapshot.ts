@@ -43,19 +43,21 @@ export function takeSnapshot(
 ): SnapshotResult {
   const { maxLength = 10000, includeSignals = true, serializer } = options;
 
-  if (!element) {
-    element = document.body;
-  }
+  const target = element ?? document.body;
+  const isBody = target === document.body;
 
   let snapshot: string;
 
   if (serializer) {
-    snapshot = serializer(element);
+    snapshot = serializer(target);
   } else {
-    snapshot = prettyDOM(element, maxLength) || '';
+    snapshot = isBody ? target.innerHTML : (prettyDOM(target, maxLength) || '');
+    if (snapshot.length > maxLength) {
+      snapshot = `${snapshot.slice(0, maxLength)}...`;
+    }
 
     if (includeSignals) {
-      const signalData = extractSignalData(element);
+      const signalData = extractSignalData(target);
       if (signalData.length > 0) {
         snapshot += '\n\n<!-- Signal State -->\n';
         signalData.forEach(({ name, value }) => {

@@ -58,7 +58,8 @@ export class GenUIHydrator {
 
   constructor(registry: ComponentRegistry, options: HydratorOptions = {}) {
     this.registry = registry;
-    this.validator = new ASTValidator(options.sandbox);
+    const sandboxConfig = { allowUnknownComponents: true, ...options.sandbox };
+    this.validator = new ASTValidator(sandboxConfig);
     this.options = options;
   }
 
@@ -75,13 +76,12 @@ export class GenUIHydrator {
       };
     }
 
-    // Clear previous content
-    this.cleanup();
-    container.innerHTML = '';
-    this.componentMap.clear();
-
     try {
       if (message.type === 'render' && message.payload.type === 'render') {
+        // Clear previous content for full renders
+        this.cleanup();
+        container.innerHTML = '';
+        this.componentMap.clear();
         return this.hydrateRenderPayload(message.payload, container);
       } else if (message.type === 'update' && message.payload.type === 'update') {
         return this.hydrateUpdatePayload(message.payload);
@@ -310,6 +310,7 @@ export class GenUIHydrator {
       fallback.id = component.id;
       fallback.dataset.unknownComponent = component.type;
       fallback.textContent = `[Unknown component: ${component.type}]`;
+      this.applyComponentDecorations(fallback, component);
       this.componentMap.set(component.id, fallback);
       return fallback;
     }
@@ -317,6 +318,7 @@ export class GenUIHydrator {
     // Render component
     const element = renderer(component, context);
     if (element) {
+      this.applyComponentDecorations(element, component);
       this.componentMap.set(component.id, element);
     }
 
@@ -525,6 +527,37 @@ export class GenUIHydrator {
       element.setAttribute(prop, String(value ?? ''));
     } else {
       element.setAttribute(prop, String(value ?? ''));
+    }
+  }
+
+  /**
+   * Apply class, style, and accessibility metadata to a rendered element.
+   */
+  private applyComponentDecorations(element: HTMLElement, component: A2UIComponent): void {
+    if (component.className) {
+      for (const className of component.className.split(/\s+/)) {
+        if (className) element.classList.add(className);
+      }
+    }
+
+    if (component.style) {
+      for (const [prop, value] of Object.entries(component.style)) {
+        (element.style as Record<string, string | number>)[prop] = value as string | number;
+      }
+    }
+
+    if (component.a11y) {
+      if (component.a11y.role) element.setAttribute('role', component.a11y.role);
+      if (component.a11y.label) element.setAttribute('aria-label', component.a11y.label);
+      if (component.a11y.labelledBy) {
+        element.setAttribute('aria-labelledby', component.a11y.labelledBy);
+      }
+      if (component.a11y.describedBy) {
+        element.setAttribute('aria-describedby', component.a11y.describedBy);
+      }
+      if (component.a11y.live) element.setAttribute('aria-live', component.a11y.live);
+      if (component.a11y.tabIndex !== undefined) element.tabIndex = component.a11y.tabIndex;
+      if (component.a11y.hidden) element.setAttribute('aria-hidden', 'true');
     }
   }
 

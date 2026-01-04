@@ -11,9 +11,10 @@
   "devDependencies": {
     "@types/chrome": "^0.0.260",
     "vite": "^7.3.0",
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "engines": {
     "node": ">=24"
   }
 }
+

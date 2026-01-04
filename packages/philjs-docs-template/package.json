@@ -1,0 +1,36 @@
+{
+    "name": "@philjs/docs-template",
+    "version": "0.1.0",
+    "description": "VitePress-like documentation template for PhilJS projects",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "bin": {
+        "philjs-docs": "./dist/cli.js"
+    },
+    "scripts": {
+        "build": "tsup src/index.ts src/cli.ts --format esm --dts",
+        "dev": "tsup src/index.ts src/cli.ts --format esm --dts --watch"
+    },
+    "dependencies": {
+        "@philjs/core": "workspace:*",
+        "@philjs/router": "workspace:*",
+        "@philjs/ssr": "workspace:*",
+        "shiki": "^1.0.0",
+        "gray-matter": "^4.0.3",
+        "marked": "^12.0.0",
+        "commander": "^11.0.0"
+    },
+    "devDependencies": {
+        "tsup": "^8.0.0",
+        "typescript": "^5.3.0"
+    },
+    "keywords": [
+        "philjs",
+        "docs",
+        "documentation",
+        "template",
+        "vitepress"
+    ],
+    "license": "MIT"
+}

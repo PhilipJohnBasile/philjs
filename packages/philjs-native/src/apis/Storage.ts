@@ -8,6 +8,12 @@
 import { signal, effect, type Signal } from '@philjs/core';
 import { detectPlatform, nativeBridge } from '../runtime.js';
 
+// Check if localStorage is available and functional
+const hasLocalStorage = (): boolean =>
+  typeof localStorage !== 'undefined' &&
+  typeof localStorage.setItem === 'function' &&
+  typeof localStorage.getItem === 'function';
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -72,7 +78,7 @@ export const Storage = {
     const platform = detectPlatform();
     const prefixedKey = this.config.prefix + key;
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       try {
         const value = localStorage.getItem(prefixedKey);
         if (value && this.config.encryptionKey) {
@@ -100,7 +106,7 @@ export const Storage = {
       storedValue = encrypt(value, this.config.encryptionKey);
     }
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       try {
         localStorage.setItem(prefixedKey, storedValue);
       } catch (error) {
@@ -123,7 +129,7 @@ export const Storage = {
     const platform = detectPlatform();
     const prefixedKey = this.config.prefix + key;
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       localStorage.removeItem(prefixedKey);
       return;
     }
@@ -138,7 +144,7 @@ export const Storage = {
     const platform = detectPlatform();
     const prefixedKeys = keys.map(k => this.config.prefix + k);
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       return Promise.all(
         prefixedKeys.map(async (_key, index) => {
           const originalKey = keys[index]!;
@@ -158,7 +164,7 @@ export const Storage = {
   async multiSet(keyValuePairs: MultiSetInput): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       await Promise.all(
         keyValuePairs.map(([key, value]) => this.setItem(key, value))
       );
@@ -175,7 +181,7 @@ export const Storage = {
   async multiRemove(keys: string[]): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       await Promise.all(keys.map(key => this.removeItem(key)));
       return;
     }
@@ -190,7 +196,7 @@ export const Storage = {
   async getAllKeys(): Promise<string[]> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       const keys: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -213,7 +219,7 @@ export const Storage = {
   async clear(): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -260,7 +266,7 @@ export const Storage = {
     const platform = detectPlatform();
     const keys = await this.getAllKeys();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       let used = 0;
       for (const key of keys) {
         const value = await this.getItem(key);
@@ -332,7 +338,7 @@ export const SecureStorage = {
   async getItem(key: string): Promise<string | null> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       // Web uses sessionStorage for slightly more security
       return sessionStorage.getItem(Storage.config.prefix + key);
     }
@@ -346,7 +352,7 @@ export const SecureStorage = {
   async setItem(key: string, value: string): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       sessionStorage.setItem(Storage.config.prefix + key, value);
       return;
     }
@@ -360,7 +366,7 @@ export const SecureStorage = {
   async removeItem(key: string): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       sessionStorage.removeItem(Storage.config.prefix + key);
       return;
     }
@@ -374,7 +380,7 @@ export const SecureStorage = {
   async clear(): Promise<void> {
     const platform = detectPlatform();
 
-    if (platform === 'web') {
+    if (platform === 'web' && hasLocalStorage()) {
       sessionStorage.clear();
       return;
     }
@@ -465,9 +471,14 @@ export const MMKVStorage = {
 
     const store = this.instances.get(id)!;
 
+    // Check if localStorage is available and functional
+    const hasLocalStorage =
+      typeof localStorage !== 'undefined' &&
+      typeof localStorage.setItem === 'function';
+
     return {
       getString(key: string): string | undefined {
-        if (platform === 'web') {
+        if (platform === 'web' && hasLocalStorage) {
           const value = localStorage.getItem(`mmkv:${id}:${key}`);
           return value ?? undefined;
         }
@@ -475,7 +486,7 @@ export const MMKVStorage = {
       },
 
       setString(key: string, value: string): void {
-        if (platform === 'web') {
+        if (platform === 'web' && hasLocalStorage) {
           localStorage.setItem(`mmkv:${id}:${key}`, value);
         }
         store.set(key, value);
@@ -500,14 +511,14 @@ export const MMKVStorage = {
       },
 
       delete(key: string): void {
-        if (platform === 'web') {
+        if (platform === 'web' && hasLocalStorage) {
           localStorage.removeItem(`mmkv:${id}:${key}`);
         }
         store.delete(key);
       },
 
       getAllKeys(): string[] {
-        if (platform === 'web') {
+        if (platform === 'web' && hasLocalStorage) {
           const keys: string[] = [];
           const prefix = `mmkv:${id}:`;
           for (let i = 0; i < localStorage.length; i++) {
@@ -522,7 +533,7 @@ export const MMKVStorage = {
       },
 
       clearAll(): void {
-        if (platform === 'web') {
+        if (platform === 'web' && hasLocalStorage) {
           const prefix = `mmkv:${id}:`;
           const keysToRemove: string[] = [];
           for (let i = 0; i < localStorage.length; i++) {

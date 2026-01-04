@@ -1,0 +1,59 @@
+{
+  "name": "@philjs/security",
+  "version": "0.1.0",
+  "description": "Runtime security protection - CSP, CSRF, XSS prevention, and security headers",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./csp": {
+      "types": "./dist/csp.d.ts",
+      "import": "./dist/csp.js",
+      "require": "./dist/csp.cjs"
+    },
+    "./csrf": {
+      "types": "./dist/csrf.d.ts",
+      "import": "./dist/csrf.js",
+      "require": "./dist/csrf.cjs"
+    },
+    "./headers": {
+      "types": "./dist/headers.d.ts",
+      "import": "./dist/headers.js",
+      "require": "./dist/headers.cjs"
+    },
+    "./sanitize": {
+      "types": "./dist/sanitize.d.ts",
+      "import": "./dist/sanitize.js",
+      "require": "./dist/sanitize.cjs"
+    }
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["philjs", "security", "csp", "csrf", "xss", "headers", "protection"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

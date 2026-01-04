@@ -42,7 +42,7 @@
     "@rollup/plugin-typescript": "^12.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "rollup": "^4.54.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "license": "MIT",
@@ -67,3 +67,4 @@
     "node": ">=24"
   }
 }
+

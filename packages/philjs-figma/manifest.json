@@ -1,0 +1,16 @@
+{
+    "name": "PhilJS Code Export",
+    "id": "philjs-figma-plugin",
+    "api": "1.0.0",
+    "main": "dist/code.js",
+    "ui": "dist/ui.html",
+    "editorType": [
+        "figma",
+        "figjam"
+    ],
+    "networkAccess": {
+        "allowedDomains": [
+            "*"
+        ]
+    }
+}

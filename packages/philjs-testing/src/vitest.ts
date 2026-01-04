@@ -66,6 +66,78 @@ if (typeof global !== 'undefined' && !global.IntersectionObserver) {
   } as any;
 }
 
+if (typeof global !== 'undefined' && !global.DataTransfer) {
+  class DataTransferItemList {
+    private files: File[];
+
+    constructor(files: File[]) {
+      this.files = files;
+    }
+
+    add(file: File) {
+      this.files.push(file);
+      return file;
+    }
+
+    remove(index: number) {
+      this.files.splice(index, 1);
+    }
+
+    clear() {
+      this.files.length = 0;
+    }
+
+    get length() {
+      return this.files.length;
+    }
+
+    [Symbol.iterator]() {
+      return this.files[Symbol.iterator]();
+    }
+  }
+
+  class DataTransfer {
+    private filesInternal: File[] = [];
+    private data = new Map<string, string>();
+    items = new DataTransferItemList(this.filesInternal);
+
+    get files() {
+      return this.filesInternal as unknown as FileList;
+    }
+
+    setData(type: string, value: string) {
+      this.data.set(type, value);
+    }
+
+    getData(type: string) {
+      return this.data.get(type) ?? "";
+    }
+
+    clearData(type?: string) {
+      if (type) {
+        this.data.delete(type);
+      } else {
+        this.data.clear();
+      }
+    }
+  }
+
+  global.DataTransfer = DataTransfer as any;
+}
+
+if (typeof global !== 'undefined' && !global.ClipboardEvent) {
+  class ClipboardEvent extends Event {
+    clipboardData: DataTransfer | null;
+
+    constructor(type: string, init: ClipboardEventInit = {}) {
+      super(type, init);
+      this.clipboardData = init.clipboardData ?? null;
+    }
+  }
+
+  global.ClipboardEvent = ClipboardEvent as any;
+}
+
 // Mock window.matchMedia
 if (typeof window !== 'undefined' && !window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {

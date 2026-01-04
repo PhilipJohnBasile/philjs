@@ -1177,52 +1177,154 @@ const codeExecutorTool: ToolDefinition = {
 };
 
 // ============================================================================
-// REACT HOOKS
+// REACTIVE HOOKS (PhilJS Signal-based)
 // ============================================================================
 
+/**
+ * Signal type for reactive state management
+ * Compatible with @philjs/core signals
+ */
+interface Signal<T> {
+  (): T;
+  set(value: T): void;
+  update(fn: (prev: T) => T): void;
+}
+
+/**
+ * Create a reactive signal (placeholder - should use @philjs/core in production)
+ * This implementation provides basic reactivity that works standalone
+ */
+function createSignal<T>(initialValue: T): Signal<T> {
+  let value = initialValue;
+  const subscribers = new Set<() => void>();
+
+  const signal = (() => value) as Signal<T>;
+
+  signal.set = (newValue: T) => {
+    if (value !== newValue) {
+      value = newValue;
+      subscribers.forEach(fn => fn());
+    }
+  };
+
+  signal.update = (fn: (prev: T) => T) => {
+    signal.set(fn(value));
+  };
+
+  // Allow subscription for framework integration
+  (signal as any).subscribe = (fn: () => void) => {
+    subscribers.add(fn);
+    return () => subscribers.delete(fn);
+  };
+
+  return signal;
+}
+
 interface UseAgentResult {
-  messages: Message[];
-  isLoading: boolean;
-  error: Error | null;
+  /** Reactive signal containing all messages in the conversation */
+  messages: Signal<Message[]>;
+  /** Reactive signal indicating if a request is in progress */
+  isLoading: Signal<boolean>;
+  /** Reactive signal containing any error that occurred */
+  error: Signal<Error | null>;
+  /** Send a message to the agent and stream the response */
   send: (message: string) => Promise<void>;
-  streamingContent: string;
+  /** Reactive signal containing the current streaming content */
+  streamingContent: Signal<string>;
+  /** Clear all messages and reset state */
   clear: () => void;
+  /** Abort the current request if any */
+  abort: () => void;
 }
 
+/**
+ * Hook for interacting with a single AI agent
+ *
+ * @example
+ * ```typescript
+ * const agent = createAgent()
+ *   .name('assistant')
+ *   .systemPrompt('You are a helpful assistant')
+ *   .build(new OpenAIClient(apiKey));
+ *
+ * const { messages, isLoading, send, streamingContent } = useAgent(agent);
+ *
+ * // Send a message
+ * await send('Hello!');
+ *
+ * // Access reactive state
+ * console.log(messages()); // Get current messages
+ * console.log(isLoading()); // Check if loading
+ * console.log(streamingContent()); // Get streaming text
+ * ```
+ */
 function useAgent(agent: Agent): UseAgentResult {
-  let messages: Message[] = [];
-  let isLoading = false;
-  let error: Error | null = null;
-  let streamingContent = '';
+  const messages = createSignal<Message[]>([]);
+  const isLoading = createSignal(false);
+  const error = createSignal<Error | null>(null);
+  const streamingContent = createSignal('');
 
-  const send = async (message: string) => {
-    isLoading = true;
-    error = null;
-    streamingContent = '';
+  let abortController: AbortController | null = null;
+
+  const send = async (message: string): Promise<void> => {
+    // Abort any existing request
+    if (abortController) {
+      abortController.abort();
+    }
+    abortController = new AbortController();
+
+    isLoading.set(true);
+    error.set(null);
+    streamingContent.set('');
 
     try {
-      for await (const chunk of agent.stream(message)) {
+      const context = { abortSignal: abortController.signal };
+
+      for await (const chunk of agent.stream(message, context)) {
+        // Check for abort
+        if (abortController.signal.aborted) {
+          break;
+        }
+
         if (chunk.type === 'text' && chunk.content) {
-          streamingContent += chunk.content;
+          streamingContent.update(prev => prev + chunk.content);
         } else if (chunk.type === 'done') {
-          messages = await agent.getMemory().getMessages();
+          const updatedMessages = await agent.getMemory().getMessages();
+          messages.set(updatedMessages);
+          streamingContent.set(''); // Clear streaming content after completion
         } else if (chunk.type === 'error') {
-          error = new Error(chunk.error);
+          error.set(new Error(chunk.error));
         }
       }
     } catch (e) {
-      error = e instanceof Error ? e : new Error('Unknown error');
+      if (e instanceof Error && e.name === 'AbortError') {
+        // Request was aborted, not an error
+        return;
+      }
+      error.set(e instanceof Error ? e : new Error('Unknown error'));
     } finally {
-      isLoading = false;
+      isLoading.set(false);
+      abortController = null;
     }
   };
 
-  const clear = () => {
+  const clear = (): void => {
     agent.getMemory().clear();
-    messages = [];
-    streamingContent = '';
-    error = null;
+    messages.set([]);
+    streamingContent.set('');
+    error.set(null);
   };
+
+  const abort = (): void => {
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+      isLoading.set(false);
+    }
+  };
+
+  // Initialize with existing messages
+  agent.getMemory().getMessages().then(msgs => messages.set(msgs));
 
   return {
     messages,
@@ -1230,42 +1332,113 @@ function useAgent(agent: Agent): UseAgentResult {
     error,
     send,
     streamingContent,
-    clear
+    clear,
+    abort
   };
 }
 
-function useOrchestrator(orchestrator: AgentOrchestrator): UseAgentResult {
-  let messages: Message[] = [];
-  let isLoading = false;
-  let error: Error | null = null;
-  let streamingContent = '';
+interface UseOrchestratorResult extends UseAgentResult {
+  /** The currently active agent handling the conversation */
+  activeAgent: Signal<Agent | null>;
+  /** History of agent handoffs */
+  handoffHistory: Signal<HandoffRequest[]>;
+}
 
-  const send = async (message: string) => {
-    isLoading = true;
-    error = null;
-    streamingContent = '';
+/**
+ * Hook for interacting with a multi-agent orchestrator
+ *
+ * @example
+ * ```typescript
+ * const orchestrator = new AgentOrchestrator({
+ *   agents: [salesAgent, supportAgent, technicalAgent],
+ *   router: async (msg, agents) => {
+ *     // Route based on message content
+ *     if (msg.includes('price')) return agents.find(a => a.name === 'sales');
+ *     return agents[0];
+ *   }
+ * });
+ *
+ * const { messages, send, activeAgent } = useOrchestrator(orchestrator);
+ *
+ * await send('What are your prices?');
+ * console.log(activeAgent()?.name); // 'sales'
+ * ```
+ */
+function useOrchestrator(orchestrator: AgentOrchestrator): UseOrchestratorResult {
+  const messages = createSignal<Message[]>([]);
+  const isLoading = createSignal(false);
+  const error = createSignal<Error | null>(null);
+  const streamingContent = createSignal('');
+  const activeAgent = createSignal<Agent | null>(null);
+  const handoffHistory = createSignal<HandoffRequest[]>([]);
+
+  let abortController: AbortController | null = null;
+
+  const send = async (message: string): Promise<void> => {
+    // Abort any existing request
+    if (abortController) {
+      abortController.abort();
+    }
+    abortController = new AbortController();
+
+    isLoading.set(true);
+    error.set(null);
+    streamingContent.set('');
 
     try {
-      for await (const chunk of orchestrator.stream(message)) {
+      // Route to appropriate agent
+      const agent = await orchestrator.route(message);
+      activeAgent.set(agent);
+
+      const context = { abortSignal: abortController.signal };
+
+      for await (const chunk of orchestrator.stream(message, context)) {
+        // Check for abort
+        if (abortController.signal.aborted) {
+          break;
+        }
+
         if (chunk.type === 'text' && chunk.content) {
-          streamingContent += chunk.content;
+          streamingContent.update(prev => prev + chunk.content);
         } else if (chunk.type === 'done') {
-          // Get messages from routed agent
+          // Get messages from the active agent
+          const currentAgent = activeAgent();
+          if (currentAgent) {
+            const updatedMessages = await currentAgent.getMemory().getMessages();
+            messages.set(updatedMessages);
+          }
+          streamingContent.set('');
         } else if (chunk.type === 'error') {
-          error = new Error(chunk.error);
+          error.set(new Error(chunk.error));
         }
       }
+
+      // Update handoff history
+      handoffHistory.set(orchestrator.getHandoffHistory());
     } catch (e) {
-      error = e instanceof Error ? e : new Error('Unknown error');
+      if (e instanceof Error && e.name === 'AbortError') {
+        return;
+      }
+      error.set(e instanceof Error ? e : new Error('Unknown error'));
     } finally {
-      isLoading = false;
+      isLoading.set(false);
+      abortController = null;
     }
   };
 
-  const clear = () => {
-    messages = [];
-    streamingContent = '';
-    error = null;
+  const clear = (): void => {
+    messages.set([]);
+    streamingContent.set('');
+    error.set(null);
+    activeAgent.set(null);
+  };
+
+  const abort = (): void => {
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+      isLoading.set(false);
+    }
   };
 
   return {
@@ -1274,7 +1447,162 @@ function useOrchestrator(orchestrator: AgentOrchestrator): UseAgentResult {
     error,
     send,
     streamingContent,
-    clear
+    clear,
+    abort,
+    activeAgent,
+    handoffHistory
+  };
+}
+
+/**
+ * Hook for supervisor-worker pattern orchestration
+ */
+interface UseSupervisorResult extends UseAgentResult {
+  /** Results from delegated worker tasks */
+  workerResults: Signal<Array<{ worker: string; task: string; response: string }>>;
+}
+
+function useSupervisor(supervisor: SupervisorOrchestrator): UseSupervisorResult {
+  const messages = createSignal<Message[]>([]);
+  const isLoading = createSignal(false);
+  const error = createSignal<Error | null>(null);
+  const streamingContent = createSignal('');
+  const workerResults = createSignal<Array<{ worker: string; task: string; response: string }>>([]);
+
+  let abortController: AbortController | null = null;
+
+  const send = async (task: string): Promise<void> => {
+    if (abortController) {
+      abortController.abort();
+    }
+    abortController = new AbortController();
+
+    isLoading.set(true);
+    error.set(null);
+    streamingContent.set('');
+    workerResults.set([]);
+
+    try {
+      const context = { abortSignal: abortController.signal };
+
+      for await (const chunk of supervisor.stream(task, context)) {
+        if (abortController.signal.aborted) {
+          break;
+        }
+
+        if (chunk.type === 'text' && chunk.content) {
+          streamingContent.update(prev => prev + chunk.content);
+        } else if (chunk.type === 'tool_result' && chunk.toolResult) {
+          // Capture worker delegation results
+          const result = chunk.toolResult.result;
+          if (result && typeof result === 'object' && 'worker' in result) {
+            workerResults.update(prev => [...prev, result as any]);
+          }
+        } else if (chunk.type === 'done') {
+          streamingContent.set('');
+        } else if (chunk.type === 'error') {
+          error.set(new Error(chunk.error));
+        }
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === 'AbortError') {
+        return;
+      }
+      error.set(e instanceof Error ? e : new Error('Unknown error'));
+    } finally {
+      isLoading.set(false);
+      abortController = null;
+    }
+  };
+
+  const clear = (): void => {
+    messages.set([]);
+    streamingContent.set('');
+    error.set(null);
+    workerResults.set([]);
+  };
+
+  const abort = (): void => {
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+      isLoading.set(false);
+    }
+  };
+
+  return {
+    messages,
+    isLoading,
+    error,
+    send,
+    streamingContent,
+    clear,
+    abort,
+    workerResults
+  };
+}
+
+/**
+ * Hook for running agent workflows/pipelines
+ */
+interface UseWorkflowResult {
+  /** Whether the workflow is currently running */
+  isRunning: Signal<boolean>;
+  /** Current step being executed */
+  currentStep: Signal<string | null>;
+  /** Execution trace of all steps */
+  trace: Signal<Array<{ step: string; input: string; output: any }>>;
+  /** Final output of the workflow */
+  output: Signal<any>;
+  /** Any error that occurred */
+  error: Signal<Error | null>;
+  /** Run the workflow with initial input */
+  run: (input: string) => Promise<void>;
+  /** Reset the workflow state */
+  reset: () => void;
+}
+
+function useWorkflow(workflow: AgentWorkflow): UseWorkflowResult {
+  const isRunning = createSignal(false);
+  const currentStep = createSignal<string | null>(null);
+  const trace = createSignal<Array<{ step: string; input: string; output: any }>>([]);
+  const output = createSignal<any>(null);
+  const error = createSignal<Error | null>(null);
+
+  const run = async (input: string): Promise<void> => {
+    isRunning.set(true);
+    error.set(null);
+    trace.set([]);
+    output.set(null);
+
+    try {
+      const result = await workflow.run(input);
+      trace.set(result.trace);
+      output.set(result.output);
+    } catch (e) {
+      error.set(e instanceof Error ? e : new Error('Workflow failed'));
+    } finally {
+      isRunning.set(false);
+      currentStep.set(null);
+    }
+  };
+
+  const reset = (): void => {
+    isRunning.set(false);
+    currentStep.set(null);
+    trace.set([]);
+    output.set(null);
+    error.set(null);
+  };
+
+  return {
+    isRunning,
+    currentStep,
+    trace,
+    output,
+    error,
+    run,
+    reset
   };
 }
 
@@ -1381,9 +1709,14 @@ export {
   calculatorTool,
   codeExecutorTool,
 
-  // Hooks
+  // Reactive Hooks
   useAgent,
   useOrchestrator,
+  useSupervisor,
+  useWorkflow,
+
+  // Signal utilities
+  createSignal,
 
   // Builder
   createAgent,
@@ -1405,5 +1738,9 @@ export {
   type WorkflowStep,
   type LLMClient,
   type LLMRequest,
-  type UseAgentResult
+  type UseAgentResult,
+  type UseOrchestratorResult,
+  type UseSupervisorResult,
+  type UseWorkflowResult,
+  type Signal
 };

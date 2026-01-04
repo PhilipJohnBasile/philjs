@@ -21,9 +21,51 @@ export interface PropertyOptions {
 
 /**
  * Property decorator for Hollow elements
+ * Supports both legacy and stage 3 decorators
  */
 export function property(options: PropertyOptions = {}) {
-  return function (target: HollowElement, propertyKey: string) {
+  return function (target: any, propertyKeyOrContext: string | ClassFieldDecoratorContext) {
+    // Stage 3 decorator (TC39)
+    if (typeof propertyKeyOrContext === 'object' && propertyKeyOrContext.kind === 'field') {
+      const context = propertyKeyOrContext;
+      const propertyKey = String(context.name);
+
+      context.addInitializer(function (this: HollowElement) {
+        const constructor = this.constructor as typeof HollowElement;
+
+        // Initialize metadata storage
+        if (!constructor._propertyMetadata) {
+          constructor._propertyMetadata = new Map();
+        }
+
+        // Store metadata
+        constructor._propertyMetadata.set(propertyKey, {
+          attribute: options.attribute ?? toKebabCase(propertyKey),
+          type: options.type ?? 'string',
+          reflect: options.reflect ?? false,
+          default: options.default,
+        });
+
+        // Add to observed attributes
+        if (options.attribute !== false) {
+          const attrName = options.attribute ?? toKebabCase(propertyKey);
+          if (!constructor.observedAttributes.includes(attrName)) {
+            constructor.observedAttributes = [...constructor.observedAttributes, attrName];
+          }
+        }
+      });
+
+      return;
+    }
+
+    // Legacy decorator
+    const propertyKey = propertyKeyOrContext as string;
+
+    // Handle case where target might be undefined in some test contexts
+    if (!target || !target.constructor) {
+      return;
+    }
+
     const constructor = target.constructor as typeof HollowElement;
 
     // Initialize metadata storage

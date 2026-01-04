@@ -115,17 +115,21 @@ export function defer<T>(promise: Promise<T>): DeferredValue<T> {
   };
 
   // Start resolving immediately
-  promise
+  const trackedPromise = promise
     .then((value) => {
       deferred.status = "resolved";
       deferred.value = value;
       subscribers.forEach((cb) => cb("resolved"));
+      return value;
     })
     .catch((error) => {
       deferred.status = "rejected";
       deferred.error = error instanceof Error ? error : new Error(String(error));
       subscribers.forEach((cb) => cb("rejected"));
+      throw deferred.error;
     });
+
+  deferred.promise = trackedPromise;
 
   return deferred;
 }

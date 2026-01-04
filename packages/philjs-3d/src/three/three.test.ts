@@ -7,47 +7,61 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock Three.js module
 vi.mock('three', () => ({
-  Scene: vi.fn(() => ({
-    add: vi.fn(),
-    remove: vi.fn(),
-    children: [],
-    traverse: vi.fn(),
-  })),
-  PerspectiveCamera: vi.fn((fov, aspect, near, far) => ({
-    fov,
-    aspect,
-    near,
-    far,
-    position: { x: 0, y: 0, z: 0, set: vi.fn() },
-    lookAt: vi.fn(),
-    updateProjectionMatrix: vi.fn(),
-  })),
-  WebGLRenderer: vi.fn(() => ({
-    domElement: document.createElement('canvas'),
-    render: vi.fn(),
-    setSize: vi.fn(),
-    setPixelRatio: vi.fn(),
-    setClearColor: vi.fn(),
-    dispose: vi.fn(),
-    shadowMap: { enabled: false },
-  })),
-  Clock: vi.fn(() => ({
-    start: vi.fn(),
-    stop: vi.fn(),
-    getElapsedTime: vi.fn(() => 0),
-    getDelta: vi.fn(() => 0.016),
-    running: false,
-    elapsedTime: 0,
-  })),
-  Vector3: vi.fn((x = 0, y = 0, z = 0) => ({ x, y, z })),
-  Color: vi.fn((color) => ({ r: 0, g: 0, b: 0 })),
-  TextureLoader: vi.fn(() => ({
-    load: vi.fn((url, onLoad) => {
-      const texture = { image: {}, needsUpdate: false, dispose: vi.fn() };
-      onLoad?.(texture);
-      return texture;
-    }),
-  })),
+  Scene: vi.fn(function Scene() {
+    return {
+      add: vi.fn(),
+      remove: vi.fn(),
+      children: [],
+      traverse: vi.fn(),
+    };
+  }),
+  PerspectiveCamera: vi.fn(function PerspectiveCamera(fov, aspect, near, far) {
+    return {
+      fov,
+      aspect,
+      near,
+      far,
+      position: { x: 0, y: 0, z: 0, set: vi.fn() },
+      lookAt: vi.fn(),
+      updateProjectionMatrix: vi.fn(),
+    };
+  }),
+  WebGLRenderer: vi.fn(function WebGLRenderer() {
+    return {
+      domElement: document.createElement('canvas'),
+      render: vi.fn(),
+      setSize: vi.fn(),
+      setPixelRatio: vi.fn(),
+      setClearColor: vi.fn(),
+      dispose: vi.fn(),
+      shadowMap: { enabled: false },
+    };
+  }),
+  Clock: vi.fn(function Clock() {
+    return {
+      start: vi.fn(),
+      stop: vi.fn(),
+      getElapsedTime: vi.fn(() => 0),
+      getDelta: vi.fn(() => 0.016),
+      running: false,
+      elapsedTime: 0,
+    };
+  }),
+  Vector3: vi.fn(function Vector3(x = 0, y = 0, z = 0) {
+    return { x, y, z };
+  }),
+  Color: vi.fn(function Color() {
+    return { r: 0, g: 0, b: 0 };
+  }),
+  TextureLoader: vi.fn(function TextureLoader() {
+    return {
+      load: vi.fn((url, onLoad) => {
+        const texture = { image: {}, needsUpdate: false, dispose: vi.fn() };
+        onLoad?.(texture);
+        return texture;
+      }),
+    };
+  }),
 }));
 
 import {

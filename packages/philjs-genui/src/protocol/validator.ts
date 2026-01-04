@@ -77,13 +77,13 @@ a2uiComponentSchema = z.lazy(() =>
   z.object({
     id: z.string().min(1),
     type: z.string().min(1),
-    props: z.record(z.unknown()),
+    props: z.record(z.string(), z.unknown()),
     children: z.array(a2uiComponentSchema).optional(),
     slot: z.string().optional(),
     when: a2uiConditionSchema.optional(),
     each: a2uiIterationSchema.optional(),
     className: z.string().optional(),
-    style: z.record(z.union([z.string(), z.number()])).optional(),
+    style: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
     a11y: a2uiAccessibilitySchema.optional(),
   })
 );
@@ -124,7 +124,7 @@ const a2uiActionHandlerSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('agent'),
     intent: z.string().min(1),
-    context: z.record(z.unknown()).optional(),
+    context: z.record(z.string(), z.unknown()).optional(),
     await: z.boolean().optional(),
   }),
 ]);
@@ -151,7 +151,14 @@ const a2uiAnimationSchema = z.object({
   duration: z.number().optional(),
   easing: z.string().optional(),
   direction: z.enum(['up', 'down', 'left', 'right']).optional(),
-  keyframes: z.array(z.record(z.record(z.union([z.string(), z.number()])))).optional(),
+  keyframes: z
+    .array(
+      z.record(
+        z.string(),
+        z.record(z.string(), z.union([z.string(), z.number()]))
+      )
+    )
+    .optional(),
 });
 
 /**
@@ -183,7 +190,7 @@ const a2uiRenderPayloadSchema = z.object({
 const a2uiUpdatePayloadSchema = z.object({
   type: z.literal('update'),
   targetId: z.string().min(1),
-  props: z.record(z.unknown()).optional(),
+  props: z.record(z.string(), z.unknown()).optional(),
   children: z.array(a2uiComponentSchema).optional(),
   animation: a2uiAnimationSchema.optional(),
 });
@@ -198,7 +205,7 @@ const a2uiActionPayloadSchema = z.object({
     type: z.string(),
     data: z.unknown().optional(),
   }),
-  state: z.record(z.unknown()).optional(),
+  state: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**
@@ -207,7 +214,7 @@ const a2uiActionPayloadSchema = z.object({
 const a2uiQueryPayloadSchema = z.object({
   type: z.literal('query'),
   query: z.enum(['components', 'layouts', 'capabilities', 'state']),
-  filters: z.record(z.unknown()).optional(),
+  filters: z.record(z.string(), z.unknown()).optional(),
 });
 
 /**

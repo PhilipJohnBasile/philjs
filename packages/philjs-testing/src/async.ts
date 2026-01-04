@@ -141,6 +141,7 @@ export async function waitForNetworkIdle(
   options: { timeout?: number; idleTime?: number } = {}
 ): Promise<void> {
   const { timeout = 5000, idleTime = 500 } = options;
+  const interval = Math.max(1, Math.min(100, idleTime, Math.floor(timeout / 2)));
 
   let lastRequestTime = Date.now();
 
@@ -174,7 +175,7 @@ export async function waitForNetworkIdle(
 
         return true;
       },
-      { timeout, interval: 100 }
+      { timeout, interval }
     );
   } finally {
     window.fetch = originalFetch;

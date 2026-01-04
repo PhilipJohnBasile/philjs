@@ -37,7 +37,7 @@
     "morphdom": "^2.7.2"
   },
   "devDependencies": {
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "tsup": "^8.5.1",
     "vitest": "^4.0.16"
   },
@@ -60,3 +60,4 @@
     "node": ">=24"
   }
 }
+

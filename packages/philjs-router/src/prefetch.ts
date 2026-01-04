@@ -150,10 +150,11 @@ function shouldPrefetch(config: PrefetchConfig): boolean {
 /**
  * Prefetch Manager - Qwik-style speculative prefetching
  */
-export class PrefetchManager {
-  private queue: PrefetchQueueItem[] = [];
-  private loading = new Map<string, Promise<PrefetchResult>>();
-  private loaded = new Map<string, { result: PrefetchResult; timestamp: number }>();
+  export class PrefetchManager {
+    private queue: PrefetchQueueItem[] = [];
+    private queueStart = 0;
+    private loading = new Map<string, Promise<PrefetchResult>>();
+    private loaded = new Map<string, { result: PrefetchResult; timestamp: number }>();
   private failed = new Set<string>();
   private config: Required<PrefetchConfig>;
   private stats: PrefetchStats = {
@@ -170,8 +171,8 @@ export class PrefetchManager {
   private routeModules = new Map<string, RouteModule>();
   private dataCache = new Map<string, { data: any; timestamp: number }>();
 
-  // Service worker communication channel
-  private swChannel: BroadcastChannel | null = null;
+    // Service worker communication channel
+    private swChannel: BroadcastChannel | null = null;
 
   constructor(config: PrefetchConfig = {}) {
     this.config = {
@@ -315,36 +316,37 @@ export class PrefetchManager {
     return this.processQueue(url, options.params);
   }
 
-  /**
-   * Add item to priority queue
-   */
-  private addToQueue(item: PrefetchQueueItem): void {
-    // Remove existing entry for same URL
-    this.queue = this.queue.filter((q) => q.url !== item.url);
+    /**
+     * Add item to priority queue
+     */
+    private addToQueue(item: PrefetchQueueItem): void {
+      this.compactQueue();
+      // Remove existing entry for same URL
+      this.queue = this.queue.filter((q) => q.url !== item.url);
 
     // Add new item
     this.queue.push(item);
 
     // Sort by priority (higher weight first), then by timestamp (older first)
-    this.queue.sort((a, b) => {
-      const priorityDiff = PRIORITY_WEIGHTS[b.priority] - PRIORITY_WEIGHTS[a.priority];
-      if (priorityDiff !== 0) return priorityDiff;
-      return a.timestamp - b.timestamp;
-    });
-  }
+      this.queue.sort((a, b) => {
+        const priorityDiff = PRIORITY_WEIGHTS[b.priority] - PRIORITY_WEIGHTS[a.priority];
+        if (priorityDiff !== 0) return priorityDiff;
+        return a.timestamp - b.timestamp;
+      });
+    }
 
-  /**
-   * Process the prefetch queue
-   */
-  private async processQueue(targetUrl?: string, params?: Record<string, string>): Promise<PrefetchResult> {
-    // Track the result for the target URL
-    let targetResult: Promise<PrefetchResult> | undefined;
+    /**
+     * Process the prefetch queue
+     */
+    private async processQueue(targetUrl?: string, params?: Record<string, string>): Promise<PrefetchResult> {
+      // Track the result for the target URL
+      let targetResult: Promise<PrefetchResult> | undefined;
 
-    while (this.queue.length > 0 && this.loading.size < this.config.maxConcurrent) {
-      const item = this.queue.shift();
-      if (!item) break;
+      while (this.queueStart < this.queue.length && this.loading.size < this.config.maxConcurrent) {
+        const item = this.queue[this.queueStart++];
+        if (!item) break;
 
-      this.stats.queued--;
+        this.stats.queued--;
 
       const fetchPromise = this.executePrefetch(item, params);
       this.loading.set(item.url, fetchPromise);
@@ -355,13 +357,18 @@ export class PrefetchManager {
       }
 
       // Don't await - let it process in parallel
-      fetchPromise.finally(() => {
-        this.loading.delete(item.url);
-        this.stats.loading--;
-        // Continue processing queue
-        this.processQueue();
-      });
-    }
+        fetchPromise.finally(() => {
+          this.loading.delete(item.url);
+          this.stats.loading--;
+          // Continue processing queue
+          this.processQueue();
+        });
+      }
+
+      if (this.queueStart >= this.queue.length) {
+        this.queue = [];
+        this.queueStart = 0;
+      }
 
     // If we're waiting for a specific URL
     if (targetUrl) {
@@ -379,8 +386,14 @@ export class PrefetchManager {
       }
     }
 
-    return { url: targetUrl || '', success: true, cached: false };
-  }
+      return { url: targetUrl || '', success: true, cached: false };
+    }
+
+    private compactQueue(): void {
+      if (this.queueStart === 0) return;
+      this.queue = this.queue.slice(this.queueStart);
+      this.queueStart = 0;
+    }
 
   /**
    * Execute a single prefetch
@@ -503,24 +516,29 @@ export class PrefetchManager {
   /**
    * Prefetch route data (run loader)
    */
-  private async prefetchData(url: string, params: Record<string, string>): Promise<any> {
-    // Check data cache first
-    const cached = this.dataCache.get(url);
-    if (cached && Date.now() - cached.timestamp < this.config.cacheTTL) {
-      return cached.data;
-    }
+    private async prefetchData(url: string, params: Record<string, string>): Promise<any> {
+      // Check data cache first
+      const cached = this.dataCache.get(url);
+      if (cached && Date.now() - cached.timestamp < this.config.cacheTTL) {
+        return cached.data;
+      }
 
-    // Find route module
-    const pathname = new URL(url, 'http://localhost').pathname;
-    const module = this.findRouteModule(pathname);
+      // Find route module
+      const resolvedUrl = new URL(
+        url,
+        typeof window !== 'undefined' ? window.location.origin : 'http://localhost'
+      );
+      const match = this.findRouteModule(resolvedUrl.pathname);
 
-    if (!module?.loader) {
-      return undefined;
-    }
+      if (!match?.module.loader) {
+        return undefined;
+      }
 
-    // Execute loader
-    const request = new Request(url, { method: 'GET' });
-    const data = await module.loader({ params, request });
+      // Execute loader
+      const request = new Request(resolvedUrl.toString(), { method: 'GET' });
+      const loaderParams =
+        Object.keys(params).length > 0 ? params : match.params;
+      const data = await match.module.loader({ params: loaderParams, request });
 
     // Cache data
     this.dataCache.set(url, { data, timestamp: Date.now() });
@@ -531,58 +549,94 @@ export class PrefetchManager {
   /**
    * Find route module for a path
    */
-  private findRouteModule(pathname: string): RouteModule | undefined {
-    // Try exact match first
-    if (this.routeModules.has(pathname)) {
-      return this.routeModules.get(pathname);
-    }
-
-    // Try pattern matching
-    for (const [pattern, module] of this.routeModules) {
-      if (this.matchPath(pattern, pathname)) {
-        return module;
+    private findRouteModule(
+      pathname: string
+    ): { module: RouteModule; params: Record<string, string> } | undefined {
+      // Try exact match first
+      const direct = this.routeModules.get(pathname);
+      if (direct) {
+        return { module: direct, params: {} };
       }
-    }
 
-    return undefined;
-  }
+      // Try pattern matching
+      for (const [pattern, module] of this.routeModules) {
+        const params = this.matchAndExtractParams(pattern, pathname);
+        if (params) {
+          return { module, params };
+        }
+      }
+
+      return undefined;
+    }
 
   /**
    * Simple path pattern matching
    */
-  private matchPath(pattern: string, pathname: string): boolean {
-    const patternParts = pattern.split('/').filter(Boolean);
-    const pathParts = pathname.split('/').filter(Boolean);
-
-    if (patternParts.length !== pathParts.length) return false;
-
-    for (let i = 0; i < patternParts.length; i++) {
-      const segment = patternParts[i];
-      if (segment === undefined) continue;
-      if (segment.startsWith(':') || segment === '*') {
-        continue;
-      }
-      if (segment !== pathParts[i]) {
-        return false;
-      }
+    private matchPath(pattern: string, pathname: string): boolean {
+      return this.matchAndExtractParams(pattern, pathname) !== null;
     }
 
-    return true;
-  }
+    private matchAndExtractParams(
+      pattern: string,
+      pathname: string
+    ): Record<string, string> | null {
+      const patternParts = pattern.split('/').filter(Boolean);
+      const pathParts = pathname.split('/').filter(Boolean);
+
+      const hasCatchAll = patternParts.includes('*');
+      if (!hasCatchAll && patternParts.length !== pathParts.length) return null;
+      if (patternParts.length > pathParts.length) return null;
+
+      const params: Record<string, string> = {};
+
+      for (let i = 0; i < patternParts.length; i++) {
+        const segment = patternParts[i];
+        const pathSegment = pathParts[i];
+        if (segment === undefined) continue;
+
+        if (segment === '*') {
+          params['*'] = decodeURIComponent(pathParts.slice(i).join('/'));
+          return params;
+        }
+
+        if (segment.startsWith(':')) {
+          params[segment.slice(1)] = decodeURIComponent(pathSegment ?? '');
+          continue;
+        }
+
+        if (segment !== pathSegment) {
+          return null;
+        }
+      }
+
+      if (patternParts.length !== pathParts.length && !hasCatchAll) {
+        return null;
+      }
+
+      return params;
+    }
 
   /**
    * Cancel a pending prefetch
    */
-  public cancel(url: string): void {
-    this.queue = this.queue.filter((item) => item.url !== url);
-  }
+    public cancel(url: string): void {
+      this.compactQueue();
+      const before = this.queue.length;
+      this.queue = this.queue.filter((item) => item.url !== url);
+      const removed = before - this.queue.length;
+      if (removed > 0) {
+        this.stats.queued = Math.max(0, this.stats.queued - removed);
+      }
+    }
 
   /**
    * Cancel all pending prefetches
    */
-  public cancelAll(): void {
-    this.queue = [];
-  }
+    public cancelAll(): void {
+      this.queue = [];
+      this.queueStart = 0;
+      this.stats.queued = 0;
+    }
 
   /**
    * Get prefetch statistics
@@ -620,9 +674,10 @@ export class PrefetchManager {
   /**
    * Clear all caches
    */
-  public clear(): void {
-    this.queue = [];
-    this.loading.clear();
+    public clear(): void {
+      this.queue = [];
+      this.queueStart = 0;
+      this.loading.clear();
     this.loaded.clear();
     this.failed.clear();
     this.dataCache.clear();

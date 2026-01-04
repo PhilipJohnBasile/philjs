@@ -1,6 +1,6 @@
 /**
  * Rslib Configuration
- * Library build configuration for PhilJS packages
+ * Library/app build configuration for PhilJS packages.
  */
 
 /**
@@ -9,238 +9,244 @@
 export type OutputFormat = 'esm' | 'cjs' | 'umd';
 
 /**
- * Rslib configuration
+ * Supported presets
+ */
+export type RslibPreset = 'library' | 'application' | 'component' | 'node';
+
+/**
+ * Rslib configuration (simplified shape for PhilJS).
  */
 export interface RslibConfig {
-  lib: RslibLibConfig[];
-  source?: {
-    entry?: Record<string, string>;
+  source: {
+    entry?: string | Record<string, string>;
+    alias?: Record<string, string>;
   };
-  output?: {
-    externals?: (string | RegExp)[];
+  output: {
+    format?: OutputFormat;
+    formats?: OutputFormat[];
+    dir?: string;
+    filename?: string;
+    clean?: boolean;
     minify?: boolean;
+    splitting?: boolean;
+    dts?: boolean;
     sourceMap?: boolean;
+    target?: 'node' | 'browser';
+    extractCSS?: boolean;
+    preserveModules?: boolean;
+  };
+  external?: string[];
+  autoExternal?: {
+    peerDependencies?: boolean;
+    builtins?: boolean;
   };
   plugins?: unknown[];
 }
 
 /**
- * Library output configuration
+ * New-style configuration options.
  */
-export interface RslibLibConfig {
-  format: OutputFormat;
-  output?: {
-    distPath?: {
-      root?: string;
-    };
-  };
-  umd?: {
-    name?: string;
-    globals?: Record<string, string>;
-  };
+export interface RslibConfigOptions {
+  preset?: RslibPreset;
+  source?: RslibConfig['source'];
+  output?: RslibConfig['output'];
+  external?: string[];
+  autoExternal?: RslibConfig['autoExternal'];
+  autoExternalPeers?: boolean;
+  autoExternalNode?: boolean;
+  plugins?: unknown[];
 }
 
 /**
- * PhilJS Rslib options
+ * Legacy library options (kept for CLI compatibility).
  */
-export interface PhilJSRslibOptions {
-  /** Entry file(s) */
+export interface LegacyRslibOptions {
   entry: string | Record<string, string>;
-  /** Output formats to generate */
   formats: OutputFormat[];
-  /** External dependencies (not bundled) */
   external?: string[];
-  /** Generate .d.ts files */
   dts?: boolean;
-  /** UMD global name (for UMD format) */
   umdName?: string;
-  /** UMD globals mapping */
   umdGlobals?: Record<string, string>;
-  /** Minify output */
   minify?: boolean;
-  /** Generate source maps */
   sourceMap?: boolean;
-  /** Output directory base */
   outDir?: string;
 }
 
-/**
- * Create Rslib configuration for PhilJS libraries
- */
-export function createRslibConfig(options: PhilJSRslibOptions): RslibConfig {
-  return {
-    lib: options.formats.map((format) => ({
-      format,
-      output: {
-        distPath: {
-          root: options.outDir ? `${options.outDir}/${format}` : `dist/${format}`,
-        },
-      },
-      ...(format === 'umd' && options.umdName
-        ? {
-            umd: {
-              name: options.umdName,
-              globals: options.umdGlobals ?? {
-                '@philjs/core': 'PhilJSCore',
-                react: 'React',
-              },
-            },
-          }
-        : {}),
-    })),
-    source: {
-      entry:
-        typeof options.entry === 'string'
-          ? { index: options.entry }
-          : options.entry,
-    },
-    output: {
-      externals: [
-        /^@philjs\//,
-        ...(options.external ?? []),
-      ],
-      minify: options.minify ?? true,
-      sourceMap: options.sourceMap ?? true,
-    },
-    plugins: [
-      // DTS plugin would be added here if dts is enabled
-      ...(options.dts !== false ? [createDtsPlugin()] : []),
-    ],
-  };
-}
+export type PhilJSRslibOptions = RslibConfigOptions | LegacyRslibOptions;
 
-/**
- * Create DTS (TypeScript declarations) plugin
- */
-function createDtsPlugin(): unknown {
-  return {
-    name: 'dts-plugin',
-    // Plugin implementation placeholder
-    // In production, use @rslib/plugin-dts or similar
-  };
-}
+const DEFAULT_ENTRY = './src/index.ts';
 
-/**
- * Preset configurations for common use cases
- */
-export const rslibPresets = {
-  /**
-   * Core framework package preset
-   * ESM only, strict tree-shaking
-   */
-  core: (entry: string): PhilJSRslibOptions => ({
-    entry,
-    formats: ['esm'],
+export const libraryPreset: RslibConfigOptions = {
+  output: {
+    format: 'esm',
     dts: true,
-    minify: true,
-    sourceMap: true,
-  }),
-
-  /**
-   * Library package preset
-   * Multiple formats for maximum compatibility
-   */
-  library: (entry: string, umdName?: string): PhilJSRslibOptions => ({
-    entry,
-    formats: ['esm', 'cjs', 'umd'],
-    dts: true,
-    umdName,
-    minify: true,
-    sourceMap: true,
-  }),
-
-  /**
-   * UI component package preset
-   * ESM and CJS, external React/Vue/Svelte
-   */
-  components: (entry: string): PhilJSRslibOptions => ({
-    entry,
-    formats: ['esm', 'cjs'],
-    dts: true,
-    external: ['react', 'react-dom', 'vue', 'svelte'],
-    minify: true,
-    sourceMap: true,
-  }),
-
-  /**
-   * Utility package preset
-   * ESM only, no external dependencies
-   */
-  utility: (entry: string): PhilJSRslibOptions => ({
-    entry,
-    formats: ['esm'],
-    dts: true,
-    external: [],
-    minify: true,
-    sourceMap: true,
-  }),
-
-  /**
-   * Node.js package preset
-   * CJS and ESM for Node compatibility
-   */
-  node: (entry: string): PhilJSRslibOptions => ({
-    entry,
-    formats: ['esm', 'cjs'],
-    dts: true,
+    clean: true,
     minify: false,
     sourceMap: true,
-  }),
+  },
+  autoExternal: {
+    peerDependencies: true,
+  },
+};
+
+export const applicationPreset: RslibConfigOptions = {
+  output: {
+    format: 'esm',
+    minify: true,
+    splitting: true,
+    clean: true,
+  },
+};
+
+export const componentPreset: RslibConfigOptions = {
+  output: {
+    format: 'esm',
+    dts: true,
+    extractCSS: true,
+    preserveModules: true,
+  },
+};
+
+export const nodePreset: RslibConfigOptions = {
+  output: {
+    format: 'cjs',
+    target: 'node',
+    dts: true,
+    sourceMap: true,
+  },
+  autoExternal: {
+    builtins: true,
+  },
+};
+
+export const rslibPresets = {
+  library: libraryPreset,
+  application: applicationPreset,
+  component: componentPreset,
+  node: nodePreset,
 };
 
 /**
- * Define an Rslib configuration (for rslib.config.ts files)
+ * Create Rslib configuration for PhilJS libraries/apps.
+ */
+export function createRslibConfig(options: PhilJSRslibOptions = {}): RslibConfig {
+  const normalized = normalizeRslibOptions(options);
+  const presetConfig = normalized.preset ? rslibPresets[normalized.preset] : {};
+  const { preset: _preset, ...normalizedConfig } = normalized;
+
+  const base: RslibConfigOptions = {
+    source: { entry: DEFAULT_ENTRY },
+    output: {
+      format: 'esm',
+      dts: true,
+      sourceMap: true,
+    },
+    plugins: [],
+  };
+
+  const merged = mergeConfigs(base, presetConfig, normalizedConfig) as RslibConfig;
+
+  if (merged.output?.formats?.length && !merged.output.format) {
+    merged.output.format = merged.output.formats[0];
+  }
+
+  if (!merged.output?.format) {
+    merged.output = { ...(merged.output ?? {}), format: 'esm' };
+  }
+
+  return merged;
+}
+
+function normalizeRslibOptions(options: PhilJSRslibOptions): RslibConfigOptions {
+  if (isLegacyOptions(options)) {
+    const legacy = options as LegacyRslibOptions;
+    return {
+      source: { entry: legacy.entry },
+      output: {
+        formats: legacy.formats,
+        format: legacy.formats[0] ?? 'esm',
+        dts: legacy.dts ?? true,
+        dir: legacy.outDir,
+        minify: legacy.minify ?? true,
+        sourceMap: legacy.sourceMap ?? true,
+      },
+      external: legacy.external,
+    };
+  }
+
+  const modern = options as RslibConfigOptions;
+  const autoExternal = {
+    ...(modern.autoExternal ?? {}),
+    ...(modern.autoExternalPeers ? { peerDependencies: true } : {}),
+    ...(modern.autoExternalNode ? { builtins: true } : {}),
+  };
+
+  return {
+    ...modern,
+    autoExternal: Object.keys(autoExternal).length ? autoExternal : modern.autoExternal,
+  };
+}
+
+function isLegacyOptions(options: PhilJSRslibOptions): options is LegacyRslibOptions {
+  return Boolean(
+    options &&
+      typeof options === 'object' &&
+      'formats' in options &&
+      'entry' in options
+  );
+}
+
+/**
+ * Define an Rslib configuration (for rslib.config.ts files).
  */
 export function defineConfig(config: RslibConfig): RslibConfig {
   return config;
 }
 
 /**
- * Merge multiple Rslib configurations
+ * Merge multiple configurations.
  */
-export function mergeConfigs(...configs: Partial<RslibConfig>[]): RslibConfig {
-  const merged: RslibConfig = {
-    lib: [],
-    source: {},
-    output: {},
-    plugins: [],
-  };
+export function mergeConfigs<T extends Record<string, unknown>>(
+  ...configs: Array<T | undefined>
+): T {
+  const result: Record<string, unknown> = {};
 
   for (const config of configs) {
-    if (config.lib) {
-      merged.lib.push(...config.lib);
-    }
-    if (config.source) {
-      merged.source = { ...merged.source, ...config.source };
-    }
-    if (config.output) {
-      merged.output = { ...merged.output, ...config.output };
-    }
-    if (config.plugins) {
-      merged.plugins!.push(...config.plugins);
+    if (!config) continue;
+    for (const [key, value] of Object.entries(config)) {
+      if (value === undefined) continue;
+
+      const existing = result[key];
+      if (Array.isArray(existing) && Array.isArray(value)) {
+        result[key] = [...existing, ...value];
+      } else if (isPlainObject(existing) && isPlainObject(value)) {
+        result[key] = mergeConfigs(existing as Record<string, unknown>, value as Record<string, unknown>);
+      } else {
+        result[key] = value;
+      }
     }
   }
 
-  return merged;
+  return result as T;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
 /**
- * Helper to create entry points from glob pattern
+ * Helper to create entry points from glob pattern.
  */
 export function entriesFromGlob(pattern: string, baseDir = 'src'): Record<string, string> {
-  // In production, use fast-glob
-  // This is a simplified version
+  // In production, use fast-glob.
   const entries: Record<string, string> = {};
-
-  // For now, just return a placeholder
-  // Real implementation would use fast-glob to find files
+  void pattern;
   entries.index = `${baseDir}/index.ts`;
-
   return entries;
 }
 
 /**
- * Generate package.json exports field from Rslib config
+ * Generate package.json exports field from Rslib config.
  */
 export function generateExportsField(
   config: RslibConfig
@@ -248,8 +254,9 @@ export function generateExportsField(
   const exports: Record<string, Record<string, string> | string> = {};
 
   const entries = config.source?.entry ?? { index: './src/index.ts' };
+  const normalizedEntries = typeof entries === 'string' ? { index: entries } : entries;
 
-  for (const [name, _entry] of Object.entries(entries)) {
+  for (const [name] of Object.entries(normalizedEntries)) {
     const exportPath = name === 'index' ? '.' : `./${name}`;
     const basePath = name === 'index' ? '' : `/${name}`;
 

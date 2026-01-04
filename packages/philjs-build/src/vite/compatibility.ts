@@ -1461,13 +1461,251 @@ export function toViteServerConfig(config: DevServerConfig): unknown {
 /**
  * Convert shared config to Rspack format
  */
-export function toRspackDevServerConfig(config: DevServerConfig): unknown {
+export function toRspackDevServerConfig(config: DevServerConfig): unknown {     
   return {
     port: config.port,
     host: typeof config.host === 'boolean' ? '0.0.0.0' : config.host,
     open: config.open,
     https: config.https,
     proxy: config.proxy,
-    headers: config.cors ? { 'Access-Control-Allow-Origin': '*' } : undefined,
+    headers: config.cors ? { 'Access-Control-Allow-Origin': '*' } : undefined,  
   };
+}
+
+// ============================================================================
+// Vite Adapter Utilities
+// ============================================================================
+
+export interface ViteAdapterOptions {
+  mode?: 'development' | 'production';
+  minify?: boolean;
+  sourcemap?: boolean | 'inline' | 'hidden';
+  build?: {
+    outDir?: string;
+    minify?: boolean | 'esbuild' | 'terser';
+    sourcemap?: boolean | 'inline' | 'hidden';
+    assetsInlineLimit?: number;
+    target?: string;
+    lib?: {
+      entry?: string;
+      name?: string;
+      formats?: string[];
+    };
+    rollupOptions?: {
+      external?: string[];
+      output?: {
+        globals?: Record<string, string>;
+      };
+    };
+  };
+  server?: {
+    port?: number;
+    hot?: boolean;
+    hmr?: boolean | Record<string, unknown>;
+    proxy?: Record<string, string>;
+  };
+  resolve?: {
+    alias?: Record<string, string>;
+  };
+  css?: {
+    modules?: {
+      localsConvention?: string;
+    };
+  };
+  esbuild?: {
+    target?: string;
+    jsx?: string;
+  };
+  plugins?: VitePlugin[];
+  philjs?: boolean;
+}
+
+export function viteAdapter(options: ViteAdapterOptions = {}): Record<string, unknown> {
+  const mode = options.mode ?? 'development';
+  const build = { ...(options.build ?? {}) };
+  const server = { ...(options.server ?? {}) };
+
+  if (options.minify !== undefined && build.minify === undefined) {
+    build.minify = options.minify;
+  }
+
+  if (options.sourcemap !== undefined && build.sourcemap === undefined) {
+    build.sourcemap = options.sourcemap;
+  }
+
+  if (mode === 'production' && build.minify === undefined) {
+    build.minify = true;
+  }
+
+  if (mode === 'development' && server.hmr === undefined) {
+    server.hmr = server.hot ?? true;
+  }
+
+  return {
+    mode,
+    ...options,
+    build,
+    server: Object.keys(server).length ? server : options.server,
+  };
+}
+
+export function createViteCompatibleConfig(
+  options: ViteAdapterOptions = {}
+): Record<string, unknown> {
+  const base = viteAdapter(options);
+  const plugins = [...(options.plugins ?? [])];
+
+  if (options.philjs) {
+    plugins.unshift(philJSVite());
+  }
+
+  return {
+    ...base,
+    plugins,
+    resolve: options.resolve ? { ...options.resolve } : undefined,
+    css: options.css ? { ...options.css } : undefined,
+    esbuild: options.esbuild ? { ...options.esbuild } : undefined,
+  };
+}
+
+export function convertRspackToVite(
+  rspackConfig: Partial<RspackConfiguration>
+): Record<string, unknown> {
+  const mapped = mapRspackOptionsToVite(rspackConfig);
+  const build = { ...(mapped.build ?? {}) } as Record<string, unknown>;
+
+  if (rspackConfig.output?.path) {
+    build['outDir'] = rspackConfig.output.path;
+  }
+
+  if (rspackConfig.optimization?.minimize !== undefined) {
+    build['minify'] = rspackConfig.optimization.minimize;
+  }
+
+  const viteConfig: Record<string, unknown> = {
+    ...mapped,
+    build,
+  };
+
+  if (rspackConfig.output?.publicPath) {
+    viteConfig['base'] = rspackConfig.output.publicPath;
+  }
+
+  if (rspackConfig.resolve?.alias) {
+    viteConfig['resolve'] = { alias: rspackConfig.resolve.alias };
+  }
+
+  if (rspackConfig.devServer) {
+    viteConfig['server'] = {
+      port: rspackConfig.devServer.port,
+      proxy: rspackConfig.devServer.proxy,
+    };
+  }
+
+  if (rspackConfig.plugins) {
+    const plugins: VitePlugin[] = [];
+    for (const plugin of rspackConfig.plugins ?? []) {
+      const mappedPlugin = mapRspackPluginToVite(plugin);
+      if (mappedPlugin) {
+        plugins.push(mappedPlugin);
+      }
+    }
+    viteConfig['plugins'] = plugins;
+  }
+
+  return viteConfig;
+}
+
+export interface RspackLoaderMappingResult {
+  needsPlugin: boolean;
+  pluginName?: string;
+  nativeSupport?: boolean;
+}
+
+export function mapRspackPluginToVite(plugin: unknown): VitePlugin | null {
+  if (!plugin || typeof plugin !== 'object') return null;
+  const name = (plugin as { constructor?: { name?: string } }).constructor?.name;
+
+  if (name === 'HtmlRspackPlugin' || name === 'HtmlWebpackPlugin') {
+    return {
+      name: 'vite:html',
+      transformIndexHtml: (html) => html,
+    };
+  }
+
+  if (name === 'DefinePlugin') {
+    const definitions = (plugin as { definitions?: Record<string, string> }).definitions ?? {};
+    return {
+      name: 'vite:define',
+      config: () => ({ define: definitions }),
+    };
+  }
+
+  return null;
+}
+
+export function mapRspackLoaderToVite(loader: RspackModuleRule): RspackLoaderMappingResult {
+  const uses = normalizeLoaderUse(loader.use);
+  const loaderNames = uses.map((item) => item.loader);
+
+  if (loaderNames.includes('@svgr/webpack')) {
+    return { needsPlugin: true, pluginName: 'vite-plugin-svgr' };
+  }
+
+  if (loaderNames.some((name) => name.includes('css-loader')) || /css/.test(String(loader.test))) {
+    return { needsPlugin: false, nativeSupport: true };
+  }
+
+  if (loaderNames.some((name) => name.includes('ts-loader')) || /tsx?/.test(String(loader.test))) {
+    return { needsPlugin: false, nativeSupport: true };
+  }
+
+  if (typeof loader.type === 'string' && loader.type.startsWith('asset')) {
+    return { needsPlugin: false, nativeSupport: true };
+  }
+
+  return { needsPlugin: false };
+}
+
+export function mapRspackOptionsToVite(options: {
+  target?: string | string[];
+  devtool?: string | false;
+  externals?: unknown;
+}): Record<string, unknown> {
+  const build: Record<string, unknown> = {};
+
+  if (options.target) {
+    build['target'] = Array.isArray(options.target) ? options.target[0] : options.target;
+  }
+
+  if (options.devtool) {
+    if (options.devtool === 'inline-source-map') {
+      build['sourcemap'] = 'inline';
+    } else if (options.devtool === 'hidden-source-map') {
+      build['sourcemap'] = 'hidden';
+    } else {
+      build['sourcemap'] = true;
+    }
+  } else if (options.devtool === false) {
+    build['sourcemap'] = false;
+  }
+
+  if (Array.isArray(options.externals)) {
+    build['rollupOptions'] = {
+      external: options.externals,
+    };
+  }
+
+  return { build };
+}
+
+function normalizeLoaderUse(use?: RspackModuleRule['use']): Array<{ loader: string }> {
+  if (!use) return [];
+  const entries = Array.isArray(use) ? use : [use];
+  return entries.map((entry) => {
+    if (typeof entry === 'string') {
+      return { loader: entry };
+    }
+    return { loader: entry.loader };
+  });
 }

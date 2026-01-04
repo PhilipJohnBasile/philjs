@@ -442,6 +442,7 @@ export function resetRouterContext(): void {
   routeContextOverridesSignal.set(new Map());
   contextProvidersSignal.set(new Map());
   contextMiddlewareSignal.set([]);
+  contextConfigSignal.set({ freeze: false, strict: false });
   contextCacheSignal.set(new Map());
   currentRouteContextSignal.set({});
 }

@@ -416,9 +416,9 @@ export async function registerServiceWorker(
     console.log('[PWA] Service worker registered:', registration.scope);
 
     // Handle updates
-    registration.addEventListener('updatefound', () => {
+    const handleUpdateFound = () => {
       const newWorker = registration.installing;
-      if (newWorker) {
+      if (newWorker && typeof newWorker.addEventListener === 'function') {
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
             // New service worker available
@@ -427,7 +427,13 @@ export async function registerServiceWorker(
           }
         });
       }
-    });
+    };
+
+    if (typeof registration.addEventListener === 'function') {
+      registration.addEventListener('updatefound', handleUpdateFound);
+    } else if ('onupdatefound' in registration) {
+      registration.onupdatefound = handleUpdateFound;
+    }
 
     return registration;
   } catch (error) {

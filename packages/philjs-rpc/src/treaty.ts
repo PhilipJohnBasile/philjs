@@ -358,7 +358,7 @@ async function executeWithRetry<T>(
  * Create a request with timeout support.
  */
 async function createTimeoutRequest<T>(
-  fn: () => Promise<T>,
+  fn: (signal?: AbortSignal) => Promise<T>,
   timeout?: number,
   signal?: AbortSignal
 ): Promise<T> {
@@ -366,22 +366,57 @@ async function createTimeoutRequest<T>(
     return fn();
   }
 
-  const controller = new AbortController();
-  const combinedSignal = signal ? combineAbortSignals(signal, controller.signal) : controller.signal;
-
+  let timeoutSignal: AbortSignal | undefined;
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  if (timeout) {
-    timeoutId = setTimeout(() => controller.abort(), timeout);
+  if (timeout !== undefined) {
+    if (typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal) {
+      timeoutSignal = AbortSignal.timeout(timeout);
+    } else {
+      const timeoutController = new AbortController();
+      timeoutId = setTimeout(() => timeoutController.abort(), timeout);
+      timeoutSignal = timeoutController.signal;
+    }
   }
 
+  const signals = [signal, timeoutSignal].filter(Boolean) as AbortSignal[];
+  const combinedSignal =
+    signals.length === 0
+      ? undefined
+      : signals.length === 1
+      ? signals[0]
+      : typeof AbortSignal !== 'undefined' && 'any' in AbortSignal
+      ? AbortSignal.any(signals)
+      : combineAbortSignals(signals[0]!, signals[1]!);
+
+  let removeAbortListener: (() => void) | undefined;
+
   try {
-    const result = await fn();
-    if (timeoutId) clearTimeout(timeoutId);
-    return result;
-  } catch (error) {
-    if (timeoutId) clearTimeout(timeoutId);
-    throw error;
+    if (!combinedSignal) {
+      return await fn();
+    }
+
+    const abortPromise = new Promise<never>((_, reject) => {
+      if (combinedSignal.aborted) {
+        reject(new Error('Request aborted'));
+        return;
+      }
+
+      const onAbort = () => reject(new Error('Request aborted'));
+      combinedSignal.addEventListener('abort', onAbort, { once: true });
+      removeAbortListener = () => {
+        combinedSignal.removeEventListener('abort', onAbort);
+      };
+    });
+
+    return await Promise.race([fn(combinedSignal), abortPromise]);
+  } finally {
+    if (removeAbortListener) {
+      removeAbortListener();
+    }
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
   }
 }
 
@@ -392,9 +427,25 @@ function combineAbortSignals(signal1: AbortSignal, signal2: AbortSignal): AbortS
   const controller = new AbortController();
 
   const abort = () => controller.abort();
+  const cleanup = () => {
+    signal1.removeEventListener('abort', abort);
+    signal2.removeEventListener('abort', abort);
+  };
 
-  signal1.addEventListener('abort', abort);
-  signal2.addEventListener('abort', abort);
+  if (signal1.aborted || signal2.aborted) {
+    abort();
+    cleanup();
+    return controller.signal;
+  }
+
+  signal1.addEventListener('abort', () => {
+    abort();
+    cleanup();
+  }, { once: true });
+  signal2.addEventListener('abort', () => {
+    abort();
+    cleanup();
+  }, { once: true });
 
   return controller.signal;
 }
@@ -427,9 +478,15 @@ async function makeRequest<T>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      const errorPayload =
+        errorData && typeof errorData === 'object' && 'error' in (errorData as Record<string, unknown>)
+          ? (errorData as { error: { code?: string; message?: string } }).error
+          : (errorData as { code?: string; message?: string });
+
       const error = new TreatyError({
-        code: errorData.code ?? 'HTTP_ERROR',
-        message: errorData.message ?? `HTTP ${response.status}: ${response.statusText}`,
+        code: errorPayload?.code ?? 'HTTP_ERROR',
+        message:
+          errorPayload?.message ?? `HTTP ${response.status}: ${response.statusText}`,
         status: response.status,
         response: errorData,
         config: finalConfig,
@@ -541,21 +598,49 @@ export function treaty<TApi extends APIDefinition>(
     path: string,
     method: string
   ): (input?: TInput, options?: TreatyRequestOptions) => Promise<TOutput> {
+    const normalizedMethod = method.toLowerCase();
+    const requestType: ProcedureType =
+      normalizedMethod === 'get' || normalizedMethod === 'head' || normalizedMethod === 'options'
+        ? 'query'
+        : 'mutation';
+
+    const isOptionsObject = (value: unknown): value is TreatyRequestOptions => {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+      return (
+        'headers' in value ||
+        'timeout' in value ||
+        'signal' in value ||
+        'retry' in value ||
+        'onProgress' in value ||
+        'fetch' in value
+      );
+    };
+
     return async (input?: TInput, options?: TreatyRequestOptions) => {
+      let resolvedInput = input;
+      let resolvedOptions = options;
+
+      if (options === undefined && isOptionsObject(input)) {
+        resolvedInput = undefined;
+        resolvedOptions = input;
+      }
+
       const mergedOptions = {
         ...globalConfig.defaults,
-        ...options,
+        ...resolvedOptions,
       };
 
       const requestConfig: TreatyRequestConfig & { fetch?: typeof fetch } = {
-        url: `${globalConfig.baseUrl}/${path}`,
+        url: globalConfig.baseUrl,
         method: method.toUpperCase(),
         headers: mergedOptions.headers ?? {},
+        body: {
+          path,
+          type: requestType,
+          ...(resolvedInput !== undefined ? { input: resolvedInput } : {}),
+        } as RPCRequest,
       };
 
-      if (input !== undefined) {
-        requestConfig.body = input;
-      }
       if (mergedOptions.signal !== undefined) {
         requestConfig.signal = mergedOptions.signal;
       }
@@ -568,7 +653,7 @@ export function treaty<TApi extends APIDefinition>(
 
       const executeRequest = async () => {
         return createTimeoutRequest(
-          () => makeRequest<TOutput>(requestConfig, globalConfig),
+          (signal) => makeRequest<TOutput>({ ...requestConfig, signal }, globalConfig),
           mergedOptions.timeout,
           mergedOptions.signal
         );
@@ -659,7 +744,11 @@ export function treaty<TApi extends APIDefinition>(
     };
 
     return new Proxy(proxyFn as unknown as object, {
-      get(_, key: string) {
+      get(_, key: string | symbol) {
+        if (typeof key !== 'string') {
+          return (proxyFn as any)[key];
+        }
+
         // HTTP method handlers
         const httpMethods = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'];
         if (httpMethods.includes(key.toLowerCase())) {
@@ -671,7 +760,20 @@ export function treaty<TApi extends APIDefinition>(
             finalPath = finalPath.replace(`:${paramKey}`, String(paramValue));
           }
 
-          return createMethodHandler(finalPath, key);
+          const methodHandler = createMethodHandler(finalPath, key);
+          const methodProxy = new Proxy(methodHandler as unknown as object, {
+            get(__, nestedKey: string | symbol) {
+              if (typeof nestedKey !== 'string') {
+                return (methodHandler as any)[nestedKey];
+              }
+              return (buildProxy([...path, key], params) as any)[nestedKey];
+            },
+            apply(__, ___, args: unknown[]) {
+              return methodHandler(args[0] as never, args[1] as never);
+            },
+          });
+
+          return methodProxy;
         }
 
         // Special methods

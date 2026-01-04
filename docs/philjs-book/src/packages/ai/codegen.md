@@ -1,6 +1,6 @@
-# AI Code Generation
+# Code Generation
 
-@philjs/ai provides comprehensive AI-powered code generation that turns natural language descriptions into production-ready PhilJS code. Generate components, pages, APIs, functions, tests, and documentation with a single function call.
+@philjs/ai provides powerful AI-driven code generation capabilities for components, pages, APIs, functions, and more. The code generation system is designed to produce production-quality PhilJS code with proper TypeScript types, accessibility support, and best practices.
 
 ## Why AI Code Generation?
 
@@ -12,428 +12,758 @@
 
 ## Code Generator
 
-### Basic Setup
+The `CodeGenerator` class provides a unified interface for all code generation tasks.
+
+### Creating a Code Generator
 
 ```typescript
-import { createOpenAIProvider, createCodeGenerator, CodeGenerator } from '@philjs/ai';
+import { CodeGenerator, createCodeGenerator, createOpenAIProvider } from '@philjs/ai';
 
-const provider = createOpenAIProvider({ apiKey: process.env.OPENAI_API_KEY });
+const provider = createOpenAIProvider({ apiKey: process.env.OPENAI_API_KEY! });
 
-const codegen = createCodeGenerator(provider, {
-  temperature: 0.2,      // Lower = more deterministic
-  maxTokens: 4096,       // Max tokens for generation
+// Using factory function
+const generator = createCodeGenerator(provider, {
+  temperature: 0.2,
+  maxTokens: 4096,
 });
 
 // Or instantiate directly
-const codegen = new CodeGenerator(provider);
+const generator = new CodeGenerator(provider, {
+  temperature: 0.2,
+  maxTokens: 4096,
+});
 ```
 
-### Generate Components
+### Generation Options
 
 ```typescript
-const result = await codegen.generateComponent(
-  'A user profile card with avatar, name, bio, and social links',
-  {
-    useSignals: true,      // Use PhilJS signals for state
-    includeTypes: true,    // Generate TypeScript interfaces
-    includeJSDoc: true,    // Add JSDoc comments
-    styleApproach: 'tailwind', // 'tailwind' | 'css-modules' | 'inline' | 'none'
-    framework: 'philjs',   // Target framework
-  }
+interface CodeGenOptions {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  systemPrompt?: string;
+
+  // Code-specific options
+  includeTypes?: boolean;     // Include TypeScript types
+  includeJSDoc?: boolean;     // Include JSDoc comments
+  useSignals?: boolean;       // Use PhilJS signals for state
+  framework?: 'philjs' | 'react-compat';
+  styleApproach?: 'tailwind' | 'css-modules' | 'styled-components' | 'inline' | 'none';
+}
+```
+
+## Component Generation
+
+Generate PhilJS components from natural language descriptions.
+
+### Basic Component Generation
+
+```typescript
+import { generateComponent, createOpenAIProvider } from '@philjs/ai';
+
+const provider = createOpenAIProvider({ apiKey: '...' });
+
+const result = await generateComponent(
+  provider,
+  'A button with primary, secondary, and danger variants, loading state, and click handler',
+  'Button'
 );
 
 console.log(result.code);
-// export function UserProfileCard({ user }: UserProfileCardProps) {
-//   return (
-//     <div class="bg-white rounded-lg shadow p-6">
-//       <img class="w-20 h-20 rounded-full" src={user.avatar} alt={user.name} />
-//       <h2 class="text-xl font-bold">{user.name}</h2>
-//       <p class="text-gray-600">{user.bio}</p>
-//       ...
-//     </div>
-//   );
-// }
-
-console.log(result.types);
-// interface UserProfileCardProps {
-//   user: {
-//     avatar: string;
-//     name: string;
-//     bio: string;
-//     social: { platform: string; url: string; }[];
-//   };
-// }
+console.log(result.explanation);
+console.log(result.imports);
 ```
 
-### Generate Functions
+### Component Generator Class
+
+For more control, use the `ComponentGenerator` class:
 
 ```typescript
-const fn = await codegen.generateFunction(
-  'Parse a currency string like "$1,234.56" into cents with validation',
+import { ComponentGenerator, createOpenAIProvider } from '@philjs/ai';
+
+const provider = createOpenAIProvider({ apiKey: '...' });
+const generator = new ComponentGenerator(provider);
+
+const result = await generator.generateFromDescription({
+  name: 'UserCard',
+  description: 'A card displaying user avatar, name, email, and role with edit button',
+  props: [
+    { name: 'user', type: 'User', required: true, description: 'User data' },
+    { name: 'onEdit', type: '() => void', required: false, description: 'Edit callback' },
+  ],
+  style: {
+    approach: 'tailwind',
+    responsive: true,
+    darkMode: true,
+  },
+  accessibility: {
+    wcagLevel: 'AA',
+    ariaLabels: true,
+    keyboardNav: true,
+  },
+  includeTests: true,
+  includeStories: false,
+  useSignals: true,
+});
+
+console.log(result.code);
+console.log(result.propsInterface);
+console.log(result.tests);
+console.log(result.accessibilityNotes);
+```
+
+### Component Configuration
+
+```typescript
+interface ComponentGenerationConfig {
+  name: string;                           // Component name
+  description: string;                    // Natural language description
+  props?: PropDefinition[];               // Component props
+  style?: StyleConfig;                    // Styling preferences
+  accessibility?: AccessibilityConfig;   // A11y requirements
+  includeTests?: boolean;                // Generate tests
+  includeStories?: boolean;              // Generate Storybook stories
+  useSignals?: boolean;                  // Use PhilJS signals
+  framework?: 'philjs' | 'react-compat';
+}
+
+interface PropDefinition {
+  name: string;
+  type: string;
+  required?: boolean;
+  defaultValue?: string;
+  description?: string;
+}
+
+interface StyleConfig {
+  approach: 'tailwind' | 'css-modules' | 'styled-components' | 'inline' | 'none';
+  theme?: {
+    colors?: Record<string, string>;
+    spacing?: Record<string, string>;
+    typography?: Record<string, string>;
+  };
+  responsive?: boolean;
+  darkMode?: boolean;
+}
+
+interface AccessibilityConfig {
+  wcagLevel: 'A' | 'AA' | 'AAA';
+  ariaLabels?: boolean;
+  keyboardNav?: boolean;
+  screenReader?: boolean;
+  focusManagement?: boolean;
+  colorContrast?: boolean;
+}
+```
+
+### Generated Component Result
+
+```typescript
+interface GeneratedComponent {
+  code: string;                      // Component source code
+  name: string;                      // Component name
+  propsInterface?: string;           // Generated props interface
+  styles?: string;                   // Generated styles
+  tests?: string;                    // Generated tests
+  stories?: string;                  // Storybook stories
+  explanation: string;               // Explanation of the code
+  accessibilityNotes?: string[];     // A11y notes
+  examples?: string[];               // Usage examples
+  imports: string[];                 // Required imports
+  dependencies?: string[];           // NPM dependencies
+}
+```
+
+### Enhance Accessibility
+
+Add accessibility features to existing components:
+
+```typescript
+const enhanced = await generator.enhanceAccessibility(
+  existingComponentCode,
   {
-    name: 'parseCurrency',
-    async: false,
-    includeTypes: true,
+    wcagLevel: 'AAA',
+    ariaLabels: true,
+    keyboardNav: true,
+    screenReader: true,
+    focusManagement: true,
+    colorContrast: true,
   }
 );
 
-console.log(fn.code);
-// function parseCurrency(value: string): number | null {
-//   const cleaned = value.replace(/[$,]/g, '');
-//   const parsed = parseFloat(cleaned);
-//   if (isNaN(parsed)) return null;
-//   return Math.round(parsed * 100);
-// }
-
-console.log(fn.signature);
-// (value: string) => number | null
+console.log(enhanced.code);     // Enhanced component
+console.log(enhanced.changes);  // List of changes made
+console.log(enhanced.notes);    // Accessibility notes
 ```
 
-### Refactor Code
+### Customize Styling
+
+Apply styling to components:
 
 ```typescript
-const refactor = await codegen.refactorCode(
-  existingCode,
-  'Convert useState to signals and optimize for fine-grained reactivity'
+const styled = await generator.customizeStyle(
+  existingComponentCode,
+  {
+    approach: 'tailwind',
+    responsive: true,
+    darkMode: true,
+    theme: {
+      colors: { primary: 'blue-500', secondary: 'gray-600' },
+      spacing: { sm: '0.5rem', md: '1rem' },
+    },
+  }
 );
 
-console.log(refactor.refactored);
-// Original:
-// const [count, setCount] = useState(0);
-// <button onClick={() => setCount(count + 1)}>
-//
-// Refactored:
-// const count = signal(0);
-// <button onClick={() => count.set(count() + 1)}>
-
-console.log(refactor.changes);
-// [{ type: 'state', from: 'useState', to: 'signal', explanation: '...' }]
+console.log(styled.code);
+console.log(styled.styles); // For css-modules approach
 ```
 
-### Explain Code
+### Generate Variants
+
+Create component variants from a base component:
 
 ```typescript
-const explanation = await codegen.explainCode(complexCode, {
-  detailLevel: 'detailed', // 'brief' | 'detailed' | 'comprehensive'
-});
+const variants = await generator.generateVariants(
+  baseButtonCode,
+  ['primary', 'secondary', 'danger', 'ghost', 'link']
+);
 
-console.log(explanation.summary);
-// "This component implements a drag-and-drop list using..."
-
-console.log(explanation.sections);
-// [
-//   { title: 'State Management', content: 'Uses signals for...' },
-//   { title: 'Event Handling', content: 'The drag handlers...' },
-//   { title: 'Rendering', content: 'Maps over items to...' },
-// ]
+console.log(variants.primary);
+console.log(variants.secondary);
+// ... etc
 ```
 
-### Generate Tests
+## Function Generation
+
+Generate TypeScript functions from descriptions.
 
 ```typescript
-const tests = await codegen.generateTests(componentCode, 'unit');
+import { generateFunction, CodeGenerator } from '@philjs/ai';
 
-console.log(tests.code);
-// import { describe, it, expect } from 'vitest';
-// import { render, fireEvent } from '@philjs/testing';
-// import { UserProfileCard } from './UserProfileCard';
-//
-// describe('UserProfileCard', () => {
-//   it('renders user name', () => {
-//     const { getByText } = render(<UserProfileCard user={mockUser} />);
-//     expect(getByText('John Doe')).toBeTruthy();
-//   });
-//   ...
-// });
+// Quick helper
+const result = await generateFunction(
+  provider,
+  'A function that debounces another function with configurable delay'
+);
 
-console.log(tests.coverage);
-// ['renders user name', 'displays avatar', 'shows bio', 'lists social links']
+// Or with more options
+const generator = new CodeGenerator(provider);
+const func = await generator.generateFunction(
+  'Calculate compound interest with principal, rate, time, and frequency',
+  {
+    name: 'calculateCompoundInterest',
+    async: false,
+    includeTypes: true,
+    includeJSDoc: true,
+  }
+);
+
+console.log(func.code);
+console.log(func.signature);     // 'function calculateCompoundInterest(...)'
+console.log(func.parameters);    // [{ name, type, description }, ...]
+console.log(func.returnType);    // 'number'
+console.log(func.examples);
 ```
 
-## Component Generator
-
-Dedicated generator for components with more options:
+### Generated Function Result
 
 ```typescript
-import { ComponentGenerator, createComponentGenerator } from '@philjs/ai';
+interface GeneratedFunctionResult {
+  code: string;
+  name: string;
+  signature: string;
+  parameters: Array<{
+    name: string;
+    type: string;
+    description?: string;
+  }>;
+  returnType: string;
+  explanation: string;
+  imports: string[];
+  examples?: string[];
+  validation: { valid: boolean; errors: string[] };
+}
+```
 
-const generator = createComponentGenerator(provider);
+## Code Refactoring
+
+Refactor existing code with AI assistance.
+
+```typescript
+import { refactorCode, CodeGenerator } from '@philjs/ai';
+
+// Quick helper
+const result = await refactorCode(
+  provider,
+  existingCode,
+  'Convert to use PhilJS signals and improve performance'
+);
+
+// With options
+const generator = new CodeGenerator(provider);
+const refactored = await generator.refactorCode(
+  existingCode,
+  'Add error handling and improve type safety',
+  {
+    preserveBehavior: true,
+    level: 'moderate', // 'conservative' | 'moderate' | 'aggressive'
+  }
+);
+
+console.log(refactored.original);
+console.log(refactored.refactored);
+console.log(refactored.changes);
+console.log(refactored.explanation);
+console.log(refactored.breakingChanges);
+```
+
+### Refactor Result
+
+```typescript
+interface RefactorResult {
+  original: string;
+  refactored: string;
+  changes: RefactorChange[];
+  explanation: string;
+  breakingChanges?: string[];
+}
+
+interface RefactorChange {
+  type: 'performance' | 'readability' | 'patterns' | 'signals' | 'types' | 'security' | 'style';
+  description: string;
+  before: string;
+  after: string;
+  lines?: { start: number; end: number };
+}
+```
+
+## Code Explanation
+
+Get detailed explanations of code functionality.
+
+```typescript
+import { explainCode, CodeGenerator } from '@philjs/ai';
+
+// Quick helper
+const explanation = await explainCode(provider, complexCode);
+
+// With options
+const generator = new CodeGenerator(provider);
+const detailed = await generator.explainCode(
+  complexCode,
+  {
+    detailLevel: 'comprehensive', // 'brief' | 'detailed' | 'comprehensive'
+    audience: 'intermediate',     // 'beginner' | 'intermediate' | 'expert'
+  }
+);
+
+console.log(detailed.summary);     // High-level summary
+console.log(detailed.detailed);    // Detailed explanation
+console.log(detailed.sections);    // Code sections with explanations
+console.log(detailed.concepts);    // Key concepts used
+console.log(detailed.complexity);  // Complexity assessment
+```
+
+### Code Explanation Result
+
+```typescript
+interface CodeExplanation {
+  summary: string;
+  detailed: string;
+  sections: CodeSection[];
+  concepts: string[];
+  complexity: {
+    level: 'simple' | 'moderate' | 'complex';
+    score: number;  // 1-10
+    factors: string[];
+  };
+}
+
+interface CodeSection {
+  name: string;
+  code: string;
+  explanation: string;
+  lines: { start: number; end: number };
+}
+```
+
+## Test Generation
+
+Generate comprehensive tests for your code.
+
+```typescript
+import { generateTests, CodeGenerator } from '@philjs/ai';
+
+// Quick helper
+const tests = await generateTests(provider, functionCode);
+
+// With options
+const generator = new CodeGenerator(provider);
+const testSuite = await generator.generateTests(
+  componentCode,
+  {
+    framework: 'vitest',  // 'vitest' | 'jest'
+    name: 'UserCard',
+    coverage: ['happy-path', 'edge-cases', 'error-handling', 'async'],
+    includeMocks: true,
+  }
+);
+
+console.log(testSuite.code);
+console.log(testSuite.testCount);
+console.log(testSuite.testCases);
+console.log(testSuite.coverage);
+console.log(testSuite.setup);
+console.log(testSuite.mocks);
+```
+
+### Generated Tests Result
+
+```typescript
+interface GeneratedTestsResult {
+  code: string;
+  framework: 'vitest' | 'jest';
+  testCount: number;
+  testCases: TestCase[];
+  coverage: string[];
+  setup?: string;
+  mocks?: string;
+}
+
+interface TestCase {
+  name: string;
+  description: string;
+  category: 'happy-path' | 'edge-case' | 'error-handling' | 'integration' | 'performance';
+}
+```
+
+## Code Completion
+
+Get AI-powered code completions (Copilot-style).
+
+```typescript
+const generator = new CodeGenerator(provider);
+
+const completion = await generator.getCompletion(
+  'function calculateTotal(items: CartItem[])',  // prefix
+  '}\n\n// Usage example',                         // suffix
+  {
+    maxLength: 200,
+    language: 'typescript',
+  }
+);
+
+console.log(completion);
+// ': number {\n  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);\n'
+```
+
+## Natural Language Code Generation
+
+Generate code from natural language descriptions with intent parsing.
+
+```typescript
+import {
+  NaturalLanguageGenerator,
+  createNaturalLanguageGenerator,
+  generateFromNaturalLanguage,
+  parseCodeIntent,
+} from '@philjs/ai';
+
+const nlGenerator = createNaturalLanguageGenerator(provider);
 
 // Generate from description
-const component = await generator.generateFromDescription({
-  name: 'TodoList',
-  description: 'A todo list with add, complete, and delete functionality',
-  useSignals: true,
-  includeTests: true,
-  styleConfig: {
-    approach: 'tailwind',
-    theme: 'light',
-  },
-  accessibility: {
-    ariaLabels: true,
-    keyboardNavigation: true,
-  },
-});
+const result = await nlGenerator.generate(
+  'Create a login form with email and password validation that shows errors and has a submit button'
+);
 
-console.log(component.component);     // Component code
-console.log(component.tests);         // Test file
-console.log(component.types);         // Type definitions
-console.log(component.styles);        // CSS (if applicable)
+// Parse intent first
+const intent = await nlGenerator.parseIntent(
+  'Make a dropdown menu with options for sorting by date, name, and price'
+);
+
+console.log(intent.type);      // 'component'
+console.log(intent.entities);  // Detected entities
+console.log(intent.params);    // Inferred parameters
+
+// Conversational code generation
+const conversation = await nlGenerator.startConversation(
+  'I need a data table component'
+);
+
+const refined = await nlGenerator.continueConversation(
+  conversation.id,
+  'Add sorting and pagination'
+);
+
+const final = await nlGenerator.continueConversation(
+  conversation.id,
+  'Make it use server-side data fetching'
+);
 ```
 
-## Page Generator
+## Page Generation
 
-Generate full pages with routing, data loading, and layout:
+Generate complete pages with routing integration.
 
 ```typescript
 import { PageGenerator, createPageGenerator } from '@philjs/ai';
 
-const pageGen = createPageGenerator(provider);
+const pageGenerator = createPageGenerator(provider);
 
-const page = await pageGen.generatePage({
+const page = await pageGenerator.generatePage({
   name: 'Dashboard',
   path: '/dashboard',
-  description: 'Admin dashboard with stats cards, charts, and recent activity',
-  layout: 'sidebar',
-  dataLoading: {
-    loader: true,
-    suspense: true,
+  description: 'Admin dashboard with stats cards, recent activity, and charts',
+  pageType: 'dashboard',
+  layout: {
+    type: 'sidebar',
+    sections: ['header', 'sidebar', 'main', 'footer'],
   },
   seo: {
-    title: 'Dashboard | MyApp',
-    description: 'View your dashboard',
+    title: 'Dashboard - MyApp',
+    description: 'View your dashboard and analytics',
+  },
+  dataLoading: {
+    strategy: 'ssr',
+    loader: true,
   },
 });
 
-console.log(page.component);  // Page component
-console.log(page.route);      // Route definition
-console.log(page.loader);     // Data loader function
-console.log(page.meta);       // Meta component
+console.log(page.code);
+console.log(page.layout);
+console.log(page.loaderCode);
+console.log(page.metaCode);
 ```
 
-## API Generator
+## API Generation
 
-Generate CRUD APIs and endpoints:
+Generate CRUD APIs for resources.
 
 ```typescript
 import { APIGenerator, createAPIGenerator, generateCRUD } from '@philjs/ai';
 
-const apiGen = createAPIGenerator(provider);
+const apiGenerator = createAPIGenerator(provider);
 
-// Generate full CRUD
-const api = await apiGen.generateCRUD({
+// Generate CRUD endpoints
+const api = await apiGenerator.generateCRUD({
   resource: 'products',
   schema: {
-    id: { type: 'string', primary: true },
-    name: { type: 'string', required: true },
-    price: { type: 'number', required: true },
-    category: { type: 'string', enum: ['electronics', 'clothing', 'food'] },
-    inStock: { type: 'boolean', default: true },
+    name: 'Product',
+    fields: [
+      { name: 'id', type: 'string', primary: true },
+      { name: 'name', type: 'string', required: true },
+      { name: 'description', type: 'string' },
+      { name: 'price', type: 'number', required: true },
+      { name: 'stock', type: 'number', default: '0' },
+      { name: 'categoryId', type: 'string', reference: 'categories' },
+    ],
   },
-  database: 'prisma',      // 'prisma' | 'drizzle' | 'raw-sql'
-  authentication: 'jwt',    // 'jwt' | 'session' | 'none'
-  validation: 'zod',        // 'zod' | 'yup' | 'none'
+  operations: ['create', 'read', 'update', 'delete', 'list'],
+  database: 'prisma',
+  validation: true,
+  authentication: true,
 });
 
-console.log(api.endpoints);
-// [
-//   { method: 'GET', path: '/products', code: '...' },
-//   { method: 'GET', path: '/products/:id', code: '...' },
-//   { method: 'POST', path: '/products', code: '...' },
-//   { method: 'PUT', path: '/products/:id', code: '...' },
-//   { method: 'DELETE', path: '/products/:id', code: '...' },
-// ]
-
-console.log(api.schema);     // Prisma/Drizzle schema
-console.log(api.validation); // Zod schemas
-console.log(api.types);      // TypeScript types
+console.log(api.routes);
+console.log(api.handlers);
+console.log(api.types);
+console.log(api.validationSchemas);
 ```
 
-## Natural Language Generator
+## Schema to Component
 
-Generate code from conversational descriptions:
+Generate components from schemas (JSON Schema, GraphQL, Prisma).
 
 ```typescript
-import { NaturalLanguageGenerator, createNaturalLanguageGenerator } from '@philjs/ai';
+import { SchemaToComponentGenerator, generateFromJSONSchema, generateFromGraphQL } from '@philjs/ai';
 
-const nlGen = createNaturalLanguageGenerator(provider);
+const schemaGenerator = new SchemaToComponentGenerator(provider);
 
-// Parse intent from description
-const intent = await nlGen.parseIntent(
-  'Make a button that shows a loading spinner when clicked and fetches user data'
+// From JSON Schema
+const formComponents = await schemaGenerator.generate(
+  jsonSchemaString,
+  {
+    schemaType: 'json-schema',
+    componentTypes: ['form', 'table', 'detail'],
+  }
 );
 
-console.log(intent);
-// {
-//   type: 'component',
-//   entities: ['button', 'spinner', 'user data'],
-//   state: ['loading', 'userData'],
-//   events: ['click', 'fetch'],
-// }
-
-// Generate code from description
-const generated = await nlGen.generate(
-  'Create a form with email and password fields that validates on submit'
+// From GraphQL
+const graphqlComponents = await schemaGenerator.generate(
+  graphqlSchemaString,
+  {
+    schemaType: 'graphql',
+    componentTypes: ['form', 'list'],
+  }
 );
 
-// Conversational generation
-const conversation = await nlGen.startConversation('I need a data table');
-let response = await conversation.send('Add sorting by column');
-response = await conversation.send('Also add pagination');
-console.log(response.code); // Complete table with sorting and pagination
-```
-
-## Test Generator
-
-Advanced test generation with coverage analysis:
-
-```typescript
-import { AdvancedTestGenerator, createAdvancedTestGenerator } from '@philjs/ai';
-
-const testGen = createAdvancedTestGenerator(provider);
-
-// Generate comprehensive test suite
-const suite = await testGen.generateTestSuite(componentCode, {
-  framework: 'vitest',   // 'vitest' | 'jest'
-  types: ['unit', 'integration'],
-  coverage: {
-    statements: 80,
-    branches: 75,
-  },
-});
-
-console.log(suite.tests);      // Test code
-console.log(suite.mocks);      // Mock files
-console.log(suite.fixtures);   // Test fixtures
-console.log(suite.coverage);   // Coverage analysis
-
-// Generate E2E scenarios
-const e2e = await testGen.generateE2EScenarios(
-  'User can sign up, log in, and update their profile'
+// Generate full CRUD
+const crud = await schemaGenerator.generateCRUD(
+  schemaString,
+  { schemaType: 'prisma' }
 );
 
-console.log(e2e.scenarios);
-// [
-//   { name: 'User signup flow', steps: [...] },
-//   { name: 'User login flow', steps: [...] },
-//   { name: 'Profile update flow', steps: [...] },
-// ]
-
-// Generate accessibility tests
-const a11y = await testGen.generateA11yTests(componentCode, {
-  wcagLevel: 'AA',
-});
+console.log(crud.listComponent);
+console.log(crud.formComponent);
+console.log(crud.detailComponent);
+console.log(crud.deleteConfirmation);
 ```
 
-## Documentation Generator
+## Type Inference
 
-Generate docs and JSDoc:
-
-```typescript
-import { DocumentationGenerator, createDocumentationGenerator } from '@philjs/ai';
-
-const docGen = createDocumentationGenerator(provider);
-
-// Add JSDoc to code
-const documented = await docGen.addJSDoc(undocumentedCode);
-
-// Generate component documentation
-const componentDoc = await docGen.documentComponent(componentCode);
-
-console.log(componentDoc.description);
-console.log(componentDoc.props);      // Prop documentation
-console.log(componentDoc.events);     // Event handlers
-console.log(componentDoc.examples);   // Usage examples
-
-// Generate README
-const readme = await docGen.generateReadme(projectFiles, {
-  projectName: 'My Project',
-  includeInstallation: true,
-  includeUsage: true,
-  includeAPI: true,
-});
-```
-
-## Type Inference Helper
-
-Infer and generate types:
+Infer TypeScript types from code and data.
 
 ```typescript
-import { TypeInferenceHelper, createTypeInferenceHelper } from '@philjs/ai';
+import { TypeInferenceHelper, jsonToTypeScript, convertJavaScriptToTypeScript } from '@philjs/ai';
 
-const typeHelper = createTypeInferenceHelper(provider);
+const typeHelper = new TypeInferenceHelper(provider);
 
-// Infer types from JavaScript code
-const types = await typeHelper.inferTypes(jsCode);
+// Infer types for code
+const result = await typeHelper.inferTypes(
+  jsCode,
+  { strictMode: true }
+);
 
-console.log(types.interfaces);  // Generated interfaces
-console.log(types.suggestions); // Type suggestions
+console.log(result.interfaces);
+console.log(result.typeAliases);
+console.log(result.suggestions);
 
-// Convert JSON to TypeScript
-const tsTypes = await typeHelper.inferFromJSON(jsonData, 'ApiResponse');
-// interface ApiResponse {
-//   id: string;
-//   data: { ... };
+// From JSON data
+const types = await typeHelper.inferFromJSON(
+  { name: 'John', age: 30, tags: ['dev', 'js'] },
+  'User'
+);
+
+console.log(types.code);
+// interface User {
+//   name: string;
+//   age: number;
+//   tags: string[];
 // }
 
 // Convert JS to TS
 const tsCode = await typeHelper.convertJSToTS(jsCode);
 ```
 
-## Schema to Component
+## Advanced Test Generator
 
-Generate components from schemas:
+Enhanced test generation with more features.
 
 ```typescript
-import { SchemaToComponentGenerator, createSchemaToComponentGenerator } from '@philjs/ai';
+import { AdvancedTestGenerator, generateTestSuite, generateE2ETestScenarios } from '@philjs/ai';
 
-const schemaGen = createSchemaToComponentGenerator(provider);
+const testGenerator = new AdvancedTestGenerator(provider);
 
-// From JSON Schema
-const components = await schemaGen.generate(jsonSchema, {
-  schemaType: 'json-schema',
-  componentTypes: ['form', 'table', 'detail'],
-});
-
-// From GraphQL
-const graphqlComponents = await schemaGen.generateFromGraphQL(
-  graphqlSchema,
+// Comprehensive test suite
+const suite = await testGenerator.generateTestSuite(
+  componentCode,
   {
-    operations: ['query', 'mutation'],
+    framework: 'vitest',
+    types: ['unit', 'integration', 'snapshot'],
+    coverage: {
+      statements: 80,
+      branches: 75,
+      functions: 80,
+    },
   }
 );
 
-// Generate full CRUD from schema
-const crud = await schemaGen.generateCRUD(schema, {
-  schemaType: 'prisma',
-});
+// E2E test scenarios
+const e2e = await testGenerator.generateE2EScenarios(
+  'An e-commerce checkout flow with cart, shipping, payment, and confirmation'
+);
 
-console.log(crud.list);    // List component
-console.log(crud.create);  // Create form
-console.log(crud.edit);    // Edit form
-console.log(crud.detail);  // Detail view
-console.log(crud.delete);  // Delete confirmation
+console.log(e2e.scenarios);
+console.log(e2e.steps);
+
+// Accessibility tests
+const a11yTests = await testGenerator.generateA11yTests(
+  componentCode,
+  { wcagLevel: 'AA' }
+);
 ```
 
-## Code Generation Options
+## Documentation Generator
+
+Generate comprehensive documentation for code.
 
 ```typescript
-interface CodeGenOptions {
-  // Output options
-  includeTypes?: boolean;     // Generate TypeScript types
-  includeJSDoc?: boolean;     // Add JSDoc comments
-  useSignals?: boolean;       // Use PhilJS signals
+import { DocumentationGenerator, generateDocumentation, addJSDocToCode } from '@philjs/ai';
 
-  // Framework
-  framework?: 'philjs' | 'react-compat';
+const docGenerator = new DocumentationGenerator(provider);
 
-  // Styling
-  styleApproach?: 'tailwind' | 'css-modules' | 'inline' | 'none';
+// Generate documentation
+const docs = await docGenerator.generateDocs(
+  componentCode,
+  {
+    style: 'jsdoc',
+    includeExamples: true,
+    includeTypes: true,
+  }
+);
 
-  // Model options
-  temperature?: number;       // 0-1, lower = more deterministic
-  maxTokens?: number;         // Max tokens for response
-}
+// Document a component
+const componentDoc = await docGenerator.documentComponent(componentCode);
+
+console.log(componentDoc.props);
+console.log(componentDoc.state);
+console.log(componentDoc.events);
+console.log(componentDoc.examples);
+
+// Generate README
+const readme = await docGenerator.generateReadme(
+  projectFiles,
+  { projectName: 'MyApp' }
+);
+```
+
+## AI Client Convenience Methods
+
+All code generation is also available through the AI client:
+
+```typescript
+import { createAIClient, createOpenAIProvider } from '@philjs/ai';
+
+const ai = createAIClient(createOpenAIProvider({ apiKey: '...' }));
+
+// Component generation
+const component = await ai.generateComponent('A modal dialog', 'Modal');
+
+// Function generation
+const func = await ai.generateFunction('Sort array by multiple keys');
+
+// Page generation
+const page = await ai.generatePage('User profile page', 'Profile', '/profile');
+
+// API generation
+const api = await ai.generateAPI('users', userSchema);
+
+// Refactoring
+const refactored = await ai.refactorCode(code, 'use signals');
+
+// Explanation
+const explanation = await ai.explainCode(code);
+
+// Test generation
+const tests = await ai.generateTests(code, 'unit');
+
+// Documentation
+const docs = await ai.addDocs(code, 'jsdoc');
+
+// Natural language generation
+const generated = await ai.generateFromDescription('Create a search input');
+
+// Type inference
+const types = await ai.inferTypes(jsCode);
+
+// JS to TS conversion
+const tsCode = await ai.jsToTs(jsCode);
+
+// Schema to components
+const components = await ai.componentsFromSchema(schema, {
+  schemaType: 'json-schema',
+  componentTypes: ['form', 'table'],
+});
 ```
 
 ## Parsing Utilities
@@ -460,15 +790,18 @@ if (!validation.valid) {
 
 ## Best Practices
 
-1. **Be specific**: Detailed descriptions produce better results
-2. **Include examples**: Reference existing code patterns
-3. **Review output**: AI-generated code should be reviewed
-4. **Test thoroughly**: Always test generated code
-5. **Iterate**: Use conversational generation for complex requirements
-6. **Low temperature**: Use 0.1-0.3 for deterministic code generation
+1. **Be Specific** - Detailed descriptions yield better results
+2. **Include Requirements** - Specify accessibility, styling, and other requirements upfront
+3. **Use Types** - Enable TypeScript types for better code quality
+4. **Validate Output** - Always review and test generated code
+5. **Iterate** - Use refactoring to improve generated code
+6. **Provide Context** - Include existing code patterns for consistency
+7. **Low Temperature** - Use 0.1-0.3 for deterministic code generation
 
 ## Next Steps
 
+- [RAG Pipeline](./rag.md) - Context-aware generation
+- [Structured Output](./structured-output.md) - Type-safe responses
+- [Tool Calling](./tools.md) - AI agents for complex tasks
 - [Streaming](./streaming.md) - Handle streaming completions
-- [RAG Pipeline](./rag.md) - Retrieval augmented generation
-- [Tools & Agents](./tools.md) - Build AI agents
+- [API Reference](./api-reference.md) - Complete API documentation

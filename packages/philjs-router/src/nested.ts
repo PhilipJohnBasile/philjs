@@ -192,20 +192,28 @@ function matchRoutesRecursive(
   routes: NestedRouteDefinition[],
   parentPath: string,
   parentParams: Record<string, string>,
-  caseSensitive?: boolean
+  caseSensitive?: boolean,
+  matchedPrefix: string = ""
 ): MatchedNestedRoute[] {
   for (const route of routes) {
     const fullPath = joinPaths(parentPath, route.path);
-    const result = matchPathSegment(pathname, fullPath, caseSensitive, route.catchAll);
+    const matchPattern = getMatchPattern(parentPath, route.path, fullPath);
+    const result = matchPathSegment(
+      pathname,
+      matchPattern,
+      caseSensitive,
+      route.catchAll
+    );
 
     if (result) {
       const params = { ...parentParams, ...result.params };
       const id = route.id || fullPath;
+      const fullMatchedPath = joinMatchedPaths(matchedPrefix, result.matchedPath);
 
       const match: MatchedNestedRoute = {
         route,
         params,
-        pathname: result.matchedPath,
+        pathname: fullMatchedPath,
         id,
       };
 
@@ -221,7 +229,8 @@ function matchRoutesRecursive(
           route.children,
           fullPath,
           params,
-          caseSensitive
+          caseSensitive,
+          fullMatchedPath
         );
 
         if (childMatches.length > 0) {
@@ -645,6 +654,10 @@ function joinPaths(parent: string, child: string): string {
     return parent || "/";
   }
 
+  if (child.startsWith("/")) {
+    return child;
+  }
+
   if (!parent || parent === "/") {
     return child.startsWith("/") ? child : "/" + child;
   }
@@ -653,6 +666,50 @@ function joinPaths(parent: string, child: string): string {
   const normalizedChild = child.startsWith("/") ? child : "/" + child;
 
   return normalizedParent + normalizedChild;
+}
+
+function getMatchPattern(
+  parentPath: string,
+  childPath: string,
+  fullPath: string
+): string {
+  if (!childPath || childPath === "/") {
+    return fullPath;
+  }
+
+  if (!childPath.startsWith("/")) {
+    return childPath;
+  }
+
+  if (!parentPath || parentPath === "/") {
+    return childPath;
+  }
+
+  const normalizedParent = normalizePath(parentPath).replace(/\/$/, "");
+  const normalizedChild = normalizePath(childPath).replace(/\/$/, "");
+
+  if (normalizedChild === normalizedParent) {
+    return "/";
+  }
+
+  if (normalizedChild.startsWith(normalizedParent + "/")) {
+    const relative = normalizedChild.slice(normalizedParent.length);
+    return relative || "/";
+  }
+
+  return childPath;
+}
+
+function joinMatchedPaths(prefix: string, matched: string): string {
+  if (!prefix || prefix === "/") {
+    return matched === "/" ? "/" : matched;
+  }
+  if (!matched || matched === "/") {
+    return prefix;
+  }
+  const normalizedPrefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
+  const normalizedMatched = matched.startsWith("/") ? matched : `/${matched}`;
+  return normalizedPrefix + normalizedMatched;
 }
 
 /**
@@ -670,7 +727,11 @@ export function generatePath(
         return encodeURIComponent(params[paramName] || "");
       }
       if (segment === "*") {
-        return encodeURIComponent(params["*"] || "");
+        const value = params["*"] || "";
+        return value
+          .split("/")
+          .map((part) => encodeURIComponent(part))
+          .join("/");
       }
       return segment;
     })

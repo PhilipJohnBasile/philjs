@@ -62,7 +62,7 @@ export function deleteCookie(name: string, options: CookieOptions = {}): string 
  * Parse cookies from Cookie header
  */
 export function parseCookies(cookieHeader: string): Record<string, string> {
-  const cookies: Record<string, string> = {};
+  const cookies: Record<string, string> = Object.create(null);
 
   if (!cookieHeader) return cookies;
 
@@ -193,7 +193,7 @@ export function createCookieJar(request: Request) {
     },
 
     has(name: string): boolean {
-      return name in cookies;
+      return Object.hasOwn(cookies, name);
     },
 
     getAll(): Record<string, string> {

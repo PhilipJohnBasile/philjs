@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "NodeNext",
     "strict": false,
+    "strictNullChecks": true,
+    "exactOptionalPropertyTypes": false,
     "noImplicitAny": false,
     "noImplicitReturns": false,
     "noUnusedLocals": false,

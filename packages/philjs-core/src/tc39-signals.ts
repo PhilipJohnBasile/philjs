@@ -16,11 +16,45 @@
  * ```
  */
 
-export type { SignalState, SignalComputed, SignalWatcher } from './tc39-signals-polyfill.js';
+export interface SignalState<T> {
+  get(): T;
+  set(value: T): void;
+}
 
-type SignalNamespace = typeof import('./tc39-signals-polyfill.js').Signal;
+export interface SignalComputed<T> {
+  get(): T;
+}
 
-let polyfillPromise: Promise<typeof import('./tc39-signals-polyfill.js')> | null = null;
+export interface SignalWatcher {
+  watch(...signals: SignalState<unknown>[]): void;
+  unwatch(...signals: SignalState<unknown>[]): void;
+  getPending(): SignalState<unknown>[];
+}
+
+export interface SignalNamespace {
+  State: new <T>(value: T, options?: { equals?: (a: T, b: T) => boolean }) => SignalState<T>;
+  Computed: new <T>(
+    computation: () => T,
+    options?: { equals?: (a: T, b: T) => boolean }
+  ) => SignalComputed<T>;
+  subtle?: {
+    Watcher?: new (callback: () => void) => SignalWatcher;
+    untrack?: <T>(fn: () => T) => T;
+    currentComputation?: () => unknown | null;
+    hasPendingBatch?: () => boolean;
+  };
+}
+
+declare const __PHILJS_SIGNAL_POLYFILL__: boolean | undefined;
+
+const polyfillEnabled =
+  typeof __PHILJS_SIGNAL_POLYFILL__ === 'boolean'
+    ? __PHILJS_SIGNAL_POLYFILL__
+    : true;
+
+type PolyfillModule = typeof import('./tc39-signals-polyfill.js');
+
+let polyfillPromise: Promise<PolyfillModule> | null = null;
 
 /**
  * Check if native TC39 Signals are available.
@@ -44,12 +78,20 @@ export function getNativeSignal(): SignalNamespace | null {
 /**
  * Lazily load the polyfill module.
  */
-export async function loadSignalPolyfill(): Promise<typeof import('./tc39-signals-polyfill.js')> {
-  if (!polyfillPromise) {
-    polyfillPromise = import('./tc39-signals-polyfill.js');
-  }
-  return polyfillPromise;
-}
+const loadSignalPolyfillImpl = polyfillEnabled
+  ? async (): Promise<PolyfillModule> => {
+      if (!polyfillPromise) {
+        polyfillPromise = import('./tc39-signals-polyfill.js');
+      }
+      return polyfillPromise;
+    }
+  : async (): Promise<PolyfillModule> => {
+      throw new Error(
+        'Signal polyfill loading is disabled. Enable __PHILJS_SIGNAL_POLYFILL__ or import @philjs/core/tc39-signals-polyfill directly.'
+      );
+    };
+
+export const loadSignalPolyfill = loadSignalPolyfillImpl;
 
 /**
  * Get the Signal implementation (native or polyfill).

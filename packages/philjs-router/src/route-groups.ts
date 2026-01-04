@@ -167,17 +167,20 @@ export function parseRouteGroup(
   path: string,
   config: RouteGroupConfig = {}
 ): { group: string | null; cleanPath: string } {
-  const pattern = config.groupPattern || /\(([^)]+)\)/g;
+  const groupPattern = config.groupPattern || /^\(([^)]+)\)$/;
   const parts = path.split("/").filter(Boolean);
   const cleanParts: string[] = [];
   let group: string | null = null;
 
   for (const part of parts) {
-    const match = part.match(/^\(([^)]+)\)$/);
+    const match = part.match(groupPattern);
     if (match) {
-      // This is a group - don't include in path, but remember it
+      const name = match[1] ?? part.replace(/^\(|\)$/g, "");
+      // This is a group - don't include in path, but remember the first
       if (!group) {
-        group = match[1] ?? null;
+        group = name || null;
+      } else if (name) {
+        cleanParts.push(name);
       }
     } else {
       cleanParts.push(part);

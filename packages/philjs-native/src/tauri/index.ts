@@ -573,6 +573,14 @@ export async function getTauriVersion(): Promise<string> {
 }
 
 /**
+ * Get app info (combined name and version)
+ */
+export async function getAppInfo(): Promise<{ name: string; version: string }> {
+  const [name, version] = await Promise.all([getAppName(), getAppVersion()]);
+  return { name, version };
+}
+
+/**
  * Show the app (macOS)
  */
 export async function showApp(): Promise<void> {

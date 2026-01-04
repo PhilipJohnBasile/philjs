@@ -25,6 +25,8 @@
 - [Signals and Reactivity](./core/signals.md)
 - [Signals Cookbook](./core/signals-cookbook.md)
 - [Effects and Memos](./core/effects-memos.md)
+- [Self-Healing Runtime](./core/self-healing.md)
+- [Universal Components](./core/universal.md)
 
 # Rendering
 
@@ -182,6 +184,9 @@
 # Packages
 
 - [Package Atlas](./packages/atlas.md)
+
+## Core Framework
+
 - [@philjs/core](./packages/core/overview.md)
   - [Signals and Reactivity](./packages/core/signals.md)
   - [Effects and Lifecycle](./packages/core/effects-lifecycle.md)
@@ -196,11 +201,12 @@
   - [Internationalization](./packages/core/i18n.md)
   - [Testing](./packages/core/testing.md)
   - [TypeScript](./packages/core/typescript.md)
-- [@philjs/ai](./packages/ai/overview.md)
-  - [Code Generation](./packages/ai/codegen.md)
-  - [RAG](./packages/ai/rag.md)
-  - [Streaming](./packages/ai/streaming.md)
-  - [Tools](./packages/ai/tools.md)
+- [@philjs/runtime](./packages/runtime/overview.md)
+- [@philjs/compiler](./packages/compiler/overview.md)
+- [@philjs/errors](./packages/errors/overview.md)
+
+## Routing and Navigation
+
 - [@philjs/router](./packages/router/overview.md)
   - [Data Loading](./packages/router/data-loading.md)
   - [Guards](./packages/router/guards.md)
@@ -208,28 +214,245 @@
   - [Parallel Routes](./packages/router/parallel-routes.md)
   - [View Transitions](./packages/router/view-transitions.md)
   - [Advanced Features](./packages/router/advanced-features.md)
+- [@philjs/router-typesafe](./packages/router-typesafe/overview.md)
+
+## UI Components
+
 - [@philjs/ui](./packages/ui/overview.md)
   - [Theming](./packages/ui/theming.md)
   - [Forms](./packages/ui/forms.md)
   - [Data Display](./packages/ui/data-display.md)
   - [Accessibility](./packages/ui/accessibility.md)
 - [@philjs/forms](./packages/forms/overview.md)
-- [@philjs/compiler](./packages/compiler/overview.md)
-- [@philjs/cli](./packages/cli/overview.md)
-- [@philjs/testing](./packages/testing/overview.md)
+- [@philjs/table](./packages/table/overview.md)
+- [@philjs/charts](./packages/charts/overview.md)
+- [@philjs/dnd](./packages/dnd/overview.md)
+- [@philjs/rich-text](./packages/rich-text/overview.md)
+- [@philjs/motion](./packages/motion/overview.md)
+- [@philjs/virtual](./packages/virtual/overview.md)
+
+## State Management
+
+- [@philjs/atoms](./packages/atoms/overview.md)
+- [@philjs/cells](./packages/cells/overview.md)
+- [@philjs/xstate](./packages/xstate/overview.md)
+- [@philjs/zustand](./packages/zustand/overview.md)
+- [@philjs/time-travel](./packages/time-travel/overview.md)
+
+## Data and API
+
 - [@philjs/db](./packages/db/overview.md)
+  - [Queries](./packages/db/queries.md)
+  - [Migrations](./packages/db/migrations.md)
+  - [Schema Management](./packages/db/schema.md)
+  - [Supabase Integration](./packages/db/supabase.md)
+  - [Transactions](./packages/db/transactions.md)
+  - [Repository Pattern](./packages/db/repository.md)
+- [@philjs/sqlite](./packages/sqlite/overview.md)
 - [@philjs/graphql](./packages/graphql/overview.md)
+- [@philjs/openapi](./packages/openapi/overview.md)
+- [@philjs/trpc](./packages/trpc/overview.md)
+- [@philjs/rpc](./packages/rpc/overview.md)
+- [@philjs/storage](./packages/storage/overview.md)
+- [@philjs/vector-store](./packages/vector-store/overview.md)
+- [@philjs/event-sourcing](./packages/event-sourcing/overview.md)
+
+## Server-Side Rendering
+
+- [@philjs/ssr](./packages/ssr/overview.md)
+- [@philjs/liveview](./packages/liveview/overview.md)
+- [@philjs/html](./packages/html/overview.md)
+- [@philjs/htmx](./packages/htmx/overview.md)
+- [@philjs/hollow](./packages/hollow/overview.md)
+- [@philjs/resumable](./packages/resumable/overview.md)
+- [Islands Quick Start](./packages/islands/quick-start.md)
+- [The Resumability Engine](./packages/islands/architecture.md)
+- [Multi-Framework Islands](./packages/islands/multi-framework.md)
+
+## Realtime and Communication
+
 - [@philjs/realtime](./packages/realtime/overview.md)
+  - [WebSocket Connections](./packages/realtime/websockets.md)
+  - [Channels and Rooms](./packages/realtime/channels.md)
+  - [Presence Tracking](./packages/realtime/presence.md)
+  - [Data Synchronization](./packages/realtime/data-sync.md)
+- [@philjs/webrtc](./packages/webrtc/overview.md)
+- [@philjs/collab](./packages/collab/overview.md)
+- [@philjs/video-chat](./packages/video-chat/overview.md)
+- [@philjs/screen-share](./packages/screen-share/overview.md)
+- [@philjs/media-stream](./packages/media-stream/overview.md)
+- [@philjs/voice](./packages/voice/overview.md)
+- [@philjs/spatial-audio](./packages/spatial-audio/overview.md)
+
+## AI and Machine Learning
+
+- [@philjs/ai](./packages/ai/overview.md)
+  - [Code Generation](./packages/ai/codegen.md)
+  - [RAG](./packages/ai/rag.md)
+  - [Streaming](./packages/ai/streaming.md)
+  - [Tools](./packages/ai/tools.md)
+  - [Predictive Prefetching](./packages/ai/predictive.md)
+- [@philjs/ai-agents](./packages/ai-agents/overview.md)
+- [@philjs/neural](./packages/neural/overview.md)
+- [@philjs/edge-ai](./packages/edge-ai/overview.md)
+- [@philjs/llm-ui](./packages/llm-ui/overview.md)
+- [@philjs/genui](./packages/genui/overview.md)
+- [@philjs/a11y-ai](./packages/a11y-ai/overview.md)
+
+## 3D, Graphics, and XR
+
+- [@philjs/3d](./packages/3d/overview.md)
+- [@philjs/3d-physics](./packages/3d-physics/overview.md)
+- [@philjs/scene](./packages/scene/overview.md)
+- [@philjs/webgpu](./packages/webgpu/overview.md)
+- [@philjs/xr](./packages/xr/overview.md)
+- [@philjs/digital-twin](./packages/digital-twin/overview.md)
+
+## Platform and Native
+
 - [@philjs/native](./packages/native/overview.md)
+- [@philjs/mobile](./packages/mobile/overview.md)
+  - [Native Apps with Signals](./packages/mobile/native.md)
+- [@philjs/desktop](./packages/desktop/overview.md)
+- [@philjs/tauri](./packages/tauri/overview.md)
+- [@philjs/pwa](./packages/pwa/overview.md)
+- [@philjs/offline](./packages/offline/overview.md)
+- [@philjs/wasm](./packages/wasm/overview.md)
+- [@philjs/crossdevice](./packages/crossdevice/overview.md)
 - [Platform Adapters](./packages/adapters/platforms.md)
+
+## Edge and CDN
+
+- [@philjs/edge](./packages/edge/overview.md)
+- [@philjs/edge-mesh](./packages/edge-mesh/overview.md)
+- [@philjs/cdn](./packages/cdn/overview.md)
 - [Edge Middleware](./packages/api/edge-middleware.md)
+
+## Input and Interaction
+
+- [@philjs/gesture](./packages/gesture/overview.md)
+- [@philjs/haptic](./packages/haptic/overview.md)
+- [@philjs/biometric](./packages/biometric/overview.md)
+- [@philjs/eye-tracking](./packages/eye-tracking/overview.md)
+- [@philjs/intent](./packages/intent/overview.md)
+
+## Media and Content
+
+- [@philjs/image](./packages/image/overview.md)
+- [@philjs/pdf](./packages/pdf/overview.md)
+- [@philjs/qr](./packages/qr/overview.md)
+- [@philjs/maps](./packages/maps/overview.md)
+- [@philjs/email](./packages/email/overview.md)
+- [@philjs/content](./packages/content/overview.md)
+- [@philjs/export](./packages/export/overview.md)
+
+## Authentication and Payments
+
+- [@philjs/auth](./packages/auth/overview.md)
+- [Auth Guide](./packages/auth/guide.md)
+- [@philjs/payments](./packages/payments/overview.md)
+
+## Background Processing
+
+- [@philjs/jobs](./packages/jobs/overview.md)
+- [@philjs/workers](./packages/workers/overview.md)
+- [@philjs/workflow](./packages/workflow/overview.md)
+
+## Styling and Design
+
+- [@philjs/styles](./packages/styles/overview.md)
+- [@philjs/css](./packages/css/overview.md)
+- [@philjs/tailwind](./packages/tailwind/overview.md)
+
+## Testing and Quality
+
+- [@philjs/testing](./packages/testing/overview.md)
+- [@philjs/benchmark](./packages/benchmark/overview.md)
+- [@philjs/security-scanner](./packages/security-scanner/overview.md)
+
+## Developer Tools
+
+- [@philjs/cli](./packages/cli/overview.md)
+- [@philjs/devtools](./packages/devtools/overview.md)
+- [@philjs/devtools-extension](./packages/devtools-extension/overview.md)
+- [@philjs/inspector](./packages/inspector/overview.md)
+- [@philjs/storybook](./packages/storybook/overview.md)
+- [@philjs/vscode](./packages/vscode/overview.md)
+
+## Build and Optimization
+
+- [@philjs/build](./packages/build/overview.md)
+- [@philjs/builder](./packages/builder/overview.md)
+- [@philjs/optimizer](./packages/optimizer/overview.md)
+- [@philjs/perf](./packages/perf/overview.md)
+- [@philjs/perf-budget](./packages/perf-budget/overview.md)
+
+## Observability
+
+- [@philjs/observability](./packages/observability/overview.md)
+- [@philjs/analytics](./packages/analytics/overview.md)
+- [@philjs/ab-testing](./packages/ab-testing/overview.md)
+
+## Internationalization
+
+- [@philjs/i18n](./packages/i18n/overview.md)
+- [@philjs/meta](./packages/meta/overview.md)
+
+## Sustainability
+
+- [@philjs/carbon](./packages/carbon/overview.md)
+
+## Enterprise and Advanced
+
+- [@philjs/enterprise](./packages/enterprise/overview.md)
+- [@philjs/nexus](./packages/nexus/overview.md)
+- [@philjs/studio](./packages/studio/overview.md)
+- [@philjs/dashboard](./packages/dashboard/overview.md)
+- [@philjs/editor](./packages/editor/overview.md)
+- [@philjs/ambient](./packages/ambient/overview.md)
+- [@philjs/quantum](./packages/quantum/overview.md)
+
+## Plugins
+
+- [@philjs/plugins](./packages/plugins/overview.md)
+- [@philjs/plugin-pwa](./packages/plugin-pwa/overview.md)
+- [@philjs/plugin-analytics](./packages/plugin-analytics/overview.md)
+- [@philjs/plugin-i18n](./packages/plugin-i18n/overview.md)
+- [@philjs/plugin-seo](./packages/plugin-seo/overview.md)
+- [@philjs/plugin-tailwind](./packages/plugin-tailwind/overview.md)
+
+## Language Bindings
+
+- [@philjs/go](./packages/go/overview.md)
+- [@philjs/python](./packages/python/overview.md)
+- [@philjs/kotlin](./packages/kotlin/overview.md)
+- [@philjs/swift](./packages/swift/overview.md)
+- [@philjs/zig](./packages/zig/overview.md)
+
+## Rust Ecosystem
+
+- [@philjs/rust](./packages/rust/overview.md)
+- [@philjs/actix](./packages/actix/overview.md)
+- [@philjs/axum](./packages/axum/overview.md)
+- [@philjs/rocket](./packages/rocket/overview.md)
+- [@philjs/tokio](./packages/tokio/overview.md)
+- [@philjs/seaorm](./packages/seaorm/overview.md)
+- [@philjs/sqlx](./packages/sqlx/overview.md)
+- [@philjs/macros](./packages/macros/overview.md)
+- [@philjs/poem](./packages/poem/overview.md)
+
+## Infrastructure
+
+- [@philjs/eslint](./packages/eslint/overview.md)
+- [@philjs/docs](./packages/docs/overview.md)
+- [@philjs/templates](./packages/templates/overview.md)
+- [@philjs/migrate](./packages/migrate/overview.md)
+
+## API and Sessions
+
 - [Session Management](./packages/api/sessions.md)
 - [Session Migration](./packages/api/session-migration.md)
-- [Auth Guide](./packages/auth/guide.md)
 - [Database Migrations](./packages/database/migrations.md)
-- [Islands Quick Start](./packages/islands/quick-start.md)
-- [Multi-Framework Islands](./packages/islands/multi-framework.md)
-- [Router Advanced Features](./packages/router/advanced-features.md)
 
 # DevOps and Publishing
 
@@ -278,6 +501,65 @@
 - [Local-First Architecture](./nexus/architecture.md)
 - [GenUI and AI Flows](./nexus/genui.md)
 - [Collaboration Patterns](./nexus/collaboration.md)
+
+# Rust Core
+
+- [Rust Introduction](./rust-core/introduction.md)
+
+## Getting Started (Rust)
+
+- [Installation](./rust-core/getting-started/installation.md)
+- [Hello World](./rust-core/getting-started/hello-world.md)
+- [Project Structure](./rust-core/getting-started/project-structure.md)
+
+## Core Concepts (Rust)
+
+- [Components](./rust-core/core/components.md)
+- [Signals](./rust-core/core/signals.md)
+- [Effects](./rust-core/core/effects.md)
+- [Memos](./rust-core/core/memos.md)
+- [Props](./rust-core/core/props.md)
+- [Events](./rust-core/core/events.md)
+
+## Rendering (Rust)
+
+- [JSX/RSX](./rust-core/rendering/jsx-rsx.md)
+- [Conditional Rendering](./rust-core/rendering/conditional.md)
+- [Lists](./rust-core/rendering/lists.md)
+- [Fragments](./rust-core/rendering/fragments.md)
+
+## State Management (Rust)
+
+- [Local State](./rust-core/state/local.md)
+- [Context](./rust-core/state/context.md)
+- [Stores](./rust-core/state/stores.md)
+
+## Server Side (Rust)
+
+- [SSR with Axum](./rust-core/server/axum.md)
+- [SSR with Actix](./rust-core/server/actix.md)
+- [Server Functions](./rust-core/server/functions.md)
+- [Hydration](./rust-core/server/hydration.md)
+- [Streaming](./rust-core/server/streaming.md)
+
+## Advanced Rust
+
+- [TypeScript Interop](./rust-core/advanced/typescript-interop.md)
+- [WASM Optimization](./rust-core/advanced/wasm-optimization.md)
+- [Testing](./rust-core/advanced/testing.md)
+- [Debugging](./rust-core/advanced/debugging.md)
+
+## Deployment (Rust)
+
+- [Building for Production](./rust-core/deployment/building.md)
+- [Deploying to Vercel](./rust-core/deployment/vercel.md)
+- [Deploying to Cloudflare](./rust-core/deployment/cloudflare.md)
+
+## Reference (Rust)
+
+- [API Reference](./rust-core/reference/api.md)
+- [Macros](./rust-core/reference/macros.md)
+- [CLI](./rust-core/reference/cli.md)
 
 # Migration
 

@@ -148,9 +148,8 @@ async function handleSingleRequest<TRouter extends Router>(
         input,
         type,
         path,
-        handler: async () => {
-          return executeProcedure(procedure, { input, ctx, path });
-        },
+        handler: async (ctxFromMiddleware) =>
+          executeProcedure(procedure, { input, ctx: ctxFromMiddleware, path }),
       });
 
       if (!middlewareResult.ok) {

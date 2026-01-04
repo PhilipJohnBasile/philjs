@@ -138,16 +138,17 @@ export class PPRStreamController {
     encoder: TextEncoder,
     concurrency = 3
   ): Promise<void> {
-    const queue = [...boundaries];
-    const inFlight: Promise<void>[] = [];
+    const queue = boundaries;
+    let queueIndex = 0;
+    const inFlight = new Set<Promise<void>>();
 
-    while (queue.length > 0 || inFlight.length > 0) {
+    while (queueIndex < queue.length || inFlight.size > 0) {
       if (this.aborted) break;
 
       // Fill up to concurrency limit
-      while (queue.length > 0 && inFlight.length < concurrency) {
-        const boundary = queue.shift()!;
-        const promise = this.resolveBoundary(boundary)
+      while (queueIndex < queue.length && inFlight.size < concurrency) {
+        const boundary = queue[queueIndex++]!;
+        const task = this.resolveBoundary(boundary)
           .then((resolution) => {
             if (!this.aborted) {
               controller.enqueue(
@@ -167,27 +168,17 @@ export class PPRStreamController {
                 this.generateErrorScript(boundary.id, error.message)
               )
             );
+          })
+          .finally(() => {
+            inFlight.delete(task);
           });
 
-        inFlight.push(promise);
+        inFlight.add(task);
       }
 
       // Wait for at least one to complete
-      if (inFlight.length > 0) {
+      if (inFlight.size > 0) {
         await Promise.race(inFlight);
-        // Remove completed promises
-        for (let i = inFlight.length - 1; i >= 0; i--) {
-          const promise = inFlight[i];
-          if (promise) {
-            const status = await Promise.race([
-              promise.then(() => "resolved"),
-              Promise.resolve("pending"),
-            ]);
-            if (status === "resolved") {
-              inFlight.splice(i, 1);
-            }
-          }
-        }
       }
     }
   }
@@ -213,8 +204,9 @@ export class PPRStreamController {
       priority: metadata.priority,
     };
 
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(
+      timeoutId = setTimeout(
         () => reject(new Error(`Timeout resolving boundary ${metadata.id}`)),
         this.options.timeout
       );
@@ -223,7 +215,11 @@ export class PPRStreamController {
     const resolution = await Promise.race([
       renderDynamicContent(boundary, ctx),
       timeoutPromise,
-    ]);
+    ]).finally(() => {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    });
 
     this.resolvedBoundaries.set(metadata.id, resolution);
     this.pendingBoundaries.delete(metadata.id);

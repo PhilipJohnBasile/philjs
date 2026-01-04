@@ -1,0 +1,8 @@
+/**
+ * PhilJS Meta - Router Module
+ *
+ * File-based routing and layout system exports
+ */
+export { createFileRouter, generateRouteManifest, matchRoute, matchApiRoute, type FileRouter, type FileRouterOptions, type RouteDefinition, type RouteManifest, type RouteMetadata, type RouteSegment, type RouteSegmentType, } from './file-based.js';
+export { createLayoutTree, getLayoutsForRoute, getParallelSlots, parseInterceptedRoute, createErrorBoundary, createLoadingWrapper, LayoutContextManager, LayoutUtils, type LayoutProps, type ErrorBoundaryProps, type LoadingProps, type LayoutDefinition, type LayoutTreeNode, type LayoutContext, type LayoutComposition, type ErrorBoundaryConfig, type ErrorBoundaryFactory, type LoadingConfig, type LoadingFactory, type ParallelRouteSlot, type InterceptedRoute, } from './layouts.js';
+//# sourceMappingURL=index.d.ts.map

@@ -62,7 +62,7 @@
     "@types/mime-types": "^2.1.4",
     "@vitest/coverage-v8": "^4.0.16",
     "rollup": "^4.54.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
@@ -98,3 +98,4 @@
     "node": ">=24"
   }
 }
+

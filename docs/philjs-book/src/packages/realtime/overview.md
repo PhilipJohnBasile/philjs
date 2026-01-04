@@ -782,6 +782,16 @@ function Whiteboard({ roomId }) {
 
 ## Next Steps
 
+### Package Documentation
+
+- [WebSocket Connections](./websockets.md) - Low-level WebSocket client with auto-reconnect
+- [Channels and Rooms](./channels.md) - Broadcast channels and room management
+- [Presence Tracking](./presence.md) - Track online users and cursors
+- [Data Synchronization](./data-sync.md) - Real-time shared state
+
+### Related Guides
+
 - [WebSockets and Realtime](../../integrations/websockets.md) - Integration guide
 - [@philjs/graphql](../graphql/overview.md) - GraphQL subscriptions
+- [@philjs/collab](../collab/overview.md) - Full CRDT collaboration
 - [Nexus Architecture](../../nexus/overview.md) - Local-first patterns

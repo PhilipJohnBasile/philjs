@@ -55,7 +55,7 @@
     "@vitest/ui": "^3.2.4",
     "jsdom": "^27.4.0",
     "rollup": "^4.54.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "sideEffects": false,
@@ -72,3 +72,4 @@
     "node": ">=24"
   }
 }
+

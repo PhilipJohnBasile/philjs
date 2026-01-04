@@ -134,6 +134,7 @@ export interface StoreStats {
 
 let wasmModule: any = null;
 let wasmInitPromise: Promise<any> | null = null;
+let fallbackWarned = false;
 
 /**
  * Initialize the WASM module (called automatically on first use)
@@ -156,14 +157,155 @@ async function initWasm(): Promise<any> {
       wasmModule = wasm;
       return wasm;
     } catch (error) {
-      wasmInitPromise = null;
-      throw new Error(
-        `Failed to initialize vecstore-wasm: ${error instanceof Error ? error.message : String(error)}`
-      );
+      const fallback = createFallbackModule(error);
+      wasmModule = fallback;
+      return fallback;
     }
   })();
 
   return wasmInitPromise;
+}
+
+function createFallbackModule(error: unknown): { createStore: (config: Required<VectorStoreConfig>) => Promise<MemoryVecStore> } {
+  if (!fallbackWarned) {
+    fallbackWarned = true;
+    const isTest = typeof process !== 'undefined' && process.env?.['NODE_ENV'] === 'test';
+    if (!isTest) {
+      console.warn(
+        `[PhilJS] vecstore-wasm unavailable, using JS fallback (${error instanceof Error ? error.message : String(error)}).`
+      );
+    }
+  }
+
+  return {
+    async createStore(config: Required<VectorStoreConfig>) {
+      return new MemoryVecStore(config);
+    },
+  };
+}
+
+class MemoryVecStore {
+  private vectors = new Map<string, { vector: Float32Array; metadata?: VectorMetadata }>();
+  private config: Required<VectorStoreConfig>;
+
+  constructor(config: Required<VectorStoreConfig>) {
+    this.config = config;
+  }
+
+  async upsert(id: string, vector: Float32Array, metadata?: VectorMetadata): Promise<void> {
+    this.vectors.set(id, { vector, metadata });
+  }
+
+  async upsertBatch(items: Array<{ id: string; vector: Float32Array; metadata?: VectorMetadata }>): Promise<void> {
+    for (const item of items) {
+      this.vectors.set(item.id, { vector: item.vector, metadata: item.metadata });
+    }
+  }
+
+  async query(vector: Float32Array, k: number): Promise<Array<{ id: string; score: number; metadata?: VectorMetadata; vector?: Float32Array }>> {
+    const results: Array<{ id: string; score: number; metadata?: VectorMetadata; vector?: Float32Array }> = [];
+
+    for (const [id, entry] of this.vectors.entries()) {
+      const score = scoreVector(this.config.metric, vector, entry.vector);
+      results.push({
+        id,
+        score,
+        metadata: entry.metadata,
+        vector: entry.vector,
+      });
+    }
+
+    results.sort((a, b) => b.score - a.score);
+    return results.slice(0, k);
+  }
+
+  async delete(id: string): Promise<boolean> {
+    return this.vectors.delete(id);
+  }
+
+  async deleteBatch(ids: string[]): Promise<number> {
+    let deleted = 0;
+    for (const id of ids) {
+      if (this.vectors.delete(id)) deleted++;
+    }
+    return deleted;
+  }
+
+  async get(id: string): Promise<{ vector: Float32Array; metadata?: VectorMetadata } | null> {
+    return this.vectors.get(id) ?? null;
+  }
+
+  async has(id: string): Promise<boolean> {
+    return this.vectors.has(id);
+  }
+
+  async clear(): Promise<void> {
+    this.vectors.clear();
+  }
+
+  async stats(): Promise<{ count: number; memoryBytes?: number }> {
+    return { count: this.vectors.size };
+  }
+
+  async count(): Promise<number> {
+    return this.vectors.size;
+  }
+}
+
+function scoreVector(metric: DistanceMetric, a: Float32Array, b: Float32Array): number {
+  switch (metric) {
+    case 'euclidean':
+      return 1 / (1 + euclideanDistance(a, b));
+    case 'dot':
+      return dotProduct(a, b);
+    case 'manhattan':
+      return 1 / (1 + manhattanDistance(a, b));
+    case 'hamming':
+      return 1 - hammingDistance(a, b) / a.length;
+    case 'jaccard':
+      return jaccardSimilarity(a, b);
+    case 'cosine':
+    default:
+      return cosineSimilarity(a, b);
+  }
+}
+
+function dotProduct(a: Float32Array, b: Float32Array): number {
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) {
+    sum += a[i]! * b[i]!;
+  }
+  return sum;
+}
+
+function manhattanDistance(a: Float32Array, b: Float32Array): number {
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) {
+    sum += Math.abs(a[i]! - b[i]!);
+  }
+  return sum;
+}
+
+function hammingDistance(a: Float32Array, b: Float32Array): number {
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) diff++;
+  }
+  return diff;
+}
+
+function jaccardSimilarity(a: Float32Array, b: Float32Array): number {
+  let intersection = 0;
+  let union = 0;
+  for (let i = 0; i < a.length; i++) {
+    const av = a[i]!;
+    const bv = b[i]!;
+    const aPresent = av !== 0;
+    const bPresent = bv !== 0;
+    if (aPresent || bPresent) union++;
+    if (aPresent && bPresent && av === bv) intersection++;
+  }
+  return union === 0 ? 0 : intersection / union;
 }
 
 // ============================================================================

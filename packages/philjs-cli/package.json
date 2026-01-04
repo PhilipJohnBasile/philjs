@@ -43,7 +43,7 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16",
     "@types/node": "^25.0.0",
     "@types/prompts": "^2.4.9"
@@ -64,3 +64,4 @@
     "node": ">=24"
   }
 }
+

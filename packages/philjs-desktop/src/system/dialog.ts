@@ -4,6 +4,14 @@
 
 import { isTauri } from '../tauri/context.js';
 
+const canUseWindow = (): boolean => {
+  return typeof window !== 'undefined' && typeof document !== 'undefined';
+};
+
+const shouldUseTauri = (): boolean => {
+  return isTauri() && canUseWindow();
+};
+
 // Dialog types
 export interface OpenDialogOptions {
   /** Dialog title */
@@ -64,8 +72,11 @@ export const Dialog = {
    * Open a file selection dialog
    */
   async open(options: OpenDialogOptions = {}): Promise<string | string[] | null> {
-    if (!isTauri()) {
+    if (!shouldUseTauri()) {
       // Browser fallback using input element
+      if (typeof document === 'undefined') {
+        return null;
+      }
       return new Promise((resolve) => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -101,17 +112,20 @@ export const Dialog = {
     if (options.directory !== undefined) openOptions.directory = options.directory;
     if (options.canCreateDirectories !== undefined) openOptions.canCreateDirectories = options.canCreateDirectories;
     if (options.recursive !== undefined) openOptions.recursive = options.recursive;
-    return open(openOptions);
+    const result = await open(openOptions);
+    return result ?? null;
   },
 
   /**
    * Open a save file dialog
    */
   async save(options: SaveDialogOptions = {}): Promise<string | null> {
-    if (!isTauri()) {
+    if (!shouldUseTauri()) {
       // Browser fallback - return a fake path
-      const filename = prompt('Enter filename:', options.defaultPath || 'file.txt');
-      return filename;
+      if (typeof prompt !== 'function') {
+        return options.defaultPath ?? null;
+      }
+      return prompt('Enter filename:', options.defaultPath || 'file.txt');
     }
 
     const { save } = await import('@tauri-apps/plugin-dialog');
@@ -127,8 +141,10 @@ export const Dialog = {
    * Show an info message box
    */
   async message(message: string, options: MessageDialogOptions = {}): Promise<void> {
-    if (!isTauri()) {
-      alert(message);
+    if (!shouldUseTauri()) {
+      if (typeof alert === 'function') {
+        alert(message);
+      }
       return;
     }
 
@@ -144,8 +160,8 @@ export const Dialog = {
    * Show a confirmation dialog
    */
   async confirm(message: string, options: ConfirmDialogOptions = {}): Promise<boolean> {
-    if (!isTauri()) {
-      return confirm(message);
+    if (!shouldUseTauri()) {
+      return typeof confirm === 'function' ? confirm(message) : false;
     }
 
     const { confirm: showConfirm } = await import('@tauri-apps/plugin-dialog');
@@ -162,8 +178,8 @@ export const Dialog = {
    * Show an ask dialog (yes/no)
    */
   async ask(message: string, options: MessageDialogOptions = {}): Promise<boolean> {
-    if (!isTauri()) {
-      return confirm(message);
+    if (!shouldUseTauri()) {
+      return typeof confirm === 'function' ? confirm(message) : false;
     }
 
     const { ask } = await import('@tauri-apps/plugin-dialog');

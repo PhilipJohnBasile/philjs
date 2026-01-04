@@ -67,6 +67,7 @@ export type AppearanceChangeHandler = (
  */
 function getInitialColorScheme(): ColorScheme {
   if (typeof window === 'undefined') return 'light';
+  if (typeof window.matchMedia !== 'function') return 'light';
 
   // Check system preference
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -81,6 +82,7 @@ function getInitialColorScheme(): ColorScheme {
  */
 function getReduceMotion(): boolean {
   if (typeof window === 'undefined') return false;
+  if (typeof window.matchMedia !== 'function') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -89,6 +91,7 @@ function getReduceMotion(): boolean {
  */
 function getReduceTransparency(): boolean {
   if (typeof window === 'undefined') return false;
+  if (typeof window.matchMedia !== 'function') return false;
   return window.matchMedia('(prefers-reduced-transparency: reduce)').matches;
 }
 
@@ -97,6 +100,7 @@ function getReduceTransparency(): boolean {
  */
 function getHighContrast(): boolean {
   if (typeof window === 'undefined') return false;
+  if (typeof window.matchMedia !== 'function') return false;
 
   // Windows high contrast mode
   const forcedColors = window.matchMedia('(forced-colors: active)').matches;
@@ -186,7 +190,7 @@ function updateAppearance(): void {
 }
 
 // Set up listeners
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
   // Color scheme change
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (userColorSchemeOverride === null) {

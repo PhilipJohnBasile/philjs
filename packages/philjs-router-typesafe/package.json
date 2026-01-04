@@ -37,13 +37,13 @@
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16",
     "zod": "^4.2.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
@@ -55,3 +55,4 @@
     "node": ">=24"
   }
 }
+

@@ -1,0 +1,49 @@
+{
+  "name": "@philjs/compat",
+  "version": "0.1.0",
+  "description": "Polyfills and compatibility layer for legacy browsers",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./signals": {
+      "types": "./dist/signals.d.ts",
+      "import": "./dist/signals.js",
+      "require": "./dist/signals.cjs"
+    },
+    "./dom": {
+      "types": "./dist/dom.d.ts",
+      "import": "./dist/dom.js",
+      "require": "./dist/dom.cjs"
+    }
+  },
+  "files": ["dist", "src"],
+  "sideEffects": true,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["philjs", "polyfill", "compatibility", "legacy", "ie11", "es5"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

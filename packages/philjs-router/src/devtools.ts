@@ -173,9 +173,19 @@ export type RouteMatchDebugInfo = {
   matchTime: number;
 };
 
-// ============================================================================
+// ============================================================================ 
 // State Management
-// ============================================================================
+// ============================================================================ 
+
+const DEFAULT_DEVTOOLS_CONFIG: Required<DevToolsConfig> = {
+  position: "bottom",
+  size: 400,
+  minimized: false,
+  maxHistoryEntries: 100,
+  showPerformance: true,
+  autoTrack: true,
+  theme: "system",
+};
 
 /**
  * Global DevTools state.
@@ -183,7 +193,7 @@ export type RouteMatchDebugInfo = {
 const devToolsState = signal<{
   enabled: boolean;
   minimized: boolean;
-  activeTab: "routes" | "state" | "history" | "performance" | "matching";
+  activeTab: "routes" | "state" | "history" | "performance" | "matching";       
   routeTree: RouteTreeNode[];
   history: NavigationHistoryEntry[];
   performance: Map<string, RoutePerformance>;
@@ -199,15 +209,7 @@ const devToolsState = signal<{
   performance: new Map(),
   currentState: null,
   matchDebugInfo: null,
-  config: {
-    position: "bottom",
-    size: 400,
-    minimized: false,
-    maxHistoryEntries: 100,
-    showPerformance: true,
-    autoTrack: true,
-    theme: "system",
-  },
+  config: { ...DEFAULT_DEVTOOLS_CONFIG },
 });
 
 /**
@@ -225,10 +227,12 @@ let currentNavigationMetrics: Partial<NavigationMetrics> = {};
  */
 export function initRouterDevTools(config?: DevToolsConfig): void {
   const state = devToolsState();
+  const mergedConfig = { ...DEFAULT_DEVTOOLS_CONFIG, ...config };
   devToolsState.set({
     ...state,
     enabled: true,
-    config: { ...state.config, ...config },
+    minimized: mergedConfig.minimized,
+    config: mergedConfig,
   });
 
   if (typeof window !== "undefined") {
@@ -285,24 +289,29 @@ export function completeNavigation(metrics?: Partial<NavigationMetrics>): void {
   if (!state.enabled || !currentNavigationStart) return;
 
   const duration = performance.now() - currentNavigationStart;
+  const total = metrics?.total ?? duration;
   const history = [...state.history];
   const lastEntry = history[history.length - 1];
 
   if (lastEntry) {
-    lastEntry.duration = duration;
+    const loaders = {
+      ...(currentNavigationMetrics.loaders || {}),
+      ...(metrics?.loaders || {}),
+    };
+
+    lastEntry.duration = total;
     lastEntry.metrics = {
-      total: duration,
-      matching: currentNavigationMetrics.matching || 0,
-      dataLoading: currentNavigationMetrics.dataLoading || 0,
-      rendering: currentNavigationMetrics.rendering || 0,
-      loaders: currentNavigationMetrics.loaders || {},
-      ...metrics,
+      total,
+      matching: metrics?.matching ?? currentNavigationMetrics.matching ?? 0,
+      dataLoading: metrics?.dataLoading ?? currentNavigationMetrics.dataLoading ?? 0,
+      rendering: metrics?.rendering ?? currentNavigationMetrics.rendering ?? 0,
+      loaders,
     };
 
     devToolsState.set({ ...state, history });
 
     // Update route performance
-    updateRoutePerformance(lastEntry.path, duration);
+    updateRoutePerformance(lastEntry.path, total);
   }
 
   currentNavigationStart = null;

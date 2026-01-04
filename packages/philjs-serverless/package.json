@@ -1,0 +1,61 @@
+{
+  "name": "@philjs/serverless",
+  "version": "0.1.0",
+  "description": "Unified serverless adapter for AWS Lambda, Vercel, Cloudflare Workers, and more",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./aws": {
+      "types": "./dist/aws.d.ts",
+      "import": "./dist/aws.js",
+      "require": "./dist/aws.cjs"
+    },
+    "./vercel": {
+      "types": "./dist/vercel.d.ts",
+      "import": "./dist/vercel.js",
+      "require": "./dist/vercel.cjs"
+    },
+    "./cloudflare": {
+      "types": "./dist/cloudflare.d.ts",
+      "import": "./dist/cloudflare.js",
+      "require": "./dist/cloudflare.cjs"
+    },
+    "./netlify": {
+      "types": "./dist/netlify.d.ts",
+      "import": "./dist/netlify.js",
+      "require": "./dist/netlify.cjs"
+    }
+  },
+  "files": ["dist", "src"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "keywords": ["philjs", "serverless", "aws", "lambda", "vercel", "cloudflare", "workers", "edge"],
+  "author": "PhilJS Team",
+  "license": "MIT",
+  "dependencies": {
+    "@philjs/core": "workspace:*",
+    "@philjs/adapters": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "tsup": "^8.5.1",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

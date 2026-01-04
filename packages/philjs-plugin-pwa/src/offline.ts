@@ -9,7 +9,9 @@ import type { Signal } from '@philjs/core';
  * Online/offline status signal
  */
 export const isOnline: Signal<boolean> = signal(
-  typeof navigator !== 'undefined' ? navigator.onLine : true
+  typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
+    ? navigator.onLine
+    : true
 );
 
 /**

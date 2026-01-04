@@ -23,12 +23,12 @@
     "@philjs/api": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16",
     "zod": "^4.2.1"
   },
   "peerDependencies": {
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
@@ -66,3 +66,4 @@
     "node": ">=24"
   }
 }
+

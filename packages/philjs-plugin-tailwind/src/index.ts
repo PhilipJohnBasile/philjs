@@ -242,9 +242,7 @@ export function createTailwindPlugin(userConfig: TailwindPluginConfig = {}): Plu
             css: {
               postcss: {
                 plugins: [
-                  tailwindcss({
-                    config: mergedConfig.configPath || "./tailwind.config.js",
-                  }),
+                  tailwindcss,
                   autoprefixer,
                 ],
               },

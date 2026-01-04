@@ -29,6 +29,8 @@ export function BevyEmbed(props: BevyEmbedProps): HTMLElement {
   const container = document.createElement('div');
   container.style.position = 'relative';
   container.style.display = 'inline-block';
+  let isDisposed = false;
+  let instancePromise: Promise<BevyInstance> | null = null;
 
   if (props.className) {
     container.className = props.className;
@@ -69,7 +71,7 @@ export function BevyEmbed(props: BevyEmbedProps): HTMLElement {
   }
 
   // Initialize Bevy
-  createBevyInstance({
+  instancePromise = createBevyInstance({
     wasmPath: props.wasmPath,
     ...(props.jsPath !== undefined ? { jsPath: props.jsPath } : {}),
     canvas,
@@ -86,8 +88,13 @@ export function BevyEmbed(props: BevyEmbedProps): HTMLElement {
       ...(props.gamepad !== undefined ? { gamepad: props.gamepad } : {}),
       ...(props.touch !== undefined ? { touch: props.touch } : {}),
     },
-  })
-    .then((instance) => {
+  });
+  instancePromise
+    .then(async (instance) => {
+      if (isDisposed) {
+        await instance.app.dispose();
+        return;
+      }
       // Remove loading element
       if (loadingElement) {
         loadingElement.remove();
@@ -100,6 +107,9 @@ export function BevyEmbed(props: BevyEmbedProps): HTMLElement {
       props.onReady?.(instance);
     })
     .catch((error) => {
+      if (isDisposed) {
+        return;
+      }
       // Remove loading element
       if (loadingElement) {
         loadingElement.remove();
@@ -119,6 +129,26 @@ export function BevyEmbed(props: BevyEmbedProps): HTMLElement {
 
       props.onError?.(error);
     });
+
+  const dispose = async () => {
+    if (isDisposed) {
+      return;
+    }
+    isDisposed = true;
+    if (loadingElement) {
+      loadingElement.remove();
+    }
+    const instance = await instancePromise?.catch(() => null);
+    if (instance?.app) {
+      await instance.app.dispose();
+    } else {
+      await disposeBevy(canvas);
+    }
+  };
+  Object.defineProperty(container, 'dispose', {
+    value: dispose,
+    configurable: true,
+  });
 
   return container;
 }

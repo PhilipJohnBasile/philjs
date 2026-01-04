@@ -5,18 +5,90 @@
  * @packageDocumentation
  */
 
+import type { PhilJSRspackOptions } from './rspack/config.js';
+
 // Rspack
 export {
   createRspackConfig,
   createModuleFederationPlugin,
   createPhilJSPlugin,
-  presets as rspackPresets,
+  philJSRspackPlugin,
+  defaultRspackConfig,
+  mergeRspackConfig,
   type RspackConfiguration,
   type RspackRule,
   type PhilJSRspackOptions,
+  type RspackPluginOptions,
   type ModuleFederationOptions,
   type SharedModuleConfig,
 } from './rspack/config.js';
+
+export const presets = {
+  development: (entry: string | Record<string, string>): PhilJSRspackOptions => ({
+    mode: 'development',
+    entry,
+    philjs: {
+      signals: true,
+      jsx: 'transform',
+      autoMemo: false,
+      treeshake: 'standard',
+    },
+    devServer: {
+      port: 3000,
+      hot: true,
+      open: true,
+    },
+  }),
+  production: (entry: string | Record<string, string>): PhilJSRspackOptions => ({
+    mode: 'production',
+    entry,
+    philjs: {
+      signals: true,
+      jsx: 'transform',
+      autoMemo: true,
+      treeshake: 'aggressive',
+    },
+    devtool: 'source-map',
+  }),
+  library: (
+    entry: string | Record<string, string>,
+    externals?: string[]
+  ): PhilJSRspackOptions => ({
+    mode: 'production',
+    entry,
+    output: {
+      filename: '[name].js',
+    },
+    externals: Object.fromEntries((externals ?? ['@philjs/core']).map((e) => [e, e])),
+    philjs: {
+      signals: true,
+      jsx: 'transform',
+      autoMemo: true,
+      treeshake: 'aggressive',
+    },
+  }),
+  microfrontend: (
+    name: string,
+    entry: string,
+    options: { exposes?: Record<string, string>; remotes?: Record<string, string> }
+  ): PhilJSRspackOptions => ({
+    mode: 'production',
+    entry: { main: entry },
+    moduleFederation: {
+      name,
+      exposes: options.exposes,
+      remotes: options.remotes,
+    },
+    philjs: {
+      signals: true,
+      jsx: 'transform',
+      autoMemo: true,
+      treeshake: 'aggressive',
+    },
+  }),
+};
+
+export const rspackPresets = presets;
 
 // Rslib
 export {

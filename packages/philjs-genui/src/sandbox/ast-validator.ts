@@ -18,6 +18,8 @@ import type {
 export interface SandboxConfig {
   /** Whitelist of allowed component types */
   allowedComponents: string[];
+  /** Whether to allow unknown component types */
+  allowUnknownComponents: boolean;
   /** Props whitelist per component */
   allowedProps: Map<string, string[]>;
   /** Allowed action types */
@@ -86,6 +88,7 @@ export const DEFAULT_SANDBOX_CONFIG: SandboxConfig = {
     // Data
     'Table', 'List', 'ListItem',
   ],
+  allowUnknownComponents: false,
   allowedProps: new Map([
     ['Button', ['children', 'variant', 'size', 'disabled', 'loading', 'type', 'onClick']],
     ['Input', ['type', 'placeholder', 'value', 'disabled', 'required', 'name', 'onChange', 'onBlur']],
@@ -286,12 +289,18 @@ export class ASTValidator {
   ): void {
     // Check if component type is allowed
     if (!this.config.allowedComponents.includes(component.type)) {
-      errors.push({
-        code: 'INVALID_COMPONENT',
-        message: `Component type not allowed: ${component.type}`,
-        source: component.id,
-      });
-      return;
+      if (this.config.allowUnknownComponents) {
+        warnings.push(
+          `Unknown component type: ${component.type} (component: ${component.id})`
+        );
+      } else {
+        errors.push({
+          code: 'INVALID_COMPONENT',
+          message: `Component type not allowed: ${component.type}`,
+          source: component.id,
+        });
+        return;
+      }
     }
 
     // Validate props

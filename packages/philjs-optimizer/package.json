@@ -60,7 +60,7 @@
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.5",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
@@ -76,3 +76,4 @@
     "node": ">=24"
   }
 }
+

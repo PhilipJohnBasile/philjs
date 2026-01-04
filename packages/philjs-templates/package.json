@@ -24,7 +24,7 @@
     "degit": "^2.8.4"
   },
   "devDependencies": {
-    "typescript": "^6.0.0"
+    "typescript": "6.0.0-dev.20251230"
   },
   "files": [
     "dist",
@@ -53,3 +53,4 @@
     "node": ">=24"
   }
 }
+

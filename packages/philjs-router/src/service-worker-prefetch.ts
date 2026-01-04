@@ -372,6 +372,25 @@ let swChannel: BroadcastChannel | null = null;
 let cachedUrls = new Set<string>();
 const messageHandlers = new Map<string, (message: PrefetchMessage) => void>();
 
+function createBroadcastChannel(name: string): BroadcastChannel | null {
+  if (typeof BroadcastChannel === 'undefined') return null;
+
+  const Channel = BroadcastChannel as unknown as {
+    (channelName: string): BroadcastChannel;
+    new (channelName: string): BroadcastChannel;
+  };
+
+  try {
+    return Channel(name);
+  } catch {
+    try {
+      return new Channel(name);
+    } catch {
+      return null;
+    }
+  }
+}
+
 /**
  * Initialize service worker communication
  */
@@ -379,7 +398,8 @@ export function initServiceWorkerPrefetch(): void {
   if (typeof window === 'undefined') return;
 
   try {
-    swChannel = new BroadcastChannel(BROADCAST_CHANNEL);
+    swChannel = createBroadcastChannel(BROADCAST_CHANNEL);
+    if (!swChannel) return;
     swChannel.onmessage = (event: MessageEvent<PrefetchMessage>) => {
       handleSwMessage(event.data);
     };

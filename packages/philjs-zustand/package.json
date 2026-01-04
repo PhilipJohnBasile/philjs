@@ -28,7 +28,7 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.54.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"
   },
   "keywords": [
@@ -53,3 +53,4 @@
     "node": ">=24"
   }
 }
+
