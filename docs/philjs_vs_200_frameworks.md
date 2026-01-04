@@ -140,6 +140,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **SWR / TanStack Query** | PhilJS "Resources" handle loading/error/stale-while-revalidate states natively. No libs needed. | **IMPLEMENTED:** `@philjs/query` with Optimistic Updates. |
 | **tRPC** | PhilJS has end-to-end type safety built into its RPC layer. `@philjs/trpc` available for legacy support. | Add "Subscription" support to RPC layer. |
 | **ConnectRPC / Buf** | Professional gRPC-web replacement. PhilJS supports `connect-web` for banking-grade APIs. | Generate typed Clients from `.proto` files automatically. |
+| **Socket.io** | Real-time bidirectional events. PhilJS wraps Socket.io with Signals for reactive state sync. | **IMPLEMENTED:** `useSocket` hook. |
+| **WebSocket** | Native browser API. PhilJS provides `createWebSocketSignal` for automatic reconnection and state sync. | Add binary protocol support. |
+| **Pusher / Ably** | Managed real-time. PhilJS integrates with both via `@philjs/realtime` for presence channels. | **IMPLEMENTED:** Presence channel hooks. |
 
 ---
 
