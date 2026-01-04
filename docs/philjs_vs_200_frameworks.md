@@ -157,6 +157,8 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **PocketBase** | Go-based backend. PhilJS works perfectly with the single binary philosophy. | Add `pocketbase-typegen` integration into CLI. |
 | **PayloadCMS** | Best headless CMS for TypeScript. PhilJS handles Payload's generic types perfectly. | Support Payload 3.0 Next.js-free mode. |
 | **Strapi** | Headless usage is trivial. | Add GraphQL schema stitching for Strapi. |
+| **Contentful** | Enterprise CMS. PhilJS provides a "Content Logic" (CL) layer to map Contentful models to Signals. | **IMPLEMENTED:** `contentful-to-ts` generator. |
+| **Sanity** | Real-time content. PhilJS listeners hook directly into Sanity `listen()` for instant updates. | Ensure GROQ queries are type-safe. |
 
 ---
 
@@ -184,6 +186,8 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Panda CSS / UnoCSS / vanilla-extract** | Modern zero-runtime CSS is the preferred way. Adapters exist for all 3. | Benchmark build times for large atomic CSS generation. |
 | **shadcn/ui** | PhilJS has a `philjs add shadcn` command to scaffold accessible components into your project. | Keep component registry synced with ui.shadcn.com. |
 | **Tailwind CSS** | Native support. PhilJS template compiler optimizes Tailwind class strings (deduplication). | Support Tailwind v4 "oxide" engine features. |
+| **Recharts / Nivo / Victory** | React-based charts. PhilJS supports these via the React compatibility layer effortlessly. | Add "PhilJS Charts" wrapper for lighter bundles. |
+| **Tremor** | Dashboard UI. PhilJS templates include the Tremor standard library by default. | **IMPLEMENTED:** Dashboard template includes Tremor. |
 | **OpenProps** | CSS Variable standard. PhilJS offers an `@philjs/open-props` preset for native CSS usage. | Bundle OpenProps 2.0 variables by default. |
 | **StyleX** | Meta's atomic CSS-in-JS. PhilJS compiler can perform the same zero-runtime extraction. | Benchmark StyleX build output vs PhilJS Native Styles. |
 
@@ -266,6 +270,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | **IMPLEMENTED:** `@philjs/durable` (Durable Objects). |
 | **Docker / Kubernetes** | Production-ready `Dockerfile` and Helm charts included (`philjs deploy --k8s`). | Optimize container image size (Target <50MB). |
+| **Coolify** | Self-hosted PaaS. PhilJS provides a `coolify.yaml` for one-click self-hosting. | **IMPLEMENTED:** Coolify deploy blueprint. |
+| **Railway** | PhilJS detects `railway.toml` or `nixpacks` automatically. | Support Railway "Priority Boarding" builds. |
+| **Zeabur** | The friction-less deploy for Asia. PhilJS is Verified on Zeabur. | Add Zeabur deploy button to README. |
 | **Encore.ts** | Backend framework with automatic infrastructure. PhilJS offers `philjs deploy` which infers infra requirements similarly. | Add "Infrastructure-from-Code" static analysis. |
 | **Nitric** | Portable cloud framework. PhilJS supports Nitric via adapter for multi-cloud deployment. | Ensure Nitric "Collection" API maps to PhilJS Stores. |
 | **SST** | Serverless Stack. PhilJS provides an `sst.config.ts` preset for instant AWS deployment. | Support both SST v2 (CDK) and Ion (Pulumi) modes. |
