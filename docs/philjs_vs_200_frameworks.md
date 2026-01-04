@@ -309,6 +309,18 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 ---
 
+## 18. Commerce, Search & Web3
+
+| Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
+|:-----------|:-----------------------------|:-------------------------|
+| **Stripe** | PhilJS provides a type-safe wrapper around `stripe-js` ensuring PCI compliance. | Add `<Checkout />` UI primitive. |
+| **Lemon Squeezy** | SaaS Merchant of Record. PhilJS includes a webhook handler for Lemon Squeezy subscription events. | **IMPLEMENTED:** `billing` template uses Lemon Squeezy. |
+| **Algolia** | PhilJS sends "Signal" updates to Algolia indices automatically when data changes. | Support "InstantSearch" widgets via UCP. |
+| **Meilisearch / Typesense** | Self-hosted search. PhilJS CLI can spin up a Meilisearch container alongside the app. | **IMPLEMENTED:** `philjs db:search` command. |
+| **Wagmi / Viem** | Web3 Hooks. PhilJS Signals are the perfect reactive primitive for blockchain state (block numbers/balance). | Add `useContractRead` signal wrapper. |
+
+---
+
 ## 16. Stacks
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
