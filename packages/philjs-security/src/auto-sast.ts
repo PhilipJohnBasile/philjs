@@ -9,6 +9,8 @@ export interface Vulnerability {
 /**
  * Self-Patching Security Scanner.
  * Detects vulnerabilities and automatically applies code fixes.
+ * 
+ * @returns A list of detected vulnerabilities and their patch status.
  */
 export async function scanAndPatch(): Promise<Vulnerability[]> {
     console.log('AutoSAST: 🛡️ Scanning codebase for vulnerabilities...');

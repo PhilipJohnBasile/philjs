@@ -15,6 +15,12 @@ export interface AgentConfig {
 export class Agent {
     constructor(private config: AgentConfig) { }
 
+    /**
+     * Executes a prompt using the configured LLM model.
+     * 
+     * @param prompt - The user's natural language input.
+     * @returns The model's generated response.
+     */
     async run(prompt: string): Promise<string> {
         console.log(`Agent (${this.config.model}): Thinking specifically about "${prompt}"...`);
 

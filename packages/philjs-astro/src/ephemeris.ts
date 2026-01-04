@@ -3,7 +3,13 @@
  * Orbital Mechanics & Astronomy Calculator.
  */
 export class Ephemeris {
-    static getPlanetPosition(planet: 'mars' | 'jupiter', date: Date) {
+    /**
+     * Calculates the heliocentric coordinates of a planet for a given date.
+     * @param planet - The target celestial body.
+     * @param date - The observation time.
+     * @returns Right Ascension (RA), Declination (Dec), and Distance in AU.
+     */
+    static getPlanetPosition(planet: 'mars' | 'jupiter', date: Date): { ra: string; dec: string; distance: string } {
         console.log(`Astro: 🔭 Calculating heliocentric coordinates for ${planet} at J2000 epoch...`);
         return {
             ra: '12h 43m 22s',

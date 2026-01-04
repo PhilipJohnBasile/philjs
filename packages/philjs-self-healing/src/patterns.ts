@@ -34,6 +34,12 @@ export const healingPatterns: HealPattern[] = [
     }
 ];
 
+/**
+ * Finds a matching self-healing pattern for a given error.
+ * 
+ * @param error - The runtime error to analyze.
+ * @returns The matching HealPattern descriptor, or undefined if no match is found.
+ */
 export function findPattern(error: Error): HealPattern | undefined {
     return healingPatterns.find(p => p.errorRegex.test(error.message));
 }

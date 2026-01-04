@@ -6,7 +6,12 @@
 export class Tensor {
     constructor(private data: number[], private shape: number[]) { }
 
-    static zeros(shape: number[]) {
+    /**
+     * Creates a tensor of zeros with the specified shape.
+     * @param shape - The dimensions of the tensor [dim1, dim2, ...].
+     * @returns A new Tensor instance initialized with zeros.
+     */
+    static zeros(shape: number[]): Tensor {
         const size = shape.reduce((a, b) => a * b, 1);
         return new Tensor(new Array(size).fill(0), shape);
     }

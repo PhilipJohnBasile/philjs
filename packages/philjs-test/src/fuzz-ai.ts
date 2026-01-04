@@ -7,11 +7,15 @@ export interface FuzzConfig {
 /**
  * AI-Powered Fuzz Testing.
  * Generates edge-case inputs based on the function signature and AI inference.
+ * 
+ * @param targetFunction - The function to be tested.
+ * @param config - Fuzzing strategy configuration.
+ * @returns A report containing total runs, failures, and a robustness score.
  */
 export async function fuzzAI(
     targetFunction: Function,
     config: FuzzConfig = { iterations: 10, strategy: 'semantic' }
-) {
+): Promise<{ total: number; failures: any[]; score: number }> {
     console.log(`FuzzAI: Analyzing function "${targetFunction.name}" for vulnerabilities...`);
     console.log(`FuzzAI: Strategy: ${config.strategy}`);
 

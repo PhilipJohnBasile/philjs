@@ -2,8 +2,11 @@
 /**
  * Autonomous Documentation Generator.
  * Reads code, understands intent, and writes/updates Markdown docs.
+ * 
+ * @param entryPoint - The main entry file to analyze.
+ * @returns Status of the generation and list of updated files.
  */
-export async function generateDocs(entryPoint: string) {
+export async function generateDocs(entryPoint: string): Promise<{ status: string; files: string[] }> {
     console.log(`AutoDoc: 📚 Reading source from ${entryPoint}...`);
     console.log('AutoDoc: 🧠 Understanding business logic and API surface...');
 

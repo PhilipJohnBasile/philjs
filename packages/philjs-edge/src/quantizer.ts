@@ -8,8 +8,16 @@ export interface QuantizationConfig {
 /**
  * Simulates model quantization for edge deployment.
  * Reduces model size by converting weights from Float32 to lower precision.
+ * 
+ * @param config - Configuration specifying the source model and target precision.
+ * @returns Metadata about the quantized model including size reduction.
  */
-export async function quantizeModel(config: QuantizationConfig) {
+export async function quantizeModel(config: QuantizationConfig): Promise<{
+    outputPath: string;
+    originalSize: number;
+    compressedSize: number;
+    precision: string;
+}> {
     console.log(`Quantizer: Loading model from ${config.sourceModelPath}...`);
     console.log(`Quantizer: Target Precision: ${config.targetFormat.toUpperCase()}`);
 

@@ -2,8 +2,10 @@
 /**
  * Autonomous Performance Tuner.
  * Profiles runtime execution and injects Memoization/caching.
+ * 
+ * @returns Report of optimized files and estimated performance gain.
  */
-export async function optimizePerformance() {
+export async function optimizePerformance(): Promise<{ optimizedFiles: string[]; perfGain: string }> {
     console.log('AutoPerf: 🏎️ Profiling render cycles and memory usage...');
 
     await new Promise(r => setTimeout(r, 500));

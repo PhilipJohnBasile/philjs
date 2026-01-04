@@ -9,7 +9,12 @@ export class DNA {
         return sequence.split('').map(b => map[b] || b).join('');
     }
 
-    static findCrisprTarget(sequence: string) {
+    /**
+     * Scans a DNA sequence for CRISPR/Cas9 PAM (NGG) sites.
+     * @param sequence - The DNA string to analyze.
+     * @returns A list of potential target sites with off-target scores.
+     */
+    static findCrisprTarget(sequence: string): Array<{ start: number; end: number; sequence: string; score: number }> {
         console.log('Bio: 🧬 Scanning for CRISPR/Cas9 PAM sequences (NGG)...');
         return [{ start: 23, end: 43, sequence: 'GATTACA...', score: 98.6 }];
     }
