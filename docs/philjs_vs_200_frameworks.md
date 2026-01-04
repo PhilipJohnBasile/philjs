@@ -127,6 +127,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **RxJS** | PhilJS Signals are "hot" by default and simpler than Observables. `@philjs/rxjs` allows full interop. | Keep interop layer performance cost zero. |
 | **XState** | PhilJS integrates state machines for complex flows. `@philjs/xstate` is first-party supported. | Add visual state machine inspector to devtools. |
 | **Zustand** | PhilJS Global Signals are practically identical to Zustand stores but require no setup function. | Benchmark store creation overhead (currently near zero). |
+| **i18next** | Internationalization. PhilJS provides `useTranslation` Signal that auto-updates on locale change. | **IMPLEMENTED:** `@philjs/i18n` wrapper. |
+| **Lodash / lodash-es** | Utility library. PhilJS recommends native methods or es-toolkit; provides tree-shaking guidance. | Document modern replacements for common Lodash patterns. |
+| **date-fns / Day.js** | Date utilities. PhilJS signals work seamlessly with immutable date updates. | **IMPLEMENTED:** Date formatting helpers in core. |
 
 ---
 
