@@ -38,7 +38,7 @@
 - [ ] **AdonisJS**: Support the IoC Container pattern natively.
 
 ### 📦 Stacks & Starters
-- [ ] **P-Stack**: Release CLI preset for (PhilJS + tRPC + Tailwind + Prisma) to compete with T3.
+- [x] **P-Stack**: Release CLI preset for (PhilJS + tRPC + Tailwind + Prisma) to compete with T3. (Template added to create-philjs)
 - [ ] **MEAN/MERN**: Release "One-Command" setup scripts for Mongo/Node stacks.
 - [ ] **Sails/Rails**: Create "Blueprints" rapid-prototyping generators.
 
@@ -53,13 +53,13 @@
 *Focus: Leveraging our unique AI-native architecture to do things no other framework can.*
 
 ### 🤖 Agents & LLMs
-- [ ] **Hierarchical Teams**: Deepen support for complex "Manager -> Worker" agent flows in `@philjs/ai-agents`.
+- [x] **Hierarchical Teams**: Deepen support for complex "Manager -> Worker" agent flows in `@philjs/ai-agents`. (Implemented HierarchicalTeam)
 - [ ] **Visual Graph Editor**: Release a GUI for designing LangGraph/PhilJS agent flows.
 - [ ] **RAG**: Optimize vector retrieval speeds in `@philjs/vector-store`.
 - [ ] **Edge Agents**: Keep the `smolagents` runtime under 5KB for edge deployment.
 
 ### 🧠 Testing & Healing
-- [ ] **Self-Healing Tests**: Add AI-healing to Playwright selectors (auto-fix broken tests).
+- [x] **Self-Healing Tests**: Add AI-healing to Playwright selectors (auto-fix broken tests). (Implemented @philjs/self-healing)
 - [ ] **Context Awareness**: Simplify "useCopilot" hooks to feed app state to LLMs.
 - [ ] **Observability**: Add specific "Cost per Token" dashboards to the dev console.
 
