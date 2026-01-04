@@ -15,6 +15,10 @@ const _TEMPLATES = {
   blog: "Blog with markdown and SEO",
   saas: "SaaS starter with auth and billing",
   "p-stack": "The PhilJS Stack: tRPC + Tailwind + Drizzle + Auth",
+  "mern": "MERN Stack: Mongo + Express + React(Phil) + Node",
+  "sails": "Sails.js Blueprint: MVC Waterline + PhilJS",
+  "tauri": "Tauri Desktop App: Rust + PhilJS",
+  "atomic": "Atomic CSS: PandaCSS + PhilJS",
 };
 
 async function main() {

@@ -1,0 +1,11 @@
+{
+    "philjs.refactor.moveComponent": true,
+    "philjs.context.openInGitHub": true,
+    "files.associations": {
+        "*.phil": "typescriptreact"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true
+    }
+}
