@@ -328,6 +328,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Docusaurus / Nextra** | PhilJS Project includes a `docs/` template powered by the same engine but 10x faster HMR. | **IMPLEMENTED:** `docs` template in CLI. |
 | **Mintlify / Fumadocs** | Modern Docs-as-Code. PhilJS auto-generates `mint.json` config from your Routes. | Add "API Reference" auto-generation. |
+| **MDX** | Markdown + JSX. PhilJS fully supports MDX 3 with interactive Signal components embedded in docs. | **IMPLEMENTED:** Enhanced MDX features in docs. |
 | **Sentry / LogRocket** | PhilJS "Error Boundaries" automatically capture stack traces and component state for Sentry. | **IMPLEMENTED:** `@philjs/sentry` middleware. |
 | **Datadog / New Relic** | Real User Monitoring (RUM). PhilJS router emits "User Timing" marks for every navigation. | Ensure "Core Web Vitals" are reported automatically. |
 
