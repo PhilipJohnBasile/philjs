@@ -41,6 +41,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Svelte / SvelteKit** | PhilJS offers Svelte-like succinctness via Signals but without the custom `.svelte` compiler syntax limitations (standard TSX). | Study Svelte 5 "Runes" to ensure PhilJS signals remain cleaner. |
 | **Vue / Vue.js / Vue Router** | PhilJS Composition API (`signal`, `effect`) is more consistent than Vue's `ref`/`reactive` split and avoids `.value` in templates. | Target Vue 2 -> PhilJS migration path specifically. |
 | **Web Components** | PhilJS treats WCs as first-class citizens. You can import them, render them, and export to them losslessly. | **IMPLEMENTED:** Declarative Shadow DOM in `@philjs/ssr`. |
+| **Waku** | Minimalist React framework for RSCs. PhilJS offers "Server Signals" which are conceptually simpler than RSCs. | Benchmark Server Signal roundtrip vs RSC payload size. |
 
 ---
 
@@ -59,6 +60,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **TanStack Start** | PhilJS offers similar full-stack safety but with a cohesive, opinionated runtime that self-heals errors TanStack would crash on. | Integrate closely with TanStack Router patterns. |
 | **Vike** | PhilJS is less "do-it-yourself" than Vike while maintaining the flexibility. We provide logical defaults for SSR/SSG. | Maintain a Vike compatibility adapter for advanced customizers. |
 | **VitePress** | PhilJS docs template is as fast as VitePress (Vue-based) but allows React/Svelte/Solid examples inline. | Benchmark HMR speeds for markdown editing. |
+| **Vinxi** | The "Vite-Native" server that powers SolidStart. PhilJS uses a similar primitives-based server architecture. | Ensure PhilJS Server middleware is Vinxi-compatible. |
 
 ---
 
@@ -197,6 +199,8 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Babel** | Used only when necessary for legacy browser support. PhilJS prefers SWC/Rust. | Keep usage minimal for performance. |
 | **esbuild / SWC / Rspack** | PhilJS uses these under the hood for development speed (100x vs Webpack). | **IMPLEMENTED:** Rspack support verified. |
+| **Mako** | Extremely fast Rust bundler for UmiJS. PhilJS monitors Mako for performance tricks. | Benchmark Mako's "Module Federation" vs PhilJS. |
+| **Turbopack** | The successor to Webpack (in Rust). PhilJS is architecture-agnostic and can switch bundlers if Turbopack wins. | Support `turbo dev` if it stabilizes. |
 | **Oxc** | The Oxford Compiler. PhilJS uses Oxc for blazing fast linting and AST transformation in the CLI. | Replace Babel parser with Oxc entirely. |
 | **VoidZero** | The new toolchain from Evan You. PhilJS is designed to be VoidZero-compatible Day 1. | Align configuration schema with VoidZero. |
 | **npm / pnpm / yarn** | All supported. `philjs-cli` respects lockfile detection. | Enforce pnpm for monorepos due to speed/efficiency. |
@@ -246,6 +250,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | **IMPLEMENTED:** `@philjs/durable` (Durable Objects). |
 | **Docker / Kubernetes** | Production-ready `Dockerfile` and Helm charts included (`philjs deploy --k8s`). | Optimize container image size (Target <50MB). |
+| **Encore.ts** | Backend framework with automatic infrastructure. PhilJS offers `philjs deploy` which infers infra requirements similarly. | Add "Infrastructure-from-Code" static analysis. |
+| **Nitric** | Portable cloud framework. PhilJS supports Nitric via adapter for multi-cloud deployment. | Ensure Nitric "Collection" API maps to PhilJS Stores. |
+| **SST** | Serverless Stack. PhilJS provides an `sst.config.ts` preset for instant AWS deployment. | Support both SST v2 (CDK) and Ion (Pulumi) modes. |
 | **ESLint / Prettier** | `philjs-lint` configures these specifically for Signals usage (preventing common pitfalls). | Add custom rule for "No Effect Side-Effects". |
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
 | **Git / GitHub / GitLab** | `@philjs/git` provides programmatic access for custom devtools. | Add "Open in GitHub" feature for every component in DevTools. |
