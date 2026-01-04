@@ -8,6 +8,11 @@ It unifies the entire stack—from quantum cryptography to biological DNA sequen
 
 ## Installation
 
+### System Requirements (`2026 Standard`)
+- **Node.js**: `v24.0.0` or higher (Titanium LTS).
+- **TypeScript**: `v6.0.0` (Required for const generics and native decoration).
+- **Runtime**: Supports Edge Runtime 3.0.
+
 ```bash
 pnpm add philjs
 ```

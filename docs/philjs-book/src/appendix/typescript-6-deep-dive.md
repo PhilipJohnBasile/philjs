@@ -1,6 +1,6 @@
 # TypeScript 6.x Deep Dive (Appendix)
 
-A practical, in-depth TypeScript 6.x guide for PhilJS developers. Use this appendix as a language reference, a style guide, and a set of patterns you can apply directly in PhilJS apps.
+A practical, in-depth TypeScript 6.x guide for PhilJS developers. PhilJS is built exclusively for **TypeScript 6.0+** and **Node.js 24+**, leveraging the latest optimizing compilers and runtime features.
 
 ## Table of contents
 
