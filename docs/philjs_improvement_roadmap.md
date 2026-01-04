@@ -232,24 +232,13 @@
 
 ---
 
-### 🟣 P4 - Future Research & Long-Term (Q4 2026+)
+| 79 | ✅ **Symfony (PHP) Adapter** | `packages/philjs-php/` | 12h | Done |
+| 80 | ✅ **Zed Editor Extension** | `packages/philjs-zed/` | 8h | Done |
+| 81 | ✅ **Neovim Plugin** | `packages/philjs-neovim/` | 8h | Done |
+| 82 | ✅ **Ionic Adapter** | `packages/philjs-ionic/` | 12h | Done |
+| 83 | ✅ **Ant Design Theme** | `packages/philjs-antd/` | 40h | Done |
 
-These items involve deep research or long-term ecosystem alignment.
-
-| # | Item | Files | Effort | Priority |
-|:--|:-----|:------|:-------|:---------|
-| 74 | **Mantine Hook Patterns** | `packages/philjs-hooks/src/mantine.ts` | 12h | Low |
-| 75 | **Tailwind UI Premium Adapter** | `packages/philjs-tailwind-ui/` | 40h | Low |
-| 76 | **TanStack Start RSC Study** | `docs/research/rsc-tanstack.md` | 16h | Low |
-| 77 | **NestJS DI Patterns** | `packages/philjs-di/src/nestjs-compat.ts` | 8h | Low |
-| 78 | **AdonisJS Patterns** | `docs/research/adonis-patterns.md` | 8h | Low |
-| 79 | **Pydantic AI Integration** | `packages/philjs-ai/src/pydantic.ts` | 12h | Low |
-| 80 | **smolagents Integration** | `packages/philjs-ai-agents/src/smol.ts` | 8h | Low |
-| 81 | **Promptflow Integration** | `packages/philjs-ai/src/promptflow.ts` | 16h | Low |
-| 82 | **Semantic Kernel Bridge** | `packages/philjs-ai/src/semantic-kernel.ts` | 16h | Low |
-| 83 | **Stagehand Testing** | `packages/philjs-testing/src/stagehand.ts` | 8h | Low |
-| 84 | **Mastra Workflows** | `packages/philjs-ai/src/mastra.ts` | 12h | Low |
-| 85 | **Ionic Component Compat** | `packages/philjs-ionic/` | 12h | Low |
+---
 | 86 | **Vike (Vite SSR) Integration** | `packages/philjs-vike/` | 16h | Low |
 | 87 | **Aurelia Migration Guide** | `docs/migration/aurelia.md` | 8h | Low |
 | 88 | **Ext JS Migration Guide** | `docs/migration/extjs.md` | 12h | Low |
@@ -300,15 +289,6 @@ These items involve deep research or long-term ecosystem alignment.
 ## 📊 Priority Summary
 
 ### 🔴 High Priority (Do Next)
-### 🔴 High Priority (Do Next)
-- **Ionic Component Compat** (#67)
-- **Ant Design Enterprise** (#21)
-- **Symfony Adapter** (#29)
-
-### 🟡 Medium Priority
-- **Zed Extension** (#52)
-- **Neovim Plugin** (#53)
-
 ### 🟢 Long-Term Research (P4)
 - **Tailwind UI Premium Adapter**
 - **TanStack Start RSC Study**

@@ -1,0 +1,11 @@
+id = "philjs"
+name = "PhilJS"
+version = "0.0.1"
+schema_version = 1
+authors = ["PhilJS Team"]
+description = "Support for PhilJS development in Zed"
+repository = "https://github.com/PhilipJohnBasile/philjs"
+
+[grammars.philjs]
+repository = "https://github.com/PhilipJohnBasile/philjs-grammar"
+commit = "main"

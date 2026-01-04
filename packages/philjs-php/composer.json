@@ -1,0 +1,14 @@
+{
+    "name": "philjs/philjs-php",
+    "description": "PHP Adapter for PhilJS - Universal Super-Framework",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PhilJS\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    }
+}

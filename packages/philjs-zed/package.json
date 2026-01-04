@@ -1,0 +1,6 @@
+{
+    "name": "@philjs/zed",
+    "version": "0.0.1",
+    "type": "module",
+    "description": "Zed adapter configuration helper"
+}

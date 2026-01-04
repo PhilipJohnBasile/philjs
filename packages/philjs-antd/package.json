@@ -1,0 +1,9 @@
+{
+    "name": "@philjs/antd",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "src/index.ts",
+    "peerDependencies": {
+        "antd": "^5.0.0"
+    }
+}
