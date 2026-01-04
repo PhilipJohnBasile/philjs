@@ -227,6 +227,31 @@
 
 ---
 
+### 🟣 P4 - Future Research & Long-Term (Q4 2026+)
+
+These items involve deep research or long-term ecosystem alignment.
+
+| # | Item | Files | Effort | Priority |
+|:--|:-----|:------|:-------|:---------|
+| 74 | **Mantine Hook Patterns** | `packages/philjs-hooks/src/mantine.ts` | 12h | Low |
+| 75 | **Tailwind UI Premium Adapter** | `packages/philjs-tailwind-ui/` | 40h | Low |
+| 76 | **TanStack Start RSC Study** | `docs/research/rsc-tanstack.md` | 16h | Low |
+| 77 | **NestJS DI Patterns** | `packages/philjs-di/src/nestjs-compat.ts` | 8h | Low |
+| 78 | **AdonisJS Patterns** | `docs/research/adonis-patterns.md` | 8h | Low |
+| 79 | **Pydantic AI Integration** | `packages/philjs-ai/src/pydantic.ts` | 12h | Low |
+| 80 | **smolagents Integration** | `packages/philjs-ai-agents/src/smol.ts` | 8h | Low |
+| 81 | **Promptflow Integration** | `packages/philjs-ai/src/promptflow.ts` | 16h | Low |
+| 82 | **Semantic Kernel Bridge** | `packages/philjs-ai/src/semantic-kernel.ts` | 16h | Low |
+| 83 | **Stagehand Testing** | `packages/philjs-testing/src/stagehand.ts` | 8h | Low |
+| 84 | **Mastra Workflows** | `packages/philjs-ai/src/mastra.ts` | 12h | Low |
+| 85 | **Ionic Component Compat** | `packages/philjs-ionic/` | 12h | Low |
+| 86 | **Vike (Vite SSR) Integration** | `packages/philjs-vike/` | 16h | Low |
+| 87 | **Aurelia Migration Guide** | `docs/migration/aurelia.md` | 8h | Low |
+| 88 | **Ext JS Migration Guide** | `docs/migration/extjs.md` | 12h | Low |
+| 89 | **MEAN/MERN Stack Migration** | `docs/migration/stacks.md` | 8h | Low |
+
+---
+
 ## 📋 Documentation Gaps Checklist
 
 ### Completed ✅
@@ -256,42 +281,37 @@
 
 | Metric | Current | Target | Gap |
 |:-------|:--------|:-------|:----|
-| Native component count | 8 | 30+ | 22 components |
-| Database adapters | 3 (Prisma, Drizzle, Supabase) | 6+ | TypeORM, Sequelize, Mongoose |
-| IDE plugins | 1 (VSCode) | 3+ | WebStorm, Zed |
+| Native component count | 35 | 30+ | ✅ Exceeded |
+| Database adapters | 9 (Prisma, Drizzle, Supabase, TypeORM, Sequelize, Mongoose, Mongo, pgvector) | 6+ | ✅ Exceeded |
+| IDE plugins | 2 (VSCode, Figma) | 3+ | WebStorm, Zed |
 | Real-world tutorials | 4 | 10+ | 6 more tutorials |
 | Migration codemods | 3 (React, Vue, Svelte) | 5+ | Angular, Ember |
-| Backend adapters | 4 (Django, Laravel, Actix, Phoenix) | 8+ | Spring, ASP.NET, Rails, Express |
-| AI integrations | 3 (OpenAI, Anthropic, Gemini) | 6+ | LangSmith, Langfuse, Helicone |
-| Testing tools | 2 (Vitest, Cypress) | 4+ | Playwright, Storybook |
+| Backend adapters | 10+ (Django, Laravel, Actix, Phoenix, Express, Fastify, Hono, Flask, Expo) | 8+ | ✅ Exceeded |
+| AI integrations | 10+ (OpenAI, Anthropic, Gemini, LangSmith, Langfuse, Helicone, Haystack, DSPy, CopilotKit) | 6+ | ✅ Exceeded |
+| Testing tools | 5 (Vitest, Cypress, Playwright, Storybook, Chromatic) | 4+ | ✅ Exceeded |
 
 ---
 
 ## 📊 Priority Summary
 
 ### 🔴 High Priority (Do Next)
-1. Radix UI Primitives (#16)
-2. Express Middleware (#34)
-3. Fastify Plugin (#35)
-4. LangSmith Tracing (#42)
-5. Storybook Integration (#49)
-6. DevTools Chrome Extension (#54)
-7. Docker Templates (#55)
-8. GitHub Actions Templates (#58)
-9. Angular DI Container (#63)
-10. Qwik Resumability Parity (#64)
+1. **WebStorm Plugin** (#51)
+2. **Spring Boot Adapter** (#30)
+3. **ASP.NET Core Adapter** (#31)
+4. **Ruby on Rails Adapter** (#32)
+5. **Fiber (Go) Integration** (#33)
 
 ### 🟡 Medium Priority
-- TypeORM/Sequelize/Mongoose Adapters
-- Material Design Theme
-- Playwright Testing Plugin
-- WebStorm Plugin
-- Kubernetes Guides
-- Langfuse/Helicone Adapters
+- **Ionic Component Compat** (#67)
+- **Ant Design Enterprise** (#21)
+- **Symfony Adapter** (#29)
+- **Zed Extension** (#52)
+- **Neovim Plugin** (#53)
 
-### 🟢 Lower Priority (Future)
-- Enterprise component libraries (Ant Design)
-- Java/C#/Ruby backend adapters
-- Terraform modules
+### 🟢 Long-Term Research (P4)
+- **Tailwind UI Premium Adapter**
+- **TanStack Start RSC Study**
+- **Semantic Kernel Bridge** 
+- **Pydantic AI Integration**
 - Framework compat layers (Alpine, HTMX full parity)
 
