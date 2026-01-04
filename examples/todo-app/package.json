@@ -11,13 +11,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@philjs/core": "^0.1.0",
-    "@philjs/router": "^0.1.0",
-    "@philjs/compiler": "^0.1.0"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
+    "@philjs/compiler": "workspace:*"
   },
   "devDependencies": {
     "vite": "^7.3.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "@types/node": "^25.0.0"
   }
 }
+
+

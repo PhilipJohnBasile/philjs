@@ -13,18 +13,20 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@philjs/core": "^0.1.0",
-    "@philjs/router": "^0.1.0",
-    "@philjs/ssr": "^0.1.0",
-    "@philjs/islands": "^0.1.0",
-    "@philjs/compiler": "^0.1.0"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
+    "@philjs/ssr": "workspace:*",
+    "@philjs/islands": "workspace:*",
+    "@philjs/compiler": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
     "@vitest/coverage-v8": "^4.0.16",
     "jsdom": "^27.0.0",
-    "typescript": "^6.0.0",
+    "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
   }
 }
+
+
