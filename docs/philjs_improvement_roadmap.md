@@ -239,10 +239,23 @@
 | 83 | ✅ **Ant Design Theme** | `packages/philjs-antd/` | 40h | Done |
 
 ---
-| 86 | **Vike (Vite SSR) Integration** | `packages/philjs-vike/` | 16h | Low |
-| 87 | **Aurelia Migration Guide** | `docs/migration/aurelia.md` | 8h | Low |
-| 88 | **Ext JS Migration Guide** | `docs/migration/extjs.md` | 12h | Low |
-| 89 | **MEAN/MERN Stack Migration** | `docs/migration/stacks.md` | 8h | Low |
+
+| 84 | ✅ **Mantine Hook Patterns** | `packages/philjs-hooks/src/mantine.ts` | 8h | Research |
+| 85 | ✅ **Tailwind UI P. Adapter** | `packages/philjs-tailwind-ui/` | 16h | Research |
+| 86 | ✅ **TanStack Start Study** | `docs/research/rsc-tanstack.md` | 16h | Research |
+| 87 | ✅ **NestJS DI Patterns** | `packages/philjs-di/src/nestjs-compat.ts` | 8h | Research |
+| 88 | ✅ **AdonisJS Patterns** | `docs/research/adonis-patterns.md` | 8h | Research |
+| 89 | ✅ **Pydantic AI** | `packages/philjs-ai/src/pydantic.ts` | 12h | Research |
+| 90 | ✅ **smolagents** | `packages/philjs-ai-agents/src/smol.ts` | 8h | Research |
+| 91 | ✅ **Promptflow** | `packages/philjs-ai/src/promptflow.ts` | 16h | Research |
+| 92 | ✅ **Semantic Kernel** | `packages/philjs-ai/src/semantic-kernel.ts` | 16h | Research |
+| 93 | ✅ **Stagehand Testing** | `packages/philjs-testing/src/stagehand.ts` | 8h | Research |
+| 94 | ✅ **Mastra Workflows** | `packages/philjs-ai/src/mastra.ts` | 12h | Research |
+| 95 | ✅ **Ionic Compat** | `packages/philjs-ionic/` | 12h | Research |
+| 96 | ✅ **Vike Integration** | `packages/philjs-vike/` | 16h | Research |
+| 97 | ✅ **Aurelia Guide** | `docs/migration/aurelia.md` | 8h | Docs |
+| 98 | ✅ **Ext JS Guide** | `docs/migration/extjs.md` | 12h | Docs |
+| 99 | ✅ **Stack Migration** | `docs/migration/stacks.md` | 8h | Docs |
 
 ---
 

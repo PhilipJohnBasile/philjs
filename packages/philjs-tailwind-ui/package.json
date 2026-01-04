@@ -1,0 +1,6 @@
+{
+    "name": "@philjs/tailwind-ui",
+    "version": "0.0.0-research",
+    "type": "module",
+    "private": true
+}

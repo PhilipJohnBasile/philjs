@@ -1,0 +1,6 @@
+{
+    "name": "@philjs/vike",
+    "version": "0.0.0-research",
+    "type": "module",
+    "private": true
+}
