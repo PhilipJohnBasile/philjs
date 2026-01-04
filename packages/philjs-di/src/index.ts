@@ -8,7 +8,17 @@ import { signal, type Signal } from '@philjs/core';
 
 // ============ TYPES ============
 
-export type Token<T = any> = string | symbol | { new(...args: any[]): T };
+export type Token<T = any> = string | symbol | { new(...args: any[]): T } | InjectionToken<T>;
+
+export class InjectionToken<T = any> {
+    readonly _desc: string;
+    constructor(desc: string) {
+        this._desc = desc;
+    }
+    toString(): string {
+        return `InjectionToken ${this._desc}`;
+    }
+}
 
 export interface Provider<T = any> {
     provide: Token<T>;
@@ -39,7 +49,18 @@ export function Inject(token: Token) {
     return function (target: any, key: string | undefined, index: number) {
         const existing = metadata.get(target) || {};
         existing.params = existing.params || [];
-        existing.params[index] = token;
+        existing.params[index] = { token, options: {} };
+        metadata.set(target, existing);
+    };
+}
+
+export function Optional() {
+    return function (target: any, key: string | undefined, index: number) {
+        const existing = metadata.get(target) || {};
+        existing.params = existing.params || [];
+        // Ensure param object exists
+        if (!existing.params[index]) existing.params[index] = { options: {} };
+        existing.params[index].options.optional = true;
         metadata.set(target, existing);
     };
 }
@@ -141,7 +162,18 @@ export class Injector {
         const params = meta.params || [];
 
         // Get constructor parameter types (would need reflect-metadata in real impl)
-        const args = params.map((token: Token) => this.get(token));
+        const args = params.map((param: any) => {
+            // Handle { token, options } struct vs legacy Token
+            const token = param.token || param;
+            const options = param.options || {};
+
+            try {
+                return this.get(token);
+            } catch (e) {
+                if (options.optional) return null;
+                throw e;
+            }
+        });
 
         return new target(...args);
     }
