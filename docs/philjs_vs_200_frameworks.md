@@ -285,6 +285,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Encore.ts** | Backend framework with automatic infrastructure. PhilJS offers `philjs deploy` which infers infra requirements similarly. | Add "Infrastructure-from-Code" static analysis. |
 | **Nitric** | Portable cloud framework. PhilJS supports Nitric via adapter for multi-cloud deployment. | Ensure Nitric "Collection" API maps to PhilJS Stores. |
 | **SST** | Serverless Stack. PhilJS provides an `sst.config.ts` preset for instant AWS deployment. | Support both SST v2 (CDK) and Ion (Pulumi) modes. |
+| **Vercel** | Edge-first platform. PhilJS outputs Vercel-optimized builds with `philjs build --vercel`. | **IMPLEMENTED:** Zero-config Vercel deployment. |
+| **Netlify** | Jamstack pioneer. PhilJS integrates with Netlify Functions and Edge Functions. | **IMPLEMENTED:** `netlify.toml` auto-generation. |
+| **AWS Lambda** | Serverless compute. PhilJS SSR can run as a Lambda function via `@philjs/aws`. | Optimize bundle for Lambda cold start times. |
 | **ESLint / Prettier** | `philjs-lint` configures these specifically for Signals usage (preventing common pitfalls). | Add custom rule for "No Effect Side-Effects". |
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
 | **Git / GitHub / GitLab** | `@philjs/git` provides programmatic access for custom devtools. | Add "Open in GitHub" feature for every component in DevTools. |
