@@ -136,6 +136,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Relay** | PhilJS supports Relay-style data masking and fragment co-location without the complex compiler setup. | **IMPLEMENTED:** Fragment documentation updated. |
 | **SWR / TanStack Query** | PhilJS "Resources" handle loading/error/stale-while-revalidate states natively. No libs needed. | **IMPLEMENTED:** `@philjs/query` with Optimistic Updates. |
 | **tRPC** | PhilJS has end-to-end type safety built into its RPC layer. `@philjs/trpc` available for legacy support. | Add "Subscription" support to RPC layer. |
+| **ConnectRPC / Buf** | Professional gRPC-web replacement. PhilJS supports `connect-web` for banking-grade APIs. | Generate typed Clients from `.proto` files automatically. |
 
 ---
 
@@ -183,6 +184,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Panda CSS / UnoCSS / vanilla-extract** | Modern zero-runtime CSS is the preferred way. Adapters exist for all 3. | Benchmark build times for large atomic CSS generation. |
 | **shadcn/ui** | PhilJS has a `philjs add shadcn` command to scaffold accessible components into your project. | Keep component registry synced with ui.shadcn.com. |
 | **Tailwind CSS** | Native support. PhilJS template compiler optimizes Tailwind class strings (deduplication). | Support Tailwind v4 "oxide" engine features. |
+| **OpenProps** | CSS Variable standard. PhilJS offers an `@philjs/open-props` preset for native CSS usage. | Bundle OpenProps 2.0 variables by default. |
 | **StyleX** | Meta's atomic CSS-in-JS. PhilJS compiler can perform the same zero-runtime extraction. | Benchmark StyleX build output vs PhilJS Native Styles. |
 
 ---
@@ -194,6 +196,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Expo / React Native** | `@philjs/react-native` allows sharing Business Logic (Signals/Stores) exactly between Web and Native. | Improve "Universal Navigation" patterns suitable for native. |
 | **Ionic** | PhilJS Adapter (`@philjs/ionic`) bridges lifecycle events correctly. | **IMPLEMENTED:** `@philjs/mobile` transitions. |
 | **Tauri** | PhilJS provides a Tauri template that sets up Rust-to-JS communication commands automatically. | **IMPLEMENTED:** `tauri` template in CLI. |
+| **Electron** | The industry standard. PhilJS supports Electron `ipcRenderer` patterns via a "Bridge" signal. | Ensure "secure by default" CSP generation for Electron. |
 
 ---
 
@@ -229,6 +232,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Cypress** | `@philjs/cypress` configures E2E tests automatically. | improve "Component Testing" mode for Cypress. |
 | **Jest / Vitest** | Vitest is default (Vite-native). Jest supported for legacy. | Ensure "Time Travel" testing works with Signals. |
 | **Playwright** | Recommended E2E tool. `@philjs/playwright` includes specialized selectors for PhilJS components. | **IMPLEMENTED:** `@philjs/self-healing` (AI Selectors). |
+| **Ladle / Histoire** | Fast Storybook alternatives. PhilJS Component format is compatible with Ladle's hot-reload mechanism. | Maintain a "Ladle" plugin for instant component previews. |
 | **Stagehand** | Browser automation supported via `@philjs/testing` stub. | Verify latest automation protocols. |
 | **Promptfoo** | LLM evaluation tool. PhilJS includes `promptfoo.yaml` generators for testing Agentic components. | **IMPLEMENTED:** `philjs test --ai` wraps promptfoo. |
 
