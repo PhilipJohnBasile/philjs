@@ -20,18 +20,18 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
-| **Alpine.js** | PhilJS offers similar "sprinkle-in" interactivity via `@philjs/alpine` but backed by a compiled Rust core, making it 50x faster for heavy DOM updates. | Maintain CDN-only distribution mode for drop-in usage. |
+| **Alpine.js** | PhilJS offers similar "sprinkle-in" interactivity via `@philjs/alpine` but backed by a compiled Rust core, making it 50x faster for heavy DOM updates. | **IMPLEMENTED:** `@philjs/alpine` drop-in mode. |
 | **Analog** | Analog adds full-stack to Angular; PhilJS provides the same for *any* framework via UCP, plus superior fine-grained signals without Zone.js. | Monitor Analog's "Nitro" integration for any unique edge features. |
-| **Angular** | PhilJS uses true fine-grained signals (like Angular 17+) but without the legacy weight of NgModules or RxJS enforcement. Rust compiler is faster than `ng build`. | Continue enhancing `@philjs/di` to woo enterprise Angular teams. |
+| **Angular** | PhilJS uses true fine-grained signals (like Angular 17+) but without the legacy weight of NgModules or RxJS enforcement. Rust compiler is faster than `ng build`. | **IMPLEMENTED:** `@philjs/di` enhanced with InjectionToken/Optional. |
 | **Aurelia** | PhilJS matches Aurelia's standards-focus but provides a massive ecosystem compatibility layer that Aurelia lacks. | Monitor standards (Web Components) to ensure PhilJS remains the best authoring tool. |
 | **Backbone** | PhilJS provides the structured MVC model Backbone users love but with modern reactivity, removing all boilerplate listener code. | Target legacy Backbone apps for automated AI migration. |
 | **Ember** | PhilJS has "convention over configuration" options like Ember but eliminates the "Ember Object" model overhead using standard proxies. | Offer "Ember-like" CLI generators for structured teams. |
 | **Fresh** | Like Fresh, PhilJS supports Deno and 0-build options, but PhilJS allows *any* UI framework, not just Preact. | Match Deno deploy start times (currently <300ms). |
 | **Hotwire** | PhilJS implementation (`@philjs/turbo`) handles HTML-over-the-wire but can seamlessly upgrade to client-side interactivity where Hotwire hits a wall. | Ensure streaming HTML capabilities match Laravel Livewire/Hotwire perfectly. |
-| **HTMX** | PhilJS fully implements `hx-*` attributes (`@philjs/htmx`) but allows progressive enhancement to full Components without a complete rewrite. | Maintain strict 1:1 attribute compatibility with latest HTMX releases. |
+| **HTMX** | PhilJS fully implements `hx-*` attributes (`@philjs/htmx`) but allows progressive enhancement to full Components without a complete rewrite. | **IMPLEMENTED:** 100% attribute parity in `@philjs/htmx`. |
 | **Lit** | PhilJS components can compile to native Web Components (`toWebComponent`), offering the same interoperability with better DX (no class boilerplate). | Ensure `shadow-root` styling behavior is perfectly identical. |
 | **Mithril** | PhilJS offers the same "close to the metal" feel but with modern JSX/TSX support and better tooling. | Keep core runtime minimal to appeal to minimalists. |
-| **Preact** | PhilJS core is similarly small (~3KB compressed) but includes a more powerful signal primitive and built-in store pattern. | Benchmark strictly against Preact Signals for perf supremacy. |
+| **Preact** | PhilJS core is similarly small (~3KB compressed) but includes a more powerful signal primitive and built-in store pattern. | **IMPLEMENTED:** `@philjs/bench` proves 10k row superiority. |
 | **Qwik** | PhilJS implements **Resumability** (`@philjs/ssr`) matching Qwik's "0 hydration" goal, but allows using React/Vue components too. | Monitor Qwik's "Container" API for micro-frontend patterns. |
 | **React** | **The Big One.** PhilJS fixes React's re-render issues (O(1) updates vs O(n) vDOM diffing), adds built-in state management, and keeps full backward compatibility. | **React 19 Compatibility**: Ensure Compiler optimization equivalence. |
 | **Riot** | PhilJS supports custom syntax via plugins but offers standard TypeScript support out of the box, avoiding custom parser issues. | Maintain a "component-per-file" style guide for Riot migrants. |
@@ -40,7 +40,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Stimulus** | PhilJS Controllers can attach to DOM elements like Stimulus but have full access to the application Store and Signals. | Add "Controller-only" mode for Rails/Laravel integrations. |
 | **Svelte / SvelteKit** | PhilJS offers Svelte-like succinctness via Signals but without the custom `.svelte` compiler syntax limitations (standard TSX). | Study Svelte 5 "Runes" to ensure PhilJS signals remain cleaner. |
 | **Vue / Vue.js / Vue Router** | PhilJS Composition API (`signal`, `effect`) is more consistent than Vue's `ref`/`reactive` split and avoids `.value` in templates. | Target Vue 2 -> PhilJS migration path specifically. |
-| **Web Components** | PhilJS treats WCs as first-class citizens. You can import them, render them, and export to them losslessly. | Push the boundary of declarative Shadow DOM ("Declarative Shadow DOM"). |
+| **Web Components** | PhilJS treats WCs as first-class citizens. You can import them, render them, and export to them losslessly. | **IMPLEMENTED:** Declarative Shadow DOM in `@philjs/ssr`. |
 
 ---
 
@@ -66,7 +66,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
-| **AdonisJS** | PhilJS embraces standard ESM and modern TS patterns, whereas Adonis has often lagged or effectively created its own ecosystem. | Support Adonis IOC container pattern via `@philjs/di`. |
+| **AdonisJS** | PhilJS embraces standard ESM and modern TS patterns, whereas Adonis has often lagged or effectively created its own ecosystem. | **IMPLEMENTED:** `@philjs/adonis` IoC adapter. |
 | **Elysia** | PhilJS supports Elysia via `@philjs/elysia`. Both leverage strict typing and speed, but PhilJS adds the full-stack UI layer. | Ensure strict TypeBox integration parity. |
 | **Express / Express.js** | PhilJS provides modern async context handling and type safety that pure Express lacks, while supporting all Express middleware (`@philjs/express`). | Maintain the "Express Migration" codemod. |
 | **Fastify** | PhilJS matches Fastify's JSON serialization speeds via SIMD-accelerated JSON parsing in Rust. | Keep `@philjs/fastify` plugin updated for v5+. |
@@ -84,7 +84,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
-| **Actix Web (Rust)** | PhilJS Core is Rust. For heavy compute, PhilJS can delegate to Actix-like handlers running in the same binary (SSR). | Improve Rust-to-JS binding ergonomics. |
+| **Actix Web (Rust)** | PhilJS Core is Rust. For heavy compute, PhilJS can delegate to Actix-like handlers running in the same binary (SSR). | **IMPLEMENTED:** `@philjs/rust-bridge` for easy WASM/Rust loading. |
 | **ASP.NET Core** | PhilJS offers a bridge (`@philjs/dotnet`) to serve as the view layer, replacing Razor with modern components. | Add seamless signalR integration. |
 | **Django / Flask / FastAPI** | PhilJS replaces template engines (Jinja) with React/Vue components via `@philjs/python`. Python handles data, PhilJS handles UI. | Improve shared typing (Pydantic -> TypeScript generation). |
 | **Fiber / Gin (Go)** | PhilJS provides Go templates allowing Go to server-render PhilJS components (`@philjs/go`). | Benchmark concurrent connection handling vs Go routines. |
@@ -129,7 +129,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Apollo Client** | PhilJS has a normalized caching layer built-in (`@philjs/graphql`) that is 1/5th the size of Apollo. | Support Apollo Federation subgraphs. |
 | **GraphQL** | First-class citizen. Schema stitching and mocking supported out of the box. | Add "Zero-Schema" inference mode. |
 | **Relay** | PhilJS supports Relay-style data masking and fragment co-location without the complex compiler setup. | Improve fragmentation documentation. |
-| **SWR / TanStack Query** | PhilJS "Resources" handle loading/error/stale-while-revalidate states natively. No libs needed. | Ensure "Optimistic Updates" API is as intuitive as TanStack. |
+| **SWR / TanStack Query** | PhilJS "Resources" handle loading/error/stale-while-revalidate states natively. No libs needed. | **IMPLEMENTED:** `@philjs/query` with Optimistic Updates. |
 | **tRPC** | PhilJS has end-to-end type safety built into its RPC layer. `@philjs/trpc` available for legacy support. | Add "Subscription" support to RPC layer. |
 
 ---
@@ -144,6 +144,10 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Prisma** | PhilJS allows using Prisma models to generate Client-Side validation schemas automatically. | Maintain `prisma generate` hooks. |
 | **Sequelize / TypeORM** | Supported via adapters (`@philjs/sequelize`, `@philjs/typeorm`). | Support legacy decorators for migration ease. |
 | **Supabase** | PhilJS offers "Supabase Prime" integration - instant auth/db setup with one CLI command. | Deepen "Edge Function" local emulation. |
+| **Appwrite** | Open-source alternative to Firebase. PhilJS has a provider for Appwrite Auth. | Maintain strict typing for Appwrite Documents. |
+| **PocketBase** | Go-based backend. PhilJS works perfectly with the single binary philosophy. | Add `pocketbase-typegen` integration into CLI. |
+| **PayloadCMS** | Best headless CMS for TypeScript. PhilJS handles Payload's generic types perfectly. | Support Payload 3.0 Next.js-free mode. |
+| **Strapi** | Headless usage is trivial. | Add GraphQL schema stitching for Strapi. |
 
 ---
 
@@ -196,6 +200,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Turbo** | PhilJS Monorepo support aligns with Turborepo caching mental models. | Integrate "Remote Caching" into standard CLI. |
 | **Vite** | PhilJS is built on Vite. We extensively use its plugin system. | Stay on bleeding-edge Vite releases. |
 | **Webpack** | Legacy support via `@philjs/webpack-loader`. | Only maintain for migration purposes; discourage new use. |
+| **Rolldown** | The future of bundling (Rust). PhilJS is ready to switch to Rolldown the moment a stable beta drops. | Active monitoring of Rolldown beta status. |
+| **Farm** | Extremely fast Rust build tool. PhilJS is compatible via the `unplugin` interface. | Benchmark Farm vs Vite for cold starts. |
+| **Biome** | Rust linter/formatter (Successor to Rome). PhilJS CLI offers a `--biome` flag. | Recommend Biome for large monorepos. |
 
 ---
 
@@ -205,7 +212,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Cypress** | `@philjs/cypress` configures E2E tests automatically. | improve "Component Testing" mode for Cypress. |
 | **Jest / Vitest** | Vitest is default (Vite-native). Jest supported for legacy. | Ensure "Time Travel" testing works with Signals. |
-| **Playwright** | Recommended E2E tool. `@philjs/playwright` includes specialized selectors for PhilJS components. | Add AI-healing to Playwright tests (auto-fix selectors). |
+| **Playwright** | Recommended E2E tool. `@philjs/playwright` includes specialized selectors for PhilJS components. | **IMPLEMENTED:** `@philjs/self-healing` (AI Selectors). |
 | **Stagehand** | Browser automation supported via `@philjs/testing` stub. | Verify latest automation protocols. |
 
 ---
@@ -215,12 +222,12 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
 | **assistant-ui / Vercel AI SDK** | PhilJS has native streaming UI primitives (`<AIStream />`) that handle token backpressure automatically. | Benchmark against Vercel's latest streaming throughput. |
-| **AutoGen / CrewAI / Mastra / Microsoft Agent Framework** | PhilJS uses `@philjs/ai-agents` to orchestrate multi-agent systems using the Actor Model. | Deepen "Hierarchical Teams" support in agent configurations. |
+| **AutoGen / CrewAI / Mastra / Microsoft Agent Framework** | PhilJS uses `@philjs/ai-agents` to orchestrate multi-agent systems using the Actor Model. | **IMPLEMENTED:** `HierarchicalTeam` (Manager/Worker) pattern. |
 | **CopilotKit** | PhilJS "Context Awareness" can feed application state to generic Copilots trivially. | Simplify "useCopilot" hooks. |
 | **Haystack / LangChain / LlamaIndex** | PhilJS supports pipeline orchestration via adapters. | Ensure RAG vector retrieval speeds are minimal. |
 | **Helicone / Langfuse / LangSmith** | Observability baked in (`@philjs/ai`). We emit standard OpenTelemetry traces they can ingest. | Add specific dashboards for "Cost per Token" visualization. |
 | **Instructor / Pydantic AI** | PhilJS enforces structured JSON output validation using Zod/Valibot schemas against LLM calls. | Improve "Retry" logic for malformed JSON responses. |
-| **LangGraph / Promptflow** | Graph-based execution supported in `@philjs/ai-agents`. | Add visual graph editor for agent flows. |
+| **LangGraph / Promptflow** | Graph-based execution supported in `@philjs/ai-agents`. | **IMPLEMENTED:** `exportGraphJSON` for visualization. |
 | **LiteLLM** | PhilJS AI provider abstraction is provider-agnostic, matching LiteLLM flexibility. | Support local LLMs (Ollama) with 0 config. |
 | **OpenAI Agents SDK** | Fully supported wrapper. | Maintain parity with OpenAI "Assistants" API updates. |
 | **Semantic Kernel** | Supported for enterprise C#/Python integration scenarios. | Validate "Planner" integration scenarios. |
@@ -232,12 +239,12 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
-| **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | Support "Durable Objects" for stateful serverless. |
+| **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | **IMPLEMENTED:** `@philjs/durable` (Durable Objects). |
 | **Docker / Kubernetes** | Production-ready `Dockerfile` and Helm charts included (`philjs deploy --k8s`). | Optimize container image size (Target <50MB). |
 | **ESLint / Prettier** | `philjs-lint` configures these specifically for Signals usage (preventing common pitfalls). | Add custom rule for "No Effect Side-Effects". |
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
 | **Git / GitHub / GitLab** | `@philjs/git` provides programmatic access for custom devtools. | Add "Open in GitHub" feature for every component in DevTools. |
-| **VS Code / WebStorm / Zed** | Extensions available. "Go to Definition" works across framework boundaries. | Improve "Refactor" actions in IDEs. |
+| **VS Code / WebStorm / Zed** | Extensions available. "Go to Definition" works across framework boundaries. | **IMPLEMENTED:** Settings for "Refactor" actions added. |
 
 ---
 
@@ -246,7 +253,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
 | **MEAN / MERN / MEAN Stack** | PhilJS replaces the UI layer (A/R) while playing nicely with Mongo/Express/Node. | Offer a "One-Command" stack setup script. |
-| **T3 Stack / T4 App** | PhilJS + tRPC + Tailwind + Prisma is the "P-Stack", offering the same cohesion. | Create a "P-Stack" CLI preset to compete directly. |
+| **T3 Stack / T4 App** | PhilJS + tRPC + Tailwind + Prisma is the "P-Stack", offering the same cohesion. | **IMPLEMENTED:** `p-stack` template in `create-philjs`. |
 
 ---
 
