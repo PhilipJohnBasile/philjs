@@ -194,6 +194,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
 | **Expo / React Native** | `@philjs/react-native` allows sharing Business Logic (Signals/Stores) exactly between Web and Native. | Improve "Universal Navigation" patterns suitable for native. |
+| **NativeWind** | Universal Tailwind. PhilJS supports NativeWind v4 via the compiled "Atomic Split" feature. | Benchmark NativeWind compilation vs PhilJS Styles. |
+| **Solito** | PhilJS Router allows for Solito-like shared navigation between Web and Native apps. | **IMPLEMENTED:** Universal Router patterns. |
+| **Tamagui** | Universal UI kit. PhilJS optimizes Tamagui's compiler to run at the edge. | Support Tamagui's "Starters" natively. |
 | **Ionic** | PhilJS Adapter (`@philjs/ionic`) bridges lifecycle events correctly. | **IMPLEMENTED:** `@philjs/mobile` transitions. |
 | **Tauri** | PhilJS provides a Tauri template that sets up Rust-to-JS communication commands automatically. | **IMPLEMENTED:** `tauri` template in CLI. |
 | **Electron** | The industry standard. PhilJS supports Electron `ipcRenderer` patterns via a "Bridge" signal. | Ensure "secure by default" CSP generation for Electron. |
@@ -253,6 +256,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **OpenAI Agents SDK** | Fully supported wrapper. | Maintain parity with OpenAI "Assistants" API updates. |
 | **Semantic Kernel** | Supported for enterprise C#/Python integration scenarios. | Validate "Planner" integration scenarios. |
 | **smolagents** | Lightweight alternative supported via stub. | Keep agent runtime under 5KB for "Edge Agents". |
+| **Hume / Retell / Vapi** | Voice AI APIs. PhilJS provides a `<VoiceProvider />` that handles websocket streams for low-latency conversation. | **IMPLEMENTED:** `useVoice` hook with cancellation. |
 
 ---
 
@@ -280,6 +284,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | Technology | PhilJS Advantage (Deep Dive) | Strategic Dominance Plan |
 |:-----------|:-----------------------------|:-------------------------|
 | **MEAN / MERN / MEAN Stack** | PhilJS replaces the UI layer (A/R) while playing nicely with Mongo/Express/Node. | **IMPLEMENTED:** `mern` template in CLI. |
+| **Refine** | Headless internal tool framework. PhilJS offers similar "Data Hooks" but with cleaner Signals integration. | Add "CRUD" template for rapid admin panels. |
 | **T3 Stack / T4 App** | PhilJS + tRPC + Tailwind + Prisma is the "P-Stack", offering the same cohesion. | **IMPLEMENTED:** `p-stack` template in `create-philjs`. |
 | **BetterAuth** | The new standard for open source auth. PhilJS is the *first* framework to ship BetterAuth as the default. | **IMPLEMENTED:** `auth` scaffolding uses BetterAuth. |
 | **Clerk / Kinde** | PhilJS provides `<SignedIn />` and `<UserButton />` components that work with any provider. | Support Clerk "Elements" custom styling. |
