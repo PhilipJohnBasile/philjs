@@ -1,10 +1,25 @@
+import type { Context, Middleware, Next } from 'koa';
 
-import type { Context, Middleware } from 'koa';
+export interface PhilJSOptions {
+    render: (url: string, context?: any) => Promise<string>;
+}
 
-export function philjsMiddleware(): Middleware {
-    return async (ctx: Context, next: () => Promise<any>) => {
-        // Basic stub for PhilJS SSR integration with Koa
-        ctx.body = `<html><body><div id="root">PhilJS on Koa</div></body></html>`;
-        await next();
+export function philjsMiddleware(options: PhilJSOptions): Middleware {
+    return async (ctx: Context, next: Next) => {
+        // Skip static assets or API routes if not handled
+        if (ctx.path.startsWith('/assets') || ctx.path.startsWith('/api')) {
+            return next();
+        }
+
+        try {
+            const html = await options.render(ctx.url, ctx);
+            ctx.body = html;
+            ctx.type = 'text/html';
+        } catch (err) {
+            console.error('PhilJS SSR Error:', err);
+            // Fallback or next() depending on error type
+            ctx.status = 500;
+            ctx.body = 'Internal Server Error';
+        }
     };
 }
