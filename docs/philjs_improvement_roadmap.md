@@ -224,6 +224,11 @@
 | 71 | ✅ **Immer Integration** | `packages/philjs-immer/` | 4h | Done |
 | 72 | ✅ **Relay Pagination** | `packages/philjs-graphql/src/relay.ts` | 8h | Done |
 | 73 | ✅ **Pure SSG Mode** | `packages/philjs-ssg/` | 8h | Done |
+| 74 | ✅ **WebStorm Plugin** | `packages/philjs-webstorm/` | 24h | Done |
+| 75 | ✅ **Spring Boot Adapter** | `packages/philjs-java/` | 20h | Done |
+| 76 | ✅ **ASP.NET Core Adapter** | `packages/philjs-dotnet/` | 20h | Done |
+| 77 | ✅ **Ruby on Rails Adapter** | `packages/philjs-ruby/` | 16h | Done |
+| 78 | ✅ **Fiber (Go) Integration** | `packages/philjs-go/` | 6h | Done |
 
 ---
 
@@ -295,16 +300,12 @@ These items involve deep research or long-term ecosystem alignment.
 ## 📊 Priority Summary
 
 ### 🔴 High Priority (Do Next)
-1. **WebStorm Plugin** (#51)
-2. **Spring Boot Adapter** (#30)
-3. **ASP.NET Core Adapter** (#31)
-4. **Ruby on Rails Adapter** (#32)
-5. **Fiber (Go) Integration** (#33)
-
-### 🟡 Medium Priority
+### 🔴 High Priority (Do Next)
 - **Ionic Component Compat** (#67)
 - **Ant Design Enterprise** (#21)
 - **Symfony Adapter** (#29)
+
+### 🟡 Medium Priority
 - **Zed Extension** (#52)
 - **Neovim Plugin** (#53)
 

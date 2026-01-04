@@ -1,0 +1,20 @@
+<idea-plugin>
+  <id>com.philjs.plugin</id>
+  <name>PhilJS Support</name>
+  <version>1.0.0</version>
+  <vendor email="support@philjs.dev" url="https://philjs.dev">PhilJS Team</vendor>
+
+  <description><![CDATA[
+    Basic support for PhilJS development in WebStorm and IntelliJ IDEA.
+    <ul>
+      <li>Recognizes .phil files (future)</li>
+      <li>Snippets for signals and components</li>
+    </ul>
+  ]]></description>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Future: Add file type, syntax highlighter, etc. -->
+  </extensions>
+</idea-plugin>
