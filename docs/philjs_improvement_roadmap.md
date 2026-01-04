@@ -115,7 +115,7 @@
 | 17 | ✅ **Headless UI Components** | `packages/philjs-headless/` | 20h | Done |
 | 18 | ✅ **Material Design Theme** | `packages/philjs-material/` | 16h | Done |
 | 19 | ✅ **Chakra Theme System** | `packages/philjs-theme/` | 16h | Done |
-| 20 | **DaisyUI Presets** | `packages/philjs-shadcn/src/presets/daisy.ts` | 12h | Low |
+| 20 | ✅ **DaisyUI Presets** | `packages/philjs-shadcn/src/presets/daisy.ts` | 12h | Done |
 | 21 | **Ant Design Enterprise** | `packages/philjs-antd/` | 40h | Low |
 | 22 | ✅ **React Aria A11y Primitives** | `packages/philjs-a11y-primitives/` | 16h | Done |
 
@@ -126,14 +126,14 @@
 | 23 | ✅ **TypeORM Adapter** | `packages/philjs-typeorm/` | 8h | Done |
 | 24 | ✅ **Sequelize Adapter** | `packages/philjs-sequelize/` | 8h | Done |
 | 25 | ✅ **Mongoose Adapter** | `packages/philjs-mongoose/` | 8h | Done |
-| 26 | **MongoDB Native Driver** | `packages/philjs-mongodb/` | 6h | Low |
-| 27 | **pgvector Support** | `packages/philjs-vector-store/src/pgvector.ts` | 6h | Medium |
+| 26 | ✅ **MongoDB Native Driver** | `packages/philjs-mongodb/` | 6h | Done |
+| 27 | ✅ **pgvector Support** | `packages/philjs-vector-store/src/pgvector.ts` | 6h | Done |
 
 ### Backend Framework Integrations
 
 | # | Item | Files | Effort | Priority |
 |:--|:-----|:------|:-------|:---------|
-| 28 | **Flask Integration** | `packages/philjs-python/src/flask/` | 6h | Medium |
+| 28 | ✅ **Flask Integration** | `packages/philjs-python/src/flask/` | 6h | Done |
 | 29 | **Symfony Adapter** | `packages/philjs-php/src/Symfony/` | 12h | Low |
 | 30 | **Spring Boot Adapter** | `packages/philjs-java/` | 20h | Low |
 | 31 | **ASP.NET Core Adapter** | `packages/philjs-dotnet/` | 20h | Low |
@@ -201,8 +201,8 @@
 
 | # | Item | Files | Effort | Priority |
 |:--|:-----|:------|:-------|:---------|
-| 61 | **Alpine.js API Parity** | `packages/philjs-alpine/src/directives.ts` | 8h | Medium |
-| 62 | **HTMX Full hx-* Coverage** | `packages/philjs-htmx/src/attributes.ts` | 8h | Medium |
+| 61 | ✅ **Alpine.js API Parity** | `packages/philjs-alpine/src/directives.ts` | 8h | Done |
+| 62 | ✅ **HTMX Full hx-* Coverage** | `packages/philjs-htmx/src/attributes.ts` | 8h | Done |
 | 63 | ✅ **Angular DI Container** | `packages/philjs-di/` | 16h | Done |
 | 64 | ✅ **Qwik Resumability Parity** | `packages/philjs-ssr/src/resumable.ts` | 12h | Done |
 | 65 | ✅ **React 19 Compiler Study** | `docs/philjs-book/src/advanced/react19-compat.md` | 8h | Done |
