@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](.)
 [![Status](https://img.shields.io/badge/status-alpha-orange)](.)
 [![License](https://img.shields.io/badge/license-MIT-blue)](.)
-[![Packages](https://img.shields.io/badge/packages-90+-blue)](./packages)
+[![Packages](https://img.shields.io/badge/packages-100+-blue)](./packages)
 
 PhilJS is not just another framework. It is a **unification engine** designed to solve the fragmentation of the JavaScript ecosystem. By combining the raw performance of **Rust/WASM**, the fine-grained reactivity of **Signals**, and a revolutionary **Self-Healing Runtime**, PhilJS allows you to build applications that are resilient, performant, and future-proof.
 
@@ -46,9 +46,9 @@ A unified data stack for the next generation of applications.
 
 ---
 
-## 📦 The Ecosystem (90+ Packages)
+## 📦 The Ecosystem (100+ Packages)
 
-PhilJS is a monorepo containing over 90 specialized packages, grouped by capability.
+PhilJS is a monorepo containing over 100 specialized packages, grouped by capability.
 
 ### **Core Runtime**
 | Package | Description |
@@ -103,6 +103,51 @@ PhilJS is a monorepo containing over 90 specialized packages, grouped by capabil
 |:---|:---|
 | `philjs-rust` | The Rust core (WASM source). |
 | `philjs-actix` | High-performance Rust web server integration. |
+
+### **UI Components**
+| Package | Description |
+|:---|:---|
+| `@philjs/shadcn` | **Native shadcn/ui** components (Button, Card, Dialog, Input). |
+| `@philjs/ui` | Core UI primitives with accessibility built-in. |
+
+### **Database & ORM**
+| Package | Description |
+|:---|:---|
+| `@philjs/drizzle` | **Type-safe SQL** with Drizzle ORM integration. |
+| `@philjs/prisma` | Prisma adapter with signal-based queries. |
+| Supabase Adapter | Built into `@philjs/nexus` for sync, auth, realtime. |
+
+### **Testing**
+| Package | Description |
+|:---|:---|
+| `@philjs/cypress` | **E2E testing** with signal inspection commands. |
+| `@philjs/test` | Unit testing utilities for signals and components. |
+
+### **AI Agents**
+| Package | Description |
+|:---|:---|
+| `@philjs/ai-agents` | LangGraph-style graphs + CrewAI-style crews. |
+| `@philjs/genui` | AI-generated UI components at runtime. |
+
+### **Mobile & Cross-Platform**
+| Package | Description |
+|:---|:---|
+| `@philjs/mobile` | **Expo/React Native** adapter with persisted signals. |
+| `@philjs/tauri` | Desktop apps with Tauri integration. |
+
+### **Backend Integrations**
+| Package | Description |
+|:---|:---|
+| `@philjs/python` | **Django** middleware for SSR. |
+| `@philjs/php` | **Laravel** service provider with Blade directives. |
+
+### **Developer Tools**
+| Package | Description |
+|:---|:---|
+| `@philjs/docs-template` | VitePress-like documentation generator. |
+| `@philjs/unocss` | UnoCSS preset with PhilJS utilities. |
+| `@philjs/figma` | Export Figma designs to PhilJS components. |
+| `@philjs/migrate` | Codemods for React, Vue, and Svelte migration. |
 
 ---
 
@@ -198,6 +243,14 @@ The **PhilJS Book** is your bible for the framework.
     *   [Nexus Architecture](./docs/philjs-book/src/nexus/overview.md)
     *   [Predictive Prefetching AI](./docs/philjs-book/src/packages/ai/predictive.md)
     *   [Quantum Safe Crypto](./docs/philjs-book/src/packages/quantum/overview.md)
+*   **Rust Core** (NEW!)
+    *   [Rust Introduction](./docs/philjs-book/src/rust-core/introduction.md)
+    *   [WASM Optimization](./docs/philjs-book/src/rust-core/advanced/wasm-optimization.md)
+*   **Tutorials** (NEW!)
+    *   [Build a Notion Clone](./docs/philjs-book/src/tutorials/notion-clone.md)
+    *   [E-commerce Checkout](./docs/philjs-book/src/tutorials/checkout.md)
+    *   [Real-time Dashboard](./docs/philjs-book/src/tutorials/dashboard.md)
+    *   [AI Chat App](./docs/philjs-book/src/tutorials/ai-chat.md)
 *   **[Full Table of Contents](./docs/philjs-book/src/SUMMARY.md)**
 
 ---
