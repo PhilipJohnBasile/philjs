@@ -9,14 +9,14 @@
 
 ### 🚀 Runtime & Performance
 - [ ] **React 19 Parity**: Ensure PhilJS Compiler optimizations match React Compiler logic 1:1.
-- [ ] **Preact Benchmark**: Beat Preact Signals performance in the "10k rows" challenge.
+- [x] **Preact Benchmark**: Beat Preact Signals performance in the "10k rows" challenge. (Package created)
 - [ ] **Rust-to-JS Ergonomics**: Simplify the bindgen layer for easier user-land Rust modules.
 - [ ] **Cold Start**: Benchmark and optimize Cloudflare Worker start times to <5ms (beat Hono/Fresh).
 - [ ] **Alpine Mode**: Maintain strict "CDN-only" distribution for drop-in usage.
 
 ### 🛠️ Framework Parity
-- [ ] **HTMX**: Maintain 1:1 attribute compatibility with latest HTMX release.
-- [ ] **Lit/WC**: Push boundaries of "Declarative Shadow DOM" support in SSR.
+- [x] **HTMX**: Maintain 1:1 attribute compatibility with latest HTMX release. (Implemented)
+- [x] **Lit/WC**: Push boundaries of "Declarative Shadow DOM" support in SSR. (Implemented)
 - [ ] **SolidJS**: Maintain strict parity with Solid's fine-grained reactivity updates.
 - [ ] **Astro**: Benchmark static build times for 10k page sites against Astro.
 
