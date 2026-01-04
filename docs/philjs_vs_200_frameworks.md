@@ -272,6 +272,9 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 |:-----------|:-----------------------------|:-------------------------|
 | **Cloudflare Workers** | PhilJS Edge Runtime is optimized for 0ms cold starts on Workers. | **IMPLEMENTED:** `@philjs/durable` (Durable Objects). |
 | **PartyKit** | Real-time collaboration. PhilJS supports PartyKit rooms as native `useParty()` hooks. | Add "Multiplayer Cursor" component. |
+| **Trigger.dev** | Background jobs. PhilJS "Workers" integrate with Trigger.dev for long-running AI tasks. | **IMPLEMENTED:** `trigger.ts` task scaffolding. |
+| **PostHog** | Product OS. PhilJS ships a `useFeatureFlag` hook that defaults to PostHog/LaunchDarkly. | Auto-capture "Signal Updates" as PostHog events. |
+| **Infisical / Doppler** | Secrets management. PhilJS CLI pulls secrets from Infisical automatically during dev. | Support `.env.enc` encryption at rest. |
 | **Docker / Kubernetes** | Production-ready `Dockerfile` and Helm charts included (`philjs deploy --k8s`). | Optimize container image size (Target <50MB). |
 | **Coolify** | Self-hosted PaaS. PhilJS provides a `coolify.yaml` for one-click self-hosting. | **IMPLEMENTED:** Coolify deploy blueprint. |
 | **Railway** | PhilJS detects `railway.toml` or `nixpacks` automatically. | Support Railway "Priority Boarding" builds. |
