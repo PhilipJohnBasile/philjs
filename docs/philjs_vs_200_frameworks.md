@@ -244,6 +244,7 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **Jest / Vitest** | Vitest is default (Vite-native). Jest supported for legacy. | Ensure "Time Travel" testing works with Signals. |
 | **Playwright** | Recommended E2E tool. `@philjs/playwright` includes specialized selectors for PhilJS components. | **IMPLEMENTED:** `@philjs/self-healing` (AI Selectors). |
 | **Ladle / Histoire** | Fast Storybook alternatives. PhilJS Component format is compatible with Ladle's hot-reload mechanism. | Maintain a "Ladle" plugin for instant component previews. |
+| **Storybook** | Industry standard for component documentation. PhilJS provides `@philjs/storybook` for seamless integration. | **IMPLEMENTED:** Storybook 8 CSF3 support. |
 | **Stagehand** | Browser automation supported via `@philjs/testing` stub. | Verify latest automation protocols. |
 | **Promptfoo** | LLM evaluation tool. PhilJS includes `promptfoo.yaml` generators for testing Agentic components. | **IMPLEMENTED:** `philjs test --ai` wraps promptfoo. |
 | **MSW** | Mock Service Worker. PhilJS DevTools integrate with MSW to toggle network mocks via UI. | **IMPLEMENTED:** `@philjs/msw` preset. |
@@ -287,6 +288,8 @@ PhilJS defines a new generation of web frameworks ("Gen 4"), characterized by:
 | **SST** | Serverless Stack. PhilJS provides an `sst.config.ts` preset for instant AWS deployment. | Support both SST v2 (CDK) and Ion (Pulumi) modes. |
 | **Vercel** | Edge-first platform. PhilJS outputs Vercel-optimized builds with `philjs build --vercel`. | **IMPLEMENTED:** Zero-config Vercel deployment. |
 | **Netlify** | Jamstack pioneer. PhilJS integrates with Netlify Functions and Edge Functions. | **IMPLEMENTED:** `netlify.toml` auto-generation. |
+| **Fly.io** | Global edge compute. PhilJS Docker image is optimized for Fly.io multi-region deployments. | Add `fly.toml` generator to CLI. |
+| **Render** | Easy PaaS. PhilJS auto-detects Render's `render.yaml` and configures accordingly. | **IMPLEMENTED:** Render blueprint template. |
 | **AWS Lambda** | Serverless compute. PhilJS SSR can run as a Lambda function via `@philjs/aws`. | Optimize bundle for Lambda cold start times. |
 | **ESLint / Prettier** | `philjs-lint` configures these specifically for Signals usage (preventing common pitfalls). | Add custom rule for "No Effect Side-Effects". |
 | **Figma** | Plugin allows importing Figma designs directly to PhilJS Components. | Enhance "Auto-Layout" to Flexbox conversion accuracy. |
