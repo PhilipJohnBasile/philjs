@@ -10,9 +10,9 @@
 ### 🚀 Runtime & Performance
 - [ ] **React 19 Parity**: Ensure PhilJS Compiler optimizations match React Compiler logic 1:1.
 - [x] **Preact Benchmark**: Beat Preact Signals performance in the "10k rows" challenge. (Package created)
-- [ ] **Rust-to-JS Ergonomics**: Simplify the bindgen layer for easier user-land Rust modules.
+- [x] **Rust-to-JS Ergonomics**: Simplify the bindgen layer for easier user-land Rust modules. (Implemented @philjs/rust-bridge)
 - [ ] **Cold Start**: Benchmark and optimize Cloudflare Worker start times to <5ms (beat Hono/Fresh).
-- [ ] **Alpine Mode**: Maintain strict "CDN-only" distribution for drop-in usage.
+- [x] **Alpine Mode**: Maintain strict "CDN-only" distribution for drop-in usage. (Implemented @philjs/alpine)
 
 ### 🛠️ Framework Parity
 - [x] **HTMX**: Maintain 1:1 attribute compatibility with latest HTMX release. (Implemented)
@@ -31,7 +31,7 @@
 *Focus: Removing barriers for big teams migrating from Legacy or heavy-duty backends.*
 
 ### 🏢 Enterprise Migration
-- [ ] **Angular**: Enhance `@philjs/di` to capture enterprise Angular teams.
+- [x] **Angular**: Enhance `@philjs/di` to capture enterprise Angular teams. (Implemented InjectionToken/Optional)
 - [ ] **Backbone/Ember**: Release "AI Migrator" specifically trained on legacy MVC patterns.
 - [ ] **Java/Spring**: Improve Maven/Gradle plugin integration for "Backend-for-Frontend" workflow.
 - [ ] **C#/.NET**: Add seamless SignalR integration to `@philjs/dotnet`.
