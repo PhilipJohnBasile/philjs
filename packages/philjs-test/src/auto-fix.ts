@@ -1,6 +1,4 @@
 
-import * as fs from 'fs';
-
 export interface TestFailure {
     testFile: string;
     testName: string;
@@ -17,7 +15,7 @@ export async function attemptTestFix(failure: TestFailure) {
 
     // 1. Read Test Code
     console.log(`AutoFix: Reading ${failure.testFile}...`);
-    // const content = fs.readFileSync(failure.testFile, 'utf8'); // Mock read
+    // Mock read
 
     // 2. AI Analysis
     console.log('AutoFix: 🤖 Asking LLM for solution...');

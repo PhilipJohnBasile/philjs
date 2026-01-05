@@ -5,6 +5,8 @@ export default defineConfig({
   cacheDir: 'node_modules/.cache/vitest',
   resolve: {
     alias: [
+      { find: /^@philjs\/philjs$/, replacement: './packages/philjs/src/index.ts' },
+      { find: /^@philjs\/([^/]+)$/, replacement: './packages/philjs-$1/src/index.ts' },
       { find: /^philjs-core(\/.*)?$/, replacement: '@philjs/core$1' },
     ],
   },
@@ -16,7 +18,7 @@ export default defineConfig({
 
     // Faster test discovery; keep paths relative to CWD so package-level runs work
     include: ['**/*.test.ts', '**/*.spec.ts'],
-    exclude: ['**/node_modules/**', '**/dist/**', '**/.turbo/**'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/.turbo/**', '**/tests/e2e/**', '**/examples/**'],
 
     // Enable benchmarking
     benchmark: {
