@@ -15,6 +15,7 @@ import type {
   ImageInput,
   VisionOptions,
   VisionResult,
+  ProviderResponse,
 } from '../types.js';
 
 export interface OpenAIConfig {
@@ -41,7 +42,7 @@ export class OpenAIProvider implements AIProvider {
     this.embeddingModel = config.embeddingModel || 'text-embedding-3-small';
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
 
     if (options?.systemPrompt) {
@@ -56,15 +57,46 @@ export class OpenAIProvider implements AIProvider {
       content: prompt,
     });
 
+    // Map tools to OpenAI format
+    const tools: OpenAI.Chat.ChatCompletionTool[] | undefined = options?.tools?.map((tool) => ({
+      type: 'function',
+      function: {
+        name: tool.name,
+        description: tool.description,
+        parameters: tool.parameters,
+      },
+    }));
+
     const response = await this.client.chat.completions.create({
       model: options?.model || this.defaultModel,
       messages,
       temperature: options?.temperature ?? 0.7,
       max_tokens: options?.maxTokens ?? 4096,
       ...(options?.stopSequences && { stop: options.stopSequences }),
+      ...(tools && { tools }),
+      ...(options?.toolChoice && { tool_choice: options.toolChoice as any }),
     });
 
-    return response.choices[0]?.message?.content || '';
+    const choice = response.choices[0];
+    const message = choice?.message;
+
+    return {
+      content: message?.content || '',
+      ...(message?.tool_calls?.length ? {
+        toolCalls: message.tool_calls.filter(tc => tc.type === 'function').map((tc) => ({
+          id: tc.id,
+          name: tc.function.name,
+          arguments: JSON.parse(tc.function.arguments),
+        }))
+      } : {}),
+      ...(response.usage && {
+        usage: {
+          inputTokens: response.usage.prompt_tokens,
+          outputTokens: response.usage.completion_tokens,
+          totalTokens: response.usage.total_tokens,
+        }
+      }),
+    };
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {
@@ -119,8 +151,8 @@ export class OpenAIProvider implements AIProvider {
     const imageContent = await this.formatImageContent(image, options?.detail);
     const additionalImages = options?.additionalImages
       ? await Promise.all(
-          options.additionalImages.map(img => this.formatImageContent(img, options?.detail))
-        )
+        options.additionalImages.map(img => this.formatImageContent(img, options?.detail))
+      )
       : [];
 
     const content: OpenAI.Chat.ChatCompletionContentPart[] = [
@@ -193,8 +225,8 @@ export class OpenAIProvider implements AIProvider {
       const ext = image.path.split('.').pop()?.toLowerCase();
       const mediaType = ext === 'png' ? 'image/png'
         : ext === 'gif' ? 'image/gif'
-        : ext === 'webp' ? 'image/webp'
-        : 'image/jpeg';
+          : ext === 'webp' ? 'image/webp'
+            : 'image/jpeg';
 
       return {
         type: 'image_url',

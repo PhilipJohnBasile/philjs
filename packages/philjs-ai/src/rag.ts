@@ -23,7 +23,7 @@ interface EmbeddingAIProvider extends AIProvider {
 // Types
 // ============================================================================
 
-export interface Document {
+export interface RagDocument {
   id: string;
   content: string;
   metadata?: Record<string, any>;
@@ -32,14 +32,14 @@ export interface Document {
 
 export interface VectorStore {
   name: string;
-  add(documents: Document[]): Promise<void>;
+  add(documents: RagDocument[]): Promise<void>;
   search(query: number[], topK?: number): Promise<SearchResult[]>;
   delete(ids: string[]): Promise<void>;
   clear(): Promise<void>;
 }
 
 export interface SearchResult {
-  document: Document;
+  document: RagDocument;
   score: number;
 }
 
@@ -57,9 +57,10 @@ export interface RAGOptions {
 
 export class InMemoryVectorStore implements VectorStore {
   name = 'memory';
-  private documents: Map<string, Document> = new Map();
 
-  async add(documents: Document[]): Promise<void> {
+  private documents: Map<string, RagDocument> = new Map();
+
+  async add(documents: RagDocument[]): Promise<void> {
     for (const doc of documents) {
       this.documents.set(doc.id, doc);
     }
@@ -91,7 +92,7 @@ export class InMemoryVectorStore implements VectorStore {
     this.documents.clear();
   }
 
-  getAll(): Document[] {
+  getAll(): RagDocument[] {
     return Array.from(this.documents.values());
   }
 }
@@ -148,7 +149,7 @@ export class PineconeVectorStore implements VectorStore {
         'Api-Key': this.config.apiKey,
         'Content-Type': 'application/json',
       },
-      body: body ? JSON.stringify(body) : undefined,
+      ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
     if (!response.ok) {
@@ -159,7 +160,7 @@ export class PineconeVectorStore implements VectorStore {
     return response.json();
   }
 
-  async add(documents: Document[]): Promise<void> {
+  async add(documents: RagDocument[]): Promise<void> {
     if (documents.length === 0) return;
 
     // Validate all documents have embeddings
@@ -207,9 +208,9 @@ export class PineconeVectorStore implements VectorStore {
     return response.matches.map(match => ({
       document: {
         id: match.id,
-        content: (match.metadata?.content as string) || '',
-        metadata: match.metadata,
-        embedding: undefined, // Not returned by query
+        content: (match.metadata?.['content'] as string) || '',
+        ...(match.metadata ? { metadata: match.metadata as Record<string, any> } : {}),
+        // embedding: undefined - omit if undefined
       },
       score: match.score,
     }));
@@ -245,7 +246,7 @@ export class PineconeVectorStore implements VectorStore {
   /**
    * Fetch vectors by ID
    */
-  async fetch(ids: string[]): Promise<Map<string, Document>> {
+  async fetch(ids: string[]): Promise<Map<string, RagDocument>> {
     const response = await this.request<{
       vectors: Record<string, {
         id: string;
@@ -257,12 +258,12 @@ export class PineconeVectorStore implements VectorStore {
       namespace: this.namespace,
     });
 
-    const result = new Map<string, Document>();
+    const result = new Map<string, RagDocument>();
     for (const [id, vector] of Object.entries(response.vectors)) {
       result.set(id, {
         id,
-        content: (vector.metadata?.content as string) || '',
-        metadata: vector.metadata,
+        content: (vector.metadata?.['content'] as string) || '',
+        ...(vector.metadata ? { metadata: vector.metadata as Record<string, any> } : {}),
         embedding: vector.values,
       });
     }
@@ -318,7 +319,7 @@ export class ChromaVectorStore implements VectorStore {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: body ? JSON.stringify(body) : undefined,
+      ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
     if (!response.ok) {
@@ -327,7 +328,7 @@ export class ChromaVectorStore implements VectorStore {
     }
 
     const text = await response.text();
-    return text ? JSON.parse(text) : null;
+    return text ? JSON.parse(text) : null as T;
   }
 
   /**
@@ -355,7 +356,7 @@ export class ChromaVectorStore implements VectorStore {
     return this.collectionId;
   }
 
-  async add(documents: Document[]): Promise<void> {
+  async add(documents: RagDocument[]): Promise<void> {
     if (documents.length === 0) return;
 
     const collectionId = await this.ensureCollection();
@@ -408,7 +409,7 @@ export class ChromaVectorStore implements VectorStore {
       document: {
         id,
         content: documents[i] || '',
-        metadata: metadatas[i] || undefined,
+        ...(metadatas[i] ? { metadata: metadatas[i] as Record<string, any> } : {}),
       },
       // Chroma returns L2 distance, convert to similarity score (0-1)
       score: 1 / (1 + (distances[i] || 0)),
@@ -458,7 +459,7 @@ export class ChromaVectorStore implements VectorStore {
   /**
    * Update documents
    */
-  async update(documents: Document[]): Promise<void> {
+  async update(documents: RagDocument[]): Promise<void> {
     if (documents.length === 0) return;
 
     const collectionId = await this.ensureCollection();
@@ -478,7 +479,7 @@ export class ChromaVectorStore implements VectorStore {
   /**
    * Get documents by ID
    */
-  async get(ids: string[]): Promise<Document[]> {
+  async get(ids: string[]): Promise<RagDocument[]> {
     const collectionId = await this.ensureCollection();
 
     const response = await this.request<{
@@ -498,8 +499,8 @@ export class ChromaVectorStore implements VectorStore {
     return response.ids.map((id, i) => ({
       id,
       content: response.documents[i] || '',
-      metadata: response.metadatas[i] || undefined,
-      embedding: response.embeddings[i] || undefined,
+      ...(response.metadatas[i] ? { metadata: response.metadatas[i] as Record<string, any> } : {}),
+      ...(response.embeddings[i] ? { embedding: response.embeddings[i]! } : {}),
     }));
   }
 }
@@ -508,26 +509,167 @@ export interface QdrantConfig {
   url: string;
   collectionName: string;
   apiKey?: string;
+  vectorDimension?: number;
+}
+
+interface QdrantPoint {
+  id: string | number;
+  vector: number[];
+  payload?: Record<string, unknown>;
+}
+
+interface QdrantSearchResult {
+  id: string | number;
+  score: number;
+  payload?: Record<string, unknown>;
+  vector?: number[];
 }
 
 export class QdrantVectorStore implements VectorStore {
   name = 'qdrant';
   private config: QdrantConfig;
+  private collectionEnsured = false;
 
   constructor(config: QdrantConfig) {
-    this.config = config;
+    this.config = {
+      vectorDimension: 1536,
+      ...config,
+    };
   }
 
-  async add(documents: Document[]): Promise<void> {
-    console.log(`Adding ${documents.length} documents to Qdrant`);
+  private async request<T>(
+    endpoint: string,
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
+    body?: unknown
+  ): Promise<T> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (this.config.apiKey) {
+      headers['api-key'] = this.config.apiKey;
+    }
+
+    const response = await fetch(`${this.config.url}${endpoint}`, {
+      method,
+      headers,
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Qdrant API error: ${response.status} - ${text}`);
+    }
+
+    const text = await response.text();
+    return text ? JSON.parse(text) : ({} as T);
+  }
+
+  private async ensureCollection(): Promise<void> {
+    if (this.collectionEnsured) return;
+
+    try {
+      // Check if collection exists
+      await this.request(`/collections/${this.config.collectionName}`);
+      this.collectionEnsured = true;
+    } catch {
+      // Create collection if it doesn't exist
+      await this.request(`/collections/${this.config.collectionName}`, 'PUT', {
+        vectors: {
+          size: this.config.vectorDimension,
+          distance: 'Cosine',
+        },
+      });
+      this.collectionEnsured = true;
+    }
+  }
+
+  async add(documents: RagDocument[]): Promise<void> {
+    if (documents.length === 0) return;
+
+    await this.ensureCollection();
+
+    // Validate all documents have embeddings
+    for (const doc of documents) {
+      if (!doc.embedding) {
+        throw new Error(`Document ${doc.id} missing embedding`);
+      }
+    }
+
+    const points: QdrantPoint[] = documents.map(doc => ({
+      id: doc.id,
+      vector: doc.embedding!,
+      payload: {
+        content: doc.content,
+        ...(doc.metadata || {}),
+      },
+    }));
+
+    await this.request(`/collections/${this.config.collectionName}/points`, 'PUT', {
+      points,
+    });
   }
 
   async search(query: number[], topK = 5): Promise<SearchResult[]> {
-    return [];
+    await this.ensureCollection();
+
+    const response = await this.request<{
+      result: QdrantSearchResult[];
+    }>(`/collections/${this.config.collectionName}/points/search`, 'POST', {
+      vector: query,
+      limit: topK,
+      with_payload: true,
+      with_vector: true,
+    });
+
+    return response.result.map(result => ({
+      document: {
+        id: String(result.id),
+        content: (result.payload?.['content'] as string) || '',
+        ...(result.payload ? { metadata: result.payload as Record<string, any> } : {}),
+        ...(result.vector ? { embedding: result.vector } : {}),
+      },
+      score: result.score,
+    }));
   }
 
-  async delete(ids: string[]): Promise<void> {}
-  async clear(): Promise<void> {}
+  async delete(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+
+    await this.ensureCollection();
+
+    await this.request(`/collections/${this.config.collectionName}/points/delete`, 'POST', {
+      points: ids,
+    });
+  }
+
+  async clear(): Promise<void> {
+    try {
+      await this.request(`/collections/${this.config.collectionName}`, 'DELETE');
+      this.collectionEnsured = false;
+    } catch {
+      // Collection might not exist
+    }
+  }
+
+  /**
+   * Get collection info
+   */
+  async info(): Promise<{ vectorsCount: number; pointsCount: number }> {
+    await this.ensureCollection();
+
+    const response = await this.request<{
+      result: {
+        vectors_count: number;
+        points_count: number;
+      };
+    }>(`/collections/${this.config.collectionName}`);
+
+    return {
+      vectorsCount: response.result.vectors_count,
+      pointsCount: response.result.points_count,
+    };
+  }
 }
 
 // ============================================================================
@@ -550,7 +692,7 @@ export class RAGPipeline {
       'You are a helpful assistant. Use the following context to answer questions. If the context doesn\'t contain relevant information, say so.';
   }
 
-  async ingest(documents: Document[]): Promise<void> {
+  async ingest(documents: RagDocument[]): Promise<void> {
     if (!this.provider.embed) {
       throw new Error('Provider does not support embeddings');
     }
@@ -586,7 +728,7 @@ export class RAGPipeline {
     // Generate answer using generateCompletion
     const prompt = `${question}\n\nContext:\n${context}`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       systemPrompt: this.systemPrompt,
     });
 
@@ -606,7 +748,7 @@ export class RAGPipeline {
 // ============================================================================
 
 export interface DocumentLoader {
-  load(): Promise<Document[]>;
+  load(): Promise<RagDocument[]>;
 }
 
 export class TextLoader implements DocumentLoader {
@@ -618,8 +760,8 @@ export class TextLoader implements DocumentLoader {
     if (metadata !== undefined) this.metadata = metadata;
   }
 
-  async load(): Promise<Document[]> {
-    const doc: Document = {
+  async load(): Promise<RagDocument[]> {
+    const doc: RagDocument = {
       id: generateId(),
       content: this.content,
     };
@@ -637,7 +779,7 @@ export class JSONLoader implements DocumentLoader {
     this.contentKey = contentKey;
   }
 
-  async load(): Promise<Document[]> {
+  async load(): Promise<RagDocument[]> {
     const items = Array.isArray(this.data) ? this.data : [this.data];
     return items.map(item => ({
       id: item.id || generateId(),
@@ -654,7 +796,7 @@ export class MarkdownLoader implements DocumentLoader {
     this.content = content;
   }
 
-  async load(): Promise<Document[]> {
+  async load(): Promise<RagDocument[]> {
     // Split by headers
     const sections = this.content.split(/^#{1,3}\s+/m).filter(Boolean);
 
@@ -785,7 +927,7 @@ export function useRAG(options: RAGOptions) {
     }
   };
 
-  const ingest = async (documents: Document[]) => {
+  const ingest = async (documents: RagDocument[]) => {
     isLoading.set(true);
     try {
       await pipeline.ingest(documents);

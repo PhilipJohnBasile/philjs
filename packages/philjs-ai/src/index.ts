@@ -1,4 +1,4 @@
 
-export * from './agent';
-export * from './vectors';
-export * from './prompt';
+export * from './agent.js';
+export * from './vectors.js';
+export * from './prompt.js';

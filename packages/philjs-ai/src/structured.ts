@@ -4,7 +4,8 @@
  * Type-safe AI responses with runtime validation and automatic retries.
  */
 
-import { z, ZodSchema, ZodError } from 'zod';
+import { z, ZodError } from 'zod';
+type ZodSchema<T = any> = z.ZodType<T>;
 import type { AIProvider, CompletionOptions } from './types.js';
 
 // ============================================================================
@@ -42,7 +43,7 @@ export function schemaToDescription(schema: ZodSchema): string {
   return formatZodType(schema._def);
 }
 
-function formatZodType(def: z.ZodTypeDef & { typeName?: string; innerType?: ZodSchema; shape?: () => Record<string, ZodSchema>; options?: ZodSchema[]; items?: ZodSchema; element?: ZodSchema }): string {
+function formatZodType(def: any): string {
   const typeName = def.typeName;
 
   switch (typeName) {
@@ -57,9 +58,9 @@ function formatZodType(def: z.ZodTypeDef & { typeName?: string; innerType?: ZodS
     case 'ZodUndefined':
       return 'undefined';
     case 'ZodLiteral':
-      return JSON.stringify((def as z.ZodLiteralDef).value);
+      return `Literal<${JSON.stringify((def as any).value)}>`;
     case 'ZodEnum':
-      return (def as z.ZodEnumDef).values.map((v: string) => JSON.stringify(v)).join(' | ');
+      return `Enum<${(def as any).values.map((v: string) => `"${v}"`).join(' | ')}>`;
     case 'ZodOptional':
       return `${formatZodType((def as { innerType: ZodSchema }).innerType._def)} | undefined`;
     case 'ZodNullable':
@@ -67,18 +68,18 @@ function formatZodType(def: z.ZodTypeDef & { typeName?: string; innerType?: ZodS
     case 'ZodArray':
       return `Array<${formatZodType((def as { type: ZodSchema }).type._def)}>`;
     case 'ZodObject': {
-      const shape = (def as z.ZodObjectDef).shape();
+      const shape = (def as any).shape();
       const fields = Object.entries(shape)
-        .map(([key, value]) => `  ${key}: ${formatZodType(value._def)}`)
+        .map(([key, value]) => `  ${key}: ${formatZodType((value as any)._def)}`)
         .join(',\n');
       return `{\n${fields}\n}`;
     }
     case 'ZodUnion':
-      return (def as z.ZodUnionDef).options.map((opt: ZodSchema) => formatZodType(opt._def)).join(' | ');
+      return (def as any).options.map((opt: ZodSchema) => formatZodType(opt._def)).join(' | ');
     case 'ZodRecord':
-      return `Record<string, ${formatZodType((def as z.ZodRecordDef<z.ZodString, ZodSchema>).valueType._def)}>`;
+      return `Record<string, ${formatZodType((def as any).valueType._def)}>`;
     case 'ZodTuple':
-      return `[${(def as z.ZodTupleDef).items.map((item: ZodSchema) => formatZodType(item._def)).join(', ')}]`;
+      return `[${(def as any).items.map((item: any) => formatZodType(item._def)).join(', ')}]`;
     default:
       return 'unknown';
   }
@@ -91,7 +92,7 @@ export function zodToJsonSchema(schema: ZodSchema): Record<string, unknown> {
   return convertToJsonSchema(schema._def);
 }
 
-function convertToJsonSchema(def: z.ZodTypeDef & { typeName?: string }): Record<string, unknown> {
+function convertToJsonSchema(def: any): Record<string, unknown> {
   const typeName = def.typeName;
 
   switch (typeName) {
@@ -104,9 +105,9 @@ function convertToJsonSchema(def: z.ZodTypeDef & { typeName?: string }): Record<
     case 'ZodNull':
       return { type: 'null' };
     case 'ZodLiteral':
-      return { const: (def as z.ZodLiteralDef).value };
+      return { const: (def as any).value };
     case 'ZodEnum':
-      return { enum: (def as z.ZodEnumDef).values };
+      return { enum: (def as any).values };
     case 'ZodOptional':
       return convertToJsonSchema((def as { innerType: ZodSchema }).innerType._def);
     case 'ZodNullable': {
@@ -116,16 +117,16 @@ function convertToJsonSchema(def: z.ZodTypeDef & { typeName?: string }): Record<
     case 'ZodArray':
       return {
         type: 'array',
-        items: convertToJsonSchema((def as { type: ZodSchema }).type._def),
+        items: convertToJsonSchema((def as any).type._def),
       };
     case 'ZodObject': {
-      const shape = (def as z.ZodObjectDef).shape();
+      const shape = (def as any).shape();
       const properties: Record<string, unknown> = {};
       const required: string[] = [];
 
       for (const [key, value] of Object.entries(shape)) {
-        properties[key] = convertToJsonSchema(value._def);
-        if (value._def.typeName !== 'ZodOptional') {
+        properties[key] = convertToJsonSchema((value as any)._def);
+        if ((value as any)._def.typeName !== 'ZodOptional') {
           required.push(key);
         }
       }
@@ -138,12 +139,12 @@ function convertToJsonSchema(def: z.ZodTypeDef & { typeName?: string }): Record<
     }
     case 'ZodUnion':
       return {
-        oneOf: (def as z.ZodUnionDef).options.map((opt: ZodSchema) => convertToJsonSchema(opt._def)),
+        oneOf: (def as any).options.map((opt: ZodSchema) => convertToJsonSchema(opt._def)),
       };
     case 'ZodRecord':
       return {
         type: 'object',
-        additionalProperties: convertToJsonSchema((def as z.ZodRecordDef<z.ZodString, ZodSchema>).valueType._def),
+        additionalProperties: convertToJsonSchema((def as any).valueType._def),
       };
     default:
       return {};
@@ -206,7 +207,7 @@ Important:
     }
 
     try {
-      const response = await provider.generateCompletion(currentPrompt, {
+      const { content: response } = await provider.generateCompletion(currentPrompt, {
         ...options,
         systemPrompt,
         temperature: options?.temperature ?? 0.1,
@@ -268,7 +269,7 @@ function parseJsonResponse(response: string): unknown {
  * Format Zod error for retry prompt
  */
 function formatZodError(error: ZodError): string {
-  return error.errors.map(err => {
+  return (error as any).errors.map((err: { path: (string | number)[]; message: string }) => {
     const path = err.path.join('.');
     return `- ${path ? `${path}: ` : ''}${err.message}`;
   }).join('\n');

@@ -14,6 +14,7 @@ import type {
   ImageInput,
   VisionOptions,
   VisionResult,
+  ProviderResponse,
 } from '../types.js';
 
 export interface AnthropicConfig {
@@ -41,7 +42,13 @@ export class AnthropicProvider implements AIProvider {
     this.enableCaching = config.enableCaching ?? false;
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
+    const tools = options?.tools?.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      input_schema: tool.parameters as Anthropic.Tool.InputSchema,
+    }));
+
     const response = await this.client.messages.create({
       model: options?.model || this.defaultModel,
       max_tokens: options?.maxTokens ?? 4096,
@@ -54,13 +61,28 @@ export class AnthropicProvider implements AIProvider {
         },
       ],
       ...(options?.stopSequences && { stop_sequences: options.stopSequences }),
+      ...(tools && { tools }),
+      ...(options?.toolChoice === 'auto' && { tool_choice: { type: 'auto' } as const }),
     });
 
-    const content = response.content[0];
-    if (content?.type === 'text') {
-      return content.text;
-    }
-    return '';
+    const textContent = response.content.find(c => c.type === 'text');
+    const toolCalls = response.content
+      .filter(c => c.type === 'tool_use')
+      .map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        arguments: c.input,
+      }));
+
+    return {
+      content: textContent?.type === 'text' ? textContent.text : '',
+      ...(toolCalls.length > 0 ? { toolCalls } : {}),
+      usage: {
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        totalTokens: response.usage.input_tokens + response.usage.output_tokens,
+      },
+    };
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {
@@ -176,8 +198,8 @@ export class AnthropicProvider implements AIProvider {
       const ext = image.path.split('.').pop()?.toLowerCase();
       const mediaType = ext === 'png' ? 'image/png'
         : ext === 'gif' ? 'image/gif'
-        : ext === 'webp' ? 'image/webp'
-        : 'image/jpeg';
+          : ext === 'webp' ? 'image/webp'
+            : 'image/jpeg';
 
       return {
         type: 'image',

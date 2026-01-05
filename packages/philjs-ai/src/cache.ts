@@ -6,7 +6,7 @@
  */
 
 import { createHash } from 'crypto';
-import type { AIProvider, CompletionOptions } from './types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from './types.js';
 
 // ============================================================================
 // Types
@@ -39,7 +39,7 @@ export interface CacheEntry {
     completionTokens?: number;
     cost?: number;
   };
-  embedding?: number[];
+  embedding?: number[] | undefined;
 }
 
 export interface CacheStats {
@@ -237,7 +237,7 @@ export class CachedAIProvider implements AIProvider {
     this.ttl = config.ttl ?? 60 * 60 * 1000; // 1 hour default
     this.semanticMatching = config.semanticMatching ?? false;
     this.similarityThreshold = config.similarityThreshold ?? 0.95;
-    this.embeddingProvider = config.embeddingProvider;
+    if (config.embeddingProvider) this.embeddingProvider = config.embeddingProvider;
   }
 
   /**
@@ -281,7 +281,7 @@ export class CachedAIProvider implements AIProvider {
     return undefined;
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     // Try cache first
     const cached = await this.findCached(prompt, options);
     if (cached) {
@@ -289,7 +289,14 @@ export class CachedAIProvider implements AIProvider {
       this.stats.savedTokens += (cached.metadata?.promptTokens || 0) + (cached.metadata?.completionTokens || 0);
       this.stats.savedCost += cached.metadata?.cost || 0;
       this.updateHitRate();
-      return cached.value;
+      return {
+        content: cached.value,
+        usage: {
+          inputTokens: cached.metadata?.promptTokens || 0,
+          outputTokens: cached.metadata?.completionTokens || 0,
+          totalTokens: (cached.metadata?.promptTokens || 0) + (cached.metadata?.completionTokens || 0),
+        },
+      };
     }
 
     // Cache miss - call provider
@@ -302,12 +309,12 @@ export class CachedAIProvider implements AIProvider {
     const key = this.generateKey(prompt, options);
     const entry: CacheEntry = {
       key,
-      value: result,
+      value: result.content,
       createdAt: Date.now(),
       expiresAt: Date.now() + this.ttl,
       hits: 0,
       metadata: {
-        model: options?.model,
+        ...(options?.model && { model: options.model }),
       },
     };
 
@@ -358,7 +365,9 @@ export class CachedAIProvider implements AIProvider {
       createdAt: Date.now(),
       expiresAt: Date.now() + this.ttl,
       hits: 0,
-      metadata: { model: options?.model },
+      metadata: {
+        ...(options?.model && { model: options.model })
+      },
     };
 
     await this.storage.set(key, entry);

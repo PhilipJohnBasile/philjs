@@ -2,7 +2,7 @@
  * Google Gemini provider implementation
  */
 
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 
 export interface GeminiConfig {
   apiKey: string;
@@ -15,10 +15,19 @@ interface GeminiResponse {
     content?: {
       parts?: Array<{
         text?: string;
+        functionCall?: {
+          name: string;
+          args: Record<string, unknown>;
+        };
       }>;
     };
     finishReason?: string;
   }>;
+  usageMetadata?: {
+    promptTokenCount?: number;
+    candidatesTokenCount?: number;
+    totalTokenCount?: number;
+  };
   error?: {
     message?: string;
     code?: number;
@@ -30,6 +39,10 @@ interface GeminiStreamChunk {
     content?: {
       parts?: Array<{
         text?: string;
+        functionCall?: {
+          name: string;
+          args: Record<string, unknown>;
+        };
       }>;
     };
   }>;
@@ -47,7 +60,7 @@ export class GeminiProvider implements AIProvider {
     this.defaultModel = config.defaultModel || 'gemini-1.5-pro';
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     const model = options?.model || this.defaultModel;
     const url = `${this.baseURL}/models/${model}:generateContent?key=${this.apiKey}`;
 
@@ -89,7 +102,36 @@ export class GeminiProvider implements AIProvider {
       throw new Error(`Gemini API error: ${data.error.message}`);
     }
 
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    // Extract text content
+    const parts = data.candidates?.[0]?.content?.parts || [];
+    const textParts = parts.filter(p => p.text).map(p => p.text!);
+    const text = textParts.join('');
+
+    // Extract function/tool calls
+    const functionCalls = parts
+      .filter(p => p.functionCall)
+      .map((p, i) => ({
+        id: `call_${i}`,
+        name: p.functionCall!.name,
+        arguments: p.functionCall!.args,
+      }));
+
+    // Extract usage metadata
+    const usage = data.usageMetadata ? {
+      inputTokens: data.usageMetadata.promptTokenCount || 0,
+      outputTokens: data.usageMetadata.candidatesTokenCount || 0,
+      totalTokens: data.usageMetadata.totalTokenCount || 0,
+    } : {
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+    };
+
+    return {
+      content: text,
+      ...(functionCalls.length > 0 && { toolCalls: functionCalls }),
+      usage,
+    };
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {

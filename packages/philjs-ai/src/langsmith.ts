@@ -38,6 +38,13 @@ export interface TraceOptions {
     parentId?: string;
 }
 
+export interface EvaluationResult {
+    name: string;
+    score: number;
+    passed: boolean;
+    reason?: string;
+}
+
 // ============ CLIENT ============
 
 let config: LangSmithConfig | null = null;
@@ -128,6 +135,28 @@ export class LangSmithClient {
         const data = await response.json();
         return data.runs;
     }
+
+    async submitFeedback(runId: string, feedback: {
+        name: string;
+        score?: number;
+        value?: string;
+        comment?: string;
+    }): Promise<void> {
+        await fetch(`${this.endpoint}/feedback`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this.config.apiKey,
+            },
+            body: JSON.stringify({
+                run_id: runId,
+                key: feedback.name,
+                score: feedback.score,
+                value: feedback.value,
+                comment: feedback.comment,
+            }),
+        });
+    }
 }
 
 // ============ TRACING DECORATOR ============
@@ -186,7 +215,9 @@ export function useTraces(options: { limit?: number } = {}) {
         error.set(null);
 
         try {
-            const runs = await client.getRuns({ limit: options.limit });
+            const runs = await client.getRuns({
+                ...(options.limit !== undefined && { limit: options.limit })
+            });
             traces.set(runs);
         } catch (e) {
             error.set(e as Error);
@@ -210,7 +241,7 @@ export function useTraceContext() {
     const startTrace = async (options: Omit<TraceOptions, 'parentId'>) => {
         const runId = await client.createRun({
             ...options,
-            parentId: currentTraceId() || undefined,
+            ...(currentTraceId() ? { parentId: currentTraceId()! } : {}),
         });
         currentTraceId.set(runId);
         return runId;
@@ -254,16 +285,21 @@ export async function evaluate(
     // Run evaluator
     const results = await evaluator(trace);
 
-    // TODO: Submit feedback to LangSmith
+    // Submit feedback to LangSmith for each evaluation result
+    for (const result of results) {
+        try {
+            await client.submitFeedback(runId, {
+                name: result.name,
+                score: result.score,
+                value: result.passed ? 'passed' : 'failed',
+                ...(result.reason && { comment: result.reason }),
+            });
+        } catch (error) {
+            console.warn(`Failed to submit feedback for ${result.name}:`, error);
+        }
+    }
 
     return results;
 }
 
-export {
-    initLangSmith,
-    LangSmithClient,
-    traced,
-    useTraces,
-    useTraceContext,
-    evaluate,
-};
+// Exports are handled inline
