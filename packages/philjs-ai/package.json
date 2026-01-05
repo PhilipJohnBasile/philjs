@@ -51,9 +51,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build": "rollup -c rollup.config.cjs",
     "test": "vitest run",
-    "lint": "echo 'Lint philjs-ai'",
+    "lint": "npm run typecheck",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -82,7 +82,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-ai"
   },
   "bugs": {
@@ -91,6 +91,11 @@
   "homepage": "https://github.com/yourusername/philjs#readme",
   "engines": {
     "node": ">=24"
-  }
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "ai"
+  ]
 }
-
