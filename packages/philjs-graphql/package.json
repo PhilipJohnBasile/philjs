@@ -29,7 +29,7 @@
     "@graphql-tools/schema": "^10.0.4",
     "@graphql-tools/utils": "^10.5.7",
     "vitest": "^4.0.16",
-    "typescript": "6.0.0-dev.20251230",
+    "typescript": "6.0.0-dev.20260106",
     "rollup": "^4.54.0"
   },
   "peerDependencies": {
