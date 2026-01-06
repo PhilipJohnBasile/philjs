@@ -28,7 +28,7 @@
     "@vitest/coverage-v8": "^4.0.16",
     "jsdom": "^27.0.0",
     "playwright": "^1.49.0",
-    "shiki": "^0.14.0",
+    "shiki": "^3.20.0",
     "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
