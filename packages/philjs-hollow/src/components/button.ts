@@ -217,7 +217,7 @@ export class HollowButton extends HollowElement {
     });
 
     // Handle form submission
-    const type = this.getProp('type', 'button');
+    const type = this.getProp('type', 'button') as string;
     if (type === 'submit' && this._internals?.form) {
       this._internals.form.requestSubmit();
     } else if (type === 'reset' && this._internals?.form) {

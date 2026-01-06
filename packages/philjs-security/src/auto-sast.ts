@@ -37,7 +37,6 @@ export async function scanAndPatch(): Promise<Vulnerability[]> {
         if (issue.autoPatched) {
             console.log(`AutoSAST: 🚨 Detected ${issue.severity.toUpperCase()} issue in ${issue.file}`);
             console.log(`AutoSAST: 🔧 Applying heuristic patch: Sanitizing input/Masking logs...`);
-            console.log(`AutoSAST: ✅ Patch verified safe.`);
         }
     }
 

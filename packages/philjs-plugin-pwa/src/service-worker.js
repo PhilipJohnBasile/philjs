@@ -35,7 +35,6 @@ const RUNTIME_CACHING_RULES = ${JSON.stringify(runtimeCaching.map(rule => ({
 // ============================================================================
 
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing service worker...');
 
   event.waitUntil(
     (async () => {
@@ -58,7 +57,6 @@ self.addEventListener('install', (event) => {
 // ============================================================================
 
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating service worker...');
 
   event.waitUntil(
     (async () => {
@@ -68,7 +66,6 @@ self.addEventListener('activate', (event) => {
         cacheNames
           .filter(name => name.startsWith(CACHE_PREFIX) && name !== PRECACHE_NAME && name !== RUNTIME_CACHE_NAME)
           .map(name => {
-            console.log('[SW] Deleting old cache:', name);
             return caches.delete(name);
           })
       );
@@ -319,7 +316,6 @@ ${backgroundSync?.enabled ? `
 
 self.addEventListener('sync', (event) => {
   const { tag } = event;
-  console.log('[SW] Background sync:', tag);
 
   if (tag === '${backgroundSync.queueName || 'default-sync'}') {
     event.waitUntil(handleBackgroundSync());
@@ -335,7 +331,6 @@ async function handleBackgroundSync() {
     try {
       await fetch(request);
       await cache.delete(request);
-      console.log('[SW] Synced:', request.url);
     } catch (error) {
       console.error('[SW] Sync failed:', request.url, error);
     }

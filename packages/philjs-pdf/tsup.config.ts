@@ -9,4 +9,9 @@ export default defineConfig({
   treeshake: true,
   splitting: false,
   minify: false,
+  external: [
+    '@react-pdf/renderer',
+    'react',
+    'react-dom',
+  ],
 });

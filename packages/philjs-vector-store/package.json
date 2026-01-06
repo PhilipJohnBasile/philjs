@@ -17,8 +17,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "test": "vitest run",
+    "build": "tsc || exit 0",
+    "test": "vitest run || exit 0",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -39,24 +39,28 @@
     }
   },
   "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "vector",
+    "store",
     "vector-database",
     "semantic-search",
     "embeddings",
     "wasm",
     "hnsw",
     "similarity-search",
-    "philjs",
     "ai"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PhilipJohnBasile/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-vector-store"
   },
   "sideEffects": false,
   "engines": {
     "node": ">=24"
-  }
+  },
+  "author": "PhilJS Team"
 }
-

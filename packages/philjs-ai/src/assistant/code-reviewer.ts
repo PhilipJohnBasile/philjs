@@ -204,23 +204,53 @@ export interface LineComment {
 // =============================================================================
 
 export class CodeReviewer {
-  constructor(private provider: AIProvider) {}
+  constructor(private provider: AIProvider) { }
 
   /**
-   * Review a code file
+   * Review a code file - comprehensive analysis including all focus areas
    */
   async reviewCode(code: string, config: ReviewConfig = {}): Promise<ReviewResult> {
-    const { focus = ['best-practices'], minSeverity = 'info' } = config;
+    const { focus = ['best-practices'], minSeverity = 'info', customRules } = config;
 
     const prompt = this.buildReviewPrompt(code, config);
 
     try {
-      const response = await this.provider.generateCompletion(prompt, {
+      const { content: response } = await this.provider.generateCompletion(prompt, {
         temperature: 0.3,
         maxTokens: 4000,
       });
 
-      return this.parseReviewResponse(response, code, config);
+      const baseReview = this.parseReviewResponse(response, code, config);
+
+      // Calculate real metrics
+      baseReview.metrics = this.calculateMetrics(code);
+
+      // Evaluate custom rules
+      if (customRules?.length) {
+        const customIssues = this.evaluateCustomRules(code, customRules);
+        baseReview.issues = [...baseReview.issues, ...customIssues];
+        baseReview.summary.totalIssues = baseReview.issues.length;
+      }
+
+      // Run specialized reviews based on focus areas
+      const [securityFindings, performanceNotes, accessibilityIssues] = await Promise.all([
+        focus.includes('security') ? this.securityReview(code) : Promise.resolve([]),
+        focus.includes('performance') ? this.performanceReview(code) : Promise.resolve([]),
+        focus.includes('accessibility') ? this.accessibilityReview(code) : Promise.resolve([]),
+      ]);
+
+      baseReview.securityFindings = securityFindings;
+      baseReview.performanceNotes = performanceNotes;
+      baseReview.accessibilityIssues = accessibilityIssues;
+
+      // Filter by min severity
+      baseReview.issues = this.filterBySeverity(baseReview.issues, minSeverity);
+
+      // Recalculate summary and score
+      baseReview.summary = this.calculateSummary(baseReview);
+      baseReview.overallScore = this.calculateScore(baseReview);
+
+      return baseReview;
     } catch (error) {
       return this.createEmptyReview();
     }
@@ -301,7 +331,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<SecurityFinding[]>(response, []);
     } catch {
       return [];
@@ -339,7 +369,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<PerformanceNote[]>(response, []);
     } catch {
       return [];
@@ -378,7 +408,7 @@ Return findings as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.2 });
       return this.parseJSON<AccessibilityIssue[]>(response, []);
     } catch {
       return [];
@@ -419,7 +449,7 @@ Provide a comment as JSON:
 }`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
       const result = this.parseJSON<{ type: string; content: string; code?: string }>(response, {
         type: 'suggestion',
         content: 'No issues found.',
@@ -477,7 +507,7 @@ Return suggestions as JSON array:
 }]`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.4 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.4 });
       return this.parseJSON<ReviewSuggestion[]>(response, []);
     } catch {
       return [];
@@ -649,7 +679,7 @@ ${diff}
 Focus on changes only. Return issues and suggestions as JSON.`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
+      const { content: response } = await this.provider.generateCompletion(prompt, { temperature: 0.3 });
       return this.parseReviewResponse(response, diff, config);
     } catch {
       return this.createEmptyReview();
@@ -769,6 +799,319 @@ Focus on changes only. Return issues and suggestions as JSON.`;
       }
       return fallback;
     }
+  }
+
+  /**
+   * Calculate real code metrics
+   */
+  private calculateMetrics(code: string): CodeMetrics {
+    const lines = code.split('\n');
+    const linesOfCode = lines.filter(l => l.trim() && !l.trim().startsWith('//')).length;
+
+    return {
+      linesOfCode,
+      cyclomaticComplexity: this.calculateCyclomaticComplexity(code),
+      cognitiveComplexity: this.calculateCognitiveComplexity(code),
+      maintainabilityIndex: this.calculateMaintainabilityIndex(code),
+      duplicateLines: this.countDuplicateLines(code),
+      dependencyCount: this.countDependencies(code),
+      unusedExports: 0, // Would require full project analysis
+    };
+  }
+
+  /**
+   * Calculate cyclomatic complexity
+   * Counts decision points: if, else if, for, while, case, catch, &&, ||, ?:
+   */
+  private calculateCyclomaticComplexity(code: string): number {
+    let complexity = 1; // Base complexity
+
+    // Decision points
+    const patterns = [
+      /\bif\s*\(/g,
+      /\belse\s+if\s*\(/g,
+      /\bfor\s*\(/g,
+      /\bwhile\s*\(/g,
+      /\bcase\s+/g,
+      /\bcatch\s*\(/g,
+      /\?\s*[^:]+\s*:/g, // Ternary
+      /&&/g,
+      /\|\|/g,
+      /\?\?/g, // Nullish coalescing
+    ];
+
+    for (const pattern of patterns) {
+      const matches = code.match(pattern);
+      if (matches) {
+        complexity += matches.length;
+      }
+    }
+
+    return complexity;
+  }
+
+  /**
+   * Calculate cognitive complexity
+   * Weighted measure considering nesting and control flow breaks
+   */
+  private calculateCognitiveComplexity(code: string): number {
+    let complexity = 0;
+    let nestingLevel = 0;
+
+    const lines = code.split('\n');
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      // Increment for control structures at their nesting level
+      if (/\b(if|else if|for|while|switch)\s*\(/.test(trimmed)) {
+        complexity += 1 + nestingLevel;
+      }
+
+      // Increment for break/continue with labels
+      if (/\b(break|continue)\s+\w+/.test(trimmed)) {
+        complexity += 1;
+      }
+
+      // Increment for recursion (simple heuristic)
+      if (/\bfunction\s+(\w+)[^{]*\{/.test(trimmed)) {
+        const fnName = trimmed.match(/\bfunction\s+(\w+)/)?.[1];
+        if (fnName && code.includes(`${fnName}(`)) {
+          // Check if function calls itself
+          const fnBody = this.extractFunctionBody(code, fnName);
+          if (fnBody && fnBody.includes(`${fnName}(`)) {
+            complexity += 1;
+          }
+        }
+      }
+
+      // Track nesting
+      const opens = (line.match(/\{/g) || []).length;
+      const closes = (line.match(/\}/g) || []).length;
+      nestingLevel = Math.max(0, nestingLevel + opens - closes);
+    }
+
+    return complexity;
+  }
+
+  private extractFunctionBody(code: string, fnName: string): string | null {
+    const regex = new RegExp(`\\bfunction\\s+${fnName}\\s*\\([^)]*\\)\\s*\\{`, 'g');
+    const match = regex.exec(code);
+    if (!match) return null;
+
+    let depth = 1;
+    let start = match.index + match[0].length;
+    let end = start;
+
+    while (depth > 0 && end < code.length) {
+      if (code[end] === '{') depth++;
+      if (code[end] === '}') depth--;
+      end++;
+    }
+
+    return code.slice(start, end - 1);
+  }
+
+  /**
+   * Calculate maintainability index (0-100)
+   * Based on Halstead volume, cyclomatic complexity, and lines of code
+   */
+  private calculateMaintainabilityIndex(code: string): number {
+    const lines = code.split('\n').filter(l => l.trim()).length;
+    const complexity = this.calculateCyclomaticComplexity(code);
+
+    // Simplified formula: MI = 171 - 5.2 * ln(V) - 0.23 * G - 16.2 * ln(L)
+    // We use approximations for Halstead volume
+    const operators = (code.match(/[+\-*/%=<>!&|^~?:]/g) || []).length;
+    const operands = (code.match(/\b[a-zA-Z_]\w*\b/g) || []).length;
+    const volume = Math.max(1, (operators + operands) * Math.log2(operators + operands + 1));
+
+    const mi = 171 - 5.2 * Math.log(volume) - 0.23 * complexity - 16.2 * Math.log(lines + 1);
+
+    // Normalize to 0-100
+    return Math.max(0, Math.min(100, mi * (100 / 171)));
+  }
+
+  /**
+   * Count duplicate lines (simple heuristic)
+   */
+  private countDuplicateLines(code: string): number {
+    const lines = code.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 10 && !l.startsWith('//') && !l.startsWith('*'));
+
+    const seen = new Map<string, number>();
+    let duplicates = 0;
+
+    for (const line of lines) {
+      const count = seen.get(line) || 0;
+      if (count > 0) {
+        duplicates++;
+      }
+      seen.set(line, count + 1);
+    }
+
+    return duplicates;
+  }
+
+  /**
+   * Count import/require statements
+   */
+  private countDependencies(code: string): number {
+    const imports = code.match(/\bimport\s+.+\s+from\s+['"][^'"]+['"]/g) || [];
+    const requires = code.match(/\brequire\s*\(\s*['"][^'"]+['"]\s*\)/g) || [];
+    return imports.length + requires.length;
+  }
+
+  /**
+   * Evaluate custom rules against code
+   */
+  private evaluateCustomRules(code: string, rules: CustomRule[]): ReviewIssue[] {
+    const issues: ReviewIssue[] = [];
+
+    for (const rule of rules) {
+      if (rule.check(code)) {
+        // Find line number if pattern provided
+        let lineNumber: number | undefined;
+        if (rule.pattern) {
+          const regex = new RegExp(rule.pattern, 'g');
+          const match = regex.exec(code);
+          if (match) {
+            const beforeMatch = code.slice(0, match.index);
+            lineNumber = beforeMatch.split('\n').length;
+          }
+        }
+
+        const issue: ReviewIssue = {
+          id: `CUSTOM-${rule.id}`,
+          severity: rule.severity,
+          category: 'custom-rule',
+          title: rule.name,
+          description: rule.description,
+          suggestion: rule.message,
+        };
+        if (lineNumber !== undefined) {
+          issue.line = lineNumber;
+        }
+        if (rule.fix !== undefined) {
+          issue.suggestedFix = rule.fix;
+        }
+        issues.push(issue);
+      }
+    }
+
+    return issues;
+  }
+
+  /**
+   * Filter issues by minimum severity
+   */
+  private filterBySeverity(issues: ReviewIssue[], minSeverity: ReviewSeverity): ReviewIssue[] {
+    const severityOrder: ReviewSeverity[] = ['info', 'warning', 'error', 'critical'];
+    const minIndex = severityOrder.indexOf(minSeverity);
+
+    return issues.filter(issue => {
+      const issueIndex = severityOrder.indexOf(issue.severity);
+      return issueIndex >= minIndex;
+    });
+  }
+
+  /**
+   * Calculate review summary from issues
+   */
+  private calculateSummary(review: ReviewResult): ReviewSummary {
+    const issues = review.issues;
+
+    const bySeverity: Record<ReviewSeverity, number> = {
+      info: 0,
+      warning: 0,
+      error: 0,
+      critical: 0,
+    };
+
+    const byCategory: Record<string, number> = {};
+
+    for (const issue of issues) {
+      bySeverity[issue.severity]++;
+      byCategory[issue.category] = (byCategory[issue.category] || 0) + 1;
+    }
+
+    // Generate highlights
+    const highlights: string[] = [];
+    if (bySeverity.critical > 0) {
+      highlights.push(`${bySeverity.critical} critical issue(s) found`);
+    }
+    if (review.securityFindings.length > 0) {
+      highlights.push(`${review.securityFindings.length} security finding(s)`);
+    }
+    if (review.metrics.cyclomaticComplexity > 10) {
+      highlights.push('High cyclomatic complexity detected');
+    }
+    if (review.metrics.maintainabilityIndex < 50) {
+      highlights.push('Low maintainability index');
+    }
+
+    // Determine recommendation
+    let recommendation: 'approve' | 'request-changes' | 'needs-discussion';
+    if (bySeverity.critical > 0 || review.securityFindings.some(f => f.severity === 'critical')) {
+      recommendation = 'request-changes';
+    } else if (bySeverity.error > 2 || review.securityFindings.some(f => f.severity === 'high')) {
+      recommendation = 'request-changes';
+    } else if (bySeverity.error > 0 || bySeverity.warning > 5) {
+      recommendation = 'needs-discussion';
+    } else {
+      recommendation = 'approve';
+    }
+
+    return {
+      totalIssues: issues.length,
+      bySeverity,
+      byCategory,
+      highlights,
+      recommendation,
+    };
+  }
+
+  /**
+   * Calculate overall review score (0-100)
+   */
+  private calculateScore(review: ReviewResult): number {
+    let score = 100;
+
+    // Deduct for issues
+    score -= review.summary.bySeverity.critical * 20;
+    score -= review.summary.bySeverity.error * 10;
+    score -= review.summary.bySeverity.warning * 3;
+    score -= review.summary.bySeverity.info * 1;
+
+    // Deduct for security findings
+    for (const finding of review.securityFindings) {
+      switch (finding.severity) {
+        case 'critical': score -= 15; break;
+        case 'high': score -= 10; break;
+        case 'medium': score -= 5; break;
+        case 'low': score -= 2; break;
+      }
+    }
+
+    // Deduct for poor metrics
+    if (review.metrics.cyclomaticComplexity > 20) {
+      score -= 10;
+    } else if (review.metrics.cyclomaticComplexity > 10) {
+      score -= 5;
+    }
+
+    if (review.metrics.maintainabilityIndex < 30) {
+      score -= 10;
+    } else if (review.metrics.maintainabilityIndex < 50) {
+      score -= 5;
+    }
+
+    if (review.metrics.duplicateLines > 20) {
+      score -= 5;
+    }
+
+    return Math.max(0, Math.min(100, score));
   }
 }
 

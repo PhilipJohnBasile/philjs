@@ -29,8 +29,8 @@ import type {
   BulkEmailMessage,
   BulkEmailResult,
   TemplateEmailMessage,
-} from '../types';
-import { renderReactEmail, formatAddress, normalizeAddress, withRetry } from '../utils';
+} from '../types.js';
+import { renderReactEmail, formatAddress, normalizeAddress, withRetry } from '../utils.js';
 
 /**
  * Mailgun Email Provider
@@ -55,7 +55,9 @@ export class MailgunProvider implements EmailProvider {
     if (!this.clientPromise) {
       this.clientPromise = (async () => {
         try {
+          // @ts-expect-error - Optional peer dependency
           const mailgunModule = await import('mailgun.js');
+          // @ts-expect-error - Optional peer dependency
           const formDataModule = await import('form-data');
           const MailgunCtor = (mailgunModule as any).default ?? mailgunModule;
           const formDataCtor = (formDataModule as any).default ?? formDataModule;

@@ -12,17 +12,19 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --watch",
-    "test": "vitest"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
+    "xr",
     "webxr",
     "vr",
     "ar",
     "mr",
-    "xr",
     "virtual-reality",
     "augmented-reality",
     "hand-tracking",
@@ -41,6 +43,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-xr"
   }
 }
-

@@ -1,107 +1,68 @@
-# SSR Overview
+# Chapter 5: Islands & Hydration
 
-PhilJS SSR is streaming-first and designed for islands. You can render routes directly with the server adapters.
+The greatest lie of the Single Page Application era was this: *"It's fast once it loads."*
 
-![SSR streaming pipeline](../../visuals/ssr-streaming-pipeline.svg "Streaming SSR from edge to hydration")
+The problem is the "once it loads." To make a page interactive, traditional frameworks must download all the JavaScript for the page, parse it, execute it, and then attach event listeners to every single DOM node. This process is called **Hydration**.
 
-## Basic Node server
+Hydration is pure overhead. It is purely redundant work. The server already rendered the HTML; why must the browser spend 500ms re-doing that work just to make a menu clickable?
 
-```ts
-import { createServer } from "node:http";
-import { createNodeHttpHandler } from "@philjs/ssr";
-import { createAppRouter } from "@philjs/router";
+## The Cost of Hydration
 
-const routes = [
-  { path: "/", component: () => <main>Home</main> },
-  { path: "/about", component: () => <main>About</main> },
-];
+Imagine buying a furnished house.
+**Server Side Rendering (SSR)** is like having the house built and furnished before you arrive.
+**Hydration** is keeping the movers outside the door, and forcing them to touch every single piece of furniture to confirm it exists before you are allowed to sit on the couch.
 
-const handler = createNodeHttpHandler({ routes });
+It gets worse. As your app grows, the hydration cost grows linearly. Your "Blog" page might only need a tiny bit of JS for a "Like" button, but if it's built as an SPA, users must download the entire framework runtime, the router, and the layout logic just to read text.
 
-createServer(handler).listen(3000, () => {
-  console.log("PhilJS SSR running on http://localhost:3000");
-});
-```
+## The Solution: Islands Architecture
 
-## Render to string
+PhilJS implements the **Islands Architecture**.
 
-```tsx
-import { renderToString } from "@philjs/core";
+The default behavior of PhilJS is **0kb JavaScript**.
+If you render a static page (like this book), PhilJS sends pure HTML and CSS. No bundles. No hydration. It loads instantly.
 
-const html = renderToString(<main>Server render</main>);
-```
+When you need interactivity, you mark a component as an **Island**.
 
-## Streaming SSR
-
-```tsx
-import { renderToStream } from "@philjs/ssr";
-
-const stream = renderToStream(<App />);
-```
-
-## Architecture
-
-- **Router-aware SSR**: loaders run server-side, data is serialized, and hydration picks up without refetching.
-- **Streaming-first**: HTML flushes early while slower panels fill in later.
-- **Islands**: hydrate only what needs to be interactive; keep static shells cheap.
-- **Adapters**: Vercel/Netlify/Cloudflare/Bun/Deno/AWS/Node adapters handle platform specifics.
-
-## Hydration and resumability
-
-- Keep hydration targets small; split heavy widgets into islands.
-- Avoid generating new object identities in render that break equality across server/client.
-- Use stable keys in lists to align server and client DOM.
-- Pass loader data via serialized payloads; avoid re-running fetches on the client unless needed.
-
-## Caching and revalidate
-
-- Use loader cache tags and `revalidate` hints to drive ISR/edge cache lifetimes.
-- For HTML caching, pair adapter-level cache with per-route invalidation (see Loaders chapter).
-- Keep HTML payloads small; stream large panels instead of blocking first paint.
-
-## Edge vs regional SSR
-
-- Edge (Vercel/Netlify/CF/Bun/Deno): lowest latency, but smaller CPU/memory/time budgets.
-- Regional (Node/AWS): more headroom for heavy work (PDFs, image processing), but higher latency.
-- Choose per-route: marketing pages at edge, heavy exports regionally.
-
-## Rendering modes
-
-- `renderToString` – full HTML string (useful for tests and small pages).
-- `renderToStream` – streaming; best default for production.
-- `renderToReadableStream` (edge-friendly) for platforms that expect Web Streams.
-
-## Environment and secrets
-
-- Do not bundle secrets; read from env at runtime (adapter passes through).
-- Avoid Node-only APIs when targeting edge runtimes; stick to Web APIs where possible.
-
-## Error handling
-
-- Wrap root with an error boundary for SSR; render user-friendly errors.
-- Log SSR failures with route info and request id to observability pipeline.
-- Provide fallbacks for partial streams if downstream data fails.
-
-## Testing SSR
-
-- Use `renderToString` in unit tests to assert markup.
-- Use Playwright against `philjs dev --ssr` or a preview build to validate hydration.
-- Simulate slow loaders and verify streaming delivers shell + fallback content promptly.
-
-## Try it now: edge-ready stream
-
-```tsx
-// edge-handler.ts
-import { renderToReadableStream } from '@philjs/ssr';
-import { App } from './App';
-
-export default async function handle() {
-  const body = await renderToReadableStream(<App />);
-  return new Response(body, {
-    headers: { 'content-type': 'text/html; charset=utf-8' }
-  });
+```typescript
+// This component ships NO JavaScript to the client
+function Header() {
+  return (
+    <header>
+      <h1>My Site</h1>
+      {/* This component hydrates in isolation */}
+      <SearchBar client:load />
+    </header>
+  );
 }
 ```
 
-Deploy this with the Cloudflare/Vercel adapter and measure TTFB + first paint with Playwright traces.
+The `<SearchBar />` is an "Island of Interactivity" in a sea of static HTML. PhilJS generates a tiny, independent bundle for just that component.
 
+## Hydration Strategies
+
+You can control *when* an island hydrates using strategies:
+
+*   `client:load`: Hydrate immediately (for critical UI like Nav).
+*   `client:idle`: Hydrate when the CPU is free (for secondary UI).
+*   `client:visible`: Hydrate only when the user scrolls it into view (for heavy footers or charts).
+*   `client:media="(min-width: 768px)"`: Hydrate only on desktop.
+
+## Resumability
+
+PhilJS goes one step further with **Resumability**.
+
+In standard hydration, the framework needs to re-run the component logic to figure out where the event listeners go. PhilJS serializes this information into the HTML itself.
+
+```html
+<button on:click="chunk-abc.js#handleClick">Buy</button>
+```
+
+When you click the button, a tiny 1kb bootloader intercepts the event, downloads `chunk-abc.js`, and executes `handleClick` directly. The component logic *never ran on the client*. We skipped hydration entirely for the event handler.
+
+## Summary
+
+*   **HTML is the fastest format**. Send more of it.
+*   **JavaScript has a cost**. Spend it wisely.
+*   **Islands** let you mix the performance of a static site with the interactivity of an app.
+
+Your users don't care about your framework. They care about opening the page. Give them the HTML.

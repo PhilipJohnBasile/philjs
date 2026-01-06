@@ -176,7 +176,6 @@ export async function promptOptions(type) {
  * Full interactive mode
  */
 export async function runInteractiveMode() {
-    console.log(pc.cyan('\nPhilJS Generator\n'));
     const type = await promptGeneratorType();
     if (!type)
         return null;
@@ -213,11 +212,9 @@ export async function runInteractiveMode() {
  * Confirm generation before proceeding
  */
 export async function confirmGeneration(files) {
-    console.log(pc.cyan('\nFiles to be created:\n'));
     for (const file of files) {
         console.log(pc.dim(`  ${file}`));
     }
-    console.log();
     const response = await prompts({
         type: 'confirm',
         name: 'confirm',

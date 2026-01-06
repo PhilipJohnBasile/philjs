@@ -148,7 +148,7 @@ export class ComponentGenerator {
   async generateFromDescription(config: ComponentGenerationConfig): Promise<GeneratedComponent> {
     const prompt = this.buildDescriptionPrompt(config);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(config),
     });
@@ -165,7 +165,7 @@ export class ComponentGenerator {
   ): Promise<GeneratedComponent> {
     const prompt = this.buildWireframePrompt(wireframe, config);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt({ ...config, description: 'From wireframe' }),
     });
@@ -182,7 +182,7 @@ export class ComponentGenerator {
   ): Promise<{ code: string; changes: string[]; notes: string[] }> {
     const prompt = this.buildAccessibilityPrompt(code, accessibility);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are an accessibility expert for web components.
 Enhance components to meet WCAG ${accessibility.wcagLevel} standards.
@@ -212,7 +212,7 @@ Return JSON with: code, changes (array of changes made), notes (array of accessi
   ): Promise<{ code: string; styles?: string }> {
     const prompt = this.buildStylePrompt(code, style);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a CSS and styling expert.
 Apply the requested style configuration to the component.
@@ -252,7 +252,7 @@ Generate these variants: ${variants.join(', ')}
 
 Return JSON with variant names as keys and component code as values.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Generate component variants maintaining consistent API and style.',
     });
@@ -266,8 +266,8 @@ Return JSON with variant names as keys and component code as values.`;
   private buildDescriptionPrompt(config: ComponentGenerationConfig): string {
     const propsSection = config.props?.length
       ? `\nProps:\n${config.props.map(p =>
-          `- ${p.name}: ${p.type}${p.required ? ' (required)' : ''}${p.description ? ` - ${p.description}` : ''}`
-        ).join('\n')}`
+        `- ${p.name}: ${p.type}${p.required ? ' (required)' : ''}${p.description ? ` - ${p.description}` : ''}`
+      ).join('\n')}`
       : '';
 
     const styleSection = config.style

@@ -40,7 +40,6 @@ export function initUpdateNotifications(options: {
       releaseNotes: detail?.releaseNotes,
     });
 
-    console.log('[Updates] Update available');
 
     // Dispatch custom event
     window.dispatchEvent(new CustomEvent('pwa-update-ready', { detail }));
@@ -86,7 +85,6 @@ export async function checkForUpdates(): Promise<boolean> {
 
     if (hasUpdateNow) {
       hasUpdate.set(true);
-      console.log('[Updates] Update found');
     }
 
     return hasUpdateNow;

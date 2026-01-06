@@ -11,7 +11,6 @@ export function staticAdapter(config = {}) {
     return {
         name: 'static',
         async adapt() {
-            console.log('Building static site...');
             mkdirSync(outDir, { recursive: true });
             // Discover routes if no pages specified
             const routesToRender = pages.length > 0 ? pages : await discoverRoutes();
@@ -148,7 +147,6 @@ export function staticAdapter(config = {}) {
 ${urls.join('\n')}
 </urlset>`;
         writeFileSync(join(outDir, 'sitemap.xml'), xml);
-        console.log('  ✓ sitemap.xml');
     }
     function generateRobots() {
         if (!robots)
@@ -165,7 +163,6 @@ ${urls.join('\n')}
             lines.push(`Sitemap: ${sitemap.hostname}/sitemap.xml`);
         }
         writeFileSync(join(outDir, 'robots.txt'), lines.join('\n'));
-        console.log('  ✓ robots.txt');
     }
     function generateFallback() {
         if (!fallback)

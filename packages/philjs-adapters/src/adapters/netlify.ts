@@ -310,7 +310,6 @@ export function netlifyAdapter(config: NetlifyAdapterConfig = {}): Adapter & Par
         JSON.stringify(manifest, null, 2)
       );
 
-      console.log('Netlify build complete');
     },
 
     getHandler() {

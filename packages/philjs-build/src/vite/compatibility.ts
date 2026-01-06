@@ -3,6 +3,34 @@
  * Maintain Vite dev server compatibility during Rspack migration
  */
 
+// Type for Rspack configuration (simplified)
+interface RspackConfiguration {
+  entry?: string | Record<string, string>;
+  output?: {
+    path?: string;
+    filename?: string;
+    publicPath?: string;
+    clean?: boolean;
+  };
+  mode?: 'development' | 'production' | 'none';
+  resolve?: {
+    alias?: Record<string, string>;
+    extensions?: string[];
+  };
+  optimization?: {
+    minimize?: boolean;
+    splitChunks?: unknown;
+  };
+  devtool?: string | boolean;
+  target?: string | string[];
+  module?: {
+    rules?: unknown[];
+  };
+  plugins?: unknown[];
+  devServer?: unknown;
+  [key: string]: unknown;
+}
+
 // ============================================================================
 // Vite Plugin Types
 // ============================================================================
@@ -1571,8 +1599,8 @@ export function createViteCompatibleConfig(
 export function convertRspackToVite(
   rspackConfig: Partial<RspackConfiguration>
 ): Record<string, unknown> {
-  const mapped = mapRspackOptionsToVite(rspackConfig);
-  const build = { ...(mapped.build ?? {}) } as Record<string, unknown>;
+  const mapped = mapRspackOptionsToVite(rspackConfig as any);
+  const build = { ...((mapped as any).build ?? {}) } as Record<string, unknown>;
 
   if (rspackConfig.output?.path) {
     build['outDir'] = rspackConfig.output.path;
@@ -1596,9 +1624,10 @@ export function convertRspackToVite(
   }
 
   if (rspackConfig.devServer) {
+    const devServer = rspackConfig.devServer as Record<string, unknown>;
     viteConfig['server'] = {
-      port: rspackConfig.devServer.port,
-      proxy: rspackConfig.devServer.proxy,
+      port: devServer.port,
+      proxy: devServer.proxy,
     };
   }
 

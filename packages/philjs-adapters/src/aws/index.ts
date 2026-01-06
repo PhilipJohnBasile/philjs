@@ -79,7 +79,6 @@ export function awsAdapter(config: AWSConfig = {}): Adapter & ServerlessAdapter 
           break;
       }
 
-      console.log('AWS build complete');
     },
 
     getHandler() {

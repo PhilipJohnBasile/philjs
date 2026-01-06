@@ -17,7 +17,6 @@ export class ReliabilityMetrics {
             type: 'crash',
             details: error.message
         });
-        console.log('Metrics: 📉 Crash recorded.');
     }
 
     recordHeal(patternName: string) {

@@ -204,7 +204,6 @@ export default ${JSON.stringify(manifest, null, 2)};
  * Log optimization statistics
  */
 function logOptimizationStats(symbols, chunks, lazyChunks) {
-    console.log('\n--- PhilJS Optimizer Stats ---');
     console.log(`Total symbols: ${symbols.length}`);
     console.log(`Lazy symbols: ${symbols.filter((s) => s.isLazy).length}`);
     console.log(`Chunks: ${chunks.size}`);
@@ -214,7 +213,6 @@ function logOptimizationStats(symbols, chunks, lazyChunks) {
     for (const symbol of symbols) {
         typeBreakdown.set(symbol.type, (typeBreakdown.get(symbol.type) || 0) + 1);
     }
-    console.log('\nSymbol types:');
     for (const [type, count] of typeBreakdown) {
         console.log(`  ${type}: ${count}`);
     }
@@ -225,13 +223,11 @@ function logOptimizationStats(symbols, chunks, lazyChunks) {
         const avgSize = totalSize / chunkSizes.length;
         const maxSize = Math.max(...chunkSizes);
         const minSize = Math.min(...chunkSizes);
-        console.log('\nChunk sizes:');
         console.log(`  Total: ${formatBytes(totalSize)}`);
         console.log(`  Average: ${formatBytes(avgSize)}`);
         console.log(`  Max: ${formatBytes(maxSize)}`);
         console.log(`  Min: ${formatBytes(minSize)}`);
     }
-    console.log('-------------------------------\n');
 }
 /**
  * Format bytes to human-readable string

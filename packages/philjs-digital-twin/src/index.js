@@ -89,7 +89,6 @@ class MQTTHandler extends ConnectionHandler {
         this.onDisconnect?.();
     }
     send(data) {
-        console.log('MQTT publish:', data);
     }
 }
 // ============================================================================

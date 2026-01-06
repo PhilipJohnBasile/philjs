@@ -440,6 +440,6 @@ export abstract class HollowElement extends HTMLElement {
  */
 export function defineElement(tagName: string, elementClass: typeof HollowElement): void {
   if (!customElements.get(tagName)) {
-    customElements.define(tagName, elementClass);
+    customElements.define(tagName, elementClass as unknown as CustomElementConstructor);
   }
 }

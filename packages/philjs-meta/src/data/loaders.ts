@@ -450,6 +450,30 @@ export interface FormActionHandler<Data = unknown> {
 /**
  * Create a client-side server context (for hydration)
  */
+/**
+ * Client-side redirect error
+ * Used to interrupt execution when redirecting on the client
+ */
+class ClientRedirectError extends Error {
+  constructor() {
+    super('Client Redirect');
+    this.name = 'ClientRedirectError';
+  }
+}
+
+/**
+ * Client-side not found error
+ */
+class ClientNotFoundError extends Error {
+  constructor() {
+    super('Client Not Found');
+    this.name = 'ClientNotFoundError';
+  }
+}
+
+/**
+ * Create a client-side server context (for hydration)
+ */
 function createClientServerContext(): ServerContext {
   return {
     cookies: {
@@ -485,10 +509,10 @@ function createClientServerContext(): ServerContext {
     },
     redirect: (url) => {
       window.location.href = url;
-      throw new Error('Redirect');
+      throw new ClientRedirectError();
     },
     notFound: () => {
-      throw new Error('Not Found');
+      throw new ClientNotFoundError();
     },
   };
 }

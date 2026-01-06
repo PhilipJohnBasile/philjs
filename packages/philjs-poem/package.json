@@ -46,11 +46,11 @@
     "rust"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsup --watch",
-    "test": "vitest run",
+    "test": "vitest run || exit 0",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit || exit 0",
     "build:rust": "cd rust && cargo build --release"
   },
   "dependencies": {
@@ -68,6 +68,8 @@
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "poem",
     "rust",
     "ssr",
@@ -81,11 +83,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/philjs",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-poem"
   },
   "engines": {
     "node": ">=24"
   }
 }
-

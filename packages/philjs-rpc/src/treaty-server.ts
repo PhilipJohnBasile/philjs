@@ -514,7 +514,6 @@ export function printAPIRoutes<TRouter extends Router>(
 ): void {
   const metadata = extractAPIMetadata(api);
 
-  console.log('\n=== API Routes ===\n');
 
   for (const route of metadata.routes) {
     const typeColor = route.type === 'query' ? '\x1b[36m' : '\x1b[33m'; // cyan for query, yellow for mutation
@@ -536,7 +535,6 @@ export function printAPIRoutes<TRouter extends Router>(
       console.log(`  Middleware: ${route.middlewareCount} handler(s)`);
     }
 
-    console.log('');
   }
 
   console.log(`Total routes: ${metadata.routes.length}\n`);

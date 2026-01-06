@@ -184,9 +184,56 @@ export class HandTracker {
   }
 
   private simulateHandDetection(): Hand[] {
-    // Placeholder for actual ML model inference
-    // In production, integrate with MediaPipe Hands or TensorFlow.js
-    return [];
+    const time = Date.now() / 1000;
+
+    // Simulate a right hand moving in a figure-8 pattern
+    const x = 0.5 + Math.sin(time) * 0.3;
+    const y = 0.5 + Math.cos(time * 2) * 0.2;
+    const z = 0;
+
+    // Create a basic hand skeleton relative to the wrist (x, y, z)
+    const wrist: HandLandmark = {
+      index: 0,
+      name: 'wrist',
+      position: { x, y, z },
+      visibility: 1
+    };
+
+    const landmarks: HandLandmark[] = [wrist];
+    const fingerNames = ['thumb', 'index', 'middle', 'ring', 'pinky'];
+
+    // Generate fingers (fan out)
+    fingerNames.forEach((finger, i) => {
+      const offsetX = (i - 2) * 0.05;
+
+      // Simulate finger curl based on time (open/close fist effect every 5 seconds)
+      const curl = (Math.sin(time / 5) + 1) / 2; // 0 to 1
+      const extended = curl > 0.5;
+
+      const tipY = extended ? y - 0.2 : y - 0.1;
+      const tipZ = extended ? 0 : -0.1;
+
+      landmarks.push({
+        index: i * 4 + 1,
+        name: `${finger}_mcp` as HandLandmarkName,
+        position: { x: x + offsetX, y: y - 0.05, z },
+        visibility: 1
+      });
+      landmarks.push({
+        index: i * 4 + 4,
+        name: `${finger}_tip` as HandLandmarkName,
+        position: { x: x + offsetX * 1.5, y: tipY, z: tipZ },
+        visibility: 1
+      });
+    });
+
+    return [{
+      id: 'simulated-hand-1',
+      handedness: 'right',
+      landmarks,
+      boundingBox: { x: x - 0.2, y: y - 0.25, width: 0.4, height: 0.5 },
+      confidence: 0.95
+    }];
   }
 
   private smoothLandmarks(prev: HandLandmark[], current: HandLandmark[]): HandLandmark[] {

@@ -15,6 +15,19 @@
   },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-devtools-extension"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "devtools",
+    "extension"
+  ]
 }
-

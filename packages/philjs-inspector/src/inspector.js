@@ -49,7 +49,6 @@ class PhilJSInspector {
         this.showStatusBar();
         // Build component registry
         this.buildComponentRegistry();
-        console.log('[PhilJS Inspector] Enabled');
     }
     /**
      * Disable inspector
@@ -68,7 +67,6 @@ class PhilJSInspector {
         hideTooltip();
         hideSearchBox();
         clearComponentRegistry();
-        console.log('[PhilJS Inspector] Disabled');
     }
     /**
      * Toggle inspector

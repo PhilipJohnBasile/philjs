@@ -77,7 +77,6 @@ export function cloudflareAdapter(config: CloudflareConfig = {}): Adapter & Edge
         await adaptForWorkers();
       }
 
-      console.log('Cloudflare build complete');
     },
 
     getHandler() {

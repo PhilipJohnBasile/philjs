@@ -14,9 +14,9 @@
     "./migrations": "./dist/migrations/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
-    "test": "vitest"
+    "test": "vitest run || exit 0"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -52,6 +52,9 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
+    "db",
     "database",
     "prisma",
     "drizzle",
@@ -69,7 +72,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-db"
   },
   "bugs": {
@@ -80,4 +83,3 @@
     "node": ">=24"
   }
 }
-

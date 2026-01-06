@@ -505,7 +505,6 @@ export class SubscriptionClient {
 
     this.reconnectAttempt++;
 
-    console.log(
       `Reconnecting attempt ${this.reconnectAttempt} in ${delay}ms...`
     );
 

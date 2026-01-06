@@ -294,7 +294,7 @@ export class HollowAccordion extends HollowElement {
     this.addEventListener('keydown', this.handleKeyDown.bind(this));
 
     // Initialize from expanded attribute
-    const expanded = this.getProp('expanded', '');
+    const expanded = this.getProp('expanded', '') as string;
     if (expanded) {
       this._expandedItems = new Set(expanded.split(',').filter(Boolean));
     }

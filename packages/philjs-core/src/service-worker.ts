@@ -62,11 +62,9 @@ const CACHE_RULES = ${JSON.stringify(config.cacheRules.map(rule => ({
 
 // Install event - precache assets
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing service worker...');
 
   event.waitUntil(
     caches.open(CACHE_VERSION).then((cache) => {
-      console.log('[SW] Precaching:', PRECACHE_URLS);
       return cache.addAll(PRECACHE_URLS);
     })${config.skipWaiting ? ".then(() => self.skipWaiting())" : ""}
   );
@@ -74,7 +72,6 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating service worker...');
 
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -82,7 +79,6 @@ self.addEventListener('activate', (event) => {
         cacheNames
           .filter((name) => name !== CACHE_VERSION)
           .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
             return caches.delete(name);
           })
       );
@@ -204,7 +200,6 @@ ${config.backgroundSync ? generateBackgroundSync() : ""}
 
 ${config.pushNotifications ? generatePushNotifications() : ""}
 
-console.log('[SW] Service worker ready');
 `.trim();
 }
 
@@ -212,7 +207,6 @@ function generateBackgroundSync(): string {
   return `
 // Background sync
 self.addEventListener('sync', (event) => {
-  console.log('[SW] Background sync:', event.tag);
 
   if (event.tag === 'sync-data') {
     event.waitUntil(syncData());

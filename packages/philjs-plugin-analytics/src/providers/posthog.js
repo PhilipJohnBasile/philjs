@@ -17,7 +17,6 @@ export class PostHogProvider {
         // Load PostHog script
         this.loadScript();
         if (config.debug) {
-            console.log("[PostHog] Initialized");
         }
     }
     trackEvent(event) {
@@ -25,7 +24,6 @@ export class PostHogProvider {
             return;
         window.posthog.capture(event.name, event.properties || {});
         if (this.config.debug) {
-            console.log("[PostHog] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -79,7 +77,6 @@ export class PostHogProvider {
             return;
         window.posthog.alias(userId);
         if (this.config.debug) {
-            console.log("[PostHog] Alias created:", userId);
         }
     }
     /**
@@ -90,7 +87,6 @@ export class PostHogProvider {
             return;
         window.posthog.reset();
         if (this.config.debug) {
-            console.log("[PostHog] Session reset");
         }
     }
     /**
@@ -240,7 +236,6 @@ export class PostHogProvider {
             loaded: () => {
                 this.loaded = true;
                 if (this.config.debug) {
-                    console.log("[PostHog] Script loaded");
                 }
             },
         };
@@ -258,7 +253,6 @@ export class PostHogProvider {
         }
         window.posthog.init(this.config.trackingId, posthogConfig);
         if (this.config.debug) {
-            console.log("[PostHog] Script loading...");
         }
     }
     isDNTEnabled() {

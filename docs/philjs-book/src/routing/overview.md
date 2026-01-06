@@ -1,227 +1,96 @@
-# Routing Overview
+# Chapter 4: The URL is Truth
 
-PhilJS ships a declarative router that pairs zero-hydration resumability with intent-aware navigation. This guide walks through the essentials: defining routes, navigating, working with parameters, and composing layouts.
+If Signals are the atom of State, then result of that state is typically a View. But how do we determine *which* view to show?
 
-![Routing data flow diagram](../../visuals/routing-data-flow.svg "Router, loader, cache, and component flow")
+In the early days of Single Page Applications, we treated the URL as an afterthought—a side effect of clicking buttons. We stored application state in global stores (Redux, MobX) and desperately tried to keep the URL in sync.
 
-## Router Quick Start
+PhilJS flips this model. **The URL is the single source of truth.**
 
-Route components live wherever you prefer (many apps use `src/routes/`). Create a layout and a few pages:
+## The URL as State
 
-```tsx
-// src/routes/_layout.tsx
-import { Link } from '@philjs/router';
+Consider a user viewing a product with a specific filter applied:
+`https://shop.philjs.dev/products/shoes?color=red&size=10`
 
-export function AppLayout({ children }: { children: any }) {
-  return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', minHeight: '100vh', background: '#f8fafc' }}>
-      <header style={{ padding: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center', background: 'white', boxShadow: '0 1px 3px rgba(15, 23, 42, 0.1)' }}>
-        <strong>PhilJS</strong>
-        <nav style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/docs">Docs</Link>
-        </nav>
-      </header>
-      <main style={{ padding: '2rem' }}>{children}</main>
-    </div>
-  );
+In PhilJS, you do not store `selectedColor` or `selectedSize` in a global signal. You store them in the URL. The URL *is* the state store.
+
+```typescript
+export default function ProductPage() {
+  const route = useRoute();
+  
+  // These are reactive signals derived strictly from the URL
+  const color = memo(() => route.searchParams.get('color')); 
+  const size = memo(() => route.searchParams.get('size'));
+
+  return <ProductList color={color()} size={size()} />;
 }
 ```
 
-```tsx
-// src/routes/index.tsx
-export function HomeRoute() {
-  return (
-    <section>
-      <h1>Welcome to PhilJS</h1>
-      <p>Build resumable apps with smart routing and zero hydration.</p>
-    </section>
-  );
+When the user clicks "Blue", you do not call `setColor('blue')`. You navigate to `?color=blue`. The URL changes, the route signal updates, and the `ProductList` re-renders.
+
+This guarantees that:
+1.  **Shareability**: Users can copy/paste the URL and get the exact same state.
+2.  **History**: The back button just works.
+3.  **Simplicity**: You delete half your state management code.
+
+## Nested Routing: The UI is a Tree
+
+Most UIs are nested boxes. A generic "Settings" page usually implies:
+`Root Layout -> Settings Layout -> Profile Page`
+
+PhilJS maps these nested boxes directly to the URL structure.
+
+```
+/           -> _layout.tsx
+/settings   -> settings/_layout.tsx
+/profile    -> settings/profile.tsx
+```
+
+When the user navigates from `/settings/profile` to `/settings/account`, the Root Layout and Settings Layout **do not re-render**. They preserve their state. Only the inner `Profile` component is swapped for `Account`.
+
+## Data Loading: Render-As-You-Fetch
+
+Traditional SPAs suffer from "waterfalls":
+1.  Load JS bundle
+2.  Render component
+3.  Component fetches data
+4.  Render Spinner
+5.  Show Data
+
+PhilJS moves data fetching to the **Edge**. Every route can export a `loader`.
+
+```typescript
+// defined in route file, runs on server/edge
+export const loader = async ({ params }) => {
+  return await db.users.find(params.id);
+};
+
+export default function User({ data }) {
+  // data is available immediately!
+  return <h1>{data.name}</h1>;
 }
 ```
 
-Next wire the router in `src/main.tsx`:
+The router fetches the data *in parallel* with loading the component code. By the time the component renders, the data is there.
 
-```tsx
-import { createAppRouter } from '@philjs/router';
-import { AppLayout } from './routes/_layout';
-import { HomeRoute } from './routes/index';
-import { AboutRoute } from './routes/about';
-import { DocsRoute } from './routes/docs';
+## Actions: Mutations as Transitions
 
-createAppRouter({
-  target: '#app',
-  prefetch: true, // enable intent-based preloading globally
-  transitions: { type: 'fade', duration: 200 },
-  routes: [
-    {
-      path: '/',
-      layout: AppLayout,
-      component: HomeRoute,
-      children: [
-        { path: '/about', component: AboutRoute },
-        { path: '/docs', component: DocsRoute },
-      ],
-    },
-  ],
-});
+When you need to change server state, you use an **Action**.
+
+```typescript
+export const action = async ({ request }) => {
+  const formData = await request.formData();
+  await db.todos.create(formData.get('text'));
+  return redirect('/todos');
+};
 ```
 
-The router renders into `#app`, tracks history, and automatically applies smart prefetching and view transitions.
+Actions automatically trigger a "Revalidation". The router knows that data has changed, so it automatically re-runs all active loaders on the page to fetch fresh data. Your UI updates automatically without you needing to manually update a cache.
 
-## Navigation Basics
+## Summary
 
-### Declarative links
+1.  **Don't sync state to the URL**. Derive state *from* the URL.
+2.  **UI Nesting matches URL Nesting**.
+3.  **Fetch data before you render** using Loaders.
+4.  **Mutate via Actions** to get automatic updates.
 
-Use the bundled `<Link>` component for client-side navigation. It integrates with the smart preloader and respects modifier keys:
-
-```tsx
-import { Link } from '@philjs/router';
-
-export function Nav() {
-  return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
-      <Link to="/docs" replace>Docs</Link>
-    </nav>
-  );
-}
-```
-
-`Link` accepts standard anchor props (`className`, `style`, etc.) plus `replace` and `prefetch` overrides.
-
-### Programmatic navigation
-
-`useRouter()` exposes the current match and a `navigate()` helper:
-
-```tsx
-import { useRouter } from '@philjs/router';
-
-export function LoginForm() {
-  const { navigate } = useRouter();
-
-  async function handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
-    // ...auth logic
-    await navigate('/dashboard');
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* fields */}
-      <button type="submit">Log in</button>
-    </form>
-  );
-}
-```
-
-### Inspecting the current route
-
-`useRoute()` returns the matched route (path, params, loader data, module). This is handy for breadcrumbs, analytics, or debugging overlays.
-
-## Dynamic Routes & Params
-
-Paths with `:params` capture dynamic segments. The router injects them via the component props:
-
-```tsx
-// src/routes/blog/[slug].tsx
-export function BlogPostRoute({ params }: { params: { slug: string } }) {
-  return (
-    <article>
-      <h1>Blog post: {params.slug}</h1>
-    </article>
-  );
-}
-```
-
-In the route table:
-
-```ts
-{
-  path: '/blog',
-  component: BlogIndexRoute,
-  children: [
-    { path: '/:slug', component: BlogPostRoute },
-  ],
-}
-```
-
-URLs such as `/blog/getting-started` now render `BlogPostRoute` with `params.slug === 'getting-started'`.
-
-### Multiple parameters
-
-You can nest as many param segments as needed:
-
-```tsx
-export function UserPostRoute({ params }: { params: { id: string; postId: string } }) {
-  return (
-    <section>
-      <h1>User {params.id}</h1>
-      <h2>Post {params.postId}</h2>
-    </section>
-  );
-}
-```
-
-Define the child route with `path: '/:id/posts/:postId'` under `/users`.
-
-## Layouts & Nested Routes
-
-Layouts wrap child routes when you provide a `layout` function. Layouts receive the same props as pages plus a `children` slot:
-
-```tsx
-function DashboardLayout({ params, children }: { params: { section?: string }; children: any }) {
-  return (
-    <div className="dashboard">
-      <Sidebar active={params.section} />
-      <main>{children}</main>
-    </div>
-  );
-}
-
-createAppRouter({
-  routes: [
-    {
-      path: '/dashboard',
-      layout: DashboardLayout,
-      component: DashboardHome,
-      children: [
-        { path: '/analytics', component: AnalyticsRoute },
-        { path: '/billing', component: BillingRoute },
-      ],
-    },
-  ],
-});
-```
-
-Layouts can also run loaders or set transition/prefetch defaults for entire sections by configuring the parent route.
-
-## Loaders & Actions (Preview)
-
-Routes optionally define `loader` and `action` functions:
-
-```ts
-{
-  path: '/docs/:slug',
-  component: DocsRoute,
-  loader: async ({ params }) => fetchDoc(params.slug),
-  action: async ({ params, formData }) => saveDoc(params.slug, formData),
-}
-```
-
-Loader results are passed to the component as `data`. Actions receive the same context plus `formData`. Upcoming releases will integrate these with PhilJS SSR/SSG automatically.
-
-## Smart Prefetch & Transitions
-
-- Set `prefetch: true` at the router level to enable intent-based preloading. Override per route with `{ prefetch: { strategy: 'hover' } }`.
-- Apply view transitions globally (`transitions: { type: 'fade' }`) or per route (`transition: false` to opt out).
-
-## Next Steps
-
-- Learn more about [smart preloading](./smart-preloading.md) and [view transitions](./view-transitions.md)
-- Dive into [dynamic routes](./dynamic-routes.md) and [nested layouts](./layouts.md)
-- Explore [static generation and ISR](../getting-started/tutorial-blog-ssg.md) using the same route definitions
-
-
+The URL is the most enduring API of the web. Treat it with respect.

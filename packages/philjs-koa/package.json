@@ -1,9 +1,22 @@
 {
-    "name": "@philjs/koa",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts",
-    "peerDependencies": {
-        "koa": "^2.0.0"
-    }
+  "name": "@philjs/koa",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "koa": "^2.0.0"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-koa"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "koa"
+  ]
 }

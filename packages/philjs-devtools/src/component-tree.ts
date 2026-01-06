@@ -995,6 +995,5 @@ export function removeHighlight(): void {
 export function logComponentTree(rootElement?: Element): void {
   const inspector = getComponentTreeInspector() || initComponentTreeInspector();
   const root = inspector.buildTreeFromDOM(rootElement);
-  console.log(inspector.printTree(root));
   console.log("Statistics:", inspector.getStatistics(root));
 }

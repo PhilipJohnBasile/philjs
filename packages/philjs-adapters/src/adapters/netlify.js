@@ -89,7 +89,6 @@ export function netlifyAdapter(config = {}) {
                 routes: [],
             });
             writeFileSync(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
-            console.log('Netlify build complete');
         },
         getHandler() {
             return async (request, context) => {

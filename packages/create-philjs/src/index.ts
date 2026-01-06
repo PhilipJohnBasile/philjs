@@ -22,7 +22,6 @@ const _TEMPLATES = {
 };
 
 async function main() {
-  console.log(`
 ╔═══════════════════════════════════════════╗
 ║                                           ║
 ║   🚀 Welcome to PhilJS Framework          ║
@@ -56,20 +55,14 @@ async function main() {
   generateAppFiles(projectPath, template);
 
   console.log(`\n✅ Project created successfully!\n`);
-  console.log(`Next steps:\n`);
   console.log(`  cd ${projectName}`);
   console.log(`  ${packageManager} install`);
   console.log(`  ${packageManager} dev\n`);
 
-  console.log(`📚 Features enabled:`);
   console.log(`  ✅ Performance budgets (blocks builds over budget)`);
   console.log(`  ✅ Cost tracking (see cloud costs per route)`);
   console.log(`  ✅ Usage analytics (track component usage)`);
   console.log(`  ✅ Automatic regression detection`);
-  console.log(`  ✅ Dead code detection`);
-  console.log(`  ✅ Spring physics animations`);
-  console.log(`  ✅ Resumability (zero hydration)`);
-  console.log(`  ✅ Islands architecture\n`);
 }
 
 function createProjectStructure(path: string, _template: string) {

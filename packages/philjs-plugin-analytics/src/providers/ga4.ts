@@ -82,7 +82,6 @@ export class GA4Provider implements IAnalyticsProvider {
     window.gtag("event", event.name, event.properties || {});
 
     if (this.config.debug) {
-      console.log("[GA4] Event tracked:", event);
     }
   }
 
@@ -158,7 +157,6 @@ export class GA4Provider implements IAnalyticsProvider {
     script.onload = () => {
       this.loaded = true;
       if (this.config.debug) {
-        console.log("[GA4] Script loaded");
       }
     };
 

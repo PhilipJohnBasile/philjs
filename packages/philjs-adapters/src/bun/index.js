@@ -231,7 +231,6 @@ export function createBunAdapter(config = {}) {
         const protocol = tls ? 'https' : 'http';
         console.log(`🚀 PhilJS running on ${protocol}://${hostname}:${port}`);
         if (development) {
-            console.log('🔥 Hot reload enabled');
         }
         return server;
     }
@@ -320,7 +319,6 @@ export function bunAdapter(config = {}) {
     return {
         name: 'bun',
         async adapt() {
-            console.log('Building for Bun runtime...');
             // Bun can run TypeScript directly, minimal build needed
         },
         getHandler() {

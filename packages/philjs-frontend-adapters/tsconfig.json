@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "jsx": "preserve",
+        "noEmitOnError": false,
+        "strict": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "exactOptionalPropertyTypes": false
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.stories.tsx"
+    ]
+}

@@ -56,7 +56,6 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 async function generateSitemap() {
-  console.log('Generating sitemap...');
 
   // Get all published content
   const posts = await getCollection('${collection}', {
@@ -105,7 +104,6 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 async function generateRobots() {
-  console.log('Generating robots.txt...');
 
   const robots = generateRobotsTxt({
     sitemapUrl: '${sitemapUrl}',

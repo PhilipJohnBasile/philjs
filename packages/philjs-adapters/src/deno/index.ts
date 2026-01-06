@@ -576,7 +576,6 @@ export function denoAdapter(config: DenoConfig = {}): Adapter {
     name: 'deno',
 
     async adapt() {
-      console.log('Building for Deno runtime...');
       // Deno can run TypeScript directly, minimal build needed
       // Generate deno.json if needed
     },

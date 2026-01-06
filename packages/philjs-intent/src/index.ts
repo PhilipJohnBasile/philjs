@@ -131,7 +131,6 @@ export function ${formType.charAt(0).toUpperCase() + formType.slice(1)}Form() {
     try {
       // Submit form logic here
       const data = { ${fields!.join(': ' + fields![0] + '(), ')} };
-      console.log('Submitting:', data);
     } catch (err) {
       setError(err.message);
     } finally {

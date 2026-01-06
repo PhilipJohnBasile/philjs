@@ -23,7 +23,6 @@ program
     .option("--host <host>", "Host to bind to", "localhost")
     .option("--open", "Open browser automatically", false)
     .action(async (options) => {
-    console.log(pc.cyan("\n⚡ PhilJS Dev Server\n"));
     try {
         await startDevServer({
             port: parseInt(options.port),
@@ -51,7 +50,6 @@ program
             analyze: options.analyze,
             outDir: options.outDir,
         });
-        console.log(pc.green("\n✓ Build complete!\n"));
     }
     catch (error) {
         console.error(pc.red("Build failed:"), error);
@@ -80,7 +78,6 @@ program
     console.log(pc.cyan("\n📝 Generating route types...\n"));
     try {
         await generateTypes();
-        console.log(pc.green("\n✓ Types generated!\n"));
     }
     catch (error) {
         console.error(pc.red("Type generation failed:"), error);

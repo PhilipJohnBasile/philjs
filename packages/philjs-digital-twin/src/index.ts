@@ -194,7 +194,6 @@ class MQTTHandler extends ConnectionHandler {
   }
 
   send(data: unknown): void {
-    console.log('MQTT publish:', data);
   }
 }
 

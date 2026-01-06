@@ -370,7 +370,7 @@ export class AutocompleteEngine {
 
     const prompt = this.buildSuggestionPrompt(context);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(context),
     });
@@ -409,7 +409,7 @@ ${context.fileContent.slice(0, 2000)}
 
 Return JSON array of props with: name, type, required, defaultValue, description.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert at analyzing PhilJS component props.',
     });
@@ -455,7 +455,7 @@ Available dependencies: ${context.projectContext?.dependencies?.join(', ') || 'S
 
 Return JSON array of import suggestions with: module, named (array), default (string or null).`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert at suggesting correct imports.',
     });
@@ -495,7 +495,7 @@ Provide fix suggestions with:
 
 Return JSON array of fix suggestions.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert at fixing PhilJS and TypeScript errors.',
     });
@@ -530,7 +530,7 @@ Provide a natural continuation that:
 
 Return only the completion text, no explanations.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       temperature: 0.2,
       systemPrompt: 'Complete code naturally and concisely. Return only code, no markdown.',
@@ -571,7 +571,7 @@ Requirements:
 
 Return JSON with: text, label, detail, insertText (with placeholders).`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Generate useful PhilJS code snippets.',
     });
@@ -838,7 +838,7 @@ Return ONLY the completion text that should be inserted at the cursor position.
 Do not include any explanation or markdown.`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, {
+      const { content: response } = await this.provider.generateCompletion(prompt, {
         ...this.defaultOptions,
         temperature: 0.1,
         maxTokens: Math.min(maxLength * 2, 200),
@@ -937,7 +937,7 @@ Return JSON with:
 }`;
 
     try {
-      const response = await this.provider.generateCompletion(prompt, {
+      const { content: response } = await this.provider.generateCompletion(prompt, {
         ...this.defaultOptions,
         systemPrompt: 'You are a TypeScript documentation expert. Provide accurate function signatures.',
       });

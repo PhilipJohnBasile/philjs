@@ -25,10 +25,61 @@ interface VirtualBackgroundConfig {
   segmentationModel?: 'mediapipe' | 'tensorflow' | 'custom';
 }
 
+// MediaPipe Types
+interface SelfieSegmentationResults {
+  segmentationMask: ImageData;
+  image: ImageBitmap;
+}
+
+interface SelfieSegmentation {
+  setOptions(options: { modelSelection: number; selfieMode: boolean }): void;
+  onResults(callback: (results: SelfieSegmentationResults) => void): void;
+  send(input: { image: ImageBitmap }): Promise<void>;
+  close(): Promise<void>;
+}
+
+interface SelfieSegmentationConstructor {
+  new(config?: { locateFile?: (file: string) => string }): SelfieSegmentation;
+}
+
+// Web Speech API Types
+interface SpeechRecognitionEvent {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+  message: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
+interface SpeechRecognitionConstructor {
+  new(): SpeechRecognition;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
+
 class VirtualBackgroundProcessor {
   private canvas: OffscreenCanvas;
   private ctx: OffscreenCanvasRenderingContext2D;
-  private segmenter: any;
+  private segmenter: SelfieSegmentation | null = null;
   private config: VirtualBackgroundConfig;
   private backgroundImage: ImageBitmap | null = null;
   private running = false;
@@ -58,9 +109,11 @@ class VirtualBackgroundProcessor {
     const model = this.config.segmentationModel || 'mediapipe';
 
     if (model === 'mediapipe') {
-      // @ts-ignore - MediaPipe types
+      // @ts-ignore - Dynamic import of generic module
       const { SelfieSegmentation } = await import('@mediapipe/selfie_segmentation');
-      this.segmenter = new SelfieSegmentation({
+      const SelfieSegmentationClass = SelfieSegmentation as SelfieSegmentationConstructor;
+
+      this.segmenter = new SelfieSegmentationClass({
         locateFile: (file: string) =>
           `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`
       });
@@ -106,7 +159,11 @@ class VirtualBackgroundProcessor {
   private async segment(bitmap: ImageBitmap): Promise<ImageData> {
     // Run MediaPipe segmentation
     return new Promise((resolve) => {
-      this.segmenter.onResults((results: any) => {
+      if (!this.segmenter) {
+        resolve(new ImageData(1, 1)); // Fallback
+        return;
+      }
+      this.segmenter.onResults((results: SelfieSegmentationResults) => {
         resolve(results.segmentationMask);
       });
       this.segmenter.send({ image: bitmap });
@@ -523,7 +580,7 @@ class VideoRoom {
   private audioEnhancer: AudioEnhancer | null = null;
   private mediaRecorder: MediaRecorder | null = null;
   private recordedChunks: Blob[] = [];
-  private speechRecognition: any = null;
+  private speechRecognition: SpeechRecognition | null = null;
   private listeners: Map<string, Set<Function>> = new Map();
 
   constructor(config: RoomConfig) {
@@ -985,7 +1042,7 @@ class VideoRoom {
     }
 
     const SpeechRecognition = (window as any).SpeechRecognition ||
-                              (window as any).webkitSpeechRecognition;
+      (window as any).webkitSpeechRecognition;
     this.speechRecognition = new SpeechRecognition();
     this.speechRecognition.continuous = true;
     this.speechRecognition.interimResults = true;

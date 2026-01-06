@@ -255,7 +255,7 @@ Return JSON:
   "complexity": "low|medium|high"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
       systemPrompt: this.getPlanningSystemPrompt(),
     });
@@ -348,8 +348,8 @@ ${task.context?.patterns?.length ? `Follow patterns: ${task.context.patterns.joi
 
 Existing files in project:
 ${Array.from(this.generatedFiles.entries()).map(([path, content]) =>
-  `--- ${path} ---\n${content.slice(0, 500)}...`
-).join('\n\n')}
+      `--- ${path} ---\n${content.slice(0, 500)}...`
+    ).join('\n\n')}
 
 Generate complete, production-ready code.
 
@@ -361,7 +361,7 @@ Return JSON:
   "explanation": "What was created and why"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
       systemPrompt: this.getWritingSystemPrompt(task),
     });
@@ -403,8 +403,8 @@ Return JSON:
 
 Files:
 ${Array.from(this.generatedFiles.entries()).map(([path, content]) =>
-  `--- ${path} ---\n${content}`
-).join('\n\n')}
+      `--- ${path} ---\n${content}`
+    ).join('\n\n')}
 
 Provide analysis:
 {
@@ -413,7 +413,7 @@ Provide analysis:
   "suggestions": ["Suggestion 1"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
     });
 
@@ -430,9 +430,9 @@ ${step.description}
 
 Files to test:
 ${Array.from(this.generatedFiles.entries())
-  .filter(([path]) => !path.includes('.test.') && !path.includes('.spec.'))
-  .map(([path, content]) => `--- ${path} ---\n${content}`)
-  .join('\n\n')}
+        .filter(([path]) => !path.includes('.test.') && !path.includes('.spec.'))
+        .map(([path, content]) => `--- ${path} ---\n${content}`)
+        .join('\n\n')}
 
 Generate comprehensive tests using Vitest.
 
@@ -443,7 +443,7 @@ Return JSON:
   }
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
       systemPrompt: 'You are an expert at writing comprehensive tests.',
     });
@@ -472,8 +472,8 @@ Original Task: ${task.description}
 
 Generated Files:
 ${Array.from(this.generatedFiles.entries()).map(([path, content]) =>
-  `--- ${path} ---\n${content}`
-).join('\n\n')}
+      `--- ${path} ---\n${content}`
+    ).join('\n\n')}
 
 Check for:
 1. All requirements met
@@ -490,7 +490,7 @@ Return JSON:
   "score": 0-100
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
     });
 
@@ -532,8 +532,8 @@ ${issues.map((i, idx) => `${idx + 1}. ${i}`).join('\n')}
 
 Current Files:
 ${Array.from(this.generatedFiles.entries()).map(([path, content]) =>
-  `--- ${path} ---\n${content}`
-).join('\n\n')}
+      `--- ${path} ---\n${content}`
+    ).join('\n\n')}
 
 Return JSON with fixed files:
 {
@@ -543,7 +543,7 @@ Return JSON with fixed files:
   "fixedIssues": ["Issue 1 fixed", "Issue 2 fixed"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
     });
 
@@ -581,7 +581,7 @@ Consider:
 
 Think step by step and explain your reasoning.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
       temperature: 0.4,
     });
@@ -602,8 +602,8 @@ Task: ${task.description}
 
 Generated Files:
 ${Array.from(this.generatedFiles.entries()).map(([path, content]) =>
-  `--- ${path} ---\n${content.slice(0, 1000)}`
-).join('\n\n')}
+      `--- ${path} ---\n${content.slice(0, 1000)}`
+    ).join('\n\n')}
 
 Self-critique:
 1. Does this fully meet the requirements?
@@ -614,7 +614,7 @@ Self-critique:
 
 Be honest and thorough.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.options,
       systemPrompt: 'You are reviewing your own work. Be critical and honest.',
     });

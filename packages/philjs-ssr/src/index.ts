@@ -7,20 +7,62 @@ export * from "./hints.js";
 export { handleRequest } from "./request-handler.js";
 export type { RouteModule, RequestContext, RenderOptions } from "./request-handler.js";
 // Basic SSR render function
-export function renderToString(vnode: any) {
-  if (typeof vnode === 'string') return vnode;
-  // Stub implementation
+// Safe HTML escaping
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Basic SSR render function with escaping and attribute handling
+export function renderToString(vnode: any): string {
+  if (vnode === null || vnode === undefined || typeof vnode === 'boolean') return '';
+  if (typeof vnode === 'string' || typeof vnode === 'number') return escapeHtml(String(vnode));
+  if (Array.isArray(vnode)) return vnode.map(renderToString).join('');
+
+  const type = vnode.type;
   const props = vnode.props || {};
-  let out = `<${vnode.type}`;
+  const children = props.children;
+
+  // Handle Components (Functions)
+  if (typeof type === 'function') {
+    return renderToString(type(props));
+  }
+
+  // Handle HTML Tags
+  let out = \`<\${type}\`;
+
+  for (const [key, value] of Object.entries(props)) {
+      if (key === 'children' || key === 'shadowRootMode') continue;
+      if (key === 'style' && typeof value === 'object') {
+          const styleStr = Object.entries(value as object)
+              .map(([k, v]) => \`\${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:\${v}\`)
+              .join(';');
+          out += \` style="\${escapeHtml(styleStr)}"\`;
+      } else if (value === true) {
+          out += \` \${key}\`; // Boolean attribute
+      } else if (value !== false && value !== null && value !== undefined) {
+          out += \` \${key}="\${escapeHtml(String(value))}"\`;
+      }
+  }
 
   if (props.shadowRootMode) {
-    out += `><template shadowrootmode="${props.shadowRootMode}">`;
-    out += props.children ? props.children.map(renderToString).join('') : '';
-    out += `</template></${vnode.type}>`;
+    out += \`><template shadowrootmode="\${props.shadowRootMode}">\`;
+    out += renderToString(children);
+    out += \`</template></\${type}>\`;
     return out;
   }
 
-  out += `>${props.children ? props.children.map(renderToString).join('') : ''}</${vnode.type}>`;
+  // Self-closing tags
+  const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+  if (voidTags.has(type)) {
+      return out + ' />';
+  }
+
+  out += \`>\${renderToString(children)}</\${type}>\`;
   return out;
 }
 export { renderToStreamingResponse, Suspense } from "./streaming.js";

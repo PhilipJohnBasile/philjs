@@ -11,7 +11,6 @@ export function netlifyAdapter(config = {}) {
         name: 'netlify',
         edge,
         async adapt() {
-            console.log('Building for Netlify...');
             // Create output directories
             const functionsDir = edge
                 ? join(outDir, 'edge-functions')
@@ -55,7 +54,6 @@ export function netlifyAdapter(config = {}) {
             if (existsSync('.philjs/prerendered')) {
                 cpSync('.philjs/prerendered', 'publish', { recursive: true });
             }
-            console.log('Netlify build complete');
         },
         getHandler() {
             return async (request, context) => {

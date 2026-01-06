@@ -775,7 +775,6 @@ export function removeHighlight() {
 export function logComponentTree(rootElement) {
     const inspector = getComponentTreeInspector() || initComponentTreeInspector();
     const root = inspector.buildTreeFromDOM(rootElement);
-    console.log(inspector.printTree(root));
     console.log("Statistics:", inspector.getStatistics(root));
 }
 //# sourceMappingURL=component-tree.js.map

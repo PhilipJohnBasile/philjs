@@ -52,7 +52,7 @@
     "publish:all": "tsx scripts/publish-results.ts --format=all",
     "publish:gh-pages": "tsx scripts/publish-results.ts --github-pages",
     "comparison": "tsx -e \"import { generateAndSaveCharts, loadComparisonData } from './src/comparison/chart-generator.js'; import fs from 'fs/promises'; const report = JSON.parse(await fs.readFile('./results/latest.json', 'utf-8')); await generateAndSaveCharts(report, './results/comparison');\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit || exit 0"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
@@ -67,19 +67,21 @@
     "typescript": "6.0.0-dev.20251230"
   },
   "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
     "benchmark",
     "performance",
-    "philjs",
     "framework-benchmark"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AshBarton/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-benchmark"
   },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "author": "PhilJS Team"
 }
-

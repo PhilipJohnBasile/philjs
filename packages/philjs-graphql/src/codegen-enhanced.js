@@ -1023,7 +1023,6 @@ export async function runCodegen(config) {
     // 2. Parse documents from glob patterns
     // 3. Generate types
     // 4. Write to files
-    console.log('Code generation completed!');
 }
 /**
  * Helper to extract operation info from a document string

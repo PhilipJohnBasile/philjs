@@ -230,7 +230,7 @@ export class TypeSafeRouter {
       let search: Record<string, unknown> = {};
       if (route.validateSearch) {
         try {
-          search = parseSearchParams(newLocation.search, route.validateSearch);
+          search = parseSearchParams(newLocation.search, route.validateSearch) as Record<string, unknown>;
         } catch (error) {
           console.error("[philjs-router-typesafe] Search validation error:", error);
           // Use empty search on validation error
@@ -618,7 +618,7 @@ export function createSSRRouter(options: RouterOptions & { url: string }): {
 
     if (route.validateSearch) {
       try {
-        search = parseSearchParams(url.search, route.validateSearch);
+        search = parseSearchParams(url.search, route.validateSearch) as Record<string, unknown>;
       } catch {
         search = {};
       }
@@ -672,7 +672,7 @@ export async function loadRouteData(
 
   if (route.validateSearch) {
     try {
-      search = parseSearchParams(parsedUrl.search, route.validateSearch);
+      search = parseSearchParams(parsedUrl.search, route.validateSearch) as Record<string, unknown>;
     } catch {
       search = {};
     }

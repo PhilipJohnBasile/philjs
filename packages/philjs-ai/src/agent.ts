@@ -34,15 +34,16 @@ export class Agent {
                 defaultModel: config.model,
             } as OpenAIConfig);
         } else {
-            console.warn('No provider or apiKey configured for Agent. Using mock provider for testing.');
-            // Simple mock provider for tests to pass without keys
-            this.provider = {
-                name: 'mock',
-                generateCompletion: async () => ({
-                    content: 'Mock response (Agent not configured)',
-                    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
-                })
-            };
+            // No provider configured - throw error at initialization to fail fast
+            throw new Error(
+                'Agent requires a valid AI provider configuration.\n' +
+                'Please provide one of the following:\n' +
+                '  1. An API key: new Agent({ apiKey: "your-openai-key" })\n' +
+                '  2. A custom provider: new Agent({ provider: myProvider })\n' +
+                '\n' +
+                'Environment variable OPENAI_API_KEY can also be used.\n' +
+                'For testing without a real provider, explicitly pass a mock provider.'
+            );
         }
 
         if (config.systemPrompt) {

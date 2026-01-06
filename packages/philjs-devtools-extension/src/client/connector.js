@@ -42,7 +42,6 @@ function initializeConnection() {
     hookIntoComponents();
     hookIntoPerformance();
     hookIntoNetwork();
-    console.log('[PhilJS DevTools] Connected');
 }
 /**
  * Disconnect from DevTools
@@ -52,7 +51,6 @@ export function disconnectDevTools() {
         return;
     isConnected = false;
     window.removeEventListener('message', handleDevToolsMessage);
-    console.log('[PhilJS DevTools] Disconnected');
 }
 /**
  * Check if DevTools is connected
@@ -377,7 +375,6 @@ function handleHighlightComponent(componentId) {
 function handleInspectSignal(signalId) {
     const data = signalRegistry.get(signalId);
     if (data) {
-        console.log('[PhilJS DevTools] Signal:', data);
     }
 }
 /**

@@ -95,10 +95,8 @@ class MigrationCLI {
     async migrate(options) {
         if (!this.manager)
             throw new Error('Manager not initialized');
-        console.log('Running migrations...\n');
         if (options.dryRun) {
             const status = await this.manager.getStatus();
-            console.log('Pending migrations (dry run):');
             status.pending.forEach((m) => console.log(`  - ${m.version}_${m.name}`));
             return;
         }
@@ -111,7 +109,6 @@ class MigrationCLI {
             console.log(`  Executed: ${result.migrations.length} migration(s)`);
             console.log(`  Duration: ${result.duration}ms`);
             if (result.migrations.length > 0) {
-                console.log('\nMigrations:');
                 result.migrations.forEach((m) => console.log(`  ✓ ${m}`));
             }
         }
@@ -138,12 +135,10 @@ class MigrationCLI {
     async rollback(options) {
         if (!this.manager)
             throw new Error('Manager not initialized');
-        console.log('Rolling back migrations...\n');
         if (options.dryRun) {
             const status = await this.manager.getStatus();
             const lastBatch = Math.max(...status.executed.map((m) => m.batch), 0);
             const toRollback = status.executed.filter((m) => m.batch === lastBatch);
-            console.log('Migrations to rollback (dry run):');
             toRollback.forEach((m) => console.log(`  - ${m.version}_${m.name}`));
             return;
         }
@@ -157,7 +152,6 @@ class MigrationCLI {
             console.log(`  Rolled back: ${result.migrations.length} migration(s)`);
             console.log(`  Duration: ${result.duration}ms`);
             if (result.migrations.length > 0) {
-                console.log('\nMigrations:');
                 result.migrations.forEach((m) => console.log(`  ✓ ${m}`));
             }
         }
@@ -173,30 +167,23 @@ class MigrationCLI {
         if (!this.manager)
             throw new Error('Manager not initialized');
         const status = await this.manager.getStatus();
-        console.log('Migration Status\n');
         if (status.conflicts.length > 0) {
-            console.log('⚠ Conflicts:\n');
             status.conflicts.forEach((c) => {
                 console.log(`  ${c.type.toUpperCase()}: ${c.message}`);
             });
-            console.log();
         }
         console.log(`Executed Migrations: ${status.executed.length}`);
         if (status.executed.length > 0) {
             const batches = new Set(status.executed.map((m) => m.batch));
             console.log(`Batches: ${batches.size}`);
-            console.log();
             if (options.verbose) {
-                console.log('Executed:');
                 status.executed.forEach((m) => {
                     console.log(`  ✓ ${m.version}_${m.name} (batch ${m.batch}, ${m.execution_time}ms)`);
                 });
-                console.log();
             }
         }
         console.log(`Pending Migrations: ${status.pending.length}`);
         if (status.pending.length > 0) {
-            console.log('\nPending:');
             status.pending.forEach((m) => {
                 console.log(`  - ${m.version}_${m.name}`);
             });
@@ -207,14 +194,12 @@ class MigrationCLI {
             throw new Error('Manager not initialized');
         console.log('⚠ Warning: This will drop all tables and re-run migrations.\n');
         if (!options.dryRun && !(await this.confirm('Continue?'))) {
-            console.log('Aborted.');
             return;
         }
         if (options.dryRun) {
             console.log('Would drop all tables and run migrations (dry run)');
             return;
         }
-        console.log('Dropping all tables...');
         const result = await this.manager.fresh();
         if (result.success) {
             console.log('✓ Database refreshed successfully\n');
@@ -231,17 +216,14 @@ class MigrationCLI {
             throw new Error('Manager not initialized');
         console.log('⚠ Warning: This will rollback all migrations and re-run them.\n');
         if (!options.dryRun && !(await this.confirm('Continue?'))) {
-            console.log('Aborted.');
             return;
         }
         if (options.dryRun) {
             console.log('Would rollback all and re-run migrations (dry run)');
             return;
         }
-        console.log('Resetting database...');
         const result = await this.manager.reset();
         if (result.success) {
-            console.log('✓ Database reset successfully\n');
             console.log(`  Executed: ${result.migrations.length} migration(s)`);
             console.log(`  Duration: ${result.duration}ms`);
         }
@@ -253,7 +235,6 @@ class MigrationCLI {
     async diff(options) {
         if (!this.config)
             throw new Error('Config not loaded');
-        console.log('Generating schema diff...\n');
         const generator = new SchemaDiffGenerator(this.config);
         const diff = await generator.generate();
         this.printSchemaDiff(diff);
@@ -269,10 +250,8 @@ class MigrationCLI {
             ...(options.dryRun !== undefined ? { dryRun: options.dryRun } : {}),
         });
         if (options.dryRun) {
-            console.log('Generated SQL (dry run):');
             migration.sql.forEach((sql) => console.log(`  ${sql}`));
             if (migration.warnings.length > 0) {
-                console.log('\n⚠ Warnings:');
                 migration.warnings.forEach((w) => console.log(`  ${w}`));
             }
         }
@@ -338,22 +317,17 @@ class MigrationCLI {
         return process.env['CI'] === 'true' || process.argv.includes('--yes');
     }
     printSchemaDiff(diff) {
-        console.log('Tables:');
         if (diff.tables.created.length > 0) {
-            console.log('\n  Created:');
             diff.tables.created.forEach((t) => console.log(`    + ${t.name}`));
         }
         if (diff.tables.dropped.length > 0) {
-            console.log('\n  Dropped:');
             diff.tables.dropped.forEach((t) => console.log(`    - ${t}`));
         }
         if (diff.tables.modified.length > 0) {
-            console.log('\n  Modified:');
             diff.tables.modified.forEach((t) => console.log(`    ~ ${t.name}`));
         }
     }
     showHelp() {
-        console.log(`
 PhilJS Database Migration CLI
 
 Usage:

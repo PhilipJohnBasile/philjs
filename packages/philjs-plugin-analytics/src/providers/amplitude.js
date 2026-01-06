@@ -17,7 +17,6 @@ export class AmplitudeProvider {
         // Load Amplitude SDK
         this.loadScript();
         if (config.debug) {
-            console.log("[Amplitude] Initialized");
         }
     }
     trackEvent(event) {
@@ -25,7 +24,6 @@ export class AmplitudeProvider {
             return;
         window.amplitude.track(event.name, event.properties || {});
         if (this.config.debug) {
-            console.log("[Amplitude] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -118,7 +116,6 @@ export class AmplitudeProvider {
                 s.src = "https://cdn.amplitude.com/libs/analytics-browser-2.0.0-min.js.gz";
                 s.onload = () => {
                     if (!e.amplitude.runQueuedFunctions) {
-                        console.log("[Amplitude] Amplitude SDK loaded");
                     }
                     e.amplitude.init(self.config.trackingId, undefined, {
                         defaultTracking: {
@@ -183,7 +180,6 @@ export class AmplitudeProvider {
             }
         })(window, document);
         if (this.config.debug) {
-            console.log("[Amplitude] Script loading...");
         }
     }
     isDNTEnabled() {

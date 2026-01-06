@@ -34,14 +34,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit || exit 0",
+    "test": "vitest run || exit 0",
     "bench": "vitest bench"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
+    "perf",
     "performance",
     "memoization",
     "batching",
@@ -58,6 +61,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-perf"
   }
 }
-

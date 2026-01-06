@@ -318,18 +318,10 @@ yarn-error.log*
 .env.*.local
 `;
     writeFileSync(join(projectDir, '.gitignore'), gitignore);
-    console.log('  Created project structure');
-    console.log('');
-    console.log('  Next steps:');
     console.log(`    cd ${projectName}`);
-    console.log('    npm install');
-    console.log('    npm run start');
-    console.log('');
-    console.log('  To run on a specific platform:');
     console.log('    npm run run:ios     # iOS simulator');
     console.log('    npm run run:android # Android emulator');
     console.log('    npm run run:web     # Web browser');
-    console.log('');
 }
 /**
  * Run the app on a specific platform
@@ -374,7 +366,6 @@ async function runIOS(config, options) {
     const iosDir = join(process.cwd(), 'ios');
     // Initialize iOS project if needed
     if (!existsSync(iosDir)) {
-        console.log('  Initializing iOS project...');
         await initIOSProject(config);
     }
     // Install CocoaPods dependencies
@@ -401,7 +392,6 @@ async function runIOS(config, options) {
         process.exit(1);
     }
     // Launch simulator and app using args arrays
-    console.log('  Launching app...');
     spawnSync('xcrun', ['simctl', 'boot', simulator], { stdio: 'pipe' });
     spawnSync('open', ['-a', 'Simulator'], { stdio: 'pipe' });
     const appPath = join(iosDir, 'build/Build/Products/Debug-iphonesimulator', `${config.name}.app`);
@@ -422,11 +412,9 @@ async function runAndroid(config, options) {
     const androidDir = join(process.cwd(), 'android');
     // Initialize Android project if needed
     if (!existsSync(androidDir)) {
-        console.log('  Initializing Android project...');
         await initAndroidProject(config);
     }
     // Build and install
-    console.log('  Building Android app...');
     const gradleCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
     // Use spawnSync with args array
     const gradleResult = spawnSync(gradleCmd, ['assembleDebug'], { cwd: androidDir, stdio: 'inherit' });
@@ -435,7 +423,6 @@ async function runAndroid(config, options) {
         process.exit(1);
     }
     // Install on device/emulator
-    console.log('  Installing on device...');
     const apkPath = join(androidDir, 'app/build/outputs/apk/debug/app-debug.apk');
     spawnSync('adb', ['install', '-r', apkPath], { stdio: 'inherit' });
     // Launch app - validate bundleId format
@@ -443,7 +430,6 @@ async function runAndroid(config, options) {
         console.error('  Error: Invalid bundle ID');
         process.exit(1);
     }
-    console.log('  Launching app...');
     spawnSync('adb', ['shell', 'am', 'start', '-n', `${config.bundleId}/.MainActivity`], { stdio: 'inherit' });
 }
 /**
@@ -453,7 +439,6 @@ async function runWeb(config, options) {
     // Validate port
     const port = validatePort(options['port'] || '3000');
     console.log(`  Starting development server on http://localhost:${port}`);
-    console.log('  Press Ctrl+C to stop\n');
     // Start Vite dev server without shell: true
     try {
         const vite = spawn('npx', ['vite', '--port', port.toString(), '--open'], {
@@ -559,7 +544,6 @@ async function startDevServer(options) {
     console.log(`\n  Starting PhilJS Native development server...\n`);
     console.log(`  Local:   http://localhost:${port}`);
     console.log(`  Network: http://${localIP}:${port}`);
-    console.log('\n  Press Ctrl+C to stop\n');
     // Use spawn without shell: true
     spawn('npx', ['vite', '--port', port.toString(), '--host'], {
         stdio: 'inherit',
@@ -587,7 +571,6 @@ async function addPlatform(platform) {
  * Run diagnostics
  */
 async function runDoctor() {
-    console.log('\n  PhilJS Native Doctor\n');
     console.log('  Checking your development environment...\n');
     const checks = [
         {
@@ -615,7 +598,6 @@ async function runDoctor() {
             name: 'Xcode (macOS only)',
             check: () => {
                 if (process.platform !== 'darwin') {
-                    console.log('    Xcode: N/A (not macOS)');
                     return true;
                 }
                 try {
@@ -624,7 +606,6 @@ async function runDoctor() {
                     return true;
                 }
                 catch {
-                    console.log('    Xcode: Not installed');
                     return false;
                 }
             },
@@ -637,7 +618,6 @@ async function runDoctor() {
                     console.log(`    Android SDK: ${androidHome}`);
                     return true;
                 }
-                console.log('    Android SDK: Not found');
                 return false;
             },
         },
@@ -650,9 +630,7 @@ async function runDoctor() {
             console.log(`    [FAIL] ${name} - needs attention`);
         }
     }
-    console.log('');
     if (allPassed) {
-        console.log('  All checks passed!\n');
     }
     else {
         console.log('  Some checks failed. Please address the issues above.\n');
@@ -662,10 +640,8 @@ async function runDoctor() {
  * Upgrade project to latest PhilJS Native version
  */
 async function upgradeProject() {
-    console.log('\n  Upgrading PhilJS Native...\n');
     // Use spawnSync with args array
     spawnSync('npm', ['update', 'philjs-native', '@philjs/core'], { stdio: 'inherit' });
-    console.log('\n  Upgrade complete!\n');
 }
 // ============================================================================
 // Helper Functions
@@ -716,7 +692,6 @@ target '${config.name}' do
 end
 `;
     writeFileSync(join(iosDir, 'Podfile'), podfile);
-    console.log('  Created iOS project structure');
     console.log('  Note: Full iOS project generation requires Xcode');
 }
 async function initAndroidProject(config) {
@@ -751,7 +726,6 @@ include ':app'
     console.log('  Created Android project structure');
 }
 function showHelp() {
-    console.log(`
   PhilJS Native CLI
 
   Usage:
@@ -778,7 +752,6 @@ function showHelp() {
 `);
 }
 function showVersion() {
-    console.log('philjs-native version 2.0.0');
 }
 // Run CLI
 main().catch((error) => {

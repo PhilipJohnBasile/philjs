@@ -240,7 +240,7 @@ export class AIAssistant {
 
     const prompt = this.buildCodeGenPrompt(request);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 8192,
       systemPrompt: this.getCodeGenSystemPrompt(request.type),
@@ -460,7 +460,7 @@ If you take actions, list them in a JSON block like:
 
 Respond naturally:`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 4096,
       systemPrompt: this.getChatSystemPrompt(),
@@ -529,10 +529,11 @@ Provide:
 
 Be concise but thorough.`;
 
-    return this.provider.generateCompletion(prompt, {
+    const { content } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert code explainer. Be clear, concise, and accurate.',
     });
+    return content;
   }
 
   /**
@@ -561,7 +562,7 @@ Return JSON:
   "fixedCode": "// corrected code if applicable"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a debugging expert. Provide clear explanations and working solutions.',
     });
@@ -621,7 +622,7 @@ Return JSON:
   "summary": "Overall assessment"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a senior code reviewer. Be thorough but constructive.',
     });
@@ -676,7 +677,7 @@ Provide:
   "architecture": "Brief architecture description"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 2048,
       systemPrompt: 'You are a project architect. Provide actionable analysis.',

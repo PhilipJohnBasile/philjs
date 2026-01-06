@@ -106,23 +106,16 @@ async function measureStartupTime() {
 export async function runFrameworkBenchmarks(options = {}) {
     const verbose = options.verbose ?? true;
     if (verbose) {
-        console.log('='.repeat(60));
-        console.log('PhilJS Framework Benchmark Suite');
         console.log('Compatible with js-framework-benchmark');
-        console.log('='.repeat(60));
-        console.log();
     }
     const results = [];
     // Run startup benchmark
     if (verbose)
-        console.log('Running startup benchmarks...\n');
     const startupResult = await measureStartupTime();
     results.push(startupResult);
     if (verbose)
-        console.log(formatResult(startupResult), '\n');
     // Run core benchmarks
     if (verbose)
-        console.log('Running core benchmarks...\n');
     const coreResults = await runBenchmarkSuite(coreFrameworkBenchmarks, {
         ...options,
         verbose,
@@ -148,7 +141,6 @@ export async function runFrameworkBenchmarks(options = {}) {
     results.push(...deleteResults);
     // Memory benchmarks
     if (verbose)
-        console.log('\nRunning memory benchmarks...\n');
     const memoryResult = await measureMemory('memory-1000-rows', async () => {
         const { signal, effect } = await import('@philjs/core');
         const rows = signal([]);
@@ -160,9 +152,6 @@ export async function runFrameworkBenchmarks(options = {}) {
     if (verbose)
         console.log(`memory-1000-rows: ${memoryResult.mean.toFixed(2)}MB\n`);
     if (verbose) {
-        console.log('='.repeat(60));
-        console.log('Benchmark Complete');
-        console.log('='.repeat(60));
     }
     return {
         name: 'framework-benchmark',
@@ -178,11 +167,6 @@ export async function runFrameworkBenchmarks(options = {}) {
 export async function runCoreBenchmarks(options = {}) {
     const verbose = options.verbose ?? true;
     if (verbose) {
-        console.log('='.repeat(60));
-        console.log('PhilJS Core Framework Benchmarks');
-        console.log('js-framework-benchmark compatible');
-        console.log('='.repeat(60));
-        console.log();
     }
     const results = await runBenchmarkSuite(coreFrameworkBenchmarks, {
         ...options,
@@ -204,8 +188,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
     runFrameworkBenchmarks({ verbose: true })
         .then(suite => {
-        console.log('\nResults JSON:');
-        console.log(JSON.stringify(suite, null, 2));
     })
         .catch(console.error);
 }

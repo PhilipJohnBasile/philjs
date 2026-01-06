@@ -19,11 +19,13 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsup src/cli.ts --format esm --dts",
-    "dev": "tsup src/cli.ts --watch"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "create",
     "cli",
     "scaffold",
@@ -50,6 +52,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/create-philjs"
   }
 }
-

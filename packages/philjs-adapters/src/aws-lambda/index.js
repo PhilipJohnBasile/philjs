@@ -22,7 +22,6 @@ export function awsLambdaAdapter(config = {}) {
             runtime,
         },
         async adapt() {
-            console.log('Building for AWS Lambda...');
             // Create output structure
             mkdirSync(outDir, { recursive: true });
             mkdirSync(join(outDir, 'lambda'), { recursive: true });

@@ -1,6 +1,19 @@
 {
-    "name": "@philjs/adonis",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts"
+  "name": "@philjs/adonis",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-adonis"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "adonis"
+  ]
 }

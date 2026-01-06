@@ -140,11 +140,7 @@ export async function runFrameworkBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Framework Benchmark Suite');
     console.log('Compatible with js-framework-benchmark');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   const results: BenchmarkResult[] = [];
@@ -215,9 +211,6 @@ export async function runFrameworkBenchmarks(
   if (verbose) console.log(`memory-1000-rows: ${memoryResult.mean.toFixed(2)}MB\n`);
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('Benchmark Complete');
-    console.log('='.repeat(60));
   }
 
   return {
@@ -238,11 +231,6 @@ export async function runCoreBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Core Framework Benchmarks');
-    console.log('js-framework-benchmark compatible');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   const results = await runBenchmarkSuite(coreFrameworkBenchmarks, {
@@ -268,8 +256,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
   runFrameworkBenchmarks({ verbose: true })
     .then(suite => {
-      console.log('\nResults JSON:');
-      console.log(JSON.stringify(suite, null, 2));
     })
     .catch(console.error);
 }

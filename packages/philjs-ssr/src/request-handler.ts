@@ -2,9 +2,7 @@
  * SSR request handler - executes loaders and renders routes.
  */
 
-// Types would come from other packages
-export type VNode = any;
-
+import type { VNode } from "@philjs/core";
 import type { Loader, Action, ActionCtx } from "./types.js";
 import { isResult, isOk, isErr, renderToString } from "@philjs/core";
 import type { RouteMatcher } from "@philjs/router";
@@ -22,10 +20,26 @@ function safeSerialize(value: any): string {
   }
 }
 
-export type RouteModule = {
-  loader?: Loader<any>;
-  action?: Action<any>;
-  default: (props: { data?: any; error?: any; params: Record<string, string> }) => VNode;
+/**
+ * Loader data can be any serializable value
+ */
+export type LoaderData = unknown;
+
+/**
+ * Loader error can be any error type
+ */
+export type LoaderError = Error | unknown;
+
+export type RouteModule<T = LoaderData> = {
+  loader?: Loader<T>;
+  action?: Action<T>;
+  default: (props: {
+    data?: T;
+    error?: LoaderError;
+    params: Record<string, string>;
+    url?: URL;
+    navigate?: (to: string) => Promise<void>;
+  }) => VNode;
 };
 
 export type RequestContext = {
@@ -103,8 +117,8 @@ export async function handleRequest(
     }
 
     // Execute loader
-    let loaderData: any = undefined;
-    let loaderError: any = undefined;
+    let loaderData: LoaderData = undefined;
+    let loaderError: LoaderError = undefined;
     if (module.loader) {
       try {
         const result = await module.loader(ctx);

@@ -28,7 +28,6 @@ program
   .option("--host <host>", "Host to bind to", "localhost")
   .option("--open", "Open browser automatically", false)
   .action(async (options: { port: string; host: string; open: boolean }) => {
-    console.log(pc.cyan("\n⚡ PhilJS Dev Server\n"));
 
     try {
       await startDevServer({
@@ -59,7 +58,6 @@ program
         outDir: options.outDir,
       });
 
-      console.log(pc.green("\n✓ Build complete!\n"));
     } catch (error) {
       console.error(pc.red("Build failed:"), error);
       process.exit(1);
@@ -90,7 +88,6 @@ program
 
     try {
       await generateTypes();
-      console.log(pc.green("\n✓ Types generated!\n"));
     } catch (error) {
       console.error(pc.red("Type generation failed:"), error);
       process.exit(1);

@@ -34,7 +34,7 @@ function createElementRenderer(tagName: string): ComponentRenderer {
     // Apply styles
     if (component.style) {
       for (const [prop, value] of Object.entries(component.style)) {
-        (element.style as Record<string, unknown>)[prop] = value;
+        (element.style as unknown as Record<string, unknown>)[prop] = value;
       }
     }
 
@@ -250,7 +250,7 @@ export const inputComponents: Array<{
       const element = document.createElement('button');
       element.id = component.id;
       element.textContent = component.props.children as string;
-      element.type = (component.props.type as string) || 'button';
+      element.type = (component.props.type as 'submit' | 'reset' | 'button') || 'button';
       element.disabled = !!(component.props.disabled || component.props.loading);
       element.dataset.variant = (component.props.variant as string) || 'primary';
       element.dataset.size = (component.props.size as string) || 'md';

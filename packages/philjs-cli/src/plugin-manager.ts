@@ -343,7 +343,6 @@ export class CLIPluginManager {
     }
 
     await this.saveConfig({ plugins });
-    console.log(pc.green("\nAll plugins updated!"));
   }
 
   /**
@@ -635,7 +634,6 @@ export class CLIPluginManager {
    * Show next steps after installation
    */
   private showNextSteps(plugin: Plugin): void {
-    console.log(pc.dim("\nNext steps:"));
     console.log(pc.dim(`1. Configure the plugin in ${pc.bold(".philjs/plugins.json")}`));
     console.log(pc.dim(`2. Enable the plugin with ${pc.bold(`philjs plugin enable ${plugin.meta.name}`)}`));
 

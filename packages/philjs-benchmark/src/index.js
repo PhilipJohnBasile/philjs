@@ -35,8 +35,6 @@ export { streamingBenchmarks, streamingThroughput } from './ssr/streaming.js';
  */
 export async function runAllBenchmarks(options = {}) {
     const { iterations = 50, warmup = 5, outputFormat = 'json', outputPath, } = options;
-    console.log('PhilJS Benchmark Suite');
-    console.log('========================\n');
     const results = {
         timestamp: new Date().toISOString(),
         environment: await getEnvironmentInfoLocal(),
@@ -47,7 +45,6 @@ export async function runAllBenchmarks(options = {}) {
         rust: null,
     };
     // Framework benchmarks - dynamically import to avoid circular deps
-    console.log('Running Framework Benchmarks...');
     const { runFrameworkBenchmarks: runFwBench } = await import('./framework-benchmark/runner.js');
     const fwSuite = await runFwBench({ iterations, warmupIterations: warmup, verbose: false });
     results.framework = fwSuite.results.map(r => ({
@@ -73,7 +70,6 @@ export async function runAllBenchmarks(options = {}) {
         ops: r.ops,
     }));
     // SSR benchmarks
-    console.log('\nRunning SSR Benchmarks...');
     const { runSSRBenchmarks: runSSRBench } = await import('./ssr/index.js');
     const ssrSuite = await runSSRBench({ iterations, warmupIterations: warmup, verbose: false });
     results.ssr = ssrSuite.results.map(r => ({

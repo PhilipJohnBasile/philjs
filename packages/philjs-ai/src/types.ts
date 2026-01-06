@@ -22,12 +22,22 @@ export type Provider = {
 
 export interface AIProvider {
   name: string;
-  generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+  generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
   generateStreamCompletion?(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
   /** Analyze images with vision capabilities */
   analyzeImage?(image: ImageInput, prompt: string, options?: VisionOptions): Promise<VisionResult>;
   /** Embed texts for vector search */
   embed?(texts: string[]): Promise<number[][]>;
+}
+
+export interface ProviderResponse {
+  content: string;
+  toolCalls?: ToolCall[];
+  usage?: {
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+  };
 }
 
 export interface CompletionOptions {
@@ -36,6 +46,8 @@ export interface CompletionOptions {
   maxTokens?: number;
   stopSequences?: string[];
   systemPrompt?: string;
+  tools?: ToolDefinition[];
+  toolChoice?: 'auto' | 'none' | 'required' | { type: 'function'; function: { name: string } };
 }
 
 // ============================================================================

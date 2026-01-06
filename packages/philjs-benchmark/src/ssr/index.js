@@ -36,22 +36,15 @@ export const coreSSRBenchmarks = [
 export async function runSSRBenchmarks(options = {}) {
     const verbose = options.verbose ?? true;
     if (verbose) {
-        console.log('='.repeat(60));
-        console.log('PhilJS SSR Benchmark Suite');
-        console.log('='.repeat(60));
-        console.log();
     }
     // Run render time benchmarks
     if (verbose)
-        console.log('Render Time Benchmarks:\n');
     const renderResults = await runBenchmarkSuite(renderTimeBenchmarks, { ...options, verbose });
     // Run hydration benchmarks
     if (verbose)
-        console.log('\nHydration Benchmarks:\n');
     const hydrationResults = await runBenchmarkSuite(hydrationBenchmarks, { ...options, verbose });
     // Run streaming benchmarks
     if (verbose)
-        console.log('\nStreaming SSR Benchmarks:\n');
     const streamingResults = await runBenchmarkSuite(streamingBenchmarks, { ...options, verbose });
     const allResults = [
         ...renderResults,
@@ -59,9 +52,6 @@ export async function runSSRBenchmarks(options = {}) {
         ...streamingResults,
     ];
     if (verbose) {
-        console.log('\n' + '='.repeat(60));
-        console.log('SSR Benchmark Complete');
-        console.log('='.repeat(60));
         // Print additional metrics if available
         if (globalThis.__lastSSRSize) {
             const size = globalThis.__lastSSRSize;
@@ -73,7 +63,6 @@ export async function runSSRBenchmarks(options = {}) {
         }
         if (globalThis.__lastChunkAnalysis) {
             const analysis = globalThis.__lastChunkAnalysis;
-            console.log(`\nChunk Analysis:`);
             console.log(`  Total Chunks: ${analysis.totalChunks}`);
             console.log(`  Avg Chunk Size: ${analysis.avgChunkSize.toFixed(0)} chars`);
             console.log(`  Total Size: ${(analysis.totalSize / 1024).toFixed(2)} KB`);
@@ -93,10 +82,6 @@ export async function runSSRBenchmarks(options = {}) {
 export async function runCoreSSRBenchmarks(options = {}) {
     const verbose = options.verbose ?? true;
     if (verbose) {
-        console.log('='.repeat(60));
-        console.log('PhilJS Core SSR Benchmarks');
-        console.log('='.repeat(60));
-        console.log();
     }
     const results = await runBenchmarkSuite(coreSSRBenchmarks, { ...options, verbose });
     return {
@@ -115,8 +100,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
     runSSRBenchmarks({ verbose: true })
         .then(suite => {
-        console.log('\nResults JSON:');
-        console.log(JSON.stringify(suite, null, 2));
     })
         .catch(console.error);
 }

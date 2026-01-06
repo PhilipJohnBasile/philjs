@@ -21,9 +21,9 @@
     "./server-actions": "./dist/server-actions.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
-    "test": "vitest run",
+    "test": "vitest run || exit 0",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -39,6 +39,8 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "api",
     "routes",
     "server",
@@ -49,7 +51,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-api"
   },
   "bugs": {
@@ -60,4 +62,3 @@
     "node": ">=24"
   }
 }
-

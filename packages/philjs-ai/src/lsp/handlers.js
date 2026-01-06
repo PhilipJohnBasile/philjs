@@ -543,9 +543,7 @@ Creates a reactive signal with fine-grained reactivity.
 **Example:**
 \`\`\`typescript
 const [count, setCount] = signal(0);
-console.log(count()); // 0
 setCount(1);
-console.log(count()); // 1
 \`\`\``,
             memo: `### memo<T>(computation: () => T): Accessor<T>
 
@@ -561,7 +559,6 @@ Creates a computed/derived value that automatically tracks dependencies.
 \`\`\`typescript
 const [count, setCount] = signal(0);
 const doubled = memo(() => count() * 2);
-console.log(doubled()); // 0
 \`\`\``,
             effect: `### effect(fn: () => void | (() => void)): void
 
@@ -574,7 +571,6 @@ Creates a side effect that runs when dependencies change.
 \`\`\`typescript
 const [count, setCount] = signal(0);
 effect(() => {
-  console.log('Count is:', count());
   return () => console.log('Cleanup');
 });
 \`\`\``,

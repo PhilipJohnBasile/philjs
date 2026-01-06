@@ -50,7 +50,6 @@ export async function migrate(options) {
                     await fs.writeFile(targetPath, transformResult.code);
                 }
                 if (verbose) {
-                    console.log(pc.green(`  ✓ Transformed`));
                 }
             }
             // Collect warnings and manual review items
@@ -75,7 +74,6 @@ export async function migrate(options) {
         console.log(pc.white(`\nReport generated: ${pc.bold(reportPath)}`));
     }
     // Summary
-    console.log(pc.cyan('\n📊 Migration Summary\n'));
     console.log(pc.white(`Files processed: ${pc.bold(String(result.filesProcessed))}`));
     console.log(pc.white(`Files transformed: ${pc.bold(String(result.filesTransformed))}`));
     console.log(pc.yellow(`Warnings: ${pc.bold(String(result.warnings.length))}`));

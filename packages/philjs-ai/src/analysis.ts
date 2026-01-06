@@ -370,7 +370,7 @@ Provide a comprehensive analysis including:
 
 Return as JSON with the structure matching ComponentAnalysis interface.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are an expert code analyzer for PhilJS applications.
 Analyze components thoroughly and accurately.
@@ -431,7 +431,7 @@ For each optimization, provide:
 
 Return JSON array of OptimizationSuggestion objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a performance optimization expert for reactive UI frameworks.
 Focus on practical, impactful optimizations.
@@ -525,7 +525,7 @@ Return JSON with:
   "recommendations": ["top recommendations"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a code quality expert specializing in PhilJS and reactive frameworks.
 Detect anti-patterns accurately with low false positives.
@@ -581,7 +581,7 @@ Return JSON:
   "suggestions": ["suggestion1", "suggestion2"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a code complexity analysis expert. Provide accurate metrics.',
     });
@@ -633,7 +633,7 @@ Analyze:
 
 Return JSON with signals, memos, effects, issues, suggestions, and score.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a fine-grained reactivity expert. Analyze signal patterns thoroughly.',
     });
@@ -702,7 +702,7 @@ For each issue:
 
 Return JSON matching AccessibilityAnalysis interface.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a WCAG accessibility expert.
 Target compliance level: ${targetLevel}
@@ -758,7 +758,7 @@ Return JSON:
   "topStrengths": ["top 3 things done well"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Provide a balanced, accurate health assessment.',
     });

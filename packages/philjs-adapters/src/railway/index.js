@@ -18,7 +18,6 @@ export function railwayAdapter(config = {}) {
     return {
         name: 'railway',
         async adapt() {
-            console.log('Building for Railway...');
             // Create output structure
             mkdirSync(outDir, { recursive: true });
             // Generate Dockerfile if Docker is enabled
@@ -357,7 +356,6 @@ function gracefulShutdown(signal) {
   }, ${gracefulShutdown.timeout});
 
   server.close(() => {
-    console.log('HTTP server closed');
     clearTimeout(shutdownTimeout);
     process.exit(0);
   });

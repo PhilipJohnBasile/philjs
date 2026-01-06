@@ -265,7 +265,7 @@ Extract:
 
 Return JSON matching ParsedSchema interface.`;
 
-  const response = await provider.generateCompletion(prompt, {
+  const { content: response } = await provider.generateCompletion(prompt, {
     temperature: 0.1,
     systemPrompt: 'You are a schema parsing expert. Extract schema information accurately.',
   });
@@ -438,7 +438,7 @@ export class SchemaToComponentGenerator {
   ): Promise<GeneratedSchemaComponent> {
     const prompt = this.buildComponentPrompt(schema, type, options);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(type, options),
     });
@@ -622,9 +622,9 @@ ${props}
  */
 export interface Create${schema.name}Input {
 ${schema.fields
-  .filter(f => !f.isPrimaryKey)
-  .map(f => `  ${f.name}${f.required ? '' : '?'}: ${f.isArray ? `${f.type}[]` : f.type};`)
-  .join('\n')}
+        .filter(f => !f.isPrimaryKey)
+        .map(f => `  ${f.name}${f.required ? '' : '?'}: ${f.isArray ? `${f.type}[]` : f.type};`)
+        .join('\n')}
 }
 
 /**

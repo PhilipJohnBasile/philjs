@@ -57,7 +57,6 @@ export function createSentryTracker() {
                     Sentry.setContext('philjs', {
                         version: '0.1.0',
                     });
-                    console.log('[PhilJS] Sentry initialized');
                 }
             };
             initSentry().catch(console.error);
@@ -93,7 +92,6 @@ export function createSentryTracker() {
         },
         captureMessage(message, level, context) {
             if (!Sentry) {
-                console.log('[Sentry not initialized]', message);
                 return;
             }
             Sentry.withScope((scope) => {

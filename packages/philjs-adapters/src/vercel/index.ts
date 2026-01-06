@@ -55,7 +55,6 @@ export function vercelAdapter(config: VercelConfig = {}): Adapter & Partial<Edge
     edge,
 
     async adapt() {
-      console.log('Building for Vercel...');
 
       // Create output structure
       mkdirSync(join(outDir, 'functions'), { recursive: true });

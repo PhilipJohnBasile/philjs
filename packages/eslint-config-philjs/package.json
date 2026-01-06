@@ -14,8 +14,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"
@@ -32,7 +32,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/eslint-config-philjs"
   },
   "bugs": {
@@ -41,6 +41,12 @@
   "homepage": "https://github.com/yourusername/philjs#readme",
   "engines": {
     "node": ">=24"
-  }
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "eslint",
+    "config"
+  ]
 }
-

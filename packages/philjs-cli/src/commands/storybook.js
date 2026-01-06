@@ -158,7 +158,6 @@ export default preview;
     await writeFile(join(storybookDir, 'preview.ts'), previewConfig);
     // Create package.json scripts
     console.log(pc.dim('\nAdd these scripts to your package.json:'));
-    console.log(pc.white(JSON.stringify({
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     }, null, 2)));

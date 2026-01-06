@@ -99,7 +99,6 @@ export function setupHMRClient(options: HMROptions = {}): void {
 
       if (verbose) {
         const stats = getHMRStats();
-        console.log(
           `[PhilJS HMR] Snapshot complete in ${duration.toFixed(2)}ms`,
           `(${stats.signalCount} signals, ${stats.effectCount} effects)`
         );
@@ -197,7 +196,6 @@ export function setupHMRClient(options: HMROptions = {}): void {
 
     try {
       if (verbose) {
-        console.log('[PhilJS HMR] Applying update...');
       }
 
       // State will be restored after modules are re-evaluated
@@ -236,7 +234,6 @@ export function setupHMRClient(options: HMROptions = {}): void {
 
       if (verbose) {
         const avgDuration = clientState.totalDuration / clientState.updateCount;
-        console.log(
           `[PhilJS HMR] State restored in ${duration.toFixed(2)}ms`,
           `(avg: ${avgDuration.toFixed(2)}ms, ` +
           `updates: ${clientState.updateCount}, ` +
@@ -267,7 +264,6 @@ export function setupHMRClient(options: HMROptions = {}): void {
   });
 
   if (verbose) {
-    console.log('[PhilJS HMR] Client initialized');
   }
 }
 

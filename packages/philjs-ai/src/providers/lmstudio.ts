@@ -2,7 +2,7 @@
  * LM Studio provider implementation (OpenAI-compatible local models)
  */
 
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 
 export interface LMStudioConfig {
   baseURL?: string;
@@ -22,6 +22,11 @@ interface LMStudioResponse {
     };
     finish_reason: string;
   }>;
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+  };
 }
 
 interface LMStudioStreamChunk {
@@ -48,7 +53,7 @@ export class LMStudioProvider implements AIProvider {
     this.defaultModel = config.defaultModel || 'local-model';
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     const messages: Array<{ role: string; content: string }> = [];
 
     if (options?.systemPrompt) {
@@ -83,7 +88,25 @@ export class LMStudioProvider implements AIProvider {
     }
 
     const data = await response.json() as LMStudioResponse;
-    return data.choices[0]?.message?.content || '';
+    const content = data.choices[0]?.message?.content || '';
+
+    // LM Studio (OpenAI-compatible) returns usage in response
+    const inputTokens = data.usage?.prompt_tokens ?? this.estimateTokens(prompt);
+    const outputTokens = data.usage?.completion_tokens ?? this.estimateTokens(content);
+
+    return {
+      content,
+      usage: {
+        inputTokens,
+        outputTokens,
+        totalTokens: data.usage?.total_tokens ?? (inputTokens + outputTokens)
+      }
+    };
+  }
+
+  /** Estimate token count (~4 chars per token) */
+  private estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {

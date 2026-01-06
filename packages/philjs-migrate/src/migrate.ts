@@ -116,7 +116,6 @@ export async function migrate(options: MigrationOptions): Promise<MigrationResul
         }
 
         if (verbose) {
-          console.log(pc.green(`  ✓ Transformed`));
         }
       }
 
@@ -145,7 +144,6 @@ export async function migrate(options: MigrationOptions): Promise<MigrationResul
   }
 
   // Summary
-  console.log(pc.cyan('\n📊 Migration Summary\n'));
   console.log(pc.white(`Files processed: ${pc.bold(String(result.filesProcessed))}`));
   console.log(pc.white(`Files transformed: ${pc.bold(String(result.filesTransformed))}`));
   console.log(pc.yellow(`Warnings: ${pc.bold(String(result.warnings.length))}`));

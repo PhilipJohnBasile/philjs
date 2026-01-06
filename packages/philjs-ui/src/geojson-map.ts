@@ -25,7 +25,6 @@ export function GeoJSONMap(props: MapProps) {
 
     const initMap = () => {
         // Mock Mapbox GL JS initialization
-        console.log(`Mapbox: Initializing map ${mapId}`, {
             style: props.style,
             center: props.center || [0, 0],
             zoom: props.zoom || 1
@@ -33,13 +32,11 @@ export function GeoJSONMap(props: MapProps) {
 
         if (props.sources) {
             Object.entries(props.sources).forEach(([id, source]) => {
-                console.log(`Mapbox: Adding source "${id}"`, source);
             });
         }
 
         if (props.layers) {
             props.layers.forEach(layer => {
-                console.log(`Mapbox: Adding layer "${layer.id}"`, layer);
             });
         }
 

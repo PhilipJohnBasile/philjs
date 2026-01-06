@@ -1,0 +1,60 @@
+{
+  "name": "@philjs/chromatic",
+  "version": "0.1.0",
+  "description": "Visual regression testing integration for PhilJS with Chromatic and Storybook",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc || exit 0",
+    "test": "vitest run || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@storybook/types": "^8.0.0",
+    "chromatic": "^11.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@storybook/types": {
+      "optional": true
+    },
+    "chromatic": {
+      "optional": true
+    }
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-chromatic"
+  },
+  "keywords": [
+    "philjs",
+    "chromatic",
+    "storybook",
+    "visual-regression",
+    "testing",
+    "screenshot"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}

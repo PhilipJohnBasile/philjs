@@ -47,7 +47,6 @@ program
       devtool: options.sourcemap ? 'source-map' : false,
     });
 
-    console.log(chalk.gray('Configuration:'));
     console.log(chalk.gray(`  Entry: ${options.entry}`));
     console.log(chalk.gray(`  Output: ${options.output}`));
     console.log(chalk.gray(`  Mode: ${options.mode}`));
@@ -57,8 +56,6 @@ program
     console.log(chalk.gray('Run with Rspack: npx rspack build -c rspack.config.js'));
 
     // Export config for use with Rspack CLI
-    console.log(chalk.gray('\nGenerated config:'));
-    console.log(JSON.stringify(config, null, 2));
   });
 
 /**
@@ -76,7 +73,6 @@ program
 
     const config = createRspackConfig(rspackPresets.development(options.entry));
 
-    console.log(chalk.gray('Development server:'));
     console.log(chalk.gray(`  Entry: ${options.entry}`));
     console.log(chalk.gray(`  Port: ${options.port}`));
     console.log(chalk.gray(`  Host: ${options.host ? '0.0.0.0' : 'localhost'}`));
@@ -109,7 +105,6 @@ program
       outDir: options.output,
     });
 
-    console.log(chalk.gray('Library build:'));
     console.log(chalk.gray(`  Entry: ${options.entry}`));
     console.log(chalk.gray(`  Formats: ${formats.join(', ')}`));
     console.log(chalk.gray(`  Output: ${options.output}`));
@@ -175,7 +170,6 @@ export default createRspackConfig(presets.microfrontend(
 
     for (const [filename, content] of Object.entries(configs)) {
       console.log(chalk.gray(`  ${filename}`));
-      console.log(chalk.dim(content));
     }
 
     console.log(chalk.green('\n✅ Configuration initialized'));
@@ -218,21 +212,15 @@ program
   .command('info')
   .description('Show build system information')
   .action(() => {
-    console.log(chalk.blue('PhilJS Build System'));
-    console.log(chalk.gray('─'.repeat(40)));
     console.log(`  Version: ${chalk.cyan('0.1.0')}`);
     console.log(`  Node: ${chalk.cyan(process.version)}`);
     console.log(`  Platform: ${chalk.cyan(process.platform)}`);
-    console.log(chalk.gray('─'.repeat(40)));
-    console.log(chalk.gray('\nBuild engines:'));
     console.log(`  Rspack: ${chalk.cyan('^1.1.0')} (Rust-based, fast)`);
     console.log(`  Rslib: ${chalk.cyan('^0.3.0')} (Library builds)`);
     console.log(`  Vite: ${chalk.cyan('^7.3.0')} (Dev server compat)`);
-    console.log(chalk.gray('\nFeatures:'));
     console.log('  • 10x faster builds vs Rollup/Webpack');
     console.log('  • Module Federation for micro-frontends');
     console.log('  • Multi-format library output (ESM/CJS/UMD)');
-    console.log('  • PhilJS signal optimization');
     console.log('  • JSX transform with @philjs/core');
   });
 

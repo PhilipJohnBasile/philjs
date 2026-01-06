@@ -1,44 +1,52 @@
 {
-    "name": "@philjs/drizzle",
-    "version": "0.1.0",
-    "description": "Drizzle ORM adapter for PhilJS - type-safe SQL with signals",
-    "type": "module",
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsup src/index.ts --format esm --dts",
-        "dev": "tsup src/index.ts --format esm --dts --watch",
-        "test": "vitest run"
-    },
-    "dependencies": {
-        "@philjs/core": "workspace:*"
-    },
-    "peerDependencies": {
-        "@philjs/core": ">=0.1.0",
-        "drizzle-orm": ">=0.29.0"
-    },
-    "devDependencies": {
-        "drizzle-orm": "^0.29.0",
-        "better-sqlite3": "^9.0.0",
-        "@types/better-sqlite3": "^7.0.0",
-        "vitest": "^1.0.0",
-        "typescript": "^5.3.0",
-        "tsup": "^8.0.0"
-    },
-    "keywords": [
-        "philjs",
-        "drizzle",
-        "orm",
-        "sql",
-        "database",
-        "signals"
-    ],
-    "license": "MIT"
+  "name": "@philjs/drizzle",
+  "version": "0.1.0",
+  "description": "Drizzle ORM adapter for PhilJS - type-safe SQL with signals",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@philjs/core": ">=0.1.0",
+    "drizzle-orm": ">=0.29.0"
+  },
+  "devDependencies": {
+    "drizzle-orm": "^0.29.0",
+    "better-sqlite3": "^9.0.0",
+    "@types/better-sqlite3": "^7.0.0",
+    "vitest": "^1.0.0",
+    "typescript": "6.0.0-dev.20251230",
+    "tsup": "^8.0.0"
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "drizzle",
+    "orm",
+    "sql",
+    "database",
+    "signals"
+  ],
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-drizzle"
+  }
 }

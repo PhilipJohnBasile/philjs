@@ -216,7 +216,7 @@ export class PageGenerator {
   async generatePage(config: PageGenerationConfig): Promise<GeneratedPage> {
     const prompt = this.buildPagePrompt(config);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(config),
     });
@@ -246,7 +246,7 @@ For each layout, provide:
 
 Return as JSON array of layout suggestions.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a UI/UX expert specializing in page layouts.',
     });
@@ -272,7 +272,7 @@ Breakpoints: ${breakpoints.join(', ')}
 For each breakpoint, provide optimized layout and styling.
 Return JSON with breakpoint names as keys and adapted code as values.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a responsive design expert.',
     });
@@ -307,7 +307,7 @@ Generate:
 
 Return as JSON with: metadata (code), structuredData (code if requested), recommendations (array).`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an SEO expert for modern web applications.',
     });

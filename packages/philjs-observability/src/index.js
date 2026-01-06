@@ -270,7 +270,6 @@ export class ConsoleTransport {
     }
     log(entry) {
         if (this.format === 'json') {
-            console.log(JSON.stringify(entry));
             return;
         }
         const timestamp = entry.timestamp.toISOString();

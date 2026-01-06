@@ -52,7 +52,6 @@ export function denoDeployAdapter(config = {}) {
             regions: regions.length > 0 ? regions : ['global'],
         },
         async adapt() {
-            console.log('Building for Deno Deploy...');
             // Create output structure
             mkdirSync(outDir, { recursive: true });
             mkdirSync(join(outDir, 'static'), { recursive: true });

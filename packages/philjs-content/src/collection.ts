@@ -136,7 +136,7 @@ export function getCollectionConfig(name: string): CollectionDefinition | undefi
 export function validateEntryData<TSchema extends ZodType>(
   schema: TSchema,
   data: unknown
-): z.SafeParseReturnType<unknown, z.infer<TSchema>> {
+) {
   return schema.safeParse(data);
 }
 

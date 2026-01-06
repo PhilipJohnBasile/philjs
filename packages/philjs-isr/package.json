@@ -1,0 +1,104 @@
+{
+  "name": "@philjs/isr",
+  "version": "0.1.0",
+  "description": "Incremental Static Regeneration for PhilJS - static generation with background revalidation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./build": {
+      "types": "./dist/build/index.d.ts",
+      "import": "./dist/build/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
+    },
+    "./adapters/node": {
+      "types": "./dist/adapters/node.d.ts",
+      "import": "./dist/adapters/node.js"
+    },
+    "./adapters/vercel": {
+      "types": "./dist/adapters/vercel.d.ts",
+      "import": "./dist/adapters/vercel.js"
+    },
+    "./adapters/cloudflare": {
+      "types": "./dist/adapters/cloudflare.d.ts",
+      "import": "./dist/adapters/cloudflare.js"
+    },
+    "./adapters/netlify": {
+      "types": "./dist/adapters/netlify.d.ts",
+      "import": "./dist/adapters/netlify.js"
+    },
+    "./vite": {
+      "types": "./dist/vite-plugin.d.ts",
+      "import": "./dist/vite-plugin.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251225.0",
+    "@types/node": "^25.0.0",
+    "typescript": "6.0.0-dev.20251230",
+    "vite": "^6.2.0",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "ioredis": "^5.0.0",
+    "vite": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "ioredis": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-isr"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "isr",
+    "incremental-static-regeneration",
+    "static-generation",
+    "ssg",
+    "revalidation",
+    "cache",
+    "stale-while-revalidate"
+  ]
+}

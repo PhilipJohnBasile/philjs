@@ -4,7 +4,12 @@
  * Utility functions for email operations
  */
 
-import type { ReactElement } from 'react';
+// Local type definition for React elements (avoiding react dependency)
+type ReactElement<P = any> = {
+  type: any;
+  props: P;
+};
+
 import type { EmailAddress, RetryConfig } from './types.js';
 
 /**
@@ -98,6 +103,7 @@ export async function renderReactEmail(
 ): Promise<{ html: string; text: string }> {
   try {
     // Try to use @react-email/components
+    // @ts-expect-error - Optional peer dependency
     const { render } = await import('@react-email/components');
     const html = await render(component);
     const text = await render(component, { plainText: true });
@@ -105,14 +111,15 @@ export async function renderReactEmail(
   } catch {
     try {
       // Fallback to @react-email/render (dynamically imported, may not be installed)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const renderModule = await import('@react-email/render' as any);
+      // @ts-expect-error - Optional peer dependency
+      const renderModule = await import('@react-email/render');
       const render = renderModule.render;
       const html = await render(component);
       const text = await render(component, { plainText: true });
       return { html, text };
     } catch {
       // Final fallback: use react-dom/server
+      // @ts-expect-error - Optional peer dependency
       const { renderToStaticMarkup } = await import('react-dom/server');
       const html = renderToStaticMarkup(component);
       const text = htmlToText(html);

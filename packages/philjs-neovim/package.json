@@ -1,6 +1,19 @@
 {
-    "name": "@philjs/neovim",
-    "version": "0.0.1",
-    "type": "module",
-    "description": "Neovim adapter helper"
+  "name": "@philjs/neovim",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Neovim adapter helper",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-neovim"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "neovim"
+  ]
 }

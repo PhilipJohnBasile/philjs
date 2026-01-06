@@ -125,7 +125,6 @@ createDesktopApp({
     version: '0.1.0',
   },
   onReady: () => {
-    console.log('App is ready!');
   },
 });
 
@@ -227,7 +226,6 @@ async function initProject(options) {
         },
     };
     fs.writeFileSync(path.join(projectDir, 'package.json'), JSON.stringify(packageJson, null, 2));
-    console.log(`  Created: package.json`);
     // Create tauri.conf.json
     const tauriConf = {
         ...DEFAULT_TAURI_CONFIG,
@@ -247,19 +245,14 @@ async function initProject(options) {
     console.log(`  Created: src-tauri/tauri.conf.json`);
     // Create Cargo.toml
     fs.writeFileSync(path.join(projectDir, 'src-tauri', 'Cargo.toml'), CARGO_TOML_TEMPLATE.replace(/{{name}}/g, projectName.replace(/-/g, '_')));
-    console.log(`  Created: src-tauri/Cargo.toml`);
     // Create main.rs
     fs.writeFileSync(path.join(projectDir, 'src-tauri', 'src', 'main.rs'), MAIN_RS_TEMPLATE);
-    console.log(`  Created: src-tauri/src/main.rs`);
     // Create build.rs
     fs.writeFileSync(path.join(projectDir, 'src-tauri', 'build.rs'), BUILD_RS_TEMPLATE);
-    console.log(`  Created: src-tauri/build.rs`);
     // Create index.html
     fs.writeFileSync(path.join(projectDir, 'index.html'), INDEX_HTML_TEMPLATE.replace(/{{name}}/g, projectName));
-    console.log(`  Created: index.html`);
     // Create main.ts
     fs.writeFileSync(path.join(projectDir, 'src', 'main.ts'), MAIN_TS_TEMPLATE.replace(/{{name}}/g, projectName));
-    console.log(`  Created: src/main.ts`);
     // Create vite.config.ts
     const viteConfig = `import { defineConfig } from 'vite';
 
@@ -277,7 +270,6 @@ export default defineConfig({
 });
 `;
     fs.writeFileSync(path.join(projectDir, 'vite.config.ts'), viteConfig);
-    console.log(`  Created: vite.config.ts`);
     // Create tsconfig.json
     const tsConfig = {
         compilerOptions: {
@@ -299,8 +291,6 @@ export default defineConfig({
         include: ['src'],
     };
     fs.writeFileSync(path.join(projectDir, 'tsconfig.json'), JSON.stringify(tsConfig, null, 2));
-    console.log(`  Created: tsconfig.json`);
-    console.log(`
 Project initialized successfully!
 
 Next steps:
@@ -380,7 +370,6 @@ async function buildApp(options) {
  * Show help
  */
 function showHelp() {
-    console.log(`
 PhilJS Desktop CLI
 
 Usage:

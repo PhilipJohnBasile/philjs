@@ -26,7 +26,6 @@ export function philJSPlugin(): Plugin {
     },
 
     configResolved(config) {
-      console.log(
         pc.cyan("🔧 PhilJS plugin loaded") +
         pc.dim(` (mode: ${config.mode})`)
       );

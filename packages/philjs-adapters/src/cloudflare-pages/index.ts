@@ -123,7 +123,6 @@ export function cloudflarePagesAdapter(config: CloudflarePagesConfig = {}): Adap
     },
 
     async adapt() {
-      console.log('Building for Cloudflare Pages...');
 
       // Create output directory structure
       mkdirSync(outDir, { recursive: true });
@@ -172,7 +171,6 @@ export function cloudflarePagesAdapter(config: CloudflarePagesConfig = {}): Adap
         cpSync('.philjs/prerendered', outDir, { recursive: true });
       }
 
-      console.log('Cloudflare Pages build complete');
     },
 
     getHandler() {

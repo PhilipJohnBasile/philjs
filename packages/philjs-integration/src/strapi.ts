@@ -1,41 +1,45 @@
-
-export interface StrapiType {
-    kind: 'collectionType' | 'singleType';
-    info: {
-        singularName: string;
-        pluralName: string;
-        displayName: string;
-    };
-    attributes: Record<string, any>;
+// Minimal GraphQL Client
+async function gql(url: string, query: string, variables: any = {}) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables })
+  });
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data;
 }
 
-// Stub for Strapi GraphQL stitching
-export function createStrapiSchema(apiUrl: string, types?: StrapiType[]) {
-    console.log(`Strapi: Fetching schema from ${apiUrl}/graphql`);
+export interface StrapiType {
+  kind: 'collectionType' | 'singleType';
+  info: {
+    singularName: string;
+    pluralName: string;
+    displayName: string;
+  };
+  attributes: Record<string, any>;
+}
 
-    if (!types || types.length === 0) {
-        // Generate mock schema if no types provided
-        return `
-      type StrapiMeta {
-        page: Int
-        pageSize: Int
-        total: Int
-      }
-      
-      type Query { 
-        strapi_health: String
-      }
-    `;
+export class StrapiClient {
+  constructor(private apiUrl: string, private token?: string) { }
+
+  async find(resource: string, fields: string[] = ['id']) {
+    const query = \`query { \${resource} { data { id attributes { \${fields.join(' ')} } } } }\`;
+        return gql(\`\${this.apiUrl}/graphql\`, query);
     }
 
-    // Convert Strapi Content Types to GraphQL Mock
-    const typeDefs = types.map(t => {
-        const fields = Object.entries(t.attributes).map(([key, attr]) => {
-            return `  ${key}: String`; // Simplified
-        }).join('\n');
+    async findOne(resource: string, id: string, fields: string[] = ['id']) {
+        const query = \`query { \${resource}(id: "\${id}") { data { id attributes { \${fields.join(' ')} } } } }\`;
+        return gql(\`\${this.apiUrl}/graphql\`, query);
+    }
+}
 
-        return `type ${t.info.displayName} {\n  id: ID!\n${fields}\n}`;
-    }).join('\n\n');
-
-    return typeDefs;
+// Deprecated: Moving towards runtime introspection
+export function createStrapiSchema(apiUrl: string, types?: StrapiType[]) {
+    // Return a functional client instantiator code for codegen if needed
+    // But primarily we export the Client class now
+    return \`
+        import { StrapiClient } from '@philjs/integration';
+        const strapi = new StrapiClient('\${apiUrl}');
+    \`;
 }

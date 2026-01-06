@@ -673,7 +673,7 @@ export function useWorkerPool(config?: WorkerPoolConfig): {
 export function useParallel<T, R>(
   items: T[],
   fn: (item: T) => R,
-  deps?: any[]
+  deps: readonly unknown[] = []
 ): {
   results: R[] | null;
   loading: boolean;

@@ -50,7 +50,6 @@ export function netlifyAdapter(config: NetlifyConfig = {}): Adapter & Partial<Ed
     edge,
 
     async adapt() {
-      console.log('Building for Netlify...');
 
       // Create output directories
       const functionsDir = edge
@@ -111,7 +110,6 @@ export function netlifyAdapter(config: NetlifyConfig = {}): Adapter & Partial<Ed
         cpSync('.philjs/prerendered', 'publish', { recursive: true });
       }
 
-      console.log('Netlify build complete');
     },
 
     getHandler() {

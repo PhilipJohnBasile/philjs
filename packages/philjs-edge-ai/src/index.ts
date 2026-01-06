@@ -10,6 +10,108 @@
  * - Quantization and optimization
  */
 
+// Type definitions for optional dependencies (dynamic imports)
+type OnnxRuntimeWeb = {
+  InferenceSession: any;
+  Tensor: any;
+  env?: any;
+};
+
+type TensorFlowJS = {
+  loadGraphModel: (url: string) => Promise<any>;
+  loadLayersModel: (url: string) => Promise<any>;
+  setBackend: (backend: string) => Promise<void>;
+  ready: () => Promise<void>;
+  tensor: (data: any, shape?: number[]) => any;
+  dispose: (tensors: any[]) => void;
+};
+
+type TFLite = {
+  loadTFLiteModel: (url: string) => Promise<any>;
+};
+
+// WebGPU type (not available by default in some TypeScript configs)
+declare global {
+  interface GPU {
+    requestAdapter(): Promise<GPUAdapter | null>;
+  }
+  interface GPUAdapter {
+    requestDevice(): Promise<GPUDevice>;
+  }
+  interface GPUDevice {
+    queue: GPUQueue;
+    createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer;
+    createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule;
+    createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
+    createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup;
+    createCommandEncoder(): GPUCommandEncoder;
+    destroy(): void;
+  }
+  interface GPUQueue {
+    submit(commandBuffers: GPUCommandBuffer[]): void;
+    writeBuffer(buffer: GPUBuffer, offset: number, data: ArrayBufferView): void;
+  }
+  interface GPUBuffer {
+    getMappedRange(): ArrayBuffer;
+    unmap(): void;
+    mapAsync(mode: number): Promise<void>;
+    destroy(): void;
+  }
+  interface GPUBufferDescriptor {
+    size: number;
+    usage: number;
+    mappedAtCreation?: boolean;
+  }
+  interface GPUShaderModule {}
+  interface GPUShaderModuleDescriptor {
+    code: string;
+  }
+  interface GPUComputePipeline {
+    getBindGroupLayout(index: number): GPUBindGroupLayout;
+  }
+  interface GPUComputePipelineDescriptor {
+    layout: 'auto' | GPUPipelineLayout;
+    compute: {
+      module: GPUShaderModule;
+      entryPoint: string;
+    };
+  }
+  interface GPUPipelineLayout {}
+  interface GPUBindGroupLayout {}
+  interface GPUBindGroup {}
+  interface GPUBindGroupDescriptor {
+    layout: GPUBindGroupLayout;
+    entries: GPUBindGroupEntry[];
+  }
+  interface GPUBindGroupEntry {
+    binding: number;
+    resource: { buffer: GPUBuffer };
+  }
+  interface GPUCommandEncoder {
+    beginComputePass(): GPUComputePassEncoder;
+    copyBufferToBuffer(src: GPUBuffer, srcOffset: number, dst: GPUBuffer, dstOffset: number, size: number): void;
+    finish(): GPUCommandBuffer;
+  }
+  interface GPUComputePassEncoder {
+    setPipeline(pipeline: GPUComputePipeline): void;
+    setBindGroup(index: number, bindGroup: GPUBindGroup): void;
+    dispatchWorkgroups(x: number, y?: number, z?: number): void;
+    end(): void;
+  }
+  interface GPUCommandBuffer {}
+  const GPUBufferUsage: {
+    STORAGE: number;
+    COPY_SRC: number;
+    COPY_DST: number;
+    MAP_READ: number;
+    MAP_WRITE: number;
+  };
+  const GPUMapMode: {
+    READ: number;
+    WRITE: number;
+  };
+}
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -610,6 +712,7 @@ export class InferenceEngine {
   private async initializeOnnxSession(): Promise<void> {
     try {
       // Dynamically import ONNX Runtime Web
+      // @ts-expect-error - Optional peer dependency
       this.ortModule = await import('onnxruntime-web') as unknown as OrtModule;
 
       // Configure execution providers based on backend
@@ -644,8 +747,8 @@ export class InferenceEngine {
         };
       }
     } catch (error) {
-      console.warn('ONNX Runtime Web not available, falling back to simulated inference:', error);
-      // Fall through to simulated mode
+      console.warn('ONNX Runtime Web not available:', error);
+      // Will throw at inference time if no other runtime loads
     }
   }
 
@@ -667,6 +770,7 @@ export class InferenceEngine {
   private async initializeTfjsSession(): Promise<void> {
     try {
       // Dynamically import TensorFlow.js
+      // @ts-expect-error - Optional peer dependency
       this.tfjsModule = await import('@tensorflow/tfjs') as unknown as TfjsModule;
 
       // Set backend based on device capabilities
@@ -686,7 +790,8 @@ export class InferenceEngine {
         size: this.model?.byteLength ?? 0
       };
     } catch (error) {
-      console.warn('TensorFlow.js not available, falling back to simulated inference:', error);
+      console.warn('TensorFlow.js not available:', error);
+      // Will throw at inference time if no other runtime loads
     }
   }
 
@@ -706,6 +811,7 @@ export class InferenceEngine {
   private async initializeTfliteSession(): Promise<void> {
     // TFLite support via TensorFlow.js TFLite backend
     try {
+      // @ts-expect-error - Optional peer dependency
       const tflite = await import('@tensorflow/tfjs-tflite') as any;
       this.tfjsModel = await tflite.loadTFLiteModel(this.config.url);
 
@@ -718,7 +824,8 @@ export class InferenceEngine {
         size: this.model?.byteLength ?? 0
       };
     } catch (error) {
-      console.warn('TFLite not available, falling back to simulated inference:', error);
+      console.warn('TFLite not available:', error);
+      // Will throw at inference time if no other runtime loads
     }
   }
 
@@ -824,19 +931,17 @@ export class InferenceEngine {
     return new Tensor(outputData, outputShape, 'float32');
   }
 
-  private simulateInference(input: Tensor): Tensor {
-    // Simulated inference for when no ML runtime is available
-    // This generates plausible outputs based on input shape
-
-    // For classification (common case)
-    const batchSize = input.shape[0] || 1;
-    const numClasses = 1000; // ImageNet classes
-
-    // Generate random logits
-    const output = Tensor.random([batchSize, numClasses]);
-
-    // Apply softmax to make it look like probabilities
-    return output.softmax(-1);
+  private simulateInference(_input: Tensor): never {
+    // No ML runtime available - throw an error instead of returning fake data
+    throw new Error(
+      'No ML inference runtime available. Please install one of the following:\n' +
+      '  - npm install onnxruntime-web (for ONNX models)\n' +
+      '  - npm install @tensorflow/tfjs (for TensorFlow.js models)\n' +
+      '  - npm install @tensorflow/tfjs-tflite (for TFLite models)\n' +
+      '\n' +
+      'Ensure your model URL is accessible and the format matches the installed runtime.\n' +
+      `Current config: format=${this.config.format}, backend=${this.backend}`
+    );
   }
 
   async *inferStream<T>(
@@ -883,22 +988,16 @@ export class InferenceEngine {
         await new Promise(resolve => setTimeout(resolve, 10));
       }
     } else {
-      // Simulated streaming for demo purposes
-      const totalSteps = 50;
-
-      for (let i = 0; i < totalSteps; i++) {
-        if (Date.now() - startTime > timeout) {
-          throw new Error('Inference timeout');
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 50));
-
-        yield {
-          token: `token_${i}` as T,
-          progress: ((i + 1) / totalSteps) * 100,
-          done: i === totalSteps - 1
-        };
-      }
+      // No ML runtime available - throw an error instead of returning fake data
+      throw new Error(
+        'No ML inference runtime available for streaming. Please install one of the following:\n' +
+        '  - npm install onnxruntime-web (for ONNX models)\n' +
+        '  - npm install @tensorflow/tfjs (for TensorFlow.js models)\n' +
+        '  - npm install @tensorflow/tfjs-tflite (for TFLite models)\n' +
+        '\n' +
+        'Ensure your model URL is accessible and the format matches the installed runtime.\n' +
+        `Current config: format=${this.config.format}, backend=${this.backend}`
+      );
     }
   }
 
@@ -1017,14 +1116,34 @@ export class ObjectDetector {
     await this.engine.initialize();
   }
 
+  // COCO class names for YOLOv8
+  private static readonly COCO_CLASSES = [
+    'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
+    'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat',
+    'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack',
+    'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
+    'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
+    'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+    'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair',
+    'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse',
+    'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator',
+    'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+  ];
+
   async detect(
     image: HTMLImageElement | HTMLCanvasElement,
-    threshold: number = 0.5
+    threshold: number = 0.5,
+    iouThreshold: number = 0.45
   ): Promise<Array<{
     class: string;
     confidence: number;
     bbox: { x: number; y: number; width: number; height: number };
   }>> {
+    // Get original image dimensions
+    const origWidth = image instanceof HTMLImageElement ? image.naturalWidth : image.width;
+    const origHeight = image instanceof HTMLImageElement ? image.naturalHeight : image.height;
+
+    // Resize to 640x640 for YOLOv8
     const canvas = document.createElement('canvas');
     canvas.width = 640;
     canvas.height = 640;
@@ -1035,8 +1154,97 @@ export class ObjectDetector {
     const tensor = Tensor.fromImageData(imageData);
     const result = await this.engine.infer<Tensor>(tensor);
 
-    // Parse detections (placeholder)
-    return [];
+    // Parse YOLOv8 output format: [batch, 84, 8400]
+    // 84 = 4 (bbox) + 80 (classes)
+    // 8400 = number of predictions
+    const output = result.output.data as Float32Array;
+    const numClasses = 80;
+    const numPredictions = 8400;
+
+    const detections: Array<{
+      class: string;
+      confidence: number;
+      bbox: { x: number; y: number; width: number; height: number };
+    }> = [];
+
+    // Parse each prediction
+    for (let i = 0; i < numPredictions; i++) {
+      // YOLOv8 output is transposed: [1, 84, 8400]
+      const cx = output[i]!;
+      const cy = output[numPredictions + i]!;
+      const w = output[2 * numPredictions + i]!;
+      const h = output[3 * numPredictions + i]!;
+
+      // Find best class
+      let maxScore = 0;
+      let maxClassIdx = 0;
+      for (let c = 0; c < numClasses; c++) {
+        const score = output[(4 + c) * numPredictions + i]!;
+        if (score > maxScore) {
+          maxScore = score;
+          maxClassIdx = c;
+        }
+      }
+
+      if (maxScore >= threshold) {
+        // Convert from center format to corner format and scale to original image
+        const x = ((cx - w / 2) / 640) * origWidth;
+        const y = ((cy - h / 2) / 640) * origHeight;
+        const width = (w / 640) * origWidth;
+        const height = (h / 640) * origHeight;
+
+        detections.push({
+          class: ObjectDetector.COCO_CLASSES[maxClassIdx] || `class_${maxClassIdx}`,
+          confidence: maxScore,
+          bbox: { x, y, width, height },
+        });
+      }
+    }
+
+    // Apply Non-Maximum Suppression
+    return this.nms(detections, iouThreshold);
+  }
+
+  /** Non-Maximum Suppression to remove overlapping detections */
+  private nms(
+    detections: Array<{ class: string; confidence: number; bbox: { x: number; y: number; width: number; height: number } }>,
+    iouThreshold: number
+  ): Array<{ class: string; confidence: number; bbox: { x: number; y: number; width: number; height: number } }> {
+    // Sort by confidence
+    detections.sort((a, b) => b.confidence - a.confidence);
+
+    const kept: typeof detections = [];
+    const suppressed = new Set<number>();
+
+    for (let i = 0; i < detections.length; i++) {
+      if (suppressed.has(i)) continue;
+
+      kept.push(detections[i]!);
+
+      for (let j = i + 1; j < detections.length; j++) {
+        if (suppressed.has(j)) continue;
+        if (detections[i]!.class !== detections[j]!.class) continue;
+
+        const iou = this.computeIoU(detections[i]!.bbox, detections[j]!.bbox);
+        if (iou >= iouThreshold) {
+          suppressed.add(j);
+        }
+      }
+    }
+
+    return kept;
+  }
+
+  /** Compute Intersection over Union for two bounding boxes */
+  private computeIoU(
+    a: { x: number; y: number; width: number; height: number },
+    b: { x: number; y: number; width: number; height: number }
+  ): number {
+    const xOverlap = Math.max(0, Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x));
+    const yOverlap = Math.max(0, Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y));
+    const intersection = xOverlap * yOverlap;
+    const union = a.width * a.height + b.width * b.height - intersection;
+    return intersection / union;
   }
 
   dispose(): void {
@@ -1077,9 +1285,63 @@ export class TextEmbedder {
     return this.cosineSimilarity(emb1, emb2);
   }
 
+  /** Word piece vocabulary for text embeddings (subset) */
+  private static readonly VOCAB: Record<string, number> = {
+    '[PAD]': 0, '[UNK]': 1, '[CLS]': 2, '[SEP]': 3, '[MASK]': 4,
+    'the': 5, 'a': 6, 'an': 7, 'is': 8, 'are': 9, 'was': 10, 'were': 11,
+    'be': 12, 'been': 13, 'being': 14, 'have': 15, 'has': 16, 'had': 17,
+    'do': 18, 'does': 19, 'did': 20, 'will': 21, 'would': 22, 'could': 23,
+    'should': 24, 'may': 25, 'might': 26, 'must': 27, 'can': 28,
+    'to': 29, 'of': 30, 'in': 31, 'for': 32, 'on': 33, 'with': 34,
+    'at': 35, 'by': 36, 'from': 37, 'as': 38, 'into': 39, 'through': 40,
+    'and': 41, 'or': 42, 'but': 43, 'not': 44, 'no': 45, 'yes': 46,
+    'this': 47, 'that': 48, 'these': 49, 'those': 50,
+    'i': 51, 'you': 52, 'he': 53, 'she': 54, 'it': 55, 'we': 56, 'they': 57,
+    'what': 58, 'which': 59, 'who': 60, 'when': 61, 'where': 62, 'why': 63, 'how': 64,
+  };
+
+  /** Tokenize text using word piece approach */
   private tokenize(text: string): number[] {
-    // Simplified tokenization
-    return text.split(' ').map((_, i) => i);
+    const tokens: number[] = [2]; // [CLS] token
+
+    // Normalize and split
+    const words = text.toLowerCase()
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean);
+
+    for (const word of words) {
+      if (TextEmbedder.VOCAB[word] !== undefined) {
+        tokens.push(TextEmbedder.VOCAB[word]!);
+      } else {
+        // Try subword tokenization
+        let remaining = word;
+        let foundSubword = false;
+
+        while (remaining.length > 0) {
+          let matched = false;
+          for (let len = Math.min(remaining.length, 10); len > 0; len--) {
+            const subword = remaining.slice(0, len);
+            const key = foundSubword ? `##${subword}` : subword;
+            if (TextEmbedder.VOCAB[key] !== undefined) {
+              tokens.push(TextEmbedder.VOCAB[key]!);
+              remaining = remaining.slice(len);
+              matched = true;
+              foundSubword = true;
+              break;
+            }
+          }
+          if (!matched) {
+            // Unknown character, use [UNK]
+            tokens.push(1); // [UNK]
+            remaining = remaining.slice(1);
+          }
+        }
+      }
+    }
+
+    tokens.push(3); // [SEP] token
+    return tokens;
   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -1103,8 +1365,29 @@ export class TextEmbedder {
 
 export class SpeechRecognizer {
   private engine: InferenceEngine;
+  private sampleRate: number;
 
-  constructor(config?: Partial<ModelConfig>) {
+  // Whisper token vocabulary (subset for common words)
+  private static readonly WHISPER_VOCAB: Record<number, string> = {
+    50257: '<|startoftranscript|>',
+    50258: '<|en|>',
+    50259: '<|transcribe|>',
+    50260: '<|translate|>',
+    50261: '<|notimestamps|>',
+    50362: '<|endoftext|>',
+    // Common English tokens (simplified)
+    220: ' ', 262: ' the', 257: ' a', 318: ' I', 314: ' he', 340: ' she',
+    356: ' it', 284: ' to', 286: ' is', 373: ' was', 287: ' are', 326: ' we',
+    484: ' you', 290: ' of', 329: ' in', 379: ' that', 351: ' for', 319: ' on',
+    510: ' as', 416: ' with', 644: ' be', 423: ' at', 422: ' by',
+    691: ' this', 561: ' from', 1052: ' have', 468: ' an', 407: ' not',
+    393: ' but', 394: ' or', 291: ' and', 1243: ' what', 1521: ' when',
+    810: ' who', 2035: ' where', 1522: ' how', 460: ' can', 562: ' will',
+    531: ' they', 550: ' their', 534: ' his', 465: ' her',
+  };
+
+  constructor(config?: Partial<ModelConfig & { sampleRate?: number }>) {
+    this.sampleRate = config?.sampleRate ?? 16000;
     this.engine = new InferenceEngine({
       url: config?.url ?? 'https://models.philjs.dev/whisper-tiny.onnx',
       format: config?.format ?? 'onnx',
@@ -1116,20 +1399,251 @@ export class SpeechRecognizer {
     await this.engine.initialize();
   }
 
-  async transcribe(audio: Float32Array | AudioBuffer): Promise<string> {
+  /** Transcribe audio to text */
+  async transcribe(audio: Float32Array | AudioBuffer, language = 'en'): Promise<string> {
+    // Try Web Speech API first (if available and preferred)
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      try {
+        return await this.webSpeechTranscribe(audio, language);
+      } catch {
+        // Fall back to ONNX model
+      }
+    }
+
+    // Use ONNX Whisper model
+    return this.whisperTranscribe(audio, language);
+  }
+
+  /** Use Web Speech API for transcription (browser only) */
+  private async webSpeechTranscribe(audio: Float32Array | AudioBuffer, language: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      if (!SpeechRecognition) {
+        reject(new Error('Web Speech API not supported'));
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = language;
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        resolve(transcript);
+      };
+
+      recognition.onerror = (event: any) => {
+        reject(new Error(event.error));
+      };
+
+      // Play the audio to trigger recognition (requires user gesture context)
+      const audioContext = new AudioContext();
+      let buffer: AudioBuffer;
+
+      if (audio instanceof AudioBuffer) {
+        buffer = audio;
+      } else {
+        buffer = audioContext.createBuffer(1, audio.length, this.sampleRate);
+        buffer.getChannelData(0).set(audio);
+      }
+
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      source.start();
+
+      recognition.start();
+
+      // Timeout after audio duration + 2 seconds
+      setTimeout(() => {
+        recognition.stop();
+        reject(new Error('Transcription timeout'));
+      }, (buffer.duration * 1000) + 2000);
+    });
+  }
+
+  /** Use Whisper ONNX model for transcription */
+  private async whisperTranscribe(audio: Float32Array | AudioBuffer, language: string): Promise<string> {
     let samples: Float32Array;
 
     if (audio instanceof AudioBuffer) {
       samples = audio.getChannelData(0);
+
+      // Resample to 16kHz if needed
+      if (audio.sampleRate !== 16000) {
+        samples = this.resample(samples, audio.sampleRate, 16000);
+      }
     } else {
       samples = audio;
     }
 
-    const tensor = new Tensor(samples, [1, samples.length], 'float32');
+    // Compute log-mel spectrogram (80 mel bins, 30s max)
+    const melSpectrogram = this.computeMelSpectrogram(samples);
+
+    // Create input tensor
+    const tensor = new Tensor(melSpectrogram, [1, 80, 3000], 'float32');
     const result = await this.engine.infer<Tensor>(tensor);
 
-    // Decode output (placeholder)
-    return 'Transcribed text';
+    // Decode output tokens
+    return this.decodeTokens(result.output.data as Float32Array);
+  }
+
+  /** Resample audio to target sample rate */
+  private resample(samples: Float32Array, fromRate: number, toRate: number): Float32Array {
+    const ratio = fromRate / toRate;
+    const newLength = Math.round(samples.length / ratio);
+    const resampled = new Float32Array(newLength);
+
+    for (let i = 0; i < newLength; i++) {
+      const srcIndex = i * ratio;
+      const lower = Math.floor(srcIndex);
+      const upper = Math.min(lower + 1, samples.length - 1);
+      const fraction = srcIndex - lower;
+
+      resampled[i] = samples[lower]! * (1 - fraction) + samples[upper]! * fraction;
+    }
+
+    return resampled;
+  }
+
+  /** Compute log-mel spectrogram from audio samples */
+  private computeMelSpectrogram(samples: Float32Array): Float32Array {
+    const nFft = 400;
+    const hopLength = 160;
+    const nMels = 80;
+    const maxFrames = 3000;
+
+    // Pad samples to 30 seconds
+    const targetLength = 16000 * 30;
+    const padded = new Float32Array(targetLength);
+    padded.set(samples.slice(0, Math.min(samples.length, targetLength)));
+
+    // Compute STFT
+    const numFrames = Math.min(Math.floor((padded.length - nFft) / hopLength) + 1, maxFrames);
+    const spectrogram = new Float32Array(nMels * maxFrames);
+
+    // Mel filter bank (simplified - would normally be precomputed)
+    const melFilters = this.createMelFilterBank(nFft, nMels, 16000);
+
+    for (let frame = 0; frame < numFrames; frame++) {
+      const start = frame * hopLength;
+      const frameData = padded.slice(start, start + nFft);
+
+      // Apply Hanning window
+      for (let i = 0; i < nFft; i++) {
+        frameData[i]! *= 0.5 * (1 - Math.cos(2 * Math.PI * i / (nFft - 1)));
+      }
+
+      // FFT (simplified DFT for now)
+      const fftResult = this.dft(frameData);
+
+      // Apply mel filter bank
+      for (let mel = 0; mel < nMels; mel++) {
+        let sum = 0;
+        for (let k = 0; k < nFft / 2 + 1; k++) {
+          sum += fftResult[k]! * melFilters[mel * (nFft / 2 + 1) + k]!;
+        }
+        // Log compression
+        spectrogram[mel * maxFrames + frame] = Math.log(Math.max(sum, 1e-10));
+      }
+    }
+
+    return spectrogram;
+  }
+
+  /** Create mel filter bank */
+  private createMelFilterBank(nFft: number, nMels: number, sampleRate: number): Float32Array {
+    const fMin = 0;
+    const fMax = sampleRate / 2;
+    const melMin = this.hzToMel(fMin);
+    const melMax = this.hzToMel(fMax);
+
+    const melPoints = new Float32Array(nMels + 2);
+    for (let i = 0; i < nMels + 2; i++) {
+      melPoints[i] = this.melToHz(melMin + (melMax - melMin) * i / (nMels + 1));
+    }
+
+    const binPoints = new Float32Array(nMels + 2);
+    for (let i = 0; i < nMels + 2; i++) {
+      binPoints[i] = Math.floor((nFft + 1) * melPoints[i]! / sampleRate);
+    }
+
+    const filters = new Float32Array(nMels * (nFft / 2 + 1));
+    for (let mel = 0; mel < nMels; mel++) {
+      for (let k = Math.floor(binPoints[mel]!); k < Math.floor(binPoints[mel + 2]!); k++) {
+        if (k < binPoints[mel + 1]!) {
+          filters[mel * (nFft / 2 + 1) + k] =
+            (k - binPoints[mel]!) / (binPoints[mel + 1]! - binPoints[mel]!);
+        } else {
+          filters[mel * (nFft / 2 + 1) + k] =
+            (binPoints[mel + 2]! - k) / (binPoints[mel + 2]! - binPoints[mel + 1]!);
+        }
+      }
+    }
+
+    return filters;
+  }
+
+  private hzToMel(hz: number): number {
+    return 2595 * Math.log10(1 + hz / 700);
+  }
+
+  private melToHz(mel: number): number {
+    return 700 * (Math.pow(10, mel / 2595) - 1);
+  }
+
+  /** Simplified DFT (for production, use FFT) */
+  private dft(signal: Float32Array): Float32Array {
+    const n = signal.length;
+    const result = new Float32Array(n / 2 + 1);
+
+    for (let k = 0; k <= n / 2; k++) {
+      let real = 0, imag = 0;
+      for (let t = 0; t < n; t++) {
+        const angle = -2 * Math.PI * k * t / n;
+        real += signal[t]! * Math.cos(angle);
+        imag += signal[t]! * Math.sin(angle);
+      }
+      result[k] = Math.sqrt(real * real + imag * imag);
+    }
+
+    return result;
+  }
+
+  /** Decode Whisper output tokens to text */
+  private decodeTokens(output: Float32Array): string {
+    const tokens: number[] = [];
+    const vocabSize = 51865; // Whisper vocab size
+
+    // Greedy decoding
+    for (let t = 0; t < output.length / vocabSize; t++) {
+      let maxProb = -Infinity;
+      let maxToken = 0;
+
+      for (let v = 0; v < vocabSize; v++) {
+        const prob = output[t * vocabSize + v]!;
+        if (prob > maxProb) {
+          maxProb = prob;
+          maxToken = v;
+        }
+      }
+
+      // Stop at end of text token
+      if (maxToken === 50362) break;
+
+      tokens.push(maxToken);
+    }
+
+    // Convert tokens to text
+    let text = '';
+    for (const token of tokens) {
+      if (SpeechRecognizer.WHISPER_VOCAB[token]) {
+        text += SpeechRecognizer.WHISPER_VOCAB[token];
+      }
+    }
+
+    return text.trim();
   }
 
   dispose(): void {

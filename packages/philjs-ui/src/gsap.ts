@@ -1,55 +1,60 @@
+import { createSignal, onCleanup } from 'philjs';
 
-export interface ScrollTriggerConfig {
-    trigger: string | Element;
-    start?: string;
-    end?: string;
-    scrub?: boolean | number;
-    markers?: boolean;
+export interface ScrollTriggerOptions {
+    threshold?: number;
+    rootMargin?: string;
+    once?: boolean;
 }
 
-export interface AnimationConfig {
-    x?: number | string;
-    y?: number | string;
-    opacity?: number;
-    duration?: number;
-    stagger?: number;
-    [key: string]: any;
-}
+export function useScrollTrigger(selector: string | HTMLElement, options: ScrollTriggerOptions = {}) {
+    const [isVisible, setIsVisible] = createSignal(false);
 
-export function useScrollTrigger(trigger: string, config: {
-    onEnter?: () => void;
-    onLeave?: () => void;
-    animation?: AnimationConfig;
-}) {
-    console.log('GSAP: Registering ScrollTrigger for', trigger);
+    // We assume this hook is called inside a component setup
+    // Effect will run when component mounts
 
-    // Mock GSAP Timeline
-    const tl = {
-        to: (target: string, vars: AnimationConfig) => {
-            console.log(`GSAP: Animate "${target}" to`, vars);
-            return tl;
-        },
-        from: (target: string, vars: AnimationConfig) => {
-            console.log(`GSAP: Animate "${target}" from`, vars);
-            return tl;
+    const initObserver = () => {
+        if (typeof window === 'undefined') return;
+
+        const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        if (!el) {
+            console.warn('ScrollTrigger: Element not found', selector);
+            return;
         }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    if (options.once) {
+                        observer.disconnect();
+                    }
+                } else {
+                    if (!options.once) {
+                        setIsVisible(false);
+                    }
+                }
+            });
+        }, {
+            threshold: options.threshold || 0.1,
+            rootMargin: options.rootMargin || '0px'
+        });
+
+        observer.observe(el);
+        return observer;
     };
 
-    if (config.animation) {
-        tl.to(trigger, config.animation);
-    }
+    let observer: IntersectionObserver | undefined;
 
-    // Simulate scroll event
-    const mockScroll = () => {
-        if (Math.random() > 0.5 && config.onEnter) {
-            console.log('GSAP: Trigger Enter');
-            config.onEnter();
+    // Defer execution until DOM is likely ready (microtask)
+    Promise.resolve().then(() => {
+        observer = initObserver();
+    });
+
+    onCleanup(() => {
+        if (observer) {
+            observer.disconnect();
         }
-    };
+    });
 
-    if (typeof window !== 'undefined') {
-        window.addEventListener('scroll', mockScroll);
-    }
-
-    return tl;
+    return isVisible;
 }

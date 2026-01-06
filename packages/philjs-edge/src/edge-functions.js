@@ -115,7 +115,6 @@ export function logger(options) {
         const response = await next();
         const duration = Date.now() - start;
         const logMessage = format(ctx, duration, response.status);
-        console.log(logMessage);
         return response;
     };
 }

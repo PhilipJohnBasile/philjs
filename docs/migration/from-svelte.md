@@ -1,29 +1,27 @@
-# Migrating from Svelte
+# Migrating from Svelte to PhilJS
 
-Complete guide for migrating Svelte applications to PhilJS.
+This guide helps Svelte developers transition to PhilJS, covering the conceptual shift from compiler-based to runtime reactivity.
 
+## Quick Comparison
 
-## Overview
+| Svelte | PhilJS | Notes |
+|--------|--------|-------|
+| `let x = 0` (reactive) | `signal(0)` | Explicit reactivity |
+| `$:` reactive statement | `effect()` | Auto-tracking |
+| `$: derived = x * 2` | `computed()` | Derived values |
+| `{#if}` | `{condition && ...}` | JSX conditionals |
+| `{#each}` | `<For>` or `.map()` | List rendering |
+| `bind:value` | Manual binding | Two-way binding |
+| `$store` | `store()` | Store subscription |
 
-Svelte and PhilJS share a similar philosophy of fine-grained reactivity and compile-time optimizations. This guide helps you migrate your Svelte applications to PhilJS.
+## Core Concepts
 
-## Key Differences
+### Reactive Variables
 
-| Concept | Svelte | PhilJS |
-|---------|--------|--------|
-| Reactivity | Compiler magic | Explicit signals |
-| State | `let` with `$:` | `signal()` |
-| Derived State | `$:` statements | `memo()` |
-| Side Effects | `$:` statements | `effect()` |
-| Templates | Svelte syntax | JSX |
-| Components | `.svelte` files | `.tsx` functions |
+**Svelte let → PhilJS signal**
 
-## State Management
-
-### Reactive Variables → signal()
-
-**Svelte:**
 ```svelte
+<!-- Svelte -->
 <script>
   let count = 0;
 
@@ -32,398 +30,378 @@ Svelte and PhilJS share a similar philosophy of fine-grained reactivity and comp
   }
 </script>
 
-<div>
-  <p>Count: {count}</p>
-  <button on:click={increment}>Increment</button>
-</div>
+<button on:click={increment}>
+  Count: {count}
+</button>
 ```
 
-**PhilJS:**
 ```tsx
+// PhilJS
 import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
 
-  const increment = () => {
-    count.set(count() + 1);
-  };
-
   return (
-    <div>
-      <p>Count: {count()}</p>
-      <button onClick={increment}>Increment</button>
-    </div>
+    <button onClick={() => count.set(count() + 1)}>
+      Count: {count()}
+    </button>
   );
 }
 ```
 
-**Key differences:**
-- Explicit `signal()` vs implicit reactivity
-- `.set()` for updates vs direct assignment
-- Function calls to read: `count()`
+**Key Differences:**
+- PhilJS reactivity is explicit via `signal()`
+- Access value with `count()`, not just `count`
+- Update with `count.set(x)`, not `count = x`
 
-### Reactive Objects
+### Reactive Statements
 
-**Svelte:**
+**Svelte $: → PhilJS effect**
+
 ```svelte
-<script>
-  let user = {
-    name: 'Alice',
-    age: 30
-  };
-
-  function updateName() {
-    user.name = 'Bob';
-    user = user; // Trigger reactivity
-  }
-</script>
-```
-
-**PhilJS:**
-```tsx
-const user = signal({
-  name: 'Alice',
-  age: 30
-});
-
-const updateName = () => {
-  user.set({
-    ...user(),
-    name: 'Bob'
-  });
-};
-```
-
-## Derived State
-
-### $: statements → memo()
-
-**Svelte:**
-```svelte
+<!-- Svelte -->
 <script>
   let count = 0;
+
+  $: console.log('Count changed:', count);
   $: doubled = count * 2;
-  $: quadrupled = doubled * 2;
-</script>
-
-<p>Doubled: {doubled}</p>
-<p>Quadrupled: {quadrupled}</p>
-```
-
-**PhilJS:**
-```tsx
-const count = signal(0);
-const doubled = memo(() => count() * 2);
-const quadrupled = memo(() => doubled() * 2);
-
-return (
-  <div>
-    <p>Doubled: {doubled()}</p>
-    <p>Quadrupled: {quadrupled()}</p>
-  </div>
-);
-```
-
-## Side Effects
-
-### Reactive Statements → effect()
-
-**Svelte:**
-```svelte
-<script>
-  let count = 0;
-
-  $: console.log('Count:', count);
-
-  $: {
-    if (count > 10) {
-      console.log('Count exceeded 10!');
-    }
-  }
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-const count = signal(0);
+// PhilJS
+import { signal, computed, effect } from '@philjs/core';
 
-effect(() => {
-  console.log('Count:', count());
-});
+function Component() {
+  const count = signal(0);
 
-effect(() => {
-  if (count() > 10) {
-    console.log('Count exceeded 10!');
-  }
-});
-```
-
-### onMount / onDestroy → effect()
-
-**Svelte:**
-```svelte
-<script>
-  import { onMount, onDestroy } from 'svelte';
-
-  let interval;
-
-  onMount(() => {
-    console.log('Component mounted');
-
-    interval = setInterval(() => {
-      console.log('Tick');
-    }, 1000);
+  // Side effect
+  effect(() => {
+    console.log('Count changed:', count());
   });
 
-  onDestroy(() => {
-    console.log('Component destroyed');
-    clearInterval(interval);
-  });
+  // Derived value
+  const doubled = computed(() => count() * 2);
+
+  return <div>{count()} x 2 = {doubled()}</div>;
+}
+```
+
+### Stores
+
+**Svelte store → PhilJS signal/store**
+
+```svelte
+<!-- Svelte -->
+<script>
+  import { writable, derived } from 'svelte/store';
+
+  const count = writable(0);
+  const doubled = derived(count, $count => $count * 2);
+
+  function increment() {
+    count.update(n => n + 1);
+  }
 </script>
+
+<button on:click={increment}>
+  {$count} x 2 = {$doubled}
+</button>
 ```
 
-**PhilJS:**
 ```tsx
-effect(() => {
-  console.log('Component mounted');
+// PhilJS
+import { signal, computed } from '@philjs/core';
 
-  const interval = setInterval(() => {
-    console.log('Tick');
-  }, 1000);
+// Can be defined outside component
+const count = signal(0);
+const doubled = computed(() => count() * 2);
 
-  return () => {
-    console.log('Component destroyed');
-    clearInterval(interval);
-  };
-});
+function Counter() {
+  return (
+    <button onClick={() => count.set(count() + 1)}>
+      {count()} x 2 = {doubled()}
+    </button>
+  );
+}
 ```
 
-## Templates vs JSX
+## Template → JSX
 
-### Template Syntax Conversion
+### Conditionals
 
-**Svelte:**
+**Svelte {#if} → JSX**
+
 ```svelte
-<div>
-  <!-- Interpolation -->
-  <p>{message}</p>
-
-  <!-- Attributes -->
-  <input value={text} on:input={handleInput} />
-
-  <!-- Conditional -->
-  {#if show}
-    <div>Visible</div>
-  {:else}
-    <div>Hidden</div>
-  {/if}
-
-  <!-- List -->
-  <ul>
-    {#each items as item (item.id)}
-      <li>{item.name}</li>
-    {/each}
-  </ul>
-
-  <!-- Class binding -->
-  <div class:active={isActive}>Content</div>
-
-  <!-- Style binding -->
-  <div style="color: {textColor}">Styled</div>
-</div>
+<!-- Svelte -->
+{#if loggedIn}
+  <Dashboard />
+{:else if pending}
+  <Loading />
+{:else}
+  <Login />
+{/if}
 ```
 
-**PhilJS JSX:**
 ```tsx
-return (
-  <div>
-    {/* Interpolation */}
-    <p>{message()}</p>
+// PhilJS
+function Content(props) {
+  if (props.loggedIn()) {
+    return <Dashboard />;
+  }
+  if (props.pending()) {
+    return <Loading />;
+  }
+  return <Login />;
+}
 
-    {/* Attributes */}
-    <input value={text()} onInput={handleInput} />
-
-    {/* Conditional */}
-    {show() ? (
-      <div>Visible</div>
-    ) : (
-      <div>Hidden</div>
-    )}
-
-    {/* List */}
-    <ul>
-      {items().map(item => (
-        <li key={item.id}>{item.name}</li>
-      ))}
-    </ul>
-
-    {/* Class binding */}
-    <div className={isActive() ? 'active' : ''}>Content</div>
-
-    {/* Style binding */}
-    <div style={{ color: textColor() }}>Styled</div>
-  </div>
-);
+// Or inline
+{loggedIn() ? <Dashboard /> : pending() ? <Loading /> : <Login />}
 ```
 
-### Svelte Directives → JSX Patterns
+### Lists
 
-**bind:value:**
+**Svelte {#each} → For component**
 
-**Svelte:**
 ```svelte
-<input bind:value={text} />
+<!-- Svelte -->
+{#each items as item (item.id)}
+  <li>{item.name}</li>
+{:else}
+  <li>No items</li>
+{/each}
 ```
 
-**PhilJS:**
 ```tsx
-<input
-  value={text()}
-  onInput={(e) => text.set(e.target.value)}
-/>
+// PhilJS
+import { For, Show } from '@philjs/core';
+
+function List(props) {
+  return (
+    <Show
+      when={props.items().length > 0}
+      fallback={<li>No items</li>}
+    >
+      <For each={props.items()}>
+        {item => <li>{item.name}</li>}
+      </For>
+    </Show>
+  );
+}
 ```
 
-**bind:checked:**
+### Await Blocks
 
-**Svelte:**
+**Svelte {#await} → Suspense/resource**
+
 ```svelte
-<input type="checkbox" bind:checked={isChecked} />
+<!-- Svelte -->
+{#await fetchData()}
+  <p>Loading...</p>
+{:then data}
+  <p>{data.message}</p>
+{:catch error}
+  <p>Error: {error.message}</p>
+{/await}
 ```
 
-**PhilJS:**
 ```tsx
-<input
-  type="checkbox"
-  checked={isChecked()}
-  onChange={(e) => isChecked.set(e.target.checked)}
-/>
+// PhilJS
+import { Suspense, ErrorBoundary, createResource } from '@philjs/core';
+
+function AsyncData() {
+  const [data] = createResource(fetchData);
+
+  return (
+    <ErrorBoundary fallback={(error) => <p>Error: {error.message}</p>}>
+      <Suspense fallback={<p>Loading...</p>}>
+        <p>{data()?.message}</p>
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
 ```
 
-**on:event:**
+## Event Handling
 
-**Svelte:**
+**Svelte on: → JSX events**
+
 ```svelte
+<!-- Svelte -->
 <button on:click={handleClick}>Click</button>
-<input on:input={handleInput} />
-<div on:mouseenter={handleHover}></div>
+<button on:click|preventDefault={handleClick}>Click</button>
+<input on:input={handleInput} on:keydown|enter={submit} />
 ```
 
-**PhilJS:**
 ```tsx
-<button onClick={handleClick}>Click</button>
-<input onInput={handleInput} />
-<div onMouseEnter={handleHover}></div>
+// PhilJS
+function Form() {
+  const handleClick = (e) => {
+    e.preventDefault(); // Manual if needed
+    console.log('clicked');
+  };
+
+  return (
+    <>
+      <button onClick={handleClick}>Click</button>
+      <input
+        onInput={handleInput}
+        onKeyDown={(e) => e.key === 'Enter' && submit()}
+      />
+    </>
+  );
+}
+```
+
+## Bindings
+
+### Two-Way Binding
+
+**Svelte bind: → Manual binding**
+
+```svelte
+<!-- Svelte -->
+<script>
+  let name = '';
+  let checked = false;
+</script>
+
+<input bind:value={name} />
+<input type="checkbox" bind:checked={checked} />
+```
+
+```tsx
+// PhilJS
+import { signal } from '@philjs/core';
+
+function Form() {
+  const name = signal('');
+  const checked = signal(false);
+
+  return (
+    <>
+      <input
+        value={name()}
+        onInput={(e) => name.set(e.target.value)}
+      />
+      <input
+        type="checkbox"
+        checked={checked()}
+        onChange={(e) => checked.set(e.target.checked)}
+      />
+    </>
+  );
+}
+```
+
+### Element Binding
+
+**Svelte bind:this → ref callback**
+
+```svelte
+<!-- Svelte -->
+<script>
+  let inputElement;
+
+  function focus() {
+    inputElement.focus();
+  }
+</script>
+
+<input bind:this={inputElement} />
+```
+
+```tsx
+// PhilJS
+function Form() {
+  let inputElement;
+
+  const focus = () => inputElement?.focus();
+
+  return <input ref={(el) => inputElement = el} />;
+}
 ```
 
 ## Component Communication
 
 ### Props
 
-**Svelte:**
 ```svelte
-<!-- Parent.svelte -->
-<Child message={greeting} {count} />
-
-<!-- Child.svelte -->
+<!-- Svelte -->
 <script>
-  export let message;
-  export let count;
+  export let name;
+  export let count = 0;
 </script>
 
-<div>{message} - {count}</div>
+<p>{name}: {count}</p>
 ```
 
-**PhilJS:**
 ```tsx
-// Parent
-<Child message={greeting()} count={count()} />
-
-// Child
-interface ChildProps {
-  message: string;
-  count: number;
+// PhilJS
+interface Props {
+  name: string;
+  count?: number;
 }
 
-function Child({ message, count }: ChildProps) {
-  return <div>{message} - {count}</div>;
+function Component(props: Props) {
+  const count = props.count ?? 0;
+  return <p>{props.name}: {count}</p>;
 }
 ```
 
-### Events
+### Events/Callbacks
 
-**Svelte:**
+**Svelte createEventDispatcher → callback props**
+
 ```svelte
-<!-- Child.svelte -->
+<!-- Svelte Child -->
 <script>
   import { createEventDispatcher } from 'svelte';
-
   const dispatch = createEventDispatcher();
 
   function handleClick() {
-    dispatch('update', { value: 'new value' });
+    dispatch('message', { text: 'Hello' });
   }
 </script>
 
-<button on:click={handleClick}>Update</button>
-
-<!-- Parent.svelte -->
-<Child on:update={handleUpdate} />
+<!-- Parent -->
+<Child on:message={handleMessage} />
 ```
 
-**PhilJS:**
 ```tsx
-// Child
-interface ChildProps {
-  onUpdate: (value: { value: string }) => void;
-}
-
-function Child({ onUpdate }: ChildProps) {
-  const handleClick = () => {
-    onUpdate({ value: 'new value' });
-  };
-
-  return <button onClick={handleClick}>Update</button>;
+// PhilJS
+function Child(props: { onMessage: (data: { text: string }) => void }) {
+  return (
+    <button onClick={() => props.onMessage({ text: 'Hello' })}>
+      Send
+    </button>
+  );
 }
 
 // Parent
-<Child onUpdate={handleUpdate} />
+<Child onMessage={handleMessage} />
 ```
 
-### Slots → children
+### Slots → Children
 
-**Svelte:**
 ```svelte
-<!-- Card.svelte -->
+<!-- Svelte -->
 <div class="card">
   <slot name="header" />
   <slot />
   <slot name="footer" />
 </div>
-
-<!-- Usage -->
-<Card>
-  <h1 slot="header">Title</h1>
-  <p>Content</p>
-  <div slot="footer">Footer</div>
-</Card>
 ```
 
-**PhilJS:**
 ```tsx
-// Card
-interface CardProps {
-  header?: JSX.Element;
-  children: JSX.Element;
-  footer?: JSX.Element;
-}
-
-function Card({ header, children, footer }: CardProps) {
+// PhilJS
+function Card(props) {
   return (
-    <div className="card">
-      {header}
-      {children}
-      {footer}
+    <div class="card">
+      {props.header}
+      {props.children}
+      {props.footer}
     </div>
   );
 }
@@ -431,129 +409,39 @@ function Card({ header, children, footer }: CardProps) {
 // Usage
 <Card
   header={<h1>Title</h1>}
-  footer={<div>Footer</div>}
+  footer={<button>Submit</button>}
 >
   <p>Content</p>
 </Card>
 ```
 
-## Stores → Signals
-
-### Writable Stores
-
-**Svelte:**
-```typescript
-import { writable } from 'svelte/store';
-
-export const count = writable(0);
-
-// Component
-<script>
-  import { count } from './stores';
-
-  function increment() {
-    $count += 1;
-  }
-</script>
-
-<p>Count: {$count}</p>
-```
-
-**PhilJS:**
-```typescript
-import { signal } from '@philjs/core';
-
-export const count = signal(0);
-
-// Component
-import { count } from './stores';
-
-function Counter() {
-  const increment = () => {
-    count.set(count() + 1);
-  };
-
-  return <p>Count: {count()}</p>;
-}
-```
-
-### Derived Stores
-
-**Svelte:**
-```typescript
-import { writable, derived } from 'svelte/store';
-
-const count = writable(0);
-const doubled = derived(count, $count => $count * 2);
-```
-
-**PhilJS:**
-```typescript
-import { signal, memo } from '@philjs/core';
-
-const count = signal(0);
-const doubled = memo(() => count() * 2);
-```
-
-### Readable Stores
-
-**Svelte:**
-```typescript
-import { readable } from 'svelte/store';
-
-const time = readable(new Date(), (set) => {
-  const interval = setInterval(() => {
-    set(new Date());
-  }, 1000);
-
-  return () => clearInterval(interval);
-});
-```
-
-**PhilJS:**
-```typescript
-import { signal, effect } from '@philjs/core';
-
-const time = signal(new Date());
-
-effect(() => {
-  const interval = setInterval(() => {
-    time.set(new Date());
-  }, 1000);
-
-  return () => clearInterval(interval);
-});
-```
-
 ## Context
 
-**Svelte:**
+**Svelte setContext/getContext → createContext**
+
 ```svelte
-<!-- Parent.svelte -->
+<!-- Svelte -->
 <script>
+  // Parent
   import { setContext } from 'svelte';
+  setContext('theme', { color: 'dark' });
 
-  setContext('theme', 'dark');
-</script>
-
-<!-- Child.svelte -->
-<script>
+  // Child
   import { getContext } from 'svelte';
-
-  const theme = getContext('theme');
+  const { color } = getContext('theme');
 </script>
 ```
 
-**PhilJS:**
 ```tsx
+// PhilJS
 import { createContext, useContext } from '@philjs/core';
 
-const ThemeContext = createContext('light');
+const ThemeContext = createContext({ color: 'light' });
 
 // Parent
-function Parent() {
+function App() {
   return (
-    <ThemeContext.Provider value="dark">
+    <ThemeContext.Provider value={{ color: 'dark' }}>
       <Child />
     </ThemeContext.Provider>
   );
@@ -561,253 +449,206 @@ function Parent() {
 
 // Child
 function Child() {
-  const theme = useContext(ThemeContext);
-  return <div>{theme}</div>;
+  const { color } = useContext(ThemeContext);
+  return <div>Theme: {color}</div>;
 }
 ```
 
-## Routing
+## Lifecycle
 
-### SvelteKit → PhilJS Router
+**Svelte onMount/onDestroy → PhilJS lifecycle**
 
-**SvelteKit:**
 ```svelte
-<!-- src/routes/+layout.svelte -->
-<nav>
-  <a href="/">Home</a>
-  <a href="/about">About</a>
-</nav>
-
-<slot />
-
-<!-- src/routes/+page.svelte -->
-<h1>Home</h1>
-
-<!-- src/routes/about/+page.svelte -->
-<h1>About</h1>
-
-<!-- src/routes/users/[id]/+page.svelte -->
+<!-- Svelte -->
 <script>
-  import { page } from '$app/stores';
-  $: userId = $page.params.id;
+  import { onMount, onDestroy, beforeUpdate, afterUpdate } from 'svelte';
+
+  onMount(() => {
+    console.log('Mounted');
+    return () => console.log('Cleanup');
+  });
+
+  onDestroy(() => console.log('Destroyed'));
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-import { Router, Route, Link, useParams } from '@philjs/router';
+// PhilJS
+import { onMount, onCleanup } from '@philjs/core';
 
-function App() {
-  return (
-    <>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-      </nav>
+function Component() {
+  onMount(() => {
+    console.log('Mounted');
+  });
 
-      <Router>
-        <Route path="/" component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/users/:id" component={User} />
-      </Router>
-    </>
-  );
+  onCleanup(() => {
+    console.log('Destroyed');
+  });
+
+  return <div>Content</div>;
 }
-
-function User() {
-  const { id } = useParams();
-  return <div>User ID: {id}</div>;
-}
-```
-
-## Transitions → CSS/JS Animations
-
-**Svelte:**
-```svelte
-<script>
-  import { fade, fly } from 'svelte/transition';
-
-  let visible = true;
-</script>
-
-{#if visible}
-  <div transition:fade>Fading</div>
-  <div in:fly={{ y: 200 }} out:fade>Flying</div>
-{/if}
-```
-
-**PhilJS:**
-```tsx
-const visible = signal(true);
-
-// Use CSS transitions
-<div
-  className={visible() ? 'fade-in' : 'fade-out'}
-  style={{
-    transition: 'opacity 0.3s',
-    opacity: visible() ? 1 : 0
-  }}
->
-  Fading
-</div>
-
-// Or use animation libraries like Framer Motion
 ```
 
 ## Actions → Directives
 
-**Svelte:**
+**Svelte use: → Custom directive or ref**
+
 ```svelte
+<!-- Svelte -->
 <script>
-  function clickOutside(node) {
-    const handleClick = (event) => {
-      if (!node.contains(event.target)) {
-        node.dispatchEvent(new CustomEvent('outclick'));
-      }
+  function clickOutside(node, callback) {
+    const handleClick = (e) => {
+      if (!node.contains(e.target)) callback();
     };
-
-    document.addEventListener('click', handleClick, true);
-
+    document.addEventListener('click', handleClick);
     return {
       destroy() {
-        document.removeEventListener('click', handleClick, true);
+        document.removeEventListener('click', handleClick);
       }
     };
   }
 </script>
 
-<div use:clickOutside on:outclick={handleOutsideClick}>
-  Content
-</div>
+<div use:clickOutside={handleOutsideClick}>Content</div>
 ```
 
-**PhilJS:**
 ```tsx
-function useClickOutside(onOutsideClick: () => void) {
-  let ref: HTMLElement | undefined;
+// PhilJS - as a hook
+import { effect } from '@philjs/core';
 
+function useClickOutside(ref: { current: HTMLElement | null }, callback: () => void) {
   effect(() => {
-    if (!ref) return;
-
-    const handleClick = (event: MouseEvent) => {
-      if (!ref.contains(event.target as Node)) {
-        onOutsideClick();
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        callback();
       }
     };
-
-    document.addEventListener('click', handleClick, true);
-
-    return () => {
-      document.removeEventListener('click', handleClick, true);
-    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   });
-
-  return ref;
 }
 
 // Usage
-function Component() {
-  const ref = useClickOutside(() => console.log('Clicked outside'));
+function Dropdown() {
+  const ref = { current: null as HTMLElement | null };
+  useClickOutside(ref, () => close());
 
-  return <div ref={ref}>Content</div>;
+  return <div ref={(el) => ref.current = el}>Content</div>;
 }
+```
+
+## Transitions
+
+**Svelte transitions → CSS or animation libraries**
+
+```svelte
+<!-- Svelte -->
+<script>
+  import { fade, slide } from 'svelte/transition';
+</script>
+
+{#if visible}
+  <div transition:fade>Fading content</div>
+{/if}
+```
+
+```tsx
+// PhilJS - CSS-based
+function FadeIn(props) {
+  return (
+    <div class={props.visible() ? 'fade-in' : 'fade-out'}>
+      {props.children}
+    </div>
+  );
+}
+
+// Or use @philjs/motion
+import { Motion } from '@philjs/motion';
+
+<Motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: visible() ? 1 : 0 }}
+>
+  Content
+</Motion.div>
+```
+
+## Routing
+
+**SvelteKit → PhilJS Router**
+
+```svelte
+<!-- SvelteKit -->
+<script>
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+</script>
+
+<p>Current: {$page.url.pathname}</p>
+<button on:click={() => goto('/about')}>About</button>
+```
+
+```tsx
+// PhilJS
+import { useRoute, navigate, Link } from '@philjs/router';
+
+function Nav() {
+  const route = useRoute();
+
+  return (
+    <>
+      <p>Current: {route.path}</p>
+      <button onClick={() => navigate('/about')}>About</button>
+      <Link to="/about">About</Link>
+    </>
+  );
+}
+```
+
+## Common Gotchas
+
+### 1. Explicit reactivity
+```tsx
+// Svelte: any `let` is reactive
+// PhilJS: must use signal()
+const count = signal(0);  // Not just `let count = 0`
+```
+
+### 2. Access values with ()
+```tsx
+// Svelte: {count}
+// PhilJS: {count()}
+<div>{count()}</div>
+```
+
+### 3. No compiler magic
+```tsx
+// Svelte: $: doubled = count * 2
+// PhilJS: explicit computed
+const doubled = computed(() => count() * 2);
+```
+
+### 4. Immutable updates
+```tsx
+// Svelte can mutate
+items = [...items, newItem];  // Also works: items.push(newItem); items = items;
+
+// PhilJS requires new reference
+items.set([...items(), newItem]);
 ```
 
 ## Migration Strategy
 
-### 1. File-by-File Conversion
+1. **Understand the model**: Svelte compiles away reactivity; PhilJS is runtime
+2. **Start with stores**: Global state is similar
+3. **Convert components**: Bottom-up, leaf components first
+4. **Update templates**: {#if} → JSX, {#each} → For/map
+5. **Handle actions**: Convert to hooks or ref callbacks
 
-1. Convert `.svelte` files to `.tsx`
-2. Replace `<script>` with function body
-3. Convert template to JSX
-4. Update reactivity
+## Benefits After Migration
 
-### 2. Conversion Checklist
-
-- [ ] Replace `let` with `signal()`
-- [ ] Replace `$:` derived with `memo()`
-- [ ] Replace `$:` effects with `effect()`
-- [ ] Convert template to JSX
-- [ ] Replace `bind:value` with controlled inputs
-- [ ] Update event handlers (`on:click` → `onClick`)
-- [ ] Convert lifecycle hooks to effects
-- [ ] Replace stores with signals
-- [ ] Update routing
-
-### 3. Automated Patterns
-
-```bash
-# Reactive variables
-s/let (\w+) = /const \1 = signal(/g
-
-# Auto-subscriptions
-s/\$(\w+)/\1()/g
-
-# Events
-s/on:(\w+)/on${capitalize(\1)}/g
-```
-
-## Common Pitfalls
-
-### Remember Function Calls
-
-```tsx
-// ❌ Svelte habit (auto-subscription)
-<p>Count: {count}</p>
-
-// ✅ PhilJS (explicit call)
-<p>Count: {count()}</p>
-```
-
-### Immutable Updates
-
-```tsx
-// ❌ Svelte habit (direct mutation)
-count += 1;
-user.name = 'Bob';
-
-// ✅ PhilJS (immutable updates)
-count.set(count() + 1);
-user.set({ ...user(), name: 'Bob' });
-```
-
-### Event Handler Syntax
-
-```tsx
-// ❌ Svelte habit
-<button on:click={handleClick}>
-
-// ✅ PhilJS
-<button onClick={handleClick}>
-```
-
-### Conditional Rendering
-
-```tsx
-// ❌ Svelte habit
-{#if condition}
-  <div>Content</div>
-{/if}
-
-// ✅ PhilJS
-{condition() && <div>Content</div>}
-```
-
-## Summary
-
-PhilJS migration from Svelte:
-
-✅ Similar fine-grained reactivity
-✅ Explicit instead of magical
-✅ JSX instead of templates
-✅ Stronger type safety
-✅ Simpler mental model
-✅ Better debugging
-
-Svelte developers will appreciate PhilJS's explicit reactivity and TypeScript-first approach!
-
----
-
-**Complete!** You now have comprehensive migration guides for React, Vue, and Svelte.
-
-Return to [Documentation Home](../README.md) to explore more.
+- **No build step complexity**: Runtime reactivity vs compiler
+- **Easier debugging**: Can inspect signals at runtime
+- **More portable**: Standard JavaScript patterns
+- **Fine-grained**: Updates at signal level, not component
+- **Consistent model**: Same patterns for all state

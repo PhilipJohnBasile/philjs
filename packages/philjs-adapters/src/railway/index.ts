@@ -109,7 +109,6 @@ export function railwayAdapter(config: RailwayConfig = {}): Adapter {
     name: 'railway',
 
     async adapt() {
-      console.log('Building for Railway...');
 
       // Create output structure
       mkdirSync(outDir, { recursive: true });
@@ -492,7 +491,6 @@ function gracefulShutdown(signal) {
   }, ${gracefulShutdown.timeout});
 
   server.close(() => {
-    console.log('HTTP server closed');
     clearTimeout(shutdownTimeout);
     process.exit(0);
   });

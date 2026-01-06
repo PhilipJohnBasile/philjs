@@ -1,66 +1,64 @@
-# Migrating from React
+# Chapter 9: Escaping React
 
-Move React apps to PhilJS with minimal friction and safer incremental steps.
+"The best rewrite is the one that never happens."
 
-## Strategy
+Rewriting an application from scratch is the most dangerous thing a software team can do. It stalls features, introduces regressions, and burns out developers.
 
-- Start with leaf components; migrate routes/features gradually.
-- Keep routers side-by-side during transition (PhilJS Router + existing router) if needed.
-- Replace `useState/useEffect` with signals/memos; avoid 1:1 rewrites of effect-heavy code.
+PhilJS is designed for the **Strangler Fig Application** pattern. You do not rewrite your React app. You strangle it, piece by piece, until it is gone.
 
-## JSX runtime
+## The Strategy: Routes First
 
-- Update `tsconfig.json` to `jsxImportSource: "@philjs/core"`.
-- Swap React imports with PhilJS equivalents (`createContext` -> signals/context helpers).
+Do not try to migrate leaf components (buttons, inputs) first. It leads to improved components inside a sluggish runtime.
 
-## State and effects
+Migrate **Routes**.
 
-- Signals instead of `useState`.
-- `memo` instead of derived state in `useMemo`.
-- Replace `useEffect` data-fetching with loaders/resources; side effects stay in `effect`.
-- Remove dependency arrays; PhilJS tracks dependencies automatically.
+1.  Set up PhilJS as a proxy in front of your legacy React app (e.g., via Nginx or Vercel Rewrites).
+2.  Pick a low-risk route (e.g., `/about` or `/settings`).
+3.  Build that route in PhilJS.
+4.  Direct traffic for that specific URL to the PhilJS app.
+5.  Repeat.
 
-## Components and props
+## Running React inside PhilJS
 
-- Functional components stay largely the same; drop React-specific hooks.
-- Event handling is similar; avoid synthetic event assumptions.
+Sometimes you have a complex React component (like a heavy Data Grid or Map) that you cannot rewrite yet.
 
-## Routing
+PhilJS allows you to mount React islands directly.
 
-- Map React Router routes to PhilJS Router.
-- Move data fetching to loaders; mutations to actions.
-- Use `Link` and `prefetch` for perf; add `errorBoundary` equivalents.
+```typescript
+// Wrapper.tsx (PhilJS)
+import { ReactIsland } from "@philjs/compat-react";
+import LegacyGrid from "./LegacyGrid"; // The React component
 
-## Context
+export function GridWrapper(props) {
+  return (
+    <ReactIsland
+      component={LegacyGrid}
+      props={props}
+      client:visible // Lazy load the entire React runtime only when visible
+    />
+  );
+}
+```
 
-- Prefer signals/stores over heavy context.
-- When needed, use PhilJS context utilities; keep values serializable for SSR.
+This creates an isolated React Root for just that div. The rest of your page remains lightweight PhilJS.
 
-## Porting hooks
+## The Migration Checklist
 
-- Many custom hooks become plain functions with signals.
-- Derive state with memos; avoid effect-driven synchronization.
+### 1. Identify Global State
+React apps often trap state in a global Context.
+*   **Strategy**: Move global state to the URL (Chapter 4) or to a platform-agnostic store (like NanoStores or plain Signals) that both frameworks can read.
 
-## Styling and assets
+### 2. Identify Hooks
+*   `useState` -> `signal()`
+*   `useMemo` -> `memo()`
+*   `useEffect` -> `effect()` (But refer to Chapter 2: avoid effects for state syncing!)
 
-- Reuse CSS/SCSS/Tailwind; adjust build plugins as needed.
-- Replace React-specific styling libraries if they rely on React internals.
+### 3. Identify Data Fetching
+*   `useEffect(() => fetch)` -> **Loaders**.
+Move your data fetching out of the component and into the Route Loader (Chapter 4). This is the biggest performance win you will get.
 
-## Testing
+## The End State
 
-- Swap React Testing Library for `@philjs/testing`.
-- Reuse MSW for network mocks; adapt render helpers.
-- Keep Playwright E2E mostly unchanged.
+Eventually, your React app becomes just a few islands floating in a PhilJS ocean. At that point, you can rewrite the final few components and remove `react` and `react-dom` from your `package.json`.
 
-## SSR/Islands
-
-- Move SSR entry to PhilJS SSR adapters.
-- Split heavy components into islands for hydration control.
-
-## Checklist
-
-- [ ] tsconfig updated (`jsxImportSource`).
-- [ ] State/effects migrated to signals/memos/resources.
-- [ ] Routes converted to PhilJS Router with loaders/actions.
-- [ ] Tests updated to `@philjs/testing`.
-- [ ] SSR/adapter configured; hydration verified.
+Release the baggage. The future is lighter.

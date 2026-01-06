@@ -38,7 +38,6 @@ export class PlausibleProvider implements IAnalyticsProvider {
     this.loadScript();
 
     if (config.debug) {
-      console.log("[Plausible] Initialized");
     }
   }
 
@@ -50,7 +49,6 @@ export class PlausibleProvider implements IAnalyticsProvider {
     });
 
     if (this.config.debug) {
-      console.log("[Plausible] Event tracked:", event);
     }
   }
 
@@ -109,7 +107,6 @@ export class PlausibleProvider implements IAnalyticsProvider {
     script.onload = () => {
       this.loaded = true;
       if (this.config.debug) {
-        console.log("[Plausible] Script loaded");
       }
     };
 

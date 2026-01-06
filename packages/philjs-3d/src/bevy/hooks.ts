@@ -172,7 +172,6 @@ function createBevyImports(
       // Console logging
       bevy_console_log: (ptr: number, len: number) => {
         const bytes = new Uint8Array(instance.memory.buffer, ptr, len);
-        console.log('[Bevy]', decoder.decode(bytes));
       },
       bevy_console_warn: (ptr: number, len: number) => {
         const bytes = new Uint8Array(instance.memory.buffer, ptr, len);

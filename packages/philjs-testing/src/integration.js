@@ -170,7 +170,6 @@ export function createDatabaseTestHelper(db) {
          */
         async clearAll() {
             // Implementation depends on ORM
-            console.log('[Test] Clearing database...');
         },
         /**
          * Seed table with data

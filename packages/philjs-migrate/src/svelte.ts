@@ -175,6 +175,16 @@ export async function migrateSvelteFile(source: string): Promise<string> {
         return source;
     }
 
+    // Extract template and styles
+    const styleMatch = rest.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+    let template = rest.replace(/<style[^>]*>[\s\S]*?<\/style>/, '').trim();
+    const styles = styleMatch ? styleMatch[1] : '';
+
+    // specific cleanup for script placeholder if it wasn't perfectly replaced
+    template = template.replace('{{SCRIPT_PLACEHOLDER}}', '').trim();
+
+    const migratedTemplate = migrateSvelteTemplate(template);
+
     // Replace script content and add PhilJS component wrapper
     const newScript = `
 import { signal, memo, effect } from '@philjs/core';
@@ -184,11 +194,16 @@ ${transformed}
 // Export as PhilJS component
 export function Component(props) {
   // Migrated from Svelte - review for signal usage
-  return null; // TODO: Migrate template to JSX
+  return (
+    <>
+      ${styles ? `<style>${styles}</style>` : ''}
+      ${migratedTemplate}
+    </>
+  );
 }
 `;
 
-    return rest.replace('{{SCRIPT_PLACEHOLDER}}', `<script>${newScript}</script>`);
+    return newScript;
 }
 
 /**

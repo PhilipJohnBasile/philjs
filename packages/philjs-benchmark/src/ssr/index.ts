@@ -46,10 +46,6 @@ export async function runSSRBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS SSR Benchmark Suite');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   // Run render time benchmarks
@@ -71,9 +67,6 @@ export async function runSSRBenchmarks(
   ];
 
   if (verbose) {
-    console.log('\n' + '='.repeat(60));
-    console.log('SSR Benchmark Complete');
-    console.log('='.repeat(60));
 
     // Print additional metrics if available
     if ((globalThis as any).__lastSSRSize) {
@@ -88,7 +81,6 @@ export async function runSSRBenchmarks(
 
     if ((globalThis as any).__lastChunkAnalysis) {
       const analysis = (globalThis as any).__lastChunkAnalysis;
-      console.log(`\nChunk Analysis:`);
       console.log(`  Total Chunks: ${analysis.totalChunks}`);
       console.log(`  Avg Chunk Size: ${analysis.avgChunkSize.toFixed(0)} chars`);
       console.log(`  Total Size: ${(analysis.totalSize / 1024).toFixed(2)} KB`);
@@ -113,10 +105,6 @@ export async function runCoreSSRBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Core SSR Benchmarks');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   const results = await runBenchmarkSuite(coreSSRBenchmarks, { ...options, verbose });
@@ -139,8 +127,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
   runSSRBenchmarks({ verbose: true })
     .then(suite => {
-      console.log('\nResults JSON:');
-      console.log(JSON.stringify(suite, null, 2));
     })
     .catch(console.error);
 }

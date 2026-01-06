@@ -40,10 +40,8 @@ export async function basicStreamingExample() {
 
   const stream = renderToStream(jsx(App, {}), {
     onShellReady: () => {
-      console.log("Shell HTML sent to client");
     },
     onAllReady: () => {
-      console.log("All content streamed");
     },
   });
 
@@ -107,7 +105,6 @@ export function suspenseBoundaryExample(userId: string) {
     },
     onAllReady: () => {
       // User profile data streamed when ready
-      console.log("User profile data streamed");
     },
   });
 }
@@ -292,7 +289,6 @@ export function multipleSuspenseExample() {
 
   return renderToStream(jsx(App, {}), {
     onShellReady: () => {
-      console.log("Page shell + loading states sent");
     },
   });
 }

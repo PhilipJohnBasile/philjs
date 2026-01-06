@@ -26,7 +26,6 @@ export async function generateScaffold(options) {
     console.log(pc.cyan(`\nGenerating scaffold for ${modelName}...\n`));
     // 1. Generate Model
     if (!skipModel) {
-        console.log(pc.bold('\n1. Model'));
         const modelFiles = await generateModel({
             name: modelName,
             fields,
@@ -37,7 +36,6 @@ export async function generateScaffold(options) {
     }
     // 2. Generate API Routes
     if (!skipApi) {
-        console.log(pc.bold('\n2. API Routes'));
         // List/Create endpoint
         const listApiFiles = await generateApi({
             name: camelName,
@@ -59,7 +57,6 @@ export async function generateScaffold(options) {
     }
     // 3. Generate Pages
     if (!skipPages) {
-        console.log(pc.bold('\n3. Pages'));
         // List page
         const listPagePath = path.join(process.cwd(), 'src/pages', kebabName);
         await fs.mkdir(listPagePath, { recursive: true });
@@ -77,7 +74,6 @@ export async function generateScaffold(options) {
     }
     // 4. Generate Components
     if (!skipComponents) {
-        console.log(pc.bold('\n4. Components'));
         // Form component
         const formFiles = await generateFormComponent(modelName, parsedFields, typescript, withTests);
         createdFiles.push(...formFiles);
@@ -89,7 +85,6 @@ export async function generateScaffold(options) {
         createdFiles.push(...detailComponentFiles);
     }
     console.log(pc.green(`\nScaffold for ${modelName} created successfully!`));
-    console.log(pc.dim(`\nNext steps:`));
     console.log(pc.dim(`  1. Run database migrations: npx prisma migrate dev`));
     console.log(pc.dim(`  2. Update API routes with your business logic`));
     console.log(pc.dim(`  3. Customize form validation`));

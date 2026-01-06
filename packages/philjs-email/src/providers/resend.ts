@@ -7,8 +7,8 @@ import type {
   EmailAddress,
   BulkEmailMessage,
   BulkEmailResult,
-} from '../types';
-import { renderReactEmail, normalizeAddress, withRetry } from '../utils';
+} from '../types.js';
+import { renderReactEmail, normalizeAddress, withRetry } from '../utils.js';
 
 /**
  * Resend Email Provider
@@ -223,7 +223,7 @@ export class ResendProvider implements EmailProvider {
    */
   async cancelScheduled(id: string): Promise<boolean> {
     try {
-      const response = await this.client.emails.cancel(id);
+      const response = await (this.client.emails as any).cancel(id);
       return !response.error;
     } catch {
       return false;

@@ -48,7 +48,6 @@ export function staticAdapter(config: StaticConfig = {}): Adapter {
     name: 'static',
 
     async adapt() {
-      console.log('Building static site...');
 
       mkdirSync(outDir, { recursive: true });
 
@@ -207,7 +206,6 @@ ${urls.join('\n')}
 </urlset>`;
 
     writeFileSync(join(outDir, 'sitemap.xml'), xml);
-    console.log('  ✓ sitemap.xml');
   }
 
   function generateRobots() {
@@ -229,7 +227,6 @@ ${urls.join('\n')}
     }
 
     writeFileSync(join(outDir, 'robots.txt'), lines.join('\n'));
-    console.log('  ✓ robots.txt');
   }
 
   function generateFallback() {

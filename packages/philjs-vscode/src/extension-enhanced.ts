@@ -22,7 +22,6 @@ import { createComponent, createRoute, createPage, createHook, createStore } fro
 let statusBarItem: vscode.StatusBarItem;
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('PhilJS extension is now active');
 
   const config = vscode.workspace.getConfiguration('philjs');
   const enableIntelliSense = config.get<boolean>('enableIntelliSense', true);
@@ -336,5 +335,4 @@ function updateStatusBar(editor: vscode.TextEditor | undefined) {
 }
 
 export function deactivate() {
-  console.log('PhilJS extension is now deactivated');
 }

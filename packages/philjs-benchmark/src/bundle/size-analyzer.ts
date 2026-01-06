@@ -238,10 +238,6 @@ export async function runBundleBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Bundle Size Analysis');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   const results: BenchmarkResult[] = [];
@@ -249,12 +245,10 @@ export async function runBundleBenchmarks(
   // Core bundle analysis
   const coreAnalysis = await estimateCoreSize();
   if (verbose) {
-    console.log('Core Bundle (@philjs/core):');
     console.log(`  Raw: ${(coreAnalysis.rawSize / 1024).toFixed(2)} KB`);
     console.log(`  Minified: ${(coreAnalysis.minSize / 1024).toFixed(2)} KB`);
     console.log(`  Gzip: ${(coreAnalysis.gzipSize / 1024).toFixed(2)} KB`);
     console.log(`  Brotli: ${((coreAnalysis.brotliSize || 0) / 1024).toFixed(2)} KB`);
-    console.log();
   }
 
   results.push({
@@ -272,12 +266,10 @@ export async function runBundleBenchmarks(
   // Full bundle analysis
   const fullAnalysis = await estimateFullSize();
   if (verbose) {
-    console.log('Full Bundle (all features):');
     console.log(`  Raw: ${(fullAnalysis.rawSize / 1024).toFixed(2)} KB`);
     console.log(`  Minified: ${(fullAnalysis.minSize / 1024).toFixed(2)} KB`);
     console.log(`  Gzip: ${(fullAnalysis.gzipSize / 1024).toFixed(2)} KB`);
     console.log(`  Brotli: ${((fullAnalysis.brotliSize || 0) / 1024).toFixed(2)} KB`);
-    console.log();
   }
 
   results.push({
@@ -295,12 +287,10 @@ export async function runBundleBenchmarks(
   // Tree-shaking analysis
   const treeShaking = await analyzeTreeShaking();
   if (verbose) {
-    console.log('Tree-shaking Effectiveness:');
     console.log(`  Full bundle: ${(treeShaking.fullBundleSize / 1024).toFixed(2)} KB`);
     console.log(`  Minimal (signals+jsx): ${(treeShaking.minimalBundleSize / 1024).toFixed(2)} KB`);
     console.log(`  Tree-shakeable: ${treeShaking.treeShakenPercentage.toFixed(1)}%`);
     console.log(`  Unused in minimal app: ${treeShaking.unusedExports.join(', ')}`);
-    console.log();
   }
 
   results.push({
@@ -327,7 +317,6 @@ export async function runBundleBenchmarks(
       const marker = isPhilJS ? ' <--' : '';
       console.log(`  ${name}: ${(analysis.gzipSize / 1024).toFixed(2)} KB${marker}`);
     }
-    console.log();
   }
 
   // Add comparison results
@@ -348,11 +337,9 @@ export async function runBundleBenchmarks(
   // Code splitting analysis
   const codeSplitting = await analyzeCodeSplitting();
   if (verbose) {
-    console.log('Code Splitting Overhead:');
     console.log(`  Router chunk: ${(codeSplitting.routerChunkSize / 1024).toFixed(2)} KB`);
     console.log(`  Lazy component wrapper: ${codeSplitting.lazyComponentOverhead} B`);
     console.log(`  Dynamic import runtime: ${codeSplitting.dynamicImportRuntime} B`);
-    console.log();
   }
 
   results.push({
@@ -368,9 +355,6 @@ export async function runBundleBenchmarks(
   });
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('Bundle Analysis Complete');
-    console.log('='.repeat(60));
   }
 
   return {
@@ -391,8 +375,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
   runBundleBenchmarks({ verbose: true })
     .then(suite => {
-      console.log('\nResults JSON:');
-      console.log(JSON.stringify(suite, null, 2));
     })
     .catch(console.error);
 }

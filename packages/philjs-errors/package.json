@@ -12,7 +12,7 @@
     "./rollbar": "./dist/rollbar.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch"
   },
   "dependencies": {
@@ -43,6 +43,9 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
+    "errors",
     "error-tracking",
     "sentry",
     "logrocket",
@@ -54,7 +57,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-errors"
   },
   "bugs": {
@@ -65,4 +68,3 @@
     "node": ">=24"
   }
 }
-

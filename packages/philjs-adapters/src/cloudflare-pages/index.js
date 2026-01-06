@@ -19,7 +19,6 @@ export function cloudflarePagesAdapter(config = {}) {
             regions: ['global'], // Cloudflare deploys globally
         },
         async adapt() {
-            console.log('Building for Cloudflare Pages...');
             // Create output directory structure
             mkdirSync(outDir, { recursive: true });
             mkdirSync(join(outDir, 'functions'), { recursive: true });
@@ -47,7 +46,6 @@ export function cloudflarePagesAdapter(config = {}) {
             if (existsSync('.philjs/prerendered')) {
                 cpSync('.philjs/prerendered', outDir, { recursive: true });
             }
-            console.log('Cloudflare Pages build complete');
         },
         getHandler() {
             return async (request, env, ctx) => {

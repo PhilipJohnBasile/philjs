@@ -21,7 +21,6 @@ export function cloudflareAdapter(config = {}) {
             else {
                 await adaptForWorkers();
             }
-            console.log('Cloudflare build complete');
         },
         getHandler() {
             return async (request, env) => {

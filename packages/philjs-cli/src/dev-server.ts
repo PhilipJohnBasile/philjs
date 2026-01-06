@@ -34,7 +34,6 @@ export async function startDevServer(
   console.log(pc.green("\n✓ Dev server running!\n"));
   server.printUrls();
 
-  console.log(
     pc.dim(
       "\n  " + pc.bold("PhilJS features enabled:") + "\n" +
       "  • Hot Module Replacement (HMR)\n" +

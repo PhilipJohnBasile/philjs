@@ -240,7 +240,6 @@ export const SecureStorage = {
     const prefixedKey = `${config.prefix}${key}`;
 
     if (config.debug) {
-      console.log('[SecureStorage] getItem:', key);
     }
 
     if (platform === 'web') {
@@ -322,7 +321,6 @@ export const SecureStorage = {
     const prefixedKey = `${config.prefix}${key}`;
 
     if (config.debug) {
-      console.log('[SecureStorage] removeItem:', key);
     }
 
     if (platform === 'web') {
@@ -378,7 +376,6 @@ export const SecureStorage = {
     const platform = detectPlatform();
 
     if (config.debug) {
-      console.log('[SecureStorage] clear');
     }
 
     if (platform === 'web') {

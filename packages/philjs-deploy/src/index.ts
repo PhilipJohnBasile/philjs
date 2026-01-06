@@ -1,1 +1,1 @@
-export * from './auto-deploy';
+export * from './terraform.js';

@@ -241,7 +241,7 @@ export function contentPlugin(userOptions: ContentPluginOptions = {}): Plugin {
         path: filePath,
         collection: collectionName,
         id,
-        frontmatter: result.data,
+        frontmatter: result.data as Record<string, unknown>,
         body,
         headings,
         images,

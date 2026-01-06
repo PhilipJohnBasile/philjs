@@ -502,9 +502,7 @@ process_memory_heap_used_bytes \${process.memoryUsage().heapUsed}
 
   // Graceful shutdown
   const shutdown = () => {
-    console.log('Shutting down gracefully...');
     server.close(() => {
-      console.log('Server closed');
       process.exit(0);
     });
 
@@ -772,7 +770,6 @@ try {
 
 // Graceful shutdown
 const shutdown = async () => {
-  console.log('Shutting down...');
   await fastify.close();
   process.exit(0);
 };

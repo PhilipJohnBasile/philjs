@@ -84,17 +84,11 @@ function createProgram(): Command {
           writeFileSync(options.output, result.code);
           console.log(`Component written to ${options.output}`);
         } else {
-          console.log('\n--- Generated Component ---\n');
-          console.log(result.code);
         }
 
         if (result.tests && options.tests) {
-          console.log('\n--- Tests ---\n');
-          console.log(result.tests);
         }
 
-        console.log('\n--- Explanation ---\n');
-        console.log(result.explanation);
       });
     });
 
@@ -136,17 +130,11 @@ function createProgram(): Command {
           writeFileSync(options.output, result.code);
           console.log(`Page written to ${options.output}`);
         } else {
-          console.log('\n--- Generated Page ---\n');
-          console.log(result.code);
         }
 
         if (result.loader) {
-          console.log('\n--- Loader ---\n');
-          console.log(result.loader);
         }
 
-        console.log('\n--- Explanation ---\n');
-        console.log(result.explanation);
       });
     });
 
@@ -184,19 +172,12 @@ function createProgram(): Command {
           writeFileSync(options.output, result.routes.map(r => r.code).join('\n\n'));
           console.log(`API written to ${options.output}`);
         } else {
-          console.log('\n--- Generated API Routes ---\n');
           for (const route of result.routes) {
             console.log(`// ${route.method} ${route.path}`);
-            console.log(route.code);
-            console.log('');
           }
         }
 
-        console.log('\n--- Validation Schema ---\n');
-        console.log(result.validationSchema);
 
-        console.log('\n--- Types ---\n');
-        console.log(result.types);
       });
     });
 
@@ -233,12 +214,10 @@ function createProgram(): Command {
           });
 
           if (options.dryRun) {
-            console.log('\n--- Suggestions ---\n');
             for (const suggestion of result.suggestions) {
               console.log(`[${suggestion.impact.toUpperCase()}] ${suggestion.type}: ${suggestion.description}`);
               console.log(`  Before: ${suggestion.before.slice(0, 50)}...`);
               console.log(`  After: ${suggestion.after.slice(0, 50)}...`);
-              console.log('');
             }
           } else {
             const outputPath = options.output || file;
@@ -279,11 +258,9 @@ function createProgram(): Command {
           if (options.coverage) {
             const coverage = await generator.analyzeCoverage(code);
             console.log(`\nCoverage Analysis: ${coverage.overallCoverage}%`);
-            console.log('\nMissing Coverage:');
             for (const missing of coverage.missingCoverage) {
               console.log(`  - [${missing.priority}] ${missing.description}`);
             }
-            console.log('\nSuggested Tests:');
             for (const test of coverage.suggestedTests) {
               console.log(`  - [${test.priority}] ${test.name}: ${test.tests}`);
             }
@@ -408,7 +385,6 @@ function createProgram(): Command {
                 console.log(`    Suggestion: ${issue.suggestion}`);
               }
             }
-            console.log(`\nSuggestions:`);
             for (const suggestion of result.suggestions) {
               console.log(`  - ${suggestion}`);
             }
@@ -417,7 +393,6 @@ function createProgram(): Command {
         }
 
         if (options.json) {
-          console.log(JSON.stringify(allResults, null, 2));
         }
       });
     });
@@ -437,7 +412,6 @@ function createProgram(): Command {
       show?: boolean;
     }) => {
       if (options.show) {
-        console.log('Current Configuration:');
         const openaiKey = process.env['OPENAI_API_KEY'];
         const anthropicKey = process.env['ANTHROPIC_API_KEY'];
         const ollamaUrl = process.env['OLLAMA_URL'];
@@ -448,7 +422,6 @@ function createProgram(): Command {
       }
 
       console.log('To configure providers, set environment variables:');
-      console.log('  export OPENAI_API_KEY=sk-...');
       console.log('  export ANTHROPIC_API_KEY=sk-ant-...');
       console.log('  export OLLAMA_URL=http://localhost:11434');
     });
@@ -529,7 +502,6 @@ function inferPageName(description: string): string {
  * Run an async function with a spinner
  */
 async function runWithSpinner(message: string, fn: () => Promise<void>): Promise<void> {
-  console.log(message);
   const start = Date.now();
 
   try {

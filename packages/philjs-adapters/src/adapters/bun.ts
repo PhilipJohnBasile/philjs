@@ -168,7 +168,6 @@ export function bunAdapter(config: BunAdapterConfig = {}): Adapter {
     name: 'bun',
 
     async adapt() {
-      console.log('Building for Bun runtime...');
 
       // Create output directory
       mkdirSync(outDir, { recursive: true });
@@ -475,20 +474,17 @@ console.log(\`PhilJS running on \${protocol}://\${HOSTNAME}:\${PORT}\`);
 
 ${hotReload && development ? `
 if (DEVELOPMENT) {
-  console.log('Hot reload enabled');
 }
 ` : ''}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('Shutting down...');
   server.stop();
   ${sqliteConfig ? 'db.close();' : ''}
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('Shutting down...');
   server.stop();
   ${sqliteConfig ? 'db.close();' : ''}
   process.exit(0);

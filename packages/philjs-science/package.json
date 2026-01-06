@@ -1,0 +1,37 @@
+{
+  "name": "@philjs/science",
+  "version": "0.1.0",
+  "description": "Scientific computing primitives for PhilJS (Tensor, Math)",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-science"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "science"
+  ]
+}

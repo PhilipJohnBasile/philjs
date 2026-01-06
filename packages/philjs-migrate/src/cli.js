@@ -20,7 +20,6 @@ program
     try {
         const result = analyzeProject(dir);
         spinner.succeed('Analysis complete');
-        console.log('\n' + pc.bold('Project Analysis:'));
         console.log(`  Framework: ${pc.cyan(result.framework)}`);
         console.log(`  Files: ${pc.cyan(String(result.files))}`);
         console.log(`  Complexity: ${pc.cyan(result.complexity)}`);
@@ -64,11 +63,9 @@ program
         });
         if (result.success) {
             spinner.succeed('Migration complete!');
-            console.log('\n' + pc.bold('Summary:'));
             console.log(`  Files processed: ${pc.green(String(result.filesProcessed))}`);
             console.log(`  Files modified: ${pc.green(String(result.filesModified))}`);
             if (result.warnings.length > 0) {
-                console.log('\n' + pc.yellow('Warnings:'));
                 result.warnings.forEach((w) => console.log(`  - ${w}`));
             }
         }

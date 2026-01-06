@@ -365,7 +365,7 @@ export function createRspackConfig(options: PhilJSRspackOptions = {}): RspackCon
   }
 
   // Add PhilJS optimization plugin
-  if (options.philjs !== false) {
+  if (options.philjs !== false as any) {
     config.plugins = config.plugins || [];
     config.plugins.push(philJSRspackPlugin({
       ...DEFAULT_PLUGIN_OPTIONS,

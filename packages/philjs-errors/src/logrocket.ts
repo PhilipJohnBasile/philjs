@@ -69,7 +69,6 @@ export function createLogRocketTracker(): ErrorTracker {
             environment: options.environment,
           });
 
-          console.log('[PhilJS] LogRocket initialized');
         }
       };
 

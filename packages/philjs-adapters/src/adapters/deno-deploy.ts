@@ -239,7 +239,6 @@ export function denoDeployAdapter(config: DenoDeployAdapterConfig = {}): Adapter
     },
 
     async adapt() {
-      console.log('Building for Deno Deploy...');
 
       // Create output structure
       mkdirSync(outDir, { recursive: true });

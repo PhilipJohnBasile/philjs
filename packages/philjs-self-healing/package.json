@@ -1,9 +1,23 @@
 {
-    "name": "@philjs/self-healing",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts",
-    "dependencies": {
-        "@playwright/test": "^1.40.0"
-    }
+  "name": "@philjs/self-healing",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-self-healing"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "self",
+    "healing"
+  ]
 }

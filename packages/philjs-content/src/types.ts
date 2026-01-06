@@ -305,7 +305,7 @@ export interface ContentValidationError {
   /** File path */
   filePath: string;
   /** Validation errors */
-  errors: z.ZodError['errors'];
+  errors: z.ZodError['issues'];
 }
 
 /**

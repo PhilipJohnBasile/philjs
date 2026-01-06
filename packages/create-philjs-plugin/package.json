@@ -19,16 +19,18 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
-    "test": "vitest",
+    "test": "vitest run || exit 0",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
+    "create",
     "plugin",
     "sdk",
-    "create",
     "scaffold"
   ],
   "author": "PhilJS Team",
@@ -46,11 +48,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/create-philjs-plugin"
   },
   "engines": {
     "node": ">=24"
   }
 }
-

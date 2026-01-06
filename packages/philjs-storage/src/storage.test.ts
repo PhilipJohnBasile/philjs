@@ -59,8 +59,8 @@ describe('MemoryStorageClient', () => {
         metadata: { author: 'test', version: '1.0' },
       });
 
-      expect(result.metadata?.author).toBe('test');
-      expect(result.metadata?.version).toBe('1.0');
+      expect(result.metadata?.['author']).toBe('test');
+      expect(result.metadata?.['version']).toBe('1.0');
     });
 
     it('should generate etag', async () => {
@@ -207,7 +207,7 @@ describe('MemoryStorageClient', () => {
       expect(meta).not.toBeNull();
       expect(meta?.key).toBe('meta.txt');
       expect(meta?.size).toBe(7);
-      expect(meta?.metadata?.custom).toBe('value');
+      expect(meta?.metadata?.['custom']).toBe('value');
     });
 
     it('should return null for non-existent file', async () => {

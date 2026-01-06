@@ -5,5 +5,18 @@
   "main": "src/index.ts",
   "peerDependencies": {
     "@philjs/core": "workspace:*"
-  }
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-cells"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "cells"
+  ]
 }

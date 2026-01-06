@@ -109,7 +109,6 @@ class PhilJSInspector {
     // Build component registry
     this.buildComponentRegistry();
 
-    console.log('[PhilJS Inspector] Enabled');
   }
 
   /**
@@ -131,7 +130,6 @@ class PhilJSInspector {
     hideSearchBox();
     clearComponentRegistry();
 
-    console.log('[PhilJS Inspector] Disabled');
   }
 
   /**

@@ -36,7 +36,6 @@ export function initInstallPrompt() {
         deferredPrompt = null;
         canInstall.set(false);
         isInstalled.set(true);
-        console.log('[Install] App installed');
         // Dispatch custom event
         window.dispatchEvent(new CustomEvent('pwa-installed'));
     };
@@ -59,7 +58,6 @@ export async function showInstallPrompt() {
     await deferredPrompt.prompt();
     // Wait for user response
     const { outcome } = await deferredPrompt.userChoice;
-    console.log('[Install] User choice:', outcome);
     // Clear the deferred prompt
     deferredPrompt = null;
     canInstall.set(false);

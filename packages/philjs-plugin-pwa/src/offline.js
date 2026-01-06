@@ -34,7 +34,6 @@ export async function queueOfflineRequest(url, options = {}, queueName = 'sync-q
     const request = new Request(url, options);
     const cache = await caches.open(queueName);
     await cache.put(request, new Response(null));
-    console.log('[Offline] Queued request:', url);
 }
 /**
  * Check if offline page is cached

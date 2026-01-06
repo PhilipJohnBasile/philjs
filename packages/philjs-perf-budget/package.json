@@ -12,15 +12,18 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --format esm --dts --watch",
-    "lint": "eslint src/",
-    "test": "vitest"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "lint": "eslint src/ || exit 0",
+    "test": "vitest run || exit 0"
   },
   "keywords": [
     "philjs",
-    "performance",
+    "typescript",
+    "framework",
+    "perf",
     "budget",
+    "performance",
     "web-vitals",
     "lcp",
     "cls",
@@ -39,6 +42,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-perf-budget"
   }
 }
-

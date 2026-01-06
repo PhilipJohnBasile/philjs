@@ -677,3 +677,310 @@ export function createRetryHandler(
     return false;
   };
 }
+
+// ============================================================================
+// Enhanced Nested Error Boundaries (P4 Feature)
+// ============================================================================
+
+/**
+ * Configuration for nested error boundaries.
+ */
+export type NestedErrorBoundaryConfig = {
+  /** Recovery strategy when error occurs */
+  recoveryStrategy?: 'retry' | 'fallback' | 'redirect' | 'bubble';
+  /** Redirect path for redirect strategy */
+  redirectTo?: string;
+  /** Maximum retry attempts */
+  maxRetries?: number;
+  /** Delay between retries */
+  retryDelay?: number;
+  /** Whether to reset on route change */
+  resetOnRouteChange?: boolean;
+  /** Custom error transformer */
+  transformError?: (error: RouteError) => RouteError;
+  /** Error filter - return true to handle, false to bubble */
+  shouldCatch?: (error: RouteError) => boolean;
+  /** Callback when error is caught */
+  onError?: (error: RouteError, routeId: string) => void;
+  /** Callback when error is recovered */
+  onRecovery?: (routeId: string) => void;
+};
+
+/**
+ * Creates an enhanced nested error boundary with recovery strategies.
+ */
+export function createNestedErrorBoundary(config: NestedErrorBoundaryConfig = {}) {
+  const {
+    recoveryStrategy = 'fallback',
+    redirectTo,
+    maxRetries = 3,
+    retryDelay = 1000,
+    resetOnRouteChange = true,
+    transformError,
+    shouldCatch = () => true,
+    onError,
+    onRecovery,
+  } = config;
+
+  const retryCountMap = new Map<string, number>();
+
+  return function NestedErrorBoundary(props: {
+    routeId: string;
+    errorElement?: ErrorBoundaryComponent;
+    children?: VNode | JSXElement | string | null;
+    params?: Record<string, string>;
+  }) {
+    const { routeId, errorElement, children, params } = props;
+
+    const errors = routeErrorsSignal();
+    const context = errors.get(routeId);
+
+    if (context && !context.handled) {
+      let error = context.error;
+
+      // Check if we should catch this error
+      if (!shouldCatch(error)) {
+        // Bubble up to parent
+        return bubbleError(routeId, error);
+      }
+
+      // Transform error if needed
+      if (transformError) {
+        error = transformError(error);
+      }
+
+      // Call error callback
+      onError?.(error, routeId);
+
+      // Handle recovery strategy
+      switch (recoveryStrategy) {
+        case 'retry': {
+          const retryCount = retryCountMap.get(routeId) || 0;
+          if (retryCount < maxRetries) {
+            retryCountMap.set(routeId, retryCount + 1);
+            setTimeout(() => {
+              clearRouteError(routeId);
+              onRecovery?.(routeId);
+            }, retryDelay * Math.pow(2, retryCount));
+          }
+          break;
+        }
+
+        case 'redirect':
+          if (redirectTo && typeof window !== 'undefined') {
+            window.location.href = redirectTo;
+            return null;
+          }
+          break;
+
+        case 'bubble':
+          return bubbleError(routeId, error);
+
+        case 'fallback':
+        default:
+          // Continue to render error element
+          break;
+      }
+
+      // Set current error for useRouteError hook
+      setCurrentRouteError(error);
+      markErrorHandled(routeId);
+
+      if (errorElement) {
+        return errorElement({
+          error,
+          reset: () => {
+            retryCountMap.delete(routeId);
+            clearRouteError(routeId);
+            onRecovery?.(routeId);
+          },
+          params,
+        });
+      }
+
+      return DefaultErrorBoundary({ error });
+    }
+
+    // No error, reset retry count and render children
+    retryCountMap.delete(routeId);
+    setCurrentRouteError(null);
+    return children || null;
+  };
+}
+
+/**
+ * Bubble an error up to the parent route.
+ */
+function bubbleError(routeId: string, error: RouteError): null {
+  // Find parent route and set error there
+  const parts = routeId.split('/');
+  if (parts.length > 1) {
+    parts.pop();
+    const parentId = parts.join('/') || '/';
+    setRouteError(parentId, error);
+  }
+  clearRouteError(routeId);
+  return null;
+}
+
+/**
+ * HOC to wrap components with nested error boundary.
+ */
+export function withNestedErrorBoundary<P extends Record<string, unknown>>(
+  Component: (props: P) => VNode | JSXElement | string | null,
+  config: NestedErrorBoundaryConfig & { routeId: string }
+) {
+  const NestedBoundary = createNestedErrorBoundary(config);
+
+  return function WrappedComponent(props: P) {
+    return NestedBoundary({
+      routeId: config.routeId,
+      children: Component(props),
+      params: (props as { params?: Record<string, string> }).params,
+    });
+  };
+}
+
+/**
+ * Error aggregator for collecting errors from multiple nested routes.
+ */
+export class ErrorAggregator {
+  private errors: Map<string, RouteError> = new Map();
+  private listeners: Set<(errors: Map<string, RouteError>) => void> = new Set();
+
+  add(routeId: string, error: RouteError): void {
+    this.errors.set(routeId, error);
+    this.notify();
+  }
+
+  remove(routeId: string): void {
+    this.errors.delete(routeId);
+    this.notify();
+  }
+
+  clear(): void {
+    this.errors.clear();
+    this.notify();
+  }
+
+  get(routeId: string): RouteError | undefined {
+    return this.errors.get(routeId);
+  }
+
+  getAll(): Map<string, RouteError> {
+    return new Map(this.errors);
+  }
+
+  hasErrors(): boolean {
+    return this.errors.size > 0;
+  }
+
+  subscribe(listener: (errors: Map<string, RouteError>) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify(): void {
+    for (const listener of this.listeners) {
+      listener(this.getAll());
+    }
+  }
+}
+
+/**
+ * Global error aggregator instance.
+ */
+export const globalErrorAggregator = new ErrorAggregator();
+
+/**
+ * Hook to use the error aggregator.
+ */
+export function useErrorAggregator(): ErrorAggregator {
+  return globalErrorAggregator;
+}
+
+/**
+ * Async error boundary for handling promise rejections in loaders.
+ */
+export async function asyncErrorBoundary<T>(
+  routeId: string,
+  promise: Promise<T>,
+  options: {
+    fallback?: T;
+    transformError?: (error: unknown) => RouteError;
+  } = {}
+): Promise<T> {
+  try {
+    return await promise;
+  } catch (error) {
+    let routeError: RouteError;
+
+    if (options.transformError) {
+      routeError = options.transformError(error);
+    } else if (error instanceof Response) {
+      routeError = await createRouteErrorResponse(error);
+    } else if (isRouteErrorResponse(error)) {
+      routeError = error;
+    } else if (error instanceof Error) {
+      routeError = error;
+    } else {
+      routeError = new Error(String(error));
+    }
+
+    setRouteError(routeId, routeError);
+    globalErrorAggregator.add(routeId, routeError);
+
+    if (options.fallback !== undefined) {
+      return options.fallback;
+    }
+
+    throw routeError;
+  }
+}
+
+/**
+ * Create a scoped error boundary that only catches specific error types.
+ */
+export function createScopedErrorBoundary(
+  errorTypes: Array<new (...args: any[]) => Error>
+) {
+  return function ScopedErrorBoundary(props: RouteErrorBoundaryProps) {
+    const { routeId, errorElement, fallback, children, params } = props;
+
+    const errors = routeErrorsSignal();
+    const context = errors.get(routeId);
+
+    if (context && !context.handled) {
+      const error = context.error;
+
+      // Check if error matches any of the scoped types
+      const shouldHandle = errorTypes.some(
+        (ErrorType) => error instanceof ErrorType
+      );
+
+      if (!shouldHandle) {
+        // Don't handle, let it bubble
+        return children || null;
+      }
+
+      setCurrentRouteError(error);
+      markErrorHandled(routeId);
+
+      if (errorElement) {
+        return errorElement({
+          error,
+          reset: () => clearRouteError(routeId),
+          params,
+        });
+      }
+
+      if (fallback) {
+        return fallback;
+      }
+
+      return DefaultErrorBoundary({ error });
+    }
+
+    return children || null;
+  };
+}

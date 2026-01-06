@@ -252,7 +252,6 @@ export function FileUpload() {
       return;
     }
     const url = storage.getPublicUrl(data.path);
-    console.log('Uploaded:', url);
   };
 
   return (

@@ -13,7 +13,6 @@ import { PhilJSDiagnosticsProvider } from './providers/diagnostics.js';
 import { createComponent, createRoute, createPage, createHook, createStore } from './generators.js';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('PhilJS extension is now active');
 
   const config = vscode.workspace.getConfiguration('philjs');
   const enableIntelliSense = config.get<boolean>('enableIntelliSense', true);
@@ -138,5 +137,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  console.log('PhilJS extension is now deactivated');
 }

@@ -173,7 +173,6 @@ export class ObservableAIProvider {
         }
         // Debug logging
         if (this.config.debug) {
-            console.log('[AI Observability]', {
                 type: event.type,
                 model: event.model,
                 tokens: event.inputTokens && event.outputTokens

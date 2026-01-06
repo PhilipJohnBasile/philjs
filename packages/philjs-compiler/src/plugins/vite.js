@@ -111,13 +111,10 @@ export default function philJSCompiler(options = {}) {
             });
             if (verbose) {
                 console.log('\n[philjs-compiler] Configuration:');
-                console.log('  Mode:', config.mode);
-                console.log('  Development:', isDevelopment);
                 console.log('  Source Maps:', config.build.sourcemap !== false);
                 console.log('  Cache:', cache ? 'enabled' : 'disabled');
                 console.log('  HMR State Preservation:', preserveHmrState ? 'enabled' : 'disabled');
                 console.log('  Enhanced Errors:', enhancedErrors ? 'enabled' : 'disabled');
-                console.log('  Optimizations:');
                 console.log('    - Auto-memo:', compilerConfig['autoMemo'] !== false);
                 console.log('    - Auto-batch:', compilerConfig['autoBatch'] !== false);
                 console.log('    - Dead code elimination:', compilerConfig['deadCodeElimination'] !== false);
@@ -340,7 +337,6 @@ export default function philJSCompiler(options = {}) {
                     console.log(`  Cache misses: ${stats.cacheMisses}`);
                     console.log(`  Cache efficiency: ${cacheEfficiency.toFixed(1)}%`);
                 }
-                console.log('');
             }
         },
         /**
@@ -620,7 +616,6 @@ function generateBundleReport(stats, chunkMap) {
     // ES2023+: toSorted() for non-mutating sort
     // Sort by size (largest first)
     const sorted = stats.toSorted((a, b) => b.size - a.size);
-    console.log('Bundle Breakdown:');
     console.log('─────────────────────────────────────────────────────────────');
     sorted.forEach((stat, idx) => {
         const dependencies = chunkMap.get(stat.name) || [];
@@ -630,7 +625,6 @@ function generateBundleReport(stats, chunkMap) {
         if (dependencies.length > 0) {
             console.log(`    Dependencies: ${dependencies.slice(0, 3).join(', ')}${dependencies.length > 3 ? '...' : ''}`);
         }
-        console.log('');
     });
     const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
     console.log('─────────────────────────────────────────────────────────────');

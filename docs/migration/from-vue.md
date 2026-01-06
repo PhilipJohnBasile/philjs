@@ -1,465 +1,464 @@
-# Migrating from Vue
+# Migrating from Vue to PhilJS
 
-Complete guide for migrating Vue applications to PhilJS.
+This guide helps Vue developers transition to PhilJS, covering conceptual mappings and migration patterns.
 
+## Quick Comparison
 
-## Overview
+| Vue 3 | PhilJS | Notes |
+|-------|--------|-------|
+| `ref()` | `signal()` | Nearly identical |
+| `computed()` | `computed()` | Same concept |
+| `watch/watchEffect` | `effect()` | Auto-tracking |
+| `reactive()` | `signal()` + object | Similar behavior |
+| `v-if` | `{condition && ...}` | JSX conditionals |
+| `v-for` | `<For>` or `.map()` | List rendering |
+| `v-model` | Two-way binding | Manual setup |
+| `<script setup>` | Function components | Similar ergonomics |
 
-Vue 3's Composition API and PhilJS have similar reactive primitives. This guide helps you understand the differences and migrate your Vue applications to PhilJS.
+## Core Concepts
 
-## Key Differences
+### Reactive State
 
-| Concept | Vue 3 | PhilJS |
-|---------|-------|--------|
-| Reactivity | Proxy-based | Signal-based |
-| State | `ref()` / `reactive()` | `signal()` |
-| Computed | `computed()` | `memo()` |
-| Side Effects | `watchEffect()` / `watch()` | `effect()` |
-| Templates | SFC templates | JSX |
-| Lifecycle | Composition API hooks | `effect()` |
+**Vue ref → PhilJS signal**
 
-## State Management
-
-### ref() → signal()
-
-**Vue:**
 ```vue
+<!-- Vue -->
 <script setup>
 import { ref } from 'vue';
 
 const count = ref(0);
-
-function increment() {
-  count.value++;
-}
+const increment = () => count.value++;
 </script>
 
 <template>
-  <div>
-    <p>Count: {{ count }}</p>
-    <button @click="increment">Increment</button>
-  </div>
+  <button @click="increment">{{ count }}</button>
 </template>
 ```
 
-**PhilJS:**
 ```tsx
+// PhilJS
 import { signal } from '@philjs/core';
 
 function Counter() {
   const count = signal(0);
 
-  const increment = () => {
-    count.set(count() + 1);
-  };
-
   return (
-    <div>
-      <p>Count: {count()}</p>
-      <button onClick={increment}>Increment</button>
-    </div>
+    <button onClick={() => count.set(count() + 1)}>
+      {count()}
+    </button>
   );
 }
 ```
 
-**Key differences:**
-- `.value` in Vue → `()` call in PhilJS
-- `.value =` → `.set()` in PhilJS
-- Template syntax → JSX
+**Key Differences:**
+- PhilJS: `count()` instead of `count.value`
+- PhilJS: `count.set(x)` instead of `count.value = x`
+- No `.value` unwrapping in templates
 
-### reactive() → signal() with Objects
+### Computed Properties
 
-**Vue:**
+**Vue computed → PhilJS computed**
+
 ```vue
-<script setup>
-import { reactive } from 'vue';
-
-const user = reactive({
-  name: 'Alice',
-  age: 30
-});
-
-function updateName() {
-  user.name = 'Bob';
-}
-</script>
-```
-
-**PhilJS:**
-```tsx
-const user = signal({
-  name: 'Alice',
-  age: 30
-});
-
-const updateName = () => {
-  user.set({
-    ...user(),
-    name: 'Bob'
-  });
-};
-```
-
-**Key difference:** PhilJS uses immutable updates
-
-## Computed Values
-
-### computed() → memo()
-
-**Vue:**
-```vue
+<!-- Vue -->
 <script setup>
 import { ref, computed } from 'vue';
 
-const count = ref(0);
-const doubled = computed(() => count.value * 2);
-const quadrupled = computed(() => doubled.value * 2);
+const firstName = ref('John');
+const lastName = ref('Doe');
+const fullName = computed(() => `${firstName.value} ${lastName.value}`);
 </script>
-
-<template>
-  <p>Doubled: {{ doubled }}</p>
-  <p>Quadrupled: {{ quadrupled }}</p>
-</template>
 ```
 
-**PhilJS:**
 ```tsx
-const count = signal(0);
-const doubled = memo(() => count() * 2);
-const quadrupled = memo(() => doubled() * 2);
+// PhilJS
+import { signal, computed } from '@philjs/core';
 
-return (
-  <div>
-    <p>Doubled: {doubled()}</p>
-    <p>Quadrupled: {quadrupled()}</p>
-  </div>
-);
+function NameDisplay() {
+  const firstName = signal('John');
+  const lastName = signal('Doe');
+  const fullName = computed(() => `${firstName()} ${lastName()}`);
+
+  return <div>{fullName()}</div>;
+}
 ```
 
-## Side Effects
+### Watch & Effects
 
-### watchEffect() → effect()
+**Vue watchEffect → PhilJS effect**
 
-**Vue:**
 ```vue
+<!-- Vue -->
 <script setup>
 import { ref, watchEffect } from 'vue';
 
 const count = ref(0);
 
 watchEffect(() => {
-  console.log('Count:', count.value);
-});
-
-watchEffect((onCleanup) => {
-  const id = setInterval(() => {
-    console.log('Tick');
-  }, 1000);
-
-  onCleanup(() => {
-    clearInterval(id);
-  });
+  console.log('Count changed:', count.value);
 });
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-const count = signal(0);
+// PhilJS
+import { signal, effect } from '@philjs/core';
 
-effect(() => {
-  console.log('Count:', count());
-});
+function Component() {
+  const count = signal(0);
 
-effect(() => {
-  const id = setInterval(() => {
-    console.log('Tick');
-  }, 1000);
+  effect(() => {
+    console.log('Count changed:', count());
+  });
 
-  return () => {
-    clearInterval(id);
-  };
-});
+  return <div>{count()}</div>;
+}
 ```
 
-### watch() → effect()
+**Vue watch → PhilJS effect with previous value**
 
-**Vue:**
 ```vue
+<!-- Vue -->
 <script setup>
 import { ref, watch } from 'vue';
 
-const userId = ref('123');
+const count = ref(0);
 
-watch(userId, async (newId) => {
-  const user = await fetchUser(newId);
-  console.log('User:', user);
+watch(count, (newVal, oldVal) => {
+  console.log(`Changed from ${oldVal} to ${newVal}`);
 });
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-const userId = signal('123');
+// PhilJS
+import { signal, effect } from '@philjs/core';
 
-effect(async () => {
-  const user = await fetchUser(userId());
-  console.log('User:', user);
-});
+function Component() {
+  const count = signal(0);
+  let prevCount = count();
+
+  effect(() => {
+    const newCount = count();
+    console.log(`Changed from ${prevCount} to ${newCount}`);
+    prevCount = newCount;
+  });
+
+  return <div>{count()}</div>;
+}
 ```
 
-## Lifecycle Hooks
+### Reactive Objects
 
-### Vue Lifecycle → effect()
+**Vue reactive → PhilJS signal with object**
 
-**Vue:**
 ```vue
+<!-- Vue -->
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { reactive } from 'vue';
 
-onMounted(() => {
-  console.log('Component mounted');
+const state = reactive({
+  user: { name: 'John', age: 30 },
+  loading: false
 });
 
-onUnmounted(() => {
-  console.log('Component unmounted');
-});
+state.user.name = 'Jane'; // Triggers reactivity
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-effect(() => {
-  console.log('Component mounted');
+// PhilJS - immutable updates
+import { signal } from '@philjs/core';
 
-  return () => {
-    console.log('Component unmounted');
+function Component() {
+  const state = signal({
+    user: { name: 'John', age: 30 },
+    loading: false
+  });
+
+  // Update requires new object
+  const updateName = (name) => {
+    state.set({
+      ...state(),
+      user: { ...state().user, name }
+    });
   };
-});
+
+  return <div>{state().user.name}</div>;
+}
 ```
 
-## Templates vs JSX
+## Template → JSX
 
-### Template Syntax Conversion
+### Conditionals
 
-**Vue Template:**
+**Vue v-if → JSX conditionals**
+
 ```vue
+<!-- Vue -->
 <template>
-  <div>
-    <!-- Interpolation -->
-    <p>{{ message }}</p>
-
-    <!-- Attributes -->
-    <input :value="text" @input="handleInput" />
-
-    <!-- Conditional -->
-    <div v-if="show">Visible</div>
-    <div v-else>Hidden</div>
-
-    <!-- List -->
-    <ul>
-      <li v-for="item in items" :key="item.id">
-        {{ item.name }}
-      </li>
-    </ul>
-
-    <!-- Class binding -->
-    <div :class="{ active: isActive }">Content</div>
-
-    <!-- Style binding -->
-    <div :style="{ color: textColor }">Styled</div>
-  </div>
+  <div v-if="isLoggedIn">Welcome!</div>
+  <div v-else>Please log in</div>
 </template>
 ```
 
-**PhilJS JSX:**
 ```tsx
-return (
-  <div>
-    {/* Interpolation */}
-    <p>{message()}</p>
-
-    {/* Attributes */}
-    <input value={text()} onInput={handleInput} />
-
-    {/* Conditional */}
-    {show() ? <div>Visible</div> : <div>Hidden</div>}
-
-    {/* List */}
-    <ul>
-      {items().map(item => (
-        <li key={item.id}>
-          {item.name}
-        </li>
-      ))}
-    </ul>
-
-    {/* Class binding */}
-    <div className={isActive() ? 'active' : ''}>Content</div>
-
-    {/* Style binding */}
-    <div style={{ color: textColor() }}>Styled</div>
-  </div>
-);
+// PhilJS
+function Welcome(props) {
+  return props.isLoggedIn()
+    ? <div>Welcome!</div>
+    : <div>Please log in</div>;
+}
 ```
 
-### Directives → JSX Patterns
+**Vue v-show → style display**
 
-**v-model:**
-
-**Vue:**
 ```vue
-<input v-model="text" />
-```
-
-**PhilJS:**
-```tsx
-<input
-  value={text()}
-  onInput={(e) => text.set(e.target.value)}
-/>
-```
-
-**v-show:**
-
-**Vue:**
-```vue
+<!-- Vue -->
 <div v-show="visible">Content</div>
 ```
 
-**PhilJS:**
 ```tsx
-<div style={{ display: visible() ? 'block' : 'none' }}>
-  Content
-</div>
+// PhilJS
+<div style={{ display: visible() ? 'block' : 'none' }}>Content</div>
 ```
 
-**v-for:**
+### Lists
 
-**Vue:**
+**Vue v-for → For component or map**
+
 ```vue
-<li v-for="(item, index) in items" :key="item.id">
-  {{ index }}: {{ item.name }}
-</li>
-```
-
-**PhilJS:**
-```tsx
-{items().map((item, index) => (
-  <li key={item.id}>
-    {index}: {item.name}
-  </li>
-))}
-```
-
-## Component Communication
-
-### Props
-
-**Vue:**
-```vue
-<!-- Parent.vue -->
+<!-- Vue -->
 <template>
-  <ChildComponent :message="greeting" :count="count" />
-</template>
-
-<!-- Child.vue -->
-<script setup>
-defineProps<{
-  message: string;
-  count: number;
-}>();
-</script>
-```
-
-**PhilJS:**
-```tsx
-// Parent
-<ChildComponent message={greeting()} count={count()} />
-
-// Child
-interface ChildProps {
-  message: string;
-  count: number;
-}
-
-function ChildComponent({ message, count }: ChildProps) {
-  return <div>{message} - {count}</div>;
-}
-```
-
-### Emits
-
-**Vue:**
-```vue
-<!-- Child.vue -->
-<script setup>
-const emit = defineEmits<{
-  update: [value: string];
-}>();
-
-function handleClick() {
-  emit('update', 'new value');
-}
-</script>
-
-<!-- Parent.vue -->
-<template>
-  <ChildComponent @update="handleUpdate" />
+  <ul>
+    <li v-for="item in items" :key="item.id">
+      {{ item.name }}
+    </li>
+  </ul>
 </template>
 ```
 
-**PhilJS:**
 ```tsx
-// Child
-interface ChildProps {
-  onUpdate: (value: string) => void;
+// PhilJS - with For component (optimal)
+import { For } from '@philjs/core';
+
+function List(props) {
+  return (
+    <ul>
+      <For each={props.items()}>
+        {item => <li>{item.name}</li>}
+      </For>
+    </ul>
+  );
 }
 
-function ChildComponent({ onUpdate }: ChildProps) {
-  const handleClick = () => {
-    onUpdate('new value');
-  };
+// Or with map
+function List(props) {
+  return (
+    <ul>
+      {props.items().map(item => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
 
-  return <button onClick={handleClick}>Update</button>;
+### Event Handling
+
+**Vue @event → JSX onClick etc.**
+
+```vue
+<!-- Vue -->
+<template>
+  <button @click="handleClick">Click me</button>
+  <input @input="handleInput" @keyup.enter="submit" />
+</template>
+```
+
+```tsx
+// PhilJS
+function Form() {
+  const handleClick = () => console.log('clicked');
+  const handleInput = (e) => console.log(e.target.value);
+  const submit = () => console.log('submitted');
+
+  return (
+    <>
+      <button onClick={handleClick}>Click me</button>
+      <input
+        onInput={handleInput}
+        onKeyUp={(e) => e.key === 'Enter' && submit()}
+      />
+    </>
+  );
+}
+```
+
+### Two-Way Binding
+
+**Vue v-model → Manual binding**
+
+```vue
+<!-- Vue -->
+<template>
+  <input v-model="name" />
+</template>
+
+<script setup>
+import { ref } from 'vue';
+const name = ref('');
+</script>
+```
+
+```tsx
+// PhilJS
+import { signal } from '@philjs/core';
+
+function Form() {
+  const name = signal('');
+
+  return (
+    <input
+      value={name()}
+      onInput={(e) => name.set(e.target.value)}
+    />
+  );
+}
+```
+
+### Slots → Children
+
+**Vue slots → props.children**
+
+```vue
+<!-- Vue Parent -->
+<Card>
+  <template #header>Header Content</template>
+  <template #default>Main Content</template>
+  <template #footer>Footer Content</template>
+</Card>
+
+<!-- Vue Card Component -->
+<template>
+  <div class="card">
+    <header><slot name="header" /></header>
+    <main><slot /></main>
+    <footer><slot name="footer" /></footer>
+  </div>
+</template>
+```
+
+```tsx
+// PhilJS
+function Card(props) {
+  return (
+    <div class="card">
+      <header>{props.header}</header>
+      <main>{props.children}</main>
+      <footer>{props.footer}</footer>
+    </div>
+  );
+}
+
+// Usage
+<Card
+  header={<span>Header Content</span>}
+  footer={<span>Footer Content</span>}
+>
+  Main Content
+</Card>
+```
+
+## Component Patterns
+
+### Props with Defaults
+
+```vue
+<!-- Vue -->
+<script setup>
+const props = withDefaults(defineProps<{
+  title: string;
+  count?: number;
+}>(), {
+  count: 0
+});
+</script>
+```
+
+```tsx
+// PhilJS
+interface Props {
+  title: string;
+  count?: number;
+}
+
+function Component(props: Props) {
+  const count = props.count ?? 0;
+  return <div>{props.title}: {count}</div>;
+}
+```
+
+### Emits → Callback Props
+
+```vue
+<!-- Vue Child -->
+<script setup>
+const emit = defineEmits(['update', 'delete']);
+const handleClick = () => emit('update', { id: 1 });
+</script>
+
+<!-- Vue Parent -->
+<Child @update="handleUpdate" @delete="handleDelete" />
+```
+
+```tsx
+// PhilJS
+function Child(props: {
+  onUpdate: (data: { id: number }) => void;
+  onDelete: () => void;
+}) {
+  return (
+    <button onClick={() => props.onUpdate({ id: 1 })}>
+      Update
+    </button>
+  );
 }
 
 // Parent
-<ChildComponent onUpdate={handleUpdate} />
+<Child
+  onUpdate={handleUpdate}
+  onDelete={handleDelete}
+/>
 ```
 
-## Provide/Inject → Context
+### Provide/Inject → Context
 
-**Vue:**
 ```vue
-<!-- Parent.vue -->
+<!-- Vue -->
 <script setup>
+// Parent
 import { provide, ref } from 'vue';
-
-const theme = ref('light');
+const theme = ref('dark');
 provide('theme', theme);
-</script>
 
-<!-- Child.vue -->
-<script setup>
+// Child
 import { inject } from 'vue';
-
 const theme = inject('theme');
 </script>
 ```
 
-**PhilJS:**
 ```tsx
-import { createContext, useContext } from '@philjs/core';
+// PhilJS
+import { createContext, useContext, signal } from '@philjs/core';
 
-const ThemeContext = createContext('light');
+const ThemeContext = createContext<Signal<string>>();
 
 // Parent
-function Parent() {
-  const theme = signal('light');
-
+function App() {
+  const theme = signal('dark');
   return (
-    <ThemeContext.Provider value={theme()}>
+    <ThemeContext.Provider value={theme}>
       <Child />
     </ThemeContext.Provider>
   );
@@ -468,279 +467,208 @@ function Parent() {
 // Child
 function Child() {
   const theme = useContext(ThemeContext);
-  return <div>{theme}</div>;
+  return <div>{theme()}</div>;
 }
 ```
 
-## Routing
+## Composables → Functions
 
-### Vue Router → PhilJS Router
-
-**Vue Router:**
 ```vue
-<!-- App.vue -->
-<template>
-  <nav>
-    <router-link to="/">Home</router-link>
-    <router-link to="/about">About</router-link>
-  </nav>
-
-  <router-view />
-</template>
-
-<!-- router/index.ts -->
-import { createRouter } from 'vue-router';
-
-const router = createRouter({
-  routes: [
-    { path: '/', component: Home },
-    { path: '/about', component: About },
-    { path: '/users/:id', component: User }
-  ]
-});
-```
-
-**PhilJS Router:**
-```tsx
-import { Router, Route, Link } from '@philjs/router';
-
-function App() {
-  return (
-    <>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-      </nav>
-
-      <Router>
-        <Route path="/" component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/users/:id" component={User} />
-      </Router>
-    </>
-  );
-}
-```
-
-### Route Params
-
-**Vue:**
-```vue
+<!-- Vue Composable -->
 <script setup>
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
-const userId = route.params.id;
-</script>
-```
-
-**PhilJS:**
-```tsx
-import { useParams } from '@philjs/router';
-
-function User() {
-  const { id } = useParams();
-  return <div>User ID: {id}</div>;
-}
-```
-
-## Composables → Custom Hooks
-
-**Vue Composable:**
-```typescript
 // useCounter.ts
 import { ref, computed } from 'vue';
 
 export function useCounter(initial = 0) {
   const count = ref(initial);
-  const doubled = computed(() => count.value * 2);
-
-  function increment() {
-    count.value++;
-  }
-
-  function decrement() {
-    count.value--;
-  }
-
-  return {
-    count,
-    doubled,
-    increment,
-    decrement
-  };
+  const double = computed(() => count.value * 2);
+  const increment = () => count.value++;
+  return { count, double, increment };
 }
+
+// Component
+import { useCounter } from './useCounter';
+const { count, double, increment } = useCounter(10);
+</script>
 ```
 
-**PhilJS Hook:**
-```typescript
-// useCounter.ts
-import { signal, memo } from '@philjs/core';
+```tsx
+// PhilJS
+import { signal, computed } from '@philjs/core';
 
-export function useCounter(initial = 0) {
+function createCounter(initial = 0) {
   const count = signal(initial);
-  const doubled = memo(() => count() * 2);
+  const double = computed(() => count() * 2);
+  const increment = () => count.set(count() + 1);
+  return { count, double, increment };
+}
 
-  const increment = () => {
-    count.set(count() + 1);
-  };
-
-  const decrement = () => {
-    count.set(count() - 1);
-  };
-
-  return {
-    count,
-    doubled,
-    increment,
-    decrement
-  };
+// Component
+function Counter() {
+  const { count, double, increment } = createCounter(10);
+  return (
+    <button onClick={increment}>
+      {count()} (double: {double()})
+    </button>
+  );
 }
 ```
 
-## State Management
+## Lifecycle
 
-### Pinia → PhilJS Patterns
+```vue
+<!-- Vue -->
+<script setup>
+import { onMounted, onUnmounted, onUpdated } from 'vue';
 
-**Pinia Store:**
-```typescript
+onMounted(() => console.log('Mounted'));
+onUnmounted(() => console.log('Unmounted'));
+onUpdated(() => console.log('Updated'));
+</script>
+```
+
+```tsx
+// PhilJS
+import { onMount, onCleanup, effect } from '@philjs/core';
+
+function Component() {
+  onMount(() => {
+    console.log('Mounted');
+  });
+
+  onCleanup(() => {
+    console.log('Unmounted');
+  });
+
+  // For update tracking, use effect
+  effect(() => {
+    // This runs on every tracked dependency change
+    console.log('Dependencies changed');
+  });
+
+  return <div>Content</div>;
+}
+```
+
+## Vue Router → PhilJS Router
+
+```vue
+<!-- Vue Router -->
+<script setup>
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+// Access params
+const userId = route.params.id;
+
+// Navigate
+router.push('/home');
+</script>
+```
+
+```tsx
+// PhilJS Router
+import { useRoute, navigate } from '@philjs/router';
+
+function Component() {
+  const route = useRoute();
+
+  // Access params
+  const userId = route.params.id;
+
+  // Navigate
+  const goHome = () => navigate('/home');
+
+  return <button onClick={goHome}>Go Home</button>;
+}
+```
+
+## Pinia → PhilJS Store
+
+```ts
+// Pinia Store
 import { defineStore } from 'pinia';
 
-export const useUserStore = defineStore('user', () => {
-  const user = ref(null);
-  const isAuthenticated = computed(() => user.value !== null);
-
-  async function login(email, password) {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password })
-    });
-
-    user.value = await response.json();
-  }
-
-  function logout() {
-    user.value = null;
-  }
-
-  return {
-    user,
-    isAuthenticated,
-    login,
-    logout
-  };
+export const useCounterStore = defineStore('counter', {
+  state: () => ({ count: 0 }),
+  getters: {
+    double: (state) => state.count * 2,
+  },
+  actions: {
+    increment() {
+      this.count++;
+    },
+  },
 });
 ```
 
-**PhilJS:**
-```typescript
-import { signal, memo } from '@philjs/core';
+```ts
+// PhilJS Store
+import { createStore } from '@philjs/store';
 
-function createUserStore() {
-  const user = signal(null);
-  const isAuthenticated = memo(() => user() !== null);
+export const counterStore = createStore({
+  count: 0,
 
-  const login = async (email: string, password: string) => {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password })
-    });
+  get double() {
+    return this.count * 2;
+  },
 
-    user.set(await response.json());
-  };
+  increment() {
+    this.count++;
+  },
+});
 
-  const logout = () => {
-    user.set(null);
-  };
-
-  return {
-    user,
-    isAuthenticated,
-    login,
-    logout
-  };
+// Usage in component
+function Counter() {
+  return (
+    <button onClick={counterStore.increment}>
+      {counterStore.count} (double: {counterStore.double})
+    </button>
+  );
 }
+```
 
-export const userStore = createUserStore();
+## Common Gotchas
+
+### 1. No automatic unwrapping
+```tsx
+// Vue auto-unwraps in template
+// PhilJS requires explicit call
+const count = signal(0);
+<div>{count()}</div>  // Must call as function
+```
+
+### 2. Immutable updates
+```tsx
+// Vue reactive allows mutation
+state.user.name = 'Jane';
+
+// PhilJS requires new reference
+state.set({ ...state(), user: { ...state().user, name: 'Jane' } });
+```
+
+### 3. No template syntax
+```tsx
+// Vue: v-if, v-for, v-model
+// PhilJS: JSX expressions
+{condition && <Component />}
+{items.map(item => <Item {...item} />)}
+<input value={value()} onInput={e => value.set(e.target.value)} />
 ```
 
 ## Migration Strategy
 
-### 1. Component-by-Component
+1. **Start with utilities** - Migrate composables to functions
+2. **Leaf components first** - Components without children
+3. **Use adapter at boundaries** - Mount Vue/PhilJS together
+4. **Replace routing last** - Most impactful change
 
-1. Start with leaf components
-2. Move to parent components
-3. Update routing last
+## Benefits After Migration
 
-### 2. Conversion Checklist
-
-- [ ] Replace `ref()` with `signal()`
-- [ ] Replace `computed()` with `memo()`
-- [ ] Replace `watchEffect()` with `effect()`
-- [ ] Convert templates to JSX
-- [ ] Replace `v-model` with controlled inputs
-- [ ] Update event handlers (`@click` → `onClick`)
-- [ ] Convert lifecycle hooks to effects
-- [ ] Update router imports
-
-### 3. Automated Patterns
-
-```bash
-# ref → signal
-s/const (\w+) = ref\(/const $1 = signal(/g
-
-# .value reads
-s/(\w+)\.value/\1()/g
-
-# .value writes
-s/(\w+)\.value = /\1.set(/g
-```
-
-## Common Pitfalls
-
-### Remember Function Calls
-
-```tsx
-// ❌ Vue habit
-<p>Count: {count}</p>
-
-// ✅ PhilJS
-<p>Count: {count()}</p>
-```
-
-### Immutable Updates
-
-```tsx
-// ❌ Vue habit (mutating reactive object)
-user().name = 'Bob';
-
-// ✅ PhilJS (immutable update)
-user.set({ ...user(), name: 'Bob' });
-```
-
-### Event Handler Syntax
-
-```tsx
-// ❌ Vue habit
-<button @click="increment">
-
-// ✅ PhilJS
-<button onClick={increment}>
-```
-
-## Summary
-
-PhilJS migration from Vue:
-
-✅ Similar reactivity model
-✅ Composition API maps well
-✅ JSX instead of templates
-✅ Simpler mental model
-✅ No `.value` confusion
-✅ Better TypeScript support
-
-Vue developers will find PhilJS familiar and powerful!
-
----
-
-**Next:** [Migrating from Svelte →](./from-svelte.md)
+- **Smaller bundle**: ~3KB vs Vue's ~35KB
+- **Faster updates**: Fine-grained without virtual DOM diffing
+- **Simpler model**: No `.value` unwrapping confusion
+- **TypeScript-first**: Better type inference
+- **No compilation step**: No SFC compiler needed

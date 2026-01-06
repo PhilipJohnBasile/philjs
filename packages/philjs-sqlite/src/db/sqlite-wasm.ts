@@ -201,7 +201,7 @@ class OPFSPersistence {
 
     const fileHandle = await this.dirHandle!.getFileHandle(`${this.dbName}.sqlite`, { create: true });
     const writable = await fileHandle.createWritable();
-    await writable.write(data);
+    await writable.write(data as unknown as FileSystemWriteChunkType);
     await writable.close();
   }
 

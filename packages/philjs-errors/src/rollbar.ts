@@ -51,7 +51,6 @@ export function createRollbarTracker(): ErrorTracker {
             },
           });
 
-          console.log('[PhilJS] Rollbar initialized');
         }
       };
 

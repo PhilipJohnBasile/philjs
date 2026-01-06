@@ -248,7 +248,7 @@ export class NaturalLanguageGenerator {
     const prompt = this.buildGenerationPrompt(description, intent, options);
 
     // Generate the code
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getSystemPrompt(intent, options),
@@ -337,7 +337,7 @@ Return JSON:
   "accessibility": ["aria-busy when loading", "disabled state"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       temperature: 0.1,
       systemPrompt: 'You are an expert at understanding code generation requests. Extract intent accurately.',
@@ -383,7 +383,7 @@ Apply the refinement while maintaining:
 
 Return the refined code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getSystemPrompt(previousResult.intent, options),
@@ -442,7 +442,7 @@ Return the refined code.`;
 
     const contextPrompt = this.buildConversationPrompt(followUp);
 
-    const response = await this.provider.generateCompletion(contextPrompt, {
+    const { content: response } = await this.provider.generateCompletion(contextPrompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getConversationSystemPrompt(),
@@ -537,7 +537,7 @@ Follow the same:
 
 Return the new code that follows the example pattern.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getSystemPrompt(await this.parseIntent(description), options),
@@ -770,7 +770,7 @@ Apply the request to the current code and return the updated version.`;
     } else {
       this.conversationContext.artifacts.push({
         type: intent.type === 'function' || intent.type === 'utility' ? 'function' :
-              intent.type === 'type' ? 'type' : 'component',
+          intent.type === 'type' ? 'type' : 'component',
         name: intent.suggestedName || 'Generated',
         code,
         version: 1,
@@ -786,11 +786,11 @@ Apply the request to the current code and return the updated version.`;
     let confidence = 0.5;
 
     if (lower.includes('component') || lower.includes('button') ||
-        lower.includes('form') || lower.includes('card')) {
+      lower.includes('form') || lower.includes('card')) {
       type = 'component';
       confidence = 0.8;
     } else if (lower.includes('function') || lower.includes('calculate') ||
-               lower.includes('convert')) {
+      lower.includes('convert')) {
       type = 'function';
       confidence = 0.7;
     } else if (lower.includes('hook') || lower.includes('use')) {
@@ -895,7 +895,7 @@ Include:
 
 Return only the test code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: SYSTEM_PROMPTS.testing,
     });
@@ -912,7 +912,7 @@ ${code}
 
 Return only a JSON array of short suggestion strings.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       temperature: 0.3,
       maxTokens: 256,
     });

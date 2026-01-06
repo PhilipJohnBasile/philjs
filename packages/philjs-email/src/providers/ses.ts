@@ -14,8 +14,8 @@ import type {
   BulkEmailMessage,
   BulkEmailResult,
   TemplateEmailMessage,
-} from '../types';
-import { renderReactEmail, normalizeAddress, withRetry } from '../utils';
+} from '../types.js';
+import { renderReactEmail, normalizeAddress, withRetry } from '../utils.js';
 
 /**
  * AWS SES Email Provider

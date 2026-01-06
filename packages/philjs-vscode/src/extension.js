@@ -11,7 +11,6 @@ import { PhilJSDefinitionProvider } from './providers/definition.js';
 import { PhilJSDiagnosticsProvider } from './providers/diagnostics.js';
 import { createComponent, createRoute, createPage, createHook, createStore } from './generators.js';
 export function activate(context) {
-    console.log('PhilJS extension is now active');
     const config = vscode.workspace.getConfiguration('philjs');
     const enableIntelliSense = config.get('enableIntelliSense', true);
     // Register language features
@@ -91,6 +90,5 @@ export function activate(context) {
     context.subscriptions.push(statusBarItem);
 }
 export function deactivate() {
-    console.log('PhilJS extension is now deactivated');
 }
 //# sourceMappingURL=extension.js.map

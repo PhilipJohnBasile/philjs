@@ -540,7 +540,6 @@ export class WebVitalsMonitor {
    */
   private log(...args: any[]): void {
     if (this.options.debug) {
-      console.log('[Web Vitals]', ...args);
     }
   }
 }

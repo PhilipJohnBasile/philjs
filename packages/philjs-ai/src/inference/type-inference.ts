@@ -331,7 +331,7 @@ Return JSON:
   ]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       maxTokens: 8192,
@@ -394,7 +394,7 @@ Return JSON:
   "alternatives": ["other possible types"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript type inference expert. Analyze code usage patterns to infer accurate types.',
     });
@@ -456,7 +456,7 @@ Return JSON:
   "imports": ["any needed imports"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript expert. Generate accurate, complete types from JSON.',
     });
@@ -514,7 +514,7 @@ Return JSON:
   "code": "all type definitions"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an API typing expert. Generate accurate types for API interactions.',
     });
@@ -563,7 +563,7 @@ For each suggestion:
 
 Return JSON array of TypeSuggestion objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript expert. Suggest type safety improvements.',
     });
@@ -600,7 +600,7 @@ Include:
 
 Return the complete .d.ts file.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript expert. Generate accurate type declarations.',
     });
@@ -650,7 +650,7 @@ Return JSON:
   ]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       maxTokens: 8192,
@@ -703,7 +703,7 @@ Return JSON matching InferredInterface:
   "code": "interface ComponentNameProps { ... }"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a PhilJS and TypeScript expert. Generate accurate component prop types.',
     });
@@ -755,7 +755,7 @@ For each mismatch:
 
 Return JSON array.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript type checker. Detect type errors accurately.',
     });

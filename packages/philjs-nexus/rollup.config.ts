@@ -29,6 +29,11 @@ export default defineConfig({
       tsconfig: './tsconfig.json',
       declaration: true,
       declarationDir: 'dist',
+      compilerOptions: {
+        module: 'esnext',
+        moduleResolution: 'bundler',
+        declarationMap: false,
+      },
     }),
   ],
 });

@@ -120,7 +120,6 @@ function setupDevtools(app: App, context: PhilJSVueContext): void {
 
   // Register PhilJS inspector
   devtoolsApi.on?.('devtools:inspector:attach', () => {
-    console.log('[PhilJS] Devtools attached');
   });
 
   // Expose context for devtools inspection

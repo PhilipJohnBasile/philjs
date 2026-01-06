@@ -99,7 +99,6 @@ export {
   generateExportsField,
   rslibPresets,
   type RslibConfig,
-  type RslibLibConfig,
   type PhilJSRslibOptions,
   type OutputFormat,
 } from './rslib/config.js';

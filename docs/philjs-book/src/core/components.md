@@ -1,122 +1,125 @@
-# Components
+# Chapter 3: The Component Paradox
 
-Components are TypeScript functions that return JSX. They are plain functions, easy to test, and trivial to compose.
+This chapter addresses the most common source of confusion for developers moving to PhilJS: **The Component Paradox**.
 
-## Typed props
+> **The Paradox**: *PhilJS components look exactly like React components, but they share almost none of the same runtime behavior.*
 
-```tsx
-type GreetingProps = { name: string };
+## The Illusion of Similarity
 
-export function Greeting({ name }: GreetingProps) {
-  return <p>Hello {name}</p>;
+Consider this component:
+
+```typescript
+function UserBadge({ user }) {
+  console.log("Badge Rendered");
+  return <div class="badge">{user.name}</div>;
 }
 ```
 
-## Children
+In React, this function runs every time `user` changes. The `console.log` fires repeatedly.
+In PhilJS, this function runs **once**. The `console.log` fires on mount, and never again.
 
-```tsx
-import type { JSXChild } from "@philjs/core";
+## Components as Setup Functions
 
-type CardProps = {
-  title: string;
-  children?: JSXChild;
-};
+In PhilJS, a component is a **setup function**. Its job is to:
+1.  Receive arguments (props).
+2.  Declare local state (signals).
+3.  Return a template (JSX).
 
-export function Card({ title, children }: CardProps) {
+Once the template is returned, the component function's job is done. It is garbage collected. The DOM nodes it created live on, wired directly to the signals you declared.
+
+### Implications of "Run Once"
+
+Because components run once, "Conditional Rendering" works differently.
+
+**In React:**
+```typescript
+// React: This works because the function re-runs
+function Timer() {
+  const [time, setTime] = useState(0);
+  if (time > 10) return <div>Done!</div>;
+  return <div>{time}</div>;
+}
+```
+
+**In PhilJS:**
+```typescript
+// PhilJS: This will NEVER update after the first render!
+function Timer() {
+  const time = signal(0);
+  
+  // ❌ WRONG: This `if` runs once at setup. 
+  // If time(0) is not > 10, it returns the second div and wires it up.
+  // Even if time becomes 11, the function never runs again to check the `if`.
+  if (time() > 10) return <div>Done!</div>;
+  
+  return <div>{time()}</div>;
+}
+```
+
+## How to Handle Dynamics
+
+To make things dynamic, you must perform the logic **inside the JSX** or use helper components, because the JSX expressions are the only things that subscribe to signals.
+
+**Correct Approach:**
+```typescript
+function Timer() {
+  const time = signal(0);
+  
   return (
-    <section class="card">
-      <h2>{title}</h2>
-      <div>{children}</div>
-    </section>
-  );
-}
-```
-
-## Composition
-
-```tsx
-export function Page() {
-  return (
-    <Card title="Summary">
-      <p>Signals, SSR, and islands in one system.</p>
-    </Card>
-  );
-}
-```
-
-## Default values
-
-```tsx
-type BadgeProps = { tone?: "primary" | "neutral" };
-
-export function Badge({ tone = "primary" }: BadgeProps) {
-  return <span class={`badge badge-${tone}`}>{tone}</span>;
-}
-```
-
-## Events and handlers
-
-Event handlers receive native events; keep them small and avoid inline heavy allocations.
-
-```tsx
-export function SearchBox({ onSearch }: { onSearch: (q: string) => void }) {
-  return (
-    <input
-      type="search"
-      onInput={(ev) => onSearch((ev.target as HTMLInputElement).value)}
-      placeholder="Search…"
-    />
-  );
-}
-```
-
-## Refs and lifecycle
-
-Use `ref` callbacks for DOM access; pair with `onCleanup` for listeners.
-
-```tsx
-import { onCleanup } from '@philjs/core';
-
-export function Focusable() {
-  let el: HTMLButtonElement | null = null;
-  onCleanup(() => el?.removeEventListener('click', () => {}));
-  return <button ref={(node) => (el = node)}>Click</button>;
-}
-```
-
-## Composition patterns
-
-- **Slots**: accept `children` and optional named slots as props.
-- **Render props**: pass functions for dynamic content.
-- **Headless components**: expose state via signals and render via `children`.
-
-```tsx
-export function Dialog({ open, children }: { open: boolean; children: JSXChild }) {
-  if (!open) return null;
-  return (
-    <div role="dialog" aria-modal="true">
-      {children}
+    <div>
+      {/* The ternary inside JSX creates a reactive boundary */}
+      {time() > 10 ? <span>Done!</span> : <span>{time()}</span>}
     </div>
   );
 }
 ```
 
-## Performance
+## Props are Reactive
 
-- Keep props serializable for SSR; avoid passing giant objects unless memoized.
-- Extract heavy computations into memos/resources outside render.
-- Use lists with stable keys to prevent unnecessary DOM churn.
+In many frameworks, props are plain values. In PhilJS, props can be signals or plain values. If you want a component to react to a prop change, you should generally pass a signal, or access props in a reactive context.
 
-## Testing components
+```typescript
+// Parent
+const count = signal(0);
+return <Child count={count} />; // Pass the signal itself!
 
-- Render with `@philjs/testing` and assert via roles/labels.
-- Avoid snapshotting entire trees; test behavior (text, aria, navigation).
-- Mock only boundaries (network/storage); keep component logic real.
+// Child
+function Child({ count }) {
+  // Accessing count() creates the subscription
+  return <div>{count()}</div>; 
+}
+```
 
-## Checklist
+## Lifecycle: Setup and Disposal
 
-- [ ] Props typed; defaults set for optional props.
-- [ ] Children handled safely (null/undefined allowed).
-- [ ] Event handlers lean; avoid re-binding heavy functions per render.
-- [ ] Refs cleaned up if adding listeners.
-- [ ] Tested with realistic interactions.
+Since there are no re-renders, there are no `componentDidUpdate` equivalents. There are only two moments in time:
+
+1.  **Setup**: When the functions runs.
+2.  **Disposal**: When the returned DOM is removed from the page.
+
+Use `onCleanup` to handle disposal.
+
+```typescript
+import { onCleanup } from "@philjs/core";
+
+function MouseTracker() {
+  const listener = (e) => console.log(e.x, e.y);
+  window.addEventListener("mousemove", listener);
+  
+  // Register cleanup logic
+  onCleanup(() => {
+    window.removeEventListener("mousemove", listener);
+  });
+  
+  return <div>Tracking...</div>;
+}
+```
+
+## Why This Model Wins
+
+The "Run Once" model eliminates an entire class of performance pitfalls:
+*   **No Stale Closures**: You don't need `useCallback` because functions are created once and stay stable.
+*   **No Dependency Arrays**: You don't need to tell the framework what to watch. It watches the signals you access.
+*   **Predictable Performance**: A strictly localized update is always O(1). A Virtual DOM diff is O(N) relative to the tree size.
+
+Embrace the paradox: Write functions that run once to build UIs that update forever.

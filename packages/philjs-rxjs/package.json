@@ -1,0 +1,49 @@
+{
+  "name": "@philjs/rxjs",
+  "version": "0.1.0",
+  "description": "Official PhilJS package: philjs-rxjs",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --skipLibCheck || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "rxjs": "^7.8.1",
+    "tsup": "^8.5.1",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-rxjs"
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "rxjs"
+  ]
+}

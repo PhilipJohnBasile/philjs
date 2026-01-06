@@ -121,7 +121,6 @@ export function initHMR(config: HMRConfig = {}): () => void {
   };
 
   if (!devModeEnabled()) {
-    console.log('[HMR] Disabled in production mode');
     return () => {};
   }
 
@@ -146,7 +145,6 @@ function connect(): void {
     hmrSocket = new WebSocket(hmrConfig.wsUrl!);
 
     hmrSocket.onopen = () => {
-      console.log('[HMR] Connected to dev server');
       hotReloadStatus.set('idle');
       reconnectAttempts = 0;
     };
@@ -210,7 +208,6 @@ function handleMessage(data: string): void {
 
     switch (message.type) {
       case 'hash':
-        console.log('[HMR] Bundle hash:', message.hash);
         break;
 
       case 'still-ok':
@@ -549,7 +546,6 @@ function enableInspector(): void {
   document.addEventListener('mousemove', handleInspectorMouseMove);
   document.addEventListener('click', handleInspectorClick, true);
 
-  console.log('[Inspector] Enabled');
 }
 
 /**
@@ -564,7 +560,6 @@ function disableInspector(): void {
   inspectorOverlay?.remove();
   inspectorOverlay = null;
 
-  console.log('[Inspector] Disabled');
 }
 
 /**
@@ -596,8 +591,7 @@ function handleInspectorClick(event: MouseEvent): void {
   const element = document.elementFromPoint(event.clientX, event.clientY);
   if (!element) return;
 
-  console.log('[Inspector] Selected element:', element);
-  console.log('[Inspector] Element properties:', {
+  console.log('[Inspector] Selected element:', {
     tagName: element.tagName,
     id: element.id,
     className: element.className,
@@ -701,20 +695,16 @@ export async function clearDevCache(): Promise<void> {
   if (typeof caches !== 'undefined') {
     const cacheNames = await caches.keys();
     await Promise.all(cacheNames.map(name => caches.delete(name)));
-    console.log('[DevTools] Cleared caches');
   }
 
   if (typeof localStorage !== 'undefined') {
     localStorage.clear();
-    console.log('[DevTools] Cleared localStorage');
   }
 
   if (typeof sessionStorage !== 'undefined') {
     sessionStorage.clear();
-    console.log('[DevTools] Cleared sessionStorage');
   }
 
-  console.log('[DevTools] Cache cleared');
 }
 
 // ============================================================================

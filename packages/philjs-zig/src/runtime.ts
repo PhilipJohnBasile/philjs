@@ -2,18 +2,51 @@
  * Zig Runtime for PhilJS - High-performance operations
  */
 
-import { execa } from 'execa';
+import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { ZigBuildConfig, RuntimeConfig } from './types.js';
 
 /**
+ * Helper to execute commands (replaces execa)
+ */
+function execCommand(cmd: string, args: string[], options: { cwd?: string; stdio?: 'inherit' | 'pipe' } = {}): Promise<{ stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const proc = spawn(cmd, args, {
+      cwd: options.cwd,
+      stdio: options.stdio === 'inherit' ? 'inherit' : 'pipe',
+      shell: process.platform === 'win32',
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    if (proc.stdout) {
+      proc.stdout.on('data', (data) => { stdout += data.toString(); });
+    }
+    if (proc.stderr) {
+      proc.stderr.on('data', (data) => { stderr += data.toString(); });
+    }
+
+    proc.on('close', (code) => {
+      if (code === 0) {
+        resolve({ stdout, stderr });
+      } else {
+        reject(new Error(`Command failed with exit code ${code}`));
+      }
+    });
+
+    proc.on('error', reject);
+  });
+}
+
+/**
  * Check if Zig is installed
  */
 export async function checkZigInstalled(): Promise<{ installed: boolean; version?: string }> {
   try {
-    const { stdout } = await execa('zig', ['version']);
+    const { stdout } = await execCommand('zig', ['version']);
     return { installed: true, version: stdout.trim() };
   } catch {
     return { installed: false };
@@ -44,7 +77,7 @@ export async function buildZig(config: ZigBuildConfig = {}): Promise<string> {
 
   const zigDir = join(__dirname, '..', 'zig');
 
-  await execa('zig', args, {
+  await execCommand('zig', args, {
     cwd: zigDir,
     stdio: 'inherit',
   });

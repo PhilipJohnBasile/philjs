@@ -94,7 +94,6 @@ function parseArgs(args) {
 // ============================================================================
 const VERSION = '2.0.0';
 function showHelp() {
-    console.log(`
 PhilJS WASM Code Generator v${VERSION}
 
 Generate JavaScript/TypeScript bindings from Rust source files.
@@ -194,7 +193,6 @@ function generateCommand(args) {
         return { success: false, error: 'Failed to read input file' };
     }
     if (args.verbose) {
-        console.log(`Parsing Rust module...`);
     }
     try {
         const code = generateBindings(rustCode, {
@@ -246,7 +244,6 @@ function generateCommand(args) {
 async function watchCommand(args) {
     if (!args.input) {
         console.error('Error: No directory specified');
-        console.log('Usage: philjs-wasm watch <dir>');
         return;
     }
     const watchDir = resolve(process.cwd(), args.input);
@@ -260,7 +257,6 @@ async function watchCommand(args) {
         return;
     }
     console.log(`Watching: ${watchDir}`);
-    console.log('Press Ctrl+C to stop\n');
     // Track debounce timers
     const debounceTimers = new Map();
     // Generate bindings for a file

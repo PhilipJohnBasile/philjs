@@ -855,8 +855,6 @@ export function perfBudgetPlugin(budget: PerformanceBudget): any {
     closeBundle() {
       const result = checker.check();
 
-      console.log('\n' + checker.getArtifactReport());
-      console.log('\n' + result.summary);
 
       if (!result.passed) {
         throw new Error('Performance budget exceeded!');

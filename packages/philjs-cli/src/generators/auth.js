@@ -1792,7 +1792,6 @@ JWT_SECRET=your-jwt-secret-key
  * Print setup instructions
  */
 function printSetupInstructions(provider) {
-    console.log(pc.cyan('\n📋 Next Steps:\n'));
     console.log(pc.white('1. Install required dependencies:'));
     switch (provider) {
         case 'clerk':
@@ -1805,7 +1804,6 @@ function printSetupInstructions(provider) {
             console.log(pc.dim('   npm install @supabase/supabase-js'));
             break;
         case 'nextauth':
-            console.log(pc.dim('   npm install next-auth'));
             break;
         case 'custom':
             console.log(pc.dim('   npm install philjs-auth jsonwebtoken'));
@@ -1832,7 +1830,6 @@ function printSetupInstructions(provider) {
 
      // Your component logic
    }`));
-    console.log(pc.white('\n5. Protect routes:'));
     console.log(pc.dim(`   import { ProtectedRoute } from './auth/protected';
 
    <ProtectedRoute>

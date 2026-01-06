@@ -1,0 +1,44 @@
+{
+  "name": "@philjs/geo",
+  "version": "0.1.0",
+  "description": "Official PhilJS package: philjs-geo",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  },
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-geo"
+  },
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "geo"
+  ]
+}

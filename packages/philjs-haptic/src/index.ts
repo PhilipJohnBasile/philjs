@@ -14,6 +14,34 @@
  * - Battery-aware haptics
  */
 
+// WebXR type declarations (to avoid dependency on @types/webxr)
+declare global {
+  interface XRSession extends EventTarget {
+    readonly inputSources: XRInputSourceArray;
+    readonly renderState: XRRenderState;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void;
+  }
+
+  interface XRInputSource {
+    readonly handedness: 'none' | 'left' | 'right';
+    readonly targetRayMode: 'gaze' | 'tracked-pointer' | 'screen';
+    readonly gamepad?: Gamepad;
+  }
+
+  interface XRInputSourceArray extends ArrayLike<XRInputSource> {
+    [Symbol.iterator](): IterableIterator<XRInputSource>;
+  }
+
+  interface XRRenderState {
+    readonly baseLayer?: XRWebGLLayer;
+  }
+
+  interface XRWebGLLayer {
+    readonly framebufferWidth: number;
+    readonly framebufferHeight: number;
+  }
+}
+
 // ============================================================================
 // Types
 // ============================================================================

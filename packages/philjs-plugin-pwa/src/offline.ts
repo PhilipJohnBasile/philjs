@@ -50,7 +50,6 @@ export async function queueOfflineRequest(
   const cache = await caches.open(queueName);
   await cache.put(request, new Response(null));
 
-  console.log('[Offline] Queued request:', url);
 }
 
 /**

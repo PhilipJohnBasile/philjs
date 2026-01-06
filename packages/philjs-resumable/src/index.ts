@@ -119,7 +119,6 @@ export {
 
   // Value Serialization
   serializeValue,
-  deserializeValue,
 
   // Element/Signal Registration
   registerElement,
@@ -138,7 +137,6 @@ export {
 
   // Compact Serialization
   serializeToAttribute,
-  deserializeFromAttribute,
   generateInlineState,
 } from './serializer.js';
 
@@ -228,9 +226,18 @@ export {
   type ResumableSignal,
   type ResumableContext,
   type ResumableConfig,
+  type ResumableOptions,
 
   // Component Factory
   resumable$,
+  resumable,
+
+  // Progressive Hydration Wrappers
+  visible,
+  interactive,
+  idle,
+  eager,
+  static_,
 
   // Signals
   useSignal,
@@ -257,7 +264,84 @@ export {
   static$,
   client$,
   server$component,
+
+  // Trigger re-exports
+  onVisible,
+  onInteraction,
+  onIdle,
+  onLoad,
+  never,
+  type Trigger,
+  type TriggerType,
 } from './resumable.js';
+
+// ============================================================================
+// Triggers
+// ============================================================================
+
+export {
+  // Types
+  type HydrationCallback,
+  type TriggerCleanup,
+  type TriggerFunction,
+  type VisibleTriggerOptions,
+  type InteractionTriggerOptions,
+  type IdleTriggerOptions,
+  type MediaTriggerOptions,
+
+  // Trigger Factories
+  onMedia,
+  onCustom,
+  onEvent,
+  onFastNetwork,
+  afterDelay,
+
+  // Combinators
+  anyOf,
+  allOf,
+
+  // Utilities
+  isTrigger,
+  fromString,
+  defaultTrigger,
+} from './triggers.js';
+
+// ============================================================================
+// Deserializer
+// ============================================================================
+
+export {
+  // Types
+  type DeserializedState,
+  type DeserializedSignal,
+  type DeserializedElement,
+  type DeserializedComponent,
+  type DeserializationOptions,
+
+  // Core Deserialization
+  deserializeValue,
+  deserializeState,
+
+  // DOM Resolution
+  resolveElements,
+  setupSignalBindings,
+  resumeFromDOM,
+
+  // Attribute Deserialization
+  deserializeFromAttribute,
+  getElementState,
+
+  // Signal Resolution
+  resolveSignalRef,
+
+  // Utilities
+  isSignalRef,
+  isQRLRef,
+  getUnhydratedElements,
+  getUnhydratedComponents,
+  markHydrated,
+  clearDeserializedState,
+} from './deserializer.js';
 
 // ============================================================================
 // Container

@@ -1,1 +1,1 @@
-export * from './auto-optimize';
+export * from './auto-optimize.js';

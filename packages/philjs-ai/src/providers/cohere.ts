@@ -2,7 +2,7 @@
  * Cohere provider implementation
  */
 
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 
 export interface CohereConfig {
   apiKey: string;
@@ -14,6 +14,16 @@ interface CohereResponse {
   text?: string;
   generation_id?: string;
   finish_reason?: string;
+  meta?: {
+    tokens?: {
+      input_tokens?: number;
+      output_tokens?: number;
+    };
+    billed_units?: {
+      input_tokens?: number;
+      output_tokens?: number;
+    };
+  };
 }
 
 interface CohereStreamEvent {
@@ -33,7 +43,7 @@ export class CohereProvider implements AIProvider {
     this.defaultModel = config.defaultModel || 'command-r-plus';
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     const url = `${this.baseURL}/generate`;
 
     const requestBody: Record<string, unknown> = {
@@ -62,7 +72,28 @@ export class CohereProvider implements AIProvider {
     }
 
     const data = await response.json() as CohereResponse;
-    return data.text || '';
+
+    // Extract token usage from Cohere response
+    const inputTokens = data.meta?.tokens?.input_tokens
+      ?? data.meta?.billed_units?.input_tokens
+      ?? this.estimateTokens(prompt);
+    const outputTokens = data.meta?.tokens?.output_tokens
+      ?? data.meta?.billed_units?.output_tokens
+      ?? this.estimateTokens(data.text || '');
+
+    return {
+      content: data.text || '',
+      usage: {
+        inputTokens,
+        outputTokens,
+        totalTokens: inputTokens + outputTokens
+      }
+    };
+  }
+
+  /** Estimate token count (~4 chars per token) */
+  private estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {

@@ -24,7 +24,6 @@ export function createRollbarTracker() {
                             ...options.payload,
                         },
                     });
-                    console.log('[PhilJS] Rollbar initialized');
                 }
             };
             initRollbar().catch(console.error);

@@ -149,7 +149,7 @@ export class NexusApp {
       },
 
       get lastModified() {
-        return Date.now(); // TODO: Track actual modification time
+        return cachedValue ? (cachedValue as any)._lastModified || Date.now() : Date.now();
       },
 
       get(): T {
@@ -162,10 +162,11 @@ export class NexusApp {
       },
 
       async set(value: T): Promise<void> {
-        await self.syncEngine.set('documents', id, value);
-        cachedValue = value;
+        const valueWithMeta = { ...value, _lastModified: Date.now() };
+        await self.syncEngine.set('documents', id, valueWithMeta);
+        cachedValue = valueWithMeta;
         for (const subscriber of subscribers) {
-          subscriber(value);
+          subscriber(valueWithMeta);
         }
         self.emit({ type: 'document-change', documentId: id });
       },

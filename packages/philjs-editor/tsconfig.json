@@ -6,8 +6,13 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "skipLibCheck": true,
-    "noImplicitAny": false
+    "noEmitOnError": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "src/extensions/**"]
 }

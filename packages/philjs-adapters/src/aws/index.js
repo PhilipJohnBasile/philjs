@@ -29,7 +29,6 @@ export function awsAdapter(config = {}) {
                     await adaptForAmplify();
                     break;
             }
-            console.log('AWS build complete');
         },
         getHandler() {
             return async (request, context) => {

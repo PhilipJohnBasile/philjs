@@ -355,7 +355,7 @@ Requirements:
 
 Return only the test code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getTestSystemPrompt(framework),
@@ -401,7 +401,7 @@ Framework: ${framework}
 
 Return the integration test code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getTestSystemPrompt(framework),
@@ -453,7 +453,7 @@ Each step should have:
 
 Return JSON array of E2EScenario objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are an E2E testing expert. Generate comprehensive ${framework} test scenarios.`,
     });
@@ -487,7 +487,7 @@ Generate complete ${framework} test file with:
 
 Return the complete test file.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a ${framework} testing expert. Generate production-ready E2E tests.`,
     });
@@ -536,7 +536,7 @@ For each test provide:
 
 Return JSON array of A11yTest objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an accessibility testing expert. Generate comprehensive a11y tests.',
     });
@@ -583,7 +583,7 @@ Generate vitest snapshot tests that:
 
 Return the snapshot test code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: SYSTEM_PROMPTS.testing,
     });
@@ -635,7 +635,7 @@ Include:
 
 Return the performance test code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a performance testing expert. Generate comprehensive perf tests.',
     });
@@ -700,7 +700,7 @@ Return JSON:
   "improvements": ["general improvements"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a test coverage analyst. Provide accurate coverage analysis.',
     });
@@ -765,7 +765,7 @@ ${options?.includeMocks ? '- Include mock implementations' : ''}
 
 Return the complete test file.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       maxTokens: 8192,
@@ -885,7 +885,7 @@ For each mock provide:
 
 Return JSON array of MockFile objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
     });
 
@@ -912,7 +912,7 @@ For each fixture provide:
 
 Return JSON array of FixtureFile objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
     });
 
@@ -938,7 +938,7 @@ Generate utilities for:
 
 Return the test utilities code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
     });
 

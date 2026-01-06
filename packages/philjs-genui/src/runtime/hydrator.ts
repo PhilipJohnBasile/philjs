@@ -542,7 +542,7 @@ export class GenUIHydrator {
 
     if (component.style) {
       for (const [prop, value] of Object.entries(component.style)) {
-        (element.style as Record<string, string | number>)[prop] = value as string | number;
+        (element.style as unknown as Record<string, string | number>)[prop] = value as string | number;
       }
     }
 

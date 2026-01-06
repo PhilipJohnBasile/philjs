@@ -17,7 +17,6 @@ export class PlausibleProvider {
         // Load Plausible script
         this.loadScript();
         if (config.debug) {
-            console.log("[Plausible] Initialized");
         }
     }
     trackEvent(event) {
@@ -27,7 +26,6 @@ export class PlausibleProvider {
             ...(event.properties !== undefined ? { props: event.properties } : {}),
         });
         if (this.config.debug) {
-            console.log("[Plausible] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -77,7 +75,6 @@ export class PlausibleProvider {
         script.onload = () => {
             this.loaded = true;
             if (this.config.debug) {
-                console.log("[Plausible] Script loaded");
             }
         };
         document.head.appendChild(script);

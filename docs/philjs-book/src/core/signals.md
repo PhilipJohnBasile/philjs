@@ -1,144 +1,106 @@
-# Signals and Reactivity
+# Chapter 2: Primitives of State
 
-Signals are the core reactive primitive in PhilJS. Unlike React hooks, they are **fine-grained**: when a signal changes, only the specific text node or attribute that uses it updates. The component itself does **not** re-render.
-This matches the performance of SolidJS (consistently benchmarking 10x faster than Virtual DOM approaches) while maintaining a familiar DX.
+If the Dependency Graph is the map, then **Signals** are the territory.
 
-They are functions you call to read, and they expose a `.set` method to update.
+PhilJS provides three core primitives for state management:
+1.  **Signal**: The atomic unit of state (The Source).
+2.  **Memo**: A derived value (The Compute).
+3.  **Effect**: A side effect (The Observer).
 
-## Basic signal
+## 1. The Signal (Source)
 
-```tsx
+A Signal is a container for a value that changes over time. Structurally, it is a getter function with a `.set()` method attached.
+
+```typescript
 import { signal } from "@philjs/core";
 
-const count = signal(0);
+const count = signal(0); // Create
 
-count();       // 0
-count.set(1);  // update
+console.log(count());    // Read: 0
+count.set(1);            // Write: 1
+count.update(n => n + 1);// Update: 2
 ```
 
-## Derived values with `memo`
+### The Golden Rule of Signals
+> **"Read Function, Write Method"**
 
-```tsx
-import { memo, signal } from "@philjs/core";
+To access the value, you *call* the signal (`count()`). This allows the current context (like an Effect or a Template) to detect the access and subscribe to future changes. To change the value, you use the methods (`.set()`).
 
-const price = signal(49);
-const tax = memo(() => price() * 0.0825);
-const total = memo(() => price() + tax());
+## 2. The Memo (Derivation)
+
+Memos are cached, read-only signals. They value comes from a pure function.
+
+```typescript
+const price = signal(100);
+const tax = signal(0.1);
+
+// Automatically tracks 'price' and 'tax'
+const total = memo(() => price() * (1 + tax())); 
 ```
 
-## Writable computed values
+Memos are lazy. If nothing is reading `total`, the calculation function never runs, even if `price` changes. Memos are also smart: if `price` changes from `100` to `100` (no change), `total` will not notify its downstream dependents.
 
-```tsx
-import { linkedSignal, signal } from "@philjs/core";
+## 3. The Effect (Observer)
 
-const first = signal("Ada");
-const last = signal("Lovelace");
-const full = linkedSignal(() => `${first()} ${last()}`);
+Effects are the bridge between the reactive world and the imperative world. An Effect runs instantly when created, and runs again whenever any signal it read changes.
 
-full();            // "Ada Lovelace"
-full.set("A. L."); // override
-full.reset();      // back to computed
-```
-
-## Batch updates
-
-```tsx
-import { batch, signal } from "@philjs/core";
-
-const first = signal("Ada");
-const last = signal("Lovelace");
-
-batch(() => {
-  first.set("Grace");
-  last.set("Hopper");
-});
-```
-
-## Read without tracking
-
-```tsx
-import { signal, untrack } from "@philjs/core";
-
-const count = signal(0);
-const safeRead = () => untrack(() => count());
-```
-
-## Async data with resources
-
-```tsx
-import { resource, signal } from "@philjs/core";
-
-const userId = signal("u_1");
-const user = resource(async () => {
-  const res = await fetch(`/api/users/${userId()}`);
-  return res.json();
-});
-```
-
-## Effects
-
-Effects run when dependencies change—use them only for side effects (logging, DOM, network), not for computing values.
-
-```tsx
-import { effect } from '@philjs/core';
-
+```typescript
 effect(() => {
-  console.log('User changed', userId());
+  // This function runs every time 'total' updates
+  console.log(`The new total is ${total()}`);
+  
+  // Example: Sync to localStorage
+  localStorage.setItem('cart_total', total());
 });
 ```
 
-Keep effects lean; prefer `memo`/resources for derived data.
+> [!WARNING]
+> **Avoid Effect Spaghetti**: Beginners often use Effects to synchronize state (e.g., using an effect to set `b` when `a` changes). This causes cascading updates. Always use **Memos** for derived data. Only use Effects for logging, DOM manipulation, or I/O.
 
-## Best practices
+## The "Glitch-Free" Guarantee
 
-- **Read first, set second**: avoid reading signals inside setters unless wrapped in `batch`.
-- **Prefer memos** for derived values; avoid recomputing in render.
-- **Keep graphs shallow**: many small signals beat one large object with deep paths.
-- **Avoid async in effects**; use resources or actions instead.
-- **Use `untrack`** when you need to read without subscribing (e.g., logging).
+Reactive systems are prone to a class of bugs called "Glitches" (also known as the Diamond Problem).
 
-## Testing signals
+Imagine this graph:
+```
+    A (Name: "John")
+   / \
+  B   C (Derived: B = A.upper, C = A.len)
+   \ /
+    D (Effect: Log "NAME: LENGTH")
+```
 
-```tsx
-import { describe, it, expect } from 'vitest';
-import { signal, memo, batch } from '@philjs/core';
+If `A` changes to "Jane":
+1.  A notifies B and C.
+2.  In a naive system, B might update and trigger D *immediately*.
+3.  D runs and sees B="JANE" but C=4 (stale length of "John"). **This is a glitch.**
+4.  C updates to 4 ("Jane" is also length 4).
+5.  D runs again.
 
-describe('signals', () => {
-  it('updates memos once per batch', () => {
-    const a = signal(1);
-    const b = signal(2);
-    const sum = memo(() => a() + b());
-    batch(() => { a.set(3); b.set(4); });
-    expect(sum()).toBe(7);
-  });
+PhilJS is **Glitch-Free**. It uses a topological stabilization phase. When `A` changes, it marks B and C as "stale", but D does not run until *both* B and C have settled. D will never see an inconsistent state.
+
+## Async Resources
+
+State is not always synchronous. PhilJS handles async data via **Resources**. Using `Suspense` boundaries (discussed in the Routing chapter), specific parts of the UI can "pause" while a Resource loads.
+
+```typescript
+const userId = signal(1);
+
+const user = resource(async () => {
+  const response = await fetch(\`/api/users/\${userId()}\`);
+  return response.json();
 });
+
+// In component:
+// <div>{user().name}</div> -> Will show fallback until resolved
 ```
 
-## Performance tips
+## Summary
 
-- Batch related updates to avoid redundant recomputation.
-- Favor primitive values over giant objects; if using objects, update by path to avoid churn.
-- In lists, keep stable keys and avoid recreating signal containers per render if not needed.
+| Primitive | Role | Writeable? | Lazy? |
+| :--- | :--- | :--- | :--- |
+| **Signal** | Source of Truth | Yes | No |
+| **Memo** | Derived State | No | Yes |
+| **Effect** | Side Effect / I/O | No | No |
 
-## Checklist
-
-- [ ] Derived data uses `memo` or `linkedSignal`, not effects.
-- [ ] Expensive reads wrapped in memos.
-- [ ] Batch multiple writes.
-- [ ] `untrack` used when reading without subscribing.
-- [ ] Tests cover memo recomputation and batching.
-
-## Try it now: optimistic counter with batch
-
-```tsx
-const counter = signal(0);
-const double = memo(() => counter() * 2);
-
-function incrementMany(n: number) {
-  batch(() => {
-    for (let i = 0; i < n; i++) counter.update(v => v + 1);
-  });
-}
-```
-
-Call `incrementMany(5)` and assert `double()` reflects the batched result with a single recompute.
+Mastering these three primitives is 90% of the work in PhilJS.

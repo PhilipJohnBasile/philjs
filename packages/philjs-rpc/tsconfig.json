@@ -3,10 +3,14 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "skipLibCheck": true,
     "noEmit": false
   },
   "include": ["src/**/*"],

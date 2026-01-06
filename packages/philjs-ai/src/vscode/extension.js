@@ -27,7 +27,6 @@ export class PhilJSAIExtension {
      * Activate the extension
      */
     async activate(context) {
-        console.log('PhilJS AI extension activating...');
         // Initialize AI provider
         try {
             this.provider = autoDetectProvider();
@@ -41,7 +40,6 @@ export class PhilJSAIExtension {
         this.registerCodeActionsProvider(context);
         this.registerCommands(context);
         this.registerInlineCompletionProvider(context);
-        console.log('PhilJS AI extension activated');
     }
     /**
      * Deactivate the extension
@@ -53,7 +51,6 @@ export class PhilJSAIExtension {
         this.refactoringEngine = null;
         this.testGenerator = null;
         this.docGenerator = null;
-        console.log('PhilJS AI extension deactivated');
     }
     /**
      * Initialize AI engines
@@ -165,7 +162,6 @@ export class PhilJSAIExtension {
             useSignals: true,
         });
         // In actual extension, this would open a new document with the generated code
-        console.log('Generated component:', result.code);
     }
     /**
      * Generate tests command
@@ -177,7 +173,6 @@ export class PhilJSAIExtension {
         }
         const code = document.getText();
         const result = await this.testGenerator.generateUnitTests(code);
-        console.log('Generated tests:', result.code);
     }
     /**
      * Refactor code command
@@ -205,7 +200,6 @@ export class PhilJSAIExtension {
         }
         const code = document.getText();
         const documented = await this.docGenerator.addJSDoc(code, { includeExamples: true });
-        console.log('Documentation added');
         // In actual extension, this would replace the document content
     }
     /**
@@ -220,7 +214,6 @@ export class PhilJSAIExtension {
             ? document.getText().split('\n').slice(selection.start.line, selection.end.line + 1).join('\n')
             : document.getText();
         const explanation = await this.provider.generateCompletion(`Explain this PhilJS code:\n\n\`\`\`typescript\n${code}\n\`\`\``, { systemPrompt: 'You are a helpful coding assistant. Explain code clearly and concisely.' });
-        console.log('Explanation:', explanation);
     }
     /**
      * Review code command

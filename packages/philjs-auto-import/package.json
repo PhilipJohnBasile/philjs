@@ -1,9 +1,23 @@
 {
-    "name": "@philjs/auto-import",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts",
-    "peerDependencies": {
-        "vite": "^4.0.0"
-    }
+  "name": "@philjs/auto-import",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "vite": "^4.0.0"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-auto-import"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "auto",
+    "import"
+  ]
 }

@@ -13,11 +13,9 @@ export function SmartForm(props: SmartFormProps) {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log('SmartForm: 🤖 AI Analyzing submission...');
 
         // Simulate AI Validation
         setTimeout(() => {
-            console.log('SmartForm: 🤖 Validation Passed. Sentiment: Positive.');
             props.onSubmit({ mock: 'data' });
         }, 500);
     };

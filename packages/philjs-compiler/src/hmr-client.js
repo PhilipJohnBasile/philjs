@@ -130,7 +130,6 @@ export function setupHMRClient(options = {}) {
         const startTime = performance.now();
         try {
             if (verbose) {
-                console.log('[PhilJS HMR] Applying update...');
             }
             // State will be restored after modules are re-evaluated
             // This happens automatically via the snapshot/restore mechanism
@@ -187,7 +186,6 @@ export function setupHMRClient(options = {}) {
         }
     });
     if (verbose) {
-        console.log('[PhilJS HMR] Client initialized');
     }
 }
 /**

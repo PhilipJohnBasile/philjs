@@ -1007,7 +1007,7 @@ describe('createSyncEngine Factory', () => {
       tables: ['items'],
       conflictStrategy: 'manual',
       getAuthToken: async () => 'token',
-      onSyncComplete: () => {},
+      onSyncComplete: () => { },
       onConflict: async () => ({ action: 'use-local' }),
       debug: true,
     });
@@ -1117,7 +1117,35 @@ describe('Sync Change Records', () => {
     }
   });
 
-  it.todo('should capture row data for INSERT changes');
-  it.todo('should capture row data for UPDATE changes');
-  it.todo('should not capture data for DELETE changes');
+  it('should capture row data for INSERT changes', () => {
+    db.exec('INSERT INTO data (value) VALUES (?)', ['Insert Data']);
+
+    const changes = syncEngine.getPendingChanges();
+    const insert = changes.find((c) => c.operation === 'INSERT');
+
+    expect(insert?.data).toBeDefined();
+    expect(insert?.data?.value).toBe('Insert Data');
+  });
+
+  it('should capture row data for UPDATE changes', () => {
+    db.exec('INSERT INTO data (value) VALUES (?)', ['Original']);
+    db.exec('UPDATE data SET value = ? WHERE value = ?', ['Updated Data', 'Original']);
+
+    const changes = syncEngine.getPendingChanges();
+    const update = changes.find((c) => c.operation === 'UPDATE');
+
+    expect(update?.data).toBeDefined();
+    expect(update?.data?.value).toBe('Updated Data');
+  });
+
+  it('should not capture data for DELETE changes', () => {
+    db.exec('INSERT INTO data (value) VALUES (?)', ['To Delete']);
+    db.exec('DELETE FROM data WHERE value = ?', ['To Delete']);
+
+    const changes = syncEngine.getPendingChanges();
+    const del = changes.find((c) => c.operation === 'DELETE');
+
+    expect(del).toBeDefined();
+    expect(del?.data).toBeNull();
+  });
 });

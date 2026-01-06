@@ -36,7 +36,6 @@ export class PostHogProvider implements IAnalyticsProvider {
     this.loadScript();
 
     if (config.debug) {
-      console.log("[PostHog] Initialized");
     }
   }
 
@@ -46,7 +45,6 @@ export class PostHogProvider implements IAnalyticsProvider {
     window.posthog.capture(event.name, event.properties || {});
 
     if (this.config.debug) {
-      console.log("[PostHog] Event tracked:", event);
     }
   }
 
@@ -110,7 +108,6 @@ export class PostHogProvider implements IAnalyticsProvider {
     window.posthog.alias(userId);
 
     if (this.config.debug) {
-      console.log("[PostHog] Alias created:", userId);
     }
   }
 
@@ -123,7 +120,6 @@ export class PostHogProvider implements IAnalyticsProvider {
     window.posthog.reset();
 
     if (this.config.debug) {
-      console.log("[PostHog] Session reset");
     }
   }
 
@@ -283,7 +279,6 @@ export class PostHogProvider implements IAnalyticsProvider {
       loaded: () => {
         this.loaded = true;
         if (this.config.debug) {
-          console.log("[PostHog] Script loaded");
         }
       },
     };
@@ -306,7 +301,6 @@ export class PostHogProvider implements IAnalyticsProvider {
     window.posthog.init(this.config.trackingId, posthogConfig);
 
     if (this.config.debug) {
-      console.log("[PostHog] Script loading...");
     }
   }
 

@@ -1,1 +1,1 @@
-export * from './ros-bridge';
+export * from './ros-bridge.js';

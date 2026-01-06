@@ -51,7 +51,6 @@ function initializeConnection(): void {
   hookIntoPerformance();
   hookIntoNetwork();
 
-  console.log('[PhilJS DevTools] Connected');
 }
 
 /**
@@ -63,7 +62,6 @@ export function disconnectDevTools(): void {
   isConnected = false;
   window.removeEventListener('message', handleDevToolsMessage);
 
-  console.log('[PhilJS DevTools] Disconnected');
 }
 
 /**
@@ -425,7 +423,6 @@ function handleHighlightComponent(componentId: string | null): void {
 function handleInspectSignal(signalId: string): void {
   const data = signalRegistry.get(signalId);
   if (data) {
-    console.log('[PhilJS DevTools] Signal:', data);
   }
 }
 

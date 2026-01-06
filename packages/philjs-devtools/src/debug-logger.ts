@@ -446,7 +446,6 @@ export class DebugLogger {
 
     // Log stack trace if present
     if (entry.stackTrace && console.debug) {
-      console.debug("Stack trace:", entry.stackTrace);
     }
   }
 

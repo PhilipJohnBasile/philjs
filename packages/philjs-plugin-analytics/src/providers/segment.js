@@ -17,7 +17,6 @@ export class SegmentProvider {
         // Load Segment Analytics.js
         this.loadScript();
         if (config.debug) {
-            console.log("[Segment] Initialized");
         }
     }
     trackEvent(event) {
@@ -25,7 +24,6 @@ export class SegmentProvider {
             return;
         window.analytics.track(event.name, event.properties || {});
         if (this.config.debug) {
-            console.log("[Segment] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -112,7 +110,6 @@ export class SegmentProvider {
             return;
         window.analytics.reset();
         if (this.config.debug) {
-            console.log("[Segment] User data reset");
         }
     }
     isLoaded() {
@@ -190,7 +187,6 @@ export class SegmentProvider {
                 }
                 this.loaded = true;
                 if (this.config.debug) {
-                    console.log("[Segment] Script loaded");
                 }
             }
         }

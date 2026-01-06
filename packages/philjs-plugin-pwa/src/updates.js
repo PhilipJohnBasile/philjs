@@ -27,7 +27,6 @@ export function initUpdateNotifications(options = {}) {
             version: detail?.version,
             releaseNotes: detail?.releaseNotes,
         });
-        console.log('[Updates] Update available');
         // Dispatch custom event
         window.dispatchEvent(new CustomEvent('pwa-update-ready', { detail }));
     };
@@ -63,7 +62,6 @@ export async function checkForUpdates() {
         const hasUpdateNow = !!registration.waiting || !!registration.installing;
         if (hasUpdateNow) {
             hasUpdate.set(true);
-            console.log('[Updates] Update found');
         }
         return hasUpdateNow;
     }

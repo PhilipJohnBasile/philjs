@@ -239,7 +239,7 @@ Requirements:
 Return the complete component code in a TypeScript code block.
 Also provide a brief explanation of the component's functionality.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: this.getComponentSystemPrompt(options),
@@ -306,7 +306,7 @@ Also provide:
 3. Return type description
 4. Usage example`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       systemPrompt: `${SYSTEM_PROMPTS.typescript}
@@ -394,7 +394,7 @@ Return a JSON response with:
   "breakingChanges": ["any breaking changes"]
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       ...options,
       maxTokens: 8192,
@@ -481,7 +481,7 @@ Return JSON:
   }
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a code explanation expert.
 Explain code clearly and accurately.
@@ -566,7 +566,7 @@ Return JSON:
   "mocks": "mock code if needed"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 8192,
       systemPrompt: `${SYSTEM_PROMPTS.testing}
@@ -628,7 +628,7 @@ Requirements:
 
 Return ONLY the completion text, no explanation.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       temperature: 0.1,
       maxTokens: options?.maxLength || 100,

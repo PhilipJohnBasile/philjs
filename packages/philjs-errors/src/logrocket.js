@@ -33,7 +33,6 @@ export function createLogRocketTracker() {
                         version: '0.1.0',
                         environment: options.environment,
                     });
-                    console.log('[PhilJS] LogRocket initialized');
                 }
             };
             initLogRocket().catch(console.error);

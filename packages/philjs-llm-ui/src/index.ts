@@ -62,6 +62,49 @@ interface StreamingTextConfig {
 }
 
 // ============================================================================
+// SECURITY: HTML SANITIZATION
+// ============================================================================
+
+/** Allowed URL protocols for links */
+const SAFE_URL_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'];
+
+/** Check if a URL is safe (not javascript:, data:, vbscript:, etc.) */
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, 'https://example.com');
+    return SAFE_URL_PROTOCOLS.includes(parsed.protocol);
+  } catch {
+    // Relative URLs are safe
+    return !url.toLowerCase().trim().startsWith('javascript:') &&
+           !url.toLowerCase().trim().startsWith('data:') &&
+           !url.toLowerCase().trim().startsWith('vbscript:');
+  }
+}
+
+/** Sanitize HTML by removing dangerous elements and attributes */
+function sanitizeHtml(html: string): string {
+  // Use DOMPurify if available (recommended)
+  if (typeof window !== 'undefined' && (window as any).DOMPurify) {
+    return (window as any).DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                     'ul', 'ol', 'li', 'blockquote', 'a', 'hr', 'div', 'span', 'table', 'thead',
+                     'tbody', 'tr', 'th', 'td', 'img'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'id', 'src', 'alt', 'title'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }
+
+  // Fallback: Remove script tags and event handlers
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^>]*>/gi, '')
+    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/\s*on\w+\s*=\s*[^\s>]*/gi, '');
+}
+
+// ============================================================================
 // MARKDOWN PARSER
 // ============================================================================
 
@@ -100,8 +143,14 @@ class MarkdownRenderer {
     html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
     html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
 
-    // Links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Links - with URL validation to prevent javascript: and other dangerous protocols
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+      if (isSafeUrl(url)) {
+        return `<a href="${this.escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(text)}</a>`;
+      }
+      // Unsafe URL - render as plain text
+      return this.escapeHtml(text);
+    });
 
     // Lists
     html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
@@ -123,7 +172,8 @@ class MarkdownRenderer {
     // Line breaks
     html = html.replace(/\n/g, '<br>');
 
-    return html;
+    // Final sanitization pass to remove any remaining dangerous content
+    return sanitizeHtml(html);
   }
 
   private escapeHtml(text: string): string {
@@ -206,7 +256,8 @@ class StreamingText {
   private render(): void {
     if (!this.element) return;
 
-    let html = this.displayedContent;
+    // Sanitize content to prevent XSS from LLM responses
+    let html = sanitizeHtml(this.displayedContent);
 
     if (this.isStreaming && this.config.cursor) {
       html += `<span class="cursor">${this.config.cursorChar}</span>`;
@@ -345,10 +396,10 @@ class MessageComponent {
       `;
     }
 
-    // Status/Error
+    // Status/Error - escape to prevent XSS
     let statusHtml = '';
     if (message.status === 'error' && message.error) {
-      statusHtml = `<div class="message-error">${message.error}</div>`;
+      statusHtml = `<div class="message-error">${this.escapeHtml(message.error)}</div>`;
     }
 
     this.element.innerHTML = `

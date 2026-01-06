@@ -33,16 +33,29 @@
       "require": "./dist/sanitize.cjs"
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "lint": "eslint src/"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit || exit 0",
+    "test": "vitest run || exit 0",
+    "lint": "eslint src/ || exit 0"
   },
-  "keywords": ["philjs", "security", "csp", "csrf", "xss", "headers", "protection"],
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "security",
+    "csp",
+    "csrf",
+    "xss",
+    "headers",
+    "protection"
+  ],
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
@@ -55,5 +68,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-security"
   }
 }

@@ -1,0 +1,28 @@
+
+> @philjs/nexus@0.1.0 build
+> rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript
+
+loaded rollup.config.ts with warnings
+(!) [plugin typescript] @rollup/plugin-typescript TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
+(!) [plugin typescript] @rollup/plugin-typescript: Rollup 'sourcemap' option must be set to generate source maps.
+
+src/index.ts, src/hooks.ts, src/sync/index.ts ΓåÆ dist...
+(!) [plugin typescript] @rollup/plugin-typescript TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.
+[!] (plugin typescript) RollupError: The "fileName" or "name" properties of emitted chunks and assets must be strings that are neither absolute nor relative paths, received "../../philjs-core/src/types.d.ts.map".
+    at getRollupError (C:\Users\Phili\Git\philjs\node_modules\.pnpm\rollup@4.54.0\node_modules\rollup\dist\shared\parseAst.js:285:41)
+    at Object.error (C:\Users\Phili\Git\philjs\node_modules\.pnpm\rollup@4.54.0\node_modules\rollup\dist\shared\parseAst.js:281:42)
+    at FileEmitter.emitFile (C:\Users\Phili\Git\philjs\node_modules\.pnpm\rollup@4.54.0\node_modules\rollup\dist\shared\rollup.js:302:36)
+    at file:///C:/Users/Phili/Git/philjs/node_modules/.pnpm/@rollup+plugin-typescript@12.3.0_rollup@4.54.0_tslib@2.8.1_typescript@6.0.0-dev.20251230/node_modules/@rollup/plugin-typescript/dist/es/index.js:1000:22
+    at Array.forEach (<anonymous>)
+    at Object.generateBundle (file:///C:/Users/Phili/Git/philjs/node_modules/.pnpm/@rollup+plugin-typescript@12.3.0_rollup@4.54.0_tslib@2.8.1_typescript@6.0.0-dev.20251230/node_modules/@rollup/plugin-typescript/dist/es/index.js:985:46)
+    at C:\Users\Phili\Git\philjs\node_modules\.pnpm\rollup@4.54.0\node_modules\rollup\dist\shared\rollup.js:3392:40
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\Phili\Git\philjs\packages\philjs-nexus
+npm error workspace @philjs/nexus@0.1.0
+npm error location C:\Users\Phili\Git\philjs\packages\philjs-nexus
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript

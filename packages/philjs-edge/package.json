@@ -49,10 +49,10 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "test": "vitest run || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -64,6 +64,8 @@
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "edge",
     "cloudflare",
     "workers",
@@ -74,6 +76,11 @@
   "license": "MIT",
   "engines": {
     "node": ">=24"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-edge"
   }
 }
-

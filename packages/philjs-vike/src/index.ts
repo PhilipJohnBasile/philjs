@@ -1,6 +1,29 @@
-// @philjs/vike - Placeholder for Vike Integration
-// Ticket: #86
+import { signal } from '@philjs/core';
 
-export function helper() {
-    throw new Error("Not implemented: Vike integration is in research phase.");
+export interface VikeContext {
+    urlOriginal: string;
+    pageContext: Record<string, unknown>;
+}
+
+export interface VikePageContextInit {
+    urlOriginal: string;
+    headers: Headers;
+}
+
+export function createVikeHandler(renderPage: (ctx: VikePageContextInit) => Promise<unknown>) {
+    return async (req: Request) => {
+        const urlOriginal = req.url;
+        const pageContextInit = {
+            urlOriginal,
+            headers: req.headers,
+        };
+
+        const pageContext = await renderPage(pageContextInit);
+
+        return pageContext;
+    };
+}
+
+export function usePageContext(initialContext: Record<string, unknown>) {
+    return signal(initialContext);
 }

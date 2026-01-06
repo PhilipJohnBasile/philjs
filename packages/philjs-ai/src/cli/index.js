@@ -71,15 +71,9 @@ function createProgram() {
                 console.log(`Component written to ${options.output}`);
             }
             else {
-                console.log('\n--- Generated Component ---\n');
-                console.log(result.code);
             }
             if (result.tests && options.tests) {
-                console.log('\n--- Tests ---\n');
-                console.log(result.tests);
             }
-            console.log('\n--- Explanation ---\n');
-            console.log(result.explanation);
         });
     });
     // Generate page
@@ -115,15 +109,9 @@ function createProgram() {
                 console.log(`Page written to ${options.output}`);
             }
             else {
-                console.log('\n--- Generated Page ---\n');
-                console.log(result.code);
             }
             if (result.loader) {
-                console.log('\n--- Loader ---\n');
-                console.log(result.loader);
             }
-            console.log('\n--- Explanation ---\n');
-            console.log(result.explanation);
         });
     });
     // Generate API
@@ -155,17 +143,10 @@ function createProgram() {
                 console.log(`API written to ${options.output}`);
             }
             else {
-                console.log('\n--- Generated API Routes ---\n');
                 for (const route of result.routes) {
                     console.log(`// ${route.method} ${route.path}`);
-                    console.log(route.code);
-                    console.log('');
                 }
             }
-            console.log('\n--- Validation Schema ---\n');
-            console.log(result.validationSchema);
-            console.log('\n--- Types ---\n');
-            console.log(result.types);
         });
     });
     // Refactor command
@@ -193,12 +174,10 @@ function createProgram() {
                     level: options.level,
                 });
                 if (options.dryRun) {
-                    console.log('\n--- Suggestions ---\n');
                     for (const suggestion of result.suggestions) {
                         console.log(`[${suggestion.impact.toUpperCase()}] ${suggestion.type}: ${suggestion.description}`);
                         console.log(`  Before: ${suggestion.before.slice(0, 50)}...`);
                         console.log(`  After: ${suggestion.after.slice(0, 50)}...`);
-                        console.log('');
                     }
                 }
                 else {
@@ -231,11 +210,9 @@ function createProgram() {
                 if (options.coverage) {
                     const coverage = await generator.analyzeCoverage(code);
                     console.log(`\nCoverage Analysis: ${coverage.overallCoverage}%`);
-                    console.log('\nMissing Coverage:');
                     for (const missing of coverage.missingCoverage) {
                         console.log(`  - [${missing.priority}] ${missing.description}`);
                     }
-                    console.log('\nSuggested Tests:');
                     for (const test of coverage.suggestedTests) {
                         console.log(`  - [${test.priority}] ${test.name}: ${test.tests}`);
                     }
@@ -335,7 +312,6 @@ function createProgram() {
                             console.log(`    Suggestion: ${issue.suggestion}`);
                         }
                     }
-                    console.log(`\nSuggestions:`);
                     for (const suggestion of result.suggestions) {
                         console.log(`  - ${suggestion}`);
                     }
@@ -343,7 +319,6 @@ function createProgram() {
                 }
             }
             if (options.json) {
-                console.log(JSON.stringify(allResults, null, 2));
             }
         });
     });
@@ -357,7 +332,6 @@ function createProgram() {
         .option('--show', 'Show current configuration')
         .action((options) => {
         if (options.show) {
-            console.log('Current Configuration:');
             const openaiKey = process.env['OPENAI_API_KEY'];
             const anthropicKey = process.env['ANTHROPIC_API_KEY'];
             const ollamaUrl = process.env['OLLAMA_URL'];
@@ -367,7 +341,6 @@ function createProgram() {
             return;
         }
         console.log('To configure providers, set environment variables:');
-        console.log('  export OPENAI_API_KEY=sk-...');
         console.log('  export ANTHROPIC_API_KEY=sk-ant-...');
         console.log('  export OLLAMA_URL=http://localhost:11434');
     });
@@ -437,7 +410,6 @@ function inferPageName(description) {
  * Run an async function with a spinner
  */
 async function runWithSpinner(message, fn) {
-    console.log(message);
     const start = Date.now();
     try {
         await fn();

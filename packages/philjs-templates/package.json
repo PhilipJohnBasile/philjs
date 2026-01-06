@@ -15,7 +15,7 @@
     "create-philjs": "./dist/bin/create.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch"
   },
   "dependencies": {
@@ -32,6 +32,8 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "templates",
     "starter",
     "create-philjs",
@@ -42,7 +44,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-templates"
   },
   "bugs": {
@@ -53,4 +55,3 @@
     "node": ">=24"
   }
 }
-

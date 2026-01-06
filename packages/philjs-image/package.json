@@ -24,12 +24,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
     "test": "vitest run --passWithNoTests"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "image",
     "optimization",
     "webp",
@@ -65,7 +67,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-image"
   },
   "bugs": {
@@ -76,4 +78,3 @@
     "node": ">=24"
   }
 }
-

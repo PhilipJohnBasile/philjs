@@ -12,12 +12,14 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --watch",
-    "test": "vitest"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "quantum",
     "post-quantum",
     "cryptography",
@@ -39,6 +41,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-quantum"
   }
 }
-

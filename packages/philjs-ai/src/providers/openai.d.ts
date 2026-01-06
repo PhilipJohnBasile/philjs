@@ -8,7 +8,7 @@
  * - Structured output with JSON mode
  */
 import OpenAI from 'openai';
-import type { AIProvider, CompletionOptions, ImageInput, VisionOptions, VisionResult } from '../types.js';
+import type { AIProvider, CompletionOptions, ImageInput, VisionOptions, VisionResult, ProviderResponse } from '../types.js';
 export interface OpenAIConfig {
     apiKey: string;
     baseURL?: string;
@@ -22,7 +22,7 @@ export declare class OpenAIProvider implements AIProvider {
     private defaultModel;
     private embeddingModel;
     constructor(config: OpenAIConfig);
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
     /**
      * Analyze images using GPT-4V / GPT-4o vision capabilities

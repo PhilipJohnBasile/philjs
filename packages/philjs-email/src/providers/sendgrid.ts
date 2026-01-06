@@ -9,8 +9,8 @@ import type {
   BulkEmailMessage,
   BulkEmailResult,
   TemplateEmailMessage,
-} from '../types';
-import { renderReactEmail, formatAddress, normalizeAddress, withRetry } from '../utils';
+} from '../types.js';
+import { renderReactEmail, formatAddress, normalizeAddress, withRetry } from '../utils.js';
 
 /**
  * SendGrid Email Provider
@@ -117,9 +117,7 @@ export class SendGridProvider implements EmailProvider {
         const [response] = await sgMail.send(sgMessage);
 
         if (this.config.debug) {
-          console.log(
-            `[SendGrid] Email sent: ${response.headers['x-message-id']}`
-          );
+          console.log(`[SendGrid] Email sent: ${response.headers['x-message-id']}`);
         }
 
         return {

@@ -4,7 +4,12 @@
  * Type definitions for email sending with multiple providers
  */
 
-import type { ReactElement } from 'react';
+// Define ReactElement inline to avoid requiring @types/react
+type ReactElement = {
+  type: string | Function;
+  props: Record<string, unknown>;
+  key: string | number | null;
+};
 
 /**
  * Email address - can be a simple string or an object with name

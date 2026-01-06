@@ -93,7 +93,7 @@ export class TestGenerator {
     const prompt = this.buildTestPrompt(config);
     const systemPrompt = this.getTestSystemPrompt(config);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt,
     });
@@ -138,7 +138,7 @@ Requirements:
 - Include setup and teardown for integration context
 - Use Vitest with Testing Library`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getTestSystemPrompt({
         code,
@@ -177,7 +177,7 @@ Requirements:
 - Include error recovery scenarios
 - Generate page objects if beneficial`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are an E2E testing expert using ${framework}.
 Generate production-quality E2E tests that are:
@@ -219,7 +219,7 @@ Test for:
 
 Use axe-core for automated checks and manual test cases for interactive behavior.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are an accessibility testing expert.
 Generate comprehensive a11y tests using:
@@ -264,7 +264,7 @@ Requirements:
 - Test under load
 - Generate benchmark reports`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a performance testing expert.
 Generate tests that accurately measure and validate performance metrics.
@@ -304,7 +304,7 @@ Requirements:
 - Test loading/error states
 - Use inline snapshots where appropriate`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a snapshot testing expert.
 Generate maintainable snapshot tests that:
@@ -351,7 +351,7 @@ ${options?.includeMocks ? '6. Mock implementations' : ''}
 
 Organize tests logically with describe blocks.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 8000,
       systemPrompt: `You are a testing expert generating comprehensive test suites.
@@ -384,7 +384,7 @@ Requirements:
 - Reset functionality
 - Reasonable defaults`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a mocking expert.
 Generate flexible, type-safe mock implementations using vi.fn() and vi.mock().`,
@@ -412,7 +412,7 @@ Requirements:
 - Related data sets
 - Type-safe fixtures`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a test data expert.
 Generate comprehensive, realistic test fixtures.`,
@@ -454,7 +454,7 @@ Return JSON with:
 - missingErrorTests: string[]
 - recommendations: string[]`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a test coverage analysis expert.',
     });

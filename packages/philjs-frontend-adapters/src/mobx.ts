@@ -1,33 +1,49 @@
+import { createSignal, createMemo, createEffect } from '@philjs/core';
 
 export function useObservable<T extends object>(initialValue: T): T {
-    console.log('MobX: Creating observable proxy');
+    const signals = new Map<keyof T, any>();
+
+    // Initialize signals for existing props
+    for (const key of Object.keys(initialValue)) {
+        signals.set(key as keyof T, createSignal((initialValue as any)[key]));
+    }
 
     return new Proxy(initialValue, {
         get(target, prop, receiver) {
-            console.log(`MobX: Read ${String(prop)}`);
-            return Reflect.get(target, prop, receiver);
+            // Lazy create signal for new props
+            if (!signals.has(prop as keyof T)) {
+                signals.set(prop as keyof T, createSignal(Reflect.get(target, prop, receiver)));
+            }
+
+            const [get] = signals.get(prop as keyof T);
+            return get();
         },
         set(target, prop, value, receiver) {
-            console.log(`MobX: Write ${String(prop)} =`, value);
             const result = Reflect.set(target, prop, value, receiver);
-            // Trigger mock reactions
+
+            if (!signals.has(prop as keyof T)) {
+                signals.set(prop as keyof T, createSignal(value));
+            } else {
+                const [, set] = signals.get(prop as keyof T);
+                set(value);
+            }
+
             return result;
         }
     });
 }
 
 export function autorun(reaction: () => void) {
-    console.log('MobX: Running autorun');
-    reaction();
-    return () => console.log('MobX: Disposing autorun');
+    // PhilJS effects are auto-running and reactive
+    createEffect(reaction);
+    // Return disposer (mocked as PhilJS handles lifecycle automatically in components)
+    return () => { };
 }
 
 export function computed<T>(getter: () => T) {
-    console.log('MobX: Creating computed value');
+    // PhilJS memos are computed values
+    const memo = createMemo(getter);
     return {
-        get() {
-            console.log('MobX: Reading computed');
-            return getter();
-        }
+        get: memo
     };
 }

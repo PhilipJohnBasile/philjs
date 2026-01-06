@@ -68,7 +68,6 @@ async function handleInit(values, positionals) {
             ssr: true,
         },
     });
-    console.log(`
 PhilJS Go project initialized!
 
 Next steps:
@@ -77,7 +76,6 @@ Next steps:
 `);
 }
 async function handleBuild(values) {
-    console.log('Building Go server...');
     const outputPath = await buildGoServer({
         outDir: values['output'],
         mode: 'release',
@@ -85,7 +83,6 @@ async function handleBuild(values) {
     });
     console.log(`Build complete: ${outputPath}`);
     if (values['docker']) {
-        console.log('Docker image built: philjs-server');
     }
 }
 async function handleDev(values) {
@@ -103,14 +100,12 @@ async function handleDev(values) {
         host,
         ssr: true,
     });
-    console.log(`
 PhilJS Go server running at http://${host}:${port}
 
 Press Ctrl+C to stop
 `);
     // Handle shutdown
     process.on('SIGINT', async () => {
-        console.log('\nStopping server...');
         await server.stop();
         process.exit(0);
     });
@@ -120,17 +115,14 @@ async function handleGenerate(values) {
     const outDir = values['output'];
     const module = values['module'] || 'github.com/user/app';
     if (values['watch']) {
-        console.log('Watching for changes...');
         await watchAndGenerate({ srcDir, outDir, module });
     }
     else {
-        console.log('Generating Go code...');
         await generateGoCode({ srcDir, outDir, module });
         console.log(`Generated Go code in ${outDir}`);
     }
 }
 function printHelp() {
-    console.log(`
 PhilJS Go - High-performance Go server for PhilJS
 
 Usage:

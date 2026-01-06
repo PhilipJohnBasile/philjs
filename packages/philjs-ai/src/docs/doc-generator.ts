@@ -226,7 +226,7 @@ export class DocGenerator {
     const style = config.style || 'jsdoc';
     const prompt = this.buildDocPrompt(config, style);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(style, config.depth || 'standard'),
     });
@@ -258,7 +258,7 @@ ${options?.includeTypes ? '- Include @typedef for complex types' : ''}
 
 Return the fully documented code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a documentation expert. Add clear, helpful JSDoc comments.',
     });
@@ -297,7 +297,7 @@ Generate a professional, well-structured README with:
 
 Return the complete README in Markdown format.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a technical writer creating excellent documentation.',
     });
@@ -353,7 +353,7 @@ Generate:
 
 Return examples as JSON array of code strings.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Generate clear, practical code examples.',
     });
@@ -379,7 +379,7 @@ Format:
 
 Return the changelog entry in Markdown format.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Generate clear, informative changelog entries.',
     });
@@ -418,7 +418,7 @@ Return JSON with:
 - props: Array of { name, type, description, optional, defaultValue }
 - examples: Array of code examples`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Document PhilJS components thoroughly and clearly.',
     });
@@ -467,7 +467,7 @@ Requirements:
 
 Return the commented code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Add helpful inline comments without over-documenting.',
     });
@@ -499,7 +499,7 @@ ${config.includeExamples ? 'Include usage examples' : ''}
 
 Return JSON with module documentation structure.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'Extract and document all exports from the module.',
     });

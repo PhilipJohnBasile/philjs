@@ -6,6 +6,5 @@ chrome.devtools.panels.create(
   'icons/icon16.png',
   'panel.html',
   (panel: any) => {
-    console.log('PhilJS DevTools panel created');
   }
 );

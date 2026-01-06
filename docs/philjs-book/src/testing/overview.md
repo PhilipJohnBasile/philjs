@@ -1,121 +1,100 @@
-# Testing
+# Chapter 8: Confidence at Scale
 
-PhilJS includes a first-party testing library that mirrors DOM Testing Library with PhilJS-aware utilities.
+Unit tests are not enough. In a deterministic system, unit tests prove that A + B = C. But the Nexus is not deterministic. It involves async data, distributed systems, and non-deterministic AI agents.
 
-```tsx
-import { describe, it, expect } from "vitest";
+To sleep at night, you need **Confidence at Scale**.
+
+## The Testing Pyramid (Reimagined)
+
+PhilJS advocates for a pragmatic testing strategy:
+
+1.  **Static Analysis** (Types): The first line of defense.
+2.  **Unit Tests** (Logic): Pure functions, Signals, and Reducers.
+3.  **Component Tests** (Interaction): The DOM boundary.
+4.  **Fuzz Tests** (Chaos): Throwing garbage at the system.
+
+## Unit Testing Signals
+
+Because Signals are just functions, they are trivial to test. You don't need a browser mock.
+
+```typescript
+import { signal, memo } from "@philjs/core";
+import { expect, test } from "vitest";
+
+test("reactive flow", () => {
+    const quantity = signal(2);
+    const price = signal(10);
+    const total = memo(() => quantity() * price());
+
+    expect(total()).toBe(20);
+
+    quantity.set(3);
+    expect(total()).toBe(30);
+});
+```
+
+## Testing Components
+
+PhilJS provides `@philjs/testing`, a lightweight wrapper around standard DOM APIs.
+
+```typescript
 import { render, screen, fireEvent } from "@philjs/testing";
-import { Counter } from "../src/Counter";
+import { Counter } from "./Counter";
 
-describe("Counter", () => {
-  it("increments", () => {
+test("counter increments", async () => {
     render(() => <Counter />);
-    fireEvent.click(screen.getByRole("button", { name: /increment/i }));
-    expect(screen.getByText(/count: 1/i)).toBeInTheDocument();
-  });
+    
+    // Query by Role (Accessibility First)
+    const button = screen.getByRole("button", { name: /increment/i });
+    
+    await fireEvent.click(button);
+    
+    expect(screen.getByText("Count: 1")).toBeInTheDocument();
 });
 ```
 
-## Run tests
+## Fuzzing AI Agents
 
-```bash
-pnpm test
-pnpm --filter @philjs/core test:coverage
-```
+How do you test an Agent that produces different output every time? You cannot assert `result === "expected"`.
 
-## Test layers
+You use **Semantic Assertions** and **Fuzzing**.
 
-- **Unit**: signals, stores, helpers. Use Vitest + PhilJS testing library.
-- **Component**: render components, interact via roles/labels, assert DOM.
-- **Integration**: render routes with loaders/actions mocked (MSW), assert navigation and cache effects.
-- **E2E**: Playwright against dev/preview builds; cover core user journeys.
-- **Performance**: use `vitest bench` and Playwright traces for route timings.
+The `@philjs/test` package provides `fuzzAI`. It runs your agent against hundreds of generated scenarios and uses a smaller, faster model (the "Judge") to score the output.
 
-## Mocking and data
+```typescript
+import { fuzzAI } from "@philjs/test";
+import { MyAgent } from "./agent";
 
-- Use MSW to stub network calls; mirror API schemas to catch drift.
-- For stores, set initial state and assert selectors and middleware behavior.
-- Avoid shallow rendering—test real DOM output; prefer role-based queries.
-
-## Coverage and budgets
-
-- Run `pnpm --filter @philjs/core test:coverage` for critical packages.
-- Track snapshot size sparingly; prefer explicit assertions over large snapshots.
-- Include perf budgets in CI: `pnpm bench` and `pnpm size`.
-- Gate merges on tests + lint + typecheck; surface flaky tests early.
-- Add property-based/fuzz tests for critical invariants; see [Property-Based Testing](./property-based.md).
-
-## Playwright smoke template
-
-```ts
-import { test, expect } from '@playwright/test';
-
-test('home renders and navigates', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
-  await expect(page.getByRole('heading', { name: /home/i })).toBeVisible();
-  await page.getByRole('link', { name: /about/i }).click();
-  await expect(page).toHaveURL(/about/);
+test("agent handles hostile input", async () => {
+    await fuzzAI({
+        agent: MyAgent,
+        scenarios: 100,
+        // The fuzzer will inject prompt injections, garbage execution, and edge cases
+        strategies: ["prompt_injection", "garbage_json", "tool_failure"],
+        
+        // The Judge verifies the agent didn't crash or leak secrets
+        assert: (output) => output.hasSafetyRefusal()
+    });
 });
 ```
 
-## Testing loaders/actions
+This is the only way to ship Autonomous Agents safely.
 
-- Unit-test loaders with fake `request`, `params`, and `signal`.
-- Integration-test forms via `<Form>` in jsdom; assert action results and invalidations.
-- In E2E, submit real forms and assert SSR + hydration consistency (no flicker, no double submit).
+## End-to-End: Playwright
 
-## CI pipeline template
+For the final verify, use Playwright. Validating that your "Islands" hydrate correctly is crucial.
 
-```bash
-pnpm install --frozen-lockfile
-pnpm lint
-pnpm typecheck
-pnpm test -- --runInBand
-pnpm size
-pnpm bench --filter @philjs/core
-```
-
-Cache pnpm store between runs; record Playwright traces for failing tests.
-
-## Accessibility checks
-
-- Use `getByRole`/`getByLabelText` to encode a11y into tests.
-- Add automated a11y checks (axe) in CI for key pages.
-- Include keyboard navigation tests in Playwright (tab/enter/escape flows).
-- Verify reduced-motion handling in tests where motion is involved.
-
-## Fixtures and data strategy
-
-- Keep fixtures small and realistic; prefer factory helpers to enormous JSON.
-- Reset global state between tests; use `beforeEach` to recreate signals/stores.
-- For date/time logic, use fake timers to make assertions stable.
-
-## Checklist
-
-- [ ] Unit tests for core logic and signals.
-- [ ] Component tests cover interactions (clicks, input, keyboard).
-- [ ] Integration tests for loaders/actions with MSW.
-- [ ] Playwright smoke tests for critical routes.
-- [ ] Perf/bench runs in CI for regressions.
-- [ ] A11y assertions via roles/labels.
-
-## Try it now: loader integration test
-
-```tsx
-import { describe, it, expect } from 'vitest';
-import { render, screen, waitFor } from '@philjs/testing';
-import { ProjectsRoute } from '../src/routes/projects';
-import { server, rest } from './test-server'; // MSW setup
-
-describe('ProjectsRoute', () => {
-  it('renders projects from loader', async () => {
-    server.use(rest.get('/api/projects', (_req, res, ctx) =>
-      res(ctx.json([{ id: '1', name: 'Alpha' }]))
-    ));
-    render(() => <ProjectsRoute data={[{ id: '1', name: 'Alpha' }]} />);
-    await waitFor(() => screen.getByText('Alpha'));
-  });
+```typescript
+test("hydration works", async ({ page }) => {
+    await page.goto("/dashboard");
+    
+    // Verify the static shell is present
+    await expect(page.locator("h1")).toHaveText("Dashboard");
+    
+    // Verify the island became interactive
+    await page.click("button#refresh");
+    await expect(page.locator(".toast")).toBeVisible();
 });
 ```
 
-Wire MSW once in setup tests; reuse across suites for realistic behavior.
+Confidence is not about having 100% coverage. It is about knowing that when something breaks, the system will catch it before the user does.

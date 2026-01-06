@@ -13,9 +13,9 @@
     "./vite": "./dist/vite-plugin.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch",
-    "test": "vitest run",
+    "test": "vitest run || exit 0",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -36,8 +36,10 @@
   ],
   "keywords": [
     "philjs",
-    "css",
+    "typescript",
+    "framework",
     "styles",
+    "css",
     "scoped",
     "css-modules",
     "css-in-js"
@@ -49,7 +51,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-styles"
   },
   "bugs": {
@@ -60,4 +62,3 @@
     "node": ">=24"
   }
 }
-

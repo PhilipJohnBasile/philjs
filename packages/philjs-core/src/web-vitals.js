@@ -405,7 +405,6 @@ export class WebVitalsMonitor {
      */
     log(...args) {
         if (this.options.debug) {
-            console.log('[Web Vitals]', ...args);
         }
     }
 }

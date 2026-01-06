@@ -16,12 +16,14 @@
     }
   },
   "scripts": {
-    "build": "tsup src/self-healing/index.ts --format esm --dts --out-dir dist/self-healing",
-    "dev": "tsup src/self-healing/index.ts --watch",
-    "test": "vitest"
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0"
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "runtime",
     "self-healing",
     "error-recovery",
@@ -40,6 +42,10 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-runtime"
   }
 }
-

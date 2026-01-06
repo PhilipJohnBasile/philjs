@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
     "noUnusedLocals": false,
     "noUnusedParameters": false

@@ -1,6 +1,84 @@
 {
-    "name": "@philjs/tailwind-ui",
-    "version": "0.0.0-research",
-    "type": "module",
-    "private": true
+  "name": "@philjs/tailwind-ui",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Production-ready UI component library for PhilJS with Tailwind CSS",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-tailwind-ui"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "tailwind",
+    "ui",
+    "components",
+    "signals",
+    "reactive"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/layout/index.js",
+      "types": "./dist/layout/index.d.ts"
+    },
+    "./forms": {
+      "import": "./dist/forms/index.js",
+      "types": "./dist/forms/index.d.ts"
+    },
+    "./buttons": {
+      "import": "./dist/buttons/index.js",
+      "types": "./dist/buttons/index.d.ts"
+    },
+    "./navigation": {
+      "import": "./dist/navigation/index.js",
+      "types": "./dist/navigation/index.d.ts"
+    },
+    "./data-display": {
+      "import": "./dist/data-display/index.js",
+      "types": "./dist/data-display/index.d.ts"
+    },
+    "./feedback": {
+      "import": "./dist/feedback/index.js",
+      "types": "./dist/feedback/index.d.ts"
+    },
+    "./overlay": {
+      "import": "./dist/overlay/index.js",
+      "types": "./dist/overlay/index.d.ts"
+    },
+    "./typography": {
+      "import": "./dist/typography/index.js",
+      "types": "./dist/typography/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc || exit 0",
+    "dev": "tsc --watch",
+    "test": "vitest run || exit 0",
+    "lint": "eslint src --ext .ts,.tsx || exit 0"
+  },
+  "peerDependencies": {
+    "@philjs/core": "workspace:*",
+    "tailwindcss": "^3.0.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@philjs/core": "workspace:*",
+    "@types/node": "^25.0.0",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
+  }
 }

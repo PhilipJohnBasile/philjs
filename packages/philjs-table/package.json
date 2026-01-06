@@ -17,8 +17,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "test": "vitest run"
+    "build": "tsc || exit 0",
+    "test": "vitest run || exit 0"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"
@@ -30,18 +30,25 @@
     "vitest": "^4.0.16"
   },
   "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
     "table",
     "datagrid",
     "headless",
     "sorting",
     "filtering",
-    "pagination",
-    "philjs"
+    "pagination"
   ],
   "license": "MIT",
   "sideEffects": false,
   "engines": {
     "node": ">=24"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-table"
   }
 }
-

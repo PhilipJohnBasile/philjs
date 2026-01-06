@@ -214,7 +214,7 @@ export class APIGenerator {
     const operations = config.operations || ['create', 'read', 'update', 'delete', 'list'];
     const prompt = this.buildCRUDPrompt(config, operations);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(config),
     });
@@ -247,7 +247,7 @@ Return JSON with:
 - suggestions: Array of schema improvement suggestions
 - potentialRelations: Array of potential relations to other resources`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a database schema design expert.',
     });
@@ -280,7 +280,7 @@ Requirements:
 
 Return only the validation code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a validation expert using ${library}.`,
     });
@@ -308,7 +308,7 @@ Requirements:
 
 Return only the model code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a ${database} database expert.`,
     });
@@ -332,7 +332,7 @@ Filtering: ${config.filtering ? 'Yes' : 'No'}
 
 Generate complete OpenAPI specification in YAML format.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an API documentation expert.',
     });
@@ -369,7 +369,7 @@ Generate the route handler with:
 
 Return the handler code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a PhilJS API development expert.',
     });
@@ -405,7 +405,7 @@ Requirements:
 
 Return the middleware code.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a middleware development expert.',
     });

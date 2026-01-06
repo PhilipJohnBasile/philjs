@@ -19,7 +19,6 @@ import { PhilJSFormattingProvider, PhilJSRangeFormattingProvider } from './provi
 import { createComponent, createRoute, createPage, createHook, createStore } from './generators.js';
 let statusBarItem;
 export function activate(context) {
-    console.log('PhilJS extension is now active');
     const config = vscode.workspace.getConfiguration('philjs');
     const enableIntelliSense = config.get('enableIntelliSense', true);
     // Language selector for all TypeScript/JavaScript files
@@ -234,6 +233,5 @@ function updateStatusBar(editor) {
     }
 }
 export function deactivate() {
-    console.log('PhilJS extension is now deactivated');
 }
 //# sourceMappingURL=extension-enhanced.js.map

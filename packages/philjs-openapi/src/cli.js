@@ -72,7 +72,6 @@ function parseArgs(args) {
     return result;
 }
 function printHelp() {
-    console.log(`
 PhilJS OpenAPI CLI - Generate TypeScript types from OpenAPI specifications
 
 Usage:
@@ -100,7 +99,6 @@ Examples:
 `);
 }
 function printVersion() {
-    console.log('philjs-openapi v2.0.0');
 }
 // ============================================================================
 // Type Generation
@@ -589,7 +587,6 @@ export async function main(args) {
             try {
                 console.log(`Loading spec from ${parsed.input}...`);
                 const spec = await loadSpec(parsed.input);
-                console.log('Generating types...');
                 const options = {
                     input: parsed.input,
                     output: parsed.output,
@@ -609,7 +606,6 @@ export async function main(args) {
                 const result = generateTypes(spec, options);
                 console.log(`Writing output to ${parsed.output}...`);
                 await writeOutput(parsed.output, result.types);
-                console.log('Done!');
             }
             catch (error) {
                 console.error('Error:', error instanceof Error ? error.message : error);

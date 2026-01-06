@@ -133,7 +133,6 @@ async function gatherProjectConfig(projectName) {
     ]);
     // Handle cancellation
     if (Object.keys(responses).length === 0) {
-        console.log(pc.red('\n✖ Cancelled\n'));
         process.exit(1);
     }
     return {
@@ -180,7 +179,6 @@ async function copyTemplateFiles(projectPath, config) {
     console.log(pc.green('  ✓ Created package.json'));
     // Generate index.html
     await fs.writeFile(path.join(projectPath, 'index.html'), generateIndexHtml(config));
-    console.log(pc.green('  ✓ Created index.html'));
     // Generate main entry file
     await fs.writeFile(path.join(projectPath, 'src', `main.${ext}`), generateMainFile(config));
     console.log(pc.green(`  ✓ Created src/main.${ext}`));
@@ -219,7 +217,6 @@ async function generateBasicTemplate(projectPath, config, ext) {
     console.log(pc.green(`  ✓ Created src/routes/index.${ext}`));
     if (config.cssFramework === 'none') {
         await fs.writeFile(path.join(projectPath, 'src', 'App.css'), generateBasicCSS());
-        console.log(pc.green('  ✓ Created src/App.css'));
     }
 }
 async function generateSSRTemplate(projectPath, config, ext) {
@@ -298,10 +295,8 @@ async function generateConfigFiles(projectPath, config) {
     }
     // .gitignore
     await fs.writeFile(path.join(projectPath, '.gitignore'), generateGitignore());
-    console.log(pc.green('  ✓ Created .gitignore'));
     // README.md
     await fs.writeFile(path.join(projectPath, 'README.md'), generateReadme(config));
-    console.log(pc.green('  ✓ Created README.md'));
 }
 // File content generators
 function generatePackageJson(config) {
@@ -999,20 +994,15 @@ MIT
 }
 function printSuccessMessage(config) {
     console.log(pc.green('\n✓ Project created successfully!\n'));
-    console.log(pc.cyan('Next steps:\n'));
     console.log(pc.dim(`  cd ${config.name}`));
     console.log(pc.dim(`  ${config.packageManager} install`));
     console.log(pc.dim(`  ${config.packageManager} ${config.packageManager === 'npm' ? 'run ' : ''}dev\n`));
-    console.log(pc.cyan('Features enabled:\n'));
     console.log(pc.green(`  ✓ Template: ${config.template}`));
     console.log(pc.green(`  ✓ Language: ${config.typescript ? 'TypeScript' : 'JavaScript'}`));
     console.log(pc.green(`  ✓ CSS: ${config.cssFramework}`));
     if (config.testing)
         console.log(pc.green(`  ✓ Testing: ${config.testFramework}`));
     if (config.linting)
-        console.log(pc.green('  ✓ ESLint & Prettier'));
     if (config.git)
-        console.log(pc.green('  ✓ Git initialized'));
-    console.log();
 }
 //# sourceMappingURL=create.js.map

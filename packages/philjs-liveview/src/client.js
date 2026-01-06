@@ -120,7 +120,6 @@ export class LiveViewClient {
     // ============================================================================
     async handleOpen() {
         if (this.options.debug) {
-            console.log('[LiveView] Connected');
         }
         // Join the view channel
         try {
@@ -150,7 +149,6 @@ export class LiveViewClient {
     }
     handleClose() {
         if (this.options.debug) {
-            console.log('[LiveView] Disconnected');
         }
         disconnectHooks();
         setLoading(false);

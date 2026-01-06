@@ -159,7 +159,6 @@ export function exampleGlobalCustomTypes() {
     const json = sj.stringify(data);
     const parsed = sj.parse(json);
     console.log('Primary is Color:', parsed.primary instanceof Color);
-    console.log('RGB:', parsed.primary.toRGB());
     return parsed;
 }
 // ============================================================================
@@ -220,7 +219,6 @@ export function exampleLazyDeserialization() {
     console.log('Metadata deserialized?', lazyData.metadata.isDeserialized());
     // Access metadata (deserializes on first access)
     const metadata = lazyData.metadata.get();
-    console.log('Metadata:', metadata);
     console.log('Metadata deserialized?', lazyData.metadata.isDeserialized());
     // Large data is still not deserialized
     console.log('Large data deserialized?', lazyData.largeData.isDeserialized());
@@ -251,7 +249,6 @@ export async function exampleStreaming() {
     }
     // Get final result
     const result = deserializer.getState();
-    console.log('Final result:', result);
     return result;
 }
 /**
@@ -306,8 +303,6 @@ export function exampleSSRLoader() {
     const scriptContent = JSON.stringify(serialized);
     // Client-side hydration
     const hydrated = deserialize(serialized);
-    console.log('User ID:', hydrated.user.id);
-    console.log('Posts:', hydrated.posts.size);
     console.log('Notifications:', hydrated.settings.notifications);
     return { hydrated, scriptContent };
 }
@@ -356,27 +351,20 @@ export function exampleEdgeCases() {
  * Run all examples (for testing/demonstration).
  */
 export async function runAllExamples() {
-    console.log('=== Example 1: Basic Date ===');
     exampleBasicDate();
-    console.log('\n=== Example 2: Map and Set ===');
     exampleMapAndSet();
     console.log('\n=== Example 3: Complex Structure ===');
     exampleComplexStructure();
-    console.log('\n=== Example 4: Custom Class ===');
     exampleCustomClass();
     console.log('\n=== Example 5: Global Custom Types ===');
     exampleGlobalCustomTypes();
-    console.log('\n=== Example 6: Compression ===');
     await exampleCompression();
     console.log('\n=== Example 7: Lazy Deserialization ===');
     exampleLazyDeserialization();
-    console.log('\n=== Example 8: Streaming ===');
     await exampleStreaming();
     console.log('\n=== Example 9: RPC Integration ===');
     exampleRPCIntegration();
-    console.log('\n=== Example 10: SSR Loader ===');
     exampleSSRLoader();
-    console.log('\n=== Example 11: Edge Cases ===');
     exampleEdgeCases();
 }
 //# sourceMappingURL=superjson-examples.js.map

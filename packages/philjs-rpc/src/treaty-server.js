@@ -317,7 +317,6 @@ export function validateRequest(api, path, method) {
  */
 export function printAPIRoutes(api, options) {
     const metadata = extractAPIMetadata(api);
-    console.log('\n=== API Routes ===\n');
     for (const route of metadata.routes) {
         const typeColor = route.type === 'query' ? '\x1b[36m' : '\x1b[33m'; // cyan for query, yellow for mutation
         const reset = '\x1b[0m';
@@ -334,7 +333,6 @@ export function printAPIRoutes(api, options) {
         if (options?.includeMiddleware && route.middlewareCount > 0) {
             console.log(`  Middleware: ${route.middlewareCount} handler(s)`);
         }
-        console.log('');
     }
     console.log(`Total routes: ${metadata.routes.length}\n`);
 }

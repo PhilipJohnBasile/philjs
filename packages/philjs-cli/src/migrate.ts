@@ -45,7 +45,6 @@ const FRAMEWORKS: Record<Framework, { name: string; description: string }> = {
 };
 
 export async function migrateProject(frameworkName?: string): Promise<void> {
-  console.log(pc.cyan('\n⚡ Migrate to PhilJS\n'));
 
   let framework: Framework;
   if (frameworkName && frameworkName in FRAMEWORKS) {
@@ -62,7 +61,6 @@ export async function migrateProject(frameworkName?: string): Promise<void> {
         initial: true,
       });
       if (!response['confirm']) {
-        console.log(pc.yellow('Migration cancelled'));
         return;
       }
       framework = detected;
@@ -77,7 +75,6 @@ export async function migrateProject(frameworkName?: string): Promise<void> {
         })),
         onState: (state: PromptState) => {
           if (state.aborted) {
-            console.log(pc.red('\n✖ Cancelled\n'));
             process.exit(1);
           }
         }
@@ -103,10 +100,7 @@ export async function migrateProject(frameworkName?: string): Promise<void> {
     }
 
     console.log(pc.green(`\n✓ Migration from ${FRAMEWORKS[framework].name} complete!\n`));
-    console.log(pc.dim('Next steps:'));
     console.log(pc.dim('  1. Review the migrated files for any manual adjustments'));
-    console.log(pc.dim('  2. Run: npm install'));
-    console.log(pc.dim('  3. Run: npm run dev\n'));
   } catch (error) {
     console.error(pc.red('\n✖ Migration failed:'), error);
     process.exit(1);
@@ -163,15 +157,11 @@ async function migrateFromReact(): Promise<void> {
   console.log(pc.green('  ✓ Updated package.json'));
 
   // Find and migrate components
-  console.log(pc.dim('  Migrating components...'));
   const srcDir = path.join(process.cwd(), 'src');
   await migrateReactComponents(srcDir);
-  console.log(pc.green('  ✓ Migrated components'));
 
   // Update imports
-  console.log(pc.dim('  Updating imports...'));
   await updateReactImports(srcDir);
-  console.log(pc.green('  ✓ Updated imports'));
 }
 
 async function migrateFromVue(): Promise<void> {

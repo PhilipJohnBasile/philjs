@@ -1,3 +1,4 @@
+import { createSignal } from '@philjs/core';
 
 export interface XStateEvent {
     type: string;
@@ -8,35 +9,43 @@ export interface XStateContext {
     [key: string]: any;
 }
 
-export function useMachine(machine: { initialState: string; context: XStateContext; states: any }) {
-    let currentState = machine.initialState;
-    let currentContext = { ...machine.context };
+export interface MachineConfig {
+    initialState: string;
+    context: XStateContext;
+    states: Record<string, {
+        on?: Record<string, string | { target: string, actions?: Function[] }>
+    }>;
+}
 
-    const listeners: Set<Function> = new Set();
+export function useMachine(machine: MachineConfig) {
+    const [state, setState] = createSignal(machine.initialState);
+    const [context, setContext] = createSignal(machine.context);
 
     const send = (event: XStateEvent | string) => {
         const eventType = typeof event === 'string' ? event : event.type;
-        console.log(`XState: Processing event "${eventType}" in state "${currentState}"`);
+        const currentState = state();
 
-        // Mock transition logic
-        const nextStateConfig = machine.states[currentState]?.on?.[eventType];
-        if (nextStateConfig) {
-            // Handle simple string transition
-            const target = typeof nextStateConfig === 'string' ? nextStateConfig : nextStateConfig.target;
+        const stateConfig = machine.states[currentState];
+        const transition = stateConfig?.on?.[eventType];
+
+        if (transition) {
+            const target = typeof transition === 'string' ? transition : transition.target;
+
             if (target) {
-                currentState = target;
-                console.log(`XState: Transitioned to "${currentState}"`);
-                listeners.forEach(l => l({ value: currentState, context: currentContext }));
+                console.log(`XState: ${currentState} -> ${target}`);
+                setState(target);
+                
+                // Execute actions if any (simplified)
+                if (typeof transition !== 'string' && transition.actions) {
+                    transition.actions.forEach(action => action(context(), event));
+                }
             }
         }
     };
 
-    return [
-        { value: currentState, context: currentContext },
-        send,
-        (cb: Function) => {
-            listeners.add(cb);
-            return () => listeners.delete(cb);
-        }
-    ];
+    return { 
+        value: state, 
+        context, 
+        send 
+    };
 }

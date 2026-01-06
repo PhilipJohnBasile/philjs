@@ -312,7 +312,7 @@ export class RemoteStorageManager {
 
     if (this.config.compression) {
       const compressed = pako.gzip(body);
-      body = new Blob([compressed], { type: 'application/octet-stream' });
+      body = new Blob([compressed as BlobPart], { type: 'application/octet-stream' });
     }
 
     const controller = new AbortController();

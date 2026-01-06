@@ -55,10 +55,6 @@ export async function buildProduction(options) {
         try {
             // This would require route manifest from the app
             // For now, show what it would do
-            console.log(pc.dim("  SSG would generate:"));
-            console.log(pc.dim("  • index.html"));
-            console.log(pc.dim("  • about.html"));
-            console.log(pc.dim("  • ...dynamic routes"));
         }
         catch (error) {
             console.error(pc.red("SSG failed:"), error);
@@ -78,13 +74,10 @@ export async function buildProduction(options) {
     if (options.analyze) {
         console.log(pc.cyan("\n📈 Generating bundle analysis...\n"));
         const stats = await getOutputStats(options.outDir);
-        console.log(pc.bold("\nBundle Analysis:"));
-        console.log(pc.dim("─".repeat(50)));
         for (const [file, size] of Object.entries(stats.files)) {
             const percent = ((size / stats.totalSize) * 100).toFixed(1);
             console.log(`  ${file.padEnd(30)} ${formatSize(size).padStart(10)} ${pc.dim(`(${percent}%)`)}`);
         }
-        console.log(pc.dim("─".repeat(50)));
         console.log(pc.bold(`  Total:`) + `${formatSize(stats.totalSize).padStart(41)}`);
     }
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);

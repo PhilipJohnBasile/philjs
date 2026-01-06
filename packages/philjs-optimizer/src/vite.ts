@@ -108,8 +108,8 @@ export function philjsOptimizer(options: ViteOptimizerOptions = {}): Plugin {
 
         return {
           code: result.code,
-          map: result.map as import('rollup').SourceMapInput,
-        };
+          map: result.map,
+        } as any;
       } catch (error) {
         console.error(`Error transforming ${id}:`, error);
         return null;
@@ -274,7 +274,6 @@ function logOptimizationStats(
   chunks: Map<string, Symbol[]>,
   lazyChunks: Map<string, string>
 ): void {
-  console.log('\n--- PhilJS Optimizer Stats ---');
   console.log(`Total symbols: ${symbols.length}`);
   console.log(`Lazy symbols: ${symbols.filter((s) => s.isLazy).length}`);
   console.log(`Chunks: ${chunks.size}`);
@@ -286,7 +285,6 @@ function logOptimizationStats(
     typeBreakdown.set(symbol.type, (typeBreakdown.get(symbol.type) || 0) + 1);
   }
 
-  console.log('\nSymbol types:');
   for (const [type, count] of typeBreakdown) {
     console.log(`  ${type}: ${count}`);
   }
@@ -302,14 +300,12 @@ function logOptimizationStats(
     const maxSize = Math.max(...chunkSizes);
     const minSize = Math.min(...chunkSizes);
 
-    console.log('\nChunk sizes:');
     console.log(`  Total: ${formatBytes(totalSize)}`);
     console.log(`  Average: ${formatBytes(avgSize)}`);
     console.log(`  Max: ${formatBytes(maxSize)}`);
     console.log(`  Min: ${formatBytes(minSize)}`);
   }
 
-  console.log('-------------------------------\n');
 }
 
 /**

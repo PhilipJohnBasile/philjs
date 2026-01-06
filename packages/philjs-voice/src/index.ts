@@ -1,1 +1,1 @@
-export * from './voice-control';
+export * from './voice-control.js';

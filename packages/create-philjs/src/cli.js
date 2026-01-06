@@ -95,17 +95,13 @@ async function createProject(name, opts) {
             try {
                 execSync('git init', { cwd: projectPath, stdio: 'ignore' });
                 fs.writeFileSync(path.join(projectPath, '.gitignore'), 'node_modules/\ndist/\n.cache/\n');
-                console.log(chalk.dim('  Git initialized'));
             }
             catch (_error) {
                 // Git init failed silently - user may not have git installed
             }
         }
         console.log(chalk.green.bold('\nSuccess!') + ' Created ' + chalk.cyan(name));
-        console.log('\nNext steps:');
         console.log(chalk.cyan(`  cd ${name}`));
-        console.log(chalk.cyan('  npm install'));
-        console.log(chalk.cyan('  npm run dev'));
     }
     catch (err) {
         spinner.fail('Failed');

@@ -95,7 +95,6 @@ export function createSentryTracker(): ErrorTracker {
             version: '0.1.0',
           });
 
-          console.log('[PhilJS] Sentry initialized');
         }
       };
 
@@ -136,7 +135,6 @@ export function createSentryTracker(): ErrorTracker {
 
     captureMessage(message: string, level?: 'info' | 'warning' | 'error', context?: ErrorContext) {
       if (!Sentry) {
-        console.log('[Sentry not initialized]', message);
         return;
       }
 

@@ -123,7 +123,6 @@ export default function philJSCompiler(options: PhilJSRollupPluginOptions = {}):
           stats.totalOptimizations += result.optimizations.length;
 
           if (verbose) {
-            console.log(
               `[philjs-compiler] Optimized ${id} in ${duration.toFixed(2)}ms (${result.optimizations.length} optimizations)`
             );
 

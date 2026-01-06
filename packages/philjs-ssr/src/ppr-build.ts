@@ -593,7 +593,6 @@ export function pprVitePlugin(config: Partial<PPRBuildConfig> = {}) {
     name: "philjs-ppr",
 
     async buildStart() {
-      console.log("[PPR] Vite build starting...");
     },
 
     async generateBundle() {

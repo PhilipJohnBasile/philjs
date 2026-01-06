@@ -1,9 +1,22 @@
 {
-    "name": "@philjs/elysia",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts",
-    "peerDependencies": {
-        "elysia": "^0.6.0"
-    }
+  "name": "@philjs/elysia",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "elysia": "^0.6.0"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-elysia"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "elysia"
+  ]
 }

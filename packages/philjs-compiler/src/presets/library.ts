@@ -366,11 +366,9 @@ export async function validateLibraryBuild(
  * Library build reporter
  */
 export function printLibraryBuildReport(validation: LibraryValidation): void {
-  console.log('\n=== Library Build Report ===');
 
   console.log(`\nFormats: ${validation.stats.formats.join(', ')}`);
 
-  console.log('\nBundle Sizes:');
   Object.entries(validation.stats.size).forEach(([format, size]) => {
     const gzip = validation.stats.gzipSize[format] || 0;
     console.log(`  ${format}: ${formatSize(size)} (${formatSize(gzip)} gzipped)`);
@@ -394,12 +392,9 @@ export function printLibraryBuildReport(validation: LibraryValidation): void {
   }
 
   if (validation.passed) {
-    console.log('\n✅ Library build successful');
   } else {
-    console.log('\n❌ Library build failed');
   }
 
-  console.log('===========================\n');
 }
 
 function formatSize(bytes: number): string {

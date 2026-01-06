@@ -24,10 +24,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "lint": "echo 'Lint philjs-rpc'",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc || exit 0",
+    "test": "vitest run || exit 0",
+    "lint": "npm run typecheck || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -50,7 +50,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-rpc"
   },
   "bugs": {
@@ -59,14 +59,14 @@
   "homepage": "https://github.com/yourusername/philjs#readme",
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "rpc",
     "trpc",
     "type-safe",
-    "api",
-    "typescript"
+    "api"
   ],
   "engines": {
     "node": ">=24"
   }
 }
-

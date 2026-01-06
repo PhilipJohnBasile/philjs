@@ -332,7 +332,6 @@ export function createDatabaseTestHelper(db: any) {
      */
     async clearAll(): Promise<void> {
       // Implementation depends on ORM
-      console.log('[Test] Clearing database...');
     },
 
     /**

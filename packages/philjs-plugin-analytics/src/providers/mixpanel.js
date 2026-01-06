@@ -46,7 +46,6 @@ export class MixpanelProvider {
             return;
         window.mixpanel.track(event.name, event.properties || {});
         if (this.config.debug) {
-            console.log("[Mixpanel] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -183,7 +182,6 @@ export class MixpanelProvider {
             }
         })(document, window.mixpanel || []);
         if (this.config.debug) {
-            console.log("[Mixpanel] Script loading...");
         }
     }
     async waitForLoad() {

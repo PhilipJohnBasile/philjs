@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export async function doctor() {
-    console.log('PhilJS AI Doctor 🩺');
     console.log('Analyzing project structure and configuration...');
 
     // Mock Analysis Steps
@@ -20,7 +19,6 @@ export async function doctor() {
     }
 
     // AI Recommendation Simulation
-    console.log('\n🤖 AI Insights:');
     console.log('   - Detected potentially slow regex in "utils/parse.ts".');
     console.log('   - Recommendation: Use "pydantic-gen" for safer path parsing.');
     console.log('   - 2 unused components found in "ui/components".');

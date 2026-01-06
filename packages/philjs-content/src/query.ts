@@ -169,7 +169,7 @@ async function loadCollectionEntries(
         const result = validateEntryData(config.schema, entry.data);
 
         if (result.success) {
-          entry.data = result.data;
+          entry.data = result.data as Record<string, unknown>;
           entries.push(entry);
         } else {
           console.warn(

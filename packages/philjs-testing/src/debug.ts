@@ -41,21 +41,16 @@ export function debug(
     element = document.body;
   }
 
-  console.log('\n--- Debug Output ---');
-  console.log(prettyDOM(element, maxLength));
-  console.log('--------------------\n');
 }
 
 /**
  * Debug signals in the component
  */
 export function debugSignals(element: Element): void {
-  console.log('\n--- Signal Debug ---');
 
   const signalElements = element.querySelectorAll('[data-signal]');
 
   if (signalElements.length === 0) {
-    console.log('No signals found in DOM');
   } else {
     signalElements.forEach((el, i) => {
       const name = el.getAttribute('data-signal');
@@ -64,14 +59,12 @@ export function debugSignals(element: Element): void {
     });
   }
 
-  console.log('--------------------\n');
 }
 
 /**
  * Debug accessibility tree
  */
 export function debugA11y(element: Element): void {
-  console.log('\n--- Accessibility Debug ---');
 
   const roles = [
     'button', 'link', 'heading', 'textbox', 'checkbox', 'radio',
@@ -106,24 +99,20 @@ export function debugA11y(element: Element): void {
     }
   }
 
-  console.log('\n---------------------------\n');
 }
 
 /**
  * Debug form state
  */
 export function debugForm(form: HTMLFormElement): void {
-  console.log('\n--- Form Debug ---');
 
   const formData = new FormData(form);
 
-  console.log('Form values:');
   formData.forEach((value, key) => {
     console.log(`  ${key}: ${value}`);
   });
 
   const inputs = form.querySelectorAll('input, select, textarea');
-  console.log('\nInput states:');
   inputs.forEach((input: Element) => {
     const name = (input as HTMLInputElement).name || input.id || '(unnamed)';
     const type = (input as HTMLInputElement).type || input.tagName.toLowerCase();
@@ -138,7 +127,6 @@ export function debugForm(form: HTMLFormElement): void {
     console.log(`  ${name} [${type}]: "${value}" ${status}`);
   });
 
-  console.log('\n------------------\n');
 }
 
 /**

@@ -1,1 +1,1 @@
-export * from './q-bridge';
+export * from './q-bridge.js';

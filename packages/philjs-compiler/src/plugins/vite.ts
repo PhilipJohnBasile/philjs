@@ -255,13 +255,10 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
       if (verbose) {
         console.log('\n[philjs-compiler] Configuration:');
-        console.log('  Mode:', config.mode);
-        console.log('  Development:', isDevelopment);
         console.log('  Source Maps:', config.build.sourcemap !== false);
         console.log('  Cache:', cache ? 'enabled' : 'disabled');
         console.log('  HMR State Preservation:', preserveHmrState ? 'enabled' : 'disabled');
         console.log('  Enhanced Errors:', enhancedErrors ? 'enabled' : 'disabled');
-        console.log('  Optimizations:');
         console.log('    - Auto-memo:', compilerConfig['autoMemo'] !== false);
         console.log('    - Auto-batch:', compilerConfig['autoBatch'] !== false);
         console.log('    - Dead code elimination:', compilerConfig['deadCodeElimination'] !== false);
@@ -312,7 +309,6 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
             if (verbose) {
               const duration = performance.now() - startTime;
-              console.log(
                 `[philjs-compiler] ${id.split('/').pop()} (cached) - ${formatDuration(duration)}`
               );
             }
@@ -360,7 +356,6 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
             ? `-${formatBytes(Math.abs(sizeDiff))}`
             : '±0 B';
 
-          console.log(
             `[philjs-compiler] ${fileName} - ${formatDuration(duration)} | ${result.optimizations.length} opts | ${sizeChange}`
           );
 
@@ -540,7 +535,6 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
           console.log(`  Cache efficiency: ${cacheEfficiency.toFixed(1)}%`);
         }
 
-        console.log('');
       }
     },
 
@@ -651,7 +645,6 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
             }
 
             if (verbose) {
-              console.log(
                 `[philjs-compiler] HMR boundary detection:`,
                 `components=${hasComponents}, signals=${hasSignals}, effects=${hasEffects}`
               );
@@ -667,7 +660,6 @@ export default function philJSCompiler(options: PhilJSCompilerPluginOptions = {}
 
         if (verbose) {
           const fileName = file.split('/').pop() || file;
-          console.log(
             `[philjs-compiler] HMR: ${fileName} (${affectedModules.size} modules, ${modulesByDepth.size} levels) - ${formatDuration(duration)}`
           );
         }
@@ -885,7 +877,6 @@ function generateBundleReport(
   // Sort by size (largest first)
   const sorted = stats.toSorted((a, b) => b.size - a.size);
 
-  console.log('Bundle Breakdown:');
   console.log('─────────────────────────────────────────────────────────────');
 
   sorted.forEach((stat, idx) => {
@@ -898,7 +889,6 @@ function generateBundleReport(
     if (dependencies.length > 0) {
       console.log(`    Dependencies: ${dependencies.slice(0, 3).join(', ')}${dependencies.length > 3 ? '...' : ''}`);
     }
-    console.log('');
   });
 
   const totalSize = stats.reduce((sum, s) => sum + s.size, 0);

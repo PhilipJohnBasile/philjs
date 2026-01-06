@@ -1428,7 +1428,6 @@ export async function runCodegen(config: CodegenConfig): Promise<void> {
   // 3. Generate types
   // 4. Write to files
 
-  console.log('Code generation completed!');
 }
 
 /**

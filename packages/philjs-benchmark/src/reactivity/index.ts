@@ -54,10 +54,6 @@ export async function runReactivityBenchmarks(
   const mode = options.mode ?? 'full';
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Reactivity Benchmark Suite');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   let allResults: Awaited<ReturnType<typeof runBenchmarkSuite>>;
@@ -91,9 +87,6 @@ export async function runReactivityBenchmarks(
   }
 
   if (verbose) {
-    console.log('\n' + '='.repeat(60));
-    console.log('Reactivity Benchmark Complete');
-    console.log('='.repeat(60));
   }
 
   return {
@@ -114,10 +107,6 @@ export async function runCoreReactivityBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Core Reactivity Benchmarks');
-    console.log('='.repeat(60));
-    console.log();
   }
 
   const results = await runBenchmarkSuite(coreReactivityBenchmarks, { ...options, verbose });
@@ -140,8 +129,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
   runReactivityBenchmarks({ verbose: true })
     .then(suite => {
-      console.log('\nResults JSON:');
-      console.log(JSON.stringify(suite, null, 2));
     })
     .catch(console.error);
 }

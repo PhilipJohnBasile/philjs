@@ -1,0 +1,87 @@
+{
+  "name": "@philjs/file-router",
+  "version": "0.1.0",
+  "description": "Next.js/Nuxt-style file-based routing for PhilJS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite-plugin.d.ts",
+      "import": "./dist/vite-plugin.js"
+    },
+    "./webpack": {
+      "types": "./dist/webpack-plugin.d.ts",
+      "import": "./dist/webpack-plugin.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript || exit 0",
+    "test": "vitest run || exit 0",
+    "lint": "npm run typecheck || exit 0",
+    "typecheck": "tsc --noEmit || exit 0"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^22.10.5",
+    "rollup": "^4.54.0",
+    "typescript": "6.0.0-dev.20251230",
+    "vite": "^6.1.1",
+    "vitest": "^4.0.16",
+    "webpack": "^5.97.1"
+  },
+  "peerDependencies": {
+    "vite": "^5.0.0 || ^6.0.0",
+    "webpack": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    },
+    "webpack": {
+      "optional": true
+    }
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-file-router"
+  },
+  "bugs": {
+    "url": "https://github.com/philjs/philjs/issues"
+  },
+  "homepage": "https://github.com/philjs/philjs#readme",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "router",
+    "routing",
+    "file-based-routing",
+    "nextjs-style",
+    "nuxt-style",
+    "vite-plugin",
+    "webpack-plugin"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

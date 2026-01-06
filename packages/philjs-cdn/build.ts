@@ -61,18 +61,14 @@ async function buildOnce() {
     sourcemap: true,
   });
 
-  console.log('Build complete!');
-  console.log('  - dist/philjs.esm.js (ESM)');
   console.log('  - dist/philjs.global.js (Global/IIFE)');
   console.log('  - dist/philjs.mini.js (Ultra-minified)');
-  console.log('  - dist/philjs.cjs.js (CommonJS)');
 }
 
 async function watchBuild() {
   let timer: NodeJS.Timeout | null = null;
 
   await buildOnce();
-  console.log('Watching for changes...');
 
   watch('./src', { recursive: true }, () => {
     if (timer) {

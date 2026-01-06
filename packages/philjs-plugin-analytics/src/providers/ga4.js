@@ -52,7 +52,6 @@ export class GA4Provider {
             return;
         window.gtag("event", event.name, event.properties || {});
         if (this.config.debug) {
-            console.log("[GA4] Event tracked:", event);
         }
     }
     trackPageView(url, title) {
@@ -117,7 +116,6 @@ export class GA4Provider {
         script.onload = () => {
             this.loaded = true;
             if (this.config.debug) {
-                console.log("[GA4] Script loaded");
             }
         };
         document.head.appendChild(script);

@@ -36,7 +36,6 @@ export class SegmentProvider implements IAnalyticsProvider {
     this.loadScript();
 
     if (config.debug) {
-      console.log("[Segment] Initialized");
     }
   }
 
@@ -46,7 +45,6 @@ export class SegmentProvider implements IAnalyticsProvider {
     window.analytics.track(event.name, event.properties || {});
 
     if (this.config.debug) {
-      console.log("[Segment] Event tracked:", event);
     }
   }
 
@@ -147,7 +145,6 @@ export class SegmentProvider implements IAnalyticsProvider {
     window.analytics.reset();
 
     if (this.config.debug) {
-      console.log("[Segment] User data reset");
     }
   }
 
@@ -233,7 +230,6 @@ export class SegmentProvider implements IAnalyticsProvider {
         this.loaded = true;
 
         if (this.config.debug) {
-          console.log("[Segment] Script loaded");
         }
       }
     }

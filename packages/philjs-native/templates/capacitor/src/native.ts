@@ -14,7 +14,6 @@ import { isCapacitor, isNativePlatform, isIOS, isAndroid } from 'philjs-native';
 export async function initializeNative(): Promise<void> {
   // Only run on native platforms
   if (!isNativePlatform()) {
-    console.log('Running in web mode');
     return;
   }
 

@@ -795,3 +795,275 @@ export function server$component<P>(
     return component(props);
   };
 }
+
+// ============================================================================
+// Progressive Hydration API
+// ============================================================================
+
+import type { Trigger, TriggerType } from './triggers.js';
+import { onVisible, onInteraction, onIdle, onLoad, never, fromString, isTrigger } from './triggers.js';
+
+/**
+ * Options for the resumable wrapper with progressive hydration
+ */
+export interface ResumableOptions<P = Record<string, unknown>> {
+  /** Trigger type for hydration */
+  trigger?: TriggerType | Trigger;
+  /** Module path for code splitting */
+  module?: string;
+  /** Export symbol name */
+  symbol?: string;
+  /** Whether to prefetch on hover */
+  prefetch?: boolean;
+  /** Priority for hydration scheduling */
+  priority?: number;
+  /** Fallback to show before hydration */
+  fallback?: (props: P) => unknown;
+  /** Callback when hydration completes */
+  onHydrate?: () => void;
+  /** Callback on hydration error */
+  onError?: (error: Error) => void;
+}
+
+/**
+ * Create a resumable component with configurable hydration trigger.
+ *
+ * This is the main API for progressive hydration. The component code
+ * is only loaded when the specified trigger condition is met.
+ *
+ * @example
+ * ```typescript
+ * import { resumable, onVisible, onInteraction, onIdle } from '@philjs/resumable';
+ *
+ * // Hydrate when visible in viewport
+ * const LazyComponent = resumable(Component, { trigger: 'visible' });
+ *
+ * // Hydrate on first interaction
+ * const InteractiveComponent = resumable(Component, { trigger: 'interaction' });
+ *
+ * // Hydrate when browser is idle
+ * const IdleComponent = resumable(Component, { trigger: 'idle' });
+ *
+ * // Custom trigger
+ * const CustomComponent = resumable(Component, { trigger: onVisible({ threshold: 0.5 }) });
+ * ```
+ */
+export function resumable<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options: ResumableOptions<P> = {}
+): ResumableComponent<P> {
+  const {
+    trigger = 'idle',
+    module,
+    symbol,
+    prefetch = true,
+    priority = 0,
+    fallback,
+    onHydrate: onHydrateCallback,
+    onError: onErrorCallback,
+  } = options;
+
+  // Create QRL for the component
+  const qrl = createQRL<(props: P) => unknown>({
+    chunk: module || '__inline__',
+    symbol: symbol || component.name || 'Component',
+    resolved: component,
+  });
+
+  // Resolve trigger
+  const resolvedTrigger: Trigger = isTrigger(trigger)
+    ? trigger
+    : fromString(trigger as TriggerType);
+
+  const ResumableWrapper = ((props: P) => {
+    const ctx = getResumableContext();
+
+    if (ctx?.isServer) {
+      // Server-side: render and serialize with trigger info
+      return renderResumableWithTrigger(
+        component,
+        props,
+        qrl,
+        ctx,
+        resolvedTrigger,
+        fallback
+      );
+    } else if (ctx?.isHydrating) {
+      // Client-side hydrating: skip render, already in DOM
+      return null;
+    } else {
+      // Client-side: normal render
+      return component(props);
+    }
+  }) as ResumableComponent<P>;
+
+  ResumableWrapper.$qrl$ = qrl;
+  ResumableWrapper.displayName = component.name || 'ResumableComponent';
+
+  // Add metadata
+  (ResumableWrapper as any).$trigger$ = resolvedTrigger;
+  (ResumableWrapper as any).$prefetch$ = prefetch;
+  (ResumableWrapper as any).$priority$ = priority;
+  (ResumableWrapper as any).$onHydrate$ = onHydrateCallback;
+  (ResumableWrapper as any).$onError$ = onErrorCallback;
+
+  return ResumableWrapper;
+}
+
+/**
+ * Render a resumable component with trigger information
+ */
+function renderResumableWithTrigger<P>(
+  component: (props: P) => unknown,
+  props: P,
+  qrl: QRL<(props: P) => unknown>,
+  ctx: ResumableContext,
+  trigger: Trigger,
+  fallback?: (props: P) => unknown
+): unknown {
+  // Generate component ID
+  const componentId = generateId(ctx.serialization);
+
+  // Push to component stack
+  ctx.componentStack.push(componentId);
+
+  try {
+    // Register component for resumability
+    registerComponent(componentId, qrl, props as Record<string, unknown>, ctx.serialization);
+
+    // Render the component
+    const result = component(props);
+
+    // Render fallback if provided
+    const fallbackContent = fallback ? fallback(props) : null;
+
+    // Wrap result with component boundary marker and trigger info
+    return {
+      type: 'phil-resumable',
+      props: {
+        'data-qid': componentId,
+        'data-qcomponent': qrl.serialize(),
+        'data-qtrigger': trigger.type,
+        'data-qpriority': trigger.priority ?? 0,
+        children: result,
+        fallback: fallbackContent,
+      },
+    };
+  } finally {
+    ctx.componentStack.pop();
+  }
+}
+
+// ============================================================================
+// Convenience Trigger Wrappers
+// ============================================================================
+
+/**
+ * Create a component that hydrates when visible.
+ *
+ * @example
+ * ```typescript
+ * const LazyComponent = visible(Component);
+ * const LazyComponent = visible(Component, { threshold: 0.5 });
+ * ```
+ */
+export function visible<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options?: Parameters<typeof onVisible>[0] & Omit<ResumableOptions<P>, 'trigger'>
+): ResumableComponent<P> {
+  const { threshold, root, rootMargin, prefetch: visiblePrefetch, prefetchMargin, ...rest } = options || {};
+  return resumable(component, {
+    ...rest,
+    trigger: onVisible({ threshold, root, rootMargin, prefetch: visiblePrefetch, prefetchMargin }),
+  });
+}
+
+/**
+ * Create a component that hydrates on interaction.
+ *
+ * @example
+ * ```typescript
+ * const InteractiveComponent = interactive(Component);
+ * const InteractiveComponent = interactive(Component, { events: ['click'] });
+ * ```
+ */
+export function interactive<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options?: Parameters<typeof onInteraction>[0] & Omit<ResumableOptions<P>, 'trigger'>
+): ResumableComponent<P> {
+  const { events, event, redispatch, prefetch: interactionPrefetch, capture, ...rest } = options || {};
+  return resumable(component, {
+    ...rest,
+    trigger: onInteraction({ events, event, redispatch, prefetch: interactionPrefetch, capture }),
+  });
+}
+
+/**
+ * Create a component that hydrates when idle.
+ *
+ * @example
+ * ```typescript
+ * const IdleComponent = idle(Component);
+ * const IdleComponent = idle(Component, { timeout: 5000 });
+ * ```
+ */
+export function idle<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options?: Parameters<typeof onIdle>[0] & Omit<ResumableOptions<P>, 'trigger'>
+): ResumableComponent<P> {
+  const { timeout, ...rest } = options || {};
+  return resumable(component, {
+    ...rest,
+    trigger: onIdle({ timeout }),
+  });
+}
+
+/**
+ * Create a component that hydrates immediately.
+ *
+ * @example
+ * ```typescript
+ * const CriticalComponent = eager(Component);
+ * ```
+ */
+export function eager<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options?: Omit<ResumableOptions<P>, 'trigger'>
+): ResumableComponent<P> {
+  return resumable(component, {
+    ...options,
+    trigger: onLoad(),
+  });
+}
+
+/**
+ * Create a component that never hydrates (static only).
+ *
+ * @example
+ * ```typescript
+ * const StaticComponent = static_(Component);
+ * ```
+ */
+export function static_<P = Record<string, unknown>>(
+  component: (props: P) => unknown,
+  options?: Omit<ResumableOptions<P>, 'trigger'>
+): ResumableComponent<P> {
+  return resumable(component, {
+    ...options,
+    trigger: never(),
+  });
+}
+
+// ============================================================================
+// Re-export triggers for convenience
+// ============================================================================
+
+export {
+  onVisible,
+  onInteraction,
+  onIdle,
+  onLoad,
+  never,
+  type Trigger,
+  type TriggerType,
+} from './triggers.js';

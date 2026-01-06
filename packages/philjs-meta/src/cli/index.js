@@ -178,7 +178,6 @@ export async function build(options = {}) {
             result.warnings.forEach((warning) => log.warn(warning));
         }
         if (analyze) {
-            console.log('\nBundle Analysis:');
             result.bundles.forEach((bundle) => {
                 console.log(`  ${bundle.name}: ${formatBytes(bundle.size)}`);
             });
@@ -477,7 +476,6 @@ function formatBytes(bytes) {
 export async function run(args = process.argv.slice(2)) {
     const command = args[0];
     const options = parseArgs(args.slice(1));
-    console.log(`
 ${colors.cyan}${colors.bold}PhilJS Meta${colors.reset} v2.0.0
 `);
     switch (command) {
@@ -502,7 +500,6 @@ ${colors.cyan}${colors.bold}PhilJS Meta${colors.reset} v2.0.0
         case 'version':
         case '--version':
         case '-v':
-            console.log('2.0.0');
             break;
         default:
             if (command) {
@@ -549,7 +546,6 @@ function parseArgs(args) {
  * Print help message
  */
 function printHelp() {
-    console.log(`
 ${colors.bold}Usage:${colors.reset} philjs-meta <command> [options]
 
 ${colors.bold}Commands:${colors.reset}

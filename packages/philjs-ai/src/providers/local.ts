@@ -2,7 +2,7 @@
  * Local LLM provider (Ollama) implementation
  */
 
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 
 export interface LocalConfig {
   baseURL?: string;
@@ -19,7 +19,7 @@ export class LocalProvider implements AIProvider {
     this.defaultModel = config.defaultModel || 'codellama';
   }
 
-  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<string> {
+  async generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse> {
     const fullPrompt = options?.systemPrompt
       ? `${options.systemPrompt}\n\n${prompt}`
       : prompt;
@@ -46,7 +46,24 @@ export class LocalProvider implements AIProvider {
     }
 
     const data = await response.json();
-    return data.response || '';
+
+    // Ollama returns token counts in response
+    const inputTokens = data.prompt_eval_count ?? this.estimateTokens(fullPrompt);
+    const outputTokens = data.eval_count ?? this.estimateTokens(data.response || '');
+
+    return {
+      content: data.response || '',
+      usage: {
+        inputTokens,
+        outputTokens,
+        totalTokens: inputTokens + outputTokens
+      }
+    };
+  }
+
+  /** Estimate token count (~4 chars per token) */
+  private estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
   }
 
   async *generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string> {

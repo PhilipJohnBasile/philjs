@@ -12,7 +12,7 @@
     "./vite": "./dist/vite-plugin.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsc --watch"
   },
   "dependencies": {
@@ -33,6 +33,8 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "tailwind",
     "tailwindcss",
     "css",
@@ -45,7 +47,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-tailwind"
   },
   "bugs": {
@@ -56,4 +58,3 @@
     "node": ">=24"
   }
 }
-

@@ -40,7 +40,6 @@ export function registerPluginCommands(program: Command): void {
         ]);
 
         if (!response['search']) {
-          console.log(pc.yellow("Cancelled"));
           return;
         }
 
@@ -66,7 +65,6 @@ export function registerPluginCommands(program: Command): void {
         ]);
 
         if (!selected['plugin']) {
-          console.log(pc.yellow("Cancelled"));
           return;
         }
 
@@ -105,7 +103,6 @@ export function registerPluginCommands(program: Command): void {
       ]);
 
       if (!response['confirm']) {
-        console.log(pc.yellow("Cancelled"));
         return;
       }
 
@@ -127,9 +124,6 @@ export function registerPluginCommands(program: Command): void {
       try {
         const plugins = await manager.list();
 
-        console.log(pc.cyan("\nInstalled Plugins:\n"));
-        console.log(formatPluginList(plugins));
-        console.log();
       } catch (error) {
         console.error(pc.red(`Failed to list plugins: ${error instanceof Error ? error.message : String(error)}`));
         process.exit(1);
@@ -155,8 +149,6 @@ export function registerPluginCommands(program: Command): void {
         const results = await manager.search(query, searchOptions);
 
         console.log(pc.cyan(`\nSearch results for "${query}":`));
-        console.log(formatSearchResults(results));
-        console.log();
       } catch (error) {
         console.error(pc.red(`Search failed: ${error instanceof Error ? error.message : String(error)}`));
         process.exit(1);
@@ -179,11 +171,7 @@ export function registerPluginCommands(program: Command): void {
         }
 
         console.log(pc.cyan(`\n${pc.bold(info.name)} ${info.verified ? pc.green("✓") : ""}`));
-        console.log(pc.dim("=".repeat(50)));
-        console.log();
         console.log(pc.bold("Description:"), info.description);
-        console.log(pc.bold("Version:"), info.version);
-        console.log(pc.bold("Author:"), info.author);
         console.log(pc.bold("Downloads:"), info.downloads.toLocaleString());
         console.log(pc.bold("Rating:"), "★".repeat(Math.round(info.rating)));
 
@@ -199,9 +187,7 @@ export function registerPluginCommands(program: Command): void {
           console.log(pc.bold("Tags:"), info.tags.join(", "));
         }
 
-        console.log(pc.bold("PhilJS:"), info.philjs);
         console.log(pc.bold("Updated:"), new Date(info.updatedAt).toLocaleDateString());
-        console.log();
       } catch (error) {
         console.error(pc.red(`Failed to get plugin info: ${error instanceof Error ? error.message : String(error)}`));
         process.exit(1);
@@ -257,7 +243,6 @@ export function registerPluginCommands(program: Command): void {
 
         console.log(pc.cyan(`\nCurrent configuration for ${pc.bold(pluginName)}:\n`));
         console.log(JSON.stringify(plugin.config || {}, null, 2));
-        console.log();
 
         // Interactive config editor
         const response = await prompts([
@@ -357,7 +342,6 @@ export function registerPluginCommands(program: Command): void {
       ]);
 
       if (!response['category']) {
-        console.log(pc.yellow("Cancelled"));
         return;
       }
 
@@ -390,7 +374,6 @@ export function registerPluginCommands(program: Command): void {
       ]);
 
       if (!selected['plugins'] || selected['plugins'].length === 0) {
-        console.log(pc.yellow("No plugins selected"));
         return;
       }
 
@@ -403,6 +386,5 @@ export function registerPluginCommands(program: Command): void {
         }
       }
 
-      console.log(pc.green("\nSetup complete!"));
     });
 }

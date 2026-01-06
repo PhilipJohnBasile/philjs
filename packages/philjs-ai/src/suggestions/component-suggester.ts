@@ -468,7 +468,7 @@ For each component, provide:
 
 Return JSON array of ComponentSuggestion objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a UI/UX expert suggesting components for common patterns.',
     });
@@ -503,7 +503,7 @@ For each detection:
 
 Return JSON array.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert at identifying UI patterns and componentization opportunities.',
     });
@@ -576,7 +576,7 @@ Suggest component names that:
 
 Return JSON array of ComponentSuggestion objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       temperature: 0.1,
     });
@@ -609,7 +609,7 @@ Consider:
 
 Return JSON array of ComponentSuggestion objects for appropriate children.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert in component composition patterns.',
     });
@@ -857,7 +857,7 @@ Return JSON array of ComponentSuggestion objects with:
 - source: "ai-generated"
 - tags: relevant tags`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a component suggestion AI. Suggest relevant, useful components.',
     });

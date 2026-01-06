@@ -1,40 +1,52 @@
 {
-    "name": "philjs",
-    "version": "0.1.0",
-    "description": "The Singularity Framework. One import to rule them all.",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts"
-    },
-    "dependencies": {
-        "@philjs/ai": "workspace:*",
-        "@philjs/test": "workspace:*",
-        "@philjs/edge": "workspace:*",
-        "@philjs/deploy": "workspace:*",
-        "@philjs/security": "workspace:*",
-        "@philjs/docs": "workspace:*",
-        "@philjs/perf": "workspace:*",
-        "@philjs/a11y-ai": "workspace:*",
-        "@philjs/i18n": "workspace:*",
-        "@philjs/db": "workspace:*",
-        "@philjs/science": "workspace:*",
-        "@philjs/bio": "workspace:*",
-        "@philjs/astro": "workspace:*",
-        "@philjs/geo": "workspace:*",
-        "@philjs/fin": "workspace:*",
-        "@philjs/neuro": "workspace:*",
-        "@philjs/robotics": "workspace:*",
-        "@philjs/ar": "workspace:*",
-        "@philjs/crypto": "workspace:*",
-        "@philjs/social": "workspace:*",
-        "@philjs/backend-adapters": "workspace:*",
-        "@philjs/frontend-adapters": "workspace:*",
-        "@philjs/integration": "workspace:*",
-        "@philjs/polyglot": "workspace:*"
-    },
-    "devDependencies": {
-        "tsup": "^8.0.0",
-        "typescript": "^5.0.0"
-    }
+  "name": "philjs",
+  "version": "0.1.0",
+  "description": "The Singularity Framework. One import to rule them all.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc || exit 0"
+  },
+  "dependencies": {
+    "@philjs/ai": "workspace:*",
+    "@philjs/test": "workspace:*",
+    "@philjs/edge": "workspace:*",
+    "@philjs/deploy": "workspace:*",
+    "@philjs/security": "workspace:*",
+    "@philjs/docs": "workspace:*",
+    "@philjs/perf": "workspace:*",
+    "@philjs/a11y-ai": "workspace:*",
+    "@philjs/i18n": "workspace:*",
+    "@philjs/db": "workspace:*",
+    "@philjs/science": "workspace:*",
+    "@philjs/bio": "workspace:*",
+    "@philjs/astro": "workspace:*",
+    "@philjs/geo": "workspace:*",
+    "@philjs/fin": "workspace:*",
+    "@philjs/neuro": "workspace:*",
+    "@philjs/robotics": "workspace:*",
+    "@philjs/ar": "workspace:*",
+    "@philjs/crypto": "workspace:*",
+    "@philjs/social": "workspace:*",
+    "@philjs/backend-adapters": "workspace:*",
+    "@philjs/frontend-adapters": "workspace:*",
+    "@philjs/integration": "workspace:*",
+    "@philjs/polyglot": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "6.0.0-dev.20251230"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework"
+  ]
 }

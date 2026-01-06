@@ -527,7 +527,6 @@ export default {
   ${triggers.length > 0 ? `
   // Scheduled handler
   async scheduled(event, env, ctx) {
-    console.log('Scheduled event:', event.cron);
     // Handle scheduled tasks
   },
   ` : ''}
@@ -622,7 +621,6 @@ export default {
 
   ${triggers.length > 0 ? `
   async scheduled(event, env, ctx) {
-    console.log('Scheduled event:', event.cron);
   },
   ` : ''}
 };

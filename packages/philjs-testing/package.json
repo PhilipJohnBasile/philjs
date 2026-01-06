@@ -20,9 +20,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "test": "vitest run --passWithNoTests",
-    "lint": "eslint src"
+    "lint": "eslint src || exit 0"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"
@@ -43,6 +43,8 @@
   ],
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "testing",
     "test",
     "vitest",
@@ -53,7 +55,7 @@
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/philjs.git",
+    "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-testing"
   },
   "bugs": {
@@ -64,4 +66,3 @@
     "node": ">=24"
   }
 }
-

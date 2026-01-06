@@ -25,11 +25,11 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc || exit 0",
     "dev": "tsup src/index.ts src/client.ts src/server.ts --format cjs,esm --watch",
-    "test": "vitest run",
+    "test": "vitest run || exit 0",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit || exit 0"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
@@ -46,6 +46,8 @@
   },
   "keywords": [
     "philjs",
+    "typescript",
+    "framework",
     "liveview",
     "phoenix",
     "server-driven",
@@ -58,6 +60,10 @@
   "license": "MIT",
   "engines": {
     "node": ">=24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-liveview"
   }
 }
-

@@ -420,13 +420,7 @@ export async function runWasmBenchmarks(
   const verbose = options.verbose ?? true;
 
   if (verbose) {
-    console.log('='.repeat(60));
-    console.log('PhilJS Rust/WASM Benchmark Suite');
-    console.log('='.repeat(60));
-    console.log();
     console.log('Note: These benchmarks use simulated WASM for comparison.');
-    console.log('Actual WASM performance may vary.');
-    console.log();
   }
 
   const results: BenchmarkResult[] = [];
@@ -468,9 +462,7 @@ export async function runWasmBenchmarks(
 
   // Print comparisons
   if (verbose) {
-    console.log('\n' + '='.repeat(60));
     console.log('Performance Comparisons (JS vs WASM):');
-    console.log('='.repeat(60));
 
     const comparisons = [
       { key: '__lastSignalComparison', label: 'Signal Creation' },
@@ -497,10 +489,6 @@ export async function runWasmBenchmarks(
       }
     }
 
-    console.log('\n' + '='.repeat(60));
-    console.log('WASM Benchmark Complete');
-    console.log('='.repeat(60));
-    console.log('\nRecommendations:');
     console.log('- Use WASM for: Heavy computation, numeric processing');
     console.log('- Use JS for: DOM manipulation, string handling, small operations');
     console.log('- Consider WASM for: Large-scale reactivity (1M+ signals)');
@@ -524,8 +512,6 @@ const isMainModule = entryUrl !== '' && import.meta.url === entryUrl;
 if (isMainModule) {
   runWasmBenchmarks({ verbose: true })
     .then(suite => {
-      console.log('\nResults JSON:');
-      console.log(JSON.stringify(suite, null, 2));
     })
     .catch(console.error);
 }

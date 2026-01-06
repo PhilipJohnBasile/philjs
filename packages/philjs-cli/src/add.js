@@ -74,7 +74,6 @@ export async function addFeature(featureName) {
         });
         // Handle cancellation
         if (!response['feature']) {
-            console.log(pc.red('\n✖ Cancelled\n'));
             process.exit(1);
         }
         feature = response['feature'];
@@ -161,7 +160,6 @@ async function addSSR() {
     await updateViteConfig(isTS, (config) => {
         return config + `\n  ssr: {\n    noExternal: ['@philjs/core', 'philjs-router', 'philjs-ssr'],\n  },`;
     });
-    console.log(pc.green('  ✓ Updated vite.config'));
     console.log(pc.dim('\n  Run: npm install && npm run dev:ssr\n'));
 }
 async function addIslands() {
@@ -324,7 +322,6 @@ async function addLinting() {
         tabWidth: 2,
     }, null, 2));
     console.log(pc.green('  ✓ Created .prettierrc.json'));
-    console.log(pc.dim('\n  Run: npm run lint\n'));
 }
 async function addPWA() {
     const pkg = await readPackageJson();
@@ -358,7 +355,6 @@ async function addPWA() {
     await updateViteConfig(isTS, (config) => {
         return `import { VitePWA } from 'vite-plugin-pwa';\n\n${config}    VitePWA({\n      registerType: 'autoUpdate',\n      manifest: './public/manifest.json',\n    }),\n`;
     });
-    console.log(pc.green('  ✓ Updated vite.config'));
     console.log(pc.dim('\n  PWA support added. Add icons to public/ directory.\n'));
 }
 async function addI18n() {
@@ -403,19 +399,16 @@ export function trackPageView(url${isTS ? ': string' : ''}) {
   if (typeof window === 'undefined') return;
 
   // Add your analytics provider here (Google Analytics, Plausible, etc.)
-  console.log('Page view:', url);
 }
 
 export function trackEvent(event${isTS ? ': string' : ''}, data${isTS ? '?: Record<string, any>' : ''}) {
   if (typeof window === 'undefined') return;
 
-  console.log('Event:', event, data);
 }
 
 export function trackPerformance(metric${isTS ? ': string' : ''}, value${isTS ? ': number' : ''}) {
   if (typeof window === 'undefined') return;
 
-  console.log('Performance:', metric, value);
 }
 `);
     console.log(pc.green(`  ✓ Created src/lib/analytics.${ext}`));

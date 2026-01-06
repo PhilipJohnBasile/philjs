@@ -1099,9 +1099,98 @@ class AgentWorkflow {
 // BUILT-IN TOOLS
 // ============================================================================
 
+/** Search result interface */
+interface SearchResult {
+  title: string;
+  snippet: string;
+  url: string;
+  date?: string;
+}
+
+/** Get search API key from environment */
+function getSearchApiKey(): { provider: 'serper' | 'brave' | 'serpapi'; key: string } | null {
+  if (typeof process !== 'undefined' && process.env) {
+    if (process.env.SERPER_API_KEY) {
+      return { provider: 'serper', key: process.env.SERPER_API_KEY };
+    }
+    if (process.env.BRAVE_API_KEY) {
+      return { provider: 'brave', key: process.env.BRAVE_API_KEY };
+    }
+    if (process.env.SERPAPI_API_KEY) {
+      return { provider: 'serpapi', key: process.env.SERPAPI_API_KEY };
+    }
+  }
+  return null;
+}
+
+/** Serper.dev search implementation */
+async function serperSearch(query: string, apiKey: string, numResults: number): Promise<SearchResult[]> {
+  const response = await fetch('https://google.serper.dev/search', {
+    method: 'POST',
+    headers: {
+      'X-API-KEY': apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ q: query, num: numResults }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Serper API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return (data.organic || []).map((r: any) => ({
+    title: r.title,
+    snippet: r.snippet,
+    url: r.link,
+    date: r.date,
+  }));
+}
+
+/** Brave Search implementation */
+async function braveSearch(query: string, apiKey: string, numResults: number): Promise<SearchResult[]> {
+  const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${numResults}`;
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'X-Subscription-Token': apiKey,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Brave Search API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return (data.web?.results || []).map((r: any) => ({
+    title: r.title,
+    snippet: r.description,
+    url: r.url,
+    date: r.age,
+  }));
+}
+
+/** SerpAPI search implementation */
+async function serpApiSearch(query: string, apiKey: string, numResults: number): Promise<SearchResult[]> {
+  const url = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&num=${numResults}&api_key=${apiKey}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`SerpAPI error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return (data.organic_results || []).map((r: any) => ({
+    title: r.title,
+    snippet: r.snippet,
+    url: r.link,
+    date: r.date,
+  }));
+}
+
 const webSearchTool: ToolDefinition = {
   name: 'web_search',
-  description: 'Search the web for information',
+  description: 'Search the web for information using Serper, Brave, or SerpAPI',
   parameters: {
     type: 'object',
     properties: {
@@ -1117,14 +1206,47 @@ const webSearchTool: ToolDefinition = {
     required: ['query']
   },
   handler: async (args) => {
-    // Placeholder - would integrate with search API
-    return {
-      query: args['query'],
-      results: [
-        { title: 'Example Result 1', snippet: 'This is a search result...', url: 'https://example.com/1' },
-        { title: 'Example Result 2', snippet: 'Another search result...', url: 'https://example.com/2' }
-      ]
-    };
+    const query = args['query'] as string;
+    const numResults = (args['numResults'] as number) || 5;
+
+    const apiConfig = getSearchApiKey();
+    if (!apiConfig) {
+      return {
+        query,
+        error: 'No search API key found. Set SERPER_API_KEY, BRAVE_API_KEY, or SERPAPI_API_KEY environment variable.',
+        results: [],
+      };
+    }
+
+    try {
+      let results: SearchResult[];
+
+      switch (apiConfig.provider) {
+        case 'serper':
+          results = await serperSearch(query, apiConfig.key, numResults);
+          break;
+        case 'brave':
+          results = await braveSearch(query, apiConfig.key, numResults);
+          break;
+        case 'serpapi':
+          results = await serpApiSearch(query, apiConfig.key, numResults);
+          break;
+        default:
+          throw new Error(`Unknown search provider: ${apiConfig.provider}`);
+      }
+
+      return {
+        query,
+        provider: apiConfig.provider,
+        results,
+      };
+    } catch (error) {
+      return {
+        query,
+        error: error instanceof Error ? error.message : 'Search failed',
+        results: [],
+      };
+    }
   }
 };
 
@@ -1161,20 +1283,121 @@ const codeExecutorTool: ToolDefinition = {
       code: {
         type: 'string',
         description: 'The JavaScript code to execute'
+      },
+      timeout: {
+        type: 'number',
+        description: 'Execution timeout in milliseconds (default: 5000)'
       }
     },
     required: ['code']
   },
   handler: async (args) => {
+    const code = args['code'];
+    const timeout = args['timeout'] || 5000;
+
     try {
-      // In production, use a proper sandbox (e.g., Web Workers, VM2)
-      const result = eval(args['code']);
-      return { code: args['code'], result };
+      // Detect environment and use appropriate sandbox
+      if (typeof window !== 'undefined' && typeof Worker !== 'undefined') {
+        // Browser: Use Web Worker sandbox
+        return await executeInWebWorker(code, timeout);
+      } else if (typeof process !== 'undefined' && process.versions?.node) {
+        // Node.js: Use VM sandbox with restricted context
+        return await executeInNodeSandbox(code, timeout);
+      } else {
+        return { code, error: 'No sandbox environment available' };
+      }
     } catch (error) {
-      return { code: args['code'], error: error instanceof Error ? error.message : 'Execution failed' };
+      return { code, error: error instanceof Error ? error.message : 'Execution failed' };
     }
   }
 };
+
+/** Execute code in a Web Worker sandbox (browser) */
+async function executeInWebWorker(code: string, timeout: number): Promise<{ code: string; result?: unknown; error?: string }> {
+  return new Promise((resolve) => {
+    const workerCode = `
+      self.onmessage = function(e) {
+        try {
+          const result = (function() { return eval(e.data.code); })();
+          self.postMessage({ success: true, result });
+        } catch (error) {
+          self.postMessage({ success: false, error: error.message });
+        }
+      };
+    `;
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    const worker = new Worker(URL.createObjectURL(blob));
+
+    const timeoutId = setTimeout(() => {
+      worker.terminate();
+      resolve({ code, error: 'Execution timeout exceeded' });
+    }, timeout);
+
+    worker.onmessage = (e) => {
+      clearTimeout(timeoutId);
+      worker.terminate();
+      if (e.data.success) {
+        resolve({ code, result: e.data.result });
+      } else {
+        resolve({ code, error: e.data.error });
+      }
+    };
+
+    worker.onerror = (e) => {
+      clearTimeout(timeoutId);
+      worker.terminate();
+      resolve({ code, error: e.message });
+    };
+
+    worker.postMessage({ code });
+  });
+}
+
+/** Execute code in Node.js VM sandbox */
+async function executeInNodeSandbox(code: string, timeout: number): Promise<{ code: string; result?: unknown; error?: string }> {
+  try {
+    // Dynamic import to avoid bundling issues in browser
+    const vm = await import('vm');
+
+    // Create restricted sandbox context
+    const sandbox = {
+      console: {
+        log: (...args: unknown[]) => args,
+        error: (...args: unknown[]) => args,
+        warn: (...args: unknown[]) => args,
+      },
+      Math,
+      Date,
+      JSON,
+      parseInt,
+      parseFloat,
+      isNaN,
+      isFinite,
+      Array,
+      Object,
+      String,
+      Number,
+      Boolean,
+      Map,
+      Set,
+      Promise,
+      // Explicitly exclude dangerous globals
+      // No: process, require, import, fetch, XMLHttpRequest, fs, child_process, etc.
+    };
+
+    const context = vm.createContext(sandbox);
+    const script = new vm.Script(`(function() { ${code} })()`);
+
+    const result = script.runInContext(context, {
+      timeout,
+      displayErrors: true,
+    });
+
+    return { code, result };
+  } catch (error) {
+    return { code, error: error instanceof Error ? error.message : 'Sandbox execution failed' };
+  }
+}
 
 // ============================================================================
 // REACTIVE HOOKS (PhilJS Signal-based)

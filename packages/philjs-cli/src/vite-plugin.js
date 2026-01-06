@@ -21,7 +21,6 @@ export function philJSPlugin() {
             };
         },
         configResolved(config) {
-            console.log(pc.cyan("🔧 PhilJS plugin loaded") +
                 pc.dim(` (mode: ${config.mode})`));
         },
         transform(code, id) {

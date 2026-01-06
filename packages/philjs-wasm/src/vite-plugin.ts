@@ -125,7 +125,6 @@ export function viteWasmPlugin(options: ViteWasmPluginOptions = {}): Plugin {
 
   const log = (...args: any[]) => {
     if (debug) {
-      console.log('[philjs-wasm]', ...args);
     }
   };
 
@@ -232,7 +231,6 @@ const ${imports.includes('{') ? imports : `{ default: ${imports} }`} = await ${m
 // HMR support for WASM modules
 if (import.meta.hot) {
   import.meta.hot.accept(() => {
-    console.log('[philjs-wasm] WASM module updated');
   });
 }
 `;
@@ -302,11 +300,9 @@ if (import.meta.hot) {
      */
     closeBundle() {
       if (wasmModules.size > 0) {
-        console.log('\n[philjs-wasm] Build Summary:');
         console.log(`  WASM Modules: ${wasmModules.size}`);
 
         if (debug) {
-          console.log('\n  Modules:');
           wasmModules.forEach((info, id) => {
             console.log(`    - ${id}: ${info.path}`);
           });

@@ -100,9 +100,18 @@ export class VectorStore {
      */
     private async embed(texts: string[]): Promise<number[][]> {
         if (!this.embeddingProvider?.embed) {
-            console.warn('VectorStore: No embedding provider configured. Using simple text-based matching.');
-            // Return simple bag-of-words style embeddings for fallback
-            return texts.map(text => this.createSimpleEmbedding(text));
+            throw new Error(
+                'VectorStore requires an embedding provider for semantic search.\n' +
+                'Please configure one when creating the store:\n\n' +
+                '  import { VectorStore } from "@philjs/ai";\n' +
+                '  import { createOpenAIProvider } from "@philjs/ai/providers/openai";\n\n' +
+                '  const provider = createOpenAIProvider({ apiKey: "your-key" });\n' +
+                '  const store = new VectorStore({ embeddingProvider: provider });\n\n' +
+                'Supported embedding providers:\n' +
+                '  - OpenAI (text-embedding-3-small, text-embedding-3-large)\n' +
+                '  - Cohere (embed-english-v3.0)\n' +
+                '  - Local models via @philjs/edge-ai'
+            );
         }
 
         try {

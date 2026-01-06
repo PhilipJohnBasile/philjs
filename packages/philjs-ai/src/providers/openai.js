@@ -34,14 +34,43 @@ export class OpenAIProvider {
             role: 'user',
             content: prompt,
         });
+        // Map tools to OpenAI format
+        const tools = options?.tools?.map((tool) => ({
+            type: 'function',
+            function: {
+                name: tool.name,
+                description: tool.description,
+                parameters: tool.parameters,
+            },
+        }));
         const response = await this.client.chat.completions.create({
             model: options?.model || this.defaultModel,
             messages,
             temperature: options?.temperature ?? 0.7,
             max_tokens: options?.maxTokens ?? 4096,
             ...(options?.stopSequences && { stop: options.stopSequences }),
+            ...(tools && { tools }),
+            ...(options?.toolChoice && { tool_choice: options.toolChoice }),
         });
-        return response.choices[0]?.message?.content || '';
+        const choice = response.choices[0];
+        const message = choice?.message;
+        return {
+            content: message?.content || '',
+            ...(message?.tool_calls?.length ? {
+                toolCalls: message.tool_calls.filter(tc => tc.type === 'function').map((tc) => ({
+                    id: tc.id,
+                    name: tc.function.name,
+                    arguments: JSON.parse(tc.function.arguments),
+                }))
+            } : {}),
+            ...(response.usage && {
+                usage: {
+                    inputTokens: response.usage.prompt_tokens,
+                    outputTokens: response.usage.completion_tokens,
+                    totalTokens: response.usage.total_tokens,
+                }
+            }),
+        };
     }
     async *generateStreamCompletion(prompt, options) {
         const messages = [];

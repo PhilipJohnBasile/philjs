@@ -71,3 +71,85 @@ declare module 'ora' {
 
   export = ora;
 }
+
+// jscodeshift module
+declare module 'jscodeshift' {
+  export interface FileInfo {
+    path: string;
+    source: string;
+  }
+
+  export interface Options {
+    [key: string]: any;
+  }
+
+  export interface API {
+    jscodeshift: JSCodeshift;
+    stats: (name: string, quantity?: number) => void;
+    report: (message: string) => void;
+  }
+
+  export interface JSCodeshift {
+    (source: string): Collection;
+    ImportDeclaration: any;
+    VariableDeclaration: any;
+    ExportNamedDeclaration: any;
+    Identifier: any;
+    MemberExpression: any;
+    CallExpression: any;
+    ObjectPattern: any;
+    Property: any;
+    JSXElement: any;
+    JSXIdentifier: any;
+    JSXAttribute: any;
+    JSXOpeningElement: any;
+    FunctionDeclaration: any;
+    ArrowFunctionExpression: any;
+    FunctionExpression: any;
+    ReturnStatement: any;
+    TemplateLiteral: any;
+    StringLiteral: any;
+    ArrayExpression: any;
+    ObjectExpression: any;
+    LabeledStatement: any;
+    AssignmentExpression: any;
+    identifier: (name: string) => any;
+    stringLiteral: (value: string) => any;
+    literal: (value: any) => any;
+    memberExpression: (object: any, property: any) => any;
+    callExpression: (callee: any, args: any[]) => any;
+    importDeclaration: (specifiers: any[], source: any) => any;
+    importSpecifier: (imported: any, local?: any) => any;
+    importDefaultSpecifier: (local: any) => any;
+    objectProperty: (key: any, value: any) => any;
+    objectExpression: (properties: any[]) => any;
+    arrowFunctionExpression: (params: any[], body: any) => any;
+    blockStatement: (body: any[]) => any;
+    expressionStatement: (expression: any) => any;
+    returnStatement: (argument: any) => any;
+    variableDeclaration: (kind: string, declarations: any[]) => any;
+    variableDeclarator: (id: any, init?: any) => any;
+    withParser: (parser: string) => JSCodeshift;
+  }
+
+  export interface Collection {
+    find: (type: any, filter?: any) => Collection;
+    filter: (fn: (path: any) => boolean) => Collection;
+    forEach: (fn: (path: any) => void) => void;
+    remove: () => void;
+    insertBefore: (node: any) => void;
+    insertAfter: (node: any) => void;
+    replaceWith: (node: any) => void;
+    at: (index: number) => Collection;
+    get: () => any;
+    length: number;
+    toSource: (options?: any) => string;
+    paths: () => any[];
+    nodes: () => any[];
+    closest: (type: any) => Collection;
+    size: () => number;
+  }
+
+  const jscodeshift: JSCodeshift;
+  export default jscodeshift;
+}

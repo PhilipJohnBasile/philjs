@@ -63,8 +63,6 @@ export async function runAllBenchmarks(options: {
     outputPath,
   } = options;
 
-  console.log('PhilJS Benchmark Suite');
-  console.log('========================\n');
 
   const results: BenchmarkReport = {
     timestamp: new Date().toISOString(),
@@ -77,7 +75,6 @@ export async function runAllBenchmarks(options: {
   };
 
   // Framework benchmarks - dynamically import to avoid circular deps
-  console.log('Running Framework Benchmarks...');
   const { runFrameworkBenchmarks: runFwBench } = await import('./framework-benchmark/runner.js');
   const fwSuite = await runFwBench({ iterations, warmupIterations: warmup, verbose: false });
   results.framework = fwSuite.results.map(r => ({
@@ -105,7 +102,6 @@ export async function runAllBenchmarks(options: {
   }));
 
   // SSR benchmarks
-  console.log('\nRunning SSR Benchmarks...');
   const { runSSRBenchmarks: runSSRBench } = await import('./ssr/index.js');
   const ssrSuite = await runSSRBench({ iterations, warmupIterations: warmup, verbose: false });
   results.ssr = ssrSuite.results.map(r => ({

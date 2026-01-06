@@ -11,7 +11,6 @@ export function vercelAdapter(config = {}) {
         name: 'vercel',
         edge,
         async adapt() {
-            console.log('Building for Vercel...');
             // Create output structure
             mkdirSync(join(outDir, 'functions'), { recursive: true });
             mkdirSync(join(outDir, 'static'), { recursive: true });

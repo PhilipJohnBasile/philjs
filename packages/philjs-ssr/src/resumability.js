@@ -703,7 +703,6 @@ function generateResumeScript(stateJson, options = {}) {
           }
 
           window.__PHILJS_RESUMED__ = true;
-          console.log('[PhilJS] Resumed successfully');
         } catch (error) {
           console.error('[PhilJS] Resume failed:', error);
         }

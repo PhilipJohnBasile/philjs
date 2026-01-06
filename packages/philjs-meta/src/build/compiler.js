@@ -422,7 +422,6 @@ export function analyzerPlugin() {
         name: 'analyzer',
         setup(build) {
             build.onBuildEnd((result) => {
-                console.log('\n📦 Bundle Analysis:\n');
                 let totalSize = 0;
                 for (const bundle of result.bundles) {
                     console.log(`  ${bundle.name}`);
@@ -456,14 +455,11 @@ export function staticExportPlugin(options = {}) {
             build.onBuildEnd(async (result) => {
                 if (!result.success)
                     return;
-                console.log('\n📄 Static Export:\n');
                 for (const page of result.staticPages) {
                     console.log(`  ✓ ${page.pattern} -> ${page.htmlPath}`);
                 }
                 if (fallback) {
-                    console.log(`  ✓ 404.html (fallback)`);
                 }
-                console.log('');
             });
         },
     };

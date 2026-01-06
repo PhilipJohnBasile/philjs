@@ -453,7 +453,6 @@ export function bundleOptimizerPlugin(
 
     // Log bundle stats
     closeBundle() {
-      console.log('\n[Bundle Optimizer] Stats:');
       console.log(`  Total Size: ${formatBytes(stats.totalSize)}`);
       console.log(`  Chunks: ${stats.chunkCount}`);
       console.log(`  Modules: ${stats.modules.length}`);
@@ -471,7 +470,6 @@ export function bundleOptimizerPlugin(
         .sort((a, b) => b.size - a.size)
         .slice(0, 5);
 
-      console.log('\n  Top Chunks:');
       for (const chunk of topChunks) {
         console.log(`    ${chunk.name}: ${formatBytes(chunk.size)} (${chunk.modules} modules)`);
       }

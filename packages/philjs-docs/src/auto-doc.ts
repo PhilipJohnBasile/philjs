@@ -25,7 +25,6 @@ This application handles high-throughput video processing using the Edge AI runt
 `;
 
     console.log('AutoDoc: ✍️ Writing updated README.md...');
-    console.log(readmeContent);
 
     return { status: 'updated', files: ['README.md', 'API.md'] };
 }

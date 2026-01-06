@@ -235,7 +235,7 @@ export class RefactoringEngine {
     const focusAreas = config.focusAreas || ['performance', 'patterns', 'readability'];
     const prompt = this.buildRefactorPrompt(config, focusAreas);
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: this.getSystemPrompt(config.level || 'moderate'),
     });
@@ -268,7 +268,7 @@ Return JSON with:
 - estimatedImprovement: { renderTime, memoryUsage, bundleSize }
 - metrics: { complexity, signalUsage } before and after`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a performance optimization expert for reactive UI frameworks.',
     });
@@ -308,7 +308,7 @@ Provide:
 - compliance: { level, passedCriteria, failedCriteria }
 - improvedCode: The code with all fixes applied`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `You are a WCAG accessibility expert targeting Level ${targetLevel} compliance.`,
     });
@@ -349,7 +349,7 @@ Return JSON with:
 - score: Overall score 0-100
 - improvedCode: Code with all improvements applied`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a code quality expert for PhilJS applications.',
     });
@@ -387,7 +387,7 @@ Return JSON with:
 - changes: Array of changes made
 - explanation: Overall explanation of optimizations`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are an expert in fine-grained reactivity patterns.',
     });
@@ -424,7 +424,7 @@ Provide a thorough review with:
 - overallScore: Quality score 0-100
 - summary: Brief summary of findings`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a senior code reviewer for PhilJS applications.',
     });
@@ -463,7 +463,7 @@ Return JSON with:
 - addedTypes: Array of new types added
 - improvedTypes: Array of types that were improved`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a TypeScript type expert.',
     });
@@ -503,7 +503,7 @@ Return JSON with:
 - complexity: { before, after } cyclomatic complexity scores
 - changes: Array of simplifications made`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You simplify code while maintaining readability and functionality.',
     });

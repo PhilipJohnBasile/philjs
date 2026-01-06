@@ -72,7 +72,6 @@ export class MixpanelProvider implements IAnalyticsProvider {
     window.mixpanel.track(event.name, event.properties || {});
 
     if (this.config.debug) {
-      console.log("[Mixpanel] Event tracked:", event);
     }
   }
 
@@ -235,7 +234,6 @@ export class MixpanelProvider implements IAnalyticsProvider {
     })(document, window.mixpanel || []);
 
     if (this.config.debug) {
-      console.log("[Mixpanel] Script loading...");
     }
   }
 

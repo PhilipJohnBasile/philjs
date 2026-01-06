@@ -1,7 +1,17 @@
+export interface RequestConfig {
+    baseUrl?: string;
+    headers?: Record<string, string>;
+}
+
 export class Relation<T = any> {
     private conditions: Record<string, any> = {};
     private sorts: Array<{ field: string, dir: 'asc' | 'desc' }> = [];
     private limitValue?: number;
+    private resourceName: string;
+
+    constructor(resourceName: string, private config: RequestConfig = {}) {
+        this.resourceName = resourceName;
+    }
 
     where(conditions: Record<string, any>) {
         this.conditions = { ...this.conditions, ...conditions };
@@ -19,12 +29,17 @@ export class Relation<T = any> {
     }
 
     async toArray(): Promise<T[]> {
-        console.log('ActiveRecord: Executing Query', {
-            where: this.conditions,
-            order: this.sorts,
-            limit: this.limitValue
+        const queryParams = new URLSearchParams();
+        if (Object.keys(this.conditions).length) queryParams.set('q', JSON.stringify(this.conditions));
+        if (this.sorts.length) queryParams.set('sort', JSON.stringify(this.sorts));
+        if (this.limitValue) queryParams.set('limit', String(this.limitValue));
+
+        const response = await fetch(`${this.config.baseUrl || ''}/api/${this.resourceName}?${queryParams.toString()}`, {
+            headers: { 'Accept': 'application/json', ...this.config.headers }
         });
-        return []; // Return mock data in real app
+
+        if (!response.ok) throw new Error(`ActiveRecord Error: ${response.statusText}`);
+        return await response.json();
     }
 
     async first(): Promise<T | null> {
@@ -35,32 +50,45 @@ export class Relation<T = any> {
 }
 
 export class ActiveRecordWrapper {
+    static config: RequestConfig = {};
+    static resource = 'resources';
+
+    static configure(config: RequestConfig) {
+        this.config = config;
+    }
+
     static find(id: number | string) {
-        return new Relation().where({ id }).first();
+        return new Relation(this.resource, this.config).where({ id }).first();
     }
 
     static where(conditions: Record<string, any>) {
-        return new Relation().where(conditions);
+        return new Relation(this.resource, this.config).where(conditions);
     }
 
     /**
-     * AI-Power: Ask for data using natural language
-     * Example: User.ask("find users who signed up yesterday")
+     * AI-Power: Ask for data using natural language using PhilJS Nexus AI
      */
     static async ask(naturalLanguageQuery: string) {
-        console.log(`ActiveRecord: 🤖 Interpreting query "${naturalLanguageQuery}"...`);
 
-        // Simulate AI Latency
-        await new Promise(r => setTimeout(r, 800));
+        // Call the Nexus AI endpoint if configured, or default convention
+        const response = await fetch(`${this.config.baseUrl || ''}/api/ai/query`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...this.config.headers },
+            body: JSON.stringify({ query: naturalLanguageQuery, model: this.resource })
+        });
 
-        console.log('ActiveRecord: 🤖 Generated SQL: SELECT * FROM users WHERE created_at > NOW() - INTERVAL "1 day"');
+        const sqlOrData = await response.json();
 
-        // Return a Relation ready to execute
-        return new Relation().where({ _ai_generated: true, query: naturalLanguageQuery });
+        // If the server returns raw data, wrap it
+        if (Array.isArray(sqlOrData)) return sqlOrData;
+
+        // If it returns criteria, use them
+        if (sqlOrData.where) return this.where(sqlOrData.where);
+
+        return [];
     }
 
     save() {
-        console.log('ActiveRecord: Saving record');
-        return Promise.resolve(true);
+        return Promise.resolve(true); // Placeholder for instance method
     }
 }

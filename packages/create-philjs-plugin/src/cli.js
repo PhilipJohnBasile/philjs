@@ -206,14 +206,9 @@ async function main() {
         createPlugin(options);
         const pluginPath = path.resolve(process.cwd(), targetDir, pluginName);
         console.log(pc.green('\n✅ Plugin created successfully!\n'));
-        console.log('Next steps:');
         console.log(pc.cyan(`  cd ${path.relative(process.cwd(), pluginPath) || pluginName}`));
-        console.log(pc.cyan('  npm install'));
         if (answers.testing) {
-            console.log(pc.cyan('  npm test'));
         }
-        console.log(pc.cyan('  npm run build'));
-        console.log();
     }
     catch (error) {
         console.error(pc.red('\n❌ Error creating plugin:'), error);

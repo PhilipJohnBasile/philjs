@@ -1,9 +1,22 @@
 {
-    "name": "@philjs/antd",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "src/index.ts",
-    "peerDependencies": {
-        "antd": "^5.0.0"
-    }
+  "name": "@philjs/antd",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "antd": "^5.0.0"
+  },
+  "author": "PhilJS Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philjs/philjs.git",
+    "directory": "packages/philjs-antd"
+  },
+  "license": "MIT",
+  "keywords": [
+    "philjs",
+    "typescript",
+    "framework",
+    "antd"
+  ]
 }

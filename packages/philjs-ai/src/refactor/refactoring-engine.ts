@@ -456,16 +456,16 @@ export class RefactoringEngine {
     );
     const totalEffort: RefactoringPlan['totalEffort'] =
       totalScore <= 3 ? 'trivial' :
-      totalScore <= 8 ? 'easy' :
-      totalScore <= 16 ? 'moderate' :
-      totalScore <= 32 ? 'significant' : 'major';
+        totalScore <= 8 ? 'easy' :
+          totalScore <= 16 ? 'moderate' :
+            totalScore <= 32 ? 'significant' : 'major';
 
     // Calculate risk
     const hasBreakingChanges = suggestions.some(s => s.breakingChanges?.length);
     const hasCritical = suggestions.some(s => s.severity === 'critical');
     const risk: RefactoringPlan['risk'] =
       hasCritical || hasBreakingChanges ? 'high' :
-      suggestions.some(s => s.severity === 'error') ? 'medium' : 'low';
+        suggestions.some(s => s.severity === 'error') ? 'medium' : 'low';
 
     // Expected improvements
     const improvements = this.calculateExpectedImprovements(suggestions);
@@ -598,7 +598,7 @@ Return JSON:
   "explanation": "detailed explanation"
 }`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: 'You are a code refactoring expert. Provide precise, safe refactoring fixes.',
     });
@@ -662,7 +662,7 @@ For each suggestion, provide:
 
 Return JSON array of RefactoringSuggestion objects.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       systemPrompt: `${SYSTEM_PROMPTS.philjs}\nYou are a refactoring expert. Provide safe, practical suggestions.`,
     });
@@ -700,8 +700,8 @@ Return JSON array of RefactoringSuggestion objects.`;
           category: pattern.category,
           severity: pattern.severity,
           impact: pattern.severity === 'critical' ? 'high' :
-                  pattern.severity === 'error' ? 'high' :
-                  pattern.severity === 'warning' ? 'medium' : 'low',
+            pattern.severity === 'error' ? 'high' :
+              pattern.severity === 'warning' ? 'medium' : 'low',
           effort: 'easy',
           before: {
             code: matchedCode || '/* pattern detected */',
@@ -767,7 +767,7 @@ For each suggestion provide:
 
 Return JSON array of suggestions.`;
 
-    const response = await this.provider.generateCompletion(prompt, {
+    const { content: response } = await this.provider.generateCompletion(prompt, {
       ...this.defaultOptions,
       maxTokens: 8192,
       systemPrompt: `${SYSTEM_PROMPTS.philjs}

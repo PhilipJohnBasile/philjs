@@ -5,9 +5,13 @@
     "rootDir": "./src",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+    "noEmitOnError": false,
+    "skipLibCheck": true,
     "strict": false,
-    "strictNullChecks": true,
-    "exactOptionalPropertyTypes": false
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

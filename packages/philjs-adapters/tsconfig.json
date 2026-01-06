@@ -3,8 +3,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "noEmitOnError": false,
+    "skipLibCheck": true,
     "strict": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

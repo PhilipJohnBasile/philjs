@@ -1,1 +1,1 @@
-export * from './dna';
+export * from './dna.js';
