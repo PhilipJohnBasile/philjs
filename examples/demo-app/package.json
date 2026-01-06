@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/node": "^25.0.0",
     "@vitest/coverage-v8": "^4.0.16",
-    "jsdom": "^27.0.0",
+    "jsdom": "^27.4.0",
     "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
