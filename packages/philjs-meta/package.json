@@ -61,7 +61,7 @@
   "dependencies": {
     "@philjs/core": "workspace:*",
     "chokidar": "^5.0.0",
-    "commander": "^11.1.0",
+    "commander": "^14.0.2",
     "esbuild": "^0.27.2",
     "fast-glob": "^3.3.3",
     "picocolors": "^1.1.1",
