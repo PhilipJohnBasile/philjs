@@ -23,9 +23,11 @@
 - [Chapter 9: Escaping React](./migration/react.md)
 
 ## Part V: The Ecosystem (Reference)
+- [Package Reference Index](./packages/index.md)
 - [The Omni-Framework](./packages/atlas.md)
 - [Agents & AI](./packages/ai/agents.md)
 - [Polyglot Bridge](./packages/polyglot/overview.md)
+- [Utility Packages](./packages/utilities/overview.md)
 - [Rust Core](./rust-core/overview.md)
 - [Appendix: TypeScript 6](./appendix/typescript-6-deep-dive.md)
 
