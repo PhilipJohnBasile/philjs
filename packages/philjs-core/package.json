@@ -149,11 +149,11 @@
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.17",
     "jsdom": "^27.4.0",
-    "rollup": "^4.54.0",
+    "rollup": "^4.55.2",
     "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.17"
   },
   "license": "MIT",
   "author": "PhilJS Team",
