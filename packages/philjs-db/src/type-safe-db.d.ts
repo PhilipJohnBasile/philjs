@@ -291,4 +291,3 @@ export type DeepRequired<T> = {
  * Exact type helper (no extra properties)
  */
 export type Exact<T, Shape> = T extends Shape ? Exclude<keyof T, keyof Shape> extends never ? T : never : never;
-//# sourceMappingURL=type-safe-db.d.ts.map

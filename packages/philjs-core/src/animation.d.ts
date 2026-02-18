@@ -113,4 +113,3 @@ export declare function createParallax(element: HTMLElement, options?: {
     offset?: number;
     axis?: "x" | "y" | "both";
 }): () => void;
-//# sourceMappingURL=animation.d.ts.map

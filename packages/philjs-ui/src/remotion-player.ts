@@ -624,7 +624,7 @@ export function RemotionPlayer(props: RemotionPlayerProps): HTMLElement & { api:
     // Attach API
     (container as any).api = api;
 
-    return container as HTMLElement & { api: PlayerAPI };
+    return container as unknown as HTMLElement & { api: PlayerAPI };
 }
 
 // ============================================================================
@@ -766,13 +766,4 @@ export function sequence(
     });
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export type {
-    RemotionPlayerProps,
-    RemotionComposition,
-    CompositionProps,
-    PlayerAPI
-};
+// Types are exported inline at definition

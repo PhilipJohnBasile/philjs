@@ -26,7 +26,11 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // STATE HOOKS

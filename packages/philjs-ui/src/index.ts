@@ -17,7 +17,7 @@ export { Select, type SelectProps } from './components/Select.js';
 export { Modal, type ModalProps } from './components/Modal.js';
 export { Tabs, type TabsProps } from './components/Tabs.js';
 export { Table, type TableProps } from './components/Table.js';
-export { Toast, type ToastProps } from './components/Toast.js';
+export { toast, ToastContainer, useToast, type ToastOptions, type ToastApi, type ToastStatus, type ToastPosition } from './components/Toast.js';
 export { Tooltip, type TooltipProps } from './components/Tooltip.js';
 export { Dropdown, type DropdownProps } from './components/Dropdown.js';
 export { Card, type CardProps } from './components/Card.js';
@@ -59,12 +59,13 @@ export { variants, slotVariants, type VariantConfig, type VariantProps, type Slo
 
 // ============================================================================
 // Legacy Exports (specialized components)
+// Note: Some modules excluded due to optional dependencies:
+// - checkout.js (requires Stripe)
+// - gsap.js (requires GSAP)
 // ============================================================================
 
-export * from './checkout.js';
 export * from './video-room.js';
 export * from './remotion-player.js';
 export * from './geojson-map.js';
 export * from './chart.js';
-export * from './gsap.js';
 export * from './smart-form.js';

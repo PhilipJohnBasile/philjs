@@ -15,7 +15,7 @@ import type {
     TypedResponse,
     ContextVariableMap,
 } from 'hono';
-import type { StatusCode } from 'hono/utils/http-status';
+import type { StatusCode, ContentfulStatusCode, RedirectStatusCode } from 'hono/utils/http-status';
 
 // ============================================================================
 // Types
@@ -387,7 +387,7 @@ function serializeCookie(name: string, value: string, options: SessionCookieOpti
  * ```ts
  * import { Hono } from 'hono';
  * import { philjs } from '@philjs/hono';
- * import { render } from './entry-server';
+ * import { render } from './entry-server.js';
  *
  * const app = new Hono();
  *
@@ -548,14 +548,14 @@ export function philjs(options: PhilJSMiddlewareOptions = {}): MiddlewareHandler
                 }
 
                 let html: string;
-                let statusCode: StatusCode = 200;
+                let statusCode: ContentfulStatusCode = 200;
                 const headers: Record<string, string> = {};
 
                 if (typeof result === 'string') {
                     html = result;
                 } else {
                     if (result.redirect) {
-                        return c.redirect(result.redirect, (result.statusCode as StatusCode) || 302);
+                        return c.redirect(result.redirect, (result.statusCode || 302) as RedirectStatusCode);
                     }
 
                     if (result.headers) {
@@ -563,7 +563,7 @@ export function philjs(options: PhilJSMiddlewareOptions = {}): MiddlewareHandler
                     }
 
                     html = result.html;
-                    statusCode = (result.statusCode as StatusCode) || 200;
+                    statusCode = (result.statusCode || 200) as ContentfulStatusCode;
                 }
 
                 // Apply template
@@ -785,7 +785,7 @@ export function cors(options: CorsOptions = {}): MiddlewareHandler {
                 c.header('Access-Control-Max-Age', String(maxAge));
             }
 
-            return c.text('', 204);
+            return c.text('', 204 as ContentfulStatusCode);
         }
 
         await next();
@@ -1040,14 +1040,14 @@ export function errorHandler(options: ErrorHandlerOptions = {}): MiddlewareHandl
                 console.error('Error:', error);
             }
 
-            let statusCode: StatusCode = 500;
+            let statusCode: ContentfulStatusCode = 500;
             let response: any = {
                 error: 'Internal Server Error',
                 message: 'An unexpected error occurred',
             };
 
             if (error instanceof HttpError) {
-                statusCode = error.statusCode as StatusCode;
+                statusCode = error.statusCode as ContentfulStatusCode;
                 response = {
                     error: error.name,
                     message: error.expose ? error.message : 'An error occurred',

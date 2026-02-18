@@ -1,5 +1,9 @@
-export * from './algolia';
-export * from './web3';
-export * from './clerk-elements';
-export * from './strapi';
-//# sourceMappingURL=index.d.ts.map
+/**
+ * @philjs/integration
+ *
+ * Third-party integrations for PhilJS - Algolia, Web3, Clerk, Strapi
+ */
+export * from './algolia.js';
+export * from './web3.js';
+export * from './clerk-elements.js';
+export * from './strapi.js';

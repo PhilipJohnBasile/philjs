@@ -30,4 +30,3 @@ export declare function createBatcher<T, R>(processBatch: (items: T[]) => R[], o
     size: () => number;
 };
 export {};
-//# sourceMappingURL=batch.d.ts.map

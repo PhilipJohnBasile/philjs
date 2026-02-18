@@ -351,7 +351,7 @@ export type { PageSEO, MetaTags, OpenGraphTags, TwitterTags, JsonLd };
       ctx.logger.success('SEO setup complete!');
       ctx.logger.info(`
 Usage:
-import { setPageSEO, createBreadcrumbs } from './lib/seo';
+import { setPageSEO, createBreadcrumbs } from './lib/seo.js';
 
 // Set page SEO
 setPageSEO({

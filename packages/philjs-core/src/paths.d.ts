@@ -131,4 +131,3 @@ export declare const paths: {
     buildBreadcrumbs: typeof buildBreadcrumbs;
     configure: typeof configurePaths;
 };
-//# sourceMappingURL=paths.d.ts.map

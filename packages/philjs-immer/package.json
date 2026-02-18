@@ -1,6 +1,9 @@
 {
   "name": "@philjs/immer",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "Official PhilJS package: philjs-immer",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,12 +19,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "immer": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",

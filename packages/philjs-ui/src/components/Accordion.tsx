@@ -50,11 +50,14 @@ export function Accordion(props: AccordionProps): JSX.Element {
   };
 
   return (
-    <AccordionContext.Provider value={contextValue}>
-      <div className={`divide-y divide-gray-200 border border-gray-200 rounded-lg ${className}`}>
-        {children}
-      </div>
-    </AccordionContext.Provider>
+    <AccordionContext.Provider
+      value={contextValue}
+      children={
+        <div className={`divide-y divide-gray-200 border border-gray-200 rounded-lg ${className}`}>
+          {children}
+        </div>
+      }
+    />
   );
 }
 

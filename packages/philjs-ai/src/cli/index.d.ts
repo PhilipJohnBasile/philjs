@@ -19,4 +19,3 @@ import { Command } from 'commander';
  */
 declare function createProgram(): Command;
 export { createProgram };
-//# sourceMappingURL=index.d.ts.map

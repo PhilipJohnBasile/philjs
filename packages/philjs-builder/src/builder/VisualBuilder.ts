@@ -645,6 +645,7 @@ export function VisualBuilder(props: VisualBuilderProps): HTMLElement & { api: B
         }
 
         const nodeId = selectedIds[0];
+        if (!nodeId) return;
         const node = nodes[nodeId];
         if (!node) return;
 
@@ -675,11 +676,12 @@ export function VisualBuilder(props: VisualBuilderProps): HTMLElement & { api: B
         ];
 
         for (const prop of styleProps) {
-            const row = createPropEditor(prop, node.props?.style?.[prop.name], (value) => {
+            const styleObj = node.props?.['style'] as Record<string, any> | undefined;
+            const row = createPropEditor(prop, styleObj?.[prop.name], (value) => {
                 saveState();
                 if (!node.props) node.props = {};
-                if (!node.props.style) node.props.style = {};
-                node.props.style[prop.name] = value;
+                if (!node.props['style']) node.props['style'] = {};
+                (node.props['style'] as Record<string, any>)[prop.name] = value;
                 onNodesChange?.(nodes);
                 refreshCanvas();
             });
@@ -786,8 +788,8 @@ export function VisualBuilder(props: VisualBuilderProps): HTMLElement & { api: B
         `;
 
         // Apply custom styles
-        if (node.props?.style) {
-            Object.assign(el.style, node.props.style);
+        if (node.props?.['style']) {
+            Object.assign(el.style, node.props['style']);
         }
 
         // Node type label
@@ -874,15 +876,15 @@ export function VisualBuilder(props: VisualBuilderProps): HTMLElement & { api: B
     function renderNodePreview(node: ComponentNode): string {
         switch (node.type) {
             case 'Text':
-                return `<span style="font-size: ${node.props?.fontSize || '16px'}; color: ${node.props?.color || 'inherit'};">${node.props?.content || 'Text'}</span>`;
+                return `<span style="font-size: ${node.props?.['fontSize'] || '16px'}; color: ${node.props?.['color'] || 'inherit'};">${node.props?.['content'] || 'Text'}</span>`;
             case 'Button':
-                return `<button style="padding: 8px 16px; cursor: default;">${node.props?.label || 'Button'}</button>`;
+                return `<button style="padding: 8px 16px; cursor: default;">${node.props?.['label'] || 'Button'}</button>`;
             case 'Image':
-                return node.props?.src
-                    ? `<img src="${node.props.src}" alt="${node.props?.alt || ''}" style="max-width: 100%; height: auto;" />`
+                return node.props?.['src']
+                    ? `<img src="${node.props['src']}" alt="${node.props?.['alt'] || ''}" style="max-width: 100%; height: auto;" />`
                     : '<div style="background: #333; padding: 20px; text-align: center;">🖼️ Image</div>';
             case 'Input':
-                return `<input type="${node.props?.type || 'text'}" placeholder="${node.props?.placeholder || ''}" style="padding: 8px; width: 100%; box-sizing: border-box;" readonly />`;
+                return `<input type="${node.props?.['type'] || 'text'}" placeholder="${node.props?.['placeholder'] || ''}" style="padding: 8px; width: 100%; box-sizing: border-box;" readonly />`;
             default:
                 return '';
         }
@@ -1125,7 +1127,7 @@ export function VisualBuilder(props: VisualBuilderProps): HTMLElement & { api: B
     // Attach API
     (container as any).api = api;
 
-    return container as HTMLElement & { api: BuilderAPI };
+    return container as unknown as HTMLElement & { api: BuilderAPI };
 }
 
 export default VisualBuilder;

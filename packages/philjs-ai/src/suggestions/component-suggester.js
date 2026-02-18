@@ -281,7 +281,7 @@ For each component, provide:
 - reason: Why this component fits the pattern
 
 Return JSON array of ComponentSuggestion objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a UI/UX expert suggesting components for common patterns.',
         });
@@ -313,7 +313,7 @@ For each detection:
 - suggestedComponents: List of component names
 
 Return JSON array.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an expert at identifying UI patterns and componentization opportunities.',
         });
@@ -375,7 +375,7 @@ Suggest component names that:
 - Follow PhilJS naming conventions
 
 Return JSON array of ComponentSuggestion objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             temperature: 0.1,
         });
@@ -402,7 +402,7 @@ Consider:
 - Typical composition patterns
 
 Return JSON array of ComponentSuggestion objects for appropriate children.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an expert in component composition patterns.',
         });
@@ -618,7 +618,7 @@ Return JSON array of ComponentSuggestion objects with:
 - reason why it's suggested
 - source: "ai-generated"
 - tags: relevant tags`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a component suggestion AI. Suggest relevant, useful components.',
         });

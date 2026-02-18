@@ -4,7 +4,7 @@
  * Track token usage, costs, latency, and errors across AI operations.
  * Supports multiple export destinations and alerting.
  */
-import type { AIProvider, CompletionOptions } from './types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from './types.js';
 export interface AIMetrics {
     /** Total number of API calls */
     totalCalls: number;
@@ -110,7 +110,7 @@ export declare class ObservableAIProvider implements AIProvider {
     private checkBudget;
     private recordEvent;
     private updateMetrics;
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
     /**
      * Flush pending events to exporters
@@ -196,4 +196,3 @@ export declare class FileExporter implements TelemetryExporter {
  * ```
  */
 export declare function createObservableProvider(provider: AIProvider, config?: ObservabilityConfig): ObservableAIProvider;
-//# sourceMappingURL=observability.d.ts.map

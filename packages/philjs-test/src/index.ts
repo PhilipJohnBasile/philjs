@@ -1208,7 +1208,7 @@ export function property<T>(
  * Create a test harness for a component
  */
 export async function createTestHarness<T>(
-  component: new (...args: any[]) => T | ((props: any) => any),
+  component: (new (...args: any[]) => T) | ((props: any) => any),
   props: Record<string, any> = {}
 ): Promise<TestHarness<T>> {
   const container = document.createElement('div');
@@ -1218,8 +1218,8 @@ export async function createTestHarness<T>(
 
   // Mock component rendering
   const instance = typeof component === 'function'
-    ? (component as Function)(props)
-    : new component(props);
+    ? (component as any)(props)
+    : (new (component as any)(props));
 
   container.innerHTML = instance?.toString?.() || '';
 
@@ -1314,7 +1314,7 @@ export async function createTestHarness<T>(
       await new Promise(r => setTimeout(r, 0));
     },
 
-    async waitFor<R>(callback, options = {}) {
+    async waitFor<R>(callback: () => R | Promise<R>, options: { timeout?: number } = {}) {
       const { timeout = 5000 } = options;
       const start = Date.now();
 

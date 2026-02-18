@@ -151,7 +151,7 @@ export function Drawer(props: DrawerProps): JSX.Element | null {
       <div
         className={`absolute inset-0 bg-black/50 transition-opacity ${overlayClassName}`}
         onClick={handleOverlayClick}
-        aria-hidden="true"
+        aria-hidden={true}
       />
 
       {/* Drawer panel */}

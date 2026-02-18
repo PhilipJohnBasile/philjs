@@ -7,8 +7,8 @@
  * - Static page generation
  * - Bundle optimization
  */
-import type { RouteManifest, RouteDefinition } from '../router/file-based';
-import type { PhilJSConfig } from '../config';
+import type { RouteManifest, RouteDefinition } from '../router/file-based.js';
+import type { PhilJSConfig } from '../config.js';
 /**
  * Build options
  */

@@ -72,7 +72,7 @@ export class ResendProvider implements EmailProvider {
             content:
               att.content instanceof Buffer
                 ? att.content
-                : Buffer.from(att.content, att.encoding || 'utf-8'),
+                : Buffer.from(att.content as string, att.encoding || 'utf-8'),
             content_type: att.contentType,
           })),
           tags: message.tags?.map((tag) => ({

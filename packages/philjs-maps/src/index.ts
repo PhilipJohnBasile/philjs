@@ -728,7 +728,8 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
 
       case 'mapbox': {
         const id = `polyline-${Date.now()}`;
-        map.native.addSource(id, {
+        const mapboxMap = map.native as any;
+        mapboxMap.addSource(id, {
           type: 'geojson',
           data: {
             type: 'Feature',
@@ -740,7 +741,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
           },
         });
 
-        map.native.addLayer({
+        mapboxMap.addLayer({
           id,
           type: 'line',
           source: id,
@@ -754,7 +755,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
         polyline = { id, source: id };
 
         if (props.onClick) {
-          map.native.on('click', id, (e: any) => {
+          mapboxMap.on('click', id, (e: any) => {
             props.onClick?.({
               type: 'click',
               latlng: { lat: e.lngLat.lat, lng: e.lngLat.lng },
@@ -792,8 +793,8 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
             polyline.setMap(null);
             break;
           case 'mapbox':
-            map.native.removeLayer(polyline.id);
-            map.native.removeSource(polyline.source);
+            (map.native as any).removeLayer(polyline.id);
+            (map.native as any).removeSource(polyline.source);
             break;
           case 'leaflet':
             polyline.remove();
@@ -806,7 +807,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
             polyline.setPath(path);
             break;
           case 'mapbox':
-            map.native.getSource(polyline.source).setData({
+            (map.native as any).getSource(polyline.source).setData({
               type: 'Feature',
               properties: {},
               geometry: {
@@ -857,7 +858,8 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
 
       case 'mapbox': {
         const id = `polygon-${Date.now()}`;
-        map.native.addSource(id, {
+        const mapboxMap = map.native as any;
+        mapboxMap.addSource(id, {
           type: 'geojson',
           data: {
             type: 'Feature',
@@ -872,7 +874,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
           },
         });
 
-        map.native.addLayer({
+        mapboxMap.addLayer({
           id,
           type: 'fill',
           source: id,
@@ -882,7 +884,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
           },
         });
 
-        map.native.addLayer({
+        mapboxMap.addLayer({
           id: `${id}-outline`,
           type: 'line',
           source: id,
@@ -928,9 +930,9 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
             polygon.setMap(null);
             break;
           case 'mapbox':
-            map.native.removeLayer(`${polygon.id}-outline`);
-            map.native.removeLayer(polygon.id);
-            map.native.removeSource(polygon.source);
+            (map.native as any).removeLayer(`${polygon.id}-outline`);
+            (map.native as any).removeLayer(polygon.id);
+            (map.native as any).removeSource(polygon.source);
             break;
           case 'leaflet':
             polygon.remove();
@@ -943,7 +945,7 @@ export function createMap(config: { provider: MapProvider; apiKey?: string }) {
             polygon.setPath(path);
             break;
           case 'mapbox':
-            map.native.getSource(polygon.source).setData({
+            (map.native as any).getSource(polygon.source).setData({
               type: 'Feature',
               properties: {},
               geometry: {
@@ -1123,22 +1125,10 @@ export function useGeolocation(options: GeolocationOptions = {}): {
 
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          const geoPosition: GeolocationPosition = {
-            coords: {
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-              altitude: pos.coords.altitude,
-              accuracy: pos.coords.accuracy,
-              altitudeAccuracy: pos.coords.altitudeAccuracy,
-              heading: pos.coords.heading,
-              speed: pos.coords.speed,
-            },
-            timestamp: pos.timestamp,
-          };
-          position.set(geoPosition);
+          position.set(pos);
           loading.set(false);
           error.set(null);
-          resolve(geoPosition);
+          resolve(pos);
         },
         (err) => {
           error.set(err);
@@ -1160,19 +1150,7 @@ export function useGeolocation(options: GeolocationOptions = {}): {
 
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {
-        const geoPosition: GeolocationPosition = {
-          coords: {
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            altitude: pos.coords.altitude,
-            accuracy: pos.coords.accuracy,
-            altitudeAccuracy: pos.coords.altitudeAccuracy,
-            heading: pos.coords.heading,
-            speed: pos.coords.speed,
-          },
-          timestamp: pos.timestamp,
-        };
-        position.set(geoPosition);
+        position.set(pos);
         loading.set(false);
         error.set(null);
       },

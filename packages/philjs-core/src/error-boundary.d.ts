@@ -107,4 +107,3 @@ type RecoveryContext = {
  */
 export declare const errorRecovery: ErrorRecovery;
 export {};
-//# sourceMappingURL=error-boundary.d.ts.map

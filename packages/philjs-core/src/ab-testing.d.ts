@@ -153,4 +153,3 @@ export declare function createMultivariateTest(id: string, name: string, variant
  * Calculate statistical significance (Chi-squared test)
  */
 export declare function calculateSignificance(controlConversions: number, controlImpressions: number, variantConversions: number, variantImpressions: number): number;
-//# sourceMappingURL=ab-testing.d.ts.map

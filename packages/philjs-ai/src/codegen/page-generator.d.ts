@@ -258,4 +258,3 @@ export declare function createPageGenerator(provider: AIProvider, options?: Part
  * Quick page generation helper
  */
 export declare function generatePage(provider: AIProvider, name: string, path: string, description: string, options?: Partial<PageGenerationConfig>): Promise<GeneratedPage>;
-//# sourceMappingURL=page-generator.d.ts.map

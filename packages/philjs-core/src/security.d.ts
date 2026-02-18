@@ -178,4 +178,3 @@ export declare function createCspNonce(): Promise<string>;
  * ```
  */
 export declare function constantTimeEqual(a: string, b: string): boolean;
-//# sourceMappingURL=security.d.ts.map

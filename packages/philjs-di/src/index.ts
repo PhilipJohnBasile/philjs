@@ -5,7 +5,11 @@
  * with signal integration, async providers, lifecycle hooks, and module federation.
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Alias for backward compatibility
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types & Interfaces
@@ -166,8 +170,8 @@ export class InjectionToken_Class<T = any> implements InjectionToken<T> {
     }
 }
 
-// Alias for backwards compatibility
-export { InjectionToken_Class as InjectionToken };
+// InjectionToken_Class can be used when class instantiation is needed
+// The InjectionToken interface is the primary type
 
 // ============================================================================
 // Metadata Storage
@@ -210,8 +214,8 @@ function setPropertyMetadata(target: Constructor, key: string | symbol, metadata
 // ============================================================================
 
 export function Injectable(options: InjectableMetadata = {}): ClassDecorator {
-    return function <T extends Constructor>(target: T): T {
-        setInjectableMetadata(target, {
+    return function <TFunction extends Function>(target: TFunction): TFunction | void {
+        setInjectableMetadata(target as unknown as Constructor, {
             providedIn: options.providedIn ?? null,
             scope: options.scope ?? 'singleton',
             deps: options.deps
@@ -219,7 +223,7 @@ export function Injectable(options: InjectableMetadata = {}): ClassDecorator {
 
         // Auto-register in root if providedIn is 'root'
         if (options.providedIn === 'root') {
-            getRootInjector().register({ provide: target, useClass: target, scope: options.scope });
+            getRootInjector().register({ provide: target as unknown as Constructor, useClass: target as unknown as Constructor, scope: options.scope });
         }
 
         return target;
@@ -406,9 +410,10 @@ export class Injector {
 
         // Try to instantiate class directly if it's a constructor
         if (typeof token === 'function' && !this.isAbstract(token)) {
-            this.resolutionStack.push(token);
+            const ctor = token as unknown as Constructor<T>;
+            this.resolutionStack.push(ctor);
             try {
-                const instance = this.instantiateClass(token as Constructor<T>);
+                const instance = this.instantiateClass(ctor);
                 this.instances.set(token, instance);
                 return instance;
             } finally {
@@ -671,7 +676,7 @@ export class Injector {
     /**
      * Check if a constructor is abstract
      */
-    private isAbstract(target: Constructor): boolean {
+    private isAbstract(target: Function): boolean {
         return target.prototype === undefined || target.prototype.constructor !== target;
     }
 }
@@ -811,15 +816,15 @@ export function useAsyncService<T>(token: Token<T>): {
     const error = signal<Error | null>(null);
 
     const load = async () => {
-        loading.value = true;
-        error.value = null;
+        loading.set(true);
+        error.set(null);
         try {
             const instance = await getRootInjector().resolveAsync(token);
-            service.value = instance;
+            service.set(instance);
         } catch (e) {
-            error.value = e instanceof Error ? e : new Error(String(e));
+            error.set(e instanceof Error ? e : new Error(String(e)));
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     };
 
@@ -928,14 +933,14 @@ export function mockProvider<T>(token: Token<T>, mock: Partial<T>): Provider<T> 
     };
 }
 
-export function spyOnService<T>(token: Token<T>, methodNames: (keyof T)[]): { service: T; spies: Map<keyof T, jest.Mock> } {
+export function spyOnService<T>(token: Token<T>, methodNames: (keyof T)[]): { service: T; spies: Map<keyof T, unknown> } {
     const service = getRootInjector().get(token);
-    const spies = new Map<keyof T, jest.Mock>();
+    const spies = new Map<keyof T, unknown>();
 
     for (const method of methodNames) {
         if (typeof (service as any)[method] === 'function') {
-            const spy = jest.fn();
-            spy.mockImplementation((service as any)[method].bind(service));
+            const original = (service as any)[method].bind(service);
+            const spy = (...args: unknown[]) => original(...args);
             (service as any)[method] = spy;
             spies.set(method, spy);
         }
@@ -952,7 +957,7 @@ export interface ServiceState<T> {
     instance: Signal<T | null>;
     loading: Signal<boolean>;
     error: Signal<Error | null>;
-    ready: Computed<boolean>;
+    ready: Memo<boolean>;
 }
 
 export function createServiceSignal<T>(token: Token<T>): ServiceState<T> {
@@ -960,15 +965,15 @@ export function createServiceSignal<T>(token: Token<T>): ServiceState<T> {
     const loading = signal(true);
     const error = signal<Error | null>(null);
 
-    const ready = computed(() => instance.value !== null && !loading.value && error.value === null);
+    const ready = computed(() => instance.get() !== null && !loading.get() && error.get() === null);
 
     (async () => {
         try {
-            instance.value = await getRootInjector().resolveAsync(token);
+            instance.set(await getRootInjector().resolveAsync(token));
         } catch (e) {
-            error.value = e instanceof Error ? e : new Error(String(e));
+            error.set(e instanceof Error ? e : new Error(String(e)));
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     })();
 
@@ -1001,48 +1006,4 @@ export function emitContainerEvent(event: ContainerEvent): void {
     eventListeners.forEach(listener => listener(event));
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-    Injector,
-    Injectable,
-    Inject,
-    Optional,
-    Self,
-    SkipSelf,
-    Host,
-    useService,
-    useServices,
-    useOptionalService,
-    useInjector,
-    useScope,
-    defineModule,
-    bootstrapModule,
-    getRootInjector,
-    setRootInjector,
-    resetRootInjector,
-    createInjectionToken,
-    createTestBed,
-    mockProvider
-};
-
-export type {
-    Token,
-    Constructor,
-    AbstractType,
-    Factory,
-    AsyncFactory,
-    Scope,
-    Provider,
-    ProviderLike,
-    InjectorOptions,
-    ModuleConfig,
-    ResolveOptions,
-    InjectableMetadata,
-    InjectMetadata,
-    LifecycleHooks,
-    ServiceState,
-    ContainerEvent
-};
+// All exports are at their declaration points above

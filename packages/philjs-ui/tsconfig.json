@@ -4,14 +4,18 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "noEmitOnError": false,
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {}
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx", "src/checkout.ts", "src/gsap.ts"]
 }

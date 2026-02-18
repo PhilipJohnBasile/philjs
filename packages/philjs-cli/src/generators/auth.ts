@@ -378,7 +378,7 @@ function generateClerkProvider(ts: boolean): string {
  */
 
 import { ClerkProvider } from '@clerk/clerk-react';
-import { clerkConfig } from './config${ts ? '.js' : ''}';
+import { clerkConfig } from './config${ts ? '' : '.js'}';
 ${ts ? `import type { JSX } from '@philjs/core';\n` : ''}
 ${ts ? `interface AuthProviderProps {
   children: JSX.Element;
@@ -405,7 +405,7 @@ function generateAuth0Provider(ts: boolean): string {
  */
 
 import { Auth0Provider } from '@auth0/auth0-react';
-import { auth0Config } from './config${ts ? '.js' : ''}';
+import { auth0Config } from './config${ts ? '' : '.js'}';
 ${ts ? `import type { JSX } from '@philjs/core';\n` : ''}
 ${ts ? `interface AuthProviderProps {
   children: JSX.Element;
@@ -439,7 +439,7 @@ function generateSupabaseProvider(ts: boolean): string {
 import { createContext, useEffect } from '@philjs/core';
 import { signal } from '@philjs/core/signals';
 import { createClient } from '@supabase/supabase-js';
-import { supabaseConfig } from './config${ts ? '.js' : ''}';
+import { supabaseConfig } from './config${ts ? '' : '.js'}';
 ${ts ? `import type { JSX } from '@philjs/core';
 import type { SupabaseClient, User, Session } from '@supabase/supabase-js';
 
@@ -546,9 +546,9 @@ function generateCustomProvider(ts: boolean): string {
 
 import { createContext, useEffect } from '@philjs/core';
 import { signal, computed } from '@philjs/core/signals';
-import { authConfig } from './config${ts ? '.js' : ''}';
+import { authConfig } from './config${ts ? '' : '.js'}';
 ${ts ? `import type { JSX } from '@philjs/core';
-import type { User } from './config${ts ? '.js' : ''}';
+import type { User } from './config${ts ? '' : '.js'}';
 
 interface AuthContextValue {
   user: User | null;
@@ -884,7 +884,7 @@ function generateSupabaseHooks(ts: boolean): string {
  */
 
 import { useContext } from '@philjs/core';
-import { SupabaseAuthContext, supabase } from './AuthProvider${ts ? '.js' : ''}';
+import { SupabaseAuthContext, supabase } from './AuthProvider${ts ? '' : '.js'}';
 ${ts ? `import type { User } from './config.js';\n` : ''}
 /**
  * Hook to access current user
@@ -995,7 +995,7 @@ function generateCustomHooks(ts: boolean): string {
  */
 
 import { useContext } from '@philjs/core';
-import { AuthContext } from './AuthProvider${ts ? '.js' : ''}';
+import { AuthContext } from './AuthProvider${ts ? '' : '.js'}';
 ${ts ? `import type { User } from './config.js';\n` : ''}
 /**
  * Hook to access current user
@@ -1080,7 +1080,7 @@ async function generateLoginForm(
  */
 
 import { signal } from '@philjs/core/signals';
-import { useAuth } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
+import { useAuth } from '../hooks${ext.startsWith('t') ? '' : '.js'}';
 ${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const emailSignal = signal('');
 const passwordSignal = signal('');
@@ -1193,7 +1193,7 @@ async function generateSignupForm(
  */
 
 import { signal } from '@philjs/core/signals';
-import { useAuth } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
+import { useAuth } from '../hooks${ext.startsWith('t') ? '' : '.js'}';
 ${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const nameSignal = signal('');
 const emailSignal = signal('');
@@ -1467,7 +1467,7 @@ async function generateProfileForm(
  */
 
 import { signal, useEffect } from '@philjs/core';
-import { useUser } from '../hooks${ext.startsWith('t') ? '.js' : ''}';
+import { useUser } from '../hooks${ext.startsWith('t') ? '' : '.js'}';
 ${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';\n` : ''}
 const nameSignal = signal('');
 const emailSignal = signal('');
@@ -1597,7 +1597,7 @@ async function generateProtectedRouteUtils(
  * Protected Route Utilities
  */
 
-import { useAuth } from './hooks${ext.startsWith('t') ? '.js' : ''}';
+import { useAuth } from './hooks${ext.startsWith('t') ? '' : '.js'}';
 ${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';
 
 interface ProtectedRouteProps {
@@ -1715,7 +1715,7 @@ async function generateAuthGuard(
  * Conditionally render content based on authentication state
  */
 
-import { useAuth } from './hooks${ext.startsWith('t') ? '.js' : ''}';
+import { useAuth } from './hooks${ext.startsWith('t') ? '' : '.js'}';
 ${ext.startsWith('t') ? `import type { JSX } from '@philjs/core';
 
 interface AuthGuardProps {
@@ -1803,7 +1803,7 @@ async function generateExamplePages(
   await fs.mkdir(pagesDir, { recursive: true });
 
   // Login page
-  const loginPage = `import { LoginForm } from '../../auth/components/LoginForm${ext.startsWith('t') ? '.js' : ''}';
+  const loginPage = `import { LoginForm } from '../../auth/components/LoginForm${ext.startsWith('t') ? '' : '.js'}';
 
 export default function SignInPage() {
   return (
@@ -1818,7 +1818,7 @@ export default function SignInPage() {
   console.log(pc.green(`  ✓ Created pages/auth/sign-in.${ext}`));
 
   // Signup page
-  const signupPage = `import { SignupForm } from '../../auth/components/SignupForm${ext.startsWith('t') ? '.js' : ''}';
+  const signupPage = `import { SignupForm } from '../../auth/components/SignupForm${ext.startsWith('t') ? '' : '.js'}';
 
 export default function SignUpPage() {
   return (
@@ -1833,7 +1833,7 @@ export default function SignUpPage() {
   console.log(pc.green(`  ✓ Created pages/auth/sign-up.${ext}`));
 
   // Password reset page
-  const resetPage = `import { PasswordReset } from '../../auth/components/PasswordReset${ext.startsWith('t') ? '.js' : ''}';
+  const resetPage = `import { PasswordReset } from '../../auth/components/PasswordReset${ext.startsWith('t') ? '' : '.js'}';
 
 export default function ForgotPasswordPage() {
   return (
@@ -1848,8 +1848,8 @@ export default function ForgotPasswordPage() {
   console.log(pc.green(`  ✓ Created pages/auth/forgot-password.${ext}`));
 
   // Profile page
-  const profilePage = `import { ProfileForm } from '../../auth/components/ProfileForm${ext.startsWith('t') ? '.js' : ''}';
-import { ProtectedRoute } from '../../auth/protected${ext.startsWith('t') ? '.js' : ''}';
+  const profilePage = `import { ProfileForm } from '../../auth/components/ProfileForm${ext.startsWith('t') ? '' : '.js'}';
+import { ProtectedRoute } from '../../auth/protected${ext.startsWith('t') ? '' : '.js'}';
 
 export default function ProfilePage() {
   return (
@@ -1950,7 +1950,7 @@ function printSetupInstructions(provider: AuthProvider): void {
   console.log(pc.dim('   Copy .env.example to .env and fill in your credentials'));
 
   console.log(pc.white('\n3. Wrap your app with AuthProvider:'));
-  console.log(pc.dim(`   import { AuthProvider } from './auth/AuthProvider';
+  console.log(pc.dim(`   import { AuthProvider } from './auth/AuthProvider.js';
 
    export function App() {
      return (
@@ -1961,7 +1961,7 @@ function printSetupInstructions(provider: AuthProvider): void {
    }`));
 
   console.log(pc.white('\n4. Use authentication in your components:'));
-  console.log(pc.dim(`   import { useAuth, useUser } from './auth/hooks';
+  console.log(pc.dim(`   import { useAuth, useUser } from './auth/hooks.js';
 
    function MyComponent() {
      const { isAuthenticated, logout } = useAuth();
@@ -1970,7 +1970,7 @@ function printSetupInstructions(provider: AuthProvider): void {
      // Your component logic
    }`));
 
-  console.log(pc.dim(`   import { ProtectedRoute } from './auth/protected';
+  console.log(pc.dim(`   import { ProtectedRoute } from './auth/protected.js';
 
    <ProtectedRoute>
      <YourProtectedPage />

@@ -15,7 +15,9 @@
  *
  * @packageDocumentation
  */
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+// Compatibility aliases
+const computed = memo;
 /** Creates a reactive market data store */
 export function createMarketDataStore() {
     return {
@@ -35,14 +37,14 @@ export function createPortfolioStore(initialCash = 100000) {
     const cash = signal(initialCash);
     const totalValue = computed(() => {
         let positionValue = 0;
-        for (const pos of positions.value.values()) {
+        for (const pos of positions.get().values()) {
             positionValue += pos.marketValue;
         }
-        return cash.value + positionValue;
+        return cash.get() + positionValue;
     });
     const dayPnL = computed(() => {
         let pnl = 0;
-        for (const pos of positions.value.values()) {
+        for (const pos of positions.get().values()) {
             pnl += pos.unrealizedPnL;
         }
         return pnl;
@@ -1196,7 +1198,7 @@ export function useMarketData(symbols, config) {
         try {
             ws = new WebSocket(wsUrl);
             ws.onopen = () => {
-                store.isConnected.value = true;
+                store.isConnected.set(true);
                 reconnectAttempts = 0;
                 if (config?.apiKey) {
                     ws?.send(JSON.stringify({
@@ -1216,12 +1218,12 @@ export function useMarketData(symbols, config) {
                 const data = JSON.parse(event.data);
                 batch(() => {
                     if (data.T === 't') {
-                        const prices = new Map(store.prices.value);
+                        const prices = new Map(store.prices.get());
                         prices.set(data.S, data.p);
-                        store.prices.value = prices;
+                        store.prices.set(prices);
                     }
                     if (data.T === 'b') {
-                        const ohlcv = new Map(store.ohlcv.value);
+                        const ohlcv = new Map(store.ohlcv.get());
                         const bars = ohlcv.get(data.S) || [];
                         bars.push({
                             timestamp: new Date(data.t).getTime(),
@@ -1232,17 +1234,17 @@ export function useMarketData(symbols, config) {
                             volume: data.v
                         });
                         ohlcv.set(data.S, bars);
-                        store.ohlcv.value = ohlcv;
+                        store.ohlcv.set(ohlcv);
                     }
-                    store.lastUpdate.value = Date.now();
+                    store.lastUpdate.set(Date.now());
                 });
             };
             ws.onerror = (error) => {
-                const errors = [...store.errors.value, `WebSocket error: ${error}`];
-                store.errors.value = errors;
+                const errors = [...store.errors.get(), `WebSocket error: ${error}`];
+                store.errors.set(errors);
             };
             ws.onclose = () => {
-                store.isConnected.value = false;
+                store.isConnected.set(false);
                 if (reconnectAttempts < maxReconnects) {
                     reconnectAttempts++;
                     setTimeout(connect, Math.pow(2, reconnectAttempts) * 1000);
@@ -1250,8 +1252,8 @@ export function useMarketData(symbols, config) {
             };
         }
         catch (error) {
-            const errors = [...store.errors.value, `Connection error: ${error}`];
-            store.errors.value = errors;
+            const errors = [...store.errors.get(), `Connection error: ${error}`];
+            store.errors.set(errors);
         }
     };
     const disconnect = () => {
@@ -1290,7 +1292,7 @@ export function useMarketData(symbols, config) {
 export function usePortfolio(initialCash = 100000) {
     const store = createPortfolioStore(initialCash);
     const updatePosition = (symbol, update) => {
-        const positions = new Map(store.positions.value);
+        const positions = new Map(store.positions.get());
         const current = positions.get(symbol);
         if (current) {
             positions.set(symbol, { ...current, ...update });
@@ -1307,11 +1309,11 @@ export function usePortfolio(initialCash = 100000) {
                 realizedPnL: 0
             });
         }
-        store.positions.value = positions;
+        store.positions.set(positions);
     };
     const updatePrices = (prices) => {
         batch(() => {
-            const positions = new Map(store.positions.value);
+            const positions = new Map(store.positions.get());
             for (const [symbol, position] of positions.entries()) {
                 const price = prices.get(symbol);
                 if (price) {
@@ -1327,26 +1329,26 @@ export function usePortfolio(initialCash = 100000) {
                     });
                 }
             }
-            store.positions.value = positions;
+            store.positions.set(positions);
         });
     };
     const closePosition = (symbol, price) => {
-        const positions = new Map(store.positions.value);
+        const positions = new Map(store.positions.get());
         const position = positions.get(symbol);
         if (position) {
             const proceeds = position.quantity * price;
-            store.cash.value = store.cash.value + proceeds;
+            store.cash.set(store.cash.get() + proceeds);
             positions.delete(symbol);
-            store.positions.value = positions;
+            store.positions.set(positions);
         }
     };
     const deposit = (amount) => {
-        store.cash.value = store.cash.value + amount;
+        store.cash.set(store.cash.get() + amount);
     };
     const withdraw = (amount) => {
-        if (amount > store.cash.value)
+        if (amount > store.cash.get())
             return false;
-        store.cash.value = store.cash.value - amount;
+        store.cash.set(store.cash.get() - amount);
         return true;
     };
     return {
@@ -1362,7 +1364,7 @@ export function usePortfolio(initialCash = 100000) {
 export function useTechnicalAnalysis(ohlcv) {
     const indicators = signal(new Map());
     const calculate = (indicatorName, config) => {
-        const data = ohlcv.value;
+        const data = ohlcv.get();
         const closes = data.map(c => c.close);
         let result = [];
         switch (indicatorName.toLowerCase()) {
@@ -1394,53 +1396,53 @@ export function useTechnicalAnalysis(ohlcv) {
                 result = TechnicalAnalysis.ParabolicSAR(data);
                 break;
         }
-        const map = new Map(indicators.value);
+        const map = new Map(indicators.get());
         map.set(indicatorName, result);
-        indicators.value = map;
+        indicators.set(map);
         return result;
     };
     const calculateMACD = (config) => {
-        const closes = ohlcv.value.map(c => c.close);
+        const closes = ohlcv.get().map(c => c.close);
         const result = TechnicalAnalysis.MACD(closes, config?.fastPeriod || 12, config?.slowPeriod || 26, config?.signalPeriod || 9);
-        const map = new Map(indicators.value);
+        const map = new Map(indicators.get());
         map.set('macd_line', result.macd);
         map.set('macd_signal', result.signal);
         map.set('macd_histogram', result.histogram);
-        indicators.value = map;
+        indicators.set(map);
         return result;
     };
     const calculateBollinger = (config) => {
-        const closes = ohlcv.value.map(c => c.close);
+        const closes = ohlcv.get().map(c => c.close);
         const result = TechnicalAnalysis.BollingerBands(closes, config?.period || 20, config?.standardDeviations || 2);
-        const map = new Map(indicators.value);
+        const map = new Map(indicators.get());
         map.set('bb_upper', result.upper);
         map.set('bb_middle', result.middle);
         map.set('bb_lower', result.lower);
-        indicators.value = map;
+        indicators.set(map);
         return result;
     };
     const calculateStochastic = (config) => {
-        const result = TechnicalAnalysis.Stochastic(ohlcv.value, config?.period || 14, config?.smoothing || 3);
-        const map = new Map(indicators.value);
+        const result = TechnicalAnalysis.Stochastic(ohlcv.get(), config?.period || 14, config?.smoothing || 3);
+        const map = new Map(indicators.get());
         map.set('stoch_k', result.k);
         map.set('stoch_d', result.d);
-        indicators.value = map;
+        indicators.set(map);
         return result;
     };
     const calculateADX = (config) => {
-        const result = TechnicalAnalysis.ADX(ohlcv.value, config?.period || 14);
-        const map = new Map(indicators.value);
+        const result = TechnicalAnalysis.ADX(ohlcv.get(), config?.period || 14);
+        const map = new Map(indicators.get());
         map.set('adx', result.adx);
         map.set('plus_di', result.plusDI);
         map.set('minus_di', result.minusDI);
-        indicators.value = map;
+        indicators.set(map);
         return result;
     };
     const detectPatterns = () => {
-        return PatternRecognition.detectAll(ohlcv.value);
+        return PatternRecognition.detectAll(ohlcv.get());
     };
     const getLatest = (indicatorName) => {
-        const values = indicators.value.get(indicatorName);
+        const values = indicators.get().get(indicatorName);
         return values ? values[values.length - 1] : undefined;
     };
     return {
@@ -1459,7 +1461,7 @@ export function useOptionsChain(underlying, currentPrice) {
     const chain = signal([]);
     const generateChain = (expirations, strikes, riskFreeRate = 0.05, volatility = 0.25) => {
         const contracts = [];
-        const S = currentPrice.value;
+        const S = currentPrice.get();
         for (const expiration of expirations) {
             const T = (expiration.getTime() - Date.now()) / (365 * 24 * 60 * 60 * 1000);
             if (T <= 0)
@@ -1484,12 +1486,12 @@ export function useOptionsChain(underlying, currentPrice) {
                 }
             }
         }
-        chain.value = contracts;
+        chain.set(contracts);
         return contracts;
     };
     const updateChain = (riskFreeRate = 0.05) => {
-        const S = currentPrice.value;
-        const updated = chain.value.map(contract => {
+        const S = currentPrice.get();
+        const updated = chain.get().map(contract => {
             const T = (contract.expiration.getTime() - Date.now()) / (365 * 24 * 60 * 60 * 1000);
             if (T <= 0)
                 return contract;
@@ -1505,20 +1507,20 @@ export function useOptionsChain(underlying, currentPrice) {
                 rho: greeks.rho
             };
         });
-        chain.value = updated;
+        chain.set(updated);
         return updated;
     };
     const findByStrike = (strike, type) => {
-        return chain.value.filter(c => c.strike === strike && (!type || c.type === type));
+        return chain.get().filter(c => c.strike === strike && (!type || c.type === type));
     };
     const findByExpiration = (expiration) => {
-        return chain.value.filter(c => c.expiration.getTime() === expiration.getTime());
+        return chain.get().filter(c => c.expiration.getTime() === expiration.getTime());
     };
     const getATMOptions = () => {
-        const S = currentPrice.value;
-        const strikes = [...new Set(chain.value.map(c => c.strike))].sort((a, b) => a - b);
+        const S = currentPrice.get();
+        const strikes = [...new Set(chain.get().map(c => c.strike))].sort((a, b) => a - b);
         const atmStrike = strikes.reduce((prev, curr) => Math.abs(curr - S) < Math.abs(prev - S) ? curr : prev);
-        return chain.value.filter(c => c.strike === atmStrike);
+        return chain.get().filter(c => c.strike === atmStrike);
     };
     return {
         chain,
@@ -1538,18 +1540,18 @@ export function useBacktest(config) {
         backtester.loadData(symbol, ohlcv);
     };
     const run = (strategy) => {
-        isRunning.value = true;
+        isRunning.set(true);
         try {
             const result = backtester.run(strategy);
-            results.value = result;
+            results.set(result);
             return result;
         }
         finally {
-            isRunning.value = false;
+            isRunning.set(false);
         }
     };
     const getSummary = () => {
-        const r = results.value;
+        const r = results.get();
         if (!r)
             return null;
         return {

@@ -351,7 +351,7 @@ Return JSON:
   "diff": "diff format showing changes",
   "explanation": "detailed explanation"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a code refactoring expert. Provide precise, safe refactoring fixes.',
         });
@@ -402,7 +402,7 @@ For each suggestion, provide:
 - tags: relevant tags
 
 Return JSON array of RefactoringSuggestion objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `${SYSTEM_PROMPTS.philjs}\nYou are a refactoring expert. Provide safe, practical suggestions.`,
         });
@@ -493,7 +493,7 @@ For each suggestion provide:
 - tags: ["tag1", "tag2"]
 
 Return JSON array of suggestions.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             maxTokens: 8192,
             systemPrompt: `${SYSTEM_PROMPTS.philjs}

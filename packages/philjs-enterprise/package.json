@@ -37,10 +37,10 @@
     }
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0",
-    "typecheck": "tsc --noEmit || exit 0"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",

@@ -155,7 +155,7 @@ export async function exportToPDF<T>(
     import('jspdf'),
     import('jspdf-autotable'),
   ]);
-  const autoTable = (autoTableModule as { default?: typeof import('jspdf-autotable') }).default ?? autoTableModule;
+  const autoTable = ((autoTableModule as { default?: unknown }).default ?? autoTableModule) as (doc: InstanceType<typeof jsPDF>, options: Record<string, unknown>) => void;
 
   const orientation = options.orientation ?? 'portrait';
   const format = options.pageSize ?? 'a4';

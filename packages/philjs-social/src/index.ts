@@ -36,7 +36,10 @@
  * ```
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 import type { Signal } from '@philjs/core';
 
 // =============================================================================
@@ -1875,7 +1878,7 @@ function buildOAuthUrl(provider: SocialProvider, config: OAuthConfig): string {
  */
 function updateFeedItem(
   postId: string,
-  updates: Partial<FeedItem> | Record<string, (item: FeedItem) => any>
+  updates: { [K in keyof FeedItem]?: FeedItem[K] | ((item: FeedItem) => FeedItem[K]) }
 ): void {
   const state = storeState();
   const feed = state.feed.map(item => {

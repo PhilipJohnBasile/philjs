@@ -1,0 +1,955 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Appendix: TypeScript 6 - The PhilJS Book</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="TypeScript-first guide to building with PhilJS">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../oreilly-e003e30e.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-99cbb647.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-88683b29.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The PhilJS Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/PhilipJohnBasile/philjs" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/PhilipJohnBasile/philjs/edit/main/docs/philjs-book/src/appendix/typescript-6-deep-dive.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="typescript-6x-deep-dive-appendix"><a class="header" href="#typescript-6x-deep-dive-appendix">TypeScript 6.x Deep Dive (Appendix)</a></h1>
+<p>A practical, in-depth TypeScript 6.x guide for PhilJS developers. PhilJS is built exclusively for <strong>TypeScript 6.0+</strong> and <strong>Node.js 24+</strong>, leveraging the latest optimizing compilers and runtime features.</p>
+<h2 id="table-of-contents"><a class="header" href="#table-of-contents">Table of contents</a></h2>
+<ul>
+<li><a href="#ts6-mental-model">TypeScript mental model</a></li>
+<li><a href="#ts6-assignability">Type operators and assignability</a></li>
+<li><a href="#ts6-config">Compiler configuration</a></li>
+<li><a href="#ts6-types">Types, unions, and intersections</a></li>
+<li><a href="#ts6-enums">Enums and literal alternatives</a></li>
+<li><a href="#ts6-narrowing">Control-flow narrowing</a></li>
+<li><a href="#ts6-functions">Functions and overloads</a></li>
+<li><a href="#ts6-generics">Generics and inference</a></li>
+<li><a href="#ts6-objects">Object types and safety flags</a></li>
+<li><a href="#ts6-tuples">Tuples, arrays, and readonly data</a></li>
+<li><a href="#ts6-classes">Classes, interfaces, and the type system</a></li>
+<li><a href="#ts6-modules">Modules and the type/value split</a></li>
+<li><a href="#ts6-declarations">Declaration merging and module augmentation</a></li>
+<li><a href="#ts6-utility">Utility, mapped, and conditional types</a></li>
+<li><a href="#ts6-template-literals">Template literal types</a></li>
+<li><a href="#ts6-async">Async typing and error models</a></li>
+<li><a href="#ts6-jsx">JSX and PhilJS typing</a></li>
+<li><a href="#ts6-interop">Interop with JavaScript</a></li>
+<li><a href="#ts6-migration">Migration from JavaScript</a></li>
+<li><a href="#ts6-testing">Testing types</a></li>
+<li><a href="#ts6-performance">Build performance and project references</a></li>
+<li><a href="#ts6-patterns">Real-world patterns for PhilJS</a></li>
+<li><a href="#ts6-using">TS6 <code>using</code> and disposal</a></li>
+<li><a href="#ts6-pitfalls">Common pitfalls and fixes</a></li>
+<li><a href="#ts6-checklists">Checklists and exercises</a></li>
+</ul>
+<p><a id="ts6-mental-model"></a></p>
+<h2 id="typescript-mental-model"><a class="header" href="#typescript-mental-model">TypeScript mental model</a></h2>
+<p>TypeScript is a structural type system layered on top of JavaScript. The compiler checks your code at build time, then emits JavaScript without runtime type metadata.</p>
+<p>Key ideas:</p>
+<ul>
+<li>Structural typing: if the shape matches, the types are compatible.</li>
+<li>Inference first: the compiler infers types and you constrain them where needed.</li>
+<li>Type/value split: types exist only at compile time; values exist at runtime.</li>
+<li>Practical safety: TypeScript favors ergonomics over strict soundness.</li>
+</ul>
+<p>In PhilJS projects, strictness matters because you ship type-checked loaders, actions, and SSR boundaries. Treat the type system as an API contract.</p>
+<h3 id="widening-vs-narrowing"><a class="header" href="#widening-vs-narrowing">Widening vs narrowing</a></h3>
+<p>TypeScript widens values unless you tell it not to:</p>
+<pre><code class="language-ts">const mode = 'edge';        // type: string (widened)
+const mode2 = 'edge' as const; // type: 'edge'
+</code></pre>
+<p>Use <code>as const</code> or <code>satisfies</code> for config objects to keep literals narrow:</p>
+<pre><code class="language-ts">const env = {
+  runtime: 'edge',
+  cache: 'stale-while-revalidate'
+} satisfies { runtime: 'edge' | 'node'; cache: string };
+</code></pre>
+<h3 id="typevalue-split"><a class="header" href="#typevalue-split">Type/value split</a></h3>
+<p>Types do not exist at runtime. If you need runtime checks, use functions or schemas.</p>
+<pre><code class="language-ts">type User = { id: string };
+
+function isUser(value: unknown): value is User {
+  return typeof value === 'object' &amp;&amp; value !== null &amp;&amp; 'id' in value;
+}
+</code></pre>
+<p><a id="ts6-assignability"></a></p>
+<h2 id="type-operators-and-assignability"><a class="header" href="#type-operators-and-assignability">Type operators and assignability</a></h2>
+<p>TypeScript is structural. Assignability is based on whether the required fields and signatures exist, not on nominal names.</p>
+<pre><code class="language-ts">type User = { id: string; email: string };
+type MinimalUser = { id: string };
+
+const u: User = { id: 'u1', email: 'a@b.com' };
+const m: MinimalUser = u; // ok, u has at least the required shape
+</code></pre>
+<p>Common type operators:</p>
+<ul>
+<li><code>keyof</code> produces a union of keys.</li>
+<li><code>typeof</code> reads a value’s type.</li>
+<li>indexed access (<code>T[K]</code>) reads a property type.</li>
+</ul>
+<pre><code class="language-ts">type UserKeys = keyof User;        // 'id' | 'email'
+type UserEmail = User['email'];    // string
+
+const config = { cache: 'stale', ttl: 30 };
+type Config = typeof config;       // { cache: string; ttl: number }
+</code></pre>
+<p>Assignability gotchas:</p>
+<ul>
+<li>Function parameters follow variance rules; keep callback types explicit.</li>
+<li>Optional properties are not the same as <code>undefined</code> when <code>exactOptionalPropertyTypes</code> is enabled.</li>
+</ul>
+<p>When in doubt, use <code>satisfies</code> to validate shape without widening:</p>
+<pre><code class="language-ts">const pipeline = [
+  { name: 'lint', run: true },
+  { name: 'typecheck', run: true }
+] satisfies Array&lt;{ name: string; run: boolean }&gt;;
+</code></pre>
+<p><a id="ts6-config"></a></p>
+<h2 id="compiler-configuration"><a class="header" href="#compiler-configuration">Compiler configuration</a></h2>
+<p>A good <code>tsconfig.json</code> is the foundation for a reliable codebase.</p>
+<p>Recommended base for PhilJS apps:</p>
+<pre><code class="language-json">{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "jsxImportSource": "@philjs/core",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "useDefineForClassFields": true,
+    "isolatedModules": true,
+    "isolatedDeclarations": true,
+    "skipLibCheck": false,
+    "types": ["@philjs/core"],
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src"]
+}
+</code></pre>
+<p>Config notes:</p>
+<ul>
+<li><code>moduleResolution: bundler</code> matches modern toolchains and avoids CJS edge cases.</li>
+<li><code>noUncheckedIndexedAccess</code> forces you to handle missing keys.</li>
+<li><code>exactOptionalPropertyTypes</code> prevents <code>undefined</code> from silently slipping in.</li>
+<li><code>isolatedModules</code> keeps you compatible with fast transpilers and Vite.</li>
+<li><code>isolatedDeclarations</code> improves declaration emit for libraries.</li>
+</ul>
+<p>For libraries:</p>
+<ul>
+<li>Set <code>declaration: true</code> and <code>declarationMap: true</code>.</li>
+<li>Emit to <code>dist</code> and keep <code>types</code> in <code>package.json</code> updated.</li>
+</ul>
+<p>For apps:</p>
+<ul>
+<li><code>noEmit: true</code> is fine because Vite handles emit.</li>
+<li>Keep <code>types</code> narrow to avoid slow editor performance.</li>
+</ul>
+<p>Monorepo tips:</p>
+<ul>
+<li>Use a shared <code>tsconfig.base.json</code>.</li>
+<li>Add project references for faster incremental builds.</li>
+<li>Keep <code>paths</code> aligned with bundler aliases.</li>
+</ul>
+<h3 id="strictness-flags-that-matter"><a class="header" href="#strictness-flags-that-matter">Strictness flags that matter</a></h3>
+<p>These flags prevent subtle runtime bugs:</p>
+<ul>
+<li><code>strictNullChecks</code>: forces you to handle <code>null</code> and <code>undefined</code>.</li>
+<li><code>noImplicitOverride</code>: ensures overrides are intentional.</li>
+<li><code>noUncheckedIndexedAccess</code>: forces safe access for <code>obj[key]</code>.</li>
+<li><code>exactOptionalPropertyTypes</code>: optional does not mean <code>undefined</code> unless declared.</li>
+</ul>
+<p>Together, they prevent the common problems of “missing data” and “wrong shape” that show up most often in loaders, actions, and SSR payloads.</p>
+<p><a id="ts6-types"></a></p>
+<h2 id="types-unions-and-intersections"><a class="header" href="#types-unions-and-intersections">Types, unions, and intersections</a></h2>
+<p>TypeScript supports primitives, literals, unions, and intersections.</p>
+<pre><code class="language-ts">type Status = 'idle' | 'loading' | 'success' | 'error';
+
+type ApiError = {
+  code: 'UNAUTHORIZED' | 'NOT_FOUND' | 'RATE_LIMIT';
+  message: string;
+};
+
+type Result&lt;T&gt; = { ok: true; value: T } | { ok: false; error: ApiError };
+</code></pre>
+<p>Intersections merge shapes:</p>
+<pre><code class="language-ts">type WithMeta = { createdAt: string; updatedAt: string };
+
+type User = { id: string; email: string } &amp; WithMeta;
+</code></pre>
+<p>Special types to know:</p>
+<ul>
+<li><code>unknown</code>: safest top type. You must narrow before use.</li>
+<li><code>never</code>: indicates an impossible value; great for exhaustive checks.</li>
+<li><code>void</code>: for functions that return nothing.</li>
+<li><code>any</code>: opt-out; avoid for public APIs.</li>
+</ul>
+<h3 id="literal-unions-for-state"><a class="header" href="#literal-unions-for-state">Literal unions for state</a></h3>
+<pre><code class="language-ts">type Theme = 'light' | 'dark' | 'system';
+</code></pre>
+<p>Literal unions make UI state explicit and easy to exhaustively handle.</p>
+<p><a id="ts6-enums"></a></p>
+<h2 id="enums-and-literal-alternatives"><a class="header" href="#enums-and-literal-alternatives">Enums and literal alternatives</a></h2>
+<p>TypeScript enums exist at runtime, while literal unions are compile-time only. Prefer literal unions for most PhilJS code because they are tree-shakeable and align with serialized SSR data.</p>
+<pre><code class="language-ts">// Prefer this
+type Env = 'edge' | 'node';
+
+// Over this, unless you need runtime enum values
+enum EnvEnum {
+  Edge = 'edge',
+  Node = 'node'
+}
+</code></pre>
+<p>If you do use enums, avoid <code>const enum</code> in libraries unless your build pipeline inlines them consistently.</p>
+<p><a id="ts6-narrowing"></a></p>
+<h2 id="control-flow-narrowing"><a class="header" href="#control-flow-narrowing">Control-flow narrowing</a></h2>
+<p>TypeScript narrows types based on control flow. This is essential for safe loaders, route params, and SSR payloads.</p>
+<pre><code class="language-ts">function formatUser(user: User | null) {
+  if (!user) return 'Guest';
+  return user.email.toLowerCase();
+}
+</code></pre>
+<p>Discriminated unions:</p>
+<pre><code class="language-ts">type LoadState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: User }
+  | { status: 'error'; error: ApiError };
+
+function render(state: LoadState) {
+  switch (state.status) {
+    case 'idle':
+      return 'Idle';
+    case 'loading':
+      return 'Loading';
+    case 'success':
+      return state.data.email;
+    case 'error':
+      return state.error.message;
+  }
+}
+</code></pre>
+<p>Other narrowing tools:</p>
+<pre><code class="language-ts">if ('id' in value) {
+  // value is now narrowed to an object with id
+}
+
+if (value instanceof Error) {
+  // value is Error
+}
+</code></pre>
+<p>User-defined type guards:</p>
+<pre><code class="language-ts">function isUser(value: unknown): value is User {
+  return typeof value === 'object' &amp;&amp; value !== null &amp;&amp; 'email' in value;
+}
+</code></pre>
+<p>Assertion functions (use sparingly):</p>
+<pre><code class="language-ts">function assertUser(value: unknown): asserts value is User {
+  if (!isUser(value)) throw new Error('Not a user');
+}
+</code></pre>
+<p>Type assertions should be rare. Prefer narrowing via guards or schema validation.</p>
+<p><strong>Visual:</strong> Type narrowing flow</p>
+<p><img src="../../visuals/ts-narrowing-flow.svg" title="TypeScript narrowing flow" alt="Type narrowing flow diagram"></p>
+<p><a id="ts6-functions"></a></p>
+<h2 id="functions-and-overloads"><a class="header" href="#functions-and-overloads">Functions and overloads</a></h2>
+<p>Function types include parameters, return type, and optional <code>this</code> context.</p>
+<pre><code class="language-ts">type Loader&lt;T&gt; = (params: { request: Request }) =&gt; Promise&lt;T&gt;;
+</code></pre>
+<p>Overloads should be minimal. Use a single signature with unions when possible.</p>
+<pre><code class="language-ts">function parse(input: string): number;
+function parse(input: string, radix: number): number;
+function parse(input: string, radix?: number) {
+  return Number.parseInt(input, radix ?? 10);
+}
+</code></pre>
+<p>If you need <code>this</code> typing:</p>
+<pre><code class="language-ts">function onClick(this: HTMLButtonElement, ev: MouseEvent) {
+  this.disabled = true;
+}
+</code></pre>
+<p>Avoid <code>Function</code> or <code>any</code> in public APIs. Keep return types explicit for loaders and actions.</p>
+<p><a id="ts6-generics"></a></p>
+<h2 id="generics-and-inference"><a class="header" href="#generics-and-inference">Generics and inference</a></h2>
+<p>Generics allow you to write reusable, type-safe utilities.</p>
+<pre><code class="language-ts">function identity&lt;T&gt;(value: T): T {
+  return value;
+}
+
+function pick&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+  return obj[key];
+}
+</code></pre>
+<p>Useful patterns:</p>
+<ul>
+<li>Constraints: <code>&lt;T extends { id: string }&gt;</code></li>
+<li>Defaults: <code>&lt;T = string&gt;</code></li>
+<li>Inference helpers: <code>ReturnType</code>, <code>Parameters</code>, <code>Awaited</code></li>
+</ul>
+<p>Const type parameters (TS6) preserve literal inference:</p>
+<pre><code class="language-ts">function defineRoute&lt;const T extends string&gt;(path: T) {
+  return { path } as const;
+}
+</code></pre>
+<p>Use <code>satisfies</code> for configs to validate shape without widening:</p>
+<pre><code class="language-ts">const routes = [
+  { path: '/', auth: false },
+  { path: '/account', auth: true }
+] satisfies Array&lt;{ path: string; auth: boolean }&gt;;
+</code></pre>
+<h3 id="indexed-access-and-keyof"><a class="header" href="#indexed-access-and-keyof">Indexed access and <code>keyof</code></a></h3>
+<pre><code class="language-ts">type UserEmail = User['email'];
+
+function getField&lt;T, K extends keyof T&gt;(value: T, key: K): T[K] {
+  return value[key];
+}
+</code></pre>
+<h3 id="conditional-inference-patterns"><a class="header" href="#conditional-inference-patterns">Conditional inference patterns</a></h3>
+<p>Conditional types with <code>infer</code> let you extract parts of a type without duplicating it:</p>
+<pre><code class="language-ts">type LoaderReturn&lt;T&gt; = T extends (...args: any[]) =&gt; Promise&lt;infer R&gt; ? R : never;
+
+type ParamsOf&lt;T&gt; = T extends (params: infer P) =&gt; any ? P : never;
+</code></pre>
+<p>This is useful for keeping component props aligned with loader return types. Use it to reduce duplication, but avoid overusing it when it makes the code harder to read.
+<a id="ts6-objects"></a></p>
+<h2 id="object-types-and-safety-flags"><a class="header" href="#object-types-and-safety-flags">Object types and safety flags</a></h2>
+<p>Object types are the backbone of PhilJS state, props, and data contracts.</p>
+<pre><code class="language-ts">type User = {
+  id: string;
+  email: string;
+  name?: string;
+};
+</code></pre>
+<p>Important flags:</p>
+<ul>
+<li><code>noUncheckedIndexedAccess</code>: <code>obj[key]</code> becomes <code>T | undefined</code>.</li>
+<li><code>exactOptionalPropertyTypes</code>: optional props do not accept <code>undefined</code> unless specified.</li>
+</ul>
+<p>Use index signatures sparingly. Prefer explicit property types.</p>
+<pre><code class="language-ts">type HeaderMap = Record&lt;string, string&gt;;
+</code></pre>
+<p>Readonly and tuples:</p>
+<pre><code class="language-ts">type Point = readonly [number, number];
+const origin: Point = [0, 0];
+</code></pre>
+<p>Excess property checks prevent accidental typos:</p>
+<pre><code class="language-ts">const user: User = { id: 'u1', email: 'a@b.com', extra: true }; // error
+</code></pre>
+<p><a id="ts6-tuples"></a></p>
+<h2 id="tuples-arrays-and-readonly-data"><a class="header" href="#tuples-arrays-and-readonly-data">Tuples, arrays, and readonly data</a></h2>
+<p>Tuples encode fixed-length arrays with typed positions. They are useful for route params, cache keys, and small coordinate pairs.</p>
+<pre><code class="language-ts">type CacheKey = readonly ['user', string];
+const key: CacheKey = ['user', 'u1'];
+</code></pre>
+<p>Optional tuple elements:</p>
+<pre><code class="language-ts">type Range = [start: number, end?: number];
+</code></pre>
+<p>Readonly arrays help prevent accidental mutations in SSR payloads and shared caches:</p>
+<pre><code class="language-ts">type ReadonlyUsers = ReadonlyArray&lt;User&gt;;
+</code></pre>
+<p><a id="ts6-classes"></a></p>
+<h2 id="classes-interfaces-and-the-type-system"><a class="header" href="#classes-interfaces-and-the-type-system">Classes, interfaces, and the type system</a></h2>
+<p>Classes are optional in PhilJS, but they appear in adapters and external libraries.</p>
+<pre><code class="language-ts">interface Cache {
+  get(key: string): string | null;
+  set(key: string, value: string): void;
+}
+
+class MemoryCache implements Cache {
+  private store = new Map&lt;string, string&gt;();
+  get(key: string) { return this.store.get(key) ?? null; }
+  set(key: string, value: string) { this.store.set(key, value); }
+}
+</code></pre>
+<p>Prefer <code>private</code> fields for simple encapsulation. Use <code>#private</code> when you need runtime privacy.</p>
+<p>Use <code>implements</code> to validate shape and <code>override</code> to ensure correct method signatures.</p>
+<p><a id="ts6-modules"></a></p>
+<h2 id="modules-and-the-typevalue-split"><a class="header" href="#modules-and-the-typevalue-split">Modules and the type/value split</a></h2>
+<p>TypeScript distinguishes types from values. Use <code>type</code> imports for clarity and better tree-shaking.</p>
+<pre><code class="language-ts">import type { User } from './types';
+import { fetchUser } from './api';
+</code></pre>
+<p><code>verbatimModuleSyntax</code> forces you to be explicit about value vs type imports and aligns with ESM tooling.</p>
+<p>Common ESM patterns:</p>
+<ul>
+<li><code>export type { User } from './types';</code></li>
+<li><code>export { fetchUser } from './api';</code></li>
+<li>Avoid <code>export =</code> or <code>namespace</code> in modern projects.</li>
+</ul>
+<p>When building libraries, set <code>"types"</code> in <code>package.json</code> and keep ESM/CJS exports consistent.</p>
+<h3 id="module-resolution-and-exports"><a class="header" href="#module-resolution-and-exports">Module resolution and exports</a></h3>
+<p>Modern packages should declare <code>exports</code> and <code>types</code> in <code>package.json</code> so TypeScript and bundlers agree:</p>
+<pre><code class="language-json">{
+  "name": "@philjs/core",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts"
+}
+</code></pre>
+<p>If you ship multiple entry points, keep a <code>types</code> file for each entry. Avoid mixed CJS/ESM unless you must support legacy tooling.</p>
+<p><a id="ts6-declarations"></a></p>
+<h2 id="declaration-merging-and-module-augmentation"><a class="header" href="#declaration-merging-and-module-augmentation">Declaration merging and module augmentation</a></h2>
+<p>TypeScript can merge declarations with the same name. This is useful for extending global types or augmenting third-party modules.</p>
+<pre><code class="language-ts">declare global {
+  interface Window {
+    __PHILJS_VERSION__: string;
+  }
+}
+</code></pre>
+<p>Module augmentation lets you extend existing packages:</p>
+<pre><code class="language-ts">declare module '@philjs/router' {
+  export interface RouteMeta {
+    requiresAuth?: boolean;
+  }
+}
+</code></pre>
+<p>Use augmentation sparingly and keep it close to the consuming code so the intent is clear.</p>
+<p><a id="ts6-utility"></a></p>
+<h2 id="utility-mapped-and-conditional-types"><a class="header" href="#utility-mapped-and-conditional-types">Utility, mapped, and conditional types</a></h2>
+<p>Utility types help you reshape existing types safely.</p>
+<pre><code class="language-ts">type PartialUser = Partial&lt;User&gt;;
+type RequiredUser = Required&lt;User&gt;;
+type UserPreview = Pick&lt;User, 'id' | 'email'&gt;;
+type WithoutName = Omit&lt;User, 'name'&gt;;
+</code></pre>
+<p>Mapped types:</p>
+<pre><code class="language-ts">type DeepReadonly&lt;T&gt; = {
+  readonly [K in keyof T]: DeepReadonly&lt;T[K]&gt;;
+};
+</code></pre>
+<p>Conditional types:</p>
+<pre><code class="language-ts">type ExtractId&lt;T&gt; = T extends { id: infer I } ? I : never;
+</code></pre>
+<p>Distribution happens over unions:</p>
+<pre><code class="language-ts">type ToArray&lt;T&gt; = T extends unknown ? T[] : never;
+</code></pre>
+<h3 id="type-level-programming-patterns"><a class="header" href="#type-level-programming-patterns">Type-level programming patterns</a></h3>
+<p>These patterns show up in real codebases:</p>
+<pre><code class="language-ts">type DeepPartial&lt;T&gt; = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial&lt;T[K]&gt; : T[K];
+};
+
+type XOR&lt;A, B&gt; =
+  | (A &amp; { [K in keyof B]?: never })
+  | (B &amp; { [K in keyof A]?: never });
+</code></pre>
+<p>Use these sparingly. When types become hard to read, prefer runtime validation and simpler static types.</p>
+<p><a id="ts6-template-literals"></a></p>
+<h2 id="template-literal-types"><a class="header" href="#template-literal-types">Template literal types</a></h2>
+<p>Template literal types are powerful for routes and cache tags.</p>
+<pre><code class="language-ts">type RoutePath = `/users/${string}` | `/teams/${string}`;
+
+type CacheTag = `user:${string}` | `team:${string}`;
+</code></pre>
+<p>Use them to encode invariants the compiler can enforce.</p>
+<p><a id="ts6-async"></a></p>
+<h2 id="async-typing-and-error-models"><a class="header" href="#async-typing-and-error-models">Async typing and error models</a></h2>
+<p>Prefer explicit result types for async boundaries.</p>
+<pre><code class="language-ts">type ApiResult&lt;T&gt; =
+  | { ok: true; value: T }
+  | { ok: false; error: ApiError };
+
+async function fetchUser(id: string): Promise&lt;ApiResult&lt;User&gt;&gt; {
+  // ...
+}
+</code></pre>
+<p>Use <code>Promise.allSettled</code> for batch loaders with partial success:</p>
+<pre><code class="language-ts">const results = await Promise.allSettled(tasks);
+results.forEach((r) =&gt; {
+  if (r.status === 'fulfilled') {
+    // r.value
+  } else {
+    // r.reason
+  }
+});
+</code></pre>
+<p>Avoid throwing raw errors across loader/action boundaries. Convert to typed results or normalized error shapes.</p>
+<h3 id="error-modeling-patterns"><a class="header" href="#error-modeling-patterns">Error modeling patterns</a></h3>
+<p>Two common styles work well for PhilJS:</p>
+<ol>
+<li><strong>Result unions</strong> (best for predictable UI state)</li>
+<li><strong>Thrown errors</strong> at the boundary (best for infrastructure failures)</li>
+</ol>
+<p>Example with error codes:</p>
+<pre><code class="language-ts">type ErrorCode = 'UNAUTHORIZED' | 'NOT_FOUND' | 'RATE_LIMIT';
+
+type ApiError = { code: ErrorCode; message: string };
+type ApiResult&lt;T&gt; = { ok: true; value: T } | { ok: false; error: ApiError };
+</code></pre>
+<p>Use <code>never</code> to enforce exhaustive switches:</p>
+<pre><code class="language-ts">function assertNever(x: never): never {
+  throw new Error(`Unexpected: ${x}`);
+}
+</code></pre>
+<p>For loaders that support cancellation, include <code>AbortSignal</code> in your types and pass it to <code>fetch</code>:</p>
+<pre><code class="language-ts">type LoaderContext = { request: Request; signal: AbortSignal };
+</code></pre>
+<p><a id="ts6-jsx"></a></p>
+<h2 id="jsx-and-philjs-typing"><a class="header" href="#jsx-and-philjs-typing">JSX and PhilJS typing</a></h2>
+<p>JSX types drive props, children, and event handling.</p>
+<pre><code class="language-ts">import type { ComponentProps } from '@philjs/core';
+
+type ButtonProps = ComponentProps&lt;'button'&gt; &amp; {
+  variant?: 'primary' | 'ghost';
+};
+</code></pre>
+<p>Event typing:</p>
+<pre><code class="language-ts">const onInput = (ev: InputEvent &amp; { target: HTMLInputElement }) =&gt; {
+  const value = ev.target.value;
+};
+</code></pre>
+<p>PhilJS loader and action types should be explicit and reusable:</p>
+<pre><code class="language-ts">type UserLoader = () =&gt; Promise&lt;{ user: User } | { user: null }&gt;;
+</code></pre>
+<p>If you build component libraries, publish <code>ComponentProps</code> helpers to keep type inference intact.</p>
+<h3 id="jsx-namespace-and-intrinsic-elements"><a class="header" href="#jsx-namespace-and-intrinsic-elements">JSX namespace and intrinsic elements</a></h3>
+<p>JSX typing relies on the <code>JSX</code> namespace. In PhilJS, intrinsic elements map to DOM elements, and custom components are inferred from function signatures.</p>
+<p>If you need to extend intrinsic props, use module augmentation:</p>
+<pre><code class="language-ts">declare namespace JSX {
+  interface IntrinsicElements {
+    'x-chip': { label: string };
+  }
+}
+</code></pre>
+<p>Prefer <code>ComponentProps&lt;'button'&gt;</code> for native props and <code>PropsWithChildren</code> for components that accept children.</p>
+<h3 id="dom-and-event-typing"><a class="header" href="#dom-and-event-typing">DOM and event typing</a></h3>
+<p>DOM events are generic in TypeScript. Narrow the event target to get safe access to <code>value</code>, <code>checked</code>, or <code>files</code>:</p>
+<pre><code class="language-ts">const onSubmit = (ev: SubmitEvent &amp; { target: HTMLFormElement }) =&gt; {
+  ev.preventDefault();
+  const form = new FormData(ev.target);
+  const email = String(form.get('email') ?? '');
+};
+
+const onToggle = (ev: Event &amp; { target: HTMLInputElement }) =&gt; {
+  const enabled = ev.target.checked;
+};
+</code></pre>
+<p>For keyboard and mouse events, prefer built-in DOM types like <code>KeyboardEvent</code> and <code>MouseEvent</code> to avoid <code>any</code>.</p>
+<p><a id="ts6-interop"></a></p>
+<h2 id="interop-with-javascript"><a class="header" href="#interop-with-javascript">Interop with JavaScript</a></h2>
+<p>Use <code>unknown</code> at boundaries and validate with schemas.</p>
+<pre><code class="language-ts">function parseJson&lt;T&gt;(raw: string, validate: (v: unknown) =&gt; v is T): T {
+  const data: unknown = JSON.parse(raw);
+  if (!validate(data)) throw new Error('Invalid payload');
+  return data;
+}
+</code></pre>
+<p>For JS packages without types, add minimal <code>*.d.ts</code> files instead of using <code>any</code> everywhere.</p>
+<pre><code class="language-ts">declare module 'legacy-lib' {
+  export function doThing(input: string): string;
+}
+</code></pre>
+<p>For globals:</p>
+<pre><code class="language-ts">declare global {
+  interface Window {
+    __PHILJS_VERSION__: string;
+  }
+}
+</code></pre>
+<p><a id="ts6-migration"></a></p>
+<h2 id="migration-from-javascript"><a class="header" href="#migration-from-javascript">Migration from JavaScript</a></h2>
+<p>For existing JS projects, migrate incrementally:</p>
+<ul>
+<li>Start with <code>allowJs: true</code> and <code>checkJs: true</code> to get type checking without converting files.</li>
+<li>Convert leaf modules first (utility and domain logic), then move toward UI and routing.</li>
+<li>Replace <code>// @ts-ignore</code> with <code>// @ts-expect-error</code> once you understand the error.</li>
+</ul>
+<p>You can also annotate JS with JSDoc:</p>
+<pre><code class="language-js">// @ts-check
+/** @typedef {{ id: string, email: string }} User */
+/** @param {User} user */
+function greet(user) {
+  return `Hello ${user.email}`;
+}
+</code></pre>
+<p>Use JSDoc to narrow types before you fully convert files to TS.
+<a id="ts6-testing"></a></p>
+<h2 id="testing-types"><a class="header" href="#testing-types">Testing types</a></h2>
+<p>Type-level tests prevent API drift.</p>
+<pre><code class="language-ts">import { expectTypeOf } from 'vitest';
+
+expectTypeOf&lt;ReturnType&lt;typeof loader&gt;&gt;().toMatchTypeOf&lt;{ user: User }&gt;();
+</code></pre>
+<p>You can also use <code>tsd</code> for dedicated <code>.test-d.ts</code> files.</p>
+<p>Use <code>// @ts-expect-error</code> to document intentional errors in tests. Avoid <code>// @ts-ignore</code> when possible.</p>
+<h3 id="debugging-type-errors"><a class="header" href="#debugging-type-errors">Debugging type errors</a></h3>
+<p>When the compiler reports a complex type error:</p>
+<ul>
+<li>Inline the type with <code>type X = ...</code> and hover in the editor.</li>
+<li>Break large unions into smaller named types.</li>
+<li>Use <code>as const</code> to avoid literal widening.</li>
+<li>Add intermediate variables to force inference.
+If an error mentions a massive inferred type, simplify the function signature with explicit generics or return types.</li>
+</ul>
+<p><a id="ts6-performance"></a></p>
+<h2 id="build-performance-and-project-references"><a class="header" href="#build-performance-and-project-references">Build performance and project references</a></h2>
+<p>Large repos need fast builds:</p>
+<ul>
+<li>Enable <code>incremental</code> and <code>composite</code> for project references.</li>
+<li>Split huge type declarations into smaller modules.</li>
+<li>Avoid massive union types or <code>any</code>-like escape hatches.</li>
+<li>Use <code>skipLibCheck: true</code> only when performance is critical and libs are trusted.</li>
+</ul>
+<p>Project reference example:</p>
+<pre><code class="language-json">{
+  "references": [
+    { "path": "../packages/core" },
+    { "path": "../packages/router" }
+  ]
+}
+</code></pre>
+<p>Use <code>tsc -b</code> for multi-project builds and <code>tsc --watch</code> for incremental dev feedback.</p>
+<p>Editor performance tips:</p>
+<ul>
+<li>Keep <code>types</code> lists small to avoid loading unnecessary globals.</li>
+<li>Split large <code>*.d.ts</code> files into modules.</li>
+<li>Prefer <code>skipLibCheck</code> only when you trust dependencies and need faster CI.</li>
+</ul>
+<p><a id="ts6-patterns"></a></p>
+<h2 id="real-world-patterns-for-philjs"><a class="header" href="#real-world-patterns-for-philjs">Real-world patterns for PhilJS</a></h2>
+<h3 id="typed-route-params"><a class="header" href="#typed-route-params">Typed route params</a></h3>
+<pre><code class="language-ts">type Params = { id: string };
+
+function parseParams(params: Record&lt;string, string | undefined&gt;): Params {
+  if (!params.id) throw new Error('Missing id');
+  return { id: params.id };
+}
+</code></pre>
+<h3 id="loader-results-as-discriminated-unions"><a class="header" href="#loader-results-as-discriminated-unions">Loader results as discriminated unions</a></h3>
+<pre><code class="language-ts">type LoaderResult =
+  | { status: 'ok'; user: User }
+  | { status: 'not-found' };
+</code></pre>
+<h3 id="safe-config-validation"><a class="header" href="#safe-config-validation">Safe config validation</a></h3>
+<pre><code class="language-ts">type AppConfig = { apiUrl: string; featureFlags: string[] };
+
+function parseConfig(env: Record&lt;string, string | undefined&gt;): AppConfig {
+  if (!env.API_URL) throw new Error('Missing API_URL');
+  return { apiUrl: env.API_URL, featureFlags: (env.FLAGS ?? '').split(',') };
+}
+</code></pre>
+<h3 id="schema-style-validation"><a class="header" href="#schema-style-validation">Schema-style validation</a></h3>
+<p>If you use a schema library, keep the inferred type close to the schema and export it for reuse:</p>
+<pre><code class="language-ts">// pseudo-code pattern
+const UserSchema = {
+  id: (v: unknown) =&gt; typeof v === 'string',
+  email: (v: unknown) =&gt; typeof v === 'string'
+};
+
+type User = { id: string; email: string };
+</code></pre>
+<p>The goal is one source of truth: validate at runtime, type-check at compile time.</p>
+<h3 id="branded-ids"><a class="header" href="#branded-ids">Branded IDs</a></h3>
+<pre><code class="language-ts">type Brand&lt;T, B&gt; = T &amp; { __brand: B };
+
+type UserId = Brand&lt;string, 'UserId'&gt;;
+</code></pre>
+<h3 id="cache-tags-with-template-literals"><a class="header" href="#cache-tags-with-template-literals">Cache tags with template literals</a></h3>
+<pre><code class="language-ts">type CacheTag = `user:${string}` | `project:${string}`;
+
+function tagUser(id: string): CacheTag {
+  return `user:${id}`;
+}
+</code></pre>
+<h3 id="typed-loaders-and-actions"><a class="header" href="#typed-loaders-and-actions">Typed loaders and actions</a></h3>
+<p>Keep loader and action shapes explicit to avoid inference drift:</p>
+<pre><code class="language-ts">type LoaderData = { user: User | null; lastLogin?: string };
+
+type Loader = (ctx: { request: Request }) =&gt; Promise&lt;LoaderData&gt;;
+type Action = (ctx: { request: Request }) =&gt; Promise&lt;{ ok: true } | { ok: false; error: ApiError }&gt;;
+</code></pre>
+<p>If you expose loader data to components, export the type so component props stay aligned.</p>
+<h3 id="store-selectors-with-keyof"><a class="header" href="#store-selectors-with-keyof">Store selectors with <code>keyof</code></a></h3>
+<pre><code class="language-ts">type StoreState = { theme: 'light' | 'dark'; locale: string };
+
+function select&lt;K extends keyof StoreState&gt;(state: StoreState, key: K): StoreState[K] {
+  return state[key];
+}
+</code></pre>
+<p><a id="ts6-using"></a></p>
+<h2 id="ts6-using-and-disposal"><a class="header" href="#ts6-using-and-disposal">TS6 <code>using</code> and disposal</a></h2>
+<p>TypeScript 6 adds <code>using</code> to model deterministic cleanup when types implement <code>Symbol.dispose</code> or <code>Symbol.asyncDispose</code>.</p>
+<pre><code class="language-ts">class TempFile {
+  constructor(private path: string) {}
+  [Symbol.dispose]() {
+    // cleanup
+  }
+}
+
+using file = new TempFile('/tmp/data');
+</code></pre>
+<p>Use <code>using</code> for resource cleanup in tooling, tests, or server utilities.</p>
+<p><a id="ts6-pitfalls"></a></p>
+<h2 id="common-pitfalls-and-fixes"><a class="header" href="#common-pitfalls-and-fixes">Common pitfalls and fixes</a></h2>
+<p>These issues show up frequently in PhilJS apps:</p>
+<ul>
+<li><strong>Widened literals</strong>: a config field becomes <code>string</code> instead of <code>'edge'</code>. Fix with <code>as const</code> or <code>satisfies</code>.</li>
+<li><strong><code>any</code> from JSON</strong>: <code>JSON.parse</code> returns <code>any</code> by default. Wrap it in a parser that returns <code>unknown</code> and validates.</li>
+<li><strong>Optional vs undefined</strong>: with <code>exactOptionalPropertyTypes</code>, <code>name?: string</code> does not accept <code>undefined</code>. Use <code>name?: string | undefined</code> if you need it.</li>
+<li><strong>Unchecked index access</strong>: <code>obj[key]</code> becomes <code>T | undefined</code> with <code>noUncheckedIndexedAccess</code>. Handle missing keys explicitly.</li>
+<li><strong>Excess property checks</strong>: inline object literals get checked more strictly. Assign to a typed variable first if needed.</li>
+<li><strong>Accidental <code>as</code></strong>: using assertions to silence the compiler can hide bugs. Prefer guards or schemas.</li>
+<li><strong>Non-serializable SSR data</strong>: <code>Date</code>, <code>Map</code>, and <code>Set</code> do not serialize cleanly. Convert to strings or arrays.</li>
+<li><strong>Type/value confusion</strong>: <code>import type</code> vs <code>import</code> matters with <code>verbatimModuleSyntax</code>. Use <code>import type</code> when you only need types.</li>
+</ul>
+<p>Treat compiler errors as design feedback. If something is hard to type, it might be hard to reason about.
+<a id="ts6-checklists"></a></p>
+<h2 id="checklists-and-exercises"><a class="header" href="#checklists-and-exercises">Checklists and exercises</a></h2>
+<h3 id="checklist-safer-types"><a class="header" href="#checklist-safer-types">Checklist: safer types</a></h3>
+<ul>
+<li>Use <code>unknown</code> at boundaries and narrow early.</li>
+<li>Prefer discriminated unions for state machines.</li>
+<li>Keep loader/action return types explicit.</li>
+<li>Avoid <code>any</code> in public surfaces.</li>
+<li>Use <code>satisfies</code> for config objects.</li>
+<li>Avoid <code>as</code> assertions in shared libraries.</li>
+</ul>
+<h3 id="exercises"><a class="header" href="#exercises">Exercises</a></h3>
+<ol>
+<li>Create a union type for loader states and make an exhaustive <code>switch</code>.</li>
+<li>Write a <code>defineRoute</code> helper using const type parameters.</li>
+<li>Add <code>expectTypeOf</code> tests for a component that forwards props.</li>
+<li>Build a branded ID type for <code>ProjectId</code> and use it in two functions.</li>
+<li>Model an API error type and enforce it in a loader.</li>
+<li>Add a type guard for <code>CacheTag</code> values and use it in invalidation helpers.</li>
+</ol>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://www.typescriptlang.org/docs/">TypeScript Handbook</a></li>
+<li><a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></li>
+<li><a href="../getting-started/installation.html">PhilJS Installation</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../rust-core/overview.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../autonomous_core.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../rust-core/overview.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../autonomous_core.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -85,14 +85,14 @@ export function Checkout(props: CheckoutProps) {
         error,
         submit: handleCheckout,
         // Simple default UI
-        render: () => \`
+        render: () => `
             <div class="phil-checkout">
-                \${loading() ? '<span class="spinner">Processing...</span>' : ''}
-                \${error() ? \`<div class="error">\${error()}</div>\` : ''}
-                <button onclick="\${handleCheckout}" \${loading() ? 'disabled' : ''}>
+                ${loading() ? '<span class="spinner">Processing...</span>' : ''}
+                ${error() ? `<div class="error">${error()}</div>` : ''}
+                <button onclick="${handleCheckout}" ${loading() ? 'disabled' : ''}>
                     Checkout
                 </button>
             </div>
-        \`
+        `
     };
 }

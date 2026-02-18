@@ -6,7 +6,9 @@
  * change streams, transactions, and more.
  */
 
-import { signal, computed, effect, batch, type Signal } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // TYPES
@@ -72,10 +74,10 @@ export interface PaginationOptions<T> extends FindOptions<T> {
 export interface PaginationState {
     page: Signal<number>;
     pageSize: Signal<number>;
-    totalPages: Signal<number>;
+    totalPages: Computed<number>;
     totalCount: Signal<number>;
-    hasNextPage: Signal<boolean>;
-    hasPreviousPage: Signal<boolean>;
+    hasNextPage: Computed<boolean>;
+    hasPreviousPage: Computed<boolean>;
 }
 
 export interface AggregationStage {

@@ -1,1 +1,1 @@
-export * from './spatial';
+export * from './spatial.js';

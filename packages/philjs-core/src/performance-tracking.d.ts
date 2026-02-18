@@ -211,4 +211,3 @@ export declare function createPerformanceReport(): {
     slowestAPIs: APIPerformance[];
     largestResources: ResourcePerformance[];
 };
-//# sourceMappingURL=performance-tracking.d.ts.map

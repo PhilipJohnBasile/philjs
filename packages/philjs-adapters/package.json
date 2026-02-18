@@ -110,12 +110,12 @@
     }
   },
   "scripts": {
-    "build": "tsc --noEmitOnError false || exit 0",
+    "build": "tsc --noEmitOnError false",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit || exit 0",
-    "lint": "npm run typecheck || exit 0"
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",

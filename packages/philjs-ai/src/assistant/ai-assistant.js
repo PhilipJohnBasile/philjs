@@ -102,7 +102,7 @@ export class AIAssistant {
                 return cached;
         }
         const prompt = this.buildCodeGenPrompt(request);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             maxTokens: 8192,
             systemPrompt: this.getCodeGenSystemPrompt(request.type),
@@ -269,7 +269,7 @@ If you take actions, list them in a JSON block like:
 \`\`\`
 
 Respond naturally:`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             maxTokens: 4096,
             systemPrompt: this.getChatSystemPrompt(),
@@ -330,10 +330,11 @@ Provide:
 4. Any potential issues or improvements
 
 Be concise but thorough.`;
-        return this.provider.generateCompletion(prompt, {
+        const { content } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an expert code explainer. Be clear, concise, and accurate.',
         });
+        return content;
     }
     /**
      * Explain an error and suggest fixes
@@ -355,7 +356,7 @@ Return JSON:
   "solutions": ["Solution 1", "Solution 2"],
   "fixedCode": "// corrected code if applicable"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a debugging expert. Provide clear explanations and working solutions.',
         });
@@ -393,7 +394,7 @@ Return JSON:
   ],
   "summary": "Overall assessment"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a senior code reviewer. Be thorough but constructive.',
         });
@@ -427,7 +428,7 @@ Provide:
   "issues": ["Issue 1", "Issue 2"],
   "architecture": "Brief architecture description"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             maxTokens: 2048,
             systemPrompt: 'You are a project architect. Provide actionable analysis.',

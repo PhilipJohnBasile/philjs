@@ -239,4 +239,3 @@ export declare function suggestComponents(provider: AIProvider, context: Suggest
  * Quick pattern detection helper
  */
 export declare function detectUIPatterns(provider: AIProvider, code: string): Promise<PatternDetection[]>;
-//# sourceMappingURL=component-suggester.d.ts.map

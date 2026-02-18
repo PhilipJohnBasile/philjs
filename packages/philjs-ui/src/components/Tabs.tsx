@@ -56,9 +56,10 @@ export function Tabs(props: TabsProps): JSX.Element {
   };
 
   return (
-    <TabsContext.Provider value={contextValue}>
-      <div className={className}>{children}</div>
-    </TabsContext.Provider>
+    <TabsContext.Provider
+      value={contextValue}
+      children={<div className={className}>{children}</div>}
+    />
   );
 }
 

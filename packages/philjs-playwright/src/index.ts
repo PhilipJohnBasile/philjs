@@ -1685,33 +1685,5 @@ export const philjsMatchers = {
   },
 };
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  PhilJSTestUtils,
-  VisualTestUtils,
-  AccessibilityUtils,
-  PerformanceUtils,
-  NetworkUtils,
-  TimeUtils,
-  PhilJSPageObject,
-  createPhilJSFixtures,
-  mount,
-  createComponentHarness,
-  philjsMatchers,
-};
-
-// Type exports
-export type {
-  PhilJSFixtures,
-  SignalInfo,
-  ComponentInfo,
-  RenderContext,
-  VisualComparisonOptions,
-  AccessibilityViolation,
-  PerformanceMetrics,
-  MockRouteOptions,
-  TimeState,
-};
+// All functions and classes are exported inline via `export` declarations above
+// Type exports are also defined inline

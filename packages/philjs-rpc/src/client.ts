@@ -231,7 +231,7 @@ class RequestBatcher {
  * @example
  * ```ts
  * import { createClient } from 'philjs-rpc/client';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const client = createClient<AppAPI>({ url: '/api/rpc' });
  *

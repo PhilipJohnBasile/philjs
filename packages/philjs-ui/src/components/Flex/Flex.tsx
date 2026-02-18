@@ -60,7 +60,7 @@ const flexVariants = variants({
     wrap: 'nowrap',
     align: 'stretch',
     justify: 'start',
-    inline: false,
+    inline: 'false',
   },
 });
 

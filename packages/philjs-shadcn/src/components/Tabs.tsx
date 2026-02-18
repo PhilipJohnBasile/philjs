@@ -142,7 +142,7 @@ export function TabsTrigger(props: TabsTriggerProps) {
             role="tab"
             aria-selected={isSelected}
             aria-controls={`tabpanel-${value}`}
-            tabindex={isSelected ? 0 : -1}
+            tabIndex={isSelected ? 0 : -1}
             disabled={isDisabled}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
@@ -174,7 +174,7 @@ export function TabsContent(props: TabsContentProps) {
         <div
             role="tabpanel"
             id={`tabpanel-${value}`}
-            tabindex={0}
+            tabIndex={0}
             class={cn(
                 'mt-2 ring-offset-background',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',

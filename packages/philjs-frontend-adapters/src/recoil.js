@@ -1,4 +1,9 @@
-import { createSignal, createMemo } from '@philjs/core';
+import { signal, memo } from '@philjs/core';
+// Compatibility wrapper to provide tuple-style API
+function createSignal(initialValue) {
+    const sig = signal(initialValue);
+    return [() => sig.get(), (v) => sig.set(v)];
+}
 // Global store for atoms to ensure singleton behavior per key
 const atomStore = new Map();
 function getAtomSignal(atom) {
@@ -20,9 +25,9 @@ export function useRecoilValue(atom) {
 }
 export function selector(options) {
     // Selectors in PhilJS maps directly to Memos
-    // However, because 'get' is dynamic in Recoil but static in createMemo, 
+    // However, because 'get' is dynamic in Recoil but static in memo,
     // we pass a 'get' helper that unwraps the atom's signal.
-    return createMemo(() => {
+    return memo(() => {
         return options.get({
             get: (atom) => {
                 const [val] = getAtomSignal(atom);

@@ -177,4 +177,3 @@ export declare function createReplicatedState(config: ReplicationConfig): Replic
  * Create sync request handler
  */
 export declare function createSyncHandler(state: ReplicatedState): (request: Request) => Promise<Response>;
-//# sourceMappingURL=state-replication.d.ts.map

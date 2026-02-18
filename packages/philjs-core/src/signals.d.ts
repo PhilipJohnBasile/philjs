@@ -289,4 +289,3 @@ export declare function getHMRStats(): {
  * @alias memo
  */
 export declare const computed: typeof memo;
-//# sourceMappingURL=signals.d.ts.map

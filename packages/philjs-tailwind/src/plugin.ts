@@ -5,7 +5,12 @@
  */
 
 import plugin from 'tailwindcss/plugin.js';
-import type { PluginAPI } from 'tailwindcss/types/config.js';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PluginAPI = any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TailwindPlugin = any;
 
 export interface PhilJSPluginOptions {
   /** Add signal-related utilities */
@@ -20,7 +25,7 @@ export interface PhilJSPluginOptions {
   typography?: boolean;
 }
 
-export function philjsTailwindPlugin(options: PhilJSPluginOptions = {}) {
+export function philjsTailwindPlugin(options: PhilJSPluginOptions = {}): TailwindPlugin {
   const {
     signals = true,
     components = true,
@@ -321,7 +326,7 @@ export function philjsTailwindPlugin(options: PhilJSPluginOptions = {}) {
   );
 }
 
-export function createPhilJSPlugin(options: PhilJSPluginOptions = {}) {
+export function createPhilJSPlugin(options: PhilJSPluginOptions = {}): TailwindPlugin {
   return philjsTailwindPlugin(options);
 }
 

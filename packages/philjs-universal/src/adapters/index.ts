@@ -4,8 +4,9 @@
  * Provides adapters to convert Universal Components to framework-specific formats.
  */
 
-export { toWebComponent, WebComponentOptions } from './web-component';
-export { toPhilJS } from './philjs';
+export { toWebComponent } from './web-component.js';
+export type { WebComponentOptions } from './web-component.js';
+export { toPhilJS } from './philjs.js';
 
 // Re-export types
 export type {
@@ -14,4 +15,4 @@ export type {
   RenderContext,
   PropDefinition,
   EventDefinition,
-} from '../protocol';
+} from '../protocol.js';

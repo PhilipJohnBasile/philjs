@@ -19,9 +19,9 @@
     "templates"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript || exit 0",
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "dev": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript -w",
-    "test": "vitest run || exit 0"
+    "test": "vitest run"
   },
   "keywords": [
     "philjs",
@@ -44,10 +44,12 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.2.0",
     "@types/node": "^25.0.0",
-    "@types/prompts": "^2.4.9"
+    "@types/prompts": "^2.4.9",
+    "typescript": "6.0.0-dev.20251230",
+    "vitest": "^4.0.16"
   },
   "sideEffects": true,
   "license": "MIT",

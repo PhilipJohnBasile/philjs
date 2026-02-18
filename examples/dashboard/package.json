@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build || exit 0",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -23,5 +23,3 @@
     "vite": "^7.3.0"
   }
 }
-
-

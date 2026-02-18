@@ -646,4 +646,3 @@ declare global {
 }
 export type IntrinsicElements = JSX.IntrinsicElements;
 export type IntrinsicAttributes = JSX.IntrinsicAttributes;
-//# sourceMappingURL=types.d.ts.map

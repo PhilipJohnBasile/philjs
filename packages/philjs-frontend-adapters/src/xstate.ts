@@ -1,4 +1,10 @@
-import { createSignal } from '@philjs/core';
+import { signal } from '@philjs/core';
+
+// Compatibility wrapper to provide tuple-style API
+function createSignal<T>(initialValue: T): [() => T, (v: T) => void] {
+    const sig = signal(initialValue);
+    return [() => sig.get(), (v: T) => sig.set(v)];
+}
 
 export interface XStateEvent {
     type: string;
@@ -19,7 +25,7 @@ export interface MachineConfig {
 
 export function useMachine(machine: MachineConfig) {
     const [state, setState] = createSignal(machine.initialState);
-    const [context, setContext] = createSignal(machine.context);
+    const [context, _setContext] = createSignal(machine.context);
 
     const send = (event: XStateEvent | string) => {
         const eventType = typeof event === 'string' ? event : event.type;

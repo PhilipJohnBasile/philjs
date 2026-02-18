@@ -27,4 +27,3 @@ export declare class ActiveRecordWrapper {
     static ask(naturalLanguageQuery: string): Promise<any[] | Relation<any>>;
     save(): Promise<boolean>;
 }
-//# sourceMappingURL=active-record.d.ts.map

@@ -5,7 +5,8 @@
  * with signal-reactive state and real-time monitoring.
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+const computed = memo;
 
 // ============================================================================
 // Types & Interfaces
@@ -311,29 +312,29 @@ export function createRailwayState(config: RailwayConfig) {
     });
 
     const activeEnvironment = computed(() =>
-        state.value.environments.find(e => e.id === state.value.config.environmentId)
+        state.get().environments.find(e => e.id === state.get().config.environmentId)
     );
 
     const activeService = computed(() =>
-        state.value.services.find(s => s.id === state.value.config.serviceId)
+        state.get().services.find(s => s.id === state.get().config.serviceId)
     );
 
     const latestDeployment = computed(() => {
-        const deployments = [...state.value.deployments].sort(
+        const deployments = [...state.get().deployments].sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         return deployments[0];
     });
 
     const isDeploying = computed(() =>
-        state.value.deployments.some(d =>
+        state.get().deployments.some(d =>
             ['BUILDING', 'DEPLOYING', 'INITIALIZING', 'QUEUED', 'WAITING'].includes(d.status)
         )
     );
 
     const healthyServices = computed(() =>
-        state.value.services.filter(s => {
-            const latestDeploy = state.value.deployments
+        state.get().services.filter(s => {
+            const latestDeploy = state.get().deployments
                 .filter(d => d.serviceId === s.id)
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
             return latestDeploy?.status === 'SUCCESS';
@@ -342,7 +343,7 @@ export function createRailwayState(config: RailwayConfig) {
 
     const servicesByEnvironment = computed(() => {
         const map = new Map<string, Service[]>();
-        for (const service of state.value.services) {
+        for (const service of state.get().services) {
             const existing = map.get(service.environmentId) || [];
             map.set(service.environmentId, [...existing, service]);
         }
@@ -1073,7 +1074,7 @@ export function createRailwayAdapter(config: RailwayConfig) {
 
         try {
             batch(() => {
-                state.value = { ...state.value, loading: true, error: null };
+                state.set({ ...state.get(), loading: true, error: null });
             });
 
             const project = await client.getProject(config.projectId);
@@ -1105,8 +1106,8 @@ export function createRailwayAdapter(config: RailwayConfig) {
             }
 
             batch(() => {
-                state.value = {
-                    ...state.value,
+                state.set({
+                    ...state.get(),
                     project,
                     environments,
                     services: allServices,
@@ -1115,16 +1116,16 @@ export function createRailwayAdapter(config: RailwayConfig) {
                     plugins: project.plugins || [],
                     loading: false,
                     connected: true
-                };
+                });
             });
         } catch (error) {
             batch(() => {
-                state.value = {
-                    ...state.value,
+                state.set({
+                    ...state.get(),
                     loading: false,
                     error: error instanceof Error ? error.message : 'Unknown error',
                     connected: false
-                };
+                });
             });
         }
     }
@@ -1246,14 +1247,14 @@ export function useRailwayDeployments(projectId: string, serviceId: string) {
     const error = signal<string | null>(null);
 
     async function refresh() {
-        loading.value = true;
-        error.value = null;
+        loading.set(true);
+        error.set(null);
         try {
-            deployments.value = await client.listDeployments(serviceId);
+            deployments.set(await client.listDeployments(serviceId));
         } catch (e) {
-            error.value = e instanceof Error ? e.message : 'Failed to load deployments';
+            error.set(e instanceof Error ? e.message : 'Failed to load deployments');
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     }
 
@@ -1280,22 +1281,22 @@ export function useRailwayLogs(deploymentId: string) {
     const loading = signal(false);
 
     async function fetchLogs() {
-        loading.value = true;
+        loading.set(true);
         try {
             const [runtimeLogs, build] = await Promise.all([
                 client.getLogs(deploymentId),
                 client.getBuildLogs(deploymentId)
             ]);
-            logs.value = runtimeLogs;
-            buildLogs.value = build;
+            logs.set(runtimeLogs);
+            buildLogs.set(build);
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     }
 
     function startStreaming() {
         return client.streamLogs(deploymentId, (log) => {
-            logs.value = [...logs.value, log];
+            logs.set([...logs.get(), log]);
         });
     }
 
@@ -1319,11 +1320,11 @@ export function useRailwayMetrics(serviceId: string) {
     const period = signal<MetricsOptions['period']>('1h');
 
     async function refresh() {
-        loading.value = true;
+        loading.set(true);
         try {
-            metrics.value = await client.getMetrics(serviceId, { period: period.value });
+            metrics.set(await client.getMetrics(serviceId, { period: period.get() }));
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     }
 
@@ -1339,7 +1340,7 @@ export function useRailwayMetrics(serviceId: string) {
         period,
         refresh,
         setPeriod: (p: MetricsOptions['period']) => {
-            period.value = p;
+            period.set(p);
             refresh();
         }
     };
@@ -1352,14 +1353,14 @@ export function useRailwayVariables(projectId: string, environmentId: string, se
     const error = signal<string | null>(null);
 
     async function refresh() {
-        loading.value = true;
-        error.value = null;
+        loading.set(true);
+        error.set(null);
         try {
-            variables.value = await client.listVariables(projectId, environmentId, serviceId);
+            variables.set(await client.listVariables(projectId, environmentId, serviceId));
         } catch (e) {
-            error.value = e instanceof Error ? e.message : 'Failed to load variables';
+            error.set(e instanceof Error ? e.message : 'Failed to load variables');
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     }
 
@@ -1392,7 +1393,7 @@ export function useRailwayVariables(projectId: string, environmentId: string, se
 // ============================================================================
 
 export interface RailwayJsonConfig {
-    schema?: string;
+    '$schema'?: string;
     build?: {
         builder?: Service['builder'];
         buildCommand?: string;

@@ -24,22 +24,22 @@ export class StrapiClient {
   constructor(private apiUrl: string, private token?: string) { }
 
   async find(resource: string, fields: string[] = ['id']) {
-    const query = \`query { \${resource} { data { id attributes { \${fields.join(' ')} } } } }\`;
-        return gql(\`\${this.apiUrl}/graphql\`, query);
-    }
+    const query = `query { ${resource} { data { id attributes { ${fields.join(' ')} } } } }`;
+    return gql(`${this.apiUrl}/graphql`, query);
+  }
 
-    async findOne(resource: string, id: string, fields: string[] = ['id']) {
-        const query = \`query { \${resource}(id: "\${id}") { data { id attributes { \${fields.join(' ')} } } } }\`;
-        return gql(\`\${this.apiUrl}/graphql\`, query);
-    }
+  async findOne(resource: string, id: string, fields: string[] = ['id']) {
+    const query = `query { ${resource}(id: "${id}") { data { id attributes { ${fields.join(' ')} } } } }`;
+    return gql(`${this.apiUrl}/graphql`, query);
+  }
 }
 
 // Deprecated: Moving towards runtime introspection
 export function createStrapiSchema(apiUrl: string, types?: StrapiType[]) {
-    // Return a functional client instantiator code for codegen if needed
-    // But primarily we export the Client class now
-    return \`
-        import { StrapiClient } from '@philjs/integration';
-        const strapi = new StrapiClient('\${apiUrl}');
-    \`;
+  // Return a functional client instantiator code for codegen if needed
+  // But primarily we export the Client class now
+  return `
+    import { StrapiClient } from '@philjs/integration';
+    const strapi = new StrapiClient('${apiUrl}');
+  `;
 }

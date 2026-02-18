@@ -28,6 +28,7 @@ export interface TableFooterProps {
 export interface TableRowProps {
     className?: string;
     children?: any;
+    onClick?: () => void;
 }
 
 export interface TableHeadProps {
@@ -112,7 +113,7 @@ export function TableFooter(props: TableFooterProps) {
  * Table row
  */
 export function TableRow(props: TableRowProps) {
-    const { className, children } = props;
+    const { className, children, onClick } = props;
 
     return (
         <tr
@@ -120,6 +121,7 @@ export function TableRow(props: TableRowProps) {
                 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
                 className
             )}
+            onClick={onClick}
         >
             {children}
         </tr>

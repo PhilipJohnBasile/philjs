@@ -3,8 +3,8 @@
  */
 
 import { mount } from 'philjs-jsx';
-import { App } from './App';
-import { initializeNative } from './native';
+import { App } from './App.js';
+import { initializeNative } from './native.js';
 
 // Initialize native plugins
 initializeNative().then(() => {

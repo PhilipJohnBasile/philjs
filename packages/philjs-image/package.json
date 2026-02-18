@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run --passWithNoTests"
   },

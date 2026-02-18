@@ -15,4 +15,3 @@ export interface MavenPluginConfig {
     buildPlugins?: MavenDependency[];
 }
 export declare function generatePomXml(config: MavenPluginConfig): string;
-//# sourceMappingURL=maven-plugin.d.ts.map

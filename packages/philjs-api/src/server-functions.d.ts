@@ -15,7 +15,7 @@
  * }
  *
  * // In component
- * import { createUser } from './actions/user';
+ * import { createUser } from './actions/user.js';
  *
  * function SignupForm() {
  *   return (

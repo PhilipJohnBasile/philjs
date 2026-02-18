@@ -24,13 +24,13 @@ import {
 } from './index.js';
 
 interface CliOptions {
-  output?: string;
-  framework?: 'vitest' | 'jest' | 'playwright';
-  style?: 'unit' | 'integration' | 'e2e';
-  language?: 'typescript' | 'javascript';
-  config?: string;
-  verbose?: boolean;
-  dryRun?: boolean;
+  output?: string | undefined;
+  framework?: 'vitest' | 'jest' | 'playwright' | undefined;
+  style?: 'unit' | 'integration' | 'e2e' | undefined;
+  language?: 'typescript' | 'javascript' | undefined;
+  config?: string | undefined;
+  verbose?: boolean | undefined;
+  dryRun?: boolean | undefined;
 }
 
 // ANSI colors for terminal output
@@ -116,35 +116,36 @@ ${colors.cyan}FLOW FILE FORMAT${colors.reset}
 `);
 }
 
-function parseArgs(args: string[]): { command: string; target?: string; options: CliOptions } {
+function parseArgs(args: string[]): { command: string; target?: string | undefined; options: CliOptions } {
   const options: CliOptions = {};
   let command = '';
   let target: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
+    if (!arg) continue;
 
     if (arg.startsWith('-')) {
       switch (arg) {
         case '-o':
         case '--output':
-          options.output = args[++i];
+          options.output = args[++i] ?? undefined;
           break;
         case '-f':
         case '--framework':
-          options.framework = args[++i] as CliOptions['framework'];
+          options.framework = (args[++i] ?? undefined) as CliOptions['framework'];
           break;
         case '-s':
         case '--style':
-          options.style = args[++i] as CliOptions['style'];
+          options.style = (args[++i] ?? undefined) as CliOptions['style'];
           break;
         case '-l':
         case '--language':
-          options.language = args[++i] as CliOptions['language'];
+          options.language = (args[++i] ?? undefined) as CliOptions['language'];
           break;
         case '-c':
         case '--config':
-          options.config = args[++i];
+          options.config = args[++i] ?? undefined;
           break;
         case '-v':
         case '--verbose':

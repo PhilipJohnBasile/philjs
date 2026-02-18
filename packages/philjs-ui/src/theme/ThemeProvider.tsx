@@ -126,9 +126,7 @@ export function ThemeProvider(props: ThemeProviderProps): JSX.Element {
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value} children={children as any} />
   );
 }
 

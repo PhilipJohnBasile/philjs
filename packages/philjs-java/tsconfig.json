@@ -13,11 +13,13 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
     "dist",
+    "src/main/**",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.stories.tsx"

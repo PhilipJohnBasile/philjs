@@ -586,7 +586,7 @@ function generateMainFile(config: ProjectConfig): string {
 
   return `import { render } from '@philjs/core';
 import { createRouter } from 'philjs-router';
-import App from './App';${importCss}
+import App from './App.js';${importCss}
 
 const router = createRouter({
   routes: [
@@ -632,7 +632,7 @@ export function Counter() {
 }
 
 function generateHomeRoute(config: ProjectConfig): string {
-  return `import { Counter } from '../components/Counter';
+  return `import { Counter } from '../components/Counter.js';
 
 export default function Home() {
   return (
@@ -683,7 +683,7 @@ export default function Layout({ children }${config.typescript ? ': { children: 
 
 function generateSSREntryServer(config: ProjectConfig): string {
   return `import { renderToString } from 'philjs-ssr';
-import App from './App';
+import App from './App.js';
 
 export function render(url${config.typescript ? ': string' : ''}) {
   const html = renderToString(<App url={url} />);
@@ -694,7 +694,7 @@ export function render(url${config.typescript ? ': string' : ''}) {
 
 function generateSSREntryClient(config: ProjectConfig): string {
   return `import { hydrate } from '@philjs/core';
-import App from './App';
+import App from './App.js';
 
 hydrate(<App />, document.getElementById('app'));
 `;
@@ -1088,7 +1088,7 @@ export default defineConfig({
 function generateExampleTest(config: ProjectConfig): string {
   return `import { describe, it, expect } from 'vitest';
 import { render } from 'philjs-testing';
-import App from '../src/App';
+import App from '../src/App.js';
 
 describe('App', () => {
   it('renders without crashing', () => {

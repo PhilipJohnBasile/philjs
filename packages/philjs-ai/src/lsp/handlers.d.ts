@@ -324,4 +324,3 @@ export declare class LSPHandlers {
  * @returns LSP handlers
  */
 export declare function createLSPHandlers(provider: AIProvider): LSPHandlers;
-//# sourceMappingURL=handlers.d.ts.map

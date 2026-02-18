@@ -1,6 +1,9 @@
 {
   "name": "@philjs/shadcn",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "Native shadcn/ui components for PhilJS - beautiful, accessible components built with signals",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,9 +24,9 @@
     }
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {

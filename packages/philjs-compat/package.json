@@ -29,11 +29,11 @@
   ],
   "sideEffects": true,
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit || exit 0",
-    "test": "vitest run || exit 0",
-    "lint": "eslint src/ || exit 0"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src/"
   },
   "keywords": [
     "philjs",
@@ -52,6 +52,8 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
+    "intersection-observer": "^0.12.2",
+    "resize-observer-polyfill": "^1.5.1",
     "tsup": "^8.5.1",
     "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"

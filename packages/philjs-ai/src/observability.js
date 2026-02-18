@@ -173,6 +173,7 @@ export class ObservableAIProvider {
         }
         // Debug logging
         if (this.config.debug) {
+            console.log({
                 type: event.type,
                 model: event.model,
                 tokens: event.inputTokens && event.outputTokens
@@ -222,18 +223,19 @@ export class ObservableAIProvider {
         try {
             const response = await this.provider.generateCompletion(prompt, options);
             const latencyMs = Date.now() - startTime;
-            // Estimate output tokens
-            const estimatedOutputTokens = Math.ceil(response.length / 4);
-            const cost = calculateCost(model, estimatedInputTokens, estimatedOutputTokens);
+            // Use real usage if available, otherwise estimate
+            const inputTokens = response.usage?.inputTokens ?? estimatedInputTokens;
+            const outputTokens = response.usage?.outputTokens ?? Math.ceil(response.content.length / 4);
+            const cost = calculateCost(model, inputTokens, outputTokens);
             this.recordEvent({
                 type: 'call',
                 timestamp: startTime,
                 provider: this.provider.name,
                 model,
-                prompt: this.config.includeContent ? prompt : undefined,
-                response: this.config.includeContent ? response : undefined,
-                inputTokens: estimatedInputTokens,
-                outputTokens: estimatedOutputTokens,
+                ...(this.config.includeContent && { prompt }),
+                ...(this.config.includeContent && { response: response.content }),
+                inputTokens,
+                outputTokens,
                 cost,
                 latencyMs,
             });

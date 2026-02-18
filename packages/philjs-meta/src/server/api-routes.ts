@@ -9,7 +9,7 @@
  * - Error handling
  */
 
-import type { MiddlewareContext, MiddlewareFunction } from './middleware';
+import type { MiddlewareContext, MiddlewareFunction } from './middleware.js';
 
 /**
  * HTTP method types

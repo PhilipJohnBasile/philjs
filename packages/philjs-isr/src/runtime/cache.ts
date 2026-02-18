@@ -168,7 +168,7 @@ export class RuntimeCache {
         path,
         createdAt: now,
         revalidatedAt: now,
-        revalidateInterval: revalidateInterval === false ? 0 : revalidateInterval,
+        revalidateInterval: revalidateInterval ?? 0,
         tags: options.tags ?? [],
         status: 'fresh',
         regenerationCount: 0,

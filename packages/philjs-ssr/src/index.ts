@@ -33,26 +33,26 @@ export function renderToString(vnode: any): string {
   }
 
   // Handle HTML Tags
-  let out = \`<\${type}\`;
+  let out = `<${type}`;
 
   for (const [key, value] of Object.entries(props)) {
       if (key === 'children' || key === 'shadowRootMode') continue;
       if (key === 'style' && typeof value === 'object') {
           const styleStr = Object.entries(value as object)
-              .map(([k, v]) => \`\${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:\${v}\`)
+              .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
               .join(';');
-          out += \` style="\${escapeHtml(styleStr)}"\`;
+          out += ` style="${escapeHtml(styleStr)}"`;
       } else if (value === true) {
-          out += \` \${key}\`; // Boolean attribute
+          out += ` ${key}`; // Boolean attribute
       } else if (value !== false && value !== null && value !== undefined) {
-          out += \` \${key}="\${escapeHtml(String(value))}"\`;
+          out += ` ${key}="${escapeHtml(String(value))}"`;
       }
   }
 
   if (props.shadowRootMode) {
-    out += \`><template shadowrootmode="\${props.shadowRootMode}">\`;
+    out += `><template shadowrootmode="${props.shadowRootMode}">`;
     out += renderToString(children);
-    out += \`</template></\${type}>\`;
+    out += `</template></${type}>`;
     return out;
   }
 
@@ -62,7 +62,7 @@ export function renderToString(vnode: any): string {
       return out + ' />';
   }
 
-  out += \`>\${renderToString(children)}</\${type}>\`;
+  out += `>${renderToString(children)}</${type}>`;
   return out;
 }
 export { renderToStreamingResponse, Suspense } from "./streaming.js";

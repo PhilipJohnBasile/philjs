@@ -7,8 +7,7 @@
 export { MemoryCacheAdapter, createMemoryCache } from './memory.js';
 export type { MemoryCacheConfig } from './memory.js';
 
-export { RedisCacheAdapter, createRedisCache } from './redis.js';
-export type { RedisConfig } from './redis.js';
+// Redis adapter requires ioredis - use dynamic import: const { RedisCacheAdapter } = await import('@philjs/isr/adapters/redis');
 
 export { FilesystemCacheAdapter, createFilesystemCache } from './filesystem.js';
 export type { FilesystemCacheConfig } from './filesystem.js';

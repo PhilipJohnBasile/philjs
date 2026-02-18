@@ -1,6 +1,9 @@
 {
   "name": "@philjs/docs-template",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "VitePress-like documentation template for PhilJS projects",
   "type": "module",
   "main": "./dist/index.js",
@@ -9,7 +12,7 @@
     "philjs-docs": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch"
   },
   "dependencies": {

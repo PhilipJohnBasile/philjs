@@ -127,4 +127,3 @@ export declare function getA11yAI(): A11yAI | null;
 export declare function useA11yAudit(root?: Element): Promise<A11yReport>;
 export declare function useAutoAltText(imageUrl: string, context?: string): Promise<GeneratedAltText>;
 export { AltTextGenerator, AriaLabelGenerator, getContrastRatio, adjustColorForContrast };
-//# sourceMappingURL=index.d.ts.map

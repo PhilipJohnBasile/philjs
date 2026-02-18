@@ -218,7 +218,7 @@ export function Slider(props: SliderProps) {
                     <div
                         key={index}
                         role="slider"
-                        tabindex={isDisabled ? -1 : 0}
+                        tabIndex={isDisabled ? -1 : 0}
                         aria-valuemin={min}
                         aria-valuemax={max}
                         aria-valuenow={val}

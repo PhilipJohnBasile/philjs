@@ -536,7 +536,7 @@ export class MigrationManager {
   }
 
   private getDefaultMigrationTemplate(name: string): string {
-    return `import type { Migration } from '../types';
+    return `import type { Migration } from '../types.js';
 
 export default {
   name: '${name}',
@@ -555,7 +555,7 @@ export default {
   private getTableMigrationTemplate(name: string): string {
     const tableName = this.sanitizeName(name.replace(/^create_/, ''));
 
-    return `import type { Migration } from '../types';
+    return `import type { Migration } from '../types.js';
 
 export default {
   name: '${name}',
@@ -575,7 +575,7 @@ export default {
   }
 
   private getAlterMigrationTemplate(name: string): string {
-    return `import type { Migration } from '../types';
+    return `import type { Migration } from '../types.js';
 
 export default {
   name: '${name}',
@@ -596,7 +596,7 @@ export default {
   }
 
   private getDataMigrationTemplate(name: string): string {
-    return `import type { Migration } from '../types';
+    return `import type { Migration } from '../types.js';
 
 export default {
   name: '${name}',

@@ -17,9 +17,9 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript || exit 0",
-    "test": "jest || exit 0",
-    "typecheck": "tsc --noEmit || exit 0"
+    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "preset": "ts-jest",

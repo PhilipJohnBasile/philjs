@@ -4,13 +4,18 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": false,
     "noEmitOnError": false,
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {}
   },
   "include": [
     "src/**/*"
@@ -20,6 +25,8 @@
     "dist",
     "**/*.test.ts",
     "**/*.test.tsx",
-    "**/*.stories.tsx"
+    "**/*.stories.tsx",
+    "src/backbone.ts",
+    "src/python-bridge.ts"
   ]
 }

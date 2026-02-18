@@ -2,8 +2,8 @@
  * Atomic Utilities Examples for PhilJS CSS
  */
 
-import { createAtomicSystem } from '../src';
-import { theme } from './theme-system';
+import { createAtomicSystem } from '../src.js';
+import { theme } from './theme-system.js';
 
 // ===================================
 // 1. Complete Atomic System

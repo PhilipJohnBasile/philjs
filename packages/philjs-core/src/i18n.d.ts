@@ -117,4 +117,3 @@ export declare class AITranslationService {
  * Route-based locale detection middleware.
  */
 export declare function createLocaleMiddleware(config: I18nConfig): (request: Request) => Locale;
-//# sourceMappingURL=i18n.d.ts.map

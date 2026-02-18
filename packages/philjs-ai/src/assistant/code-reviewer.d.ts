@@ -157,7 +157,7 @@ export declare class CodeReviewer {
     private provider;
     constructor(provider: AIProvider);
     /**
-     * Review a code file
+     * Review a code file - comprehensive analysis including all focus areas
      */
     reviewCode(code: string, config?: ReviewConfig): Promise<ReviewResult>;
     /**
@@ -199,9 +199,52 @@ export declare class CodeReviewer {
     private countAdditions;
     private countDeletions;
     private parseJSON;
+    /**
+     * Calculate real code metrics
+     */
+    private calculateMetrics;
+    /**
+     * Calculate cyclomatic complexity
+     * Counts decision points: if, else if, for, while, case, catch, &&, ||, ?:
+     */
+    private calculateCyclomaticComplexity;
+    /**
+     * Calculate cognitive complexity
+     * Weighted measure considering nesting and control flow breaks
+     */
+    private calculateCognitiveComplexity;
+    private extractFunctionBody;
+    /**
+     * Calculate maintainability index (0-100)
+     * Based on Halstead volume, cyclomatic complexity, and lines of code
+     */
+    private calculateMaintainabilityIndex;
+    /**
+     * Count duplicate lines (simple heuristic)
+     */
+    private countDuplicateLines;
+    /**
+     * Count import/require statements
+     */
+    private countDependencies;
+    /**
+     * Evaluate custom rules against code
+     */
+    private evaluateCustomRules;
+    /**
+     * Filter issues by minimum severity
+     */
+    private filterBySeverity;
+    /**
+     * Calculate review summary from issues
+     */
+    private calculateSummary;
+    /**
+     * Calculate overall review score (0-100)
+     */
+    private calculateScore;
 }
 /**
  * Create a code reviewer
  */
 export declare function createCodeReviewer(provider: AIProvider): CodeReviewer;
-//# sourceMappingURL=code-reviewer.d.ts.map

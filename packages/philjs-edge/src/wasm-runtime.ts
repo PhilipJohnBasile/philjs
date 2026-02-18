@@ -38,10 +38,16 @@ export class WasmRuntime {
         console.log('WasmRuntime: Bridging JS Float32Array to WASM Heap...');
         // In reality: Copy bytes to this.memory.buffer
 
-        const ptr = this.instance.exports.malloc(inputData.byteLength);
-        const success = this.instance.exports.run_inference(ptr, inputData.length);
+        const exports = this.instance.exports as unknown as {
+            malloc: (size: number) => number;
+            run_inference: (ptr: number, len: number) => number;
+            free: (ptr: number) => void;
+        };
 
-        this.instance.exports.free(ptr);
+        const ptr = exports.malloc(inputData.byteLength);
+        const success = exports.run_inference(ptr, inputData.length);
+
+        exports.free(ptr);
 
         return success === 0 ? { status: 'ok', outputPtr: 2048 } : { status: 'error' };
     }

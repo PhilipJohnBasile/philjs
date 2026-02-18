@@ -42,12 +42,12 @@ const textareaVariants = variants({
     size: 'md',
     variant: 'outline',
     resize: 'vertical',
-    isInvalid: false,
+    isInvalid: 'false',
   },
   compoundVariants: [
-    { variant: 'outline', isInvalid: true, class: 'border-red-500 focus:border-red-500 focus:ring-red-500' },
-    { variant: 'filled', isInvalid: true, class: 'bg-red-50 dark:bg-red-900/20 focus:ring-red-500' },
-    { variant: 'flushed', isInvalid: true, class: 'border-red-500 focus:border-red-500' },
+    { variant: 'outline', isInvalid: 'true', class: 'border-red-500 focus:border-red-500 focus:ring-red-500' },
+    { variant: 'filled', isInvalid: 'true', class: 'bg-red-50 dark:bg-red-900/20 focus:ring-red-500' },
+    { variant: 'flushed', isInvalid: 'true', class: 'border-red-500 focus:border-red-500' },
   ],
 });
 
@@ -190,7 +190,7 @@ export function Textarea(props: TextareaProps): JSX.Element {
           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
         >
           {label}
-          {required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
+          {required && <span className="text-red-500 ml-1" aria-hidden={true}>*</span>}
         </label>
       )}
 

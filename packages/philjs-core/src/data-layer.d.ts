@@ -115,4 +115,3 @@ export declare function invalidateQueries(keyPattern?: QueryKey | ((key: QueryKe
  */
 export declare function prefetchQuery<T>(options: QueryOptions<T>): Promise<T>;
 export {};
-//# sourceMappingURL=data-layer.d.ts.map

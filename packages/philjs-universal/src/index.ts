@@ -18,7 +18,7 @@ export {
   getComponent,
   getAllComponents,
   clearRegistry,
-} from './protocol';
+} from './protocol.js';
 
 // Types
 export type {
@@ -32,8 +32,8 @@ export type {
   VNode,
   RenderOutput,
   ComponentRef,
-} from './protocol';
+} from './protocol.js';
 
 // Adapters
-export { toWebComponent, type WebComponentOptions } from './adapters/web-component';
-export { toPhilJS, type PhilJSComponentOptions } from './adapters/philjs';
+export { toWebComponent, type WebComponentOptions } from './adapters/web-component.js';
+export { toPhilJS, type PhilJSComponentOptions } from './adapters/philjs.js';

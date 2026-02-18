@@ -29,6 +29,8 @@ export interface ToastProps extends BaseProps, WithChildren {
   closable?: boolean;
   /** Position for standalone use */
   position?: 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center';
+  /** Key for list rendering */
+  key?: string | number;
 }
 
 const variantClasses = {

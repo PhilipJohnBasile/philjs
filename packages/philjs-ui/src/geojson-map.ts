@@ -25,18 +25,21 @@ export function GeoJSONMap(props: MapProps) {
 
     const initMap = () => {
         // Mock Mapbox GL JS initialization
+        const _config = {
             style: props.style,
             center: props.center || [0, 0],
             zoom: props.zoom || 1
-        });
+        };
 
         if (props.sources) {
-            Object.entries(props.sources).forEach(([id, source]) => {
+            Object.entries(props.sources).forEach(([_id, _source]) => {
+                // Add source to map
             });
         }
 
         if (props.layers) {
-            props.layers.forEach(layer => {
+            props.layers.forEach(_layer => {
+                // Add layer to map
             });
         }
 
@@ -45,7 +48,7 @@ export function GeoJSONMap(props: MapProps) {
 
     setTimeout(initMap, 0);
 
-    return \`<div id="\${mapId}" class="phil-map" style="width: 100%; height: 100%;">
-    Interactive Map (Style: \${props.style})
-  </div>\`;
+    return `<div id="${mapId}" class="phil-map" style="width: 100%; height: 100%;">
+    Interactive Map (Style: ${props.style})
+  </div>`;
 }

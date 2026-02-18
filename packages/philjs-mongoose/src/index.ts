@@ -15,7 +15,11 @@
  * - Type-safe schema helpers
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Alias for backward compatibility
+const computed = memo;
+type Computed<T> = Memo<T>;
 import type {
   Model,
   Document,
@@ -34,8 +38,10 @@ import type {
   SaveOptions,
   IndexDefinition,
   IndexOptions,
-  CreateIndexesOptions,
 } from 'mongoose';
+
+// Type alias for index options
+type CreateIndexesOptions = Record<string, unknown>;
 
 // ============================================================================
 // Types
@@ -222,9 +228,9 @@ export function getConnectionState(): {
     return { state: 'disconnected', host: null, port: null, name: null };
   }
 
-  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'] as const;
+  const states: Record<number, string> = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
   return {
-    state: states[connection.readyState] || 'disconnected',
+    state: (states[connection.readyState] || 'disconnected') as 'disconnected' | 'connected' | 'connecting' | 'disconnecting',
     host: connection.host || null,
     port: connection.port || null,
     name: connection.name || null,
@@ -295,7 +301,7 @@ export function getCacheStats(): {
  * @example
  * ```tsx
  * import { useMongoose } from '@philjs/mongoose';
- * import { User } from './models/User';
+ * import { User } from './models/User.js';
  *
  * function UserList() {
  *   const { data, loading, refetch } = useMongoose(User, { isActive: true });
@@ -377,7 +383,7 @@ export function useMongoose<T extends Document>(
         query = query.sort(sort);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       const result = await query.exec();
@@ -512,7 +518,7 @@ export function useMongooseById<T extends Document>(
         query = query.select(select);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       const result = await query.exec();
@@ -594,7 +600,7 @@ export function useMongooseOne<T extends Document>(
         query = query.select(select);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       const result = await query.exec();
@@ -760,7 +766,7 @@ export function usePaginated<T extends Document>(
         query = query.sort(sort);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       const result = await query.exec();
@@ -897,7 +903,7 @@ export function useInfinite<T extends Document>(
         query = query.sort(sort);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       const result = (await query.exec()) as T[];
@@ -1339,13 +1345,13 @@ export function useInsertMany<T extends Document>(
       const result = await model.insertMany(docs, options);
 
       batch(() => {
-        inserted.set(result as T[]);
+        inserted.set(result as unknown as T[]);
         loading.set(false);
       });
 
       clearCache(model.modelName);
 
-      return result as T[];
+      return result as unknown as T[];
     } catch (e) {
       batch(() => {
         error.set(e as Error);
@@ -1487,7 +1493,7 @@ export function useMongooseWatch<T extends Document>(
     changeStream = model.watch([], {
       fullDocument: streamOptions.fullDocument || 'updateLookup',
       ...streamOptions,
-    });
+    } as any);
 
     changeStream.on('change', async (change: any) => {
       if (isPaused()) return;
@@ -1641,7 +1647,7 @@ export function useTextSearch<T extends Document>(
       let mongoQuery = model.find({ $text: textSearch } as FilterQuery<T>);
 
       if (queryOptions.select) {
-        mongoQuery = mongoQuery.select({ ...queryOptions.select, score: { $meta: 'textScore' } });
+        mongoQuery = mongoQuery.select({ ...(queryOptions.select as Record<string, unknown>), score: { $meta: 'textScore' } } as any);
       } else {
         mongoQuery = mongoQuery.select({ score: { $meta: 'textScore' } });
       }
@@ -1822,7 +1828,7 @@ export async function createIndexes<T extends Document>(
   indexes: Array<{ fields: IndexDefinition; options?: IndexOptions }>
 ): Promise<void> {
   for (const index of indexes) {
-    await model.collection.createIndex(index.fields, index.options || {});
+    await model.collection.createIndex(index.fields as any, (index.options || {}) as any);
   }
 }
 
@@ -1902,7 +1908,7 @@ export function createSSRDataLoader<T extends Document>(
         query = query.sort(sort);
       }
       if (lean) {
-        query = query.lean();
+        query = query.lean() as any;
       }
 
       return (await query.exec()) as T[];
@@ -1931,7 +1937,7 @@ export function hydrateFromSSR<T>(key: string, windowKey = '__MONGOOSE_DATA__'):
     return null;
   }
 
-  const hydrationData = (window as Record<string, Record<string, string>>)[windowKey];
+  const hydrationData = (window as unknown as Record<string, Record<string, string>>)[windowKey];
   if (!hydrationData || !hydrationData[key]) {
     return null;
   }
@@ -1988,7 +1994,7 @@ export function addPreMiddleware<T>(
   method: 'save' | 'validate' | 'remove' | 'updateOne' | 'deleteOne' | 'init',
   fn: (this: HydratedDocument<T>, next: () => void) => void
 ): void {
-  schema.pre(method, fn);
+  (schema.pre as any)(method, fn);
 }
 
 /**
@@ -1999,7 +2005,7 @@ export function addPostMiddleware<T>(
   method: 'save' | 'validate' | 'remove' | 'updateOne' | 'deleteOne' | 'init',
   fn: (this: HydratedDocument<T>, doc: HydratedDocument<T>, next: () => void) => void
 ): void {
-  schema.post(method, fn);
+  (schema.post as any)(method, fn);
 }
 
 // ============================================================================
@@ -2063,84 +2069,4 @@ export function createObjectId(id?: string): unknown {
   return new mongoose.Types.ObjectId(id);
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  // Core hooks
-  useMongoose,
-  useMongooseById,
-  useMongooseOne,
-  useMongooseCount,
-  // Pagination
-  usePaginated,
-  useInfinite,
-  // Mutations
-  useMongooseMutation,
-  useBulkWrite,
-  useInsertMany,
-  // Aggregation
-  useMongooseAggregate,
-  // Real-time
-  useMongooseWatch,
-  // Transaction
-  useTransaction,
-  // Search
-  useTextSearch,
-  useDistinct,
-  // Optimistic
-  useOptimistic,
-  // Population
-  usePopulated,
-  // Connection
-  setConnection,
-  getConnection,
-  isConnected,
-  disconnect,
-  getConnectionState,
-  // Cache
-  clearCache,
-  getCacheStats,
-  // SSR
-  createSSRDataLoader,
-  prefetchForSSR,
-  hydrateFromSSR,
-  // Schema helpers
-  createSchema,
-  addVirtual,
-  addPreMiddleware,
-  addPostMiddleware,
-  // Index management
-  createIndexes,
-  listIndexes,
-  dropIndex,
-  ensureIndexes,
-  // Validation
-  validateDocument,
-  // Utilities
-  toPlainObject,
-  toPlainObjects,
-  isValidObjectId,
-  createObjectId,
-};
-
-// Type exports
-export type {
-  QueryState,
-  PaginationState,
-  InfiniteState,
-  MutationState,
-  UseMongooseOptions,
-  UseMongooseByIdOptions,
-  UsePaginatedOptions,
-  UseInfiniteOptions,
-  UseMutationOptions,
-  UseAggregateOptions,
-  UseWatchOptions,
-  TransactionOptions,
-  BulkWriteOperation,
-  BulkWriteResult,
-  TextSearchOptions,
-  SSRDataLoader,
-};
+// All exports are at their declaration points above

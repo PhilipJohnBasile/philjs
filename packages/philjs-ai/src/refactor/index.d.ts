@@ -280,4 +280,3 @@ export declare function analyzePerformance(provider: AIProvider, code: string): 
  * Quick accessibility audit helper
  */
 export declare function auditAccessibility(provider: AIProvider, code: string, level?: 'A' | 'AA' | 'AAA'): Promise<AccessibilityAudit>;
-//# sourceMappingURL=index.d.ts.map

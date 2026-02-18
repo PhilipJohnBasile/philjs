@@ -219,7 +219,7 @@ export function createTabs(props: TabsProps = {}) {
     };
 
     const registerTab = (tabValue: string) => {
-        tabs.update(t => [...t, tabValue]);
+        tabs.set([...tabs.get(), tabValue]);
     };
 
     const isSelected = (tabValue: string) => value() === tabValue;
@@ -297,9 +297,9 @@ export function createAccordion(props: AccordionProps = {}) {
             }
         } else {
             if (value().includes(itemValue)) {
-                value.update(v => v.filter(i => i !== itemValue));
+                value.set(value.get().filter(i => i !== itemValue));
             } else {
-                value.update(v => [...v, itemValue]);
+                value.set([...value.get(), itemValue]);
             }
         }
     };
@@ -535,7 +535,7 @@ export function createSelect(props: SelectProps = {}) {
     };
 
     const registerOption = (option: { value: string; label: string; disabled?: boolean }) => {
-        options.update(opts => [...opts, option]);
+        options.set([...options.get(), option]);
     };
 
     const selectedLabel = memo(() => {
@@ -556,11 +556,11 @@ export function createSelect(props: SelectProps = {}) {
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                highlightedIndex.update(i => Math.min(i + 1, options().length - 1));
+                highlightedIndex.set(Math.min(highlightedIndex.get() + 1, options.get().length - 1));
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                highlightedIndex.update(i => Math.max(i - 1, 0));
+                highlightedIndex.set(Math.max(highlightedIndex.get() - 1, 0));
                 break;
             case 'Enter':
             case ' ':
@@ -762,7 +762,7 @@ export function createMenu(props: MenuProps = {}) {
     };
 
     const registerItem = (item: { value: string; label: string; disabled?: boolean }) => {
-        items.update(i => [...i, item]);
+        items.set([...items.get(), item]);
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -777,19 +777,21 @@ export function createMenu(props: MenuProps = {}) {
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                highlightedIndex.update(i => {
-                    let next = i + 1;
-                    while (next < items().length && items()[next].disabled) next++;
-                    return next < items().length ? next : i;
-                });
+                {
+                    const currentIdx = highlightedIndex.get();
+                    let next = currentIdx + 1;
+                    while (next < items.get().length && items.get()[next].disabled) next++;
+                    highlightedIndex.set(next < items.get().length ? next : currentIdx);
+                }
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                highlightedIndex.update(i => {
-                    let prev = i - 1;
-                    while (prev >= 0 && items()[prev].disabled) prev--;
-                    return prev >= 0 ? prev : i;
-                });
+                {
+                    const currentIdx = highlightedIndex.get();
+                    let prev = currentIdx - 1;
+                    while (prev >= 0 && items.get()[prev].disabled) prev--;
+                    highlightedIndex.set(prev >= 0 ? prev : currentIdx);
+                }
                 break;
             case 'Enter':
             case ' ':
@@ -881,7 +883,7 @@ export function createRadioGroup(props: RadioGroupProps = {}) {
     };
 
     const registerItem = (itemValue: string) => {
-        items.update(i => [...i, itemValue]);
+        items.set([...items.get(), itemValue]);
     };
 
     const isSelected = (itemValue: string) => value() === itemValue;

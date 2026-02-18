@@ -38,7 +38,11 @@
  * ```
  */
 
-import { signal, computed, effect, type Signal } from '@philjs/core';
+import { signal, memo, effect, type Signal, type Memo } from '@philjs/core';
+
+// Alias for backward compatibility
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types
@@ -707,13 +711,14 @@ export function createSprinkles<C extends SprinklesConfig>(
     let values: Record<string, string | number>;
 
     if (Array.isArray(propConfig)) {
-      values = Object.fromEntries(propConfig.map((v) => [v, v]));
-    } else if ('values' in propConfig) {
-      values = Array.isArray(propConfig.values)
-        ? Object.fromEntries(propConfig.values.map((v) => [v, v]))
-        : propConfig.values;
+      values = Object.fromEntries(propConfig.map((v) => [v, v])) as Record<string, string | number>;
+    } else if ('values' in propConfig && typeof propConfig.values === 'object') {
+      const propValues = propConfig.values;
+      values = Array.isArray(propValues)
+        ? Object.fromEntries(propValues.map((v: unknown) => [String(v), v])) as Record<string, string | number>
+        : propValues as Record<string, string | number>;
     } else {
-      values = propConfig;
+      values = propConfig as Record<string, string | number>;
     }
 
     for (const [valueName, _value] of Object.entries(values)) {
@@ -1091,7 +1096,7 @@ export function createPhilJSTheme<T extends ThemeContract>(
   setTheme: (newTheme: Partial<T>) => void;
   updateTheme: (updater: (current: T) => Partial<T>) => void;
   resetTheme: () => void;
-  cssVars: Signal<Record<string, string>>;
+  cssVars: Memo<Record<string, string>>;
 } {
   const theme = signal<T>(initialContract);
 
@@ -1119,7 +1124,7 @@ export function createPhilJSTheme<T extends ThemeContract>(
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
       for (const [name, value] of Object.entries(variables)) {
-        root.style.setProperty(name, value);
+        root.style.setProperty(name, String(value));
       }
     }
   });
@@ -1128,10 +1133,10 @@ export function createPhilJSTheme<T extends ThemeContract>(
     theme,
     vars,
     setTheme: (newTheme) => {
-      theme.update((current) => deepMerge(current, newTheme as T));
+      theme.set(deepMerge(theme.get(), newTheme as T));
     },
     updateTheme: (updater) => {
-      theme.update((current) => deepMerge(current, updater(current) as T));
+      theme.set(deepMerge(theme.get(), updater(theme.get()) as T));
     },
     resetTheme: () => {
       theme.set(initialContract);
@@ -1147,11 +1152,11 @@ export function createColorMode(
   defaultMode: 'light' | 'dark' | 'system' = 'system'
 ): {
   mode: Signal<'light' | 'dark' | 'system'>;
-  resolvedMode: Signal<'light' | 'dark'>;
+  resolvedMode: Memo<'light' | 'dark'>;
   setMode: (mode: 'light' | 'dark' | 'system') => void;
   toggle: () => void;
-  isDark: Signal<boolean>;
-  isLight: Signal<boolean>;
+  isDark: Memo<boolean>;
+  isLight: Memo<boolean>;
 } {
   const mode = signal<'light' | 'dark' | 'system'>(defaultMode);
 
@@ -1196,7 +1201,7 @@ export function createColorMode(
  */
 export function createDynamicStyle<P extends Record<string, any>>(
   styleFactory: (props: P) => StyleRule
-): (props: Signal<P> | P) => Signal<string> {
+): (props: Signal<P> | P) => Memo<string> {
   return (props) => {
     return computed(() => {
       const resolvedProps = typeof props === 'function' ? props() : props;
@@ -1513,19 +1518,4 @@ export const cardRecipe = recipe({
   },
 });
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  colorTokens,
-  spaceTokens,
-  fontSizeTokens,
-  fontWeightTokens,
-  lineHeightTokens,
-  radiiTokens,
-  shadowTokens,
-  zIndexTokens,
-  transitionTokens,
-  breakpointTokens,
-};
+// All exports are at their declaration points above

@@ -8,7 +8,7 @@ export interface Message {
     role: 'user' | 'assistant' | 'system';
     content: string;
 }
-export interface Document {
+export interface RagDocument {
     id: string;
     content: string;
     metadata?: Record<string, any>;
@@ -16,13 +16,13 @@ export interface Document {
 }
 export interface VectorStore {
     name: string;
-    add(documents: Document[]): Promise<void>;
+    add(documents: RagDocument[]): Promise<void>;
     search(query: number[], topK?: number): Promise<SearchResult[]>;
     delete(ids: string[]): Promise<void>;
     clear(): Promise<void>;
 }
 export interface SearchResult {
-    document: Document;
+    document: RagDocument;
     score: number;
 }
 export interface RAGOptions {
@@ -35,11 +35,11 @@ export interface RAGOptions {
 export declare class InMemoryVectorStore implements VectorStore {
     name: string;
     private documents;
-    add(documents: Document[]): Promise<void>;
+    add(documents: RagDocument[]): Promise<void>;
     search(query: number[], topK?: number): Promise<SearchResult[]>;
     delete(ids: string[]): Promise<void>;
     clear(): Promise<void>;
-    getAll(): Document[];
+    getAll(): RagDocument[];
 }
 export interface PineconeConfig {
     apiKey: string;
@@ -70,7 +70,7 @@ export declare class PineconeVectorStore implements VectorStore {
     private namespace;
     constructor(config: PineconeConfig);
     private request;
-    add(documents: Document[]): Promise<void>;
+    add(documents: RagDocument[]): Promise<void>;
     search(query: number[], topK?: number): Promise<SearchResult[]>;
     delete(ids: string[]): Promise<void>;
     clear(): Promise<void>;
@@ -87,7 +87,7 @@ export declare class PineconeVectorStore implements VectorStore {
     /**
      * Fetch vectors by ID
      */
-    fetch(ids: string[]): Promise<Map<string, Document>>;
+    fetch(ids: string[]): Promise<Map<string, RagDocument>>;
 }
 export interface ChromaConfig {
     url: string;
@@ -122,7 +122,7 @@ export declare class ChromaVectorStore implements VectorStore {
      * Ensure collection exists and get its ID
      */
     private ensureCollection;
-    add(documents: Document[]): Promise<void>;
+    add(documents: RagDocument[]): Promise<void>;
     search(query: number[], topK?: number): Promise<SearchResult[]>;
     delete(ids: string[]): Promise<void>;
     clear(): Promise<void>;
@@ -137,25 +137,36 @@ export declare class ChromaVectorStore implements VectorStore {
     /**
      * Update documents
      */
-    update(documents: Document[]): Promise<void>;
+    update(documents: RagDocument[]): Promise<void>;
     /**
      * Get documents by ID
      */
-    get(ids: string[]): Promise<Document[]>;
+    get(ids: string[]): Promise<RagDocument[]>;
 }
 export interface QdrantConfig {
     url: string;
     collectionName: string;
     apiKey?: string;
+    vectorDimension?: number;
 }
 export declare class QdrantVectorStore implements VectorStore {
     name: string;
     private config;
+    private collectionEnsured;
     constructor(config: QdrantConfig);
-    add(documents: Document[]): Promise<void>;
+    private request;
+    private ensureCollection;
+    add(documents: RagDocument[]): Promise<void>;
     search(query: number[], topK?: number): Promise<SearchResult[]>;
     delete(ids: string[]): Promise<void>;
     clear(): Promise<void>;
+    /**
+     * Get collection info
+     */
+    info(): Promise<{
+        vectorsCount: number;
+        pointsCount: number;
+    }>;
 }
 export declare class RAGPipeline {
     private provider;
@@ -164,7 +175,7 @@ export declare class RAGPipeline {
     private minScore;
     private systemPrompt;
     constructor(options: RAGOptions);
-    ingest(documents: Document[]): Promise<void>;
+    ingest(documents: RagDocument[]): Promise<void>;
     query(question: string): Promise<{
         answer: string;
         sources: SearchResult[];
@@ -172,24 +183,24 @@ export declare class RAGPipeline {
     clear(): Promise<void>;
 }
 export interface DocumentLoader {
-    load(): Promise<Document[]>;
+    load(): Promise<RagDocument[]>;
 }
 export declare class TextLoader implements DocumentLoader {
     private content;
     private metadata?;
     constructor(content: string, metadata?: Record<string, any>);
-    load(): Promise<Document[]>;
+    load(): Promise<RagDocument[]>;
 }
 export declare class JSONLoader implements DocumentLoader {
     private data;
     private contentKey;
     constructor(data: any, contentKey?: string);
-    load(): Promise<Document[]>;
+    load(): Promise<RagDocument[]>;
 }
 export declare class MarkdownLoader implements DocumentLoader {
     private content;
     constructor(content: string);
-    load(): Promise<Document[]>;
+    load(): Promise<RagDocument[]>;
 }
 export interface TextSplitter {
     split(text: string): string[];
@@ -215,12 +226,11 @@ export declare class TokenSplitter implements TextSplitter {
     split(text: string): string[];
 }
 export declare function useRAG(options: RAGOptions): {
-    query: (question: string) => Promise<string | null>;
-    ingest: (documents: Document[]) => Promise<void>;
+    query: (question: string) => Promise<string>;
+    ingest: (documents: RagDocument[]) => Promise<void>;
     sources: () => SearchResult[];
     isLoading: () => boolean;
-    error: () => Error | null;
+    error: () => Error;
     clear: () => Promise<void>;
 };
 export declare function euclideanDistance(a: number[], b: number[]): number;
-//# sourceMappingURL=rag.d.ts.map

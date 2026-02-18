@@ -183,7 +183,7 @@ export function PopoverContent(props: PopoverContentProps) {
                 marginRight: side === 'left' ? `${sideOffset}px` : undefined,
             }}
             onKeyDown={handleKeyDown}
-            tabindex={-1}
+            tabIndex={-1}
         >
             {children}
         </div>

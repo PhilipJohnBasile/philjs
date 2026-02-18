@@ -30,7 +30,7 @@ export default [
       'commander',
       'picocolors',
       'prompts',
-      /^philjs-/
+      /^@philjs\//,
     ],
     plugins: [
       resolve({ preferBuiltins: true }),
@@ -53,7 +53,7 @@ export default [
       'commander',
       'picocolors',
       'prompts',
-      /^philjs-/
+      /^@philjs\//,
     ],
     plugins: [
       resolve({ preferBuiltins: true }),

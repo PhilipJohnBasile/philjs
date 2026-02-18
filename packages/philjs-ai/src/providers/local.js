@@ -33,7 +33,21 @@ export class LocalProvider {
             throw new Error(`Ollama API error: ${response.statusText}`);
         }
         const data = await response.json();
-        return data.response || '';
+        // Ollama returns token counts in response
+        const inputTokens = data.prompt_eval_count ?? this.estimateTokens(fullPrompt);
+        const outputTokens = data.eval_count ?? this.estimateTokens(data.response || '');
+        return {
+            content: data.response || '',
+            usage: {
+                inputTokens,
+                outputTokens,
+                totalTokens: inputTokens + outputTokens
+            }
+        };
+    }
+    /** Estimate token count (~4 chars per token) */
+    estimateTokens(text) {
+        return Math.ceil(text.length / 4);
     }
     async *generateStreamCompletion(prompt, options) {
         const fullPrompt = options?.systemPrompt

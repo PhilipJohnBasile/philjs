@@ -1,8 +1,70 @@
 /**
  * PhilJS Figma Plugin
- * 
+ *
  * Export Figma designs to PhilJS components.
  */
+
+// Figma Plugin API type declarations (minimal subset)
+declare const figma: {
+    showUI: (html: string, options?: { width?: number; height?: number }) => void;
+    closePlugin: () => void;
+    currentPage: { selection: readonly SceneNode[] };
+    ui: {
+        onmessage: ((msg: any) => void) | null;
+        postMessage: (msg: any) => void;
+    };
+};
+declare const __html__: string;
+
+interface BaseNode {
+    type: string;
+    name: string;
+}
+
+interface SceneNode extends BaseNode {
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+    fills?: readonly Paint[];
+    strokes?: readonly Paint[];
+    opacity?: number;
+    cornerRadius?: number;
+    children?: readonly SceneNode[];
+    characters?: string;
+    fontSize?: number;
+    fontName?: { family: string; style: string };
+    textAlignHorizontal?: string;
+    textAlignVertical?: string;
+}
+
+interface TextNode extends SceneNode {
+    type: 'TEXT';
+    characters: string;
+    fontSize: number;
+    fontName: { family: string; style: string };
+}
+
+interface FrameNode extends SceneNode {
+    type: 'FRAME';
+    children: readonly SceneNode[];
+    layoutMode?: 'NONE' | 'HORIZONTAL' | 'VERTICAL';
+    itemSpacing?: number;
+    paddingTop?: number;
+    paddingRight?: number;
+    paddingBottom?: number;
+    paddingLeft?: number;
+}
+
+interface RectangleNode extends SceneNode {
+    type: 'RECTANGLE';
+}
+
+interface Paint {
+    type: string;
+    color?: { r: number; g: number; b: number };
+    opacity?: number;
+}
 
 // Plugin code runs in Figma's sandbox
 figma.showUI(__html__, { width: 400, height: 600 });

@@ -16,8 +16,7 @@ export interface MachineConfig {
     }>;
 }
 export declare function useMachine(machine: MachineConfig): {
-    value: any;
-    context: any;
+    value: () => string;
+    context: () => XStateContext;
     send: (event: XStateEvent | string) => void;
 };
-//# sourceMappingURL=xstate.d.ts.map

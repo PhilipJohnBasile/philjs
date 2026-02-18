@@ -1,4 +1,3 @@
-"use strict";
 /**
  * @philjs/science - Tensor
  *
@@ -10,8 +9,6 @@
  * - WebGPU acceleration
  * - Automatic differentiation
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fromArray = exports.linspace = exports.arange = exports.eye = exports.randn = exports.random = exports.ones = exports.zeros = exports.Tensor = void 0;
 /** Get typed array constructor for dtype */
 function getTypedArrayConstructor(dtype) {
     switch (dtype) {
@@ -51,7 +48,7 @@ function broadcastShapes(shapeA, shapeB) {
 /**
  * N-dimensional Tensor class
  */
-class Tensor {
+export class Tensor {
     data;
     shape;
     strides;
@@ -1073,16 +1070,15 @@ class Tensor {
         this._grad = null;
     }
 }
-exports.Tensor = Tensor;
 // ============================================================================
 // Convenience Functions
 // ============================================================================
-exports.zeros = Tensor.zeros;
-exports.ones = Tensor.ones;
-exports.random = Tensor.random;
-exports.randn = Tensor.randn;
-exports.eye = Tensor.eye;
-exports.arange = Tensor.arange;
-exports.linspace = Tensor.linspace;
-exports.fromArray = Tensor.fromArray;
+export const zeros = Tensor.zeros;
+export const ones = Tensor.ones;
+export const random = Tensor.random;
+export const randn = Tensor.randn;
+export const eye = Tensor.eye;
+export const arange = Tensor.arange;
+export const linspace = Tensor.linspace;
+export const fromArray = Tensor.fromArray;
 //# sourceMappingURL=tensor.js.map

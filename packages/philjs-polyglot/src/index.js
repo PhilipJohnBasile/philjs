@@ -1,4 +1,9 @@
 "use strict";
+/**
+ * @philjs/polyglot
+ *
+ * Multi-language interop for PhilJS - Python, Java/Maven, and legacy JS bridges
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -14,8 +19,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./backbone"), exports);
-__exportStar(require("./maven-plugin"), exports);
-__exportStar(require("./pydantic-gen"), exports);
-__exportStar(require("./python-bridge"), exports);
+// Backbone.js compatibility layer
+__exportStar(require("./backbone.js"), exports);
+// Maven plugin for Java projects
+__exportStar(require("./maven-plugin.js"), exports);
+// Pydantic model generation
+__exportStar(require("./pydantic-gen.js"), exports);
+// Python runtime bridge
+__exportStar(require("./python-bridge.js"), exports);
 //# sourceMappingURL=index.js.map

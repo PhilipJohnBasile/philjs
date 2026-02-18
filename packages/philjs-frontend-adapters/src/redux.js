@@ -1,4 +1,9 @@
-import { createSignal, onCleanup } from '@philjs/core';
+import { signal, onCleanup } from '@philjs/core';
+// Compatibility wrapper to provide tuple-style API
+function createSignal(initialValue) {
+    const sig = signal(initialValue);
+    return [() => sig.get(), (v) => sig.set(v)];
+}
 export function useSelector(store, selector) {
     const [selected, setSelected] = createSignal(selector(store.getState()));
     const unsubscribe = store.subscribe(() => {

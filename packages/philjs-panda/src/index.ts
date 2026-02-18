@@ -24,8 +24,8 @@
  * });
  *
  * // Component
- * import { css, cva } from '../styled-system/css';
- * import { stack, flex } from '../styled-system/patterns';
+ * import { css, cva } from '../styled-system/css.js';
+ * import { stack, flex } from '../styled-system/patterns.js';
  *
  * const button = cva({
  *   base: { px: 4, py: 2, rounded: 'md' },
@@ -39,7 +39,11 @@
  * ```
  */
 
-import { signal, computed, effect, type Signal } from '@philjs/core';
+import { signal, memo, effect, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types
@@ -1711,24 +1715,28 @@ export function cva<T extends RecipeDefinition>(config: T) {
  */
 export function signalStyle<T extends CSSProperties>(
   getStyles: () => T
-): Signal<string> {
+): Memo<string> {
   return computed(() => css(getStyles()));
 }
 
 /**
  * Create reactive inline styles from signals
  */
+function isSignal(val: unknown): val is Signal<string | number> {
+  return val !== null && val !== undefined && typeof val === 'object' && 'get' in val;
+}
+
 export function useSignalStyles(
   styles: Record<string, Signal<string | number> | string | number>
-): Signal<Record<string, string | number>> {
+): Memo<Record<string, string | number>> {
   return computed(() => {
     const result: Record<string, string | number> = {};
 
     for (const [key, value] of Object.entries(styles)) {
-      if (typeof value === 'function') {
-        result[key] = (value as Signal<string | number>)();
-      } else {
-        result[key] = value;
+      if (isSignal(value)) {
+        result[key] = value.get();
+      } else if (value !== null && value !== undefined) {
+        result[key] = value as string | number;
       }
     }
 
@@ -1745,20 +1753,21 @@ export function createThemeSignal<T extends Record<string, any>>(
   theme: Signal<T>;
   setTheme: (theme: Partial<T>) => void;
   resetTheme: () => void;
-  getToken: <K extends keyof T>(key: K) => Signal<T[K]>;
+  getToken: <K extends keyof T>(key: K) => Memo<T[K]>;
 } {
   const theme = signal<T>(initialTheme);
 
   return {
     theme,
     setTheme: (newTheme) => {
-      theme.update((t) => ({ ...t, ...newTheme }));
+      const current = theme.get();
+      theme.set({ ...current, ...newTheme });
     },
     resetTheme: () => {
       theme.set(initialTheme);
     },
     getToken: <K extends keyof T>(key: K) => {
-      return computed(() => theme()[key]);
+      return computed(() => theme.get()[key]);
     },
   };
 }
@@ -1770,14 +1779,14 @@ export function createColorModeSignal(
   initialMode: 'light' | 'dark' | 'system' = 'system'
 ): {
   colorMode: Signal<'light' | 'dark' | 'system'>;
-  resolvedColorMode: Signal<'light' | 'dark'>;
+  resolvedColorMode: Memo<'light' | 'dark'>;
   setColorMode: (mode: 'light' | 'dark' | 'system') => void;
   toggleColorMode: () => void;
 } {
   const colorMode = signal<'light' | 'dark' | 'system'>(initialMode);
 
   const resolvedColorMode = computed(() => {
-    const mode = colorMode();
+    const mode = colorMode.get();
     if (mode !== 'system') return mode;
 
     // Check system preference
@@ -1789,7 +1798,7 @@ export function createColorModeSignal(
 
   // Sync with document
   effect(() => {
-    const resolved = resolvedColorMode();
+    const resolved = resolvedColorMode.get();
     if (typeof document !== 'undefined') {
       document.documentElement.setAttribute('data-theme', resolved);
       document.documentElement.classList.toggle('dark', resolved === 'dark');
@@ -1801,7 +1810,7 @@ export function createColorModeSignal(
     resolvedColorMode,
     setColorMode: (mode) => colorMode.set(mode),
     toggleColorMode: () => {
-      const current = resolvedColorMode();
+      const current = resolvedColorMode.get();
       colorMode.set(current === 'light' ? 'dark' : 'light');
     },
   };
@@ -1839,6 +1848,10 @@ export function responsive<T>(
   return result;
 }
 
+function isBooleanSignal(val: unknown): val is Signal<boolean> {
+  return val !== null && val !== undefined && typeof val === 'object' && 'get' in val;
+}
+
 /**
  * Create conditional style
  */
@@ -1847,7 +1860,9 @@ export function when(
   trueStyles: CSSProperties,
   falseStyles?: CSSProperties
 ): CSSProperties {
-  const isTrue = typeof condition === 'function' ? condition() : condition;
+  const isTrue = isBooleanSignal(condition)
+    ? condition.get()
+    : Boolean(condition);
   return isTrue ? trueStyles : (falseStyles || {});
 }
 

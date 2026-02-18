@@ -34,7 +34,9 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types
@@ -1463,26 +1465,30 @@ export function useTheme(): {
     isDark,
     isLight,
     setMode: (mode) => {
-      themeState.update((state) => ({ ...state, mode }));
+      const state = themeState.get();
+      themeState.set({ ...state, mode });
     },
     toggle: () => {
-      const current = resolvedMode();
-      themeState.update((state) => ({
+      const current = resolvedMode.get();
+      const state = themeState.get();
+      themeState.set({
         ...state,
         mode: current === 'light' ? 'dark' : 'light',
-      }));
+      });
     },
     setColor: (name, value) => {
-      themeState.update((state) => ({
+      const state = themeState.get();
+      themeState.set({
         ...state,
         colors: { ...state.colors, [name]: value },
-      }));
+      });
     },
     setCSSVar: (name, value) => {
-      themeState.update((state) => ({
+      const state = themeState.get();
+      themeState.set({
         ...state,
         customProperties: { ...state.customProperties, [name]: value },
-      }));
+      });
       if (typeof document !== 'undefined') {
         document.documentElement.style.setProperty(`--${name}`, value);
       }
@@ -1491,7 +1497,7 @@ export function useTheme(): {
       if (typeof document !== 'undefined') {
         return getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim();
       }
-      return themeState().customProperties[name] || '';
+      return themeState.get().customProperties[name] || '';
     },
   };
 }
@@ -1505,7 +1511,7 @@ export function useConditionalClass(
   falseClass: string = ''
 ): Computed<string> {
   return computed(() => {
-    const value = typeof condition === 'function' ? condition() : condition();
+    const value = 'get' in condition ? condition.get() : condition();
     return value ? trueClass : falseClass;
   });
 }
@@ -1527,7 +1533,7 @@ export function useClasses(
       } else if (typeof condition === 'function') {
         isActive = condition();
       } else {
-        isActive = condition();
+        isActive = (condition as Signal<boolean>).get();
       }
 
       if (isActive) {
@@ -1548,7 +1554,7 @@ export function useVariant<T extends string>(
   baseClass: string = ''
 ): Computed<string> {
   return computed(() => {
-    const currentValue = typeof value === 'function' ? value() : value();
+    const currentValue = 'get' in value ? value.get() : value();
     const variantClass = variants[currentValue] || '';
     return baseClass ? `${baseClass} ${variantClass}` : variantClass;
   });

@@ -36,4 +36,3 @@ export declare class PhoenixAdapter {
     liveView(mountPoint: HTMLElement): void;
 }
 export {};
-//# sourceMappingURL=phoenix.d.ts.map

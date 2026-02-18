@@ -2,7 +2,7 @@
 
 Optimize PhilJS applications for maximum speed and efficiency.
 
-![Performance metrics chart](../../visuals/performance-metrics.svg "TTFB and LCP trends over time")
+![Figure 4-1: PhilJS Performance Comparison](../assets/performance_metrics_chart.png)
 
 ## What You'll Learn
 
@@ -28,7 +28,22 @@ interface WebVitals {
 }
 ```
 
+![Web Vitals Breakdown](../assets/perf_web_vitals_breakdown.png)
+*Figure 4-2: Core Web Vitals Thresholds*
+
 ### Performance Budget
+
+```typescript
+const performanceBudget = {
+  // Bundle sizes
+  mainBundle: 170, // KB (gzipped)
+  vendorBundle: 100, // KB (gzipped)
+  cssBundle: 30, // KB (gzipped)
+};
+```
+
+![Performance Budget](../assets/perf_budget_meter.png)
+*Figure 4-3: Bundle Size Budget Gauge*
 
 ```typescript
 const performanceBudget = {
@@ -72,6 +87,9 @@ function App() {
 }
 ```
 
+![Lazy Load Waterfall](../assets/perf_lazy_load_waterfall.png)
+*Figure 4-4: Network Waterfall of Lazy-Loaded Chunks*
+
 ### 2. Memoization
 
 Cache expensive computations:
@@ -112,6 +130,9 @@ function LargeList({ items }: { items: any[] }) {
   );
 }
 ```
+
+![Virtual Scroll Mechanism](../assets/perf_virtual_scroll_mechanism.png)
+*Figure 4-5: Virtual Scrolling DOM Node Windowing*
 
 ### 4. Bundle Optimization
 

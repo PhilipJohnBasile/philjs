@@ -3,11 +3,15 @@
  * Provides the foundation for type-safe RPC communication.
  */
 
-import type { ZodType, ZodTypeDef, infer as ZodInfer } from 'zod';
-
 // ============================================================================
 // Base Types
 // ============================================================================
+
+/** Generic schema interface compatible with Zod and other validators */
+interface GenericSchema<T = unknown> {
+  parse: (input: unknown) => T;
+  _output?: T;
+}
 
 /**
  * Procedure types supported by the RPC system.
@@ -17,17 +21,14 @@ export type ProcedureType = 'query' | 'mutation' | 'subscription';
 /**
  * Schema type - supports Zod schemas and custom validation functions.
  */
-export type Schema<T = unknown> = ZodType<T, ZodTypeDef, unknown> | {
-  parse: (input: unknown) => T;
-  _output?: T;
-};
+export type Schema<T = unknown> = GenericSchema<T>;
 
 /**
  * Infer the output type from a schema.
  */
-export type InferSchemaOutput<S> = S extends ZodType<infer T, ZodTypeDef, unknown>
+export type InferSchemaOutput<S> = S extends { parse: (input: unknown) => infer T }
   ? T
-  : S extends { parse: (input: unknown) => infer T }
+  : S extends { _output: infer T }
   ? T
   : unknown;
 

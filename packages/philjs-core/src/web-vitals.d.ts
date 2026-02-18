@@ -179,4 +179,3 @@ export declare function getWebVitalsMetrics(): PerformanceMetrics;
 declare global {
     function gtag(...args: any[]): void;
 }
-//# sourceMappingURL=web-vitals.d.ts.map

@@ -7,7 +7,12 @@
     "moduleResolution": "Bundler",
     "strict": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {}
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

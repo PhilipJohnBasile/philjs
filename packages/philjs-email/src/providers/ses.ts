@@ -248,7 +248,7 @@ export class SesProvider implements EmailProvider {
         const content =
           attachment.content instanceof Buffer
             ? attachment.content.toString('base64')
-            : Buffer.from(attachment.content, 'utf-8').toString('base64');
+            : Buffer.from(attachment.content as string, 'utf-8').toString('base64');
 
         // Split base64 content into 76-character lines
         const lines = content.match(/.{1,76}/g) || [];

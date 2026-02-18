@@ -511,4 +511,3 @@ export declare function getSignatureHelp(provider: AIProvider, functionName: str
  * @returns Array of completion items
  */
 export declare function getCompletions(provider: AIProvider, context: CodeContext): Promise<CompletionItem[]>;
-//# sourceMappingURL=index.d.ts.map

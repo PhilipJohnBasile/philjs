@@ -5,7 +5,11 @@
  * capture, baseline management, CI/CD integration, and signal-reactive state.
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Alias for code that uses "computed"
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types & Interfaces
@@ -347,34 +351,34 @@ const state = signal<ChromaticState>({
 });
 
 export const chromaticState = {
-    config: computed(() => state.value.config),
-    project: computed(() => state.value.project),
-    currentBuild: computed(() => state.value.currentBuild),
-    snapshots: computed(() => state.value.snapshots),
-    baselines: computed(() => state.value.baselines),
-    testRun: computed(() => state.value.testRun),
-    loading: computed(() => state.value.loading),
-    error: computed(() => state.value.error),
-    connected: computed(() => state.value.connected),
+    config: computed(() => state.get().config),
+    project: computed(() => state.get().project),
+    currentBuild: computed(() => state.get().currentBuild),
+    snapshots: computed(() => state.get().snapshots),
+    baselines: computed(() => state.get().baselines),
+    testRun: computed(() => state.get().testRun),
+    loading: computed(() => state.get().loading),
+    error: computed(() => state.get().error),
+    connected: computed(() => state.get().connected),
 
     isBuilding: computed(() => {
-        const build = state.value.currentBuild;
+        const build = state.get().currentBuild;
         return build ? ['pending', 'prepared', 'published', 'in_progress'].includes(build.status) : false;
     }),
 
     hasChanges: computed(() => {
-        const build = state.value.currentBuild;
+        const build = state.get().currentBuild;
         return build ? build.changeCount > 0 : false;
     }),
 
     hasFailed: computed(() => {
-        const build = state.value.currentBuild;
+        const build = state.get().currentBuild;
         return build ? ['failed', 'broken', 'denied'].includes(build.status) : false;
     }),
 
-    snapshotCount: computed(() => state.value.snapshots.size),
+    snapshotCount: computed(() => state.get().snapshots.size),
 
-    baselineCount: computed(() => state.value.baselines.size),
+    baselineCount: computed(() => state.get().baselines.size),
 };
 
 function createSnapshotState() {
@@ -413,27 +417,27 @@ export function setupChromatic(config: ChromaticConfig): void {
     };
 
     batch(() => {
-        state.value = {
-            ...state.value,
+        state.set({
+            ...state.get(),
             config: fullConfig,
             connected: true
-        };
+        });
     });
 }
 
 export function getConfig(): ChromaticConfig | null {
-    return state.value.config;
+    return state.get().config;
 }
 
 export function updateConfig(updates: Partial<ChromaticConfig>): void {
-    const current = state.value.config;
+    const current = state.get().config;
     if (!current) return;
 
     batch(() => {
-        state.value = {
-            ...state.value,
+        state.set({
+            ...state.get(),
             config: { ...current, ...updates }
-        };
+        });
     });
 }
 
@@ -445,7 +449,7 @@ export async function captureSnapshot(
     component: any,
     options: CaptureOptions = {}
 ): Promise<Snapshot> {
-    const config = state.value.config;
+    const config = state.get().config;
     if (!config) throw new Error('Chromatic not configured. Call setupChromatic() first.');
 
     const viewport = options.viewport || config.viewports?.[0] || DEFAULT_VIEWPORTS[2];
@@ -471,9 +475,9 @@ export async function captureSnapshot(
     };
 
     // Update state
-    const snapshots = new Map(state.value.snapshots);
+    const snapshots = new Map(state.get().snapshots);
     snapshots.set(snapshotId, { ...snapshot, status: 'capturing' });
-    state.value = { ...state.value, snapshots };
+    state.set({ ...state.get(), snapshots });
 
     const startTime = performance.now();
 
@@ -499,7 +503,7 @@ export async function captureSnapshot(
         snapshot.metadata.duration = performance.now() - startTime;
 
         // Compare with baseline if exists
-        const baseline = state.value.baselines.get(snapshotId);
+        const baseline = state.get().baselines.get(snapshotId);
         if (baseline) {
             snapshot.baseline = {
                 id: baseline.id,
@@ -517,7 +521,7 @@ export async function captureSnapshot(
 
         // Update state with final snapshot
         snapshots.set(snapshotId, snapshot);
-        state.value = { ...state.value, snapshots };
+        state.set({ ...state.get(), snapshots });
 
         // Re-enable animations if disabled
         if (options.disableAnimations) {
@@ -529,7 +533,7 @@ export async function captureSnapshot(
         snapshot.status = 'error';
         snapshot.metadata.duration = performance.now() - startTime;
         snapshots.set(snapshotId, snapshot);
-        state.value = { ...state.value, snapshots };
+        state.set({ ...state.get(), snapshots });
         throw error;
     }
 }
@@ -538,7 +542,7 @@ export async function captureAllViewports(
     component: any,
     options: CaptureOptions = {}
 ): Promise<Snapshot[]> {
-    const config = state.value.config;
+    const config = state.get().config;
     const viewports = options.viewports || config?.viewports || DEFAULT_VIEWPORTS;
     const snapshots: Snapshot[] = [];
 
@@ -620,7 +624,7 @@ function enableAnimations(): void {
 // ============================================================================
 
 export async function compareSnapshots(baseline: Snapshot, current: Snapshot): Promise<DiffResult> {
-    const config = state.value.config;
+    const config = state.get().config;
     const threshold = config?.diffThreshold ?? 0.05;
     const totalPixels = baseline.viewport.width * baseline.viewport.height;
 
@@ -905,48 +909,48 @@ function generateChangedRegions(viewport: ViewportConfig, diffPixels: number): C
 
 export function setBaseline(config: BaselineConfig): void {
     batch(() => {
-        const baselines = new Map(state.value.baselines);
+        const baselines = new Map(state.get().baselines);
         config.snapshots.forEach((snapshot, key) => {
             baselines.set(key, snapshot);
         });
-        state.value = { ...state.value, baselines };
+        state.set({ ...state.get(), baselines });
     });
 }
 
 export function getBaseline(snapshotId: string): Snapshot | undefined {
-    return state.value.baselines.get(snapshotId);
+    return state.get().baselines.get(snapshotId);
 }
 
 export function getAllBaselines(): Map<string, Snapshot> {
-    return new Map(state.value.baselines);
+    return new Map(state.get().baselines);
 }
 
 export function clearBaselines(): void {
     batch(() => {
-        state.value = { ...state.value, baselines: new Map() };
+        state.set({ ...state.get(), baselines: new Map() });
     });
 }
 
 export function acceptSnapshot(snapshotId: string): void {
-    const snapshot = state.value.snapshots.get(snapshotId);
+    const snapshot = state.get().snapshots.get(snapshotId);
     if (!snapshot) return;
 
     batch(() => {
-        const baselines = new Map(state.value.baselines);
+        const baselines = new Map(state.get().baselines);
         baselines.set(snapshotId, snapshot);
-        state.value = { ...state.value, baselines };
+        state.set({ ...state.get(), baselines });
     });
 }
 
 export function acceptAllSnapshots(): void {
     batch(() => {
-        const baselines = new Map(state.value.baselines);
-        state.value.snapshots.forEach((snapshot, key) => {
+        const baselines = new Map(state.get().baselines);
+        state.get().snapshots.forEach((snapshot, key) => {
             if (snapshot.status === 'changed' || snapshot.status === 'new') {
                 baselines.set(key, snapshot);
             }
         });
-        state.value = { ...state.value, baselines };
+        state.set({ ...state.get(), baselines });
     });
 }
 
@@ -955,7 +959,7 @@ export function acceptAllSnapshots(): void {
 // ============================================================================
 
 export async function runBuild(options: { skipTests?: boolean } = {}): Promise<Build> {
-    const config = state.value.config;
+    const config = state.get().config;
     if (!config) throw new Error('Chromatic not configured');
 
     const buildId = `build-${Date.now()}`;
@@ -983,17 +987,17 @@ export async function runBuild(options: { skipTests?: boolean } = {}): Promise<B
     };
 
     batch(() => {
-        state.value = { ...state.value, currentBuild: build, loading: true };
+        state.set({ ...state.get(), currentBuild: build, loading: true });
     });
 
     try {
         // Simulate build process
         await new Promise(resolve => setTimeout(resolve, 1000));
         build.status = 'in_progress';
-        state.value = { ...state.value, currentBuild: build };
+        state.set({ ...state.get(), currentBuild: build });
 
         // Collect snapshots
-        build.snapshots = Array.from(state.value.snapshots.values());
+        build.snapshots = Array.from(state.get().snapshots.values());
         build.specCount = build.snapshots.length;
         build.componentCount = new Set(build.snapshots.map(s => s.componentName)).size;
         build.changeCount = build.snapshots.filter(s => s.status === 'changed' || s.status === 'new').length;
@@ -1013,7 +1017,7 @@ export async function runBuild(options: { skipTests?: boolean } = {}): Promise<B
         build.completedAt = new Date().toISOString();
 
         batch(() => {
-            state.value = { ...state.value, currentBuild: build, loading: false };
+            state.set({ ...state.get(), currentBuild: build, loading: false });
         });
 
         return build;
@@ -1021,39 +1025,39 @@ export async function runBuild(options: { skipTests?: boolean } = {}): Promise<B
         build.status = 'failed';
         build.completedAt = new Date().toISOString();
         batch(() => {
-            state.value = { ...state.value, currentBuild: build, loading: false, error: (error as Error).message };
+            state.set({ ...state.get(), currentBuild: build, loading: false, error: (error as Error).message });
         });
         throw error;
     }
 }
 
 export function getBuildStatus(): Build | null {
-    return state.value.currentBuild;
+    return state.get().currentBuild;
 }
 
 export async function acceptBuild(buildId?: string): Promise<void> {
-    const build = state.value.currentBuild;
+    const build = state.get().currentBuild;
     if (!build || (buildId && build.id !== buildId)) return;
 
     acceptAllSnapshots();
 
     batch(() => {
-        state.value = {
-            ...state.value,
+        state.set({
+            ...state.get(),
             currentBuild: { ...build, status: 'accepted', isAccepted: true }
-        };
+        });
     });
 }
 
 export async function denyBuild(buildId?: string): Promise<void> {
-    const build = state.value.currentBuild;
+    const build = state.get().currentBuild;
     if (!build || (buildId && build.id !== buildId)) return;
 
     batch(() => {
-        state.value = {
-            ...state.value,
+        state.set({
+            ...state.get(),
             currentBuild: { ...build, status: 'denied', isAccepted: false }
-        };
+        });
     });
 }
 
@@ -1062,13 +1066,13 @@ export async function denyBuild(buildId?: string): Promise<void> {
 // ============================================================================
 
 export async function runTests(stories: Array<{ component: any; name: string }>): Promise<TestRun> {
-    const config = state.value.config;
+    const config = state.get().config;
     if (!config) throw new Error('Chromatic not configured');
 
     const testRunId = `test-${Date.now()}`;
     const testRun: TestRun = {
         id: testRunId,
-        buildId: state.value.currentBuild?.id || '',
+        buildId: state.get().currentBuild?.id || '',
         status: 'running',
         startedAt: new Date().toISOString(),
         results: [],
@@ -1083,7 +1087,7 @@ export async function runTests(stories: Array<{ component: any; name: string }>)
     };
 
     batch(() => {
-        state.value = { ...state.value, testRun, loading: true };
+        state.set({ ...state.get(), testRun, loading: true });
     });
 
     const startTime = performance.now();
@@ -1113,7 +1117,7 @@ export async function runTests(stories: Array<{ component: any; name: string }>)
                 };
 
                 if (snapshot.baseline) {
-                    result.baseline = state.value.baselines.get(snapshot.id);
+                    result.baseline = state.get().baselines.get(snapshot.id);
                     result.diff = await compareSnapshots(result.baseline!, snapshot);
                 }
 
@@ -1148,7 +1152,7 @@ export async function runTests(stories: Array<{ component: any; name: string }>)
     testRun.completedAt = new Date().toISOString();
 
     batch(() => {
-        state.value = { ...state.value, testRun, loading: false };
+        state.set({ ...state.get(), testRun, loading: false });
     });
 
     return testRun;
@@ -1200,7 +1204,7 @@ export function chromaticModes(modes: Record<string, ChromaticMode>): StoryParam
 // ============================================================================
 
 export function generateGitHubWorkflow(options: { buildCommand?: string; nodeVersion?: string } = {}): string {
-    const config = state.value.config;
+    const config = state.get().config;
     const { buildCommand = config?.buildScriptName || 'build-storybook', nodeVersion = '20' } = options;
 
     return `name: Chromatic
@@ -1245,7 +1249,7 @@ jobs:
 }
 
 export function generateGitLabCI(options: { buildCommand?: string } = {}): string {
-    const config = state.value.config;
+    const config = state.get().config;
     const { buildCommand = config?.buildScriptName || 'build-storybook' } = options;
 
     return `stages:
@@ -1268,7 +1272,7 @@ chromatic:
 }
 
 export function generateCircleCI(options: { buildCommand?: string } = {}): string {
-    const config = state.value.config;
+    const config = state.get().config;
     const { buildCommand = config?.buildScriptName || 'build-storybook' } = options;
 
     return `version: 2.1
@@ -1333,7 +1337,7 @@ export async function runChromaticCLI(
 
 export const chromatic = {
     run: (token?: string) => {
-        const config = state.value.config;
+        const config = state.get().config;
         const args = ['--project-token', token || config?.projectToken || ''];
 
         if (config?.storybookBuildDir) {
@@ -1356,7 +1360,7 @@ export const chromatic = {
     },
 
     build: (options: { buildDir?: string } = {}) => {
-        const config = state.value.config;
+        const config = state.get().config;
         return runChromaticCLI([
             '--build-script-name', config?.buildScriptName || 'build-storybook',
             '--storybook-build-dir', options.buildDir || config?.storybookBuildDir || 'storybook-static'
@@ -1386,14 +1390,14 @@ export function useSnapshot(component: any, options: CaptureOptions = {}) {
     const error = signal<string | null>(null);
 
     const capture = async () => {
-        loading.value = true;
-        error.value = null;
+        loading.set(true);
+        error.set(null);
         try {
-            snapshot.value = await captureSnapshot(component, options);
+            snapshot.set(await captureSnapshot(component, options));
         } catch (e) {
-            error.value = e instanceof Error ? e.message : 'Capture failed';
+            error.set(e instanceof Error ? e.message : 'Capture failed');
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     };
 
@@ -1414,18 +1418,18 @@ export function useDiff(baselineId: string, currentId: string) {
     const loading = signal(false);
 
     effect(() => {
-        const baseline = state.value.baselines.get(baselineId);
-        const current = state.value.snapshots.get(currentId);
+        const baseline = state.get().baselines.get(baselineId);
+        const current = state.get().snapshots.get(currentId);
 
         if (baseline && current) {
-            loading.value = true;
+            loading.set(true);
             compareSnapshots(baseline, current)
                 .then(result => {
-                    diff.value = result;
-                    loading.value = false;
+                    diff.set(result);
+                    loading.set(false);
                 })
                 .catch(() => {
-                    loading.value = false;
+                    loading.set(false);
                 });
         }
     });
@@ -1435,9 +1439,9 @@ export function useDiff(baselineId: string, currentId: string) {
 
 export function useBuild() {
     return {
-        build: computed(() => state.value.currentBuild),
-        loading: computed(() => state.value.loading),
-        error: computed(() => state.value.error),
+        build: computed(() => state.get().currentBuild),
+        loading: computed(() => state.get().loading),
+        error: computed(() => state.get().error),
         isBuilding: chromaticState.isBuilding,
         hasChanges: chromaticState.hasChanges,
         hasFailed: chromaticState.hasFailed,
@@ -1449,8 +1453,8 @@ export function useBuild() {
 
 export function useTestRun() {
     return {
-        testRun: computed(() => state.value.testRun),
-        loading: computed(() => state.value.loading),
+        testRun: computed(() => state.get().testRun),
+        loading: computed(() => state.get().loading),
         run: runTests
     };
 }
@@ -1529,31 +1533,7 @@ function generateSnapshotId(component: any, storyName?: string, viewport?: Viewp
     return `${name}--${story}--${vp}`.toLowerCase().replace(/\s+/g, '-');
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export type {
-    ChromaticConfig,
-    ViewportConfig,
-    IgnoreRegion,
-    Snapshot,
-    SnapshotMetadata,
-    SnapshotStatus,
-    DiffResult,
-    ChangedRegion,
-    Build,
-    BuildStatus,
-    Project,
-    BaselineConfig,
-    TestResult,
-    TestRun,
-    TestSummary,
-    CaptureOptions,
-    StoryParameters,
-    ChromaticStoryParameters,
-    ChromaticMode,
-};
+// All types are already exported at their declaration points above
 
 export default {
     setup: setupChromatic,

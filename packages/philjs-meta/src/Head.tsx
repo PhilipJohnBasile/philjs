@@ -56,8 +56,8 @@ export function HeadProvider(props: HeadProviderProps): JSX.Element {
   const addLink = (tag: LinkTag): (() => void) => {
     const key = `${tag.rel}-${tag.href}`;
     linkTags.set([
-      ...linkTags().filter((t) => !(t.rel === tag.rel && t.href === tag.href)),
-      { ...tag, key },
+      ...linkTags().filter((t: any) => !(t.rel === tag.rel && t.href === tag.href)),
+      { ...tag, key } as any,
     ]);
 
     return () => {
@@ -125,7 +125,7 @@ export function HeadProvider(props: HeadProviderProps): JSX.Element {
 
   return (
     <HeadContext.Provider value={{ addMeta, addLink, setTitle }}>
-      {props.children}
+      {props.children as any}
     </HeadContext.Provider>
   );
 }

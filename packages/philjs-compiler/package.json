@@ -37,10 +37,10 @@
     }
   },
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript || exit 0",
-    "test": "vitest run || exit 0",
+    "build": "tsc",
+    "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit || exit 0"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@babel/core": "^7.23.0",

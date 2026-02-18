@@ -1,12 +1,10 @@
 # Chapter 4: The URL is Truth
 
-If Signals are the atom of State, then result of that state is typically a View. But how do we determine *which* view to show?
+In single-page application (SPA) architectures, routing determines the view hierarchy based on the current state. PhilJS adheres to the principle that the URL should serve as the primary source of truth for navigation state.
 
-In the early days of Single Page Applications, we treated the URL as an afterthought—a side effect of clicking buttons. We stored application state in global stores (Redux, MobX) and desperately tried to keep the URL in sync.
+## The URL as State Source
 
-PhilJS flips this model. **The URL is the single source of truth.**
-
-## The URL as State
+Historically, SPA routers treated the URL as a side effect of application state changes. PhilJS inverts this dependency: application state is derived from the URL parameters.
 
 Consider a user viewing a product with a specific filter applied:
 `https://shop.philjs.dev/products/shoes?color=red&size=10`

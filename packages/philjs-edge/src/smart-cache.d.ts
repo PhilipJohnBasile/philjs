@@ -145,4 +145,3 @@ export declare function cached<T extends (...args: unknown[]) => Promise<unknown
     ttl?: number;
     tags?: string[];
 }): (fn: T) => T;
-//# sourceMappingURL=smart-cache.d.ts.map

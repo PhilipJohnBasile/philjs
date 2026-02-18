@@ -991,10 +991,10 @@ export function interactive<P = Record<string, unknown>>(
   component: (props: P) => unknown,
   options?: Parameters<typeof onInteraction>[0] & Omit<ResumableOptions<P>, 'trigger'>
 ): ResumableComponent<P> {
-  const { events, event, redispatch, prefetch: interactionPrefetch, capture, ...rest } = options || {};
+  const { events, redispatch, prefetch: interactionPrefetch, capture, ...rest } = options || {};
   return resumable(component, {
     ...rest,
-    trigger: onInteraction({ events, event, redispatch, prefetch: interactionPrefetch, capture }),
+    trigger: onInteraction({ events, redispatch, prefetch: interactionPrefetch, capture }),
   });
 }
 

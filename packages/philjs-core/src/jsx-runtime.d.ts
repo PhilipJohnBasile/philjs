@@ -46,4 +46,3 @@ export declare function isJSXElement(value: any): value is JSXElement;
  * Create element (alternative API, React-compatible).
  */
 export declare function createElement(type: string | Function, props: Record<string, any> | null, ...children: any[]): JSXElement;
-//# sourceMappingURL=jsx-runtime.d.ts.map

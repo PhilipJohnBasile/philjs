@@ -15,7 +15,7 @@ import {
   extractCriticalCSS,
   analyzeCSSBundle,
   createVitePlugin
-} from '../src';
+} from '../src.js';
 
 // ===================================
 // 1. Define Your Styles

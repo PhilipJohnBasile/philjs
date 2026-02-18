@@ -620,7 +620,7 @@ export interface EventDelegationConfig {
   /** Event types to delegate */
   events: string[];
   /** Root element for delegation */
-  root?: Element;
+  root?: Element | Document;
   /** Capture phase */
   capture?: boolean;
 }

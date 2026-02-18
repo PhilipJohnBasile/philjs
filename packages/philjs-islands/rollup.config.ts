@@ -20,14 +20,14 @@ export default defineConfig({
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
-      declarationMap: true,
+      declarationMap: false,
       declarationDir: 'dist',
       sourceMap: true,
     })
   ],
   external: [
     /^node:/,
-    /^philjs-/,
+    /^@philjs\//,
     // Framework dependencies are external
     'react',
     'react-dom',

@@ -4,6 +4,9 @@
 
 @philjs/testing provides everything you need to test PhilJS applications: component rendering, signal testing, route testing, network mocking, accessibility testing, and performance testing.
 
+![Testing Pyramid](../../assets/testing_pyramid_schematic_1767820611536.png)
+*Figure 8-1: The Testing Pyramid*
+
 ## Installation
 
 ```bash

@@ -79,7 +79,10 @@ export function persistedSignal<T>(
         if (isHydrated) return;
 
         try {
-            const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+            // Dynamic import for React Native environment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const storage: any = await import('@react-native-async-storage/async-storage');
+            const AsyncStorage = storage.default;
             const stored = await AsyncStorage.getItem(`philjs:${key}`);
             if (stored !== null) {
                 sig.set(JSON.parse(stored));
@@ -91,15 +94,20 @@ export function persistedSignal<T>(
     };
 
     // Auto-persist on changes
-    effect(async () => {
+    effect(() => {
         if (!isHydrated) return;
 
-        try {
-            const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-            await AsyncStorage.setItem(`philjs:${key}`, JSON.stringify(sig()));
-        } catch (error) {
-            console.warn(`[PhilJS] Failed to persist signal "${key}":`, error);
-        }
+        // Wrap async operation in IIFE
+        (async () => {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const storage: any = await import('@react-native-async-storage/async-storage');
+                const AsyncStorage = storage.default;
+                await AsyncStorage.setItem(`philjs:${key}`, JSON.stringify(sig.get()));
+            } catch (error) {
+                console.warn(`[PhilJS] Failed to persist signal "${key}":`, error);
+            }
+        })();
     });
 
     return Object.assign(sig, { hydrate });
@@ -111,7 +119,7 @@ export function persistedSignal<T>(
  * @example
  * ```tsx
  * import { useSignal } from '@philjs/mobile/expo';
- * import { count } from './signals';
+ * import { count } from './signals.js';
  * 
  * function Counter() {
  *   const value = useSignal(count);

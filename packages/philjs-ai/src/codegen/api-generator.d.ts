@@ -241,4 +241,3 @@ export declare function createAPIGenerator(provider: AIProvider, options?: Parti
  * Quick CRUD generation helper
  */
 export declare function generateCRUD(provider: AIProvider, resource: string, schema?: SchemaDefinition, options?: Partial<APIGenerationConfig>): Promise<GeneratedAPI>;
-//# sourceMappingURL=api-generator.d.ts.map

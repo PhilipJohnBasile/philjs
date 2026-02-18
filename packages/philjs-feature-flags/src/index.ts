@@ -421,7 +421,7 @@ export function Flag(props: {
   fallback?: any;
   variant?: string;
 }) {
-  const value = getFlag(props.name);
+  const value = getFlag<boolean | string>(props.name);
 
   if (props.variant) {
     return value === props.variant ? props.children : props.fallback || null;

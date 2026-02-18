@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "build:full": "tsc && vite build",
     "dev": "vite",
     "preview": "vite preview"

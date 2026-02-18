@@ -24,7 +24,7 @@ declare global {
 
   interface XRInputSource {
     readonly handedness: 'none' | 'left' | 'right';
-    readonly targetRayMode: 'gaze' | 'tracked-pointer' | 'screen';
+    readonly targetRayMode: XRTargetRayMode;
     readonly gamepad?: Gamepad;
   }
 

@@ -20,7 +20,7 @@ const createEntry = (input: string, output: string, external: string[] = []) => 
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
-      declarationMap: true,
+      declarationMap: false,
       declarationDir: 'dist',
       sourceMap: true,
       composite: false

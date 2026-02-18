@@ -87,6 +87,8 @@ app.updateCursor({ documentId: 'my-doc', x: 100, y: 200 });
 
 ## Architecture
 
+![Figure 3-1: Nexus Architecture](../../assets/nexus_architecture_schematic.png)
+
 ```
 @philjs/nexus
 |-- NexusApp (Main Application Container)
@@ -121,10 +123,13 @@ app.updateCursor({ documentId: 'my-doc', x: 100, y: 200 });
 |   |   |-- IndexedDBAdapter - Browser storage
 |   |   |-- MemoryAdapter   - In-memory (testing/SSR)
 |   |   +-- SQLiteAdapter   - SQLite (coming soon)
-|   |
 |   +-- Remote Adapters
 |       +-- SupabaseSyncAdapter - Supabase realtime sync
 |
+
+![Nexus Sync Engine](../assets/nexus_sync_engine_flow.png)
+*Figure 3-2: Nexus Sync Engine Architecture (Local-First -> Cloud)*
+
 +-- Hooks (Component Integration)
     |-- initNexus()         - Initialize global app
     |-- getNexusApp()       - Get global app instance
@@ -270,6 +275,9 @@ console.log('Collection size:', users.size);
 
 Generate content using integrated LLM providers with built-in caching and cost tracking.
 
+![Nexus AI Caching](../assets/nexus_ai_caching_layer.png)
+*Figure 3-3: AI Prompt Caching and Cost Tracking Layer*
+
 ### Basic Generation
 
 ```typescript
@@ -375,6 +383,9 @@ const app = createNexusApp({
 ## Real-Time Collaboration
 
 Add multiplayer features to your application with presence, cursors, and typing indicators.
+
+![Nexus Collaboration](../assets/nexus_collab_cursors.png)
+*Figure 3-4: Real-Time Multiplayer Presence and Cursors*
 
 ### Configuration
 

@@ -1,6 +1,9 @@
 {
   "name": "@philjs/neovim",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=24"
+  },
   "type": "module",
   "description": "Neovim adapter helper",
   "author": "PhilJS Team",

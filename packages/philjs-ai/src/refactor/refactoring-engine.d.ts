@@ -256,4 +256,3 @@ export declare function analyzeForRefactoring(provider: AIProvider, code: string
  * Quick auto-fix helper
  */
 export declare function autoFixCode(provider: AIProvider, code: string, suggestions: RefactoringSuggestion[]): Promise<AutoFixResult>;
-//# sourceMappingURL=refactoring-engine.d.ts.map

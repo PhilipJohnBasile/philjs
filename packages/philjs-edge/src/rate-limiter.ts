@@ -9,7 +9,7 @@
  * - Distributed coordination via KV/Durable Objects
  */
 
-import type { KVStore } from './index.js';
+import type { KVStore } from './edge-functions.js';
 
 export interface RateLimitConfig {
   /** Maximum requests allowed */
@@ -356,7 +356,7 @@ export class EdgeRateLimiter {
     if (cached) return cached;
 
     try {
-      const data = await this.store.get<string>(key);
+      const data = await this.store.get(key);
       if (data) {
         const state = JSON.parse(data);
         this.localCache.set(key, state);

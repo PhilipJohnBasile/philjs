@@ -52,7 +52,7 @@
     "publish:all": "tsx scripts/publish-results.ts --format=all",
     "publish:gh-pages": "tsx scripts/publish-results.ts --github-pages",
     "comparison": "tsx -e \"import { generateAndSaveCharts, loadComparisonData } from './src/comparison/chart-generator.js'; import fs from 'fs/promises'; const report = JSON.parse(await fs.readFile('./results/latest.json', 'utf-8')); await generateAndSaveCharts(report, './results/comparison');\"",
-    "typecheck": "tsc --noEmit || exit 0"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",

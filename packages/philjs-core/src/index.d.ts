@@ -59,4 +59,3 @@ export type { Store, StoreNode, SetStoreFunction, StoreOptions, StoreMiddleware,
 export { createAsync, createMutation as createAsyncMutation, debounceAsync, throttleAsync, createQueue, createConcurrencyLimiter, createSuspenseResource, preload, getCached, setCache, invalidateCache, clearCache, } from "./async.js";
 export type { AsyncState, AsyncOptions, RetryConfig, CacheConfig, MutationOptions as AsyncMutationOptions, } from "./async.js";
 export { disposableTimeout, disposableInterval, disposableAbortController, disposableEventListener, disposableSubscription, asyncDisposable, createDisposableScope, createAsyncDisposableScope, toDisposable, toAsyncDisposable, createDisposableMutex, } from "./disposable.js";
-//# sourceMappingURL=index.d.ts.map

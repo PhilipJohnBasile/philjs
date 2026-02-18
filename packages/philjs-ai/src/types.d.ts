@@ -239,4 +239,3 @@ export interface ToolCall {
     /** Tool arguments */
     arguments: Record<string, unknown>;
 }
-//# sourceMappingURL=types.d.ts.map

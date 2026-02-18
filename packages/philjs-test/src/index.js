@@ -837,7 +837,7 @@ export async function createTestHarness(component, props = {}) {
     // Mock component rendering
     const instance = typeof component === 'function'
         ? component(props)
-        : new component(props);
+        : (new component(props));
     container.innerHTML = instance?.toString?.() || '';
     const harness = {
         element: container,
@@ -1091,21 +1091,7 @@ export function formatResults(results, indent = 0) {
     return lines.join('\n');
 }
 // ============================================================================
-// Exports
+// Re-exports from auto-test module (with prefixed names to avoid conflicts)
 // ============================================================================
-export { 
-// Test definition
-describe, it, test, beforeAll, afterAll, beforeEach, afterEach, 
-// Assertions
-expect, AssertionError, 
-// Mocking
-mock, spy, mockModule, fakeTimers, 
-// AI testing
-describeAI, fuzzAI, attemptTestFix, createAITestGenerator, 
-// Property testing
-arbitrary, property, 
-// Test harness
-createTestHarness, 
-// Runner
-runTests, formatResults, };
+export { aiGenerateTests, aiDescribeTests, aiGenerateTestFile, aiRunGeneratedTests, aiAnalyzeSource, aiExpect, } from './auto-test.js';
 //# sourceMappingURL=index.js.map

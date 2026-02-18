@@ -1,7 +1,11 @@
 // @philjs/drizzle - Drizzle ORM adapter for PhilJS
 // Type-safe SQL with signals
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types
@@ -1602,7 +1606,7 @@ export function useRelations<T, R = unknown>(
     enabled?: boolean | Signal<boolean>;
     staleTime?: number;
   } = {}
-): DrizzleHook<T & { [K in keyof R]?: R[K] }> & {
+): DrizzleHook<Array<T & { [K in keyof R]?: R[K] }>> & {
   loadRelation: <K extends keyof R>(key: K) => Promise<R[K]>;
   prefetchRelations: () => Promise<void>;
 } {
@@ -2039,7 +2043,7 @@ export function hydrateFromSSR<T>(
     return null;
   }
 
-  const hydrationData = (window as Record<string, Record<string, string>>)[windowKey];
+  const hydrationData = (window as unknown as Record<string, Record<string, string>>)[windowKey];
   if (!hydrationData || !hydrationData[key]) {
     return null;
   }

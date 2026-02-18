@@ -318,5 +318,3 @@ export const manifest = {
         },
     ],
 };
-
-export { contentScript, panelHTML, panelJS, manifest };

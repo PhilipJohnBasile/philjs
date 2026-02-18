@@ -14,8 +14,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
-    "typecheck": "tsc --noEmit || exit 0"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"

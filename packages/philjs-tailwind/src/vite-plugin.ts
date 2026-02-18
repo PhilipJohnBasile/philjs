@@ -4,7 +4,7 @@
  * Optimizations for Tailwind CSS in PhilJS applications.
  */
 
-import type { Plugin } from 'vite';
+import type { Plugin, UserConfig } from 'vite';
 
 export interface PhilJSTailwindViteOptions {
   /** Enable Just-in-Time mode optimizations */
@@ -19,9 +19,6 @@ export interface PhilJSTailwindViteOptions {
 
 export function philjsTailwindVite(options: PhilJSTailwindViteOptions = {}): Plugin {
   const {
-    jit = true,
-    content = ['./src/**/*.{js,ts,jsx,tsx}', './index.html'],
-    purge = true,
     extractCritical = false,
   } = options;
 
@@ -31,18 +28,15 @@ export function philjsTailwindVite(options: PhilJSTailwindViteOptions = {}): Plu
     name: 'philjs-tailwind',
     enforce: 'pre',
 
-    async config(config: any, { mode }: { mode: string }) {
+    async config(_config, { mode }): Promise<Partial<UserConfig>> {
       const tailwindcss = (await import('tailwindcss')).default;
       const autoprefixer = (await import('autoprefixer')).default;
       return {
         css: {
           postcss: {
             plugins: [
-              tailwindcss({
-                content,
-                ...(jit && { mode: 'jit' }),
-              }),
-              autoprefixer(),
+              tailwindcss,
+              autoprefixer,
             ],
           },
         },

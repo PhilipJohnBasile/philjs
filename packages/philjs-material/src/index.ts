@@ -28,7 +28,10 @@
  * ```
  */
 
-import { signal, effect, computed, memo } from '@philjs/core';
+import { signal, effect, memo, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 
 // ============================================================================
 // Types
@@ -584,10 +587,10 @@ export function setSourceColor(color: string): void {
  * Hook to use the Material theme
  */
 export function useTheme(): {
-  theme: ReturnType<typeof theme>;
-  fullTheme: ReturnType<typeof fullTheme>;
-  mode: ReturnType<typeof signal<ThemeMode>>;
-  sourceColor: ReturnType<typeof signal<string>>;
+  theme: typeof theme;
+  fullTheme: typeof fullTheme;
+  mode: Signal<ThemeMode>;
+  sourceColor: Signal<string>;
   setMode: typeof setThemeMode;
   setSourceColor: typeof setSourceColor;
 } {
@@ -979,9 +982,11 @@ effect(() => {
 export {
   signal,
   effect,
-  computed,
   memo,
 } from '@philjs/core';
+
+// Re-export computed alias
+export { computed };
 
 export {
   lightColors,

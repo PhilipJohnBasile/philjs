@@ -57,4 +57,3 @@ export declare const mapPool: ObjectPool<Map<unknown, unknown>>;
  * Pool for reusable Sets
  */
 export declare const setPool: ObjectPool<Set<unknown>>;
-//# sourceMappingURL=pool.d.ts.map

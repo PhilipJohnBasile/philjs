@@ -607,16 +607,4 @@ export function createConsoleAdapter(): AnalyticsAdapter {
 declare const gtag: (...args: any[]) => void;
 declare const posthog: { capture: (event: string, properties?: any) => void };
 
-// Export types
-export type {
-  ExperimentConfig,
-  TargetingRule,
-  MetricConfig,
-  UserContext,
-  ExperimentAssignment,
-  ExperimentResult,
-  VariantResult,
-  MetricResult,
-  AnalyticsAdapter,
-  ExperimentSystemConfig,
-};
+// All types are exported at their declaration points above

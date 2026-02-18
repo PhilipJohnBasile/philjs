@@ -7,7 +7,7 @@
  * @example
  * ```ts
  * import { fromVue } from '@philjs/universal-vue';
- * import MyVueComponent from './MyVueComponent.vue';
+ * import MyVueComponent from './MyVueComponent.vue.js';
  *
  * const UniversalMyComponent = fromVue(MyVueComponent, {
  *   name: 'MyComponent',
@@ -148,7 +148,7 @@ function createEventTunnel(): EventTunnel {
  * @example
  * ```ts
  * import { fromVue } from '@philjs/universal-vue';
- * import Counter from './Counter.vue';
+ * import Counter from './Counter.vue.js';
  *
  * const UniversalCounter = fromVue(Counter, {
  *   name: 'Counter',
@@ -371,7 +371,7 @@ export function fromVue<P extends Record<string, unknown>>(
  * @example
  * ```ts
  * import { fromVueMultiple } from '@philjs/universal-vue';
- * import * as VueComponents from './components';
+ * import * as VueComponents from './components.js';
  *
  * const universalComponents = fromVueMultiple(VueComponents);
  * ```

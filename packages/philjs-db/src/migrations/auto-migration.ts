@@ -226,7 +226,7 @@ ${downLines.join('\n')}
   }
 
   private generateMigrationTemplate(upStatements: string[], downStatements: string[]): string {
-    return `import type { Migration } from '../types';
+    return `import type { Migration } from '../types.js';
 
 export default {
   name: 'auto_migration_${Date.now()}',

@@ -95,4 +95,3 @@ export declare function createLoadingState(message?: string): {
     start: () => void;
     stop: () => void;
 };
-//# sourceMappingURL=accessibility.d.ts.map

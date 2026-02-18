@@ -1,8 +1,8 @@
 # Building Autonomous Agents
 
-In the Nexus Era, an application is not just a set of passive views waiting for user input. It is a collaborative environment where human users and **Autonomous Agents** work side-by-side.
+Modern application architectures are evolving from static view-and-respond models to environments that integrate **Autonomous Agents** as core logical components.
 
-PhilJS treats Agents not as external services, but as first-class citizens of the runtime. The `@philjs/ai` package provides the primitives to build agents that can perceive, reason, act, and remember.
+PhilJS integrates the `@philjs/ai` package directly into the runtime, providing primitives for building agents capable of perception, reasoning, and tool execution alongside traditional application logic.
 
 ## The Agency Loop
 
@@ -13,6 +13,9 @@ At the heart of every agent is the **Agency Loop**. Unlike a traditional request
 3.  **Act**: The agent executes a tool (e.g., specific API call, file write, database query).
 4.  **Observe**: The agent reads the output of the tool.
 5.  **Loop**: The observations are fed back into the context, and the cycle repeats until the goal is achieved.
+
+![Agency Loop](../../assets/agency_loop_schematic_1767820304100.png)
+*Figure 4-1: The Autonomous Agency Loop*
 
 ## Your First Agent
 
@@ -48,9 +51,15 @@ console.log(response);
 
 A single loop is often insufficient for complex tasks. The **Researcher Pattern** involves an agent breaking down a high-level goal into sub-questions, gathering data for each, and synthesizing a final report.
 
+![Researcher Pattern](../../assets/ai_researcher_pattern.png)
+*Figure 4-2: The Researcher Agent Workflow*
+
 ### Vector Memory
 
 To support long-running research, agents need memory. PhilJS provides a built-in `VectorStore` tailored for standard embeddings.
+
+![Vector Memory](../../assets/ai_vector_memory.png)
+*Figure 4-3: Vector Memory Architecture*
 
 ```typescript
 import { Agent, VectorStore } from '@philjs/ai';
@@ -88,8 +97,8 @@ devBot.use(async (ctx, next) => {
 ```
 
 ## The Future of UI
-
-Agents in PhilJS are not headless bots running in a dark server room. They are designed to drive **Generative UI**. An agent can return not just text, but a JSON description of a UI component, which PhilJS renders on the fly.
+ 
+ Agents in PhilJS are designed to drive **Generative UI**. An agent can return not just text, but a JSON description of a UI component, which PhilJS renders on the fly.
 
 > [!TIP]
 > **Pro Tip**: Use `Agent.render()` to stream React Server Components or PhilJS Signals directly from the LLM's thought process.

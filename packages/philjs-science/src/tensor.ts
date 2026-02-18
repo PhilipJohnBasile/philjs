@@ -1195,7 +1195,7 @@ export class Tensor {
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
     });
 
-    device.queue.writeBuffer(this._gpuBuffer, 0, this.data);
+    device.queue.writeBuffer(this._gpuBuffer, 0, this.data as unknown as GPUAllowSharedBufferSource);
     this._device = 'gpu';
   }
 

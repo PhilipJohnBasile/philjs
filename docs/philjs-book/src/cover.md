@@ -1,7 +1,11 @@
-# The PhilJS Book
+# PhilJS: The Definitive Guide
 
-![Building for the Nexus](./images/cover.png)
+![Cover Image](assets/book_cover_woodcut_v2.png)
 
-*Autonomous Agents, Local-First, and the Future of Node.js*
+**Building the future of the web with Resumability, Signals, and AI.**
 
-**The Definitive Guide**
+This book is the official documentation for the **PhilJS** framework.
+
+---
+
+*Copyright © 2026 Philip John Basile. All rights reserved.*

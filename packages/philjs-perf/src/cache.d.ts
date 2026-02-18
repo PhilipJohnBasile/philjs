@@ -54,4 +54,3 @@ export declare function createLRU<K, V>(maxSize: number): LRUCache<K, V>;
  * Create a cached function with LRU eviction
  */
 export declare function withLRU<K, V>(fn: (key: K) => V, maxSize: number): (key: K) => V;
-//# sourceMappingURL=cache.d.ts.map

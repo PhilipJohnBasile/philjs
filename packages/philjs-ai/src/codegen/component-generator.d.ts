@@ -212,4 +212,3 @@ export declare function createComponentGenerator(provider: AIProvider, options?:
  * Quick component generation helper
  */
 export declare function generateComponent(provider: AIProvider, description: string, name: string, options?: Partial<ComponentGenerationConfig>): Promise<GeneratedComponent>;
-//# sourceMappingURL=component-generator.d.ts.map

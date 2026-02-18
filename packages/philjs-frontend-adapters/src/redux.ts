@@ -1,4 +1,10 @@
-import { createSignal, onCleanup } from '@philjs/core';
+import { signal, onCleanup } from '@philjs/core';
+
+// Compatibility wrapper to provide tuple-style API
+function createSignal<T>(initialValue: T): [() => T, (v: T) => void] {
+    const sig = signal(initialValue);
+    return [() => sig.get(), (v: T) => sig.set(v)];
+}
 
 export interface Action<T = any> {
     type: T;

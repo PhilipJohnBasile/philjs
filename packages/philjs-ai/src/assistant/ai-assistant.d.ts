@@ -316,4 +316,3 @@ export declare function createAIAssistant(config: AssistantConfig): AIAssistant;
  * Create an AI assistant with auto-detected provider
  */
 export declare function createAutoAssistant(projectContext?: ProjectContext): AIAssistant;
-//# sourceMappingURL=ai-assistant.d.ts.map

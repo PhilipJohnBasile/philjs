@@ -119,7 +119,7 @@ export class ISRHandler {
           meta: { status: cacheResult.status },
         });
 
-        return { response, cacheStatus: cacheResult.status };
+        return { response, cacheStatus: cacheResult.status as any };
       }
 
       // Cache miss or expired

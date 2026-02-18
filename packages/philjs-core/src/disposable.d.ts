@@ -91,4 +91,3 @@ export declare function createDisposableMutex(): {
     acquire: () => Promise<Disposable>;
     isLocked: () => boolean;
 };
-//# sourceMappingURL=disposable.d.ts.map

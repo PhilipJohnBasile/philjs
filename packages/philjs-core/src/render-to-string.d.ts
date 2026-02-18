@@ -13,4 +13,3 @@ export declare function renderToString(vnode: VNode): string;
  * Suspense-aware streaming for progressive rendering of async boundaries.
  */
 export declare function renderToStream(vnode: VNode): AsyncGenerator<string>;
-//# sourceMappingURL=render-to-string.d.ts.map

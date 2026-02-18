@@ -905,16 +905,7 @@ export function VideoRoom(props: VideoRoomProps): HTMLElement & { api: RoomAPI }
     // Attach API
     (container as any).api = api;
 
-    return container as HTMLElement & { api: RoomAPI };
+    return container as unknown as HTMLElement & { api: RoomAPI };
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export type {
-    VideoRoomProps,
-    Participant,
-    ChatMessage,
-    RoomAPI
-};
+// Types are exported inline at definition

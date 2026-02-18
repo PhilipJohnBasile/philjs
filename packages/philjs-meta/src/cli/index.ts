@@ -635,6 +635,7 @@ export async function run(args: string[] = process.argv.slice(2)): Promise<void>
   const command = args[0];
   const options = parseArgs(args.slice(1));
 
+  console.log(`
 ${colors.cyan}${colors.bold}PhilJS Meta${colors.reset} v2.0.0
 `);
 
@@ -709,6 +710,7 @@ function parseArgs(args: string[]): CLIOptions {
  * Print help message
  */
 function printHelp(): void {
+  console.log(`
 ${colors.bold}Usage:${colors.reset} philjs-meta <command> [options]
 
 ${colors.bold}Commands:${colors.reset}

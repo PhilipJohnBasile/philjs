@@ -1,12 +1,15 @@
 {
   "name": "@philjs/cypress",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "Cypress E2E testing plugin for PhilJS applications",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc || exit 0"
+    "build": "tsc"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"

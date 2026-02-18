@@ -5,7 +5,11 @@
  * advanced algorithms, and integration with mapping services.
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // =============================================================================
 // Core Types and Interfaces
@@ -1400,11 +1404,11 @@ export function createGeoStore() {
         layers: new Map()
     });
 
-    const currentLocation = computed(() => state.value.currentLocation);
-    const isTracking = computed(() => state.value.isTracking);
-    const locationHistory = computed(() => state.value.locationHistory);
-    const viewport = computed(() => state.value.viewport);
-    const selectedFeatures = computed(() => state.value.selectedFeatures);
+    const currentLocation = computed(() => state.get().currentLocation);
+    const isTracking = computed(() => state.get().isTracking);
+    const locationHistory = computed(() => state.get().locationHistory);
+    const viewport = computed(() => state.get().viewport);
+    const selectedFeatures = computed(() => state.get().selectedFeatures);
 
     /**
      * Start tracking user location.
@@ -1421,8 +1425,8 @@ export function createGeoStore() {
                     const point: Point = [position.coords.longitude, position.coords.latitude];
 
                     batch(() => {
-                        const current = state.value;
-                        state.value = {
+                        const current = state.get();
+                        state.set({
                             ...current,
                             currentLocation: point,
                             isTracking: true,
@@ -1430,7 +1434,7 @@ export function createGeoStore() {
                                 ...current.locationHistory,
                                 { point, timestamp: new Date() }
                             ].slice(-1000) // Keep last 1000 points
-                        };
+                        });
                     });
 
                     // Check geofences
@@ -1441,7 +1445,7 @@ export function createGeoStore() {
                 options
             );
 
-            state.value = { ...state.value, watchId, isTracking: true };
+            state.set({ ...state.get(), watchId, isTracking: true });
         });
     }
 
@@ -1449,10 +1453,10 @@ export function createGeoStore() {
      * Stop tracking user location.
      */
     function stopTracking(): void {
-        const { watchId } = state.value;
+        const { watchId } = state.get();
         if (watchId !== null) {
             navigator.geolocation.clearWatch(watchId);
-            state.value = { ...state.value, watchId: null, isTracking: false };
+            state.set({ ...state.get(), watchId: null, isTracking: false });
         }
     }
 
@@ -1469,7 +1473,7 @@ export function createGeoStore() {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const point: Point = [position.coords.longitude, position.coords.latitude];
-                    state.value = { ...state.value, currentLocation: point };
+                    state.set({ ...state.get(), currentLocation: point });
                     resolve(point);
                 },
                 reject,
@@ -1482,25 +1486,25 @@ export function createGeoStore() {
      * Add a geofence.
      */
     function addGeofence(id: string, polygon: Polygon, callback: (inside: boolean) => void): void {
-        const geofences = new Map(state.value.geofences);
+        const geofences = new Map(state.get().geofences);
         geofences.set(id, { polygon, callback });
-        state.value = { ...state.value, geofences };
+        state.set({ ...state.get(), geofences });
     }
 
     /**
      * Remove a geofence.
      */
     function removeGeofence(id: string): void {
-        const geofences = new Map(state.value.geofences);
+        const geofences = new Map(state.get().geofences);
         geofences.delete(id);
-        state.value = { ...state.value, geofences };
+        state.set({ ...state.get(), geofences });
     }
 
     /**
      * Check if current location is within geofences.
      */
     function checkGeofences(location: Point): void {
-        for (const [, { polygon, callback }] of state.value.geofences) {
+        for (const [, { polygon, callback }] of state.get().geofences) {
             const inside = GeoSpatial.isPointInPolygon(location, polygon);
             callback(inside);
         }
@@ -1510,20 +1514,20 @@ export function createGeoStore() {
      * Update viewport.
      */
     function setViewport(viewport: MapViewport): void {
-        state.value = { ...state.value, viewport };
+        state.set({ ...state.get(), viewport });
     }
 
     /**
      * Add a layer.
      */
     function addLayer(id: string, collection: GeoJSONFeatureCollection): void {
-        const layers = new Map(state.value.layers);
+        const layers = new Map(state.get().layers);
         layers.set(id, collection);
 
         // Add features to spatial index
         for (const feature of collection.features) {
             if (feature.geometry && feature.id) {
-                state.value.spatialIndex.insert({
+                state.get().spatialIndex.insert({
                     id: String(feature.id),
                     geometry: feature.geometry,
                     boundingBox: feature.bbox || GeoSpatial.boundingBox(
@@ -1534,46 +1538,46 @@ export function createGeoStore() {
             }
         }
 
-        state.value = { ...state.value, layers };
+        state.set({ ...state.get(), layers });
     }
 
     /**
      * Remove a layer.
      */
     function removeLayer(id: string): void {
-        const layer = state.value.layers.get(id);
+        const layer = state.get().layers.get(id);
         if (layer) {
             for (const feature of layer.features) {
                 if (feature.id) {
-                    state.value.spatialIndex.remove(String(feature.id));
+                    state.get().spatialIndex.remove(String(feature.id));
                 }
             }
         }
 
-        const layers = new Map(state.value.layers);
+        const layers = new Map(state.get().layers);
         layers.delete(id);
-        state.value = { ...state.value, layers };
+        state.set({ ...state.get(), layers });
     }
 
     /**
      * Select features.
      */
     function selectFeatures(ids: string[]): void {
-        state.value = { ...state.value, selectedFeatures: ids };
+        state.set({ ...state.get(), selectedFeatures: ids });
     }
 
     /**
      * Query features by bounding box.
      */
     function queryFeatures(bbox: BoundingBox): SpatialIndexEntry<unknown>[] {
-        return state.value.spatialIndex.search(bbox);
+        return state.get().spatialIndex.search(bbox);
     }
 
     /**
      * Find nearest features to a point.
      */
     function findNearest(point: Point, k: number = 5): SpatialIndexEntry<unknown>[] {
-        return state.value.spatialIndex.knn(point, k);
+        return state.get().spatialIndex.knn(point, k);
     }
 
     return {
@@ -1649,20 +1653,20 @@ export function useGeolocation(options?: PositionOptions) {
 
     effect(() => {
         if (!navigator.geolocation) {
-            error.value = { code: 2, message: 'Geolocation not supported' } as GeolocationPositionError;
-            isLoading.value = false;
+            error.set({ code: 2, message: 'Geolocation not supported' } as GeolocationPositionError);
+            isLoading.set(false);
             return;
         }
 
         const watchId = navigator.geolocation.watchPosition(
             (position) => {
-                location.value = [position.coords.longitude, position.coords.latitude];
-                error.value = null;
-                isLoading.value = false;
+                location.set([position.coords.longitude, position.coords.latitude]);
+                error.set(null);
+                isLoading.set(false);
             },
             (err) => {
-                error.value = err;
-                isLoading.value = false;
+                error.set(err);
+                isLoading.set(false);
             },
             options
         );
@@ -1704,13 +1708,13 @@ export function useSpatialQuery<T = unknown>(
 
     effect(() => {
         if (!bbox) {
-            results.value = [];
+            results.set([]);
             return;
         }
 
-        isQuerying.value = true;
-        results.value = index.search(bbox);
-        isQuerying.value = false;
+        isQuerying.set(true);
+        results.set(index.search(bbox));
+        isQuerying.set(false);
     });
 
     return { results, isQuerying };
@@ -1728,14 +1732,14 @@ export function useClustering(
 
     effect(() => {
         if (points.length === 0) {
-            clusters.value = { clusters: [], noise: [] };
+            clusters.set({ clusters: [], noise: [] });
             return;
         }
 
-        isProcessing.value = true;
+        isProcessing.set(true);
         const clusterer = new DBSCANCluster(options.radius, options.minPoints);
-        clusters.value = clusterer.cluster(points);
-        isProcessing.value = false;
+        clusters.set(clusterer.cluster(points));
+        isProcessing.set(false);
     });
 
     return { clusters, isProcessing };
@@ -1753,16 +1757,16 @@ export function useGeofence(
     const { location } = useGeolocation();
 
     effect(() => {
-        const loc = location.value;
+        const loc = location.get();
         if (!loc) return;
 
         const nowInside = GeoSpatial.isPointInPolygon(loc, polygon);
 
-        if (nowInside && !isInside.value) {
-            isInside.value = true;
+        if (nowInside && !isInside.get()) {
+            isInside.set(true);
             onEnter?.();
-        } else if (!nowInside && isInside.value) {
-            isInside.value = false;
+        } else if (!nowInside && isInside.get()) {
+            isInside.set(false);
             onExit?.();
         }
     });
@@ -1783,19 +1787,19 @@ export function useMapViewport(initialViewport?: Partial<MapViewport>) {
     });
 
     const setCenter = (center: Point) => {
-        viewport.value = { ...viewport.value, center };
+        viewport.set({ ...viewport.get(), center });
     };
 
     const setZoom = (zoom: number) => {
-        viewport.value = { ...viewport.value, zoom };
+        viewport.set({ ...viewport.get(), zoom });
     };
 
     const setBearing = (bearing: number) => {
-        viewport.value = { ...viewport.value, bearing };
+        viewport.set({ ...viewport.get(), bearing });
     };
 
     const setPitch = (pitch: number) => {
-        viewport.value = { ...viewport.value, pitch };
+        viewport.set({ ...viewport.get(), pitch });
     };
 
     const fitBounds = (bbox: BoundingBox, padding?: number) => {
@@ -1808,7 +1812,7 @@ export function useMapViewport(initialViewport?: Partial<MapViewport>) {
         const maxDiff = Math.max(latDiff, lonDiff);
         const zoom = Math.floor(Math.log2(360 / maxDiff)) - (padding ? 1 : 0);
 
-        viewport.value = { ...viewport.value, center, zoom, boundingBox: bbox };
+        viewport.set({ ...viewport.get(), center, zoom, boundingBox: bbox });
     };
 
     return { viewport, setCenter, setZoom, setBearing, setPitch, fitBounds };
@@ -1824,30 +1828,31 @@ export function useRouteTracking() {
     const { location } = useGeolocation({ enableHighAccuracy: true });
 
     const startTracking = () => {
-        route.value = [];
-        totalDistance.value = 0;
-        isTracking.value = true;
+        route.set([]);
+        totalDistance.set(0);
+        isTracking.set(true);
     };
 
     const stopTracking = () => {
-        isTracking.value = false;
+        isTracking.set(false);
     };
 
     effect(() => {
-        if (!isTracking.value || !location.value) return;
+        if (!isTracking.get() || !location.get()) return;
 
-        const currentRoute = route.value;
+        const currentRoute = route.get();
+        const currentLocation = location.get()!;
         if (currentRoute.length > 0) {
             const lastPoint = currentRoute[currentRoute.length - 1];
-            const dist = GeoSpatial.distance(lastPoint, location.value);
+            const dist = GeoSpatial.distance(lastPoint, currentLocation);
 
             // Only add point if moved more than 10 meters
             if (dist > 0.01) {
-                route.value = [...currentRoute, location.value];
-                totalDistance.value = totalDistance.value + dist;
+                route.set([...currentRoute, currentLocation]);
+                totalDistance.set(totalDistance.get() + dist);
             }
         } else {
-            route.value = [location.value];
+            route.set([currentLocation]);
         }
     });
 

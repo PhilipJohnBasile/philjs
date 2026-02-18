@@ -485,7 +485,7 @@ function generateId(): string {
  * ```ts
  * import Koa from 'koa';
  * import { philjsMiddleware } from '@philjs/koa';
- * import { render } from './entry-server';
+ * import { render } from './entry-server.js';
  *
  * const app = new Koa();
  *

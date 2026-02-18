@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { Quantizer, QuantizationConfig } from '../quantizer.js';
+import { Quantizer } from '../quantizer.js';
+import type { QuantizationConfig } from '../quantizer.js';
 
 describe('PhilJS Edge: Quantizer', () => {
     it('should quantize Float32 array to Int8', () => {

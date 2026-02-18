@@ -2,7 +2,7 @@
  * PhilJS Migration Examples
  */
 
-import type { Migration } from '../src/migrations/types';
+import type { Migration } from '../src/migrations/types.js';
 
 /**
  * Example 1: Create Users Table

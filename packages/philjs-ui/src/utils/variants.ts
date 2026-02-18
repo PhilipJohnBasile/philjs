@@ -26,14 +26,14 @@ export interface VariantConfig<TVariants extends Record<string, Record<string, C
 }
 
 /**
- * Props type for a variant config
+ * Props type for a variant config or variant function.
+ * Works with both the config object and the returned variant function.
  */
-export type VariantProps<TConfig extends VariantConfig<Record<string, Record<string, ClassValue>>>> = {
-  [K in keyof TConfig['variants']]?: keyof TConfig['variants'][K];
-} & {
-  class?: ClassValue;
-  className?: ClassValue;
-};
+export type VariantProps<T> = T extends VariantConfig<infer TVariants>
+  ? { [K in keyof TVariants]?: keyof TVariants[K] } & { class?: ClassValue; className?: ClassValue }
+  : T extends (props?: infer P) => string
+    ? P extends Record<string, any> ? P : Record<string, any>
+    : Record<string, any>;
 
 /**
  * Creates a variant function that generates class names based on variant props.
@@ -66,7 +66,7 @@ export type VariantProps<TConfig extends VariantConfig<Record<string, Record<str
  */
 export function variants<TVariants extends Record<string, Record<string, ClassValue>>>(
   config: VariantConfig<TVariants>
-): (props?: VariantProps<VariantConfig<TVariants>>) => string {
+): (props?: Record<string, any>) => string {
   return (props = {}) => {
     const { class: classFromProp, className, ...variantProps } = props as Record<string, unknown>;
 
@@ -97,7 +97,7 @@ export function variants<TVariants extends Record<string, Record<string, ClassVa
     }
 
     // Apply custom classes
-    classes.push(classFromProp, className);
+    classes.push(classFromProp as ClassValue, className as ClassValue);
 
     return cn(...classes);
   };
@@ -147,7 +147,7 @@ export function slotVariants<
   TVariants extends Record<string, Record<string, Partial<Record<keyof TSlots, ClassValue>>>>
 >(
   config: SlotVariantConfig<TSlots, TVariants>
-): (props?: SlotVariantProps<SlotVariantConfig<TSlots, TVariants>>) => Record<keyof TSlots, string> {
+): (props?: Record<string, any>) => Record<keyof TSlots, string> {
   return (props = {}) => {
     const result = {} as Record<keyof TSlots, string>;
 

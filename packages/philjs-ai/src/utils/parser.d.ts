@@ -55,4 +55,3 @@ export declare function validateCode(code: string): {
     valid: boolean;
     errors: string[];
 };
-//# sourceMappingURL=parser.d.ts.map

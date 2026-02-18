@@ -30,4 +30,3 @@ export declare function buildDocumentationPrompt(code: string, options: {
     includeTypes?: boolean;
     style?: string;
 }): string;
-//# sourceMappingURL=prompts.d.ts.map

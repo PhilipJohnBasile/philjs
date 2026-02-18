@@ -5,6 +5,28 @@
  * anchor placement, and scene management.
  */
 
+// WebXR Light Estimation API types (experimental - not yet in @types/webxr)
+declare global {
+    interface XRLightProbe {
+        probeSpace: XRSpace;
+        onreflectionchange: ((this: XRLightProbe, ev: Event) => void) | null;
+    }
+
+    interface XRLightEstimate {
+        sphericalHarmonicsCoefficients: Float32Array;
+        primaryLightDirection: DOMPointReadOnly;
+        primaryLightIntensity: DOMPointReadOnly;
+    }
+
+    interface XRSession {
+        requestLightProbe?: (options?: { reflectionFormat?: string }) => Promise<XRLightProbe>;
+    }
+
+    interface XRFrame {
+        getLightEstimate?: (lightProbe: XRLightProbe) => XRLightEstimate | null;
+    }
+}
+
 export interface ARConfig {
     near: number;
     far: number;
@@ -311,13 +333,11 @@ export class Hologram {
         const lightEstimate = frame.getLightEstimate?.(this.lightProbe);
         if (!lightEstimate) return;
 
+        const dir = lightEstimate.primaryLightDirection;
+        const intensity = lightEstimate.primaryLightIntensity;
         this.state.lightEstimate = {
-            primaryLightDirection: new Float32Array(
-                lightEstimate.primaryLightDirection
-            ),
-            primaryLightIntensity: new Float32Array(
-                lightEstimate.primaryLightIntensity
-            ),
+            primaryLightDirection: new Float32Array([dir.x, dir.y, dir.z, dir.w]),
+            primaryLightIntensity: new Float32Array([intensity.x, intensity.y, intensity.z, intensity.w]),
             sphericalHarmonicsCoefficients: new Float32Array(
                 lightEstimate.sphericalHarmonicsCoefficients
             ),

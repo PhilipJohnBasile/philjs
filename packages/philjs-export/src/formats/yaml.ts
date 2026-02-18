@@ -52,7 +52,6 @@ export function toYAML<T>(data: T, options: YAMLOptions = {}): string {
   const {
     indent = 2,
     lineWidth = 80,
-    defaultQuoteType = 'single',
     forceQuotes = false,
     sortKeys = false,
     includeNulls = true,
@@ -74,25 +73,19 @@ export function toYAML<T>(data: T, options: YAMLOptions = {}): string {
     ...(excludeFields !== undefined ? { excludeFields } : {}),
   });
 
-  // Create YAML document
-  const doc = new YAML.Document(processedData);
+  // Generate YAML string using stringify
+  const yamlStr = YAML.stringify(processedData, {
+    indent,
+    lineWidth,
+    defaultStringType: forceQuotes ? 'QUOTE_SINGLE' : 'PLAIN',
+  } as Parameters<typeof YAML.stringify>[1]);
 
   // Add comment if provided
   if (comment) {
-    doc.commentBefore = comment;
+    return `# ${comment}\n${yamlStr}`;
   }
 
-  // Generate YAML string
-  return doc.toString({
-    indent,
-    lineWidth,
-    defaultStringType: forceQuotes
-      ? defaultQuoteType === 'double'
-        ? YAML.Scalar.QUOTE_DOUBLE
-        : YAML.Scalar.QUOTE_SINGLE
-      : YAML.Scalar.PLAIN,
-    sortMapEntries: sortKeys ? true : undefined,
-  } as YAML.ToStringOptions);
+  return yamlStr;
 }
 
 /**
@@ -123,14 +116,8 @@ export function arrayToYAMLDocuments<T>(data: T[], options: YAMLOptions = {}): s
       ...(excludeFields !== undefined ? { excludeFields } : {}),
     });
 
-    const doc = new YAML.Document(processedItem);
-    documents.push(
-      doc.toString({
-        indent,
-        lineWidth,
-        sortMapEntries: sortKeys ? true : undefined,
-      } as YAML.ToStringOptions)
-    );
+    const yamlStr = YAML.stringify(processedItem, { indent, lineWidth });
+    documents.push(yamlStr);
   }
 
   return documents.join('---\n');
@@ -196,12 +183,7 @@ export async function* streamToYAML<T>(
           ...(excludeFields !== undefined ? { excludeFields } : {}),
         });
 
-        const doc = new YAML.Document(processedItem);
-        const yamlStr = doc.toString({
-          indent,
-          lineWidth,
-          sortMapEntries: sortKeys ? true : undefined,
-        } as YAML.ToStringOptions);
+        const yamlStr = YAML.stringify(processedItem, { indent, lineWidth });
 
         chunks.push((isFirst ? '' : '---\n') + yamlStr);
         isFirst = false;
@@ -234,12 +216,7 @@ export async function* streamToYAML<T>(
         ...(excludeFields !== undefined ? { excludeFields } : {}),
       });
 
-      const doc = new YAML.Document(processedItem);
-      const yamlStr = doc.toString({
-        indent,
-        lineWidth,
-        sortMapEntries: sortKeys ? true : undefined,
-      } as YAML.ToStringOptions);
+      const yamlStr = YAML.stringify(processedItem, { indent, lineWidth });
 
       chunks.push((isFirst ? '' : '---\n') + yamlStr);
       isFirst = false;

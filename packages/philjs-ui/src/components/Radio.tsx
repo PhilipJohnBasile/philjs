@@ -164,37 +164,40 @@ export function RadioGroup(props: RadioGroupProps): JSX.Element {
   };
 
   return (
-    <RadioContext.Provider value={contextValue}>
-      <fieldset
-        className={`${className}`}
-        role="radiogroup"
-        aria-required={required}
-        aria-invalid={hasError}
-      >
-        {label && (
-          <legend className="block text-sm font-medium text-gray-700 mb-2">
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </legend>
-        )}
-        {description && (
-          <p className="text-sm text-gray-500 mb-3">{description}</p>
-        )}
-        <div
-          className={
-            orientation === 'horizontal'
-              ? 'flex flex-wrap gap-4'
-              : 'flex flex-col gap-2'
-          }
+    <RadioContext.Provider
+      value={contextValue}
+      children={
+        <fieldset
+          className={`${className}`}
+          role="radiogroup"
+          aria-required={required}
+          aria-invalid={hasError}
         >
-          {children}
-        </div>
-        {errorMessage && (
-          <p className="mt-2 text-sm text-red-600" role="alert">
-            {errorMessage}
-          </p>
-        )}
-      </fieldset>
-    </RadioContext.Provider>
+          {label && (
+            <legend className="block text-sm font-medium text-gray-700 mb-2">
+              {label}
+              {required && <span className="text-red-500 ml-1">*</span>}
+            </legend>
+          )}
+          {description && (
+            <p className="text-sm text-gray-500 mb-3">{description}</p>
+          )}
+          <div
+            className={
+              orientation === 'horizontal'
+                ? 'flex flex-wrap gap-4'
+                : 'flex flex-col gap-2'
+            }
+          >
+            {children}
+          </div>
+          {errorMessage && (
+            <p className="mt-2 text-sm text-red-600" role="alert">
+              {errorMessage}
+            </p>
+          )}
+        </fieldset>
+      }
+    />
   );
 }

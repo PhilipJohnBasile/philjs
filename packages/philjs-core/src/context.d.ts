@@ -152,4 +152,3 @@ export declare function createThemeContext<T extends Record<string, any>>(defaul
         }) => VNode;
     }) => JSXElement;
 };
-//# sourceMappingURL=context.d.ts.map

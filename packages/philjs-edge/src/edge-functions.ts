@@ -9,6 +9,16 @@
  * - Request validation
  */
 
+/**
+ * KV Store interface for edge deployments
+ */
+export interface KVStore {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
+  delete(key: string): Promise<void>;
+  list(options?: { prefix?: string; limit?: number }): Promise<{ keys: { name: string }[] }>;
+}
+
 export interface EdgeContext {
   request: Request;
   env: Record<string, unknown>;

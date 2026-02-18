@@ -70,7 +70,7 @@ export interface APIMetadata {
  * @example
  * ```ts
  * import { extractAPIMetadata } from 'philjs-rpc/treaty-server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const metadata = extractAPIMetadata(api);
  * console.log(metadata.routes);
@@ -236,7 +236,7 @@ export interface OpenAPIOperation {
  * @example
  * ```ts
  * import { extractAPIMetadata, generateOpenAPI } from 'philjs-rpc/treaty-server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const metadata = extractAPIMetadata(api, {
  *   title: 'My API',
@@ -348,7 +348,7 @@ export interface TypeGenerationOptions {
  * @example
  * ```ts
  * import { extractAPIMetadata, generateTypeDefinitions } from 'philjs-rpc/treaty-server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const metadata = extractAPIMetadata(api);
  * const types = generateTypeDefinitions(metadata, {
@@ -498,7 +498,7 @@ export function validateRequest<TRouter extends Router>(
  * @example
  * ```ts
  * import { printAPIRoutes } from 'philjs-rpc/treaty-server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * printAPIRoutes(api);
  * ```

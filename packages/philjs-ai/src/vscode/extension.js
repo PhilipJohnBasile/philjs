@@ -213,7 +213,7 @@ export class PhilJSAIExtension {
         const code = selection
             ? document.getText().split('\n').slice(selection.start.line, selection.end.line + 1).join('\n')
             : document.getText();
-        const explanation = await this.provider.generateCompletion(`Explain this PhilJS code:\n\n\`\`\`typescript\n${code}\n\`\`\``, { systemPrompt: 'You are a helpful coding assistant. Explain code clearly and concisely.' });
+        const { content: explanation } = await this.provider.generateCompletion(`Explain this PhilJS code:\n\n\`\`\`typescript\n${code}\n\`\`\``, { systemPrompt: 'You are a helpful coding assistant. Explain code clearly and concisely.' });
     }
     /**
      * Review code command

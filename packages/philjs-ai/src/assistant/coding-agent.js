@@ -127,7 +127,7 @@ Return JSON:
   "estimatedFiles": 5,
   "complexity": "low|medium|high"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
             systemPrompt: this.getPlanningSystemPrompt(),
         });
@@ -206,7 +206,7 @@ Return JSON:
   },
   "explanation": "What was created and why"
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
             systemPrompt: this.getWritingSystemPrompt(task),
         });
@@ -250,7 +250,7 @@ Provide analysis:
   "issues": ["Issue 1"],
   "suggestions": ["Suggestion 1"]
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
         });
         step.result = { success: true, output: response };
@@ -277,7 +277,7 @@ Return JSON:
     "file.test.ts": "// test code"
   }
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
             systemPrompt: 'You are an expert at writing comprehensive tests.',
         });
@@ -318,7 +318,7 @@ Return JSON:
   "suggestions": ["Suggestion 1"],
   "score": 0-100
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
         });
         const parsed = extractJSON(response);
@@ -358,7 +358,7 @@ Return JSON with fixed files:
   },
   "fixedIssues": ["Issue 1 fixed", "Issue 2 fixed"]
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
         });
         const parsed = extractJSON(response);
@@ -389,7 +389,7 @@ Consider:
 5. How should this be structured?
 
 Think step by step and explain your reasoning.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
             temperature: 0.4,
         });
@@ -416,7 +416,7 @@ Self-critique:
 5. Did I miss anything?
 
 Be honest and thorough.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.options,
             systemPrompt: 'You are reviewing your own work. Be critical and honest.',
         });

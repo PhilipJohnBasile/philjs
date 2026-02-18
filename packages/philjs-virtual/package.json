@@ -17,8 +17,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
-    "test": "vitest run || exit 0"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

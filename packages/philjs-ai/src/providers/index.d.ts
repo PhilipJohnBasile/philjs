@@ -85,4 +85,3 @@ export declare class ProviderRegistry {
  * Global provider registry instance
  */
 export declare const providerRegistry: ProviderRegistry;
-//# sourceMappingURL=index.d.ts.map

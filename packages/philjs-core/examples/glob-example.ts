@@ -14,7 +14,7 @@ import {
   sortByFrontmatter,
   filterByFrontmatter,
   autoRegister,
-} from '../src/glob';
+} from '../src/glob.js';
 
 // ============================================
 // Example 1: Basic Glob Usage

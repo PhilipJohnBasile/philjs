@@ -1,5 +1,8 @@
 
-import { signal, computed, effect } from '@philjs/core';
+import { signal, memo, effect } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 import { performance } from 'perf_hooks';
 
 // Benchmark: Create 1000 signals, 1 computed derived from all, update 1

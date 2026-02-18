@@ -19,9 +19,9 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

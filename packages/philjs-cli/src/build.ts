@@ -90,6 +90,7 @@ export async function buildProduction(options: BuildOptions): Promise<void> {
       process.exit(1);
     }
 
+    console.log(
       pc.green(
         `✓ Bundle size: ${formatSize(stats.totalSize)} / ${formatSize(budgets.maxBundleSize || Infinity)}`
       )
@@ -102,13 +103,14 @@ export async function buildProduction(options: BuildOptions): Promise<void> {
 
     const stats = await getOutputStats(options.outDir);
 
-
     for (const [file, size] of Object.entries(stats.files)) {
       const percent = ((size / stats.totalSize) * 100).toFixed(1);
+      console.log(
         `  ${file.padEnd(30)} ${formatSize(size).padStart(10)} ${pc.dim(`(${percent}%)`)}`
       );
     }
 
+    console.log(
       pc.bold(`  Total:`) + `${formatSize(stats.totalSize).padStart(41)}`
     );
   }

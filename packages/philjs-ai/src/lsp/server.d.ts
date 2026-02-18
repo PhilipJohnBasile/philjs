@@ -203,4 +203,3 @@ export declare function createLanguageServer(config: ServerConfig): PhilJSLangua
 export declare function startStdioServer(provider: AIProvider, options?: Omit<ServerConfig, 'provider'>): PhilJSLanguageServer;
 export * from './capabilities.js';
 export * from './handlers.js';
-//# sourceMappingURL=server.d.ts.map

@@ -101,7 +101,7 @@ function generateComponentTemplate(context: TemplateContext): string {
     if (styleType === 'css-modules') {
       styleImport = `import styles from './${pascalName}.module.css';\n`;
     } else if (styleType === 'styled') {
-      styleImport = `import { container } from './${pascalName}.styles';\n`;
+      styleImport = `import { container } from './${pascalName}.styles.js';\n`;
     }
   }
 

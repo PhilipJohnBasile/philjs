@@ -2,8 +2,8 @@
  * Variants System Examples for PhilJS CSS
  */
 
-import { variants, slotVariants, booleanVariant, stateVariants } from '../src';
-import { theme } from './theme-system';
+import { variants, slotVariants, booleanVariant, stateVariants } from '../src.js';
+import { theme } from './theme-system.js';
 
 // ===================================
 // 1. Button Variants

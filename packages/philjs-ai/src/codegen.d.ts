@@ -363,4 +363,3 @@ export declare function explainCode(provider: AIProvider, code: string): Promise
  * @returns Generated tests
  */
 export declare function generateTests(provider: AIProvider, code: string): Promise<GeneratedTestsResult>;
-//# sourceMappingURL=codegen.d.ts.map

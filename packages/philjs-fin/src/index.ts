@@ -16,7 +16,11 @@
  * @packageDocumentation
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Type Definitions
@@ -281,15 +285,15 @@ export function createPortfolioStore(initialCash: number = 100000): PortfolioSto
 
   const totalValue = computed(() => {
     let positionValue = 0;
-    for (const pos of positions.value.values()) {
+    for (const pos of positions.get().values()) {
       positionValue += pos.marketValue;
     }
-    return cash.value + positionValue;
+    return cash.get() + positionValue;
   });
 
   const dayPnL = computed(() => {
     let pnl = 0;
-    for (const pos of positions.value.values()) {
+    for (const pos of positions.get().values()) {
       pnl += pos.unrealizedPnL;
     }
     return pnl;
@@ -1768,7 +1772,7 @@ export function useMarketData(symbols: string[], config?: Partial<MarketDataConf
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        store.isConnected.value = true;
+        store.isConnected.set(true);
         reconnectAttempts = 0;
 
         if (config?.apiKey) {
@@ -1792,13 +1796,13 @@ export function useMarketData(symbols: string[], config?: Partial<MarketDataConf
 
         batch(() => {
           if (data.T === 't') {
-            const prices = new Map(store.prices.value);
+            const prices = new Map(store.prices.get());
             prices.set(data.S, data.p);
-            store.prices.value = prices;
+            store.prices.set(prices);
           }
 
           if (data.T === 'b') {
-            const ohlcv = new Map(store.ohlcv.value);
+            const ohlcv = new Map(store.ohlcv.get());
             const bars = ohlcv.get(data.S) || [];
             bars.push({
               timestamp: new Date(data.t).getTime(),
@@ -1809,20 +1813,20 @@ export function useMarketData(symbols: string[], config?: Partial<MarketDataConf
               volume: data.v
             });
             ohlcv.set(data.S, bars);
-            store.ohlcv.value = ohlcv;
+            store.ohlcv.set(ohlcv);
           }
 
-          store.lastUpdate.value = Date.now();
+          store.lastUpdate.set(Date.now());
         });
       };
 
       ws.onerror = (error) => {
-        const errors = [...store.errors.value, `WebSocket error: ${error}`];
-        store.errors.value = errors;
+        const errors = [...store.errors.get(), `WebSocket error: ${error}`];
+        store.errors.set(errors);
       };
 
       ws.onclose = () => {
-        store.isConnected.value = false;
+        store.isConnected.set(false);
 
         if (reconnectAttempts < maxReconnects) {
           reconnectAttempts++;
@@ -1830,8 +1834,8 @@ export function useMarketData(symbols: string[], config?: Partial<MarketDataConf
         }
       };
     } catch (error) {
-      const errors = [...store.errors.value, `Connection error: ${error}`];
-      store.errors.value = errors;
+      const errors = [...store.errors.get(), `Connection error: ${error}`];
+      store.errors.set(errors);
     }
   };
 
@@ -1876,7 +1880,7 @@ export function usePortfolio(initialCash: number = 100000) {
   const store = createPortfolioStore(initialCash);
 
   const updatePosition = (symbol: string, update: Partial<Position>) => {
-    const positions = new Map(store.positions.value);
+    const positions = new Map(store.positions.get());
     const current = positions.get(symbol);
 
     if (current) {
@@ -1894,12 +1898,12 @@ export function usePortfolio(initialCash: number = 100000) {
       });
     }
 
-    store.positions.value = positions;
+    store.positions.set(positions);
   };
 
   const updatePrices = (prices: Map<string, number>) => {
     batch(() => {
-      const positions = new Map(store.positions.value);
+      const positions = new Map(store.positions.get());
 
       for (const [symbol, position] of positions.entries()) {
         const price = prices.get(symbol);
@@ -1918,29 +1922,29 @@ export function usePortfolio(initialCash: number = 100000) {
         }
       }
 
-      store.positions.value = positions;
+      store.positions.set(positions);
     });
   };
 
   const closePosition = (symbol: string, price: number) => {
-    const positions = new Map(store.positions.value);
+    const positions = new Map(store.positions.get());
     const position = positions.get(symbol);
 
     if (position) {
       const proceeds = position.quantity * price;
-      store.cash.value = store.cash.value + proceeds;
+      store.cash.set(store.cash.get() + proceeds);
       positions.delete(symbol);
-      store.positions.value = positions;
+      store.positions.set(positions);
     }
   };
 
   const deposit = (amount: number) => {
-    store.cash.value = store.cash.value + amount;
+    store.cash.set(store.cash.get() + amount);
   };
 
   const withdraw = (amount: number): boolean => {
-    if (amount > store.cash.value) return false;
-    store.cash.value = store.cash.value - amount;
+    if (amount > store.cash.get()) return false;
+    store.cash.set(store.cash.get() - amount);
     return true;
   };
 
@@ -1959,7 +1963,7 @@ export function useTechnicalAnalysis(ohlcv: ReturnType<typeof signal<OHLCV[]>>) 
   const indicators = signal<Map<string, number[]>>(new Map());
 
   const calculate = (indicatorName: string, config?: IndicatorConfig) => {
-    const data = ohlcv.value;
+    const data = ohlcv.get();
     const closes = data.map(c => c.close);
     let result: number[] = [];
 
@@ -1993,15 +1997,15 @@ export function useTechnicalAnalysis(ohlcv: ReturnType<typeof signal<OHLCV[]>>) 
         break;
     }
 
-    const map = new Map(indicators.value);
+    const map = new Map(indicators.get());
     map.set(indicatorName, result);
-    indicators.value = map;
+    indicators.set(map);
 
     return result;
   };
 
   const calculateMACD = (config?: IndicatorConfig) => {
-    const closes = ohlcv.value.map(c => c.close);
+    const closes = ohlcv.get().map(c => c.close);
     const result = TechnicalAnalysis.MACD(
       closes,
       config?.fastPeriod || 12,
@@ -2009,65 +2013,65 @@ export function useTechnicalAnalysis(ohlcv: ReturnType<typeof signal<OHLCV[]>>) 
       config?.signalPeriod || 9
     );
 
-    const map = new Map(indicators.value);
+    const map = new Map(indicators.get());
     map.set('macd_line', result.macd);
     map.set('macd_signal', result.signal);
     map.set('macd_histogram', result.histogram);
-    indicators.value = map;
+    indicators.set(map);
 
     return result;
   };
 
   const calculateBollinger = (config?: IndicatorConfig) => {
-    const closes = ohlcv.value.map(c => c.close);
+    const closes = ohlcv.get().map(c => c.close);
     const result = TechnicalAnalysis.BollingerBands(
       closes,
       config?.period || 20,
       config?.standardDeviations || 2
     );
 
-    const map = new Map(indicators.value);
+    const map = new Map(indicators.get());
     map.set('bb_upper', result.upper);
     map.set('bb_middle', result.middle);
     map.set('bb_lower', result.lower);
-    indicators.value = map;
+    indicators.set(map);
 
     return result;
   };
 
   const calculateStochastic = (config?: IndicatorConfig) => {
     const result = TechnicalAnalysis.Stochastic(
-      ohlcv.value,
+      ohlcv.get(),
       config?.period || 14,
       config?.smoothing || 3
     );
 
-    const map = new Map(indicators.value);
+    const map = new Map(indicators.get());
     map.set('stoch_k', result.k);
     map.set('stoch_d', result.d);
-    indicators.value = map;
+    indicators.set(map);
 
     return result;
   };
 
   const calculateADX = (config?: IndicatorConfig) => {
-    const result = TechnicalAnalysis.ADX(ohlcv.value, config?.period || 14);
+    const result = TechnicalAnalysis.ADX(ohlcv.get(), config?.period || 14);
 
-    const map = new Map(indicators.value);
+    const map = new Map(indicators.get());
     map.set('adx', result.adx);
     map.set('plus_di', result.plusDI);
     map.set('minus_di', result.minusDI);
-    indicators.value = map;
+    indicators.set(map);
 
     return result;
   };
 
   const detectPatterns = () => {
-    return PatternRecognition.detectAll(ohlcv.value);
+    return PatternRecognition.detectAll(ohlcv.get());
   };
 
   const getLatest = (indicatorName: string): number | undefined => {
-    const values = indicators.value.get(indicatorName);
+    const values = indicators.get().get(indicatorName);
     return values ? values[values.length - 1] : undefined;
   };
 
@@ -2094,7 +2098,7 @@ export function useOptionsChain(underlying: string, currentPrice: ReturnType<typ
     volatility: number = 0.25
   ) => {
     const contracts: OptionContract[] = [];
-    const S = currentPrice.value;
+    const S = currentPrice.get();
 
     for (const expiration of expirations) {
       const T = (expiration.getTime() - Date.now()) / (365 * 24 * 60 * 60 * 1000);
@@ -2122,13 +2126,13 @@ export function useOptionsChain(underlying: string, currentPrice: ReturnType<typ
       }
     }
 
-    chain.value = contracts;
+    chain.set(contracts);
     return contracts;
   };
 
   const updateChain = (riskFreeRate: number = 0.05) => {
-    const S = currentPrice.value;
-    const updated = chain.value.map(contract => {
+    const S = currentPrice.get();
+    const updated = chain.get().map(contract => {
       const T = (contract.expiration.getTime() - Date.now()) / (365 * 24 * 60 * 60 * 1000);
       if (T <= 0) return contract;
 
@@ -2160,25 +2164,25 @@ export function useOptionsChain(underlying: string, currentPrice: ReturnType<typ
       };
     });
 
-    chain.value = updated;
+    chain.set(updated);
     return updated;
   };
 
   const findByStrike = (strike: number, type?: 'call' | 'put') => {
-    return chain.value.filter(c => c.strike === strike && (!type || c.type === type));
+    return chain.get().filter(c => c.strike === strike && (!type || c.type === type));
   };
 
   const findByExpiration = (expiration: Date) => {
-    return chain.value.filter(c => c.expiration.getTime() === expiration.getTime());
+    return chain.get().filter(c => c.expiration.getTime() === expiration.getTime());
   };
 
   const getATMOptions = () => {
-    const S = currentPrice.value;
-    const strikes = [...new Set(chain.value.map(c => c.strike))].sort((a, b) => a - b);
+    const S = currentPrice.get();
+    const strikes = [...new Set(chain.get().map(c => c.strike))].sort((a, b) => a - b);
     const atmStrike = strikes.reduce((prev, curr) =>
       Math.abs(curr - S) < Math.abs(prev - S) ? curr : prev
     );
-    return chain.value.filter(c => c.strike === atmStrike);
+    return chain.get().filter(c => c.strike === atmStrike);
   };
 
   return {
@@ -2202,19 +2206,19 @@ export function useBacktest(config: BacktestConfig) {
   };
 
   const run = (strategy: Parameters<typeof backtester.run>[0]) => {
-    isRunning.value = true;
+    isRunning.set(true);
 
     try {
       const result = backtester.run(strategy);
-      results.value = result;
+      results.set(result);
       return result;
     } finally {
-      isRunning.value = false;
+      isRunning.set(false);
     }
   };
 
   const getSummary = () => {
-    const r = results.value;
+    const r = results.get();
     if (!r) return null;
 
     return {

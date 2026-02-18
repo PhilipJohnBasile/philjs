@@ -15,7 +15,11 @@
  * - Real-time subscriptions
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 import type {
   DataSource,
   Repository,
@@ -268,7 +272,7 @@ export function getCacheStats(): {
  * @example
  * ```tsx
  * import { useTypeORM } from '@philjs/typeorm';
- * import { User } from './entities/User';
+ * import { User } from './entities/User.js';
  *
  * function UserList() {
  *   const { data, loading, error, refetch } = useTypeORM(User, {
@@ -470,7 +474,7 @@ export function useTypeORMOne<T extends ObjectLiteral>(
 
     try {
       const findOptions: FindOneOptions<T> = {
-        where: { id: entityId } as FindOptionsWhere<T>,
+        where: { id: entityId } as unknown as FindOptionsWhere<T>,
         relations,
         select,
       };
@@ -786,7 +790,7 @@ export function useInfinite<T extends ObjectLiteral>(
 } {
   const {
     pageSize = 20,
-    getCursor = (item) => (item as { id: unknown }).id,
+    getCursor = (item) => (item as unknown as { id: unknown }).id,
     cursorField = 'id' as keyof T,
     relations,
     select,
@@ -1056,7 +1060,7 @@ export function useTypeORMMutation<T extends ObjectLiteral>(
 
     try {
       await repository.update(id, updateData as never);
-      const result = await repository.findOneBy({ id } as FindOptionsWhere<T>);
+      const result = await repository.findOneBy({ id } as unknown as FindOptionsWhere<T>);
 
       batch(() => {
         data.set(result);
@@ -1161,7 +1165,7 @@ export function useTypeORMMutation<T extends ObjectLiteral>(
     error.set(null);
 
     try {
-      const entity = await repository.findOneBy({ id } as FindOptionsWhere<T>);
+      const entity = await repository.findOneBy({ id } as unknown as FindOptionsWhere<T>);
       if (!entity) {
         loading.set(false);
         return null;
@@ -1193,7 +1197,7 @@ export function useTypeORMMutation<T extends ObjectLiteral>(
 
     try {
       const entity = await repository.findOne({
-        where: { id } as FindOptionsWhere<T>,
+        where: { id } as unknown as FindOptionsWhere<T>,
         withDeleted: true,
       });
       if (!entity) {
@@ -1229,7 +1233,7 @@ export function useTypeORMMutation<T extends ObjectLiteral>(
     error.set(null);
 
     try {
-      const result = await repository.upsert(entityData, conflictPathsOrOptions);
+      const result = await repository.upsert(entityData as any, conflictPathsOrOptions);
 
       batch(() => {
         loading.set(false);
@@ -1303,7 +1307,7 @@ export function useBulkInsert<T extends ObjectLiteral>(
     error.set(null);
 
     try {
-      const insertResult = await repository.insert(entities);
+      const insertResult = await repository.insert(entities as any);
 
       batch(() => {
         result.set(insertResult);
@@ -1769,7 +1773,7 @@ export function useOptimistic<T extends ObjectLiteral>(
       originalData.set([...current]);
     }
     const updated = current.map((item) => {
-      const itemId = (item as { id: string | number }).id;
+      const itemId = (item as unknown as { id: string | number }).id;
       return itemId === id ? { ...item, ...updates } : item;
     });
     query.mutate(updated);
@@ -1781,7 +1785,7 @@ export function useOptimistic<T extends ObjectLiteral>(
       originalData.set([...current]);
     }
     const filtered = current.filter((item) => {
-      const itemId = (item as { id: string | number }).id;
+      const itemId = (item as unknown as { id: string | number }).id;
       return itemId !== id;
     });
     query.mutate(filtered);
@@ -1904,7 +1908,7 @@ export function hydrateFromSSR<T>(key: string, windowKey = '__TYPEORM_DATA__'): 
     return null;
   }
 
-  const hydrationData = (window as Record<string, Record<string, string>>)[windowKey];
+  const hydrationData = (window as unknown as Record<string, Record<string, string>>)[windowKey];
   if (!hydrationData || !hydrationData[key]) {
     return null;
   }
@@ -2042,78 +2046,4 @@ export async function preload<T extends ObjectLiteral>(
   return await repository.preload(entityLike);
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  // Core hooks
-  useTypeORM,
-  useTypeORMOne,
-  useTypeORMFindOne,
-  useTypeORMCount,
-  // Pagination
-  usePaginated,
-  useInfinite,
-  // Mutations
-  useTypeORMMutation,
-  useBulkInsert,
-  useBulkSave,
-  // Query builder
-  useQueryBuilder,
-  createQueryBuilder,
-  // Transaction
-  useTransaction,
-  withTransaction,
-  // Soft delete
-  useWithDeleted,
-  useOnlyDeleted,
-  // Optimistic
-  useOptimistic,
-  // Subscriptions
-  useEntitySubscription,
-  // Raw queries
-  useRawQuery,
-  executeRaw,
-  // Connection
-  setDataSource,
-  getDataSource,
-  isConnected,
-  initializeDataSource,
-  destroyDataSource,
-  getConnectionState,
-  // Cache
-  clearCache,
-  getCacheStats,
-  // SSR
-  createSSRDataLoader,
-  prefetchForSSR,
-  hydrateFromSSR,
-  // Migrations
-  runMigrations,
-  revertLastMigration,
-  showMigrations,
-  synchronizeSchema,
-  // Utilities
-  getRepository,
-  getManager,
-  exists,
-  preload,
-};
-
-// Type exports
-export type {
-  QueryState,
-  PaginationState,
-  InfiniteState,
-  MutationState,
-  UseTypeORMOptions,
-  UseTypeORMOneOptions,
-  UsePaginatedOptions,
-  UseInfiniteOptions,
-  UseMutationOptions,
-  TransactionOptions,
-  BulkOperationResult,
-  SubscriptionOptions,
-  SSRDataLoader,
-};
+// All functions are exported inline via `export function` declarations above

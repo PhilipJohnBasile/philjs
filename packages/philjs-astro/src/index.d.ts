@@ -23,7 +23,8 @@
  * effect(() => console.log('Mars RA:', mars().rightAscension));
  * ```
  */
-import { type Signal, type Computed } from '@philjs/core';
+import { type Signal, type Memo } from '@philjs/core';
+type Computed<T> = Memo<T>;
 export type CelestialBody = 'sun' | 'moon' | 'mercury' | 'venus' | 'mars' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto';
 export type ZodiacSign = 'aries' | 'taurus' | 'gemini' | 'cancer' | 'leo' | 'virgo' | 'libra' | 'scorpio' | 'sagittarius' | 'capricorn' | 'aquarius' | 'pisces';
 export type MoonPhaseName = 'new_moon' | 'waxing_crescent' | 'first_quarter' | 'waxing_gibbous' | 'full_moon' | 'waning_gibbous' | 'last_quarter' | 'waning_crescent';
@@ -126,12 +127,6 @@ export interface AstronomyState {
     siderealTime: number;
     julianDate: number;
 }
-declare const J2000 = 2451545;
-declare const JULIAN_CENTURY = 36525;
-declare const DEG_TO_RAD: number;
-declare const RAD_TO_DEG: number;
-declare const AU_TO_KM = 149597870.7;
-declare const SYNODIC_MONTH = 29.530588853;
 export declare const PLANET_DATA: Record<CelestialBody, PlanetData>;
 declare const ZODIAC_SIGNS: Record<ZodiacSign, {
     start: number;
@@ -139,7 +134,6 @@ declare const ZODIAC_SIGNS: Record<ZodiacSign, {
     symbol: string;
     element: string;
 }>;
-declare const BRIGHT_STARS: StarData[];
 /**
  * Convert a JavaScript Date to Julian Date
  */
@@ -402,5 +396,4 @@ export declare class SatelliteTracker {
  * Create tracker for ISS
  */
 export declare function createISSTracker(): SatelliteTracker;
-export { J2000, JULIAN_CENTURY, DEG_TO_RAD, RAD_TO_DEG, AU_TO_KM, SYNODIC_MONTH, ZODIAC_SIGNS, BRIGHT_STARS, dateToJulianDate, julianDateToDate, julianCenturies, greenwichSiderealTime, localSiderealTime, modifiedJulianDate, equatorialToHorizontal, horizontalToEquatorial, eclipticToEquatorial, equatorialToGalactic, formatRA, formatDec, getSunPosition, getMoonPosition, getPlanetPosition, };
-//# sourceMappingURL=index.d.ts.map
+export {};

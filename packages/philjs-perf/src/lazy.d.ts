@@ -50,4 +50,3 @@ export declare function lazyInit<T>(factory: () => T): {
     value: T;
     reset: () => void;
 };
-//# sourceMappingURL=lazy.d.ts.map

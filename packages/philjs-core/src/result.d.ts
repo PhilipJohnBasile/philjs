@@ -24,4 +24,3 @@ export declare function matchResult<T, E, U>(result: Result<T, E>, handlers: {
     ok: (value: T) => U;
     err: (error: E) => U;
 }): U;
-//# sourceMappingURL=result.d.ts.map

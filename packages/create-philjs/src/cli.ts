@@ -101,7 +101,7 @@ async function createProject(name: string, opts: Record<string, unknown>) {
     
     // Source files
     fs.writeFileSync(path.join(projectPath, 'src/main.ts'), 
-      `import { mount } from '@philjs/core';\nimport { App } from './App';\nmount(App, document.getElementById('app')!);`
+      `import { mount } from '@philjs/core';\nimport { App } from './App.js';\nmount(App, document.getElementById('app')!);`
     );
     
     fs.writeFileSync(path.join(projectPath, 'src/App.tsx'),

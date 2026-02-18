@@ -137,7 +137,7 @@ Requirements:
 - Include both positive and negative tests
 
 Return only the test code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             ...options,
             systemPrompt: this.getTestSystemPrompt(framework),
@@ -175,7 +175,7 @@ Generate integration tests that:
 Framework: ${framework}
 
 Return the integration test code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             ...options,
             systemPrompt: this.getTestSystemPrompt(framework),
@@ -220,7 +220,7 @@ Each step should have:
 - expected: Expected result
 
 Return JSON array of E2EScenario objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are an E2E testing expert. Generate comprehensive ${framework} test scenarios.`,
         });
@@ -248,7 +248,7 @@ Generate complete ${framework} test file with:
 - Screenshot on failure
 
 Return the complete test file.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are a ${framework} testing expert. Generate production-ready E2E tests.`,
         });
@@ -290,7 +290,7 @@ For each test provide:
 - checks: What the test verifies
 
 Return JSON array of A11yTest objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an accessibility testing expert. Generate comprehensive a11y tests.',
         });
@@ -329,7 +329,7 @@ Generate vitest snapshot tests that:
 4. Test responsive layouts if applicable
 
 Return the snapshot test code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: SYSTEM_PROMPTS.testing,
         });
@@ -374,7 +374,7 @@ Include:
 - Memory leak detection
 
 Return the performance test code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a performance testing expert. Generate comprehensive perf tests.',
         });
@@ -429,7 +429,7 @@ Return JSON:
   ],
   "improvements": ["general improvements"]
 }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a test coverage analyst. Provide accurate coverage analysis.',
         });
@@ -478,7 +478,7 @@ Requirements:
 ${options?.includeMocks ? '- Include mock implementations' : ''}
 
 Return the complete test file.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             ...options,
             maxTokens: 8192,
@@ -604,7 +604,7 @@ For each mock provide:
 - mocks: What it mocks
 
 Return JSON array of MockFile objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
         });
         return extractJSON(response) || [];
@@ -628,7 +628,7 @@ For each fixture provide:
 - type: data, component, api-response, state
 
 Return JSON array of FixtureFile objects.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
         });
         return extractJSON(response) || [];
@@ -651,7 +651,7 @@ Generate utilities for:
 - Cleanup utilities
 
 Return the test utilities code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
         });
         return extractCode(response) || '';

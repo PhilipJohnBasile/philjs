@@ -111,7 +111,7 @@ export async function create<T extends Record<string, any>>(
 export async function update<T extends Record<string, any>>(
   db: any,
   table: string,
-  where: Partial<T> | WhereClause,
+  where: Partial<T> | SimpleWhereClause,
   data: Partial<T>,
   options?: UpdateOptions
 ): Promise<T | T[]> {
@@ -174,7 +174,7 @@ export async function update<T extends Record<string, any>>(
 export async function deleteRecord<T extends Record<string, any>>(
   db: any,
   table: string,
-  where: Partial<T> | WhereClause,
+  where: Partial<T> | SimpleWhereClause,
   options?: DeleteOptions
 ): Promise<{ count: number } | T | T[]> {
   const provider = detectProvider(db);
@@ -248,14 +248,14 @@ export class QueryBuilder<T extends Record<string, any> = any> {
   private _provider: DatabaseProvider;
   private _schema?: any;
   private _select?: Partial<Record<keyof T, boolean>> | string[];
-  private _where?: WhereClause | Partial<T>;
+  private _where?: SimpleWhereClause | Partial<T>;
   private _orderBy?: Array<{ field: keyof T; direction: 'asc' | 'desc' }>;
   private _limit?: number;
   private _offset?: number;
   private _include?: Record<string, boolean | object>;
   private _joins?: JoinClause[];
   private _groupBy?: (keyof T)[];
-  private _having?: WhereClause;
+  private _having?: SimpleWhereClause;
   private _distinct?: boolean;
 
   constructor(db: any, table: string, schema?: any) {
@@ -276,7 +276,7 @@ export class QueryBuilder<T extends Record<string, any> = any> {
   /**
    * Add where clause
    */
-  where(clause: Partial<T> | WhereClause): this {
+  where(clause: Partial<T> | SimpleWhereClause): this {
     this._where = clause;
     return this;
   }
@@ -284,10 +284,10 @@ export class QueryBuilder<T extends Record<string, any> = any> {
   /**
    * Add AND condition to where clause
    */
-  andWhere(clause: Partial<T> | WhereClause): this {
+  andWhere(clause: Partial<T> | SimpleWhereClause): this {
     if (this._where) {
       this._where = {
-        AND: [this._where as WhereClause, clause as WhereClause],
+        AND: [this._where as SimpleWhereClause, clause as SimpleWhereClause],
       };
     } else {
       this._where = clause;
@@ -298,10 +298,10 @@ export class QueryBuilder<T extends Record<string, any> = any> {
   /**
    * Add OR condition to where clause
    */
-  orWhere(clause: Partial<T> | WhereClause): this {
+  orWhere(clause: Partial<T> | SimpleWhereClause): this {
     if (this._where) {
       this._where = {
-        OR: [this._where as WhereClause, clause as WhereClause],
+        OR: [this._where as SimpleWhereClause, clause as SimpleWhereClause],
       };
     } else {
       this._where = clause;
@@ -362,7 +362,7 @@ export class QueryBuilder<T extends Record<string, any> = any> {
   /**
    * Having clause for aggregations
    */
-  having(clause: WhereClause): this {
+  having(clause: SimpleWhereClause): this {
     this._having = clause;
     return this;
   }
@@ -759,10 +759,10 @@ export async function transaction<T>(
 // Helper Types and Interfaces
 // ============================================================================
 
-export interface WhereClause {
-  AND?: WhereClause[];
-  OR?: WhereClause[];
-  NOT?: WhereClause;
+export interface SimpleWhereClause {
+  AND?: SimpleWhereClause[];
+  OR?: SimpleWhereClause[];
+  NOT?: SimpleWhereClause;
   [key: string]: any;
 }
 

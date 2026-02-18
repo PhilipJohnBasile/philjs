@@ -8,10 +8,10 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build || exit 0",
+    "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test"
   },
@@ -34,5 +34,3 @@
     "vitest": "^4.0.16"
   }
 }
-
-

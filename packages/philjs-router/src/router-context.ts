@@ -674,6 +674,7 @@ export function createApiContextProvider<T = unknown>(
  */
 export function createLoggingContextMiddleware(): ContextMiddleware {
   return (context, options) => {
+    console.log('[Router Context]', {
       route: options.route,
       params: options.params,
       contextKeys: Object.keys(context),

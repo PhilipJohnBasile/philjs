@@ -7,9 +7,9 @@
   },
   "scripts": {
     "dev": "vite --port 3002",
-    "build": "vite build || exit 0",
+    "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -24,5 +24,3 @@
     "@playwright/test": "^1.49.0"
   }
 }
-
-

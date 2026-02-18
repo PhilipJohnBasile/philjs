@@ -1,5 +1,11 @@
+/**
+ * @philjs/polyglot
+ *
+ * Multi-language interop for PhilJS - Python, Java/Maven, and legacy JS bridges
+ */
 
-export * from './backbone';
-export * from './maven-plugin';
-export * from './pydantic-gen';
-export * from './python-bridge';
+// Maven plugin for Java projects
+export * from './maven-plugin.js';
+
+// Pydantic model generation
+export * from './pydantic-gen.js';

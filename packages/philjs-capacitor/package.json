@@ -1,6 +1,9 @@
 {
   "name": "@philjs/capacitor",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "Official PhilJS package: philjs-capacitor",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,14 +19,37 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*"
+    "@philjs/core": "workspace:*",
+    "@capacitor/core": "^6.0.0"
   },
   "devDependencies": {
+    "@capacitor/action-sheet": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/browser": "^6.0.0",
+    "@capacitor/camera": "^6.0.0",
+    "@capacitor/clipboard": "^6.0.0",
+    "@capacitor/device": "^6.0.0",
+    "@capacitor/dialog": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/geolocation": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/motion": "^6.0.0",
+    "@capacitor/network": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.0",
+    "@capacitor/screen-orientation": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/text-zoom": "^6.0.0",
+    "@capacitor/toast": "^6.0.0",
     "@types/node": "^25.0.0",
     "typescript": "6.0.0-dev.20251230",
     "vitest": "^4.0.16"

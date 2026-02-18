@@ -40,10 +40,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit || exit 0",
-    "test": "vitest run || exit 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "keywords": [

@@ -2,7 +2,7 @@
  * Theme System Examples for PhilJS CSS
  */
 
-import { createTheme, createThemeVariant, createBreakpoints, css } from '../src';
+import { createTheme, createThemeVariant, createBreakpoints, css } from '../src.js';
 
 // ===================================
 // 1. Complete Theme Definition

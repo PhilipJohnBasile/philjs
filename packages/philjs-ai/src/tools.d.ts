@@ -70,4 +70,3 @@ export declare class Agent {
 }
 export declare function createTool(name: string, description: string, parameters: Record<string, ParameterDef>, handler: (args: Record<string, any>) => Promise<any>): ToolDefinition;
 export declare function createAgent(config: AgentConfig): Agent;
-//# sourceMappingURL=tools.d.ts.map

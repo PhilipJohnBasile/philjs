@@ -369,7 +369,7 @@ export { locales, translations };
       ctx.logger.success('i18n setup complete!');
       ctx.logger.info(`
 Usage:
-import { t, setLocale } from './lib/i18n';
+import { t, setLocale } from './lib/i18n.js';
 
 // Translate
 const greeting = t('common.greeting', { name: 'World' });

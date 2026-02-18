@@ -18,7 +18,7 @@ export class AlgoliaAdapter {
     index(name: string) {
         return {
             search: async <T>(query: string, options?: SearchOptions) => {
-                const url = \`https://\${this.appId}-dsn.algolia.net/1/indexes/\${name}/query\`;
+                const url = `https://${this.appId}-dsn.algolia.net/1/indexes/${name}/query`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -34,14 +34,14 @@ export class AlgoliaAdapter {
                 });
 
                 if (!response.ok) {
-                    throw new Error(\`Algolia Error: \${response.statusText}\`);
+                    throw new Error(`Algolia Error: ${response.statusText}`);
                 }
 
                 return await response.json();
             },
 
             saveObjects: async (objects: any[]) => {
-                const url = \`https://\${this.appId}.algolia.net/1/indexes/\${name}/batch\`;
+                const url = `https://${this.appId}.algolia.net/1/indexes/${name}/batch`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -59,7 +59,7 @@ export class AlgoliaAdapter {
                 });
 
                 if (!response.ok) {
-                    throw new Error(\`Algolia Indexing Error: \${response.statusText}\`);
+                    throw new Error(`Algolia Indexing Error: ${response.statusText}`);
                 }
 
                 return await response.json();

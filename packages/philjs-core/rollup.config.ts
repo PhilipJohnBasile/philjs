@@ -109,4 +109,7 @@ export default defineConfig([
   // TC39 Signals (native-first wrapper + polyfill)
   createEntry('tc39-signals.ts', 'tc39-signals.js', ['./signals.js', './tc39-signals-polyfill.js']),
   createEntry('tc39-signals-polyfill.ts', 'tc39-signals-polyfill.js', ['./signals.js']),
+
+  // Browser-safe entry point (no Node.js modules)
+  createEntry('index.browser.ts', 'index.browser.js'),
 ]);

@@ -33,4 +33,3 @@ export interface LazyOptions {
     /** Cache the result */
     cache?: boolean;
 }
-//# sourceMappingURL=types.d.ts.map

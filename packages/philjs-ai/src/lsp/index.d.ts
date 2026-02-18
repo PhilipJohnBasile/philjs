@@ -6,4 +6,3 @@
 export * from './server.js';
 export * from './capabilities.js';
 export * from './handlers.js';
-//# sourceMappingURL=index.d.ts.map

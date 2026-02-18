@@ -16,7 +16,10 @@
  * - Rate limiting
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 
 // ============================================================================
 // Types

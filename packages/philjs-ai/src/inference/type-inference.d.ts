@@ -317,4 +317,3 @@ export declare function convertJavaScriptToTypeScript(provider: AIProvider, jsCo
     tsCode: string;
     types: InferredInterface[];
 }>;
-//# sourceMappingURL=type-inference.d.ts.map

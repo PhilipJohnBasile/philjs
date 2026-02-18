@@ -1,6 +1,9 @@
 {
   "name": "@philjs/backend-adapters",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "Backend framework adapters for PhilJS (Laravel, Rails, Phoenix, etc.)",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,9 +19,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"

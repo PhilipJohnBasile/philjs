@@ -3,7 +3,7 @@
  *
  * Type-safe AI responses with runtime validation and automatic retries.
  */
-import { z, ZodSchema, ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 // ============================================================================
 // Schema-to-Prompt Utilities
 // ============================================================================
@@ -27,9 +27,9 @@ function formatZodType(def) {
         case 'ZodUndefined':
             return 'undefined';
         case 'ZodLiteral':
-            return JSON.stringify(def.value);
+            return `Literal<${JSON.stringify(def.value)}>`;
         case 'ZodEnum':
-            return def.values.map((v) => JSON.stringify(v)).join(' | ');
+            return `Enum<${def.values.map((v) => `"${v}"`).join(' | ')}>`;
         case 'ZodOptional':
             return `${formatZodType(def.innerType._def)} | undefined`;
         case 'ZodNullable':
@@ -159,7 +159,7 @@ Important:
             currentPrompt = `${prompt}\n\nPrevious attempt failed with these validation errors:\n${formatZodError(lastError)}\n\nPlease fix these issues and try again.`;
         }
         try {
-            const response = await provider.generateCompletion(currentPrompt, {
+            const { content: response } = await provider.generateCompletion(currentPrompt, {
                 ...options,
                 systemPrompt,
                 temperature: options?.temperature ?? 0.1,
@@ -215,7 +215,7 @@ function parseJsonResponse(response) {
  * Format Zod error for retry prompt
  */
 function formatZodError(error) {
-    return error.errors.map(err => {
+    return error.errors.map((err) => {
         const path = err.path.join('.');
         return `- ${path ? `${path}: ` : ''}${err.message}`;
     }).join('\n');

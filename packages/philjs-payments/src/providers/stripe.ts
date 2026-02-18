@@ -31,7 +31,7 @@ import {
   WebhookVerificationError,
   SubscriptionStatus,
   InvoiceLineItem,
-} from '../index';
+} from '../index.js';
 
 export interface StripeConfig {
   secretKey: string;

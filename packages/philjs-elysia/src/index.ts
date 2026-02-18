@@ -15,7 +15,10 @@
  */
 
 import { Elysia, type Context, type Handler } from 'elysia';
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 import { createHmac, randomBytes, timingSafeEqual } from 'crypto';
 
 // ============================================================================

@@ -138,7 +138,8 @@ export class CachedAIProvider {
         this.ttl = config.ttl ?? 60 * 60 * 1000; // 1 hour default
         this.semanticMatching = config.semanticMatching ?? false;
         this.similarityThreshold = config.similarityThreshold ?? 0.95;
-        this.embeddingProvider = config.embeddingProvider;
+        if (config.embeddingProvider)
+            this.embeddingProvider = config.embeddingProvider;
     }
     /**
      * Generate a cache key from prompt and options
@@ -182,7 +183,14 @@ export class CachedAIProvider {
             this.stats.savedTokens += (cached.metadata?.promptTokens || 0) + (cached.metadata?.completionTokens || 0);
             this.stats.savedCost += cached.metadata?.cost || 0;
             this.updateHitRate();
-            return cached.value;
+            return {
+                content: cached.value,
+                usage: {
+                    inputTokens: cached.metadata?.promptTokens || 0,
+                    outputTokens: cached.metadata?.completionTokens || 0,
+                    totalTokens: (cached.metadata?.promptTokens || 0) + (cached.metadata?.completionTokens || 0),
+                },
+            };
         }
         // Cache miss - call provider
         this.stats.misses++;
@@ -192,12 +200,12 @@ export class CachedAIProvider {
         const key = this.generateKey(prompt, options);
         const entry = {
             key,
-            value: result,
+            value: result.content,
             createdAt: Date.now(),
             expiresAt: Date.now() + this.ttl,
             hits: 0,
             metadata: {
-                model: options?.model,
+                ...(options?.model && { model: options.model }),
             },
         };
         // Add embedding for semantic matching
@@ -237,7 +245,9 @@ export class CachedAIProvider {
             createdAt: Date.now(),
             expiresAt: Date.now() + this.ttl,
             hits: 0,
-            metadata: { model: options?.model },
+            metadata: {
+                ...(options?.model && { model: options.model })
+            },
         };
         await this.storage.set(key, entry);
     }

@@ -6,7 +6,7 @@
  * - Vision (image analysis with Claude 3+)
  * - Prompt caching for reduced latency
  */
-import type { AIProvider, CompletionOptions, ImageInput, VisionOptions, VisionResult } from '../types.js';
+import type { AIProvider, CompletionOptions, ImageInput, VisionOptions, VisionResult, ProviderResponse } from '../types.js';
 export interface AnthropicConfig {
     apiKey: string;
     baseURL?: string;
@@ -20,7 +20,7 @@ export declare class AnthropicProvider implements AIProvider {
     private defaultModel;
     private enableCaching;
     constructor(config: AnthropicConfig);
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
     /**
      * Analyze images using Claude's vision capabilities
@@ -74,4 +74,3 @@ export declare class AnthropicProvider implements AIProvider {
  * Create an Anthropic provider instance
  */
 export declare function createAnthropicProvider(config: AnthropicConfig): AnthropicProvider;
-//# sourceMappingURL=anthropic.d.ts.map

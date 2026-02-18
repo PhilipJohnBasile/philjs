@@ -33,4 +33,3 @@ export interface PaginatedResult<T> {
         hasPrevPage: boolean;
     };
 }
-//# sourceMappingURL=types.d.ts.map

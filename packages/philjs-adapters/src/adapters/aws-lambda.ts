@@ -1025,7 +1025,7 @@ ${cloudfront?.enabled ? `
       join(outDir, 'cdk', 'app.ts'),
       `#!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { PhilJSStack } from './stack';
+import { PhilJSStack } from './stack.js';
 
 const app = new cdk.App();
 new PhilJSStack(app, 'PhilJSStack', {

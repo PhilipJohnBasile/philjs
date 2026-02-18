@@ -23,7 +23,9 @@
  * effect(() => console.log('Mars RA:', mars().rightAscension));
  * ```
  */
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
+// Alias for backward compatibility
+const computed = memo;
 // ============================================================================
 // Constants
 // ============================================================================
@@ -1000,16 +1002,5 @@ export function createISSTracker() {
     const tle2 = '2 25544  51.6400 200.0000 0000000 100.0000 260.0000 15.50000000000000';
     return new SatelliteTracker(tle1, tle2);
 }
-// ============================================================================
-// Exports
-// ============================================================================
-export { 
-// Constants
-J2000, JULIAN_CENTURY, DEG_TO_RAD, RAD_TO_DEG, AU_TO_KM, SYNODIC_MONTH, ZODIAC_SIGNS, BRIGHT_STARS, 
-// Time functions
-dateToJulianDate, julianDateToDate, julianCenturies, greenwichSiderealTime, localSiderealTime, modifiedJulianDate, 
-// Coordinate transformations
-equatorialToHorizontal, horizontalToEquatorial, eclipticToEquatorial, equatorialToGalactic, formatRA, formatDec, 
-// Ephemeris calculations
-getSunPosition, getMoonPosition, getPlanetPosition, };
+// All functions and constants are exported at their declaration points above
 //# sourceMappingURL=index.js.map

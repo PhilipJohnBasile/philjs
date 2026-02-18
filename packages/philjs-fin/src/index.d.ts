@@ -15,7 +15,8 @@
  *
  * @packageDocumentation
  */
-import { signal, computed } from '@philjs/core';
+import { signal, memo, type Signal } from '@philjs/core';
+declare const computed: typeof memo;
 /** Represents a single price quote with OHLCV data */
 export interface OHLCV {
     timestamp: number;
@@ -507,7 +508,7 @@ export declare function usePortfolio(initialCash?: number): {
 };
 /** Hook for technical analysis */
 export declare function useTechnicalAnalysis(ohlcv: ReturnType<typeof signal<OHLCV[]>>): {
-    indicators: any;
+    indicators: Signal<Map<string, number[]>>;
     calculate: (indicatorName: string, config?: IndicatorConfig) => number[];
     calculateMACD: (config?: IndicatorConfig) => {
         macd: number[];
@@ -533,28 +534,28 @@ export declare function useTechnicalAnalysis(ohlcv: ReturnType<typeof signal<OHL
 };
 /** Hook for options pricing */
 export declare function useOptionsChain(underlying: string, currentPrice: ReturnType<typeof signal<number>>): {
-    chain: any;
+    chain: Signal<OptionContract[]>;
     generateChain: (expirations: Date[], strikes: number[], riskFreeRate?: number, volatility?: number) => OptionContract[];
-    updateChain: (riskFreeRate?: number) => any;
-    findByStrike: (strike: number, type?: "call" | "put") => any;
-    findByExpiration: (expiration: Date) => any;
-    getATMOptions: () => any;
+    updateChain: (riskFreeRate?: number) => OptionContract[];
+    findByStrike: (strike: number, type?: "call" | "put") => OptionContract[];
+    findByExpiration: (expiration: Date) => OptionContract[];
+    getATMOptions: () => OptionContract[];
 };
 /** Hook for backtesting strategies */
 export declare function useBacktest(config: BacktestConfig): {
-    results: any;
-    isRunning: any;
+    results: Signal<BacktestResult>;
+    isRunning: Signal<boolean>;
     loadData: (symbol: string, ohlcv: OHLCV[]) => void;
     run: (strategy: Parameters<(strategy: (timestamp: number, data: Map<string, OHLCV[]>, positions: Map<string, number>, cash: number, buy: (symbol: string, quantity: number) => boolean, sell: (symbol: string, quantity: number) => boolean) => void) => BacktestResult>[0]) => BacktestResult;
     getSummary: () => {
         'Total Return': string;
         'Annualized Return': string;
-        'Sharpe Ratio': any;
-        'Sortino Ratio': any;
+        'Sharpe Ratio': string;
+        'Sortino Ratio': string;
         'Max Drawdown': string;
         'Win Rate': string;
-        'Profit Factor': any;
-        'Total Trades': any;
+        'Profit Factor': string;
+        'Total Trades': number;
         Volatility: string;
     };
 };
@@ -597,4 +598,3 @@ export declare class Quant {
     };
 }
 export { mean, standardDeviation, calculateReturns, calculateLogReturns, linearRegression, covariance, correlation, normalCDF, normalPDF };
-//# sourceMappingURL=index.d.ts.map

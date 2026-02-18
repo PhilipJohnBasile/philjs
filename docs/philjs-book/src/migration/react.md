@@ -12,6 +12,9 @@ Do not try to migrate leaf components (buttons, inputs) first. It leads to impro
 
 Migrate **Routes**.
 
+![Strangler Fig Pattern](../assets/migration_strangler_pattern.png)
+*Figure 9-1: The Strangler Fig Pattern: Route-by-Route Migration*
+
 1.  Set up PhilJS as a proxy in front of your legacy React app (e.g., via Nginx or Vercel Rewrites).
 2.  Pick a low-risk route (e.g., `/about` or `/settings`).
 3.  Build that route in PhilJS.
@@ -57,8 +60,6 @@ React apps often trap state in a global Context.
 *   `useEffect(() => fetch)` -> **Loaders**.
 Move your data fetching out of the component and into the Route Loader (Chapter 4). This is the biggest performance win you will get.
 
-## The End State
+## Conclusion
 
-Eventually, your React app becomes just a few islands floating in a PhilJS ocean. At that point, you can rewrite the final few components and remove `react` and `react-dom` from your `package.json`.
-
-Release the baggage. The future is lighter.
+The "Strangler Fig" pattern allows for a gradual, low-risk migration strategy. By replacing routes one by one, teams can modernize their architecture without incurring the risks of a "big bang" rewrite.

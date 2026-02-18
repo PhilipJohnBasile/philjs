@@ -33,10 +33,10 @@
     "wasm"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
-    "test": "vitest run || exit 0",
-    "lint": "npm run typecheck || exit 0",
-    "typecheck": "tsc --noEmit || exit 0"
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "npm run typecheck",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "sql.js": "^1.12.0"

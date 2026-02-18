@@ -1,11 +1,14 @@
 {
   "name": "philjs",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "description": "The Singularity Framework. One import to rule them all.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc || exit 0"
+    "build": "tsc"
   },
   "dependencies": {
     "@philjs/ai": "workspace:*",

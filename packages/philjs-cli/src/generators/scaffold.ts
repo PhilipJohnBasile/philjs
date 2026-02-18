@@ -245,7 +245,7 @@ import { Head, Title, Meta } from 'philjs-meta';
 import { useParams, Link } from 'philjs-router';
 import { useLoaderData } from 'philjs-router';
 import { ${modelName}Detail } from '../../../components/${modelName}/${modelName}Detail';
-import type { loader } from './loader';
+import type { loader } from './loader.js';
 
 ${typescript ? `interface PageParams {\n  id: string;\n}\n` : ''}
 export function ${modelName}DetailPage() {
@@ -400,7 +400,7 @@ import { Head, Title, Meta } from 'philjs-meta';
 import { useParams, Link, useNavigate } from 'philjs-router';
 import { useLoaderData } from 'philjs-router';
 import { ${modelName}Form } from '../../../../components/${modelName}/${modelName}Form';
-import type { loader } from './loader';
+import type { loader } from './loader.js';
 
 ${typescript ? `interface PageParams {\n  id: string;\n}\n` : ''}
 export function Edit${modelName}Page() {

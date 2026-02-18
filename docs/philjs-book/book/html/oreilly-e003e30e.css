@@ -1,0 +1,103 @@
+/* O'Reilly-style Technical Book Theme (E-Ink Optimized) */
+
+:root {
+    --bg-paper: #ffffff;
+    --fg-ink: #000000;
+    --font-serif: "Georgia", "Times New Roman", Times, serif;
+    --font-heading: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "Menlo", "Consolas", "Monaco", monospace;
+
+    /* Override mdbook theme colors for strict monochrome */
+    --sidebar-bg: #f8f8f8;
+    --sidebar-fg: #333;
+    --sidebar-active: #000;
+    --sidebar-spacer: #ccc;
+
+    --links: #000;
+    /* No blue links */
+    --inline-code-bg: #f0f0f0;
+    --quote-bg: #fff;
+    --quote-border: #000;
+}
+
+/* Typography */
+.markdown-section {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--fg-ink);
+    max-width: 800px;
+}
+
+.markdown-section a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.markdown-section h1,
+.markdown-section h2,
+.markdown-section h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #000;
+    border-bottom: 2px solid #000;
+    /* Sturdy engineering borders */
+}
+
+/* Images: Force Grayscale for E-Ink Compatibility */
+.markdown-section img {
+    border: 2px solid #000;
+    /* Distinct solid border */
+    padding: 10px;
+    background: #fff;
+    margin: 2em auto;
+    display: block;
+    max-width: 95%;
+
+    /* THE E-INK FILTER: Forces all existing colored assets to B&W immediately */
+    filter: grayscale(100%) contrast(120%);
+}
+
+/* Admonitions (Blockquotes) */
+.markdown-section blockquote {
+    background: #fff;
+    border: 2px solid #000;
+    border-left: 6px solid #000;
+    padding: 1em;
+    margin: 1.5em 0;
+    color: #000;
+    font-style: normal;
+}
+
+/* GitHub Alerts Polyfill Styling */
+.markdown-section blockquote:has(p:first-child:contains("[!NOTE]")),
+.markdown-section blockquote:has(p:first-child:contains("[!TIP]")),
+.markdown-section blockquote:has(p:first-child:contains("[!IMPORTANT]")),
+.markdown-section blockquote:has(p:first-child:contains("[!WARNING]")),
+.markdown-section blockquote:has(p:first-child:contains("[!CAUTION]")) {
+    /* Styling for when we have actual alerts content, dependent on markdown parser output */
+    /* Since mdbook standard parser leaves [!NOTE] as text, we style the blockquote */
+}
+
+/* Tables */
+.markdown-section table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    font-family: var(--font-heading);
+    font-size: 0.9em;
+}
+
+.markdown-section table th {
+    background: #f0f0f0;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5em;
+    border-bottom: 2px solid #ccc;
+}
+
+.markdown-section table td {
+    padding: 0.5em;
+    border-bottom: 1px solid #eee;
+}

@@ -28,7 +28,7 @@ export class TestGenerator {
     async generateTests(config) {
         const framework = config.framework || 'vitest';
         const prompt = this.buildTestPrompt(config, framework);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getSystemPrompt(config.type, framework),
         });
@@ -69,7 +69,7 @@ export class TestGenerator {
     async generateE2ETests(config) {
         const framework = config.framework || 'playwright';
         const prompt = this.buildE2EPrompt(config, framework);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getE2ESystemPrompt(framework),
         });
@@ -100,7 +100,7 @@ Generate tests for:
 7. Error boundaries
 
 Use Testing Library with Vitest.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getComponentTestSystemPrompt(),
         });
@@ -133,7 +133,7 @@ Generate tests for:
 6. Rate limiting (if applicable)
 
 Use Vitest with supertest or fetch mocking.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an API testing expert. Generate comprehensive API tests.',
         });
@@ -167,7 +167,7 @@ Return JSON with:
 - missingCoverage: Array of { type, location, description, priority }
 - suggestedTests: Array of { name, tests, code, priority }
 - riskAreas: Array of { description, riskLevel, reason, mitigation }`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a test coverage analysis expert.',
         });
@@ -193,7 +193,7 @@ Generate:
 Return JSON with:
 - data: Array of ${count} test data objects
 - factory: TypeScript factory function code`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'Generate realistic, varied test data.',
         });
@@ -217,7 +217,7 @@ Generate:
 4. Reset functions
 
 Use Vitest mocking utilities.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'Generate comprehensive mocks for testing.',
         });

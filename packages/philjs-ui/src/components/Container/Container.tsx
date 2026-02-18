@@ -27,7 +27,7 @@ const containerVariants = variants({
   },
   defaultVariants: {
     size: 'xl',
-    center: false,
+    center: 'false',
   },
 });
 

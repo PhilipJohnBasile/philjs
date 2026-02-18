@@ -413,4 +413,3 @@ export declare function suggestOptimizations(provider: AIProvider, code: string)
  * @returns Anti-pattern result
  */
 export declare function detectAntiPatterns(provider: AIProvider, code: string): Promise<AntiPatternResult>;
-//# sourceMappingURL=analysis.d.ts.map

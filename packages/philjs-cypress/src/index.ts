@@ -8,6 +8,9 @@
 
 /// <reference types="cypress" />
 
+// Type alias for Interception (not exported by Cypress types)
+type Interception = any;
+
 // ============================================================================
 // TYPE DECLARATIONS
 // ============================================================================
@@ -499,7 +502,7 @@ let animationsDisabled = false;
 // ============================================================================
 
 function registerSignalCommands(): void {
-    Cypress.Commands.add('signal', (name: string) => {
+    ((Cypress.Commands.add as any) as any)('signal', (name: string) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -513,11 +516,11 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('signalShouldEqual', (name: string, expectedValue: any) => {
+    (Cypress.Commands.add as any)('signalShouldEqual', (name: string, expectedValue: any) => {
         return cy.signal(name).should('deep.equal', expectedValue);
     });
 
-    Cypress.Commands.add('setSignal', (name: string, value: any) => {
+    ((Cypress.Commands.add as any) as any)('setSignal', (name: string, value: any) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -531,7 +534,7 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('watchSignal', (name: string, options: WatchSignalOptions = {}) => {
+    ((Cypress.Commands.add as any) as any)('watchSignal', (name: string, options: WatchSignalOptions = {}) => {
         const { timeout = 5000, maxChanges = 10 } = options;
 
         return cy.window().then((win: any) => {
@@ -568,7 +571,7 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('signalChangedTo', (name: string, value: any) => {
+    ((Cypress.Commands.add as any) as any)('signalChangedTo', (name: string, value: any) => {
         return cy.window().then((win: any) => {
             return new Cypress.Promise((resolve, reject) => {
                 const philjs = win.__PHILJS_DEVTOOLS__;
@@ -606,7 +609,7 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getAllSignals', () => {
+    (Cypress.Commands.add as any)('getAllSignals', () => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -616,7 +619,7 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('resetSignals', () => {
+    ((Cypress.Commands.add as any) as any)('resetSignals', () => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -626,7 +629,7 @@ function registerSignalCommands(): void {
         });
     });
 
-    Cypress.Commands.add('batchSignals', (updates: Record<string, any>) => {
+    ((Cypress.Commands.add as any) as any)('batchSignals', (updates: Record<string, any>) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -651,7 +654,7 @@ function registerSignalCommands(): void {
 // ============================================================================
 
 function registerComponentCommands(): void {
-    Cypress.Commands.add('mountPhilJS', <P extends object>(
+    (Cypress.Commands.add as any)('mountPhilJS', <P extends object>(
         component: (props: P) => any,
         options: MountOptions<P> = {}
     ) => {
@@ -699,7 +702,7 @@ function registerComponentCommands(): void {
         });
     });
 
-    Cypress.Commands.add('unmountPhilJS', () => {
+    ((Cypress.Commands.add as any) as any)('unmountPhilJS', () => {
         if (mountedRoot) {
             return cy.window().then((win: any) => {
                 const { unmount } = win.__PHILJS__;
@@ -713,7 +716,7 @@ function registerComponentCommands(): void {
         return cy.wrap(null);
     });
 
-    Cypress.Commands.add('waitForRender', () => {
+    (Cypress.Commands.add as any)('waitForRender', () => {
         return cy.window().then((win: any) => {
             return new Cypress.Promise((resolve) => {
                 // Use requestAnimationFrame to wait for render
@@ -726,15 +729,15 @@ function registerComponentCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getComponent', (testId: string) => {
+    (Cypress.Commands.add as any)('getComponent', (testId: string) => {
         return cy.get(`[data-testid="${testId}"]`);
     });
 
-    Cypress.Commands.add('componentShouldExist', (testId: string) => {
+    (Cypress.Commands.add as any)('componentShouldExist', (testId: string) => {
         return cy.getComponent(testId).should('exist');
     });
 
-    Cypress.Commands.add('snapshotComponent', (name: string, options: SnapshotOptions = {}) => {
+    (Cypress.Commands.add as any)('snapshotComponent', (name: string, options: SnapshotOptions = {}) => {
         const { threshold = 0.1, failOnDiff = true } = options;
 
         // This integrates with cypress-image-snapshot or similar plugins
@@ -755,7 +758,7 @@ function registerComponentCommands(): void {
 // ============================================================================
 
 function registerHydrationCommands(): void {
-    Cypress.Commands.add('waitForHydration', (options: HydrationOptions = {}) => {
+    (Cypress.Commands.add as any)('waitForHydration', (options: HydrationOptions = {}) => {
         const { timeout = 10000, checkInterval = 50 } = options;
 
         return cy.window().then((win: any) => {
@@ -777,13 +780,13 @@ function registerHydrationCommands(): void {
         });
     });
 
-    Cypress.Commands.add('assertHydrated', () => {
+    (Cypress.Commands.add as any)('assertHydrated', () => {
         return cy.window().then((win: any) => {
             expect(win.__PHILJS_HYDRATED__).to.be.true;
         });
     });
 
-    Cypress.Commands.add('getHydrationMetrics', () => {
+    (Cypress.Commands.add as any)('getHydrationMetrics', () => {
         return cy.window().then((win: any) => {
             const metrics = win.__PHILJS_HYDRATION_METRICS__;
             if (!metrics) {
@@ -799,7 +802,7 @@ function registerHydrationCommands(): void {
 // ============================================================================
 
 function registerRouterCommands(): void {
-    Cypress.Commands.add('navigateTo', (path: string, options: NavigateOptions = {}) => {
+    (Cypress.Commands.add as any)('navigateTo', (path: string, options: NavigateOptions = {}) => {
         const { replace = false, state, waitForLoad = true } = options;
 
         return cy.window().then((win: any) => {
@@ -820,7 +823,7 @@ function registerRouterCommands(): void {
         });
     });
 
-    Cypress.Commands.add('routeShouldBe', (path: string) => {
+    (Cypress.Commands.add as any)('routeShouldBe', (path: string) => {
         return cy.window().then((win: any) => {
             const router = win.__PHILJS_ROUTER__;
             if (!router) {
@@ -832,7 +835,7 @@ function registerRouterCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getRouteParams', () => {
+    (Cypress.Commands.add as any)('getRouteParams', () => {
         return cy.window().then((win: any) => {
             const router = win.__PHILJS_ROUTER__;
             if (!router) {
@@ -842,7 +845,7 @@ function registerRouterCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getQueryParams', () => {
+    (Cypress.Commands.add as any)('getQueryParams', () => {
         return cy.window().then((win: any) => {
             const router = win.__PHILJS_ROUTER__;
             if (router && router.query) {
@@ -853,7 +856,7 @@ function registerRouterCommands(): void {
         });
     });
 
-    Cypress.Commands.add('waitForRouteChange', () => {
+    (Cypress.Commands.add as any)('waitForRouteChange', () => {
         return cy.window().then((win: any) => {
             return new Cypress.Promise((resolve) => {
                 const router = win.__PHILJS_ROUTER__;
@@ -876,14 +879,14 @@ function registerRouterCommands(): void {
         });
     });
 
-    Cypress.Commands.add('goBack', () => {
+    (Cypress.Commands.add as any)('goBack', () => {
         return cy.window().then((win: any) => {
             win.history.back();
             return cy.waitForRender();
         });
     });
 
-    Cypress.Commands.add('goForward', () => {
+    (Cypress.Commands.add as any)('goForward', () => {
         return cy.window().then((win: any) => {
             win.history.forward();
             return cy.waitForRender();
@@ -896,7 +899,7 @@ function registerRouterCommands(): void {
 // ============================================================================
 
 function registerFormCommands(): void {
-    Cypress.Commands.add('fillForm', (data: Record<string, any>) => {
+    (Cypress.Commands.add as any)('fillForm', (data: Record<string, any>) => {
         for (const [name, value] of Object.entries(data)) {
             cy.get(`[name="${name}"]`).then(($el) => {
                 const tagName = $el.prop('tagName').toLowerCase();
@@ -921,18 +924,18 @@ function registerFormCommands(): void {
         }
     });
 
-    Cypress.Commands.add('submitForm', (selector = 'form') => {
+    (Cypress.Commands.add as any)('submitForm', (selector = 'form') => {
         return cy.get(selector).submit();
     });
 
-    Cypress.Commands.add('formShouldBeValid', (selector = 'form') => {
+    (Cypress.Commands.add as any)('formShouldBeValid', (selector = 'form') => {
         return cy.get(selector).then(($form) => {
             const form = $form[0] as HTMLFormElement;
             expect(form.checkValidity()).to.be.true;
         });
     });
 
-    Cypress.Commands.add('formShouldHaveErrors', (errors: Record<string, string | string[]>) => {
+    (Cypress.Commands.add as any)('formShouldHaveErrors', (errors: Record<string, string | string[]>) => {
         for (const [field, messages] of Object.entries(errors)) {
             const messageArray = Array.isArray(messages) ? messages : [messages];
             for (const message of messageArray) {
@@ -942,7 +945,7 @@ function registerFormCommands(): void {
         }
     });
 
-    Cypress.Commands.add('getFormValues', (selector = 'form') => {
+    (Cypress.Commands.add as any)('getFormValues', (selector = 'form') => {
         return cy.get(selector).then(($form) => {
             const form = $form[0] as HTMLFormElement;
             const formData = new FormData(form);
@@ -963,7 +966,7 @@ function registerFormCommands(): void {
         });
     });
 
-    Cypress.Commands.add('resetForm', (selector = 'form') => {
+    (Cypress.Commands.add as any)('resetForm', (selector = 'form') => {
         return cy.get(selector).then(($form) => {
             ($form[0] as HTMLFormElement).reset();
         });
@@ -975,7 +978,7 @@ function registerFormCommands(): void {
 // ============================================================================
 
 function registerStoreCommands(): void {
-    Cypress.Commands.add('getStoreState', (storeName?: string) => {
+    (Cypress.Commands.add as any)('getStoreState', (storeName?: string) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -989,7 +992,7 @@ function registerStoreCommands(): void {
         });
     });
 
-    Cypress.Commands.add('dispatchAction', (action: string, payload?: any) => {
+    (Cypress.Commands.add as any)('dispatchAction', (action: string, payload?: any) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -999,11 +1002,11 @@ function registerStoreCommands(): void {
         });
     });
 
-    Cypress.Commands.add('storeShouldEqual', (expected: any, storeName?: string) => {
+    (Cypress.Commands.add as any)('storeShouldEqual', (expected: any, storeName?: string) => {
         return cy.getStoreState(storeName).should('deep.equal', expected);
     });
 
-    Cypress.Commands.add('resetStore', (storeName?: string) => {
+    (Cypress.Commands.add as any)('resetStore', (storeName?: string) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -1024,7 +1027,7 @@ function registerStoreCommands(): void {
 // ============================================================================
 
 function registerDevToolsCommands(): void {
-    Cypress.Commands.add('getPhilJSState', () => {
+    (Cypress.Commands.add as any)('getPhilJSState', () => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -1034,7 +1037,7 @@ function registerDevToolsCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getComponentTree', () => {
+    (Cypress.Commands.add as any)('getComponentTree', () => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -1044,7 +1047,7 @@ function registerDevToolsCommands(): void {
         });
     });
 
-    Cypress.Commands.add('getPerformanceMetrics', () => {
+    (Cypress.Commands.add as any)('getPerformanceMetrics', () => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -1054,7 +1057,7 @@ function registerDevToolsCommands(): void {
         });
     });
 
-    Cypress.Commands.add('configureDevTools', (options: DevToolsOptions) => {
+    (Cypress.Commands.add as any)('configureDevTools', (options: DevToolsOptions) => {
         return cy.window().then((win: any) => {
             const philjs = win.__PHILJS_DEVTOOLS__;
             if (!philjs) {
@@ -1070,7 +1073,7 @@ function registerDevToolsCommands(): void {
 // ============================================================================
 
 function registerA11yCommands(): void {
-    Cypress.Commands.add('a11yAudit', (options: A11yAuditOptions = {}) => {
+    (Cypress.Commands.add as any)('a11yAudit', (options: A11yAuditOptions = {}) => {
         return cy.window().then((win: any) => {
             // Integrate with axe-core if available
             if (!win.axe) {
@@ -1103,7 +1106,7 @@ function registerA11yCommands(): void {
         });
     });
 
-    Cypress.Commands.add('shouldBeAccessible', (options: A11yAuditOptions = {}) => {
+    (Cypress.Commands.add as any)('shouldBeAccessible', (options: A11yAuditOptions = {}) => {
         return cy.a11yAudit(options).then((results) => {
             const violations = results.violations;
             if (violations.length > 0) {
@@ -1115,17 +1118,17 @@ function registerA11yCommands(): void {
         });
     });
 
-    Cypress.Commands.add('assertFocusOn', (selector: string) => {
+    (Cypress.Commands.add as any)('assertFocusOn', (selector: string) => {
         return cy.focused().should('match', selector);
     });
 
-    Cypress.Commands.add('keyboardNavigate', (keys: string[]) => {
+    (Cypress.Commands.add as any)('keyboardNavigate', (keys: string[]) => {
         for (const key of keys) {
             cy.focused().type(`{${key}}`);
         }
     });
 
-    Cypress.Commands.add('shouldBeKeyboardAccessible', (selector: string) => {
+    (Cypress.Commands.add as any)('shouldBeKeyboardAccessible', (selector: string) => {
         return cy.get(selector).then(($el) => {
             // Check if element is focusable
             const tabIndex = $el.attr('tabindex');
@@ -1150,7 +1153,7 @@ function registerA11yCommands(): void {
 // ============================================================================
 
 function registerNetworkCommands(): void {
-    Cypress.Commands.add('mockApi', (
+    (Cypress.Commands.add as any)('mockApi', (
         method: string,
         url: string | RegExp,
         response: any,
@@ -1188,11 +1191,11 @@ function registerNetworkCommands(): void {
         mockAliases.set(alias, alias);
     });
 
-    Cypress.Commands.add('waitForApi', (alias: string) => {
+    (Cypress.Commands.add as any)('waitForApi', (alias: string) => {
         return cy.wait(`@${alias}`);
     });
 
-    Cypress.Commands.add('apiCalledWith', (alias: string, matcher: Record<string, any>) => {
+    (Cypress.Commands.add as any)('apiCalledWith', (alias: string, matcher: Record<string, any>) => {
         return cy.get(`@${alias}`).then((interception: any) => {
             const body = interception.request.body;
 
@@ -1202,7 +1205,7 @@ function registerNetworkCommands(): void {
         });
     });
 
-    Cypress.Commands.add('simulateNetwork', (condition: NetworkCondition) => {
+    (Cypress.Commands.add as any)('simulateNetwork', (condition: NetworkCondition) => {
         // Note: This requires CDP or a special setup
         const conditions: Record<string, { latency: number; downloadSpeed: number; uploadSpeed: number }> = {
             'offline': { latency: 0, downloadSpeed: 0, uploadSpeed: 0 },
@@ -1222,7 +1225,7 @@ function registerNetworkCommands(): void {
         cy.log(`Simulating network: ${JSON.stringify(params)}`);
     });
 
-    Cypress.Commands.add('clearMocks', () => {
+    (Cypress.Commands.add as any)('clearMocks', () => {
         mockAliases.clear();
         // Cypress automatically clears intercepts between tests
     });
@@ -1233,7 +1236,7 @@ function registerNetworkCommands(): void {
 // ============================================================================
 
 function registerAnimationCommands(): void {
-    Cypress.Commands.add('waitForAnimation', (selector?: string) => {
+    (Cypress.Commands.add as any)('waitForAnimation', (selector?: string) => {
         const target = selector || 'body';
 
         return cy.get(target).then(($el) => {
@@ -1241,7 +1244,7 @@ function registerAnimationCommands(): void {
                 const checkAnimations = () => {
                     const animations = $el[0].getAnimations();
                     const pending = animations.filter(
-                        (a) => a.playState === 'running' || a.playState === 'pending'
+                        (a) => a.playState === 'running' || (a.playState as string) === 'pending'
                     );
 
                     if (pending.length === 0) {
@@ -1258,7 +1261,7 @@ function registerAnimationCommands(): void {
         });
     });
 
-    Cypress.Commands.add('disableAnimations', () => {
+    (Cypress.Commands.add as any)('disableAnimations', () => {
         animationsDisabled = true;
 
         return cy.document().then((doc) => {
@@ -1276,7 +1279,7 @@ function registerAnimationCommands(): void {
         });
     });
 
-    Cypress.Commands.add('enableAnimations', () => {
+    (Cypress.Commands.add as any)('enableAnimations', () => {
         animationsDisabled = false;
 
         return cy.document().then((doc) => {
@@ -1285,7 +1288,7 @@ function registerAnimationCommands(): void {
         });
     });
 
-    Cypress.Commands.add('animationShouldBe', (
+    (Cypress.Commands.add as any)('animationShouldBe', (
         selector: string,
         state: 'running' | 'paused' | 'finished'
     ) => {
@@ -1302,7 +1305,7 @@ function registerAnimationCommands(): void {
 // ============================================================================
 
 function registerPerformanceCommands(): void {
-    Cypress.Commands.add('measurePerformance', (
+    (Cypress.Commands.add as any)('measurePerformance', (
         name: string,
         fn: () => Cypress.Chainable<any>
     ) => {
@@ -1323,13 +1326,13 @@ function registerPerformanceCommands(): void {
         });
     });
 
-    Cypress.Commands.add('renderTimeShouldBeLessThan', (ms: number) => {
+    (Cypress.Commands.add as any)('renderTimeShouldBeLessThan', (ms: number) => {
         return cy.getPerformanceMetrics().then((metrics) => {
             expect(metrics.renderTime).to.be.lessThan(ms);
         });
     });
 
-    Cypress.Commands.add('getWebVitals', () => {
+    (Cypress.Commands.add as any)('getWebVitals', () => {
         return cy.window().then((win: any) => {
             return new Cypress.Promise((resolve) => {
                 const vitals: Partial<WebVitals> = {};
@@ -1363,7 +1366,7 @@ function registerPerformanceCommands(): void {
         });
     });
 
-    Cypress.Commands.add('assertNoMemoryLeaks', () => {
+    (Cypress.Commands.add as any)('assertNoMemoryLeaks', () => {
         return cy.window().then((win: any) => {
             if (win.performance && win.performance.memory) {
                 const memory = win.performance.memory;
@@ -1382,7 +1385,7 @@ function registerPerformanceCommands(): void {
 // ============================================================================
 
 function registerUtilityCommands(): void {
-    Cypress.Commands.add('waitUntil', (
+    (Cypress.Commands.add as any)('waitUntil', (
         predicate: () => boolean | Cypress.Chainable<boolean>,
         options: WaitUntilOptions = {}
     ) => {
@@ -1421,18 +1424,18 @@ function registerUtilityCommands(): void {
         return check();
     });
 
-    Cypress.Commands.add('executePhilJS', <T>(fn: () => T) => {
+    (Cypress.Commands.add as any)('executePhilJS', <T>(fn: () => T) => {
         return cy.window().then((win: any) => {
             const { signal, computed, effect, batch } = win.__PHILJS__;
             return fn.call({ signal, computed, effect, batch });
         });
     });
 
-    Cypress.Commands.add('createFixture', <T>(name: string, data: T) => {
-        return cy.writeFile(`cypress/fixtures/${name}.json`, data).then(() => data);
+    (Cypress.Commands.add as any)('createFixture', <T>(name: string, data: T) => {
+        return cy.writeFile(`cypress/fixtures/${name}.json`, JSON.stringify(data, null, 2)).then(() => data);
     });
 
-    Cypress.Commands.add('loadFixture', <T>(name: string) => {
+    (Cypress.Commands.add as any)('loadFixture', <T>(name: string) => {
         return cy.fixture(name) as Cypress.Chainable<T>;
     });
 }
@@ -1715,7 +1718,9 @@ export function addPhilJSAssertions(chai: Chai.ChaiStatic): void {
         this.assert(
             $el.length > 0 && $el.is(':visible'),
             'expected component to be rendered and visible',
-            'expected component not to be rendered'
+            'expected component not to be rendered',
+            true,
+            $el.length > 0 && $el.is(':visible')
         );
     });
 
@@ -1733,7 +1738,9 @@ export function addPhilJSAssertions(chai: Chai.ChaiStatic): void {
         this.assert(
             hasRole || hasLabel,
             'expected element to be accessible (have role or label)',
-            'expected element not to have accessibility attributes'
+            'expected element not to have accessibility attributes',
+            true,
+            hasRole || hasLabel
         );
     });
 }
@@ -1805,20 +1812,8 @@ if (typeof Cypress !== 'undefined') {
 }
 
 // ============================================================================
-// EXPORTS
+// DEFAULT EXPORT
 // ============================================================================
-
-export {
-    registerCommands,
-    configurePhilJS,
-    createTestHelper,
-    createApiMock,
-    createFormHelper,
-    createRouterHelper,
-    addPhilJSAssertions,
-    setupE2E,
-    setupComponent,
-};
 
 export default {
     registerCommands,

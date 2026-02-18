@@ -20,4 +20,3 @@ export declare function connectDevTools(store: {
     getState: () => any;
     subscribe: (cb: Function) => void;
 }): void;
-//# sourceMappingURL=redux.d.ts.map

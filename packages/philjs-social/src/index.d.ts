@@ -403,19 +403,19 @@ export interface DraftPost {
     createdAt: Date;
     updatedAt: Date;
 }
-declare const storeState: any;
+declare const storeState: Signal<SocialStoreState>;
 /**
  * Creates and initializes the social store
  */
 export declare function createSocialStore(config: SocialStoreConfig): {
-    getState: () => any;
-    getProfile: () => any;
-    getFeed: () => any;
-    getNotifications: () => any;
-    isAuthenticated: () => any;
-    isLoading: () => any;
-    getError: () => any;
-    getUnreadCount: () => any;
+    getState: () => SocialStoreState;
+    getProfile: () => SocialProfile;
+    getFeed: () => FeedItem[];
+    getNotifications: () => Notification[];
+    isAuthenticated: () => boolean;
+    isLoading: () => boolean;
+    getError: () => Error;
+    getUnreadCount: () => number;
     login: typeof login;
     logout: typeof logout;
     refreshFeed: typeof refreshFeed;
@@ -474,8 +474,8 @@ export declare function useDrafts(): Signal<DraftPost[]>;
  */
 export declare function useShare(): {
     share: (options: ShareOptions, providers?: SocialProvider[]) => Promise<ShareResult[]>;
-    isSharing: any;
-    shareError: any;
+    isSharing: Signal<boolean>;
+    shareError: Signal<string>;
 };
 /**
  * ActivityPub protocol implementation
@@ -748,4 +748,3 @@ export declare function generateOAuthConfig(provider: SocialProvider, options: {
 }): OAuthConfig;
 export { storeState as socialStoreState, cleanup as cleanupSocialStore, };
 export type { SocialStoreState, };
-//# sourceMappingURL=index.d.ts.map

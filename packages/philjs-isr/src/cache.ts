@@ -461,9 +461,11 @@ export async function createCacheManager(config: ISRConfig): Promise<CacheManage
         break;
       }
       case 'redis': {
-        const { RedisCacheAdapter } = await import('./adapters/redis.js');
-        adapter = new RedisCacheAdapter(config.redis);
-        break;
+        // Redis adapter requires ioredis - install it and import manually
+        throw new Error(
+          'Redis adapter must be imported directly from @philjs/isr/adapters/redis. ' +
+          'Make sure ioredis is installed.'
+        );
       }
       case 'filesystem': {
         const { FilesystemCacheAdapter } = await import('./adapters/filesystem.js');

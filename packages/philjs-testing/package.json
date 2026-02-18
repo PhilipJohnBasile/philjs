@@ -20,9 +20,9 @@
     }
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "test": "vitest run --passWithNoTests",
-    "lint": "eslint src || exit 0"
+    "lint": "eslint src"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

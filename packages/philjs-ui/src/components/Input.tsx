@@ -151,7 +151,7 @@ export function Input(props: InputProps): JSX.Element {
           </div>
         )}
         <input
-          type={type}
+          type={type as 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'datetime-local'}
           id={inputId}
           name={name}
           value={value}

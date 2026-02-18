@@ -234,7 +234,7 @@ export function DropdownMenuItem(props: DropdownMenuItemProps) {
     return (
         <div
             role="menuitem"
-            tabindex={isDisabled ? -1 : 0}
+            tabIndex={isDisabled ? -1 : 0}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
             class={cn(
@@ -270,7 +270,7 @@ export function DropdownMenuCheckboxItem(props: DropdownMenuCheckboxItemProps) {
             role="menuitemcheckbox"
             aria-checked={isChecked}
             aria-disabled={isDisabled}
-            tabindex={isDisabled ? -1 : 0}
+            tabIndex={isDisabled ? -1 : 0}
             onClick={handleClick}
             class={cn(
                 'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
@@ -349,7 +349,7 @@ export function DropdownMenuRadioItem(props: DropdownMenuRadioItemProps) {
             role="menuitemradio"
             aria-checked={isSelected}
             aria-disabled={isDisabled}
-            tabindex={isDisabled ? -1 : 0}
+            tabIndex={isDisabled ? -1 : 0}
             onClick={handleClick}
             class={cn(
                 'relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',

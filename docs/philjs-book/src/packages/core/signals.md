@@ -26,6 +26,9 @@ count.set(prev => prev + 1);
 console.log(count()); // 6
 ```
 
+![Dependency Graph](../assets/reactivity_graph_schematic_1767820272004.png)
+*Figure 2-1: Signal Dependency Graph*
+
 ## Signal API
 
 ### `signal<T>(initialValue: T): Signal<T>`
@@ -40,6 +43,9 @@ interface Signal<T> {
   peek(): T;                          // Read without tracking
 }
 ```
+
+![Signal Memory Layout](../../assets/signals_memory_layout.png)
+*Figure 3-1: Stack vs. Heap Allocation of Primitive Signals*
 
 #### Reading Values
 
@@ -192,6 +198,9 @@ const preservedName = linkedSignal(
 );
 ```
 
+![Linked Signal Flow](../../assets/signals_linked_flow.png)
+*Figure 3-2: Topology of a Derived Signal Graph*
+
 ## Effects
 
 ### `effect(fn: () => void | (() => void)): () => void`
@@ -320,6 +329,9 @@ batch(() => {
 });
 ```
 
+![Event Loop Batching](../../assets/signals_batching_timeline.png)
+*Figure 3-3: Signal Batching across Microtask Boundaries*
+
 ## Untracking
 
 ### `untrack<T>(fn: () => T): T`
@@ -370,6 +382,9 @@ const dispose = createRoot(dispose => {
 // Later: clean up everything
 dispose();
 ```
+
+![Signal Root Lifecycle](../../assets/signals_root_lifecycle.png)
+*Figure 3-4: Signal Root Ownership and Garbage Collection*
 
 ## Resources (Async Data)
 

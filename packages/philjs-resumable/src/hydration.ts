@@ -352,7 +352,7 @@ function setupCustomHydration(
   doHydrate: () => Promise<void>
 ): () => void {
   const cleanup = options.trigger(element, doHydrate);
-  return cleanup ?? (() => {});
+  return typeof cleanup === 'function' ? cleanup : () => {};
 }
 
 // ============================================================================

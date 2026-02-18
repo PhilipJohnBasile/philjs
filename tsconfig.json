@@ -24,7 +24,7 @@
     "tsBuildInfoFile": "./node_modules/.cache/tsc/.tsbuildinfo",
 
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "sourceMap": true,
     "noEmit": false,
 

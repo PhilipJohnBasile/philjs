@@ -102,7 +102,7 @@ function generateRouteTemplate(
 
 import { JSX } from '@philjs/core';
 import { useLoaderData${isDynamic ? ', useParams' : ''} } from 'philjs-router';
-import type { loader } from './loader';
+import type { loader } from './loader.js';
 ${propsType}${paramsType}
 export default function ${name}() {
   const data = useLoaderData<typeof loader>();
@@ -229,8 +229,8 @@ function generateTestTemplate(name: string, routePath: string, typescript: boole
 import { render, screen } from 'philjs-testing';
 import { createMemoryRouter, RouterProvider } from 'philjs-router';
 import ${name} from './index';
-import { loader } from './loader';
-import { action } from './action';
+import { loader } from './loader.js';
+import { action } from './action.js';
 
 describe('${name}', () => {
   it('renders the route', async () => {

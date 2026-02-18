@@ -33,4 +33,3 @@ export declare class PythonBridge extends EventEmitter {
     close(): void;
 }
 export {};
-//# sourceMappingURL=python-bridge.d.ts.map

@@ -131,4 +131,3 @@ export declare function deactivate(): void;
  */
 export declare function getContributionPoints(): Record<string, unknown>;
 export {};
-//# sourceMappingURL=extension.d.ts.map

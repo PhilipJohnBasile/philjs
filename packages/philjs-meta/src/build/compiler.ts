@@ -11,9 +11,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type { RouteManifest, RouteDefinition } from '../router/file-based';
-import { generateRouteManifest } from '../router/file-based';
-import type { PhilJSConfig } from '../config';
+import type { RouteManifest, RouteDefinition } from '../router/file-based.js';
+import { generateRouteManifest } from '../router/file-based.js';
+import type { PhilJSConfig } from '../config.js';
 
 /**
  * Build options

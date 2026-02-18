@@ -34,7 +34,7 @@ export default defineConfig([
       typescript({
         tsconfig: './tsconfig.json',
         declaration: true,
-        declarationMap: true,
+        declarationMap: false,
         sourceMap: true,
       }),
     ],

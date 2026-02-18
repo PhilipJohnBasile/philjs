@@ -20,7 +20,7 @@ const createEntry = (input, output, external = []) => ({
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
-      declarationMap: true,
+      declarationMap: false,
       declarationDir: 'dist',
       sourceMap: true,
       composite: false
@@ -28,7 +28,7 @@ const createEntry = (input, output, external = []) => ({
   ],
   external: [
     /^node:/,
-    /^philjs-/,
+    /^@philjs\//,
     ...external
   ],
   treeshake: {

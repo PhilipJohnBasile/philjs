@@ -130,7 +130,8 @@ export class DIContainer {
 
     private instantiate<T>(type: Type<T>): T {
         // Get constructor parameter types from metadata
-        const paramTypes = Reflect.getMetadata?.('design:paramtypes', type) || [];
+        const getMetadata = (Reflect as any).getMetadata;
+        const paramTypes = getMetadata?.('design:paramtypes', type) || [];
         const deps = paramTypes.map((paramType: any) => this.resolve(paramType));
         return new type(...deps);
     }
@@ -372,5 +373,4 @@ export async function bootstrap<T>(
     };
 }
 
-// Re-export commonly used types
-export type { ModuleMetadata, InjectableMetadata, ControllerMetadata, Provider };
+// All types are exported at their declaration points above

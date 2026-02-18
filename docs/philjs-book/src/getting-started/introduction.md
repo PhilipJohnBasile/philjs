@@ -1,14 +1,15 @@
 # Introduction to PhilJS
 
-Welcome to PhilJS - a TypeScript-first framework that thinks ahead so you don't have to.
+PhilJS is a TypeScript-first web framework designed for performance and scalability through architectural optimization rather than runtime heuristics.
 
-## What is PhilJS?
+## System Overview
 
-PhilJS is a modern web framework that combines the best ideas from React, Solid, and Qwik while introducing groundbreaking concepts like **zero-hydration resumability**, **cost-aware rendering**, and **AI-powered optimization**. Built from the ground up with performance and developer experience in mind, PhilJS makes it effortless to build lightning-fast web applications.
+PhilJS combines the component model of libraries like React and Solid with **Zero-Hydration Resumability**, a technique that eliminates the initialization costs associated with traditional Single Page Applications (SPAs). This allows applications to maintain constant Time-to-Interactive (TTI) regardless of application size.
 
-Unlike traditional frameworks that force you to choose between server rendering and client interactivity, PhilJS gives you both without compromise. Applications built with PhilJS load instantly, stay responsive, and cost less to run - automatically.
+![PhilJS Architecture](../assets/philjs_architecture_woodcut_1767820257681.png)
+*Figure 1-1: The PhilJS Resumability Engine Architecture*
 
-At its core, PhilJS uses **fine-grained reactivity** with signals, meaning your UI updates surgically when data changes. No virtual DOM diffing. No unnecessary re-renders. Just direct, efficient updates to exactly what changed.
+The framework is built on **fine-grained reactivity** (Signals), ensuring that state updates propagate directly to the DOM without requiring a Virtual DOM diffing process. This approach integrates server-side rendering (SSR) and client-side interactivity into a unified model.
 
 ## Try It Yourself
 
@@ -36,26 +37,19 @@ console.log('After third increment:', count());
 
 Try modifying the code above! Change the initial value, add more increments, or experiment with the signal API.
 
-## Why PhilJS?
+## Core Design Principles
 
-### 1. **Instant First Load with Resumability**
+### 1. Resumability & Execution Latency
 
-Traditional frameworks hydrate your entire application on the client, re-executing all your component code just to attach event listeners. PhilJS uses **resumability** - your app picks up exactly where the server left off with zero wasted work.
+Unlike frameworks that hydrate the entire application state on the client, PhilJS utilizes **resumability**. The application state is serialized into the HTML, allowing the client to resume execution from the server's last state without re-running initialization logic.
 
-**What this means for you:**
-- **0ms hydration time** (vs 500-2000ms for typical React apps)
-- **Interactive immediately** - no "loading" phase
-- **Better user experience** - especially on slow devices/networks
+**Technical implications:**
+- **Elimination of Hydration Phase:** No blocking main-thread time for component re-execution.
+- **Lazy Execution:** Event handlers and component logic are loaded only upon interaction.
 
-**Real-world impact:**
-```
-React App:     Server HTML → Download 200KB JS → Parse → Hydrate 500ms → Interactive
-PhilJS App:    Server HTML → Interactive immediately
-```
+### 2. Fine-Grained Reactivity (Signals)
 
-### 2. **Fine-Grained Reactivity = Maximum Performance**
-
-PhilJS uses **signals** instead of virtual DOM. When your data changes, only the specific DOM nodes that depend on that data update - nothing else.
+PhilJS uses **signals** as the primary state primitive. This dependency-tracking system allows for O(1) updates to the DOM.
 
 **Example:**
 ```typescript
@@ -69,17 +63,17 @@ const count = signal(0);
 </div>
 ```
 
-When you click the button, **only the text node** showing the count updates. The h1, the div, the button - all unchanged. This is true for apps of any size.
+![VDOM vs Signals](../assets/intro_vdom_diff.png)
+*Figure 1-2: Virtual DOM Diffing vs. Direct Signal Updates*
 
-**Performance benefits:**
-- 10x faster updates than Virtual DOM frameworks
-- No diffing algorithm overhead
-- Predictable, consistent performance
-- Better battery life on mobile
+This model avoids the CPU overhead of Virtual DOM reconciliation.
 
-### 3. **Cost Tracking Built-In**
+### 3. Observability & Cost Attribution
 
-PhilJS is the first framework with **built-in cost tracking**. See exactly how much your components cost to run in production - down to the penny.
+PhilJS includes a native **cost tracking** module. This allows developers to measure the runtime cost (renders, data transfer) of individual components in production.
+
+![Hydration Cost Chart](../assets/intro_hydration_cost.png)
+*Figure 1-3: Time to Interactive (TTI) Comparison: Hydrated vs. Resumable*
 
 ```typescript
 import { useCosts } from '@philjs/core';
@@ -89,27 +83,18 @@ export function Dashboard() {
 
   return (
     <div>
-      <p>This component costs: ${costs.total}/month</p>
-      <p>Renders: {costs.renders} @ {costs.renderCost}</p>
-      <p>Data: {costs.dataTransfer} @ {costs.dataCost}</p>
+      <p>Render Count: {costs.renders}</p>
     </div>
   );
 }
 ```
 
-**Why this matters:**
-- Identify expensive components before they hit production
-- Set performance budgets in dollars, not milliseconds
-- Optimize where it actually matters
-- Make business-driven technical decisions
+### 4. Resilient Runtime Strategy
 
-### 4. **Self-Healing Runtime (Unique)**
+The **Self-Healing Runtime** operates as a supervisor layer. It employs strategies such as circuit breakers and isolation boundaries to prevent partial UI failures from crashing the entire application context.
 
-PhilJS is the only framework with a **Self-Healing Runtime**. It wraps your application in a supervisor process that detects crashes, memory leaks, and unhandled exceptions.
-
-- **Circuit Breakers**: If a component fails repeatedly, it is isolated (like a blown fuse) so the rest of your app keeps running.
-- **Auto-Recovery**: PhilJS attempts to "hot-patch" or restart the crashed component without reloading the page.
-- **Predictive AI**: The runtime analyzes error patterns to predict and prevent crashes *before* they happen.
+- **Circuit Breakers**: Isolation of failing components.
+- **Recovery**: Automatic re-initialization of crashed component trees.
 
 ### 5. **TypeScript 6 First**
 
@@ -191,6 +176,9 @@ Use **islands** to ship minimal JavaScript. Only interactive components get hydr
 // This loads only when visible (lazy loaded)
 <Comments client:visible />
 ```
+
+![Islands Architecture](../assets/intro_islands_concept.png)
+*Figure 1-4: The Islands Architecture: Static Seas with Interactive Islands*
 
 **Results:**
 - 90% less JavaScript shipped

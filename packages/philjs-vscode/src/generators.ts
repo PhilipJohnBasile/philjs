@@ -109,7 +109,7 @@ export async function createRoute(name: string): Promise<void> {
 
 import { JSX } from '@philjs/core';
 import { useLoaderData } from 'philjs-router';
-import type { loader } from './loader';
+import type { loader } from './loader.js';
 
 export default function ${pascalName}() {
   const data = useLoaderData<typeof loader>();
@@ -282,7 +282,8 @@ export async function createStore(name: string): Promise<void> {
  * ${pascalName} Store
  */
 
-import { signal, computed } from '@philjs/core';
+import { signal, memo } from '@philjs/core';
+const computed = memo; // Compatibility alias
 
 interface ${pascalName}State {
   items: string[];

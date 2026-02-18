@@ -46,11 +46,11 @@
     "rust"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsup --watch",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit || exit 0",
+    "typecheck": "tsc --noEmit",
     "build:rust": "cd rust && cargo build --release"
   },
   "dependencies": {

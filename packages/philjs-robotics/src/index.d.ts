@@ -1,2 +1,9 @@
+/**
+ * @philjs/robotics
+ *
+ * Robotics integration for PhilJS - ROS bridge, sensors, motion control
+ */
 export * from './ros-bridge.js';
-//# sourceMappingURL=index.d.ts.map
+export * from './sensors.js';
+export * from './motion.js';
+export * from './reactive.js';

@@ -94,4 +94,3 @@ export interface UndoRedoStore<T extends StoreNode> {
 export declare function createUndoableStore<T extends StoreNode>(initialState: T, options?: StoreOptions<T> & {
     historyLimit?: number;
 }): UndoRedoStore<T>;
-//# sourceMappingURL=store.d.ts.map

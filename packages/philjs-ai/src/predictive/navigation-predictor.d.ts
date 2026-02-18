@@ -230,4 +230,3 @@ export declare function useNavigationPredictor(): {
 export declare function withPrediction<T extends {
     href: string;
 }>(LinkComponent: (props: T) => unknown): (props: T) => unknown;
-//# sourceMappingURL=navigation-predictor.d.ts.map

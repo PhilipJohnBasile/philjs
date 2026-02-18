@@ -414,7 +414,7 @@ function generateId(): string {
  * ```ts
  * import Hapi from '@hapi/hapi';
  * import { philjsPlugin } from '@philjs/hapi';
- * import { render } from './entry-server';
+ * import { render } from './entry-server.js';
  *
  * const server = Hapi.server({ port: 3000 });
  *

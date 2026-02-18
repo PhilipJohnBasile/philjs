@@ -59,4 +59,3 @@ export declare function resumable<T extends Record<string, any>>(Component: (pro
     module: string;
     handlers?: Record<string, string>;
 }): (props: T) => VNode;
-//# sourceMappingURL=resumability.d.ts.map

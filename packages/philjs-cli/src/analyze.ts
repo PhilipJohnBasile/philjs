@@ -20,6 +20,7 @@ export async function analyze() {
 
   // Print summary
 
+  console.log(
     pc.cyan("\nJavaScript:") +
     `  ${formatSize(stats.js.total)}` +
     pc.dim(` (${stats.js.count} files)`)
@@ -27,6 +28,7 @@ export async function analyze() {
 
   for (const [name, size] of Object.entries(stats.js.files).slice(0, 10)) {
     const percent = ((size / stats.js.total) * 100).toFixed(1);
+    console.log(
       pc.dim("  ├─ ") +
       name.padEnd(40) +
       formatSize(size).padStart(12) +
@@ -34,33 +36,38 @@ export async function analyze() {
     );
   }
 
+  console.log(
     pc.cyan("\nCSS:") +
     `       ${formatSize(stats.css.total)}` +
     pc.dim(` (${stats.css.count} files)`)
   );
 
+  console.log(
     pc.cyan("\nImages:") +
     `    ${formatSize(stats.images.total)}` +
     pc.dim(` (${stats.images.count} files)`)
   );
 
+  console.log(
     pc.cyan("\nFonts:") +
     `     ${formatSize(stats.fonts.total)}` +
     pc.dim(` (${stats.fonts.count} files)`)
   );
 
-
+  console.log(
     pc.bold("\nTotal:") + `    ${formatSize(stats.total)}` + "\n"
   );
 
   // Performance recommendations
 
   if (stats.js.total > 200 * 1024) {
+    console.log(
       pc.yellow("  ⚠ JS bundle is large. Consider code splitting.")
     );
   }
 
   if (stats.images.total > 500 * 1024) {
+    console.log(
       pc.yellow("  ⚠ Large images detected. Consider compression.")
     );
   }

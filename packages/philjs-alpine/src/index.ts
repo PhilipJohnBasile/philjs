@@ -6,7 +6,10 @@
  * and plugin support.
  */
 
-import { signal, computed, effect, batch, type Signal } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 
 // ============================================================================
 // TYPES

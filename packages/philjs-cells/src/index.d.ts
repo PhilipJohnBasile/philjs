@@ -45,7 +45,7 @@
  * @example
  * ```tsx
  * // Usage in components
- * import UsersCell from './cells/UsersCell';
+ * import UsersCell from './cells/UsersCell.js';
  *
  * function UsersPage() {
  *   return (

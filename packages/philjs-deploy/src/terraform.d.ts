@@ -12,4 +12,3 @@ export declare class TerraformGenerator {
     private generateStorage;
     private generateVariables;
 }
-//# sourceMappingURL=terraform.d.ts.map

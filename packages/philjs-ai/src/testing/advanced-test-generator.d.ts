@@ -313,4 +313,3 @@ export declare function generateUnitTestsForCode(provider: AIProvider, code: str
  * Quick E2E scenario generation helper
  */
 export declare function generateE2ETestScenarios(provider: AIProvider, appDescription: string): Promise<E2EScenario[]>;
-//# sourceMappingURL=advanced-test-generator.d.ts.map

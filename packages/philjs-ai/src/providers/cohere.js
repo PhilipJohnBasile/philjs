@@ -36,7 +36,25 @@ export class CohereProvider {
             throw new Error(`Cohere API error: ${response.status} - ${error}`);
         }
         const data = await response.json();
-        return data.text || '';
+        // Extract token usage from Cohere response
+        const inputTokens = data.meta?.tokens?.input_tokens
+            ?? data.meta?.billed_units?.input_tokens
+            ?? this.estimateTokens(prompt);
+        const outputTokens = data.meta?.tokens?.output_tokens
+            ?? data.meta?.billed_units?.output_tokens
+            ?? this.estimateTokens(data.text || '');
+        return {
+            content: data.text || '',
+            usage: {
+                inputTokens,
+                outputTokens,
+                totalTokens: inputTokens + outputTokens
+            }
+        };
+    }
+    /** Estimate token count (~4 chars per token) */
+    estimateTokens(text) {
+        return Math.ceil(text.length / 4);
     }
     async *generateStreamCompletion(prompt, options) {
         const url = `${this.baseURL}/generate`;

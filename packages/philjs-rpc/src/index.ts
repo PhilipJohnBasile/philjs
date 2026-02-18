@@ -30,7 +30,7 @@
  * @example Client-side usage:
  * ```ts
  * import { createClient } from 'philjs-rpc/client';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const client = createClient<AppAPI>({ url: '/api/rpc' });
  *
@@ -45,7 +45,7 @@
  * @example Server handler:
  * ```ts
  * import { createHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * export const handler = createHandler(api);
  * ```

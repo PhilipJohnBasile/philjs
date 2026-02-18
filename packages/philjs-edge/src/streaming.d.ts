@@ -163,4 +163,3 @@ export declare function createProgressiveHTML(options: {
     renderAsync: () => Promise<string>;
     boundaryId: string;
 }): Response;
-//# sourceMappingURL=streaming.d.ts.map

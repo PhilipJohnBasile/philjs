@@ -226,11 +226,6 @@ export declare function beforeAll(fn: () => void | Promise<void>): void;
 export declare function afterAll(fn: () => void | Promise<void>): void;
 export declare function beforeEach(fn: () => void | Promise<void>): void;
 export declare function afterEach(fn: () => void | Promise<void>): void;
-declare class AssertionError extends Error {
-    expected: unknown;
-    actual: unknown;
-    constructor(message: string, expected: unknown, actual: unknown);
-}
 interface Matchers<T> {
     toBe(expected: T): void;
     toEqual(expected: T): void;
@@ -365,7 +360,7 @@ export declare function property<T>(name: string, arb: Arbitrary<T>, predicate: 
 /**
  * Create a test harness for a component
  */
-export declare function createTestHarness<T>(component: new (...args: any[]) => T | ((props: any) => any), props?: Record<string, any>): Promise<TestHarness<T>>;
+export declare function createTestHarness<T>(component: (new (...args: any[]) => T) | ((props: any) => any), props?: Record<string, any>): Promise<TestHarness<T>>;
 interface RunnerOptions {
     filter?: string;
     tags?: string[];
@@ -383,6 +378,5 @@ export declare function runTests(options?: RunnerOptions): Promise<SuiteResult>;
  * Format test results for display
  */
 export declare function formatResults(results: SuiteResult, indent?: number): string;
-export { describe, it, test, beforeAll, afterAll, beforeEach, afterEach, expect, AssertionError, mock, spy, mockModule, fakeTimers, describeAI, fuzzAI, attemptTestFix, createAITestGenerator, arbitrary, property, createTestHarness, runTests, formatResults, };
-export type { TestStatus, TestResult, SuiteResult, TestContext, MockOptions, MockCall, MockFn, SpyOptions, Spy, FuzzOptions, FuzzStrategy, FuzzResult, SnapshotOptions, CoverageData, FileCoverage, TestHarness, AITestGenerator, PropertyBasedTestOptions, Arbitrary, Matchers, };
-//# sourceMappingURL=index.d.ts.map
+export { aiGenerateTests, aiDescribeTests, aiGenerateTestFile, aiRunGeneratedTests, aiAnalyzeSource, aiExpect, } from './auto-test.js';
+export type { AITestSuite, GeneratedTest, TestCategory, AITestConfig, AIProvider, SourceAnalysis, FunctionInfo, ClassInfo, ParameterInfo, PropertyInfo, } from './auto-test.js';

@@ -38,17 +38,17 @@ import { signal, type Signal } from '@philjs/core';
 
 export interface TestGenConfig {
   /** Output directory for generated tests */
-  outputDir?: string;
+  outputDir?: string | undefined;
   /** Testing framework */
-  framework?: 'vitest' | 'jest' | 'playwright';
+  framework?: 'vitest' | 'jest' | 'playwright' | undefined;
   /** Test style */
-  style?: 'unit' | 'integration' | 'e2e';
+  style?: 'unit' | 'integration' | 'e2e' | undefined;
   /** Language */
-  language?: 'typescript' | 'javascript';
+  language?: 'typescript' | 'javascript' | undefined;
   /** Include snapshot tests */
-  includeSnapshots?: boolean;
+  includeSnapshots?: boolean | undefined;
   /** Include accessibility tests */
-  includeA11y?: boolean;
+  includeA11y?: boolean | undefined;
 }
 
 export interface ComponentAnalysis {
@@ -86,10 +86,10 @@ export interface GeneratedTest {
 }
 
 export interface TestCoverage {
-  props: number;
-  events: number;
-  states: number;
-  interactions: number;
+  statements: number;
+  branches: number;
+  functions: number;
+  lines: number;
 }
 
 export interface UserFlow {
@@ -127,7 +127,7 @@ export interface RecordedEvent {
 
 // State
 
-const configSignal: Signal<TestGenConfig> = signal({
+const configSignal = signal<TestGenConfig>({
   outputDir: '__tests__',
   framework: 'vitest',
   style: 'unit',
@@ -136,7 +136,7 @@ const configSignal: Signal<TestGenConfig> = signal({
   includeA11y: true,
 });
 
-const recordingSignal: Signal<RecordingSession | null> = signal(null);
+const recordingSignal = signal<RecordingSession | null>(null);
 
 // Core Functions
 
@@ -254,10 +254,10 @@ export async function generateFromFlow(
     code: content,
     type: 'e2e',
     coverage: {
-      props: 0,
-      events: flow.steps.length,
-      states: flow.assertions.length,
-      interactions: flow.steps.length,
+      statements: flow.steps.length + flow.assertions.length,
+      branches: 0,
+      functions: 1,
+      lines: flow.steps.length + flow.assertions.length,
     },
   };
 }
@@ -287,7 +287,7 @@ export async function generateFromNaturalLanguage(description: string): Promise<
     filename: testName.toLowerCase().replace(/\s+/g, '-') + '.spec.ts',
     content,
     type: 'e2e',
-    coverage: { props: 0, events: steps.length, states: assertions.length, interactions: steps.length },
+    coverage: { statements: steps.length + assertions.length, branches: 0, functions: 1, lines: steps.length + assertions.length },
   };
 }
 
@@ -392,10 +392,10 @@ function generateUnitTest(analysis: ComponentAnalysis, config: TestGenConfig): G
     content,
     type: 'unit',
     coverage: {
-      props: analysis.props.length,
-      events: analysis.events.length,
-      states: 1,
-      interactions: 0,
+      statements: analysis.props.length + analysis.events.length + 1,
+      branches: 0,
+      functions: analysis.events.length + 1,
+      lines: analysis.props.length + analysis.events.length + 1,
     },
   };
 }
@@ -421,7 +421,7 @@ function generateIntegrationTest(analysis: ComponentAnalysis, config: TestGenCon
     filename: `${analysis.name}.integration.test.${ext}`,
     content,
     type: 'integration',
-    coverage: { props: 0, events: 0, states: 2, interactions: 2 },
+    coverage: { statements: 4, branches: 0, functions: 2, lines: 4 },
   };
 }
 
@@ -445,7 +445,7 @@ function generateA11yTest(analysis: ComponentAnalysis, config: TestGenConfig): G
     filename: `${analysis.name}.a11y.test.${ext}`,
     content,
     type: 'unit',
-    coverage: { props: 0, events: 0, states: 1, interactions: 0 },
+    coverage: { statements: 1, branches: 0, functions: 1, lines: 1 },
   };
 }
 
@@ -510,7 +510,7 @@ function generateAssertionCode(assertion: FlowAssertion): string {
 
 function extractTestName(description: string): string {
   const match = description.match(/test\s+(?:that\s+)?(.+?)(?:\.|$)/i);
-  return match ? match[1].trim() : 'generated test';
+  return match && match[1] ? match[1].trim() : 'generated test';
 }
 
 function extractSteps(description: string): string[] {
@@ -519,19 +519,19 @@ function extractSteps(description: string): string[] {
   // Extract click actions
   const clickMatch = description.matchAll(/click\s+(?:on\s+)?(?:the\s+)?["']?([^"']+)["']?/gi);
   for (const match of clickMatch) {
-    steps.push(`await page.click('${match[1].trim()}')`);
+    if (match[1]) steps.push(`await page.click('${match[1].trim()}')`);
   }
 
   // Extract type actions
   const typeMatch = description.matchAll(/type\s+["']?([^"']+)["']?\s+(?:in|into)\s+["']?([^"']+)["']?/gi);
   for (const match of typeMatch) {
-    steps.push(`await page.fill('${match[2].trim()}', '${match[1].trim()}')`);
+    if (match[1] && match[2]) steps.push(`await page.fill('${match[2].trim()}', '${match[1].trim()}')`);
   }
 
   // Extract navigate actions
   const navMatch = description.matchAll(/(?:go\s+to|navigate\s+to|visit)\s+["']?([^"']+)["']?/gi);
   for (const match of navMatch) {
-    steps.push(`await page.goto('${match[1].trim()}')`);
+    if (match[1]) steps.push(`await page.goto('${match[1].trim()}')`);
   }
 
   return steps;
@@ -543,11 +543,13 @@ function extractAssertions(description: string): Array<{ target: string; method:
   // Extract "should see" assertions
   const seeMatch = description.matchAll(/(?:should\s+)?see\s+["']?([^"']+)["']?/gi);
   for (const match of seeMatch) {
-    assertions.push({
-      target: "page.locator('body')",
-      method: 'toContainText',
-      value: match[1].trim(),
-    });
+    if (match[1]) {
+      assertions.push({
+        target: "page.locator('body')",
+        method: 'toContainText',
+        value: match[1].trim(),
+      });
+    }
   }
 
   return assertions;
@@ -608,7 +610,7 @@ function cleanupEventListeners(): void {
 
 function getSelector(el: HTMLElement): string {
   if (el.id) return `#${el.id}`;
-  if (el.dataset.testid) return `[data-testid="${el.dataset.testid}"]`;
+  if (el.dataset['testid']) return `[data-testid="${el.dataset['testid']}"]`;
   if (el.getAttribute('name')) return `[name="${el.getAttribute('name')}"]`;
   if (el.className && typeof el.className === 'string') {
     const firstClass = el.className.split(' ')[0];
@@ -617,18 +619,4 @@ function getSelector(el: HTMLElement): string {
   return el.tagName.toLowerCase();
 }
 
-// Export types
-export type {
-  TestGenConfig,
-  ComponentAnalysis,
-  PropDefinition,
-  SignalDefinition,
-  EventDefinition,
-  GeneratedTest,
-  TestCoverage,
-  UserFlow,
-  FlowStep,
-  FlowAssertion,
-  RecordingSession,
-  RecordedEvent,
-};
+// Types are exported via their interface declarations above

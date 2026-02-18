@@ -1,7 +1,7 @@
 /**
  * Google Gemini provider implementation
  */
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 export interface GeminiConfig {
     apiKey: string;
     baseURL?: string;
@@ -13,11 +13,10 @@ export declare class GeminiProvider implements AIProvider {
     private baseURL;
     private defaultModel;
     constructor(config: GeminiConfig);
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
 }
 /**
  * Create a Gemini provider instance
  */
 export declare function createGeminiProvider(config: GeminiConfig): GeminiProvider;
-//# sourceMappingURL=gemini.d.ts.map

@@ -1,8 +1,8 @@
 # Chapter 6: The Compute Layer
 
-For a long time, JavaScript was the language of UI, and Python was the language of Math. If you wanted to run a neural network or calculate a covariance matrix, you sent the data to a Python backend.
+Historically, heavy numerical computation in web applications was offloaded to specialized Python backends.
 
-PhilJS challenges this split. With **Node 24** and the **V8 Sandbox**, JavaScript is now a systems language capable of high-performance numerics.
+With the advent of **Node 24** and advanced V8 Sandbox optimizations, JavaScript has become a viable systems language for high-performance numerics, allowing for efficient execution of tensor operations directly within the application runtime.
 
 ## The Tensor Primitive
 

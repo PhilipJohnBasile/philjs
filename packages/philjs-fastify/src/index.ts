@@ -533,7 +533,7 @@ class InMemorySessionStore implements SessionStore {
  * ```ts
  * import Fastify from 'fastify';
  * import { philjsPlugin } from '@philjs/fastify';
- * import { render } from './entry-server';
+ * import { render } from './entry-server.js';
  *
  * const app = Fastify();
  *
@@ -616,7 +616,7 @@ export const philjsPlugin: FastifyPluginAsync<PhilJSPluginOptions> = async (fast
                 reply.type('text/html').send(result);
             } else {
                 if (result.redirect) {
-                    reply.redirect(result.statusCode || 302, result.redirect);
+                    reply.status(result.statusCode || 302).redirect(result.redirect);
                     return;
                 }
 
@@ -766,7 +766,7 @@ export const philjsPlugin: FastifyPluginAsync<PhilJSPluginOptions> = async (fast
                         html = result;
                     } else {
                         if (result.redirect) {
-                            return reply.redirect(result.statusCode || 302, result.redirect);
+                            return reply.status(result.statusCode || 302).redirect(result.redirect);
                         }
 
                         if (result.headers) {

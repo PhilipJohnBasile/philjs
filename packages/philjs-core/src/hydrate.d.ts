@@ -13,4 +13,3 @@ export declare function hydrate(vnode: VNode, container: Element): void;
  * Create a client-side element (for client-only components).
  */
 export declare function render(vnode: VNode, container: Element): void;
-//# sourceMappingURL=hydrate.d.ts.map

@@ -10,7 +10,8 @@
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "webxr"]
   },
   "include": [
     "src/**/*"

@@ -226,6 +226,9 @@ export default function Dashboard() {
 
 ## Nested Layouts
 
+![Router Topology](../../assets/router_topology_schematic_1767820291350.png)
+*Figure 3-1: Nested Layout Topology*
+
 ### Layout Definition
 
 ```tsx

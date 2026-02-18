@@ -653,7 +653,7 @@ async function updateViteConfig(isTS: boolean, modifier: (config: string) => str
 
 function generateSSREntryServer(isTS: boolean): string {
   return `import { renderToString } from 'philjs-ssr';
-import App from './App';
+import App from './App.js';
 
 export function render(url${isTS ? ': string' : ''}) {
   const html = renderToString(<App url={url} />);
@@ -664,7 +664,7 @@ export function render(url${isTS ? ': string' : ''}) {
 
 function generateSSREntryClient(isTS: boolean): string {
   return `import { hydrate } from '@philjs/core';
-import App from './App';
+import App from './App.js';
 
 hydrate(<App />, document.getElementById('app'));
 `;

@@ -21,6 +21,11 @@ export class AnthropicProvider {
         this.enableCaching = config.enableCaching ?? false;
     }
     async generateCompletion(prompt, options) {
+        const tools = options?.tools?.map((tool) => ({
+            name: tool.name,
+            description: tool.description,
+            input_schema: tool.parameters,
+        }));
         const response = await this.client.messages.create({
             model: options?.model || this.defaultModel,
             max_tokens: options?.maxTokens ?? 4096,
@@ -33,12 +38,26 @@ export class AnthropicProvider {
                 },
             ],
             ...(options?.stopSequences && { stop_sequences: options.stopSequences }),
+            ...(tools && { tools }),
+            ...(options?.toolChoice === 'auto' && { tool_choice: { type: 'auto' } }),
         });
-        const content = response.content[0];
-        if (content?.type === 'text') {
-            return content.text;
-        }
-        return '';
+        const textContent = response.content.find(c => c.type === 'text');
+        const toolCalls = response.content
+            .filter(c => c.type === 'tool_use')
+            .map((c) => ({
+            id: c.id,
+            name: c.name,
+            arguments: c.input,
+        }));
+        return {
+            content: textContent?.type === 'text' ? textContent.text : '',
+            ...(toolCalls.length > 0 ? { toolCalls } : {}),
+            usage: {
+                inputTokens: response.usage.input_tokens,
+                outputTokens: response.usage.output_tokens,
+                totalTokens: response.usage.input_tokens + response.usage.output_tokens,
+            },
+        };
     }
     async *generateStreamCompletion(prompt, options) {
         const stream = await this.client.messages.stream({

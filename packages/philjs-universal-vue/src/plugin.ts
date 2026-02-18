@@ -8,7 +8,7 @@
  * ```ts
  * import { createApp } from 'vue';
  * import { PhilJSPlugin } from '@philjs/universal-vue';
- * import App from './App.vue';
+ * import App from './App.vue.js';
  *
  * const app = createApp(App);
  *

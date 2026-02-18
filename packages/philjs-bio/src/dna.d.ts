@@ -270,4 +270,3 @@ export declare function findMotifs(sequences: DNA[], motifLength: number, option
     pwm: number[][];
     positions: number[];
 };
-//# sourceMappingURL=dna.d.ts.map

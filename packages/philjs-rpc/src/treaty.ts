@@ -5,7 +5,7 @@
  * @example
  * ```ts
  * import { treaty } from 'philjs-rpc/treaty';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const api = treaty<AppAPI>('http://localhost:3000/api');
  *
@@ -558,7 +558,7 @@ async function makeRequest<T>(
  * @example
  * ```ts
  * import { treaty } from 'philjs-rpc/treaty';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const api = treaty<AppAPI>('http://localhost:3000/api');
  *

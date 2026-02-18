@@ -324,4 +324,3 @@ export interface ClientCapabilities {
  * @returns Whether the capability is supported
  */
 export declare function hasCapability(capabilities: ClientCapabilities, path: string): boolean;
-//# sourceMappingURL=capabilities.d.ts.map

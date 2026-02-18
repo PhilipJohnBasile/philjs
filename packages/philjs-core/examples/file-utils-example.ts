@@ -16,7 +16,7 @@ import {
   dirExists,
   clearCaches,
   getCacheStats,
-} from '../src/file-utils';
+} from '../src/file-utils.js';
 
 // ============================================
 // Example 1: Reading Files with Caching

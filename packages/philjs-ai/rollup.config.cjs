@@ -54,6 +54,7 @@ module.exports = {
         '@anthropic-ai/sdk',
         'crypto',
         'zod',
+        'commander',
     ],
     treeshake: {
         preset: 'smallest',

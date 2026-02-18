@@ -343,9 +343,10 @@ import { CheckboxGroup, Checkbox } from '@philjs/ui';
 | `error` | `boolean \| string` | `false` | Error state |
 | `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction |
 
-## Radio
-
-Radio button for mutually exclusive selection.
+## RadioGroup
+<a id="radio"></a>
+ 
+ Radio button for mutually exclusive selection.
 
 ```tsx
 import { RadioGroup, Radio } from '@philjs/ui';

@@ -74,7 +74,7 @@ export class PineconeVectorStore {
                 'Api-Key': this.config.apiKey,
                 'Content-Type': 'application/json',
             },
-            body: body ? JSON.stringify(body) : undefined,
+            ...(body ? { body: JSON.stringify(body) } : {}),
         });
         if (!response.ok) {
             const error = await response.text();
@@ -120,9 +120,9 @@ export class PineconeVectorStore {
         return response.matches.map(match => ({
             document: {
                 id: match.id,
-                content: match.metadata?.content || '',
-                metadata: match.metadata,
-                embedding: undefined, // Not returned by query
+                content: match.metadata?.['content'] || '',
+                ...(match.metadata ? { metadata: match.metadata } : {}),
+                // embedding: undefined - omit if undefined
             },
             score: match.score,
         }));
@@ -159,8 +159,8 @@ export class PineconeVectorStore {
         for (const [id, vector] of Object.entries(response.vectors)) {
             result.set(id, {
                 id,
-                content: vector.metadata?.content || '',
-                metadata: vector.metadata,
+                content: vector.metadata?.['content'] || '',
+                ...(vector.metadata ? { metadata: vector.metadata } : {}),
                 embedding: vector.values,
             });
         }
@@ -201,7 +201,7 @@ export class ChromaVectorStore {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: body ? JSON.stringify(body) : undefined,
+            ...(body ? { body: JSON.stringify(body) } : {}),
         });
         if (!response.ok) {
             const error = await response.text();
@@ -262,7 +262,7 @@ export class ChromaVectorStore {
             document: {
                 id,
                 content: documents[i] || '',
-                metadata: metadatas[i] || undefined,
+                ...(metadatas[i] ? { metadata: metadatas[i] } : {}),
             },
             // Chroma returns L2 distance, convert to similarity score (0-1)
             score: 1 / (1 + (distances[i] || 0)),
@@ -322,25 +322,127 @@ export class ChromaVectorStore {
         return response.ids.map((id, i) => ({
             id,
             content: response.documents[i] || '',
-            metadata: response.metadatas[i] || undefined,
-            embedding: response.embeddings[i] || undefined,
+            ...(response.metadatas[i] ? { metadata: response.metadatas[i] } : {}),
+            ...(response.embeddings[i] ? { embedding: response.embeddings[i] } : {}),
         }));
     }
 }
 export class QdrantVectorStore {
     name = 'qdrant';
     config;
+    collectionEnsured = false;
     constructor(config) {
-        this.config = config;
+        this.config = {
+            vectorDimension: 1536,
+            ...config,
+        };
+    }
+    async request(endpoint, method = 'GET', body) {
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        if (this.config.apiKey) {
+            headers['api-key'] = this.config.apiKey;
+        }
+        const response = await fetch(`${this.config.url}${endpoint}`, {
+            method,
+            headers,
+            ...(body ? { body: JSON.stringify(body) } : {}),
+        });
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Qdrant API error: ${response.status} - ${text}`);
+        }
+        const text = await response.text();
+        return text ? JSON.parse(text) : {};
+    }
+    async ensureCollection() {
+        if (this.collectionEnsured)
+            return;
+        try {
+            // Check if collection exists
+            await this.request(`/collections/${this.config.collectionName}`);
+            this.collectionEnsured = true;
+        }
+        catch {
+            // Create collection if it doesn't exist
+            await this.request(`/collections/${this.config.collectionName}`, 'PUT', {
+                vectors: {
+                    size: this.config.vectorDimension,
+                    distance: 'Cosine',
+                },
+            });
+            this.collectionEnsured = true;
+        }
     }
     async add(documents) {
-        console.log(`Adding ${documents.length} documents to Qdrant`);
+        if (documents.length === 0)
+            return;
+        await this.ensureCollection();
+        // Validate all documents have embeddings
+        for (const doc of documents) {
+            if (!doc.embedding) {
+                throw new Error(`Document ${doc.id} missing embedding`);
+            }
+        }
+        const points = documents.map(doc => ({
+            id: doc.id,
+            vector: doc.embedding,
+            payload: {
+                content: doc.content,
+                ...(doc.metadata || {}),
+            },
+        }));
+        await this.request(`/collections/${this.config.collectionName}/points`, 'PUT', {
+            points,
+        });
     }
     async search(query, topK = 5) {
-        return [];
+        await this.ensureCollection();
+        const response = await this.request(`/collections/${this.config.collectionName}/points/search`, 'POST', {
+            vector: query,
+            limit: topK,
+            with_payload: true,
+            with_vector: true,
+        });
+        return response.result.map(result => ({
+            document: {
+                id: String(result.id),
+                content: result.payload?.['content'] || '',
+                ...(result.payload ? { metadata: result.payload } : {}),
+                ...(result.vector ? { embedding: result.vector } : {}),
+            },
+            score: result.score,
+        }));
     }
-    async delete(ids) { }
-    async clear() { }
+    async delete(ids) {
+        if (ids.length === 0)
+            return;
+        await this.ensureCollection();
+        await this.request(`/collections/${this.config.collectionName}/points/delete`, 'POST', {
+            points: ids,
+        });
+    }
+    async clear() {
+        try {
+            await this.request(`/collections/${this.config.collectionName}`, 'DELETE');
+            this.collectionEnsured = false;
+        }
+        catch {
+            // Collection might not exist
+        }
+    }
+    /**
+     * Get collection info
+     */
+    async info() {
+        await this.ensureCollection();
+        const response = await this.request(`/collections/${this.config.collectionName}`);
+        return {
+            vectorsCount: response.result.vectors_count,
+            pointsCount: response.result.points_count,
+        };
+    }
 }
 // ============================================================================
 // RAG Pipeline
@@ -386,7 +488,7 @@ export class RAGPipeline {
             .join('\n\n');
         // Generate answer using generateCompletion
         const prompt = `${question}\n\nContext:\n${context}`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             systemPrompt: this.systemPrompt,
         });
         return {

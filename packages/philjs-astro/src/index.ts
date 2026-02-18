@@ -24,7 +24,11 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Alias for backward compatibility
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types & Interfaces
@@ -1345,39 +1349,4 @@ export function createISSTracker(): SatelliteTracker {
   return new SatelliteTracker(tle1, tle2);
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  // Constants
-  J2000,
-  JULIAN_CENTURY,
-  DEG_TO_RAD,
-  RAD_TO_DEG,
-  AU_TO_KM,
-  SYNODIC_MONTH,
-  ZODIAC_SIGNS,
-  BRIGHT_STARS,
-
-  // Time functions
-  dateToJulianDate,
-  julianDateToDate,
-  julianCenturies,
-  greenwichSiderealTime,
-  localSiderealTime,
-  modifiedJulianDate,
-
-  // Coordinate transformations
-  equatorialToHorizontal,
-  horizontalToEquatorial,
-  eclipticToEquatorial,
-  equatorialToGalactic,
-  formatRA,
-  formatDec,
-
-  // Ephemeris calculations
-  getSunPosition,
-  getMoonPosition,
-  getPlanetPosition,
-};
+// All functions and constants are exported at their declaration points above

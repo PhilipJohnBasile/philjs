@@ -267,4 +267,3 @@ export declare function useErrorBoundary(componentName: string): {
     onError: (error: Error, errorInfo: ErrorBoundaryInfo) => void;
 };
 export {};
-//# sourceMappingURL=error-tracking.d.ts.map

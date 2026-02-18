@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from 'philjs';
+import { signal, effect, type Signal } from '@philjs/core';
 
 export interface ClerkAppearance {
   baseTheme?: any;
@@ -39,7 +39,7 @@ export function SignIn(props: {
 }) {
   const containerId = 'clerk-signin-' + Math.random().toString(36).substr(2, 5);
 
-  createEffect(() => {
+  effect(() => {
     // Normally obtained from ENV
     const key = (window as any).__CLERK_PUBLISHABLE_KEY__;
     if (key) {
@@ -54,8 +54,8 @@ export function SignIn(props: {
 
   const styles = props.appearance?.variables || {};
   const styleStr = Object.entries(styles)
-    .map(([k, v]) => \`--cl-\${k}: \${v}\`) 
+    .map(([k, v]) => `--cl-${k}: ${v}`)
     .join('; ');
 
-  return \`<div id="\${containerId}" class="clerk-container" style="\${styleStr}"></div>\`;
+  return `<div id="${containerId}" class="clerk-container" style="${styleStr}"></div>`;
 }

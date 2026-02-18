@@ -5,9 +5,9 @@
   "description": "PhilJS Documentation Site - philjs.dev",
   "type": "module",
   "scripts": {
-    "dev": "tsx scripts/dev.ts",
-    "build": "tsx scripts/build.ts",
-    "preview": "tsx scripts/preview.ts"
+    "dev": "node --import tsx scripts/dev.ts",
+    "build": "node --import tsx scripts/build.ts",
+    "preview": "node --import tsx scripts/preview.ts"
   },
   "devDependencies": {
     "@philjs/core": "workspace:*",

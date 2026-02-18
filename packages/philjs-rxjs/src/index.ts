@@ -29,7 +29,10 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 import type {
   Observable,
   Subscription,
@@ -230,7 +233,6 @@ export function fromObservable<T>(
       unsubscribe,
       resubscribe,
       set: value.set.bind(value),
-      update: value.update.bind(value),
       peek: value.peek.bind(value),
     }
   );
@@ -376,7 +378,6 @@ export function fromObservableWithRetry<T>(
       unsubscribe,
       resubscribe,
       set: value.set.bind(value),
-      update: value.update.bind(value),
       peek: value.peek.bind(value),
     }
   );
@@ -1523,7 +1524,7 @@ export function createRxStore<S, A extends { type: string }>(
   state$: Observable<S>;
   actions$: Observable<A>;
   dispatch: (action: A) => void;
-  select: <R>(selector: (state: S) => R) => Signal<R>;
+  select: <R>(selector: (state: S) => R) => Memo<R>;
   selectObservable: <R>(selector: (state: S) => R) => Observable<R>;
 } {
   const state = signal<S>(initialState);
@@ -1536,12 +1537,12 @@ export function createRxStore<S, A extends { type: string }>(
     actionSubject.next(action);
   };
 
-  const select = <R>(selector: (state: S) => R): Signal<R> => {
+  const select = <R>(selector: (state: S) => R): Memo<R> => {
     return computed(() => selector(state()));
   };
 
   const selectObservable = <R>(selector: (state: S) => R): Observable<R> => {
-    return toObservable(computed(() => selector(state())));
+    return toObservable(computed(() => selector(state())) as unknown as Signal<R>);
   };
 
   return {
@@ -1632,7 +1633,6 @@ export function fromPromise<T>(
       unsubscribe: () => {},
       resubscribe: () => {},
       set: value.set.bind(value),
-      update: value.update.bind(value),
       peek: value.peek.bind(value),
     }
   );

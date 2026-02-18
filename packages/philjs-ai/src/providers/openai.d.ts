@@ -81,4 +81,3 @@ export declare class OpenAIProvider implements AIProvider {
  * Create an OpenAI provider instance
  */
 export declare function createOpenAIProvider(config: OpenAIConfig): OpenAIProvider;
-//# sourceMappingURL=openai.d.ts.map

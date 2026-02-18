@@ -2,7 +2,16 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "declarationMap": false,
+    "paths": {},
+    "baseUrl": ".",
+    "exactOptionalPropertyTypes": false,
+    "noImplicitAny": false,
+    "strict": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]

@@ -8,6 +8,7 @@ const labelVariants = cva(
 export interface LabelProps extends VariantProps<typeof labelVariants> {
     children?: any;
     class?: string;
+    className?: string;
     htmlFor?: string;
     required?: boolean;
 }
@@ -16,12 +17,12 @@ export interface LabelProps extends VariantProps<typeof labelVariants> {
  * Form label component
  */
 export function Label(props: LabelProps) {
-    const { children, class: className, htmlFor, required } = props;
+    const { children, class: classProp, className, htmlFor, required } = props;
 
     return (
         <label
-            for={htmlFor}
-            class={cn(labelVariants(), className)}
+            htmlFor={htmlFor}
+            class={cn(labelVariants(), classProp, className)}
         >
             {children}
             {required && <span class="text-destructive ml-1">*</span>}

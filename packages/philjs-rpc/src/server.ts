@@ -33,7 +33,7 @@ import { executeMiddlewareChain } from './middleware.js';
  * @example
  * ```ts
  * import { createHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * export const handler = createHandler(api);
  *
@@ -252,7 +252,7 @@ function getHttpStatusCode(code: RPCErrorCode): number {
  * ```ts
  * import http from 'http';
  * import { createNodeHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const handler = createNodeHandler(api);
  *
@@ -356,7 +356,7 @@ function adaptNodeResponse(res: NodeResponse): ResponseAdapter {
  * @example
  * ```ts
  * import { createFetchHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const handler = createFetchHandler(api);
  *
@@ -426,7 +426,7 @@ function adaptFetchRequest(request: Request): RequestAdapter {
  * ```ts
  * import express from 'express';
  * import { createExpressHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const app = express();
  * app.use(express.json());
@@ -507,7 +507,7 @@ function adaptExpressResponse(res: ExpressResponse): ResponseAdapter {
  * ```ts
  * // api/rpc.ts
  * import { createVercelHandler } from 'philjs-rpc/server';
- * import { api } from '../src/api';
+ * import { api } from '../src/api.js';
  *
  * export default createVercelHandler(api);
  * ```
@@ -572,7 +572,7 @@ interface VercelResponse {
  * ```ts
  * // netlify/functions/rpc.ts
  * import { createNetlifyHandler } from 'philjs-rpc/server';
- * import { api } from '../../src/api';
+ * import { api } from '../../src/api.js';
  *
  * export const handler = createNetlifyHandler(api);
  * ```

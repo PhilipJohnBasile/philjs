@@ -3,7 +3,8 @@
  * Provides form field wrappers with validation support
  */
 
-import { signal, effect, computed, type Signal } from '@philjs/core';
+import { signal, effect, memo, type Signal, type Memo } from '@philjs/core';
+const computed = memo;
 import { cn } from '../utils.js';
 import { Label } from './Label.js';
 
@@ -208,7 +209,7 @@ export interface FormState<T extends Record<string, any>> {
     values: Signal<T>;
     errors: Signal<Partial<Record<keyof T, string>>>;
     touched: Signal<Partial<Record<keyof T, boolean>>>;
-    isValid: Signal<boolean>;
+    isValid: Memo<boolean>;
     isSubmitting: Signal<boolean>;
     setValue: <K extends keyof T>(name: K, value: T[K]) => void;
     setError: <K extends keyof T>(name: K, error: string | undefined) => void;

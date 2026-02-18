@@ -16,7 +16,7 @@ type ClassValue = string | undefined | null | false | ClassValue[];
  * Merge class names, filtering out falsy values
  */
 export function cn(...classes: ClassValue[]): string {
-  return classes
+  return (classes as any[])
     .flat(Infinity)
     .filter((c): c is string => typeof c === 'string' && c.length > 0)
     .join(' ');

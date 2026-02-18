@@ -2,7 +2,7 @@
  * @fileoverview Examples for path utilities
  */
 
-import { paths, configurePaths, buildPath, matchPath, resolveAsset } from '../src/paths';
+import { paths, configurePaths, buildPath, matchPath, resolveAsset } from '../src/paths.js';
 
 // ============================================
 // Example 1: Basic Path Configuration

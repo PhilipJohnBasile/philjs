@@ -154,4 +154,3 @@ export declare function generatePrefetchHints(predictions: PrefetchPrediction[])
  * Preload header generator for HTTP/2 server push
  */
 export declare function generatePreloadHeaders(predictions: PrefetchPrediction[]): string;
-//# sourceMappingURL=prefetch.d.ts.map

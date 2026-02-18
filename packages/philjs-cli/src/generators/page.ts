@@ -107,7 +107,7 @@ function generatePageTemplate(context: TemplateContext): string {
     : '';
 
   const loaderImport = hasLoader
-    ? `import { useLoaderData } from 'philjs-router';\nimport type { loader } from './loader';\n`
+    ? `import { useLoaderData } from 'philjs-router';\nimport type { loader } from './loader.js';\n`
     : '';
 
   const loaderHook = hasLoader
@@ -191,7 +191,7 @@ function generateTestTemplate(context: TemplateContext): string {
 import { render, screen } from 'philjs-testing';
 import { createMemoryRouter, RouterProvider } from 'philjs-router';
 import { ${componentName} } from './index';
-import { loader } from './loader';
+import { loader } from './loader.js';
 
 describe('${componentName}', () => {
   it('renders the page', async () => {

@@ -46,11 +46,11 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit || exit 0",
-    "test": "vitest run || exit 0",
-    "lint": "eslint src/ || exit 0"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src/"
   },
   "keywords": [
     "philjs",

@@ -3,7 +3,8 @@
  *
  * Type-safe AI responses with runtime validation and automatic retries.
  */
-import { z, ZodSchema, ZodError } from 'zod';
+import { z, ZodError } from 'zod';
+type ZodSchema<T = any> = z.ZodType<T>;
 import type { AIProvider, CompletionOptions } from './types.js';
 export interface StructuredOutputOptions<T> extends CompletionOptions {
     /** Maximum number of retry attempts on validation failure */
@@ -130,11 +131,11 @@ export declare const commonSchemas: {
         entities: z.ZodArray<z.ZodObject<{
             text: z.ZodString;
             type: z.ZodEnum<{
-                date: "date";
-                location: "location";
                 other: "other";
-                organization: "organization";
+                location: "location";
+                date: "date";
                 person: "person";
+                organization: "organization";
                 money: "money";
             }>;
             start: z.ZodOptional<z.ZodNumber>;
@@ -163,4 +164,4 @@ export declare const commonSchemas: {
         targetLanguage: z.ZodString;
     }, z.core.$strip>;
 };
-//# sourceMappingURL=structured.d.ts.map
+export {};

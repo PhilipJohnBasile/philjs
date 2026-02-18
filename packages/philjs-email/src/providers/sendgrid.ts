@@ -70,13 +70,14 @@ export class SendGridProvider implements EmailProvider {
             : undefined,
           attachments: message.attachments?.map((att) => ({
             filename: att.filename,
-            content:
+            content: (
               att.content instanceof Buffer
                 ? att.content.toString('base64')
-                : att.content,
+                : att.content
+            ) as string,
             type: att.contentType,
-            disposition: att.disposition || 'attachment',
-            contentId: att.cid,
+            disposition: (att.disposition || 'attachment') as 'attachment' | 'inline',
+            contentId: att.cid ?? '',
           })),
           headers: this.buildHeaders(message),
           categories: message.tags,

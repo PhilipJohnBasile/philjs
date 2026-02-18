@@ -520,3 +520,503 @@ describe('@philjs/email', () => {
     });
   });
 });
+
+describe('@philjs/email Queue', () => {
+  let queue: InstanceType<typeof import('../queue.js').InMemoryQueue>;
+
+  beforeEach(async () => {
+    const { InMemoryQueue } = await import('../queue.js');
+    queue = new InMemoryQueue({
+      maxConcurrency: 2,
+      pollInterval: 50,
+      defaultMaxAttempts: 3,
+    });
+  });
+
+  afterEach(() => {
+    queue.stop();
+  });
+
+  describe('InMemoryQueue', () => {
+    it('should enqueue an email job', async () => {
+      const jobId = await queue.enqueue({
+        to: 'test@example.com',
+        subject: 'Test',
+        text: 'Test message',
+      });
+
+      expect(jobId).toBeDefined();
+      expect(typeof jobId).toBe('string');
+
+      const job = await queue.getJob(jobId);
+      expect(job).not.toBeNull();
+      expect(job?.status).toBe('pending');
+      expect(job?.attempts).toBe(0);
+    });
+
+    it('should respect maxAttempts option', async () => {
+      const jobId = await queue.enqueue(
+        { to: 'test@example.com', subject: 'Test', text: 'Test' },
+        { maxAttempts: 5 }
+      );
+
+      const job = await queue.getJob(jobId);
+      expect(job?.maxAttempts).toBe(5);
+    });
+
+    it('should apply delay when specified', async () => {
+      const before = Date.now();
+      const jobId = await queue.enqueue(
+        { to: 'test@example.com', subject: 'Test', text: 'Test' },
+        { delay: 1000 }
+      );
+
+      const job = await queue.getJob(jobId);
+      expect(job?.nextAttempt).toBeDefined();
+      expect(job!.nextAttempt!.getTime()).toBeGreaterThanOrEqual(before + 1000);
+    });
+
+    it('should cancel a pending job', async () => {
+      const jobId = await queue.enqueue({
+        to: 'test@example.com',
+        subject: 'Test',
+        text: 'Test',
+      });
+
+      const cancelled = await queue.cancel(jobId);
+      expect(cancelled).toBe(true);
+
+      const job = await queue.getJob(jobId);
+      expect(job).toBeNull();
+    });
+
+    it('should not cancel a non-existent job', async () => {
+      const cancelled = await queue.cancel('non-existent-id');
+      expect(cancelled).toBe(false);
+    });
+
+    it('should return queue statistics', async () => {
+      await queue.enqueue({ to: 'a@example.com', subject: 'A', text: 'A' });
+      await queue.enqueue({ to: 'b@example.com', subject: 'B', text: 'B' });
+
+      const stats = await queue.stats();
+      expect(stats.pending).toBe(2);
+      expect(stats.processing).toBe(0);
+      expect(stats.completed).toBe(0);
+      expect(stats.failed).toBe(0);
+    });
+
+    it('should process jobs and mark as completed', async () => {
+      const jobId = await queue.enqueue({
+        to: 'test@example.com',
+        subject: 'Test',
+        text: 'Test',
+      });
+
+      // Start processing
+      const processPromise = queue.process(async () => ({
+        success: true,
+        messageId: 'msg_123',
+        timestamp: new Date(),
+      }));
+
+      // Wait for processing
+      await sleep(100);
+      queue.stop();
+
+      const job = await queue.getJob(jobId);
+      expect(job?.status).toBe('completed');
+      expect(job?.completedAt).toBeDefined();
+    });
+
+    it('should retry failed jobs', async () => {
+      let attempts = 0;
+
+      await queue.enqueue({
+        to: 'test@example.com',
+        subject: 'Test',
+        text: 'Test',
+      });
+
+      queue.process(async () => {
+        attempts++;
+        if (attempts < 2) {
+          return {
+            success: false,
+            error: new Error('Temporary failure'),
+            timestamp: new Date(),
+          };
+        }
+        return {
+          success: true,
+          messageId: 'msg_123',
+          timestamp: new Date(),
+        };
+      });
+
+      // Wait for retry - need longer time for exponential backoff (2^1 * 1000 = 2000ms)
+      // but pollInterval is 50ms so initial processing happens quickly
+      await sleep(2500);
+      queue.stop();
+
+      expect(attempts).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should mark job as failed after max attempts', async () => {
+      const jobId = await queue.enqueue(
+        { to: 'test@example.com', subject: 'Test', text: 'Test' },
+        { maxAttempts: 1 }
+      );
+
+      queue.process(async () => ({
+        success: false,
+        error: new Error('Permanent failure'),
+        timestamp: new Date(),
+      }));
+
+      await sleep(100);
+      queue.stop();
+
+      const job = await queue.getJob(jobId);
+      expect(job?.status).toBe('failed');
+      expect(job?.error).toBe('Permanent failure');
+    });
+
+    it('should cleanup old completed and failed jobs', async () => {
+      const jobId = await queue.enqueue({
+        to: 'test@example.com',
+        subject: 'Test',
+        text: 'Test',
+      });
+
+      queue.process(async () => ({
+        success: true,
+        messageId: 'msg_123',
+        timestamp: new Date(),
+      }));
+
+      await sleep(100);
+      queue.stop();
+
+      // Cleanup with 0 max age should remove all completed jobs
+      const removed = queue.cleanup(0);
+      expect(removed).toBe(1);
+
+      const job = await queue.getJob(jobId);
+      expect(job).toBeNull();
+    });
+
+    it('should get all jobs for debugging', () => {
+      queue.enqueue({ to: 'a@example.com', subject: 'A', text: 'A' });
+      queue.enqueue({ to: 'b@example.com', subject: 'B', text: 'B' });
+
+      const allJobs = queue.getAllJobs();
+      expect(allJobs.length).toBe(2);
+    });
+  });
+});
+
+describe('@philjs/email Tracking', () => {
+  describe('GenericTrackingWebhook', () => {
+    let webhook: InstanceType<typeof import('../tracking.js').GenericTrackingWebhook>;
+
+    beforeEach(async () => {
+      const { GenericTrackingWebhook } = await import('../tracking.js');
+      webhook = new GenericTrackingWebhook({ secret: 'test-secret' });
+    });
+
+    it('should register and call event handlers', async () => {
+      const openHandler = vi.fn();
+      const clickHandler = vi.fn();
+
+      webhook.on('open', openHandler);
+      webhook.on('click', clickHandler);
+
+      await webhook.handle({
+        type: 'open',
+        messageId: 'msg_123',
+        recipient: 'test@example.com',
+        timestamp: new Date(),
+      });
+
+      expect(openHandler).toHaveBeenCalledTimes(1);
+      expect(clickHandler).not.toHaveBeenCalled();
+    });
+
+    it('should call multiple handlers for same event type', async () => {
+      const handler1 = vi.fn();
+      const handler2 = vi.fn();
+
+      webhook.on('click', handler1);
+      webhook.on('click', handler2);
+
+      await webhook.handle({
+        type: 'click',
+        messageId: 'msg_123',
+        recipient: 'test@example.com',
+        timestamp: new Date(),
+        url: 'https://example.com',
+      });
+
+      expect(handler1).toHaveBeenCalledTimes(1);
+      expect(handler2).toHaveBeenCalledTimes(1);
+    });
+
+    it('should verify valid signature', async () => {
+      const { createHmac } = await import('crypto');
+      const payload = JSON.stringify({ test: 'data' });
+      const signature = createHmac('sha256', 'test-secret')
+        .update(payload)
+        .digest('hex');
+
+      expect(webhook.verify(payload, signature)).toBe(true);
+    });
+
+    it('should reject invalid signature', () => {
+      const payload = JSON.stringify({ test: 'data' });
+      expect(webhook.verify(payload, 'invalid-signature')).toBe(false);
+    });
+
+    it('should skip verification when no secret configured', async () => {
+      const { GenericTrackingWebhook } = await import('../tracking.js');
+      const webhookNoSecret = new GenericTrackingWebhook();
+
+      expect(webhookNoSecret.verify({}, 'any-signature')).toBe(true);
+    });
+
+    it('should parse open event from query params', () => {
+      const event = webhook.parseOpenEvent(
+        {
+          id: 'msg_123',
+          recipient: 'test@example.com',
+          meta: JSON.stringify({ campaign: 'welcome' }),
+        },
+        { 'user-agent': 'Mozilla/5.0', 'x-forwarded-for': '1.2.3.4' }
+      );
+
+      expect(event.type).toBe('open');
+      expect(event.messageId).toBe('msg_123');
+      expect(event.recipient).toBe('test@example.com');
+      expect(event.userAgent).toBe('Mozilla/5.0');
+      expect(event.ip).toBe('1.2.3.4');
+      expect(event.metadata).toEqual({ campaign: 'welcome' });
+    });
+
+    it('should parse click event with redirect URL', () => {
+      const event = webhook.parseClickEvent(
+        {
+          id: 'msg_123',
+          recipient: 'test@example.com',
+          url: 'https://example.com/page',
+        },
+        { 'x-real-ip': '5.6.7.8' }
+      );
+
+      expect(event.type).toBe('click');
+      expect(event.messageId).toBe('msg_123');
+      expect(event.redirectUrl).toBe('https://example.com/page');
+      expect(event.url).toBe('https://example.com/page');
+      expect(event.ip).toBe('5.6.7.8');
+    });
+  });
+
+  describe('SendGridWebhook', () => {
+    it('should parse SendGrid webhook events', async () => {
+      const { SendGridWebhook } = await import('../tracking.js');
+      const webhook = new SendGridWebhook();
+
+      const events = webhook.parseEvents([
+        {
+          event: 'open',
+          sg_message_id: 'msg_123',
+          email: 'test@example.com',
+          timestamp: 1609459200,
+          useragent: 'Mozilla/5.0',
+          ip: '1.2.3.4',
+          category: ['newsletter'],
+        },
+        {
+          event: 'click',
+          sg_message_id: 'msg_456',
+          email: 'test2@example.com',
+          timestamp: 1609459300,
+          url: 'https://example.com',
+        },
+      ]);
+
+      expect(events.length).toBe(2);
+      expect(events[0].type).toBe('open');
+      expect(events[0].messageId).toBe('msg_123');
+      expect(events[0].recipient).toBe('test@example.com');
+      expect(events[1].type).toBe('click');
+      expect(events[1].url).toBe('https://example.com');
+    });
+
+    it('should return empty array for non-array payload', async () => {
+      const { SendGridWebhook } = await import('../tracking.js');
+      const webhook = new SendGridWebhook();
+
+      const events = webhook.parseEvents('invalid' as any);
+      expect(events).toEqual([]);
+    });
+  });
+
+  describe('MailgunWebhook', () => {
+    it('should parse Mailgun webhook event', async () => {
+      const { MailgunWebhook } = await import('../tracking.js');
+      const webhook = new MailgunWebhook();
+
+      const event = webhook.parseEvent({
+        'event-data': {
+          event: 'clicked',
+          message: { headers: { 'message-id': 'msg_123' } },
+          recipient: 'test@example.com',
+          timestamp: 1609459200,
+          url: 'https://example.com',
+          'client-info': { 'user-agent': 'Mozilla/5.0' },
+          ip: '1.2.3.4',
+        },
+      });
+
+      expect(event.type).toBe('click');
+      expect(event.messageId).toBe('msg_123');
+      expect(event.recipient).toBe('test@example.com');
+      expect(event.url).toBe('https://example.com');
+      expect(event.userAgent).toBe('Mozilla/5.0');
+      expect(event.ip).toBe('1.2.3.4');
+    });
+
+    it('should verify Mailgun signature', async () => {
+      const { MailgunWebhook } = await import('../tracking.js');
+      const { createHmac } = await import('crypto');
+
+      const signingKey = 'test-signing-key';
+      const webhook = new MailgunWebhook({ signingKey });
+
+      const timestamp = '1234567890';
+      const token = 'random-token';
+      const signature = createHmac('sha256', signingKey)
+        .update(`${timestamp}${token}`)
+        .digest('hex');
+
+      const isValid = webhook.verify(
+        { signature: { timestamp, token, signature } },
+        ''
+      );
+      expect(isValid).toBe(true);
+    });
+  });
+
+  describe('SesWebhook', () => {
+    it('should parse SES open event', async () => {
+      const { SesWebhook } = await import('../tracking.js');
+      const webhook = new SesWebhook();
+
+      const event = webhook.parseEvent({
+        notificationType: 'Open',
+        mail: {
+          messageId: 'msg_123',
+          destination: ['test@example.com'],
+        },
+        open: {
+          timestamp: '2021-01-01T00:00:00.000Z',
+          userAgent: 'Mozilla/5.0',
+          ipAddress: '1.2.3.4',
+        },
+      });
+
+      expect(event.type).toBe('open');
+      expect(event.messageId).toBe('msg_123');
+      expect(event.recipient).toBe('test@example.com');
+      expect(event.userAgent).toBe('Mozilla/5.0');
+      expect(event.ip).toBe('1.2.3.4');
+    });
+
+    it('should parse SES click event', async () => {
+      const { SesWebhook } = await import('../tracking.js');
+      const webhook = new SesWebhook();
+
+      const event = webhook.parseEvent({
+        notificationType: 'Click',
+        mail: {
+          messageId: 'msg_123',
+          destination: ['test@example.com'],
+        },
+        click: {
+          timestamp: '2021-01-01T00:00:00.000Z',
+          link: 'https://example.com',
+          userAgent: 'Mozilla/5.0',
+          ipAddress: '1.2.3.4',
+        },
+      });
+
+      expect(event.type).toBe('click');
+      expect(event.url).toBe('https://example.com');
+    });
+  });
+
+  describe('createTrackingWebhook', () => {
+    it('should create generic webhook', async () => {
+      const { createTrackingWebhook } = await import('../tracking.js');
+      const webhook = createTrackingWebhook('generic', { secret: 'test' });
+
+      expect(webhook).toBeDefined();
+      expect(typeof webhook.on).toBe('function');
+      expect(typeof webhook.handle).toBe('function');
+      expect(typeof webhook.verify).toBe('function');
+    });
+
+    it('should create provider-specific webhooks', async () => {
+      const { createTrackingWebhook } = await import('../tracking.js');
+
+      const sgWebhook = createTrackingWebhook('sendgrid');
+      const mgWebhook = createTrackingWebhook('mailgun');
+      const sesWebhook = createTrackingWebhook('ses');
+
+      expect(sgWebhook).toBeDefined();
+      expect(mgWebhook).toBeDefined();
+      expect(sesWebhook).toBeDefined();
+    });
+  });
+});
+
+describe('@philjs/email Templates', () => {
+  describe('BaseEmail', () => {
+    it('should export BaseEmail component', async () => {
+      const { BaseEmail } = await import('../templates/base.js');
+      expect(BaseEmail).toBeDefined();
+    });
+  });
+
+  describe('WelcomeEmail', () => {
+    it('should export WelcomeEmail component', async () => {
+      const { WelcomeEmail, getWelcomeSubject } = await import('../templates/welcome.js');
+      expect(WelcomeEmail).toBeDefined();
+      expect(getWelcomeSubject).toBeDefined();
+    });
+
+    it('should generate personalized subject', async () => {
+      const { getWelcomeSubject } = await import('../templates/welcome.js');
+      const subject = getWelcomeSubject({ name: 'John' });
+
+      expect(typeof subject).toBe('string');
+      expect(subject.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('PasswordResetEmail', () => {
+    it('should export PasswordResetEmail component', async () => {
+      const { PasswordResetEmail, getPasswordResetSubject } = await import('../templates/password-reset.js');
+      expect(PasswordResetEmail).toBeDefined();
+      expect(getPasswordResetSubject).toBeDefined();
+    });
+  });
+
+  describe('NotificationEmail', () => {
+    it('should export NotificationEmail component', async () => {
+      const { NotificationEmail, getNotificationSubject } = await import('../templates/notification.js');
+      expect(NotificationEmail).toBeDefined();
+      expect(getNotificationSubject).toBeDefined();
+    });
+  });
+});

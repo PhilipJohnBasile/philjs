@@ -1,6 +1,9 @@
 {
   "name": "@philjs/tailwind-ui",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
   "type": "module",
   "description": "Production-ready UI component library for PhilJS with Tailwind CSS",
   "author": "PhilJS Team",
@@ -66,10 +69,10 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0",
-    "lint": "eslint src --ext .ts,.tsx || exit 0"
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",

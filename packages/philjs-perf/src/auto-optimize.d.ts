@@ -8,4 +8,3 @@ export declare function optimizePerformance(): Promise<{
     optimizedFiles: string[];
     perfGain: string;
 }>;
-//# sourceMappingURL=auto-optimize.d.ts.map

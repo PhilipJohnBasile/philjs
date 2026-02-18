@@ -8,7 +8,7 @@
  * - Leaky bucket
  * - Distributed coordination via KV/Durable Objects
  */
-import type { KVStore } from './index.js';
+import type { KVStore } from './edge-functions.js';
 export interface RateLimitConfig {
     /** Maximum requests allowed */
     limit: number;
@@ -122,4 +122,3 @@ export declare class TieredRateLimiter {
  * Create tiered rate limiter
  */
 export declare function createTieredRateLimiter(store: KVStore, tiers: Record<string, Partial<RateLimitConfig>>, getTier: (request: Request) => string): TieredRateLimiter;
-//# sourceMappingURL=rate-limiter.d.ts.map

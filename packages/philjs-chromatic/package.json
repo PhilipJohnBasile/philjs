@@ -15,9 +15,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc || exit 0",
-    "test": "vitest run || exit 0",
-    "typecheck": "tsc --noEmit || exit 0"
+    "build": "tsc",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"

@@ -167,4 +167,3 @@ export declare const eye: typeof Tensor.eye;
 export declare const arange: typeof Tensor.arange;
 export declare const linspace: typeof Tensor.linspace;
 export declare const fromArray: typeof Tensor.fromArray;
-//# sourceMappingURL=tensor.d.ts.map

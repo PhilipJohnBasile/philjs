@@ -314,4 +314,3 @@ export declare function generateFromJSONSchema(provider: AIProvider, jsonSchema:
  * Quick GraphQL to component helper
  */
 export declare function generateFromGraphQL(provider: AIProvider, graphqlSchema: string, componentTypes?: GeneratedComponentType[]): Promise<SchemaToComponentResult>;
-//# sourceMappingURL=schema-to-component.d.ts.map

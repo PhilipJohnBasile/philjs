@@ -333,7 +333,7 @@ async function updateDrizzleIndex(
   typescript: boolean
 ): Promise<void> {
   const indexPath = path.join(modelsDir, `index.${typescript ? 'ts' : 'js'}`);
-  const exportLine = `export * from './${fileName}';\n`;
+  const exportLine = `export * from './${fileName}.js';\n`;
 
   let existingContent = '';
   try {

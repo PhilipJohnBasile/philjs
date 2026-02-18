@@ -57,4 +57,3 @@ export declare function unregisterServiceWorkers(): Promise<void>;
  * Skip waiting and activate new service worker immediately.
  */
 export declare function skipWaitingAndClaim(): void;
-//# sourceMappingURL=service-worker.d.ts.map

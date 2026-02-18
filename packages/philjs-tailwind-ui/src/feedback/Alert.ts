@@ -13,7 +13,7 @@ export interface AlertProps extends BaseProps, WithChildren {
   /** Alert title */
   title?: string;
   /** Visual style */
-  style?: 'solid' | 'outline' | 'soft' | 'left-accent' | 'top-accent';
+  visualStyle?: 'solid' | 'outline' | 'soft' | 'left-accent' | 'top-accent';
   /** Dismissible alert */
   dismissible?: boolean;
   /** Visible state */
@@ -131,7 +131,7 @@ export function Alert(props: AlertProps): JSX.Element {
   const {
     variant = 'info',
     title,
-    style: alertStyle = 'soft',
+    visualStyle: alertStyle = 'soft',
     dismissible = false,
     isVisible = true,
     onDismiss,

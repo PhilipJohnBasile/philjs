@@ -5,7 +5,7 @@
  * @example
  * ```ts
  * import { treaty } from 'philjs-rpc/treaty';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const api = treaty<AppAPI>('http://localhost:3000/api');
  *
@@ -212,7 +212,7 @@ export type BuildTreatyClient<TRouter extends Router, TPath extends string = ''>
  * @example
  * ```ts
  * import { treaty } from 'philjs-rpc/treaty';
- * import type { AppAPI } from './server/api';
+ * import type { AppAPI } from './server/api.js';
  *
  * const api = treaty<AppAPI>('http://localhost:3000/api');
  *

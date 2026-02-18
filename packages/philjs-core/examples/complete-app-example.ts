@@ -61,7 +61,7 @@ export function setupPaths() {
 import { routes } from 'virtual:philjs-routes';
 import { plugins, initializePlugins } from 'virtual:philjs-plugins';
 import config from 'virtual:philjs-config';
-import { setupPaths } from './config/paths';
+import { setupPaths } from './config/paths.js';
 
 export async function createApp() {
   // Setup paths
@@ -220,8 +220,8 @@ export function Link({ to, params, query, children, className }: LinkProps) {
 }
 
 // src/components/PostCard.tsx
-import { Post } from '../lib/content';
-import { Link } from './Link';
+import { Post } from '../lib/content.js';
+import { Link } from './Link.js';
 
 export function PostCard({ post }: { post: Post }) {
   return (
@@ -257,8 +257,8 @@ export function PostCard({ post }: { post: Post }) {
 // ============================================
 
 // src/routes/index.tsx
-import { getFeaturedPosts } from '../lib/content';
-import { PostCard } from '../components/PostCard';
+import { getFeaturedPosts } from '../lib/content.js';
+import { PostCard } from '../components/PostCard.js';
 
 export async function loader() {
   const posts = await getFeaturedPosts();
@@ -284,7 +284,7 @@ export default function HomePage({ data }) {
 }
 
 // src/routes/posts/[slug].tsx
-import { getPostBySlug } from '../../lib/content';
+import { getPostBySlug } from '../../lib/content.js';
 
 export async function loader({ params }) {
   const post = await getPostBySlug(params.slug);
@@ -326,8 +326,8 @@ export default function PostPage({ data }) {
 }
 
 // src/routes/tags/[tag].tsx
-import { getPostsByTag } from '../../lib/content';
-import { PostCard } from '../../components/PostCard';
+import { getPostsByTag } from '../../lib/content.js';
+import { PostCard } from '../../components/PostCard.js';
 
 export async function loader({ params }) {
   const posts = await getPostsByTag(params.tag);
@@ -407,7 +407,7 @@ export default {
 // ============================================
 
 // scripts/generate-rss.ts
-import { getAllPosts } from '../src/lib/content';
+import { getAllPosts } from '../src/lib/content.js';
 import { writeFile } from '@philjs/core';
 import config from 'virtual:philjs-config';
 
@@ -440,7 +440,7 @@ generateRSS();
 
 // scripts/generate-sitemap.ts
 import { routes } from 'virtual:philjs-routes';
-import { getAllPosts } from '../src/lib/content';
+import { getAllPosts } from '../src/lib/content.js';
 import { writeFile } from '@philjs/core';
 
 async function generateSitemap() {
@@ -473,7 +473,7 @@ generateSitemap();
 // ============================================
 
 // src/main.ts
-import { createApp } from './app';
+import { createApp } from './app.js';
 import { render } from '@philjs/core';
 
 async function main() {

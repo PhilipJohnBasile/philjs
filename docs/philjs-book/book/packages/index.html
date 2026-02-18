@@ -1,0 +1,701 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Package Reference Index - The PhilJS Book</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="TypeScript-first guide to building with PhilJS">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../oreilly-e003e30e.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-8e912277.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-88683b29.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The PhilJS Book</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/PhilipJohnBasile/philjs" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/PhilipJohnBasile/philjs/edit/main/docs/philjs-book/src/packages/index.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <span class=fa-svg id="git-edit-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M421.7 220.3l-11.3 11.3-22.6 22.6-205 205c-6.6 6.6-14.8 11.5-23.8 14.1L30.8 511c-8.4 2.5-17.5 .2-23.7-6.1S-1.5 489.7 1 481.2L38.7 353.1c2.6-9 7.5-17.2 14.1-23.8l205-205 22.6-22.6 11.3-11.3 33.9 33.9 62.1 62.1 33.9 33.9zM96 353.9l-9.3 9.3c-.9 .9-1.6 2.1-2 3.4l-25.3 86 86-25.3c1.3-.4 2.5-1.1 3.4-2l9.3-9.3H112c-8.8 0-16-7.2-16-16V353.9zM453.3 19.3l39.4 39.4c25 25 25 65.5 0 90.5l-14.5 14.5-22.6 22.6-11.3 11.3-33.9-33.9-62.1-62.1L314.3 67.7l11.3-11.3 22.6-22.6 14.5-14.5c25-25 65.5-25 90.5 0z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="package-reference-index"><a class="header" href="#package-reference-index">Package Reference Index</a></h1>
+<p>PhilJS consists of 241 packages organized by functionality. This index provides quick navigation to package documentation and source code.</p>
+<h2 id="core-framework"><a class="header" href="#core-framework">Core Framework</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/core</code></td><td>Signals, JSX runtime, reactivity primitives</td><td><a href="../../../packages/philjs-core">packages/philjs-core</a></td></tr>
+<tr><td><code>@philjs/router</code></td><td>Type-safe routing with file-based routes</td><td><a href="../../../packages/philjs-router">packages/philjs-router</a></td></tr>
+<tr><td><code>@philjs/cli</code></td><td>Command-line toolbelt (doctor, scaffold, bench)</td><td><a href="../../../packages/philjs-cli">packages/philjs-cli</a></td></tr>
+<tr><td><code>@philjs/compiler</code></td><td>Build-time optimizations and transforms</td><td><a href="../../../packages/philjs-compiler">packages/philjs-compiler</a></td></tr>
+<tr><td><code>@philjs/build</code></td><td>Build system and bundler configuration</td><td><a href="../../../packages/philjs-build">packages/philjs-build</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="state-management"><a class="header" href="#state-management">State Management</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/zustand</code></td><td>Zustand adapter for PhilJS signals</td><td><a href="../../../packages/philjs-zustand">packages/philjs-zustand</a></td></tr>
+<tr><td><code>@philjs/xstate</code></td><td>XState integration for state machines</td><td><a href="../../../packages/philjs-xstate">packages/philjs-xstate</a></td></tr>
+<tr><td><code>@philjs/immer</code></td><td>Immer integration for immutable updates</td><td><a href="../../../packages/philjs-immer">packages/philjs-immer</a></td></tr>
+<tr><td><code>@philjs/rxjs</code></td><td>RxJS observable integration</td><td><a href="../../../packages/philjs-rxjs">packages/philjs-rxjs</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="data--database"><a class="header" href="#data--database">Data &amp; Database</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/db</code></td><td>Database abstraction layer</td><td><a href="../../../packages/philjs-db">packages/philjs-db</a></td></tr>
+<tr><td><code>@philjs/drizzle</code></td><td>Drizzle ORM integration</td><td><a href="../../../packages/philjs-drizzle">packages/philjs-drizzle</a></td></tr>
+<tr><td><code>@philjs/mongoose</code></td><td>MongoDB/Mongoose adapter</td><td><a href="../../../packages/philjs-mongoose">packages/philjs-mongoose</a></td></tr>
+<tr><td><code>@philjs/sequelize</code></td><td>Sequelize ORM integration</td><td><a href="../../../packages/philjs-sequelize">packages/philjs-sequelize</a></td></tr>
+<tr><td><code>@philjs/typeorm</code></td><td>TypeORM integration</td><td><a href="../../../packages/philjs-typeorm">packages/philjs-typeorm</a></td></tr>
+<tr><td><code>@philjs/sqlite</code></td><td>SQLite adapter</td><td><a href="../../../packages/philjs-sqlite">packages/philjs-sqlite</a></td></tr>
+<tr><td><code>@philjs/query</code></td><td>Data fetching and caching</td><td><a href="../../../packages/philjs-query">packages/philjs-query</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="ai--machine-learning"><a class="header" href="#ai--machine-learning">AI &amp; Machine Learning</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/ai</code></td><td>AI agents, code generation, RAG</td><td><a href="../../../packages/philjs-ai">packages/philjs-ai</a></td></tr>
+<tr><td><code>@philjs/ai-agents</code></td><td>Pre-built AI agent templates</td><td><a href="../../../packages/philjs-ai-agents">packages/philjs-ai-agents</a></td></tr>
+<tr><td><code>@philjs/llm-ui</code></td><td>LLM-powered UI components</td><td><a href="../../../packages/philjs-llm-ui">packages/philjs-llm-ui</a></td></tr>
+<tr><td><code>@philjs/vector-store</code></td><td>Vector database integrations</td><td><a href="../../../packages/philjs-vector-store">packages/philjs-vector-store</a></td></tr>
+<tr><td><code>@philjs/genui</code></td><td>Generative UI components</td><td><a href="../../../packages/philjs-genui">packages/philjs-genui</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/test</code></td><td>Testing framework with AI test generation</td><td><a href="../../../packages/philjs-test">packages/philjs-test</a></td></tr>
+<tr><td><code>@philjs/testing</code></td><td>Testing utilities and matchers</td><td><a href="../../../packages/philjs-testing">packages/philjs-testing</a></td></tr>
+<tr><td><code>@philjs/playwright</code></td><td>Playwright E2E testing integration</td><td><a href="../../../packages/philjs-playwright">packages/philjs-playwright</a></td></tr>
+<tr><td><code>@philjs/cypress</code></td><td>Cypress testing integration</td><td><a href="../../../packages/philjs-cypress">packages/philjs-cypress</a></td></tr>
+<tr><td><code>@philjs/storybook</code></td><td>Storybook integration</td><td><a href="../../../packages/philjs-storybook">packages/philjs-storybook</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="ui-components"><a class="header" href="#ui-components">UI Components</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/ui</code></td><td>Core UI component library</td><td><a href="../../../packages/philjs-ui">packages/philjs-ui</a></td></tr>
+<tr><td><code>@philjs/atoms</code></td><td>Atomic design components</td><td><a href="../../../packages/philjs-atoms">packages/philjs-atoms</a></td></tr>
+<tr><td><code>@philjs/shadcn</code></td><td>shadcn/ui integration</td><td><a href="../../../packages/philjs-shadcn">packages/philjs-shadcn</a></td></tr>
+<tr><td><code>@philjs/antd</code></td><td>Ant Design integration</td><td><a href="../../../packages/philjs-antd">packages/philjs-antd</a></td></tr>
+<tr><td><code>@philjs/material</code></td><td>Material UI integration</td><td><a href="../../../packages/philjs-material">packages/philjs-material</a></td></tr>
+<tr><td><code>@philjs/carbon</code></td><td>Carbon Design integration</td><td><a href="../../../packages/philjs-carbon">packages/philjs-carbon</a></td></tr>
+<tr><td><code>@philjs/charts</code></td><td>Chart components</td><td><a href="../../../packages/philjs-charts">packages/philjs-charts</a></td></tr>
+<tr><td><code>@philjs/table</code></td><td>Data table components</td><td><a href="../../../packages/philjs-table">packages/philjs-table</a></td></tr>
+<tr><td><code>@philjs/forms</code></td><td>Form components and validation</td><td><a href="../../../packages/philjs-forms">packages/philjs-forms</a></td></tr>
+<tr><td><code>@philjs/dnd</code></td><td>Drag and drop</td><td><a href="../../../packages/philjs-dnd">packages/philjs-dnd</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="styling"><a class="header" href="#styling">Styling</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/tailwind</code></td><td>Tailwind CSS integration</td><td><a href="../../../packages/philjs-tailwind">packages/philjs-tailwind</a></td></tr>
+<tr><td><code>@philjs/tailwind-ui</code></td><td>Tailwind UI components</td><td><a href="../../../packages/philjs-tailwind-ui">packages/philjs-tailwind-ui</a></td></tr>
+<tr><td><code>@philjs/panda</code></td><td>Panda CSS integration</td><td><a href="../../../packages/philjs-panda">packages/philjs-panda</a></td></tr>
+<tr><td><code>@philjs/unocss</code></td><td>UnoCSS integration</td><td><a href="../../../packages/philjs-unocss">packages/philjs-unocss</a></td></tr>
+<tr><td><code>@philjs/vanilla-extract</code></td><td>Vanilla Extract integration</td><td><a href="../../../packages/philjs-vanilla-extract">packages/philjs-vanilla-extract</a></td></tr>
+<tr><td><code>@philjs/css</code></td><td>CSS-in-JS utilities</td><td><a href="../../../packages/philjs-css">packages/philjs-css</a></td></tr>
+<tr><td><code>@philjs/styles</code></td><td>Styling utilities</td><td><a href="../../../packages/philjs-styles">packages/philjs-styles</a></td></tr>
+<tr><td><code>@philjs/theme</code></td><td>Theming system</td><td><a href="../../../packages/philjs-theme">packages/philjs-theme</a></td></tr>
+<tr><td><code>@philjs/motion</code></td><td>Animation library</td><td><a href="../../../packages/philjs-motion">packages/philjs-motion</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="internationalization"><a class="header" href="#internationalization">Internationalization</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/i18n</code></td><td>Internationalization core</td><td><a href="../../../packages/philjs-i18n">packages/philjs-i18n</a></td></tr>
+<tr><td><code>@philjs/plugin-i18n</code></td><td>i18n build plugin</td><td><a href="../../../packages/philjs-plugin-i18n">packages/philjs-plugin-i18n</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="server--backend"><a class="header" href="#server--backend">Server &amp; Backend</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/ssr</code></td><td>Server-side rendering</td><td><a href="../../../packages/philjs-ssr">packages/philjs-ssr</a></td></tr>
+<tr><td><code>@philjs/ssg</code></td><td>Static site generation</td><td><a href="../../../packages/philjs-ssg">packages/philjs-ssg</a></td></tr>
+<tr><td><code>@philjs/islands</code></td><td>Islands architecture</td><td><a href="../../../packages/philjs-islands">packages/philjs-islands</a></td></tr>
+<tr><td><code>@philjs/isr</code></td><td>Incremental static regeneration</td><td><a href="../../../packages/philjs-isr">packages/philjs-isr</a></td></tr>
+<tr><td><code>@philjs/api</code></td><td>API route handlers</td><td><a href="../../../packages/philjs-api">packages/philjs-api</a></td></tr>
+<tr><td><code>@philjs/rpc</code></td><td>Type-safe RPC</td><td><a href="../../../packages/philjs-rpc">packages/philjs-rpc</a></td></tr>
+<tr><td><code>@philjs/trpc</code></td><td>tRPC integration</td><td><a href="../../../packages/philjs-trpc">packages/philjs-trpc</a></td></tr>
+<tr><td><code>@philjs/graphql</code></td><td>GraphQL integration</td><td><a href="../../../packages/philjs-graphql">packages/philjs-graphql</a></td></tr>
+<tr><td><code>@philjs/serverless</code></td><td>Serverless functions</td><td><a href="../../../packages/philjs-serverless">packages/philjs-serverless</a></td></tr>
+<tr><td><code>@philjs/edge</code></td><td>Edge runtime</td><td><a href="../../../packages/philjs-edge">packages/philjs-edge</a></td></tr>
+<tr><td><code>@philjs/workers</code></td><td>Web Workers integration</td><td><a href="../../../packages/philjs-workers">packages/philjs-workers</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="backend-framework-adapters"><a class="header" href="#backend-framework-adapters">Backend Framework Adapters</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/express</code></td><td>Express.js adapter</td><td><a href="../../../packages/philjs-express">packages/philjs-express</a></td></tr>
+<tr><td><code>@philjs/fastify</code></td><td>Fastify adapter</td><td><a href="../../../packages/philjs-fastify">packages/philjs-fastify</a></td></tr>
+<tr><td><code>@philjs/hono</code></td><td>Hono adapter</td><td><a href="../../../packages/philjs-hono">packages/philjs-hono</a></td></tr>
+<tr><td><code>@philjs/elysia</code></td><td>Elysia adapter</td><td><a href="../../../packages/philjs-elysia">packages/philjs-elysia</a></td></tr>
+<tr><td><code>@philjs/koa</code></td><td>Koa adapter</td><td><a href="../../../packages/philjs-koa">packages/philjs-koa</a></td></tr>
+<tr><td><code>@philjs/hapi</code></td><td>Hapi adapter</td><td><a href="../../../packages/philjs-hapi">packages/philjs-hapi</a></td></tr>
+<tr><td><code>@philjs/adonis</code></td><td>AdonisJS adapter</td><td><a href="../../../packages/philjs-adonis">packages/philjs-adonis</a></td></tr>
+<tr><td><code>@philjs/backend-adapters</code></td><td>Common backend adapters</td><td><a href="../../../packages/philjs-backend-adapters">packages/philjs-backend-adapters</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="rust-backend-adapters"><a class="header" href="#rust-backend-adapters">Rust Backend Adapters</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/actix</code></td><td>Actix Web integration</td><td><a href="../../../packages/philjs-actix">packages/philjs-actix</a></td></tr>
+<tr><td><code>@philjs/axum</code></td><td>Axum integration</td><td><a href="../../../packages/philjs-axum">packages/philjs-axum</a></td></tr>
+<tr><td><code>@philjs/rocket</code></td><td>Rocket integration</td><td><a href="../../../packages/philjs-rocket">packages/philjs-rocket</a></td></tr>
+<tr><td><code>@philjs/poem</code></td><td>Poem integration</td><td><a href="../../../packages/philjs-poem">packages/philjs-poem</a></td></tr>
+<tr><td><code>@philjs/tokio</code></td><td>Tokio runtime utilities</td><td><a href="../../../packages/philjs-tokio">packages/philjs-tokio</a></td></tr>
+<tr><td><code>@philjs/seaorm</code></td><td>SeaORM integration</td><td><a href="../../../packages/philjs-seaorm">packages/philjs-seaorm</a></td></tr>
+<tr><td><code>@philjs/sqlx</code></td><td>SQLx integration</td><td><a href="../../../packages/philjs-sqlx">packages/philjs-sqlx</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="deployment--devops"><a class="header" href="#deployment--devops">Deployment &amp; DevOps</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/deploy</code></td><td>Terraform/Pulumi generation</td><td><a href="../../../packages/philjs-deploy">packages/philjs-deploy</a></td></tr>
+<tr><td><code>@philjs/adapters</code></td><td>Platform adapters (Vercel, Netlify, etc.)</td><td><a href="../../../packages/philjs-adapters">packages/philjs-adapters</a></td></tr>
+<tr><td><code>@philjs/fly</code></td><td>Fly.io deployment</td><td><a href="../../../packages/philjs-fly">packages/philjs-fly</a></td></tr>
+<tr><td><code>@philjs/railway</code></td><td>Railway deployment</td><td><a href="../../../packages/philjs-railway">packages/philjs-railway</a></td></tr>
+<tr><td><code>@philjs/cdn</code></td><td>CDN configuration</td><td><a href="../../../packages/philjs-cdn">packages/philjs-cdn</a></td></tr>
+<tr><td><code>@philjs/observability</code></td><td>Monitoring and tracing</td><td><a href="../../../packages/philjs-observability">packages/philjs-observability</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="security"><a class="header" href="#security">Security</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/security</code></td><td>Security utilities (CSP, CSRF, XSS)</td><td><a href="../../../packages/philjs-security">packages/philjs-security</a></td></tr>
+<tr><td><code>@philjs/security-scanner</code></td><td>Vulnerability scanning</td><td><a href="../../../packages/philjs-security-scanner">packages/philjs-security-scanner</a></td></tr>
+<tr><td><code>@philjs/auth</code></td><td>Authentication utilities</td><td><a href="../../../packages/philjs-auth">packages/philjs-auth</a></td></tr>
+<tr><td><code>@philjs/crypto</code></td><td>Cryptographic operations</td><td><a href="../../../packages/philjs-crypto">packages/philjs-crypto</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/a11y</code></td><td>Accessibility utilities</td><td><a href="../../../packages/philjs-a11y">packages/philjs-a11y</a></td></tr>
+<tr><td><code>@philjs/a11y-ai</code></td><td>AI-powered WCAG remediation</td><td><a href="../../../packages/philjs-a11y-ai">packages/philjs-a11y-ai</a></td></tr>
+<tr><td><code>@philjs/a11y-primitives</code></td><td>Accessible component primitives</td><td><a href="../../../packages/philjs-a11y-primitives">packages/philjs-a11y-primitives</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="performance"><a class="header" href="#performance">Performance</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/perf</code></td><td>Performance utilities</td><td><a href="../../../packages/philjs-perf">packages/philjs-perf</a></td></tr>
+<tr><td><code>@philjs/perf-budget</code></td><td>Performance budgets</td><td><a href="../../../packages/philjs-perf-budget">packages/philjs-perf-budget</a></td></tr>
+<tr><td><code>@philjs/optimizer</code></td><td>Optimization tools</td><td><a href="../../../packages/philjs-optimizer">packages/philjs-optimizer</a></td></tr>
+<tr><td><code>@philjs/bench</code></td><td>Benchmarking utilities</td><td><a href="../../../packages/philjs-bench">packages/philjs-bench</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mobile--desktop"><a class="header" href="#mobile--desktop">Mobile &amp; Desktop</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/mobile</code></td><td>Mobile utilities</td><td><a href="../../../packages/philjs-mobile">packages/philjs-mobile</a></td></tr>
+<tr><td><code>@philjs/react-native</code></td><td>React Native adapter</td><td><a href="../../../packages/philjs-react-native">packages/philjs-react-native</a></td></tr>
+<tr><td><code>@philjs/capacitor</code></td><td>Capacitor integration</td><td><a href="../../../packages/philjs-capacitor">packages/philjs-capacitor</a></td></tr>
+<tr><td><code>@philjs/ionic</code></td><td>Ionic integration</td><td><a href="../../../packages/philjs-ionic">packages/philjs-ionic</a></td></tr>
+<tr><td><code>@philjs/tauri</code></td><td>Tauri desktop apps</td><td><a href="../../../packages/philjs-tauri">packages/philjs-tauri</a></td></tr>
+<tr><td><code>@philjs/electron</code></td><td>Electron integration</td><td><a href="../../../packages/philjs-electron">packages/philjs-electron</a></td></tr>
+<tr><td><code>@philjs/desktop</code></td><td>Desktop utilities</td><td><a href="../../../packages/philjs-desktop">packages/philjs-desktop</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="real-time--communication"><a class="header" href="#real-time--communication">Real-time &amp; Communication</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/realtime</code></td><td>Real-time updates</td><td><a href="../../../packages/philjs-realtime">packages/philjs-realtime</a></td></tr>
+<tr><td><code>@philjs/webrtc</code></td><td>WebRTC integration</td><td><a href="../../../packages/philjs-webrtc">packages/philjs-webrtc</a></td></tr>
+<tr><td><code>@philjs/video-chat</code></td><td>Video chat components</td><td><a href="../../../packages/philjs-video-chat">packages/philjs-video-chat</a></td></tr>
+<tr><td><code>@philjs/screen-share</code></td><td>Screen sharing</td><td><a href="../../../packages/philjs-screen-share">packages/philjs-screen-share</a></td></tr>
+<tr><td><code>@philjs/spatial-audio</code></td><td>Spatial audio</td><td><a href="../../../packages/philjs-spatial-audio">packages/philjs-spatial-audio</a></td></tr>
+<tr><td><code>@philjs/collab</code></td><td>Collaboration utilities</td><td><a href="../../../packages/philjs-collab">packages/philjs-collab</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="3d--graphics"><a class="header" href="#3d--graphics">3D &amp; Graphics</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/3d</code></td><td>3D rendering (Three.js, etc.)</td><td><a href="../../../packages/philjs-3d">packages/philjs-3d</a></td></tr>
+<tr><td><code>@philjs/3d-physics</code></td><td>Physics engines (Rapier, etc.)</td><td><a href="../../../packages/philjs-3d-physics">packages/philjs-3d-physics</a></td></tr>
+<tr><td><code>@philjs/webgpu</code></td><td>WebGPU integration</td><td><a href="../../../packages/philjs-webgpu">packages/philjs-webgpu</a></td></tr>
+<tr><td><code>@philjs/scene</code></td><td>Scene management</td><td><a href="../../../packages/philjs-scene">packages/philjs-scene</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="arvrxr"><a class="header" href="#arvrxr">AR/VR/XR</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/ar</code></td><td>Augmented reality primitives</td><td><a href="../../../packages/philjs-ar">packages/philjs-ar</a></td></tr>
+<tr><td><code>@philjs/xr</code></td><td>Extended reality</td><td><a href="../../../packages/philjs-xr">packages/philjs-xr</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="scientific-computing"><a class="header" href="#scientific-computing">Scientific Computing</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/science</code></td><td>Scientific computing utilities</td><td><a href="../../../packages/philjs-science">packages/philjs-science</a></td></tr>
+<tr><td><code>@philjs/bio</code></td><td>Bioinformatics</td><td><a href="../../../packages/philjs-bio">packages/philjs-bio</a></td></tr>
+<tr><td><code>@philjs/geo</code></td><td>Geospatial analysis</td><td><a href="../../../packages/philjs-geo">packages/philjs-geo</a></td></tr>
+<tr><td><code>@philjs/fin</code></td><td>Quantitative finance</td><td><a href="../../../packages/philjs-fin">packages/philjs-fin</a></td></tr>
+<tr><td><code>@philjs/astro</code></td><td>Astronomical calculations</td><td><a href="../../../packages/philjs-astro">packages/philjs-astro</a></td></tr>
+<tr><td><code>@philjs/quantum</code></td><td>Quantum computing simulation</td><td><a href="../../../packages/philjs-quantum">packages/philjs-quantum</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="future-technologies"><a class="header" href="#future-technologies">Future Technologies</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/neuro</code></td><td>Brain-computer interface</td><td><a href="../../../packages/philjs-neuro">packages/philjs-neuro</a></td></tr>
+<tr><td><code>@philjs/robotics</code></td><td>Robot Operating System bridge</td><td><a href="../../../packages/philjs-robotics">packages/philjs-robotics</a></td></tr>
+<tr><td><code>@philjs/digital-twin</code></td><td>Digital twin simulations</td><td><a href="../../../packages/philjs-digital-twin">packages/philjs-digital-twin</a></td></tr>
+<tr><td><code>@philjs/vision</code></td><td>Computer vision</td><td><a href="../../../packages/philjs-vision">packages/philjs-vision</a></td></tr>
+<tr><td><code>@philjs/voice</code></td><td>Voice synthesis and recognition</td><td><a href="../../../packages/philjs-voice">packages/philjs-voice</a></td></tr>
+<tr><td><code>@philjs/haptic</code></td><td>Haptic feedback</td><td><a href="../../../packages/philjs-haptic">packages/philjs-haptic</a></td></tr>
+<tr><td><code>@philjs/eye-tracking</code></td><td>Eye tracking integration</td><td><a href="../../../packages/philjs-eye-tracking">packages/philjs-eye-tracking</a></td></tr>
+<tr><td><code>@philjs/gesture</code></td><td>Gesture recognition</td><td><a href="../../../packages/philjs-gesture">packages/philjs-gesture</a></td></tr>
+<tr><td><code>@philjs/biometric</code></td><td>Biometric authentication</td><td><a href="../../../packages/philjs-biometric">packages/philjs-biometric</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="polyglot-language-bridges"><a class="header" href="#polyglot-language-bridges">Polyglot (Language Bridges)</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/polyglot</code></td><td>Multi-language bridge core</td><td><a href="../../../packages/philjs-polyglot">packages/philjs-polyglot</a></td></tr>
+<tr><td><code>@philjs/python</code></td><td>Python bridge</td><td><a href="../../../packages/philjs-python">packages/philjs-python</a></td></tr>
+<tr><td><code>@philjs/rust</code></td><td>Rust integration</td><td><a href="../../../packages/philjs-rust">packages/philjs-rust</a></td></tr>
+<tr><td><code>@philjs/rust-bridge</code></td><td>Rust FFI bridge</td><td><a href="../../../packages/philjs-rust-bridge">packages/philjs-rust-bridge</a></td></tr>
+<tr><td><code>@philjs/go</code></td><td>Go bridge</td><td><a href="../../../packages/philjs-go">packages/philjs-go</a></td></tr>
+<tr><td><code>@philjs/swift</code></td><td>Swift bridge</td><td><a href="../../../packages/philjs-swift">packages/philjs-swift</a></td></tr>
+<tr><td><code>@philjs/kotlin</code></td><td>Kotlin bridge</td><td><a href="../../../packages/philjs-kotlin">packages/philjs-kotlin</a></td></tr>
+<tr><td><code>@philjs/dotnet</code></td><td>.NET bridge</td><td><a href="../../../packages/philjs-dotnet">packages/philjs-dotnet</a></td></tr>
+<tr><td><code>@philjs/java</code></td><td>Java bridge</td><td><a href="../../../packages/philjs-java">packages/philjs-java</a></td></tr>
+<tr><td><code>@philjs/ruby</code></td><td>Ruby bridge</td><td><a href="../../../packages/philjs-ruby">packages/philjs-ruby</a></td></tr>
+<tr><td><code>@philjs/php</code></td><td>PHP bridge</td><td><a href="../../../packages/philjs-php">packages/philjs-php</a></td></tr>
+<tr><td><code>@philjs/zig</code></td><td>Zig bridge</td><td><a href="../../../packages/philjs-zig">packages/philjs-zig</a></td></tr>
+<tr><td><code>@philjs/wasm</code></td><td>WebAssembly utilities</td><td><a href="../../../packages/philjs-wasm">packages/philjs-wasm</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="developer-tools"><a class="header" href="#developer-tools">Developer Tools</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/devtools</code></td><td>Browser DevTools extension</td><td><a href="../../../packages/philjs-devtools">packages/philjs-devtools</a></td></tr>
+<tr><td><code>@philjs/devtools-extension</code></td><td>DevTools extension core</td><td><a href="../../../packages/philjs-devtools-extension">packages/philjs-devtools-extension</a></td></tr>
+<tr><td><code>@philjs/vscode</code></td><td>VS Code extension</td><td><a href="../../../packages/philjs-vscode">packages/philjs-vscode</a></td></tr>
+<tr><td><code>@philjs/neovim</code></td><td>Neovim plugin</td><td><a href="../../../packages/philjs-neovim">packages/philjs-neovim</a></td></tr>
+<tr><td><code>@philjs/zed</code></td><td>Zed editor extension</td><td><a href="../../../packages/philjs-zed">packages/philjs-zed</a></td></tr>
+<tr><td><code>@philjs/webstorm</code></td><td>WebStorm plugin</td><td><a href="../../../packages/philjs-webstorm">packages/philjs-webstorm</a></td></tr>
+<tr><td><code>@philjs/playground</code></td><td>Interactive playground</td><td><a href="../../../packages/philjs-playground">packages/philjs-playground</a></td></tr>
+<tr><td><code>@philjs/inspector</code></td><td>Runtime inspector</td><td><a href="../../../packages/philjs-inspector">packages/philjs-inspector</a></td></tr>
+<tr><td><code>@philjs/time-travel</code></td><td>Time-travel debugging</td><td><a href="../../../packages/philjs-time-travel">packages/philjs-time-travel</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="documentation"><a class="header" href="#documentation">Documentation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/docs</code></td><td>Self-writing documentation</td><td><a href="../../../packages/philjs-docs">packages/philjs-docs</a></td></tr>
+<tr><td><code>@philjs/docs-template</code></td><td>Documentation templates</td><td><a href="../../../packages/philjs-docs-template">packages/philjs-docs-template</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="utilities"><a class="header" href="#utilities">Utilities</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/hooks</code></td><td>React-like hooks</td><td><a href="../../../packages/philjs-hooks">packages/philjs-hooks</a></td></tr>
+<tr><td><code>@philjs/git</code></td><td>Git operations</td><td><a href="../../../packages/philjs-git">packages/philjs-git</a></td></tr>
+<tr><td><code>@philjs/storage</code></td><td>Storage utilities</td><td><a href="../../../packages/philjs-storage">packages/philjs-storage</a></td></tr>
+<tr><td><code>@philjs/offline</code></td><td>Offline-first utilities</td><td><a href="../../../packages/philjs-offline">packages/philjs-offline</a></td></tr>
+<tr><td><code>@philjs/pwa</code></td><td>PWA utilities</td><td><a href="../../../packages/philjs-pwa">packages/philjs-pwa</a></td></tr>
+<tr><td><code>@philjs/analytics</code></td><td>Analytics integration</td><td><a href="../../../packages/philjs-analytics">packages/philjs-analytics</a></td></tr>
+<tr><td><code>@philjs/email</code></td><td>Email utilities</td><td><a href="../../../packages/philjs-email">packages/philjs-email</a></td></tr>
+<tr><td><code>@philjs/pdf</code></td><td>PDF generation</td><td><a href="../../../packages/philjs-pdf">packages/philjs-pdf</a></td></tr>
+<tr><td><code>@philjs/qr</code></td><td>QR code generation</td><td><a href="../../../packages/philjs-qr">packages/philjs-qr</a></td></tr>
+<tr><td><code>@philjs/image</code></td><td>Image processing</td><td><a href="../../../packages/philjs-image">packages/philjs-image</a></td></tr>
+<tr><td><code>@philjs/rich-text</code></td><td>Rich text editing</td><td><a href="../../../packages/philjs-rich-text">packages/philjs-rich-text</a></td></tr>
+<tr><td><code>@philjs/editor</code></td><td>Code editor</td><td><a href="../../../packages/philjs-editor">packages/philjs-editor</a></td></tr>
+<tr><td><code>@philjs/maps</code></td><td>Map components</td><td><a href="../../../packages/philjs-maps">packages/philjs-maps</a></td></tr>
+<tr><td><code>@philjs/payments</code></td><td>Payment integration</td><td><a href="../../../packages/philjs-payments">packages/philjs-payments</a></td></tr>
+<tr><td><code>@philjs/social</code></td><td>Social sharing</td><td><a href="../../../packages/philjs-social">packages/philjs-social</a></td></tr>
+<tr><td><code>@philjs/errors</code></td><td>Error handling utilities</td><td><a href="../../../packages/philjs-errors">packages/philjs-errors</a></td></tr>
+<tr><td><code>@philjs/jobs</code></td><td>Background job processing</td><td><a href="../../../packages/philjs-jobs">packages/philjs-jobs</a></td></tr>
+<tr><td><code>@philjs/workflow</code></td><td>Workflow automation</td><td><a href="../../../packages/philjs-workflow">packages/philjs-workflow</a></td></tr>
+<tr><td><code>@philjs/event-sourcing</code></td><td>Event sourcing patterns</td><td><a href="../../../packages/philjs-event-sourcing">packages/philjs-event-sourcing</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="autonomous--self-healing"><a class="header" href="#autonomous--self-healing">Autonomous &amp; Self-Healing</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/self-healing</code></td><td>Self-healing error recovery</td><td><a href="../../../packages/philjs-self-healing">packages/philjs-self-healing</a></td></tr>
+<tr><td><code>@philjs/ab-testing</code></td><td>A/B testing framework</td><td><a href="../../../packages/philjs-ab-testing">packages/philjs-ab-testing</a></td></tr>
+<tr><td><code>@philjs/feature-flags</code></td><td>Feature flag management</td><td><a href="../../../packages/philjs-feature-flags">packages/philjs-feature-flags</a></td></tr>
+<tr><td><code>@philjs/experiments</code></td><td>Experiment tracking</td><td><a href="../../../packages/philjs-experiments">packages/philjs-experiments</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="plugins--extensions"><a class="header" href="#plugins--extensions">Plugins &amp; Extensions</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Package</th><th>Description</th><th>Source</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@philjs/plugins</code></td><td>Plugin system core</td><td><a href="../../../packages/philjs-plugins">packages/philjs-plugins</a></td></tr>
+<tr><td><code>@philjs/plugin-analytics</code></td><td>Analytics plugin</td><td><a href="../../../packages/philjs-plugin-analytics">packages/philjs-plugin-analytics</a></td></tr>
+<tr><td><code>@philjs/plugin-seo</code></td><td>SEO plugin</td><td><a href="../../../packages/philjs-plugin-seo">packages/philjs-plugin-seo</a></td></tr>
+<tr><td><code>@philjs/plugin-pwa</code></td><td>PWA plugin</td><td><a href="../../../packages/philjs-plugin-pwa">packages/philjs-plugin-pwa</a></td></tr>
+<tr><td><code>@philjs/plugin-tailwind</code></td><td>Tailwind plugin</td><td><a href="../../../packages/philjs-plugin-tailwind">packages/philjs-plugin-tailwind</a></td></tr>
+<tr><td><code>create-philjs</code></td><td>Project scaffolding</td><td><a href="../../../packages/create-philjs">packages/create-philjs</a></td></tr>
+<tr><td><code>create-philjs-plugin</code></td><td>Plugin scaffolding</td><td><a href="../../../packages/create-philjs-plugin">packages/create-philjs-plugin</a></td></tr>
+<tr><td><code>eslint-config-philjs</code></td><td>ESLint configuration</td><td><a href="../../../packages/eslint-config-philjs">packages/eslint-config-philjs</a></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="package-status-legend"><a class="header" href="#package-status-legend">Package Status Legend</a></h2>
+<p>All packages follow the PhilJS standards:</p>
+<ul>
+<li><strong>Node.js 24+</strong> required</li>
+<li><strong>TypeScript 6+</strong> with strict mode</li>
+<li><strong>ESM only</strong> - no CommonJS</li>
+<li>Each package includes README with installation, quickstart, and API documentation</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../migration/react.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="../packages/atlas.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../migration/react.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="../packages/atlas.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -226,4 +226,3 @@ export declare function createCodingAgent(config: CodingAgentConfig): CodingAgen
  * Execute a quick task
  */
 export declare function executeTask(provider: AIProvider, description: string, options?: Partial<AgentTask>): Promise<AgentResult>;
-//# sourceMappingURL=coding-agent.d.ts.map

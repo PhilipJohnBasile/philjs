@@ -7,10 +7,10 @@
   },
   "scripts": {
     "dev": "tsx scripts/build-sw.ts && tsx server/dev.ts",
-    "build": "tsx scripts/build-sw.ts && vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server || exit 0",
+    "build": "tsx scripts/build-sw.ts && vite build && vite build --ssr src/server/entry-server.ts --outDir dist/server",
     "preview": "tsx server/prod.ts",
     "serve": "tsx server/prod.ts",
-    "test": "vitest run || exit 0",
+    "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -33,5 +33,3 @@
     "playwright": "^1.48.0"
   }
 }
-
-

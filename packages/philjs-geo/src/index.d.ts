@@ -1,2 +1,1 @@
-export * from './spatial';
-//# sourceMappingURL=index.d.ts.map
+export * from './spatial.js';

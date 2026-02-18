@@ -1,7 +1,13 @@
-import { createSignal, createMemo, createEffect } from '@philjs/core';
+import { signal, memo, effect, type Signal } from '@philjs/core';
+
+// Compatibility wrapper to provide tuple-style API
+function createSignal<T>(initialValue: T): [() => T, (v: T) => void] {
+    const sig = signal(initialValue);
+    return [() => sig.get(), (v: T) => sig.set(v)];
+}
 
 export function useObservable<T extends object>(initialValue: T): T {
-    const signals = new Map<keyof T, any>();
+    const signals = new Map<keyof T, [() => any, (v: any) => void]>();
 
     // Initialize signals for existing props
     for (const key of Object.keys(initialValue)) {
@@ -15,7 +21,7 @@ export function useObservable<T extends object>(initialValue: T): T {
                 signals.set(prop as keyof T, createSignal(Reflect.get(target, prop, receiver)));
             }
 
-            const [get] = signals.get(prop as keyof T);
+            const [get] = signals.get(prop as keyof T)!;
             return get();
         },
         set(target, prop, value, receiver) {
@@ -24,7 +30,7 @@ export function useObservable<T extends object>(initialValue: T): T {
             if (!signals.has(prop as keyof T)) {
                 signals.set(prop as keyof T, createSignal(value));
             } else {
-                const [, set] = signals.get(prop as keyof T);
+                const [, set] = signals.get(prop as keyof T)!;
                 set(value);
             }
 
@@ -35,15 +41,15 @@ export function useObservable<T extends object>(initialValue: T): T {
 
 export function autorun(reaction: () => void) {
     // PhilJS effects are auto-running and reactive
-    createEffect(reaction);
+    effect(reaction);
     // Return disposer (mocked as PhilJS handles lifecycle automatically in components)
     return () => { };
 }
 
 export function computed<T>(getter: () => T) {
     // PhilJS memos are computed values
-    const memo = createMemo(getter);
+    const m = memo(getter);
     return {
-        get: memo
+        get: () => m.get()
     };
 }

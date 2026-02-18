@@ -30,6 +30,9 @@ PhilJS (inspired by Qwik) eliminates step 4 entirely.
     *   Dynamically downloads *only* the code for that specific event handler.
     *   Executes the handler.
 
+![Islands Bootup Sequence](../../assets/islands_bootup_sequence.png)
+*Figure 1-2: Resumable Boot-up Sequence (HTML -> Click -> Download -> Run)*
+
 ### Key differences:
 *   **0ms Hydration**: There is no "hydrating" phase on load.
 *   **Lazy Execution**: Code runs only when needed.
@@ -81,6 +84,9 @@ For resumability to work, the framework must be able to pause execution on the s
 
 PhilJS serializes the entire **Lexical Scope** of your application into JSON script tags.
 
+![Serialization JSON](../../assets/islands_serialization_json.png)
+*Figure 1-3: Serialized Scope Graph Structure*
+
 ```html
 <script type="phil/json">
 {
@@ -97,6 +103,9 @@ This allows the event handler to say "I need to increment `count`", and the runt
 ## 3. Global Event Delegation
 
 Instead of attaching thousands of `addEventListener` calls to individual elements (which is slow), PhilJS attaches a single listener for each event type (`click`, `input`, etc.) to the `window`.
+
+![Event Delegation](../../assets/islands_event_delegation.png)
+*Figure 1-4: Global Event Delegation vs. Individual Listeners*
 
 ```javascript
 // The <1KB Bootstrap Script
@@ -120,6 +129,9 @@ window.addEventListener('click', (event) => {
 | **Interactivity** | Delays until JS bundle loads (for Client Components). | **Instant**. Code loads *on interaction*. |
 | **State Preservation** | Complex state requires client-side reconstruction. | State is serialized and restored lazily. |
 
+![RSC vs Resumability](../../assets/islands_rsc_comparison.png)
+*Figure 1-5: Performance Comparison: RSC Hydration vs. PhilJS Resumability*
+
 RSC reduces the *amount* of JS sent to the client, but the interactive parts still suffer from hydration costs. PhilJS removes hydration entirely.
 
 ## 5. Intelligent Prefetching (The "Nexus" Layer)
@@ -133,3 +145,7 @@ While "loading on click" sounds slow (network latency), PhilJS uses the **Nexus 
 ## Summary
 
 The Resumability Engine is what allows PhilJS applications to scale infinitely. Whether you have 10 interactive components or 10,000, your **Time-to-Interactive (TTI)** remains constant at **0ms**.
+
+
+![Figure 1-1: The Resumability Engine Architecture](../../assets/resumability_engine_schematic.png)
+

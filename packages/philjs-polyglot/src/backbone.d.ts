@@ -14,4 +14,3 @@ export interface BackboneCollection {
 }
 export declare function useBackboneModel<T>(model: BackboneModel): any;
 export declare function useBackboneCollection<T>(collection: BackboneCollection): any;
-//# sourceMappingURL=backbone.d.ts.map

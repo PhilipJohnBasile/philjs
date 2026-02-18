@@ -27,4 +27,3 @@ export declare function rafThrottle<T extends (...args: any[]) => any>(fn: T): T
  * Schedule work during idle time
  */
 export declare function scheduleIdle<T>(fn: () => T, options?: IdleRequestOptions): Promise<T>;
-//# sourceMappingURL=timing.d.ts.map

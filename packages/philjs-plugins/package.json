@@ -10,7 +10,7 @@
     "./registry": "./dist/registry.js"
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch"
   },
   "dependencies": {

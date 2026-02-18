@@ -216,4 +216,3 @@ export declare const globUtils: {
     initializePlugins: typeof initializePlugins;
     createCollection: typeof createCollection;
 };
-//# sourceMappingURL=glob.d.ts.map

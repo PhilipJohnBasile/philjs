@@ -4,7 +4,7 @@
  * High-performance caching for AI completions with multiple storage backends.
  * Reduces API costs and latency for repeated or similar prompts.
  */
-import type { AIProvider, CompletionOptions } from './types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from './types.js';
 export interface CacheConfig {
     /** Cache storage backend */
     storage: CacheStorage;
@@ -31,7 +31,7 @@ export interface CacheEntry {
         completionTokens?: number;
         cost?: number;
     };
-    embedding?: number[];
+    embedding?: number[] | undefined;
 }
 export interface CacheStats {
     hits: number;
@@ -103,7 +103,7 @@ export declare class CachedAIProvider implements AIProvider {
      * Try to find a cached response
      */
     private findCached;
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
     private updateHitRate;
     /**
@@ -167,4 +167,3 @@ export declare function createRedisCache(client: RedisClient, prefix?: string): 
 export declare function withCache<T extends (...args: unknown[]) => Promise<string>>(fn: T, config: Omit<CacheConfig, 'storage'> & {
     storage: CacheStorage;
 }): T;
-//# sourceMappingURL=cache.d.ts.map

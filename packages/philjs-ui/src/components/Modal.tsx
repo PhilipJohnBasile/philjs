@@ -18,7 +18,7 @@ const sizeStyles: Record<ModalSize, string> = {
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  children: JSX.Element | JSX.Element[];
+  children?: JSX.Element | JSX.Element[];
   title?: string;
   size?: ModalSize;
   closeOnOverlay?: boolean;
@@ -134,7 +134,7 @@ export function Modal(props: ModalProps): JSX.Element | null {
       <div
         className="absolute inset-0 bg-black/50 transition-opacity"
         onClick={handleOverlayClick}
-        aria-hidden="true"
+        aria-hidden={true}
       />
 
       {/* Modal */}

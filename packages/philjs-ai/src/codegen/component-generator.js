@@ -27,7 +27,7 @@ export class ComponentGenerator {
      */
     async generateFromDescription(config) {
         const prompt = this.buildDescriptionPrompt(config);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getSystemPrompt(config),
         });
@@ -38,7 +38,7 @@ export class ComponentGenerator {
      */
     async generateFromWireframe(wireframe, config) {
         const prompt = this.buildWireframePrompt(wireframe, config);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getSystemPrompt({ ...config, description: 'From wireframe' }),
         });
@@ -49,7 +49,7 @@ export class ComponentGenerator {
      */
     async enhanceAccessibility(code, accessibility) {
         const prompt = this.buildAccessibilityPrompt(code, accessibility);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are an accessibility expert for web components.
 Enhance components to meet WCAG ${accessibility.wcagLevel} standards.
@@ -71,7 +71,7 @@ Return JSON with: code, changes (array of changes made), notes (array of accessi
      */
     async customizeStyle(code, style) {
         const prompt = this.buildStylePrompt(code, style);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are a CSS and styling expert.
 Apply the requested style configuration to the component.
@@ -104,7 +104,7 @@ ${baseComponent}
 Generate these variants: ${variants.join(', ')}
 
 Return JSON with variant names as keys and component code as values.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'Generate component variants maintaining consistent API and style.',
         });

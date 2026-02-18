@@ -47,7 +47,33 @@ export class GeminiProvider {
         if (data.error) {
             throw new Error(`Gemini API error: ${data.error.message}`);
         }
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        // Extract text content
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        const textParts = parts.filter(p => p.text).map(p => p.text);
+        const text = textParts.join('');
+        // Extract function/tool calls
+        const functionCalls = parts
+            .filter(p => p.functionCall)
+            .map((p, i) => ({
+            id: `call_${i}`,
+            name: p.functionCall.name,
+            arguments: p.functionCall.args,
+        }));
+        // Extract usage metadata
+        const usage = data.usageMetadata ? {
+            inputTokens: data.usageMetadata.promptTokenCount || 0,
+            outputTokens: data.usageMetadata.candidatesTokenCount || 0,
+            totalTokens: data.usageMetadata.totalTokenCount || 0,
+        } : {
+            inputTokens: 0,
+            outputTokens: 0,
+            totalTokens: 0,
+        };
+        return {
+            content: text,
+            ...(functionCalls.length > 0 && { toolCalls: functionCalls }),
+            usage,
+        };
     }
     async *generateStreamCompletion(prompt, options) {
         const model = options?.model || this.defaultModel;

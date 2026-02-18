@@ -143,4 +143,3 @@ export declare function deepClone<T>(value: T, options?: SerializationOptions): 
  * Compare two values for deep equality
  */
 export declare function deepEqual(a: any, b: any): boolean;
-//# sourceMappingURL=serialization.d.ts.map

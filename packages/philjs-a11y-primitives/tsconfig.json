@@ -10,10 +10,7 @@
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true,
-    "paths": {
-      "@philjs/core": ["../philjs-core/src/index.ts"]
-    }
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
@@ -24,8 +21,5 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.stories.tsx"
-  ],
-  "references": [
-    { "path": "../philjs-core" }
   ]
 }

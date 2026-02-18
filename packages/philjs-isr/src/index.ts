@@ -484,8 +484,6 @@ export {
 export {
   MemoryCacheAdapter,
   createMemoryCache,
-  RedisCacheAdapter,
-  createRedisCache,
   FilesystemCacheAdapter,
   createFilesystemCache,
   CloudflareKVAdapter,
@@ -494,9 +492,10 @@ export {
   createVercelKVCache,
 } from './adapters/index.js';
 
+// Redis adapter requires ioredis - use dynamic import if needed
+
 export type {
   MemoryCacheConfig,
-  RedisConfig,
   FilesystemCacheConfig,
   CloudflareKVConfig,
   VercelKVConfig,

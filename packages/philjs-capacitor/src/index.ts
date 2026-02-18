@@ -30,7 +30,11 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility aliases
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // TYPES
@@ -305,7 +309,7 @@ const notificationsSignal: Signal<PushNotification[]> = signal([]);
  * Get device information
  */
 export function useDevice(): Signal<DeviceInfo | null> {
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { Device } = await import('@capacitor/device');
       const info = await Device.getInfo();
@@ -330,7 +334,7 @@ export function useDevice(): Signal<DeviceInfo | null> {
         webViewVersion: '',
       });
     }
-  });
+  })(); });
 
   return deviceSignal;
 }
@@ -352,7 +356,7 @@ export async function getDeviceId(): Promise<string> {
  * Get battery information
  */
 export function useBattery(): Signal<BatteryInfo | null> {
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { Device } = await import('@capacitor/device');
       const info = await Device.getBatteryInfo();
@@ -363,7 +367,7 @@ export function useBattery(): Signal<BatteryInfo | null> {
     } catch {
       batterySignal.set({ batteryLevel: 1, isCharging: false });
     }
-  });
+  })(); });
 
   return batterySignal;
 }
@@ -402,7 +406,7 @@ export async function getLanguageTag(): Promise<string> {
  * Get network status
  */
 export function useNetwork(): Signal<NetworkStatus> {
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { Network } = await import('@capacitor/network');
       const status = await Network.getStatus();
@@ -431,7 +435,7 @@ export function useNetwork(): Signal<NetworkStatus> {
         networkSignal.set({ connected: false, connectionType: 'none' });
       });
     }
-  });
+  })(); });
 
   return networkSignal;
 }
@@ -694,13 +698,13 @@ export function usePersistedSignal<T>(
   const state = signal<T>(defaultValue);
 
   // Load initial value
-  effect(async () => {
+  effect(() => { void (async () => {
     const storage = useStorage();
     const stored = await storage.get<T>(key);
     if (stored !== null) {
       state.set(stored);
     }
-  });
+  })(); });
 
   const setValue = async (value: T): Promise<void> => {
     state.set(value);
@@ -805,7 +809,7 @@ export function useKeyboard(): {
   setScroll: (options: { isDisabled: boolean }) => Promise<void>;
   setResizeMode: (mode: 'body' | 'ionic' | 'native' | 'none') => Promise<void>;
 } {
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { Keyboard } = await import('@capacitor/keyboard');
 
@@ -817,7 +821,7 @@ export function useKeyboard(): {
         keyboardHeightSignal.set(0);
       });
     } catch {}
-  });
+  })(); });
 
   return {
     height: keyboardHeightSignal,
@@ -866,7 +870,7 @@ export function useApp(): {
   getLaunchUrl: () => Promise<AppUrlOpen | null>;
   minimizeApp: () => Promise<void>;
 } {
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { App } = await import('@capacitor/app');
 
@@ -877,7 +881,7 @@ export function useApp(): {
       const state = await App.getState();
       appStateSignal.set({ isActive: state.isActive });
     } catch {}
-  });
+  })(); });
 
   return {
     state: appStateSignal,
@@ -909,26 +913,26 @@ export function useApp(): {
  * Listen for app URL open events (deep links)
  */
 export function useAppUrlOpen(callback: (url: string) => void): void {
-  effect(async () => {
+  effect(() => { void (async () => {
     const { App } = await import('@capacitor/app');
 
     App.addListener('appUrlOpen', (event) => {
       callback(event.url);
     });
-  });
+  })(); });
 }
 
 /**
  * Listen for back button (Android)
  */
 export function useBackButton(callback: () => void): void {
-  effect(async () => {
+  effect(() => { void (async () => {
     const { App } = await import('@capacitor/app');
 
     App.addListener('backButton', () => {
       callback();
     });
-  });
+  })(); });
 }
 
 // ============================================================================
@@ -997,7 +1001,7 @@ export function useLocalNotifications(): {
     },
     getPending: async () => {
       const { LocalNotifications } = await import('@capacitor/local-notifications');
-      return await LocalNotifications.getPending();
+      return await LocalNotifications.getPending() as any;
     },
     cancel: async (ids) => {
       const { LocalNotifications } = await import('@capacitor/local-notifications');
@@ -1056,7 +1060,7 @@ export function usePushNotifications(): {
     },
     removeDeliveredNotifications: async (ids) => {
       const { PushNotifications } = await import('@capacitor/push-notifications');
-      await PushNotifications.removeDeliveredNotifications({ notifications: ids.map(id => ({ id })) });
+      await PushNotifications.removeDeliveredNotifications({ notifications: ids.map(id => ({ id, data: {} })) });
     },
     removeAllDeliveredNotifications: async () => {
       const { PushNotifications } = await import('@capacitor/push-notifications');
@@ -1115,7 +1119,7 @@ export function useClipboard(): {
     },
     read: async () => {
       const { Clipboard } = await import('@capacitor/clipboard');
-      return await Clipboard.read();
+      return await Clipboard.read() as any;
     },
   };
 }
@@ -1230,7 +1234,7 @@ export function useFilesystem(): {
         path: options.path,
         directory: await getDirectory(options.directory),
         encoding: options.encoding === 'utf8' ? Encoding.UTF8 : Encoding.ASCII,
-      });
+      }) as any;
     },
     writeFile: async (options) => {
       const { Filesystem, Encoding } = await import('@capacitor/filesystem');
@@ -1286,7 +1290,7 @@ export function useFilesystem(): {
       return await Filesystem.stat({
         path: options.path,
         directory: await getDirectory(options.directory),
-      });
+      }) as any;
     },
     rename: async (options) => {
       const { Filesystem } = await import('@capacitor/filesystem');
@@ -1389,7 +1393,7 @@ export function useScreenOrientation(): {
 } {
   const orientation = signal<any>('portrait');
 
-  effect(async () => {
+  effect(() => { void (async () => {
     try {
       const { ScreenOrientation } = await import('@capacitor/screen-orientation');
       const current = await ScreenOrientation.orientation();
@@ -1399,7 +1403,7 @@ export function useScreenOrientation(): {
         orientation.set(info.type);
       });
     } catch {}
-  });
+  })(); });
 
   return {
     orientation,

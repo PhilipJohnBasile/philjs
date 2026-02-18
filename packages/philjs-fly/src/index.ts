@@ -5,7 +5,7 @@
  * with signal-reactive state and SSR edge functions support.
  */
 
-import { signal, computed, effect, batch } from '@philjs/core';
+import { signal, memo, effect, batch } from '@philjs/core';
 
 // ============================================================================
 // Types & Interfaces
@@ -480,35 +480,35 @@ export function createFlyState(config: FlyConfig) {
         connected: false
     });
 
-    const isDeploying = computed(() =>
-        state.value.deployments.some(d =>
+    const isDeploying = memo(() =>
+        state.get().deployments.some(d =>
             ['pending', 'building', 'pushing', 'deploying'].includes(d.status)
         )
     );
 
-    const activeMachines = computed(() =>
-        state.value.machines.filter(m =>
+    const activeMachines = memo(() =>
+        state.get().machines.filter(m =>
             ['started', 'starting'].includes(m.state)
         )
     );
 
-    const healthyMachines = computed(() =>
-        state.value.machines.filter(m =>
+    const healthyMachines = memo(() =>
+        state.get().machines.filter(m =>
             m.state === 'started' &&
             (!m.checks || m.checks.every(c => c.status === 'passing'))
         )
     );
 
-    const regions = computed(() =>
-        [...new Set(state.value.machines.map(m => m.region))]
+    const regions = memo(() =>
+        [...new Set(state.get().machines.map(m => m.region))]
     );
 
-    const appUrl = computed(() =>
-        state.value.app ? `https://${state.value.app.hostname}` : null
+    const appUrl = memo(() =>
+        state.get().app ? `https://${state.get().app.hostname}` : null
     );
 
-    const primaryUrl = computed(() =>
-        state.value.config.app ? `https://${state.value.config.app}.fly.dev` : null
+    const primaryUrl = memo(() =>
+        state.get().config.app ? `https://${state.get().config.app}.fly.dev` : null
     );
 
     return {
@@ -1053,7 +1053,7 @@ export function createFlyAdapter(config: FlyConfig) {
     async function refreshState() {
         try {
             batch(() => {
-                state.value = { ...state.value, loading: true, error: null };
+                state.set({ ...state.get(), loading: true, error: null });
             });
 
             const [app, machines, volumes, secrets, certificates] = await Promise.all([
@@ -1065,8 +1065,8 @@ export function createFlyAdapter(config: FlyConfig) {
             ]);
 
             batch(() => {
-                state.value = {
-                    ...state.value,
+                state.set({
+                    ...state.get(),
                     app,
                     machines,
                     volumes,
@@ -1074,16 +1074,16 @@ export function createFlyAdapter(config: FlyConfig) {
                     certificates,
                     loading: false,
                     connected: true
-                };
+                });
             });
         } catch (error) {
             batch(() => {
-                state.value = {
-                    ...state.value,
+                state.set({
+                    ...state.get(),
                     loading: false,
                     error: error instanceof Error ? error.message : 'Unknown error',
                     connected: false
-                };
+                });
             });
         }
     }
@@ -1130,10 +1130,10 @@ export function createFlyAdapter(config: FlyConfig) {
             };
 
             batch(() => {
-                state.value = {
-                    ...state.value,
-                    deployments: [...state.value.deployments, deployment]
-                };
+                state.set({
+                    ...state.get(),
+                    deployments: [...state.get().deployments, deployment]
+                });
             });
 
             try {
@@ -1157,19 +1157,19 @@ export function createFlyAdapter(config: FlyConfig) {
                 throw error;
             } finally {
                 batch(() => {
-                    state.value = {
-                        ...state.value,
-                        deployments: state.value.deployments.map(d =>
+                    state.set({
+                        ...state.get(),
+                        deployments: state.get().deployments.map(d =>
                             d.id === deploymentId ? deployment : d
                         )
-                    };
+                    });
                 });
             }
         },
 
         async scale(count: number, region?: FlyRegion) {
             const targetRegion = region || config.primaryRegion || config.region;
-            const currentMachines = state.value.machines.filter(m =>
+            const currentMachines = state.get().machines.filter(m =>
                 !region || m.region === region
             );
 
@@ -1179,7 +1179,7 @@ export function createFlyAdapter(config: FlyConfig) {
                 // Scale up
                 const promises = Array.from({ length: diff }, () =>
                     client.createMachine(
-                        { image: state.value.app?.currentRelease?.imageRef || '' },
+                        { image: state.get().app?.currentRelease?.imageRef || '' },
                         targetRegion
                     )
                 );
@@ -1209,11 +1209,11 @@ export function createFlyAdapter(config: FlyConfig) {
         },
 
         getAppUrl() {
-            return primaryUrl.value;
+            return primaryUrl();
         },
 
         getRegions() {
-            return regions.value;
+            return regions();
         }
     };
 }
@@ -1605,14 +1605,14 @@ export function useFlyMachines(appName: string, apiToken?: string) {
     const error = signal<string | null>(null);
 
     async function refresh() {
-        loading.value = true;
-        error.value = null;
+        loading.set(true);
+        error.set(null);
         try {
-            machines.value = await client.listMachines();
+            machines.set(await client.listMachines());
         } catch (e) {
-            error.value = e instanceof Error ? e.message : 'Failed to load machines';
+            error.set(e instanceof Error ? e.message : 'Failed to load machines');
         } finally {
-            loading.value = false;
+            loading.set(false);
         }
     }
 
@@ -1641,18 +1641,18 @@ export function useFlyDeployment(config: FlyConfig) {
     const release = signal<Release | null>(null);
 
     async function deploy(options?: DeployOptions) {
-        status.value = 'deploying';
-        logs.value = ['Starting deployment...'];
+        status.set('deploying');
+        logs.set(['Starting deployment...']);
 
         try {
             const result = await adapter.deploy(options);
-            release.value = result;
-            status.value = 'success';
-            logs.value = [...logs.value, `Deployed release v${result.version}`];
+            release.set(result);
+            status.set('success');
+            logs.set([...logs.get(), `Deployed release v${result.version}`]);
             return result;
         } catch (e) {
-            status.value = 'error';
-            logs.value = [...logs.value, `Error: ${e instanceof Error ? e.message : 'Unknown error'}`];
+            status.set('error');
+            logs.set([...logs.get(), `Error: ${e instanceof Error ? e.message : 'Unknown error'}`]);
             throw e;
         }
     }
@@ -1662,7 +1662,7 @@ export function useFlyDeployment(config: FlyConfig) {
         logs,
         release,
         deploy,
-        isDeploying: computed(() => status.value === 'deploying')
+        isDeploying: memo(() => status.get() === 'deploying')
     };
 }
 
@@ -1766,8 +1766,8 @@ export function createMetricsCollector(config: FlyConfig) {
             }
         };
 
-        metrics.value = collected;
-        history.value = [...history.value.slice(-99), collected];
+        metrics.set(collected);
+        history.set([...history.get().slice(-99), collected]);
 
         return collected;
     }

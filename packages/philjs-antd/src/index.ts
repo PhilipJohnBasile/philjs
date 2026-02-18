@@ -34,7 +34,10 @@
  * ```
  */
 
-import { signal, effect, computed, batch, memo } from '@philjs/core';
+import { signal, effect, memo, batch, memo } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 
 // ============================================================================
 // Types

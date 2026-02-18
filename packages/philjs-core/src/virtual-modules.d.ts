@@ -61,4 +61,3 @@ export declare function generateVirtualModuleTypes(): string;
  */
 export declare function writeVirtualModuleTypes(outPath: string): Promise<void>;
 export {};
-//# sourceMappingURL=virtual-modules.d.ts.map

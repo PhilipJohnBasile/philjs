@@ -8,7 +8,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 
 export interface ButtonProps {
-  children: JSX.Element | JSX.Element[] | string;
+  children?: JSX.Element | JSX.Element[] | string;
   variant?: ButtonVariant;
   size?: ButtonSize;
   color?: ButtonColor;
@@ -120,7 +120,7 @@ export function Button(props: ButtonProps): JSX.Element {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          aria-hidden="true"
+          aria-hidden={true}
         >
           <circle
             className="opacity-25"

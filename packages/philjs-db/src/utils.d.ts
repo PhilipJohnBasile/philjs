@@ -20,11 +20,11 @@ export declare function create<T extends Record<string, any>>(db: any, table: st
 /**
  * Generic update operation with where clause support
  */
-export declare function update<T extends Record<string, any>>(db: any, table: string, where: Partial<T> | WhereClause, data: Partial<T>, options?: UpdateOptions): Promise<T | T[]>;
+export declare function update<T extends Record<string, any>>(db: any, table: string, where: Partial<T> | SimpleWhereClause, data: Partial<T>, options?: UpdateOptions): Promise<T | T[]>;
 /**
  * Generic delete operation with cascade support
  */
-export declare function deleteRecord<T extends Record<string, any>>(db: any, table: string, where: Partial<T> | WhereClause, options?: DeleteOptions): Promise<{
+export declare function deleteRecord<T extends Record<string, any>>(db: any, table: string, where: Partial<T> | SimpleWhereClause, options?: DeleteOptions): Promise<{
     count: number;
 } | T | T[]>;
 /**
@@ -53,15 +53,15 @@ export declare class QueryBuilder<T extends Record<string, any> = any> {
     /**
      * Add where clause
      */
-    where(clause: Partial<T> | WhereClause): this;
+    where(clause: Partial<T> | SimpleWhereClause): this;
     /**
      * Add AND condition to where clause
      */
-    andWhere(clause: Partial<T> | WhereClause): this;
+    andWhere(clause: Partial<T> | SimpleWhereClause): this;
     /**
      * Add OR condition to where clause
      */
-    orWhere(clause: Partial<T> | WhereClause): this;
+    orWhere(clause: Partial<T> | SimpleWhereClause): this;
     /**
      * Order by field
      */
@@ -89,7 +89,7 @@ export declare class QueryBuilder<T extends Record<string, any> = any> {
     /**
      * Having clause for aggregations
      */
-    having(clause: WhereClause): this;
+    having(clause: SimpleWhereClause): this;
     /**
      * Distinct results
      */
@@ -177,10 +177,10 @@ export declare function createTransaction(db: any): Promise<Transaction>;
  * Alternative to the `using` syntax for backward compatibility
  */
 export declare function transaction<T>(db: any, fn: (tx: Transaction) => Promise<T>): Promise<T>;
-export interface WhereClause {
-    AND?: WhereClause[];
-    OR?: WhereClause[];
-    NOT?: WhereClause;
+export interface SimpleWhereClause {
+    AND?: SimpleWhereClause[];
+    OR?: SimpleWhereClause[];
+    NOT?: SimpleWhereClause;
     [key: string]: any;
 }
 export interface JoinClause {
@@ -265,4 +265,3 @@ export declare function healthCheck(db: any): Promise<{
     healthy: boolean;
     latency: number;
 }>;
-//# sourceMappingURL=utils.d.ts.map

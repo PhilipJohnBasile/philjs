@@ -6,7 +6,10 @@
  * pagination, and real-time subscriptions.
  */
 
-import { signal, computed, effect, batch, type Signal } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Compatibility alias
+const computed = memo;
 import type {
     Model,
     ModelStatic,
@@ -59,10 +62,10 @@ export interface SingleQueryState<T> {
 export interface PaginationState {
     page: Signal<number>;
     pageSize: Signal<number>;
-    totalPages: Signal<number>;
+    totalPages: Memo<number>;
     totalCount: Signal<number>;
-    hasNextPage: Signal<boolean>;
-    hasPreviousPage: Signal<boolean>;
+    hasNextPage: Memo<boolean>;
+    hasPreviousPage: Memo<boolean>;
 }
 
 export interface UseSequelizeOptions<T extends Model> extends FindOptions<Attributes<T>> {
@@ -967,8 +970,10 @@ export function queryBuilder<T extends Model>(model: ModelStatic<T>): QueryBuild
         },
 
         orderBy(field, direction = 'ASC') {
-            options.order = options.order || [];
-            (options.order as Order).push([field as string, direction]);
+            if (!Array.isArray(options.order)) {
+                options.order = [];
+            }
+            options.order.push([field as string, direction]);
             return builder;
         },
 
@@ -1132,8 +1137,8 @@ export function useAssociation<T extends Model, A extends Model>(
 
 export interface OptimisticState<T> {
     data: Signal<T[]>;
-    optimisticData: Signal<T[]>;
-    isPending: Signal<boolean>;
+    optimisticData: Memo<T[]>;
+    isPending: Memo<boolean>;
     add: (item: T) => string;
     update: (id: string | number, updates: Partial<T>) => void;
     remove: (id: string | number) => void;

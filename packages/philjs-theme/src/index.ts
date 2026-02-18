@@ -28,7 +28,9 @@
  * ```
  */
 
-import { signal, computed, effect, memo, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, type Signal, type Memo } from '@philjs/core';
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============ TYPE DEFINITIONS ============
 

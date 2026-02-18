@@ -334,7 +334,7 @@ function renderResumableComponent(
     ctx.serialization.components.set(componentId, {
       id: componentId,
       qrl: qrl.serialize(),
-      props: serializeProps(props, ctx.serialization),
+      props: serializeProps(props, ctx.serialization) as Record<string, import('../types.js').SerializedValue>,
       children: [],
     });
 

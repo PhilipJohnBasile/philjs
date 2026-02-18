@@ -1,6 +1,9 @@
 {
   "name": "@philjs/vike",
   "version": "0.0.0-research",
+  "engines": {
+    "node": ">=24"
+  },
   "type": "module",
   "private": true,
   "author": "PhilJS Team",

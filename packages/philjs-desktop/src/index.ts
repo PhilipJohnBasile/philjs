@@ -271,7 +271,7 @@ export type {
 //   app,
 //   createMigrationHelper,
 //   ElectronToTauriMapper,
-// } from './electron';
+// } from './electron.js';
 //
 // export type {
 //   BrowserWindowOptions,

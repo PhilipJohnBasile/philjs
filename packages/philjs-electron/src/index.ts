@@ -34,7 +34,11 @@
  * ```
  */
 
-import { signal, computed, effect, batch, type Signal, type Computed } from '@philjs/core';
+import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/core';
+
+// Alias for code that uses "computed"
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // TYPES
@@ -468,11 +472,11 @@ export function useTitleBar(): {
 } {
   return {
     draggable: (element: HTMLElement) => {
-      element.style.webkitAppRegion = 'drag';
+      (element.style as any).webkitAppRegion = 'drag';
       (element.style as any)['-webkit-app-region'] = 'drag';
     },
     nonDraggable: (element: HTMLElement) => {
-      element.style.webkitAppRegion = 'no-drag';
+      (element.style as any).webkitAppRegion = 'no-drag';
       (element.style as any)['-webkit-app-region'] = 'no-drag';
     },
   };

@@ -300,4 +300,3 @@ export declare function addJSDoc(provider: AIProvider, code: string): Promise<st
  * Quick README generation helper
  */
 export declare function generateReadme(provider: AIProvider, name: string, description: string): Promise<GeneratedReadme>;
-//# sourceMappingURL=doc-generator.d.ts.map

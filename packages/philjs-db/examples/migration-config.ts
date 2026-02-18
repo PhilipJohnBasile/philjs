@@ -2,7 +2,7 @@
  * PhilJS Database Migration Configuration Examples
  */
 
-import type { MigrationConfig } from '../src/migrations/types';
+import type { MigrationConfig } from '../src/migrations/types.js';
 
 // PostgreSQL Configuration
 export const postgresConfig: MigrationConfig = {

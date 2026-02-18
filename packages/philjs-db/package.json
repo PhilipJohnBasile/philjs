@@ -14,9 +14,9 @@
     "./migrations": "./dist/migrations/index.js"
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run || exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"

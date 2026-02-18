@@ -6,20 +6,24 @@ import { cn } from '../utils.js';
 
 export interface SkeletonProps {
     className?: string;
+    class?: string;
+    style?: Record<string, string>;
 }
 
 /**
  * Skeleton loading placeholder
  */
 export function Skeleton(props: SkeletonProps) {
-    const { className } = props;
+    const { className, class: classProp, style } = props;
 
     return (
         <div
             class={cn(
                 'animate-pulse rounded-md bg-primary/10',
-                className
+                className,
+                classProp
             )}
+            style={style}
         />
     );
 }

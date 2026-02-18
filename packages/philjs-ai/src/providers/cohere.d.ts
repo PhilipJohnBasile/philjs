@@ -1,7 +1,7 @@
 /**
  * Cohere provider implementation
  */
-import type { AIProvider, CompletionOptions } from '../types.js';
+import type { AIProvider, CompletionOptions, ProviderResponse } from '../types.js';
 export interface CohereConfig {
     apiKey: string;
     baseURL?: string;
@@ -13,11 +13,12 @@ export declare class CohereProvider implements AIProvider {
     private baseURL;
     private defaultModel;
     constructor(config: CohereConfig);
-    generateCompletion(prompt: string, options?: CompletionOptions): Promise<string>;
+    generateCompletion(prompt: string, options?: CompletionOptions): Promise<ProviderResponse>;
+    /** Estimate token count (~4 chars per token) */
+    private estimateTokens;
     generateStreamCompletion(prompt: string, options?: CompletionOptions): AsyncIterableIterator<string>;
 }
 /**
  * Create a Cohere provider instance
  */
 export declare function createCohereProvider(config: CohereConfig): CohereProvider;
-//# sourceMappingURL=cohere.d.ts.map

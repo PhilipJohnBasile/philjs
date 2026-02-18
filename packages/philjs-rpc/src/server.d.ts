@@ -9,7 +9,7 @@ import type { APIDefinition, Router, HandlerOptions, HandlerFn } from './types.j
  * @example
  * ```ts
  * import { createHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * export const handler = createHandler(api);
  *
@@ -32,7 +32,7 @@ export declare function createHandler<TRouter extends Router>(api: APIDefinition
  * ```ts
  * import http from 'http';
  * import { createNodeHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const handler = createNodeHandler(api);
  *
@@ -64,7 +64,7 @@ interface NodeResponse {
  * @example
  * ```ts
  * import { createFetchHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const handler = createFetchHandler(api);
  *
@@ -82,7 +82,7 @@ export declare function createFetchHandler<TRouter extends Router>(api: APIDefin
  * ```ts
  * import express from 'express';
  * import { createExpressHandler } from 'philjs-rpc/server';
- * import { api } from './api';
+ * import { api } from './api.js';
  *
  * const app = express();
  * app.use(express.json());
@@ -115,7 +115,7 @@ interface ExpressResponse {
  * ```ts
  * // api/rpc.ts
  * import { createVercelHandler } from 'philjs-rpc/server';
- * import { api } from '../src/api';
+ * import { api } from '../src/api.js';
  *
  * export default createVercelHandler(api);
  * ```
@@ -146,7 +146,7 @@ interface VercelResponse {
  * ```ts
  * // netlify/functions/rpc.ts
  * import { createNetlifyHandler } from 'philjs-rpc/server';
- * import { api } from '../../src/api';
+ * import { api } from '../../src/api.js';
  *
  * export const handler = createNetlifyHandler(api);
  * ```

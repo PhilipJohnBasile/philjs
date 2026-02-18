@@ -6,8 +6,8 @@
  */
 
 import { signal, memo, effect } from '@philjs/core';
-import type { ImageProps, OptimizedImage } from './types';
-import { generateSrcSet, generateBlurDataURL, isExternalUrl } from './utils';
+import type { ImageProps, OptimizedImage } from './types.js';
+import { generateSrcSet, generateBlurDataURL, isExternalUrl } from './utils.js';
 
 export function Image(props: ImageProps) {
   const {
@@ -153,7 +153,7 @@ export function Image(props: ImageProps) {
         <img
           src={placeholderDataURL()!}
           alt=""
-          aria-hidden="true"
+          aria-hidden={true}
           style={placeholderStyle}
           decoding="async"
         />
@@ -183,7 +183,7 @@ export function Image(props: ImageProps) {
           alt={alt}
           width={width}
           height={height}
-          loading={priority ? 'eager' : loading}
+          loading={priority ? 'eager' : (loading === 'auto' ? 'lazy' : loading) as 'lazy' | 'eager'}
           decoding={decoding}
           crossOrigin={crossOrigin}
           referrerPolicy={referrerPolicy}

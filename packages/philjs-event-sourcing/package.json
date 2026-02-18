@@ -12,10 +12,10 @@
     }
   },
   "scripts": {
-    "build": "tsc || exit 0",
+    "build": "tsc",
     "dev": "tsc --watch",
-    "lint": "eslint src/ || exit 0",
-    "test": "vitest run || exit 0"
+    "lint": "eslint src/",
+    "test": "vitest run"
   },
   "keywords": [
     "philjs",

@@ -25,7 +25,11 @@
  * ```
  */
 
-import { signal, effect, computed, type Signal, type Computed } from '@philjs/core';
+import { signal, effect, memo, type Signal, type Memo } from '@philjs/core';
+
+// Alias for backward compatibility
+const computed = memo;
+type Computed<T> = Memo<T>;
 
 // ============================================================================
 // Types

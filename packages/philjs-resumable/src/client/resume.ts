@@ -101,7 +101,7 @@ export function resume(config?: ResumableConfig): void {
     try {
       const deserializedState = deserializeState(stateElement);
       if (deserializedState) {
-        globalState.state = deserializedState.raw as SerializedState;
+        globalState.state = deserializedState.raw as unknown as SerializedState;
 
         // Resolve DOM elements
         resolveElements(deserializedState);

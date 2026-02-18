@@ -231,8 +231,8 @@ export function mergeRouters<T extends Record<string, Router>>(
  * });
  *
  * // api.ts
- * import { usersRouter } from './users';
- * import { postsRouter } from './posts';
+ * import { usersRouter } from './users.js';
+ * import { postsRouter } from './posts.js';
  *
  * export const api = createAPI({
  *   users: usersRouter,

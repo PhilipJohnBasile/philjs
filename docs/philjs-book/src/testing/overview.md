@@ -1,8 +1,8 @@
 # Chapter 8: Confidence at Scale
 
-Unit tests are not enough. In a deterministic system, unit tests prove that A + B = C. But the Nexus is not deterministic. It involves async data, distributed systems, and non-deterministic AI agents.
+Unit tests provide deterministic validation of isolated logic ($A + B = C$). However, modern distributed systems involving asynchronous data flows and probabilistic AI agents require a broader validation strategy.
 
-To sleep at night, you need **Confidence at Scale**.
+Establishing confidence in such systems requires a multi-layered testing approach that goes beyond simple assertion logic.
 
 ## The Testing Pyramid (Reimagined)
 
@@ -12,6 +12,9 @@ PhilJS advocates for a pragmatic testing strategy:
 2.  **Unit Tests** (Logic): Pure functions, Signals, and Reducers.
 3.  **Component Tests** (Interaction): The DOM boundary.
 4.  **Fuzz Tests** (Chaos): Throwing garbage at the system.
+
+![Testing Pyramid](../assets/test_pyramid_reimagined.png)
+*Figure 8-1: The PhilJS Testing Pyramid*
 
 ## Unit Testing Signals
 
@@ -55,9 +58,10 @@ test("counter increments", async () => {
 
 ## Fuzzing AI Agents
 
-How do you test an Agent that produces different output every time? You cannot assert `result === "expected"`.
+How do you test an Agent that produces different output every time? You cannot assert `result === "expected"`. You use **Semantic Assertions** and **Fuzzing**.
 
-You use **Semantic Assertions** and **Fuzzing**.
+![AI Fuzzing Architecture](../assets/test_fuzzing_arch.png)
+*Figure 8-2: Agent Fuzzing Loop: Generator -> Agent -> Judge*
 
 The `@philjs/test` package provides `fuzzAI`. It runs your agent against hundreds of generated scenarios and uses a smaller, faster model (the "Judge") to score the output.
 
@@ -83,6 +87,9 @@ This is the only way to ship Autonomous Agents safely.
 ## End-to-End: Playwright
 
 For the final verify, use Playwright. Validating that your "Islands" hydrate correctly is crucial.
+
+![E2E Hydration Check](../assets/test_e2e_hydration.png)
+*Figure 8-3: E2E Verification of Resumable Hydration*
 
 ```typescript
 test("hydration works", async ({ page }) => {

@@ -2,7 +2,7 @@
  * Basic Usage Examples for PhilJS CSS
  */
 
-import { css, compose, cx, keyframes } from '../src';
+import { css, compose, cx, keyframes } from '../src.js';
 
 // ===================================
 // 1. Basic CSS Styles

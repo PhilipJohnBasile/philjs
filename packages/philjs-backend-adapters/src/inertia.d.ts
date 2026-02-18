@@ -31,4 +31,3 @@ export declare class InertiaAdapter {
     }): any;
     render(component: string, props: Record<string, any>): InertiaPage;
 }
-//# sourceMappingURL=inertia.d.ts.map

@@ -116,4 +116,3 @@ export declare function hydrateLazyHandlers(element: Element): void;
  */
 export declare function enhanceForm(form: HTMLFormElement): void;
 export {};
-//# sourceMappingURL=lazy-handlers.d.ts.map

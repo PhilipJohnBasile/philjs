@@ -140,4 +140,3 @@ export declare function performanceBudgetPlugin(options: {
     name: string;
     generateBundle(_options: any, bundle: any): void;
 };
-//# sourceMappingURL=performance-budgets.d.ts.map

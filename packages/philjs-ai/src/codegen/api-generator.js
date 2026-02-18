@@ -28,7 +28,7 @@ export class APIGenerator {
     async generateCRUD(config) {
         const operations = config.operations || ['create', 'read', 'update', 'delete', 'list'];
         const prompt = this.buildCRUDPrompt(config, operations);
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: this.getSystemPrompt(config),
         });
@@ -55,7 +55,7 @@ Return JSON with:
 - confidence: Confidence score 0-100
 - suggestions: Array of schema improvement suggestions
 - potentialRelations: Array of potential relations to other resources`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a database schema design expert.',
         });
@@ -82,7 +82,7 @@ Requirements:
 - Export named schemas
 
 Return only the validation code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are a validation expert using ${library}.`,
         });
@@ -104,7 +104,7 @@ Requirements:
 - Follow ${database} best practices
 
 Return only the model code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: `You are a ${database} database expert.`,
         });
@@ -125,7 +125,7 @@ Pagination: ${config.pagination ? 'Yes' : 'No'}
 Filtering: ${config.filtering ? 'Yes' : 'No'}
 
 Generate complete OpenAPI specification in YAML format.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are an API documentation expert.',
         });
@@ -155,7 +155,7 @@ Generate the route handler with:
 - Proper response format
 
 Return the handler code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a PhilJS API development expert.',
         });
@@ -185,7 +185,7 @@ Requirements:
 - Add JSDoc comments
 
 Return the middleware code.`;
-        const response = await this.provider.generateCompletion(prompt, {
+        const { content: response } = await this.provider.generateCompletion(prompt, {
             ...this.defaultOptions,
             systemPrompt: 'You are a middleware development expert.',
         });

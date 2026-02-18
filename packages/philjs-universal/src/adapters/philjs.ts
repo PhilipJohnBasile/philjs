@@ -4,9 +4,11 @@
  * Converts Universal Components to native PhilJS components
  */
 
-import type { UniversalComponentDef, VNode, RenderContext, SlotContent } from '../protocol';
-import { createSignal, createEffect, type Signal } from '@philjs/core';
-import { Fragment } from '../protocol';
+import type { UniversalComponentDef, VNode, RenderContext, SlotContent } from '../protocol.js';
+import { signal, effect, type Signal } from '@philjs/core';
+const createSignal = signal;
+const createEffect = effect;
+import { Fragment } from '../protocol.js';
 
 export interface PhilJSComponentOptions {
   /** Whether to enable signal-based reactivity */
@@ -42,8 +44,8 @@ function createPhilJSComponent<
   for (const propName of propNames) {
     const def = component.props[propName];
     const initialValue = initialProps[propName] ?? def.default;
-    const [signal, setSignal] = createSignal(initialValue);
-    propSignals.set(propName, [signal, setSignal]);
+    const sig = createSignal(initialValue);
+    propSignals.set(propName, [sig, (v: unknown) => sig.set(v)]);
   }
 
   // Event emitter

@@ -20,4 +20,3 @@ export declare class Robot {
     moveArm(x: number, y: number, z: number): void;
     disconnect(): void;
 }
-//# sourceMappingURL=ros-bridge.d.ts.map

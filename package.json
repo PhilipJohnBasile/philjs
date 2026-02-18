@@ -30,6 +30,7 @@
     "book:packages": "node scripts/generate-package-atlas.mjs",
     "book:export": "node scripts/export-book.mjs",
     "book:links": "node scripts/book-links.mjs",
+    "docs:build": "mdbook build docs/philjs-book",
     "prepare": "turbo run build"
   },
   "workspaces": [

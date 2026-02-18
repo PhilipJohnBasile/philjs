@@ -59,8 +59,8 @@ const stackVariants = variants({
     spacing: 4,
     align: 'stretch',
     justify: 'start',
-    wrap: false,
-    dividers: false,
+    wrap: 'false',
+    dividers: 'false',
   },
 });
 
