@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^27.0.0",
     "typescript": "6.0.0-dev.20251230",
     "vite": "^7.3.0",
