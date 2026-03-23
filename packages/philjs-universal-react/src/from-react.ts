@@ -348,7 +348,7 @@ export function fromReactBatch<
 >(
   components: T,
   options: Omit<FromReactOptions<Record<string, unknown>>, 'id' | 'name'> = {}
-): { [K in keyof T]: UniversalComponent<SignalAwareProps<Parameters<T[K]>[0]>> } {
+): { [K in keyof T]: UniversalComponent<SignalAwareProps<Record<string, unknown>>> } {
   const result: Record<string, UniversalComponent<SignalAwareProps<Record<string, unknown>>>> = {};
 
   for (const [key, component] of Object.entries(components)) {
@@ -358,5 +358,5 @@ export function fromReactBatch<
     });
   }
 
-  return result as { [K in keyof T]: UniversalComponent<SignalAwareProps<Parameters<T[K]>[0]>> };
+  return result as { [K in keyof T]: UniversalComponent<SignalAwareProps<Record<string, unknown>>> };
 }

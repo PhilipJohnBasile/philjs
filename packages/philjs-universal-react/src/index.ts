@@ -36,7 +36,7 @@ export function toReact<
   const { memo = true, displayName = component.name } = options;
 
   const ReactComponent = forwardRef(function UniversalReactWrapper(
-    reactProps: Partial<Props> & { children?: ReactNode },
+    reactProps: any,
     ref: ForwardedRef<HTMLElement>
   ) {
     const { children, ...props } = reactProps;

@@ -63,7 +63,7 @@ export class ResendProvider implements EmailProvider {
           html: html || undefined,
           cc: message.cc ? this.formatAddresses(message.cc) : undefined,
           bcc: message.bcc ? this.formatAddresses(message.bcc) : undefined,
-          reply_to: message.replyTo
+          replyTo: message.replyTo
             ? this.formatAddress(message.replyTo)
             : undefined,
           headers: message.headers,

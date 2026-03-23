@@ -46,22 +46,22 @@ export type {
   ErrorComponent,
   LoadingComponent,
   RouteConfig,
-  RouteMetadata,
   GeneratedRoute,
   RouteManifest,
   ScanResult,
   ScannedFile,
-  RouteNode,
-  PluginOptions,
+  RouteTreeNode,
+  VitePluginOptions,
+  WebpackPluginOptions,
 } from "./types.js";
 
 // Parser - file path parsing utilities
 export {
   parseFilePath,
   parseSegment,
-  isSpecialFile,
   getFileType,
-  shouldIgnore,
+  shouldIgnoreFile,
+  shouldIgnoreSegment,
   SPECIAL_FILES,
   IGNORE_PATTERNS,
   ROUTE_EXTENSIONS,
@@ -70,17 +70,17 @@ export {
 // Scanner - directory scanning
 export {
   scanDirectory,
-  scanFile,
-  buildRouteTree,
-  flattenRoutes,
-  type ScannerConfig,
+  flattenRouteTree,
+  findNodeByPath,
+  getLayoutChain,
 } from "./scanner.js";
+export type { ScannerConfig } from "./types.js";
 
 // Generator - route manifest generation
 export {
-  generateManifest,
-  generateRouteCode,
+  generateRoutes,
+  generateManifestCode,
   generateTypeDefinitions,
-  generateImports,
-  type GeneratorConfig,
+  generateFromScanResult,
 } from "./generator.js";
+export type { GeneratorConfig } from "./types.js";

@@ -182,9 +182,9 @@ export function toReactWithRef<P extends Record<string, unknown>>(
 
   const displayName = component.name || 'UniversalComponent';
 
-  const UniversalWrapperWithRef = forwardRef<HTMLElement, P>(
+  const UniversalWrapperWithRef = forwardRef(
     function UniversalWrapperWithRef(
-      props: P,
+      props: any,
       forwardedRef: ForwardedRef<HTMLElement>
     ): ReactNode {
       const containerRef = useRef<HTMLElement | null>(null);
@@ -256,7 +256,7 @@ export function toReactWithRef<P extends Record<string, unknown>>(
 
   UniversalWrapperWithRef.displayName = `Universal(${displayName})`;
 
-  return UniversalWrapperWithRef;
+  return UniversalWrapperWithRef as any;
 }
 
 /**
@@ -399,5 +399,5 @@ export function toReactBatch<
     result[key] = toReact(component, options);
   }
 
-  return result as { [K in keyof T]: FC<T[K] extends UniversalComponent<infer P> ? P : never> };
+  return result as any;
 }

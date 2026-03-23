@@ -8,7 +8,7 @@
  * - Subscription and invoice management
  */
 
-import { Client, Environment, ApiError } from 'square';
+import { SquareClient as Client, SquareEnvironment as Environment, SquareError as ApiError } from 'square';
 import { createHmac } from 'crypto';
 import {
   PaymentError,
@@ -43,7 +43,8 @@ export interface SquareConfig {
 
 export class SquareProvider implements PaymentProvider {
   readonly name = 'square' as const;
-  private client: Client;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private client: any;
   private locationId: string;
   private webhookSignatureKey: string;
 
@@ -52,7 +53,7 @@ export class SquareProvider implements PaymentProvider {
       accessToken: config.accessToken,
       environment:
         config.environment === 'production' ? Environment.Production : Environment.Sandbox,
-    });
+    } as any);
     this.locationId = config.locationId;
     this.webhookSignatureKey = config.webhookSignatureKey;
   }
@@ -63,7 +64,7 @@ export class SquareProvider implements PaymentProvider {
 
   async createCheckout(request: CreateCheckoutRequest): Promise<CheckoutSession> {
     try {
-      const paymentLinkRequest: Parameters<typeof this.client.checkoutApi.createPaymentLink>[0] = {
+      const paymentLinkRequest: Record<string, any> = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         quickPay: {
           name: request.lineItems[0]?.name || 'Order',
@@ -131,7 +132,7 @@ export class SquareProvider implements PaymentProvider {
 
   async createSubscription(request: CreateSubscriptionRequest): Promise<Subscription> {
     try {
-      const subscriptionRequest: Parameters<typeof this.client.subscriptionsApi.createSubscription>[0] = {
+      const subscriptionRequest: Record<string, any> = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         locationId: this.locationId,
         planVariationId: request.priceId,
@@ -215,7 +216,7 @@ export class SquareProvider implements PaymentProvider {
 
   async createCustomer(request: CreateCustomerRequest): Promise<Customer> {
     try {
-      const customerRequest: Parameters<typeof this.client.customersApi.createCustomer>[0] = {
+      const customerRequest: Record<string, any> = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         emailAddress: request.email,
       };
@@ -265,7 +266,7 @@ export class SquareProvider implements PaymentProvider {
     updates: Partial<CreateCustomerRequest>
   ): Promise<Customer> {
     try {
-      const updateRequest: Parameters<typeof this.client.customersApi.updateCustomer>[1] = {};
+      const updateRequest: Record<string, any> = {};
       if (updates.email) {
         updateRequest.emailAddress = updates.email;
       }
@@ -453,7 +454,7 @@ export class SquareProvider implements PaymentProvider {
 
   async refund(request: RefundRequest): Promise<Refund> {
     try {
-      const refundRequest: Parameters<typeof this.client.refundsApi.refundPayment>[0] = {
+      const refundRequest: Record<string, any> = {
         idempotencyKey: request.idempotencyKey || this.generateIdempotencyKey(),
         paymentId: request.paymentId,
         amountMoney: request.amount

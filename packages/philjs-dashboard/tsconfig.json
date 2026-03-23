@@ -14,8 +14,9 @@
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {}
   },
-  "include": ["src/**/*", "src/**/*.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

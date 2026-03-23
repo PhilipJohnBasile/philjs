@@ -10,10 +10,11 @@
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "webxr"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts", "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",

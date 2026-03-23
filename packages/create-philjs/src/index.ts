@@ -22,6 +22,7 @@ const _TEMPLATES = {
 };
 
 async function main() {
+  console.log(`
 ╔═══════════════════════════════════════════╗
 ║                                           ║
 ║   🚀 Welcome to PhilJS Framework          ║

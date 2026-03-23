@@ -302,7 +302,6 @@ export class MetricsCollector {
       };
 
       webVitalsModule.onLCP(handleMetric);
-      webVitalsModule.onFID(handleMetric);
       webVitalsModule.onCLS(handleMetric);
       webVitalsModule.onFCP(handleMetric);
       webVitalsModule.onTTFB(handleMetric);

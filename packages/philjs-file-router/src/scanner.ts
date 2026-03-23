@@ -469,11 +469,11 @@ export function flattenRouteTree(node: RouteTreeNode): ScannedFile[] {
  */
 export function findNodeByPath(tree: RouteTreeNode, path: string): RouteTreeNode | null {
   const segments = path.split("/").filter(Boolean);
-  let current: RouteTreeNode | undefined = tree;
+  let current: RouteTreeNode = tree;
 
   for (const segment of segments) {
     // Check regular children
-    let child = current.children.get(segment);
+    let child: RouteTreeNode | undefined = current.children.get(segment);
 
     // Check parallel slots
     if (!child && segment.startsWith("@")) {
@@ -496,7 +496,7 @@ export function findNodeByPath(tree: RouteTreeNode, path: string): RouteTreeNode
 export function getLayoutChain(tree: RouteTreeNode, path: string): ScannedFile[] {
   const layouts: ScannedFile[] = [];
   const segments = path.split("/").filter(Boolean);
-  let current: RouteTreeNode | undefined = tree;
+  let current: RouteTreeNode = tree;
 
   // Check root layout
   if (current.layout) {
@@ -504,7 +504,7 @@ export function getLayoutChain(tree: RouteTreeNode, path: string): ScannedFile[]
   }
 
   for (const segment of segments) {
-    let child = current.children.get(segment);
+    let child: RouteTreeNode | undefined = current.children.get(segment);
 
     if (!child && segment.startsWith("@")) {
       child = current.slots.get(segment.slice(1));

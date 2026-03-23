@@ -1,5 +1,7 @@
 import sgMail from '@sendgrid/mail';
-import type { MailDataRequired } from '@sendgrid/mail';
+
+// MailDataRequired moved to @sendgrid/helpers in latest versions
+type MailDataRequired = Parameters<typeof sgMail.send>[0] extends (infer T)[] ? T : Parameters<typeof sgMail.send>[0];
 import type {
   EmailProvider,
   EmailMessage,

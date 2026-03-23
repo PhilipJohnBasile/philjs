@@ -11,8 +11,6 @@ export * from './csrf.js';
 export * from './headers.js';
 // Input Sanitization
 export * from './sanitize.js';
-// Types
-export * from './types.js';
 // Auto SAST
 export * from './auto-sast.js';
 //# sourceMappingURL=index.js.map

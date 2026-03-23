@@ -7,6 +7,6 @@
     "jsxImportSource": "@philjs/core",
     "noEmitOnError": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
 }

@@ -16,6 +16,8 @@
 
 // WebXR type declarations (to avoid dependency on @types/webxr)
 declare global {
+  type XRTargetRayMode = 'gaze' | 'tracked-pointer' | 'screen' | 'transient-pointer';
+
   interface XRSession extends EventTarget {
     readonly inputSources: XRInputSourceArray;
     readonly renderState: XRRenderState;

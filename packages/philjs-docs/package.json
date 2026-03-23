@@ -4,6 +4,14 @@
   "private": true,
   "description": "PhilJS Documentation Site - philjs.dev",
   "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
   "scripts": {
     "dev": "node --import tsx scripts/dev.ts",
     "build": "node --import tsx scripts/build.ts",

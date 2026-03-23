@@ -144,7 +144,7 @@ function SearchModal(props: { config: DocsConfig; onClose: () => void }) {
                     placeholder="Search docs..."
                     value={query()}
                     onInput={(e) => query.set((e.target as HTMLInputElement).value)}
-                    autofocus
+                    autoFocus
                 />
                 <ul class="search-results">
                     {results().map((result) => (

@@ -9,7 +9,7 @@ export interface Edge<T> { node: T; cursor: string; }
 export interface Connection<T> { edges: Edge<T>[]; pageInfo: PageInfo; totalCount?: number; }
 
 export function useRelayPagination<T>(
-    query: (variables: { first?: number; after?: string; last?: number; before?: string }) => Promise<Connection<T>>,
+    query: (variables: { first?: number; after?: string | undefined; last?: number; before?: string | undefined }) => Promise<Connection<T>>,
     pageSize = 10
 ) {
     const data = signal<T[]>([]);
@@ -17,7 +17,7 @@ export function useRelayPagination<T>(
     const loading = signal(true);
     const error = signal<Error | null>(null);
 
-    const fetch = async (variables = { first: pageSize }) => {
+    const fetch = async (variables: { first?: number; after?: string | undefined; last?: number; before?: string | undefined } = { first: pageSize }) => {
         loading.set(true);
         try {
             const result = await query(variables);

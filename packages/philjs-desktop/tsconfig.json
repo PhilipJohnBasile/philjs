@@ -4,6 +4,6 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.bench.ts", "src/test-setup.ts", "src/electron/*", "src/electron/**/*", "src/system/notification.ts", "src/system/clipboard.ts"]
 }

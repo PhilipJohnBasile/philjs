@@ -13,6 +13,6 @@
     "skipLibCheck": true,
     "verbatimModuleSyntax": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

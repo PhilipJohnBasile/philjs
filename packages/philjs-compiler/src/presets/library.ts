@@ -166,19 +166,15 @@ export function createLibraryViteConfig(
         preserveModules: true,
         preserveModulesRoot: 'src',
         exports: 'named',
-        // Interop with CommonJS
-        interop: 'auto',
       } : {
         // Bundle everything
         exports: 'named',
-        interop: 'auto',
       },
 
       // Tree shaking
       treeshake: {
         moduleSideEffects: config.sideEffects,
         propertyReadSideEffects: false,
-        preset: 'smallest',
       },
     },
 

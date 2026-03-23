@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm update:*)",
+      "Bash(git status:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm view:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx tsgo:*)",
+      "Bash(pnpm turbo:*)",
+      "Bash(grep -r types.*node /c/Users/Phili/Git/philjs/packages/philjs-*/tsconfig.json)",
+      "Bash(grep -E \"philjs-\\(quantum|enterprise|templates|webgpu|xr\\)$\")",
+      "Bash(find /c/Users/Phili/Git/philjs/packages/*/src -type f \\\\\\(-name *.go -o -name *.py -o -name *.rs -o -name *.swift -o -name *.zig -o -name *.kt -o -name *.java -o -name *.php -o -name *.cs -o -name *.rb -o -name *.ex -o -name *.c -o -name *.cpp -o -name *.h -o -name *.hpp \\\\\\))",
+      "Bash(wc -l /c/Users/Phili/Git/philjs/packages/*/tsconfig.json)",
+      "Bash(ls:*)",
+      "Bash(sed 's/:build.*//')",
+      "Bash(sed 's/[^:]*:build: //')",
+      "Bash(find packages/*/src -type f \\\\\\(-name *.go -o -name *.py -o -name *.rs -o -name *.swift -o -name *.zig -o -name *.kt -o -name *.java -o -name *.php -o -name *.cs -o -name *.rb -o -name *.ex -o -name *.c -o -name *.cpp -o -name *.scala -o -name *.lua -o -name *.hs \\\\\\))",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(node node_modules/@typescript/native-preview/bin/tsgo.js --version)",
+      "Bash(node ../../node_modules/@typescript/native-preview/bin/tsgo.js --noEmit)",
+      "Bash(node node_modules/@typescript/native-preview/bin/tsgo.js --noEmit)",
+      "Bash(grep -n export C:/Users/Phili/Git/philjs/node_modules/.pnpm/cron-parser@5*/node_modules/cron-parser/dist/index.d.ts)",
+      "Bash(grep -n \"export.*MailDataRequired\\\\|MailDataRequired\" C:/Users/Phili/Git/philjs/node_modules/.pnpm/@sendgrid+mail@8*/node_modules/@sendgrid/mail/src/mail.d.ts)",
+      "Bash(grep \"MailDataRequired\" C:/Users/Phili/Git/philjs/node_modules/.pnpm/@sendgrid+helpers@*/node_modules/@sendgrid/helpers/classes/mail.d.ts)",
+      "Bash(pnpm run:*)",
+      "Bash(for pkg:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/Phili/Git/philjs/packages/$pkg/**)",
+      "Bash(done)",
+      "Bash(do)",
+      "Bash(file=\"C:/Users/Phili/Git/philjs/packages/$pkg/package.json\")",
+      "Bash(sed -i 's|\"\"build\"\": \"\"rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript\"\"|\"\"build\"\": \"\"tsc\"\"|' \"$file\")",
+      "Bash(echo \"Updated $pkg\")",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(pnpm:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(./node_modules/.bin/tsc)"
+    ]
+  }
+}

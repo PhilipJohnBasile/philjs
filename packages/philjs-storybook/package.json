@@ -44,7 +44,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build": "tsc",
     "test": "vitest run",
     "lint": "npm run typecheck",
     "typecheck": "tsc --noEmit"

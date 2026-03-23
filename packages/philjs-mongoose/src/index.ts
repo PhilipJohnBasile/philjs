@@ -20,10 +20,12 @@ import { signal, memo, effect, batch, type Signal, type Memo } from '@philjs/cor
 // Alias for backward compatibility
 const computed = memo;
 type Computed<T> = Memo<T>;
+// FilterQuery was removed in Mongoose 9; define a local alias
+type FilterQuery<T> = Record<string, unknown> & Partial<T>;
+
 import type {
   Model,
   Document,
-  FilterQuery,
   UpdateQuery,
   QueryOptions,
   Connection,
@@ -1644,7 +1646,7 @@ export function useTextSearch<T extends Document>(
       if (caseSensitive !== undefined) textSearch.$caseSensitive = caseSensitive;
       if (diacriticSensitive !== undefined) textSearch.$diacriticSensitive = diacriticSensitive;
 
-      let mongoQuery = model.find({ $text: textSearch } as FilterQuery<T>);
+      let mongoQuery = model.find({ $text: textSearch } as unknown as FilterQuery<T>);
 
       if (queryOptions.select) {
         mongoQuery = mongoQuery.select({ ...(queryOptions.select as Record<string, unknown>), score: { $meta: 'textScore' } } as any);
@@ -1967,7 +1969,7 @@ export function createSchema<T>(
     ...options,
   });
 
-  return schema as Schema<T>;
+  return schema as unknown as Schema<T>;
 }
 
 /**

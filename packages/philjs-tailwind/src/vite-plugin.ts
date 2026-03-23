@@ -28,7 +28,7 @@ export function philjsTailwindVite(options: PhilJSTailwindViteOptions = {}): Plu
     name: 'philjs-tailwind',
     enforce: 'pre',
 
-    async config(_config, { mode }): Promise<Partial<UserConfig>> {
+    async config(_config, { mode }) {
       const tailwindcss = (await import('tailwindcss')).default;
       const autoprefixer = (await import('autoprefixer')).default;
       return {
@@ -36,14 +36,14 @@ export function philjsTailwindVite(options: PhilJSTailwindViteOptions = {}): Plu
           postcss: {
             plugins: [
               tailwindcss,
-              autoprefixer,
+              autoprefixer as any,
             ],
           },
         },
         optimizeDeps: {
           include: ['tailwindcss'],
         },
-      };
+      } satisfies Partial<UserConfig> as Partial<UserConfig>;
     },
 
     transform(code, id) {

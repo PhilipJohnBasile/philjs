@@ -382,7 +382,7 @@ function loadRoute(routeId) {
  * Webpack loader for route files.
  * Adds route metadata to modules.
  */
-export function philjsRouteLoader(this: any, source: string): string {
+export function philjsRouteLoader(this: any, source: string): void {
   const callback = this.async();
   const resourcePath = this.resourcePath;
 

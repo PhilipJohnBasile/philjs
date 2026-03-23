@@ -110,28 +110,42 @@ function generateRouteFromFile(
   );
 
   // Get associated files
-  const loadingPath = (file as any).loadingFile?.relativePath;
-  const errorPath = (file as any).errorFile?.relativePath;
-  const notFoundPath = (file as any).notFoundFile?.relativePath;
+  const loadingPath: string | undefined = (file as any).loadingFile?.relativePath;
+  const errorPath: string | undefined = (file as any).errorFile?.relativePath;
+  const notFoundPath: string | undefined = (file as any).notFoundFile?.relativePath;
+  const parentId = getParentRouteId(file, tree);
 
-  return {
+  const route: GeneratedRoute = {
     id: file.id,
     path,
     filePath: file.relativePath,
     absolutePath: file.absolutePath,
     params: parsed.params,
     groups: parsed.groups,
-    slot: parsed.slots[0],
-    parentId: getParentRouteId(file, tree),
     childIds: getChildRouteIds(file, tree),
     layoutChain: layoutChain.map((l) => l.relativePath),
-    loadingPath,
-    errorPath,
-    notFoundPath,
     isIndex,
     isCatchAll,
     priority: file.priority,
   };
+
+  if (parsed.slots[0] !== undefined) {
+    route.slot = parsed.slots[0];
+  }
+  if (parentId !== undefined) {
+    route.parentId = parentId;
+  }
+  if (loadingPath !== undefined) {
+    route.loadingPath = loadingPath;
+  }
+  if (errorPath !== undefined) {
+    route.errorPath = errorPath;
+  }
+  if (notFoundPath !== undefined) {
+    route.notFoundPath = notFoundPath;
+  }
+
+  return route;
 }
 
 /**

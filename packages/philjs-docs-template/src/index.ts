@@ -5,7 +5,8 @@
  */
 
 import { signal, memo } from '@philjs/core';
-import { Router, Route } from '@philjs/router';
+import { createAppRouter } from '@philjs/router';
+import type { Route } from '@philjs/router';
 
 export interface DocsConfig {
     title: string;
@@ -117,24 +118,22 @@ export async function renderMarkdown(content: string, config?: MarkdownConfig): 
     const { marked } = await import('marked');
     const shiki = await import('shiki');
 
-    const highlighter = await shiki.getHighlighter({
-        theme: config?.theme || 'github-dark',
+    const highlighter = await shiki.createHighlighter({
+        themes: [config?.theme || 'github-dark'],
         langs: ['typescript', 'javascript', 'jsx', 'tsx', 'html', 'css', 'bash', 'json'],
     });
 
-    // Configure marked with shiki
-    marked.setOptions({
-        highlight: (code, lang) => {
-            return highlighter.codeToHtml(code, { lang: lang || 'text' });
+    // Configure marked with shiki renderer
+    const renderer = {
+        code({ text, lang }: { text: string; lang?: string }) {
+            return highlighter.codeToHtml(text, { lang: lang || 'text', theme: config?.theme || 'github-dark' });
         },
-    });
+    };
+
+    marked.use({ renderer });
 
     return marked.parse(content);
 }
 
 // Re-export components
 export { DocsLayout } from './theme/Layout.js';
-export { DocPage } from './theme/DocPage.js';
-export { Sidebar } from './theme/Sidebar.js';
-export { NavBar } from './theme/NavBar.js';
-export { SearchBox } from './theme/SearchBox.js';

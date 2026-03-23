@@ -301,4 +301,4 @@ export function NavLink(
 }
 
 // Export utilities
-export { prefetch, isExternalUrl, isActive, isActivePrefix };
+export { isExternalUrl, isActive, isActivePrefix };

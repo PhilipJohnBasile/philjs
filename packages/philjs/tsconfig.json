@@ -10,10 +10,13 @@
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false,
+    "baseUrl": ".",
+    "paths": {}
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts", "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",

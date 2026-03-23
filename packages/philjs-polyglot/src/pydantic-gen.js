@@ -6,7 +6,7 @@ exports.pydanticToTs = pydanticToTs;
  * Supports: str, int, float, bool, List, Dict, Optional, and basic class inheritance.
  */
 function pydanticToTs(pydanticModelCode) {
-    const lines = pydanticModelCode.split('\\n');
+    const lines = pydanticModelCode.split('\n');
     const buffer = [];
     let currentInterface = '';
     let inDocstring = false;
@@ -30,54 +30,49 @@ function pydanticToTs(pydanticModelCode) {
         }
         // Match Class Definition
         // class User(BaseModel):
-        const classMatch = line.match(/^class\\s+(\\w+)(?:\\((.*?)\\))?:/);
+        const classMatch = line.match(/^class\s+(\w+)(?:\((.*?)\))?:/);
         if (classMatch) {
             if (currentInterface)
-                buffer.push(currentInterface + '}\\n');
+                buffer.push(currentInterface + '}\n');
             const className = classMatch[1];
-            const extendsClause = classMatch[2] && classMatch[2] !== 'BaseModel' ?  : ;
-            ` extends \${classMatch[2]}\` : '';
-            currentInterface = \`export interface \${className}\${extendsClause} {\\n\`;
+            const extendsClause = classMatch[2] && classMatch[2] !== 'BaseModel' ? ` extends ${classMatch[2]}` : '';
+            currentInterface = `export interface ${className}${extendsClause} {\n`;
             continue;
         }
-
         // Match Fields
         // name: str
         // users: List[User] = []
         // meta: Dict[str, Any]
-        const fieldMatch = line.match(/^(\\w+):\\s+([\\w\\[\\],\\s]+)(?:\\s*=\\s*.+)?$/);
+        const fieldMatch = line.match(/^(\w+):\s+([\w\[\],\s]+)(?:\s*=\s*.+)?$/);
         if (fieldMatch && currentInterface) {
             const [_, name, type] = fieldMatch;
             const tsType = mapPythonType(type);
-            const doc = currentDocstring.length ? \`  /** \${currentDocstring.join(' ')} */\\n\` : '';
-            currentInterface += \`\${doc}  \${name}: \${tsType};\\n\`;
+            const doc = currentDocstring.length ? `  /** ${currentDocstring.join(' ')} */\n` : '';
+            currentInterface += `${doc}  ${name}: ${tsType};\n`;
             currentDocstring = []; // Reset docs
         }
     }
-
-    if (currentInterface) buffer.push(currentInterface + '}');
-
-    return buffer.join('\\n');
+    if (currentInterface)
+        buffer.push(currentInterface + '}');
+    return buffer.join('\n');
 }
-
-function mapPythonType(pyType: string): string {
+function mapPythonType(pyType) {
     pyType = pyType.trim();
-
     // Recursive types (List[str], Dict[str, int])
-    const listMatch = pyType.match(/^List\\[(.+)\\]$/);
-    if (listMatch) return \`\${mapPythonType(listMatch[1])}[]\`;
-
-    const dictMatch = pyType.match(/^Dict\\[(.+),\\s*(.+)\\]$/);
-    if (dictMatch) return \`Record<\${mapPythonType(dictMatch[1])}, \${mapPythonType(dictMatch[2])}>\`;
-
-    const optionalMatch = pyType.match(/^Optional\\[(.+)\\]$/);
-    if (optionalMatch) return \`\${mapPythonType(optionalMatch[1])} | null\`;
-
-    const unionMatch = pyType.match(/^Union\\[(.+)\\]$/);
-    if (unionMatch) return unionMatch[1].split(',').map(t => mapPythonType(t)).join(' | ');
-
+    const listMatch = pyType.match(/^List\[(.+)\]$/);
+    if (listMatch)
+        return `${mapPythonType(listMatch[1])}[]`;
+    const dictMatch = pyType.match(/^Dict\[(.+),\s*(.+)\]$/);
+    if (dictMatch)
+        return `Record<${mapPythonType(dictMatch[1])}, ${mapPythonType(dictMatch[2])}>`;
+    const optionalMatch = pyType.match(/^Optional\[(.+)\]$/);
+    if (optionalMatch)
+        return `${mapPythonType(optionalMatch[1])} | null`;
+    const unionMatch = pyType.match(/^Union\[(.+)\]$/);
+    if (unionMatch)
+        return unionMatch[1].split(',').map(t => mapPythonType(t)).join(' | ');
     // Primitives
-    const map: Record<string, string> = {
+    const map = {
         'str': 'string',
         'int': 'number',
         'float': 'number',
@@ -85,11 +80,6 @@ function mapPythonType(pyType: string): string {
         'Any': 'any',
         'None': 'null'
     };
-
     return map[pyType] || pyType;
-}
-            ;
-        }
-    }
 }
 //# sourceMappingURL=pydantic-gen.js.map

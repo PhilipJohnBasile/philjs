@@ -14,8 +14,9 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "exactOptionalPropertyTypes": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+    "paths": {}
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

@@ -8,6 +8,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@philjs/core"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

@@ -17,7 +17,7 @@ import type { ErrorFallbackProps } from '../types.js';
  */
 export interface ErrorBoundaryProps {
   /** Child components to render */
-  children: ReactNode;
+  children?: ReactNode;
 
   /** Fallback component to render when an error occurs */
   fallback?: ComponentType<ErrorFallbackProps>;

@@ -3,6 +3,40 @@
  * Production-ready neural signal processing and device integration
  */
 
+// Web Bluetooth API type declarations
+declare global {
+  interface Navigator {
+    bluetooth: {
+      requestDevice(options: {
+        filters?: Array<{ services?: string[]; namePrefix?: string; name?: string }>;
+        optionalServices?: string[];
+      }): Promise<BluetoothDevice>;
+    };
+  }
+
+  interface BluetoothDevice {
+    gatt?: BluetoothRemoteGATTServer;
+    name?: string;
+    id: string;
+  }
+
+  interface BluetoothRemoteGATTServer {
+    connect(): Promise<BluetoothRemoteGATTServer>;
+    getPrimaryService(service: string): Promise<BluetoothRemoteGATTService>;
+    connected: boolean;
+  }
+
+  interface BluetoothRemoteGATTService {
+    getCharacteristic(characteristic: string): Promise<BluetoothRemoteGATTCharacteristic>;
+  }
+
+  interface BluetoothRemoteGATTCharacteristic {
+    value: DataView | null;
+    startNotifications(): Promise<BluetoothRemoteGATTCharacteristic>;
+    addEventListener(type: string, listener: (event: Event & { target: BluetoothRemoteGATTCharacteristic }) => void): void;
+  }
+}
+
 // ============================================================================
 // Types and Interfaces
 // ============================================================================

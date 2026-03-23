@@ -3,7 +3,7 @@
  * Includes a11y and security plugins.
  */
 
-export default {
+const config: Record<string, unknown> = {
   plugins: {
     "jsx-a11y": (await import("eslint-plugin-jsx-a11y")).default,
     "security": (await import("eslint-plugin-security")).default
@@ -21,3 +21,5 @@ export default {
     "security/detect-unsafe-regex": "error"
   }
 };
+
+export default config;

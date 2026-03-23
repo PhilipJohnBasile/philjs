@@ -251,8 +251,6 @@ export function createProductionViteConfig(
         // Aggressive tree shaking
         moduleSideEffects: false,
         propertyReadSideEffects: false,
-        // Assume all imports are side-effect free unless marked
-        preset: 'smallest',
       },
     },
 

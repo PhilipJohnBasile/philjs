@@ -14,9 +14,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "skipLibCheck": true,
     "paths": {},
-    "baseUrl": ".",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }
