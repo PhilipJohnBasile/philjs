@@ -267,6 +267,21 @@ importers:
       '@philjs/ssr':
         specifier: workspace:*
         version: link:../../packages/philjs-ssr
+      workbox-cacheable-response:
+        specifier: ^7.3.0
+        version: 7.4.0
+      workbox-expiration:
+        specifier: ^7.3.0
+        version: 7.4.0
+      workbox-precaching:
+        specifier: ^7.3.0
+        version: 7.4.0
+      workbox-routing:
+        specifier: ^7.3.0
+        version: 7.4.0
+      workbox-strategies:
+        specifier: ^7.3.0
+        version: 7.4.0
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
@@ -10418,9 +10433,6 @@ packages:
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
 
-  '@types/node@25.0.3':
-    resolution: {integrity: sha512-W609buLVRVmeW693xKfzHeIV6nJGGz98uCPfeXI1ELMLXVeKYZ9m15fAMSaUPBHYLGFsVRcMmSCksQOrZV9BYA==}
-
   '@types/node@25.5.0':
     resolution: {integrity: sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==}
 
@@ -17688,9 +17700,6 @@ packages:
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
     engines: {node: '>= 0.4'}
-
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
@@ -25032,17 +25041,13 @@ snapshots:
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 25.0.3
+      '@types/node': 25.5.0
 
   '@types/node@12.20.55': {}
 
   '@types/node@14.18.63': {}
 
   '@types/node@16.18.11': {}
-
-  '@types/node@25.0.3':
-    dependencies:
-      undici-types: 7.16.0
 
   '@types/node@25.5.0':
     dependencies:
@@ -25134,7 +25139,7 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 25.0.3
+      '@types/node': 25.5.0
 
   '@types/three@0.183.1':
     dependencies:
@@ -31718,7 +31723,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 25.0.3
+      '@types/node': 25.5.0
       long: 5.3.2
 
   protocol-buffers-schema@3.6.0: {}
@@ -33917,8 +33922,6 @@ snapshots:
       has-bigints: 1.1.0
       has-symbols: 1.1.0
       which-boxed-primitive: 1.1.1
-
-  undici-types@7.16.0: {}
 
   undici-types@7.18.2: {}
 

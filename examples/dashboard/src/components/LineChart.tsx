@@ -1,5 +1,5 @@
 import { memo } from "@philjs/core";
-import { MetricData } from "../utils/data";
+import type { MetricData } from "../utils/data";
 
 interface LineChartProps {
   data: MetricData[];

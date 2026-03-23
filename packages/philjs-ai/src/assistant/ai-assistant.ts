@@ -17,6 +17,7 @@ import { RefactoringEngine, type RefactoringSuggestion, type RefactoringAnalysis
 import { DocumentationGenerator } from '../docs/documentation-generator.js';
 import { AdvancedTestGenerator, type GeneratedTestSuite } from '../testing/advanced-test-generator.js';
 import { extractCode, extractJSON } from '../utils/parser.js';
+import { autoDetectProvider } from '../providers/index.js';
 
 // ============================================================================
 // Types
@@ -908,7 +909,6 @@ export function createAIAssistant(config: AssistantConfig): AIAssistant {
 export function createAutoAssistant(
   projectContext?: ProjectContext
 ): AIAssistant {
-  const { autoDetectProvider } = require('../providers/index.js');
   const config: AssistantConfig = {
     provider: autoDetectProvider(),
   };

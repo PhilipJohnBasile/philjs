@@ -74,3 +74,98 @@ export * from './copilot.js';
 
 // VSCode extension
 export * from './vscode/extension.js';
+
+// ---------------------------------------------------------------------------
+// Lightweight AI client, prompt specs, and simple providers
+// ---------------------------------------------------------------------------
+
+/**
+ * A minimal provider interface used by createAI / providers helpers.
+ */
+export interface SimpleAIProvider {
+  name: string;
+  generate(prompt: string, options?: Record<string, unknown>): Promise<string>;
+}
+
+/**
+ * Prompt specification – a declarative description of an AI prompt.
+ */
+export interface PromptSpec {
+  name: string;
+  system?: string;
+  input: Record<string, unknown>;
+  output: Record<string, unknown>;
+  policy?: { pii?: 'block' | 'redact' | 'audit' };
+}
+
+/**
+ * Create a type-safe prompt specification.
+ */
+export function createPrompt(spec: PromptSpec): PromptSpec {
+  return spec;
+}
+
+/**
+ * Built-in simple providers for quick prototyping and testing.
+ */
+export const providers = {
+  /**
+   * Echo provider – returns the input prefixed with "Echo: ".
+   * Useful for testing without a real AI backend.
+   */
+  echo(): SimpleAIProvider {
+    return {
+      name: 'echo',
+      async generate(prompt: string) {
+        return `Echo: ${prompt}`;
+      },
+    };
+  },
+
+  /**
+   * HTTP provider – sends a POST request to the given URL and returns
+   * the `text` field from the JSON response.
+   */
+  http(url: string): SimpleAIProvider {
+    return {
+      name: 'http',
+      async generate(prompt: string, options?: Record<string, unknown>) {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ prompt, ...options }),
+        });
+        const json = await res.json() as { text: string };
+        return json.text;
+      },
+    };
+  },
+};
+
+/**
+ * Result returned by `ai.generate()`.
+ */
+export interface AIResult {
+  text: string;
+}
+
+/**
+ * Lightweight AI client created by `createAI`.
+ */
+export interface AIClient {
+  generate(spec: PromptSpec, input: unknown, options?: Record<string, unknown>): Promise<AIResult>;
+}
+
+/**
+ * Create a lightweight AI client bound to a provider.
+ */
+export function createAI(provider: SimpleAIProvider): AIClient {
+  return {
+    async generate(spec: PromptSpec, input: unknown, options?: Record<string, unknown>): Promise<AIResult> {
+      const systemPrefix = spec.system ? `${spec.system}\n\n` : '';
+      const prompt = `${systemPrefix}${String(input)}`;
+      const text = await provider.generate(prompt, options);
+      return { text };
+    },
+  };
+}

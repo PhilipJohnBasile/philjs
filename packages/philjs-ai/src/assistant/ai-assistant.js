@@ -15,6 +15,7 @@ import { RefactoringEngine } from '../refactor/refactoring-engine.js';
 import { DocumentationGenerator } from '../docs/documentation-generator.js';
 import { AdvancedTestGenerator } from '../testing/advanced-test-generator.js';
 import { extractCode, extractJSON } from '../utils/parser.js';
+import { autoDetectProvider } from '../providers/index.js';
 // ============================================================================
 // AI Development Assistant
 // ============================================================================
@@ -614,7 +615,6 @@ export function createAIAssistant(config) {
  * Create an AI assistant with auto-detected provider
  */
 export function createAutoAssistant(projectContext) {
-    const { autoDetectProvider } = require('../providers/index.js');
     const config = {
         provider: autoDetectProvider(),
     };

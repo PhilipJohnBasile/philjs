@@ -2,6 +2,7 @@
 export {
   signal,
   memo,
+  computed,
   linkedSignal,
   resource,
   effect,
