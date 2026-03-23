@@ -27,10 +27,10 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@react-native-async-storage/async-storage": "^2.1.2",
-    "@types/node": "^25.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@react-native-async-storage/async-storage": "^3.0.1",
+    "@types/node": "^25.5.0",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "license": "MIT",
   "author": "PhilJS Team",

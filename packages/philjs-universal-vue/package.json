@@ -56,10 +56,10 @@
     "vue": ">=3.0.0"
   },
   "devDependencies": {
-    "vue": "^3.5.15",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1",
+    "vue": "^3.5.30"
   },
   "engines": {
     "node": ">=24"

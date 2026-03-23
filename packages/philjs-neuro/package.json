@@ -27,10 +27,10 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.5.0",
     "@types/web-bluetooth": "^0.0.21",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "license": "MIT",
   "author": "PhilJS Team",

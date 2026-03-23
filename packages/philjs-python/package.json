@@ -48,14 +48,14 @@
     "execa": "^9.6.1"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
-    "@philjs/core": "workspace:*",
-    "@philjs/ai": "workspace:*"
+    "@philjs/ai": "workspace:*",
+    "@philjs/core": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@philjs/core": {

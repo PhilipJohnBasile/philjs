@@ -36,18 +36,18 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "immer": "^11.1.0",
-    "zustand": "^5.0.9"
+    "immer": "^11.1.4",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",
-    "@philjs/ui": "workspace:*",
-    "@philjs/dnd": "workspace:*"
+    "@philjs/dnd": "workspace:*",
+    "@philjs/ui": "workspace:*"
   },
   "engines": {
     "node": ">=24"

@@ -38,8 +38,8 @@
     "@philjs/core": "workspace:*"
   },
   "peerDependencies": {
-    "yjs": "^13.6.28",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "yjs": "^13.6.28"
   },
   "peerDependenciesMeta": {
     "yjs": {
@@ -50,8 +50,8 @@
     }
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "keywords": [
     "philjs",

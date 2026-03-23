@@ -59,12 +59,12 @@
     "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "esbuild": "^0.27.2",
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.27.4",
     "gzip-size": "^7.0.0",
-    "terser": "^5.27.0",
+    "terser": "^5.46.1",
     "tsx": "^4.21.0",
-    "typescript": "6.0.0-dev.20251230"
+    "typescript": "6.0.2"
   },
   "keywords": [
     "philjs",

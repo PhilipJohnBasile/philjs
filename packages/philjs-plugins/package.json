@@ -17,7 +17,7 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230"
+    "typescript": "6.0.2"
   },
   "files": [
     "dist",

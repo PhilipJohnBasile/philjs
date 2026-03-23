@@ -28,12 +28,12 @@
     "drizzle-orm": ">=0.29.0"
   },
   "devDependencies": {
-    "drizzle-orm": "^0.29.0",
-    "better-sqlite3": "^9.0.0",
-    "@types/better-sqlite3": "^7.0.0",
-    "vitest": "^1.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "tsup": "^8.0.0"
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.8.0",
+    "drizzle-orm": "^0.45.1",
+    "tsup": "^8.5.1",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "keywords": [
     "philjs",

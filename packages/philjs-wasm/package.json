@@ -38,7 +38,6 @@
     "lint": "npm run typecheck",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {},
   "peerDependencies": {
     "@philjs/core": "workspace:*",
     "vite": "^7.3.0"
@@ -52,12 +51,12 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
     "@philjs/core": "workspace:*",
-    "rollup": "^4.54.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16"
+    "@types/node": "^25.5.0",
+    "rollup": "^4.60.0",
+    "typescript": "6.0.2",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1"
   },
   "license": "MIT",
   "author": "PhilJS Team",

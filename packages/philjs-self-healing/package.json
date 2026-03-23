@@ -7,7 +7,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.58.2"
   },
   "author": "PhilJS Team",
   "repository": {

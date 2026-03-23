@@ -55,13 +55,13 @@
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
-    "@philjs/ssr": "workspace:*",
-    "@philjs/liveview": "workspace:*"
+    "@philjs/liveview": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
     "tsup": "^8.5.1",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

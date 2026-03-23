@@ -23,8 +23,8 @@
   },
   "peerDependencies": {
     "@prisma/client": "^7.2.0",
-    "drizzle-orm": "^0.45.1",
-    "@supabase/supabase-js": "^2.89.0"
+    "@supabase/supabase-js": "^2.89.0",
+    "drizzle-orm": "^0.45.1"
   },
   "peerDependenciesMeta": {
     "@prisma/client": {
@@ -38,12 +38,12 @@
     }
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16",
-    "@types/node": "^25.0.0",
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^7.5.0",
+    "@supabase/supabase-js": "^2.100.0",
+    "@types/node": "^25.5.0",
     "drizzle-orm": "^0.45.1",
-    "@supabase/supabase-js": "^2.89.0"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "files": [
     "dist",

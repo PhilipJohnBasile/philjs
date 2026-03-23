@@ -11,16 +11,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@philjs/compiler": "workspace:*",
     "@philjs/core": "workspace:*",
-    "@philjs/router": "workspace:*",
-    "@philjs/ssr": "workspace:*",
     "@philjs/islands": "workspace:*",
-    "@philjs/compiler": "workspace:*"
+    "@philjs/router": "workspace:*",
+    "@philjs/ssr": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vite": "^7.3.0",
-    "vite-plugin-pwa": "^0.21.1"
+    "@types/node": "^25.5.0",
+    "typescript": "6.0.2",
+    "vite": "^8.0.2",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

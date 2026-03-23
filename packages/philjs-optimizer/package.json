@@ -50,20 +50,20 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^8.11.3",
-    "acorn-walk": "^8.3.2",
-    "magic-string": "^0.30.5"
+    "acorn": "^8.16.0",
+    "acorn-walk": "^8.3.5",
+    "magic-string": "^0.30.21"
   },
   "devDependencies": {
-    "@babel/generator": "^7.28.5",
-    "@babel/parser": "^7.28.5",
-    "@babel/traverse": "^7.28.5",
-    "@babel/types": "^7.28.5",
-    "@types/babel__generator": "^7.6.8",
-    "@types/babel__traverse": "^7.20.5",
+    "@babel/generator": "^7.29.1",
+    "@babel/parser": "^7.29.2",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",

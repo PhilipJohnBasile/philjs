@@ -41,18 +41,18 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.400.0",
-    "@sendgrid/mail": "^8.1.0",
-    "nodemailer": "^7.0.12",
-    "resend": "^2.0.0"
+    "@aws-sdk/client-ses": "^3.1014.0",
+    "@sendgrid/mail": "^8.1.6",
+    "nodemailer": "^8.0.3",
+    "resend": "^6.9.4"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "@types/nodemailer": "^6.4.14",
-    "@types/react": "^19.0.0",
+    "@types/node": "^25.5.0",
+    "@types/nodemailer": "^7.0.11",
+    "@types/react": "^19.2.14",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

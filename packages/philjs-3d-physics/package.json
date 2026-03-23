@@ -32,13 +32,13 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "peerDependencies": {
-    "@philjs/core": "workspace:*",
-    "@dimforge/rapier3d": ">=0.11.0"
+    "@dimforge/rapier3d": ">=0.11.0",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=24"

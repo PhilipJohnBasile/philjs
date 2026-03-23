@@ -53,15 +53,15 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "stripe": "^20.1.0",
     "@paypal/checkout-server-sdk": "^1.0.3",
-    "square": "^35.0.0"
+    "square": "^44.0.1",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

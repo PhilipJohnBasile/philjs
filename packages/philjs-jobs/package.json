@@ -65,14 +65,14 @@
     }
   },
   "dependencies": {
-    "cron-parser": "^4.9.0"
+    "cron-parser": "^5.5.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "bullmq": "^5.66.3",
-    "ioredis": "^5.8.2",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@types/node": "^25.5.0",
+    "bullmq": "^5.71.0",
+    "ioredis": "^5.10.1",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=24"

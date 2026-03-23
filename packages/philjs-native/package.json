@@ -71,12 +71,12 @@
   "license": "MIT",
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
-    "@philjs/core": "workspace:*",
     "@capacitor/core": ">=5.0.0",
+    "@philjs/core": "workspace:*",
     "@tauri-apps/api": ">=1.5.0"
   },
   "peerDependenciesMeta": {

@@ -11,13 +11,13 @@
   },
   "devDependencies": {
     "@philjs/core": "workspace:*",
-    "esbuild": "^0.27.2",
-    "marked": "^17.0.1",
-    "gray-matter": "^4.0.3",
     "chokidar": "^5.0.0",
-    "tsx": "^4.19.1",
-    "typescript": "6.0.0-dev.20251230",
-    "ws": "^8.18.3"
+    "esbuild": "^0.27.4",
+    "gray-matter": "^4.0.3",
+    "marked": "^17.0.5",
+    "tsx": "^4.21.0",
+    "typescript": "6.0.2",
+    "ws": "^8.20.0"
   },
   "engines": {
     "node": ">=24"

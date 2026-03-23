@@ -43,16 +43,16 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "sharp": "^0.34.5",
+    "@types/node": "^25.5.0",
     "blurhash": "^2.0.5",
-    "vite": "^7.3.0",
-    "@types/node": "^25.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "sharp": "^0.34.5",
+    "typescript": "6.0.2",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
-    "sharp": "^0.34.5",
-    "blurhash": "^2.0.5"
+    "blurhash": "^2.0.5",
+    "sharp": "^0.34.5"
   },
   "peerDependenciesMeta": {
     "sharp": {

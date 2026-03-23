@@ -60,14 +60,14 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "dependencies": {
-    "@philjs/core": "workspace:*",
-    "@philjs/adapters": "workspace:*"
+    "@philjs/adapters": "workspace:*",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.145",
+    "@types/aws-lambda": "^8.10.161",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=24"

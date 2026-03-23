@@ -34,14 +34,14 @@
     "eslint": "^9.39.2"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "^8.0.0"
+    "@typescript-eslint/utils": "^8.57.2"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.0.0",
-    "@typescript-eslint/rule-tester": "^8.0.0",
-    "eslint": "^9.16.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@typescript-eslint/parser": "^8.57.2",
+    "@typescript-eslint/rule-tester": "^8.57.2",
+    "eslint": "^10.1.0",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=24"

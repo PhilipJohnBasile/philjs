@@ -22,7 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230"
+    "typescript": "6.0.2"
   },
   "license": "MIT",
   "author": "PhilJS Team",

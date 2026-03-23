@@ -30,11 +30,11 @@
     "rxjs": "^7.0.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "rxjs": "^7.8.1",
+    "@types/node": "^25.5.0",
+    "rxjs": "^7.8.2",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "license": "MIT",
   "author": "PhilJS Team",

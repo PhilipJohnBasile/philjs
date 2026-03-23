@@ -18,19 +18,19 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@babel/parser": "^7.28.5",
-    "@babel/traverse": "^7.28.5",
-    "@babel/generator": "^7.28.5",
-    "commander": "^14.0.2",
-    "glob": "^13.0.0",
-    "ora": "^8.0.0",
+    "@babel/generator": "^7.29.1",
+    "@babel/parser": "^7.29.2",
+    "@babel/traverse": "^7.29.0",
+    "commander": "^14.0.3",
+    "glob": "^13.0.6",
+    "ora": "^9.3.0",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
+    "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.0-dev.20251230"
+    "typescript": "6.0.2"
   },
   "license": "MIT",
   "engines": {

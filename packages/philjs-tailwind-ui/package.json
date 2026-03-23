@@ -80,8 +80,8 @@
   },
   "devDependencies": {
     "@philjs/core": "workspace:*",
-    "@types/node": "^25.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@types/node": "^25.5.0",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   }
 }

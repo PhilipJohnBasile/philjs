@@ -42,14 +42,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^4.2.1"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "jsdom": "^27.4.0",
-    "rollup": "^4.54.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@types/node": "^25.5.0",
+    "jsdom": "^29.0.1",
+    "rollup": "^4.60.0",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

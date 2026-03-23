@@ -13,14 +13,14 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
-    "@philjs/compiler": "workspace:*"
+    "@philjs/compiler": "workspace:*",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "vite": "^7.3.0",
-    "typescript": "6.0.0-dev.20251230",
-    "@types/node": "^25.0.0",
-    "vitest": "^4.0.16",
-    "@playwright/test": "^1.49.0"
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0",
+    "typescript": "6.0.2",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1"
   }
 }

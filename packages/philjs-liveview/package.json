@@ -34,12 +34,12 @@
   "dependencies": {
     "@philjs/core": "workspace:*",
     "@philjs/realtime": "workspace:*",
-    "morphdom": "^2.7.2"
+    "morphdom": "^2.7.8"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
     "tsup": "^8.5.1",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*"

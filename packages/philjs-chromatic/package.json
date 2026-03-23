@@ -23,8 +23,8 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@storybook/types": "^8.0.0",

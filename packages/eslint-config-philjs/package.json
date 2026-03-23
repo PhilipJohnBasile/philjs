@@ -21,11 +21,11 @@
     "eslint": "^9.0.0"
   },
   "dependencies": {
-    "eslint-plugin-jsx-a11y": "^6.10.0",
-    "eslint-plugin-security": "^3.0.1"
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-security": "^4.0.0"
   },
   "devDependencies": {
-    "typescript": "6.0.0-dev.20251230"
+    "typescript": "6.0.2"
   },
   "sideEffects": false,
   "license": "MIT",

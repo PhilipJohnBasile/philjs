@@ -61,11 +61,11 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20251225.0",
-    "@types/node": "^25.0.0",
-    "typescript": "6.0.0-dev.20251230",
-    "vite": "^6.2.0",
-    "vitest": "^4.0.16"
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "@types/node": "^25.5.0",
+    "typescript": "6.0.2",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "ioredis": "^5.0.0",

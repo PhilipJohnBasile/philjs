@@ -27,10 +27,10 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^25.0.0",
-    "typeorm": "^0.3.20",
-    "typescript": "6.0.0-dev.20251230",
-    "vitest": "^4.0.16"
+    "@types/node": "^25.5.0",
+    "typeorm": "^0.3.28",
+    "typescript": "6.0.2",
+    "vitest": "^4.1.1"
   },
   "license": "MIT",
   "author": "PhilJS Team",
