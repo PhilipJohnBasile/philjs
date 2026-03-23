@@ -15,10 +15,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
@@ -29,7 +29,6 @@
     "@graphql-tools/utils": "^11.0.0",
     "graphql": "^16.13.1",
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {
@@ -44,9 +43,9 @@
     "directory": "packages/philjs-graphql"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   },

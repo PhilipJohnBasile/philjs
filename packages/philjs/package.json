@@ -5,10 +5,11 @@
     "node": ">=24"
   },
   "description": "The Singularity Framework. One import to rule them all.",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsgo"
   },
   "dependencies": {
     "@philjs/a11y-ai": "workspace:*",
@@ -37,8 +38,7 @@
     "@philjs/test": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.5.1",
-    "typescript": "6.0.2"
+    "tsup": "^8.5.1"
   },
   "author": "PhilJS Team",
   "repository": {
@@ -51,5 +51,8 @@
     "philjs",
     "typescript",
     "framework"
+  ],
+  "files": [
+    "dist"
   ]
 }

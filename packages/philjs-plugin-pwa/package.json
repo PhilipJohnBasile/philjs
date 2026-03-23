@@ -15,17 +15,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "sideEffects": false,
@@ -37,9 +36,9 @@
     "directory": "packages/philjs-plugin-pwa"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

@@ -19,5 +19,8 @@
     "framework",
     "rust",
     "bridge"
+  ],
+  "files": [
+    "dist"
   ]
 }

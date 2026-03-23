@@ -16,13 +16,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "typescript": "6.0.2"
+    "typecheck": "tsgo --noEmit"
   },
   "license": "MIT",
   "author": "PhilJS Team",

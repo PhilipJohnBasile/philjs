@@ -29,9 +29,9 @@
   ],
   "sideEffects": true,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
+    "typecheck": "tsgo --noEmit",
     "test": "vitest run",
     "lint": "eslint src/"
   },
@@ -55,7 +55,6 @@
     "intersection-observer": "^0.12.2",
     "resize-observer-polyfill": "^1.5.1",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "engines": {

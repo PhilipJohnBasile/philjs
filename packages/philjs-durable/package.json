@@ -18,5 +18,8 @@
     "typescript",
     "framework",
     "durable"
+  ],
+  "files": [
+    "dist"
   ]
 }

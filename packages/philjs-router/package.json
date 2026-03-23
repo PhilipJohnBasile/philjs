@@ -26,7 +26,7 @@
     "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -35,7 +35,6 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "sideEffects": false,
@@ -47,9 +46,9 @@
     "directory": "packages/philjs-router"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

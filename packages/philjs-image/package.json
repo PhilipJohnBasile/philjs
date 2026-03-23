@@ -24,8 +24,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run --passWithNoTests"
   },
   "keywords": [
@@ -46,7 +46,6 @@
     "@types/node": "^25.5.0",
     "blurhash": "^2.0.5",
     "sharp": "^0.34.5",
-    "typescript": "6.0.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.1"
   },
@@ -71,9 +70,9 @@
     "directory": "packages/philjs-image"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

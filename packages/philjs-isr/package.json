@@ -52,10 +52,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -63,7 +63,6 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260317.1",
     "@types/node": "^25.5.0",
-    "typescript": "6.0.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.1"
   },

@@ -33,8 +33,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --skipLibCheck --noEmitOnError false",
-    "dev": "tsc --watch",
+    "build": "tsgo --skipLibCheck --noEmitOnError false",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -58,7 +58,6 @@
     "@types/node": "^25.5.0",
     "jsdom": "^29.0.1",
     "tsx": "^4.21.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {
@@ -75,9 +74,9 @@
     "directory": "packages/philjs-ui"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "keywords": [
@@ -38,7 +38,6 @@
     "@types/node": "^25.5.0",
     "@types/webxr": "^0.5.24",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "engines": {
@@ -48,5 +47,8 @@
     "type": "git",
     "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-xr"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

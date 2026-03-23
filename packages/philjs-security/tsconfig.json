@@ -4,8 +4,6 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "declarationMap": false,
-    "paths": {},
-    "baseUrl": "."
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]

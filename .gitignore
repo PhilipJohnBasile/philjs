@@ -48,6 +48,11 @@ examples/**/public/sw.js.map
 examples/**/public/sw.d.ts
 examples/**/public/sw.d.ts.map
 
+# Build artifacts in source dirs
+packages/**/src/**/*.js
+packages/**/src/**/*.js.map
+packages/**/src/**/*.d.ts.map
+
 # Debug files at root
 /test-*.js
 /analyze_docs.py
@@ -88,7 +93,6 @@ tools/
 **/tests/*debug*.spec.ts
 
 # Lock files (keep Cargo.lock for reproducible Rust builds)
-pnpm-lock.yaml
 package-lock.json
 yarn.lock
 rollup.config-*.mjs

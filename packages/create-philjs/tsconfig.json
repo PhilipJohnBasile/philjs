@@ -6,7 +6,6 @@
     "declarationMap": false,
     "types": ["node"],
     "typeRoots": ["./src/types", "../../node_modules/@types"],
-    "baseUrl": ".",
     "paths": {
       "@philjs/router": ["./src/types/philjs-router.d.ts"]
     }

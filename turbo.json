@@ -13,12 +13,6 @@
       "outputs": ["dist/**", ".turbo/**"],
       "cache": true
     },
-    "build:fast": {
-      "dependsOn": [],
-      "inputs": ["src/**"],
-      "outputs": ["dist/**"],
-      "cache": true
-    },
     "dev": {
       "cache": false,
       "persistent": true
@@ -30,7 +24,7 @@
       "cache": true
     },
     "test": {
-      "dependsOn": [],
+      "dependsOn": ["^build"],
       "inputs": ["src/**", "**/*.test.ts"],
       "outputs": ["coverage/**"],
       "cache": true

@@ -32,11 +32,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "peerDependencies": {
     "@philjs/core": "workspace:*",
@@ -54,7 +54,6 @@
     "@philjs/core": "workspace:*",
     "@types/node": "^25.5.0",
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.1"
   },
@@ -66,9 +65,9 @@
     "directory": "packages/philjs-wasm"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

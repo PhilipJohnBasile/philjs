@@ -48,7 +48,6 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^25.5.0",
     "@types/prompts": "^2.4.9",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "sideEffects": true,
@@ -60,9 +59,9 @@
     "directory": "packages/philjs-cli"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

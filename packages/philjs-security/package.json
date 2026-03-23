@@ -34,14 +34,13 @@
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
+    "typecheck": "tsgo --noEmit",
     "test": "vitest run",
     "lint": "eslint src/"
   },
@@ -63,7 +62,6 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "engines": {

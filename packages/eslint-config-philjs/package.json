@@ -14,8 +14,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "build": "tsgo",
+    "typecheck": "tsgo --noEmit",
+    "test": "vitest run"
   },
   "peerDependencies": {
     "eslint": "^9.0.0"
@@ -23,9 +24,6 @@
   "dependencies": {
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-security": "^4.0.0"
-  },
-  "devDependencies": {
-    "typescript": "6.0.2"
   },
   "sideEffects": false,
   "license": "MIT",
@@ -36,9 +34,9 @@
     "directory": "packages/eslint-config-philjs"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   },

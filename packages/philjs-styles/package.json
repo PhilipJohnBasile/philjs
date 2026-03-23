@@ -13,8 +13,8 @@
     "./vite": "./dist/vite-plugin.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
@@ -26,7 +26,6 @@
     "@vitest/coverage-v8": "^4.1.1",
     "jsdom": "^29.0.1",
     "postcss": "^8.5.8",
-    "typescript": "6.0.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.1"
   },
@@ -55,9 +54,9 @@
     "directory": "packages/philjs-styles"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

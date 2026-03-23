@@ -54,11 +54,10 @@
     "build": "rollup -c rollup.config.cjs",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
-    "@types/vscode": "^1.110.0",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "openai": "^6.32.0",
@@ -68,8 +67,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "@types/vscode": "^1.110.0",
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {
@@ -86,9 +85,9 @@
     "directory": "packages/philjs-ai"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   },

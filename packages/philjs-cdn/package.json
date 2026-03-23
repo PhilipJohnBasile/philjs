@@ -21,13 +21,13 @@
   ],
   "scripts": {
     "build": "tsx build.ts",
-    "build:watch": "tsx build.ts --watch"
+    "build:watch": "tsx build.ts --watch",
+    "test": "vitest run"
   },
   "devDependencies": {
     "esbuild": "^0.27.4",
     "terser": "^5.46.1",
-    "tsx": "^4.21.0",
-    "typescript": "6.0.2"
+    "tsx": "^4.21.0"
   },
   "keywords": [
     "philjs",

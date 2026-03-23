@@ -12,8 +12,8 @@
     "philjs-docs": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsgo",
+    "dev": "tsgo --watch"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
@@ -25,8 +25,7 @@
     "shiki": "^4.0.2"
   },
   "devDependencies": {
-    "tsup": "^8.5.1",
-    "typescript": "6.0.2"
+    "tsup": "^8.5.1"
   },
   "keywords": [
     "philjs",
@@ -43,5 +42,8 @@
     "type": "git",
     "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-docs-template"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

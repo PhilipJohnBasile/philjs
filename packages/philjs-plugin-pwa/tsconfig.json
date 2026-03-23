@@ -11,8 +11,6 @@
     "exactOptionalPropertyTypes": false,
     "strictNullChecks": false,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {}
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

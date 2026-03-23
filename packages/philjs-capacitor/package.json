@@ -19,8 +19,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "dependencies": {
@@ -51,7 +51,6 @@
     "@capacitor/text-zoom": "^8.0.1",
     "@capacitor/toast": "^8.0.1",
     "@types/node": "^25.5.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "license": "MIT",

@@ -19,5 +19,8 @@
     "framework",
     "react",
     "native"
+  ],
+  "files": [
+    "dist"
   ]
 }

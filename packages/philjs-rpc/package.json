@@ -24,21 +24,19 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.2",
     "vitest": "^4.1.1",
     "zod": "^4.3.6"
   },
   "peerDependencies": {
-    "typescript": "6.0.0-dev.20251230",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
@@ -54,9 +52,9 @@
     "directory": "packages/philjs-rpc"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

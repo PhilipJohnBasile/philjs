@@ -36,11 +36,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "peerDependencies": {
     "three": ">=0.150.0"
@@ -55,7 +55,6 @@
     "@vitest/coverage-v8": "^4.1.1",
     "jsdom": "^29.0.1",
     "three": "^0.183.2",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "license": "MIT",
@@ -66,9 +65,9 @@
     "directory": "packages/philjs-3d"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

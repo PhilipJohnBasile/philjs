@@ -17,7 +17,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -26,7 +26,6 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "keywords": [

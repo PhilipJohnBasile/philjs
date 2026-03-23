@@ -52,7 +52,7 @@
     "publish:all": "tsx scripts/publish-results.ts --format=all",
     "publish:gh-pages": "tsx scripts/publish-results.ts --github-pages",
     "comparison": "tsx -e \"import { generateAndSaveCharts, loadComparisonData } from './src/comparison/chart-generator.js'; import fs from 'fs/promises'; const report = JSON.parse(await fs.readFile('./results/latest.json', 'utf-8')); await generateAndSaveCharts(report, './results/comparison');\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*",
@@ -63,8 +63,7 @@
     "esbuild": "^0.27.4",
     "gzip-size": "^7.0.0",
     "terser": "^5.46.1",
-    "tsx": "^4.21.0",
-    "typescript": "6.0.2"
+    "tsx": "^4.21.0"
   },
   "keywords": [
     "philjs",
@@ -83,5 +82,8 @@
   "engines": {
     "node": ">=24"
   },
-  "author": "PhilJS Team"
+  "author": "PhilJS Team",
+  "files": [
+    "dist"
+  ]
 }

@@ -12,8 +12,6 @@
     "noPropertyAccessFromIndexSignature": false,
     "skipLibCheck": true,
     "noEmit": false,
-    "baseUrl": ".",
-    "paths": {}
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

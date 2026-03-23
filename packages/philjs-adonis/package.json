@@ -18,5 +18,11 @@
     "typescript",
     "framework",
     "adonis"
-  ]
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "vitest run"
+  }
 }

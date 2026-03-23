@@ -18,5 +18,8 @@
     "typescript",
     "framework",
     "actions"
+  ],
+  "files": [
+    "dist"
   ]
 }

@@ -19,5 +19,8 @@
     "framework",
     "migration",
     "utils"
+  ],
+  "files": [
+    "dist"
   ]
 }

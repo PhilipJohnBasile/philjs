@@ -18,5 +18,8 @@
     "typescript",
     "framework",
     "neovim"
+  ],
+  "files": [
+    "dist"
   ]
 }

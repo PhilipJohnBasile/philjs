@@ -29,10 +29,10 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -50,7 +50,6 @@
     }
   },
   "devDependencies": {
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "keywords": [
@@ -73,5 +72,8 @@
     "type": "git",
     "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-realtime"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

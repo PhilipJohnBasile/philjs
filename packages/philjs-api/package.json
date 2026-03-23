@@ -21,8 +21,8 @@
     "./server-actions": "./dist/server-actions.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -30,7 +30,6 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "files": [
@@ -55,9 +54,9 @@
     "directory": "packages/philjs-api"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

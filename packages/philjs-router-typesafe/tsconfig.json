@@ -16,7 +16,6 @@
       "@philjs/core": ["../philjs-core/dist/index.d.ts"],
       "zod": ["../../node_modules/zod/lib/index.d.ts"]
     },
-    "baseUrl": "."
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

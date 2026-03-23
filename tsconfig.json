@@ -19,8 +19,6 @@
     "verbatimModuleSyntax": true,
     "useDefineForClassFields": true,
 
-    "experimentalDecorators": false,
-
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsc/.tsbuildinfo",
 
@@ -29,16 +27,8 @@
     "sourceMap": true,
     "noEmit": false,
 
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "ignoreDeprecations": "6.0",
-
-    "paths": {
-      "@philjs/*": ["./packages/philjs-*/src"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["packages/*/src/**/*.ts"],
   "exclude": ["node_modules", "**/dist", "**/*.test.ts", "**/*.spec.ts"]

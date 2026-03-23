@@ -18,5 +18,11 @@
     "typescript",
     "framework",
     "git"
-  ]
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "vitest run"
+  }
 }

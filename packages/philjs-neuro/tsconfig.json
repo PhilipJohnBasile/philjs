@@ -11,7 +11,6 @@
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "skipLibCheck": true,
-    "paths": {}
   },
   "include": [
     "src/**/*.ts", "src/**/*.tsx"

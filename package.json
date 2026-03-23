@@ -9,7 +9,6 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "build:fast": "turbo run build:fast --parallel",
     "build:affected": "turbo run build --filter=...[origin/main]",
     "build:no-cache": "turbo run build --force",
     "dev": "turbo run dev --parallel",
@@ -30,15 +29,8 @@
     "book:packages": "node scripts/generate-package-atlas.mjs",
     "book:export": "node scripts/export-book.mjs",
     "book:links": "node scripts/book-links.mjs",
-    "docs:build": "mdbook build docs/philjs-book",
-    "prepare": "turbo run build"
+    "docs:build": "mdbook build docs/philjs-book"
   },
-  "workspaces": [
-    "packages/*",
-    "examples/*",
-    "marketing-site",
-    "benchmarks/*"
-  ],
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
     "@playwright/test": "^1.58.2",

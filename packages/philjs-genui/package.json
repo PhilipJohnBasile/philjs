@@ -36,10 +36,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "zod": "^4.3.6"
@@ -48,7 +48,6 @@
     "@types/node": "^25.5.0",
     "jsdom": "^29.0.1",
     "rollup": "^4.60.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {
@@ -62,9 +61,9 @@
     "directory": "packages/philjs-genui"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "keywords": [
     "philjs",
     "typescript",

@@ -14,8 +14,8 @@
     "./cli": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -23,12 +23,10 @@
     "@philjs/api": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "6.0.2",
     "vitest": "^4.1.1",
     "zod": "^4.3.6"
   },
   "peerDependencies": {
-    "typescript": "6.0.0-dev.20251230",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
@@ -60,9 +58,9 @@
     "directory": "packages/philjs-openapi"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

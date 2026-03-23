@@ -29,16 +29,15 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "zig:build": "cd zig && zig build",
     "zig:test": "cd zig && zig build test"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

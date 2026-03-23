@@ -15,7 +15,8 @@
   "scripts": {
     "dev": "node --import tsx scripts/dev.ts",
     "build": "node --import tsx scripts/build.ts",
-    "preview": "node --import tsx scripts/preview.ts"
+    "preview": "node --import tsx scripts/preview.ts",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@philjs/core": "workspace:*",
@@ -24,7 +25,6 @@
     "gray-matter": "^4.0.3",
     "marked": "^17.0.5",
     "tsx": "^4.21.0",
-    "typescript": "6.0.2",
     "ws": "^8.20.0"
   },
   "engines": {

@@ -36,7 +36,9 @@
       "Bash(echo \"EXIT: $?\")",
       "Bash(pnpm:*)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
-      "Bash(./node_modules/.bin/tsc)"
+      "Bash(./node_modules/.bin/tsc)",
+      "Bash(git commit:*)",
+      "Bash(gh auth:*)"
     ]
   }
 }

@@ -22,5 +22,8 @@
     "framework",
     "auto",
     "import"
+  ],
+  "files": [
+    "dist"
   ]
 }

@@ -1,1 +1,0 @@
-{"version":3,"file":"wasm-runtime.d.ts","sourceRoot":"","sources":["wasm-runtime.ts"],"names":[],"mappings":"AACA;;;GAGG;AACH,qBAAa,WAAW;IACpB,OAAO,CAAC,MAAM,CAAmC;IACjD,OAAO,CAAC,QAAQ,CAAqC;IAE/C,IAAI,CAAC,QAAQ,EAAE,MAAM,EAAE,WAAW,GAAE,MAAY;IAyBtD,YAAY,CAAC,SAAS,EAAE,YAAY;;;;;;;CAavC"}

@@ -46,11 +46,11 @@
     "rust"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "build:rust": "cd rust && cargo build --release"
   },
   "dependencies": {
@@ -60,7 +60,6 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

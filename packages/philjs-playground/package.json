@@ -12,10 +12,11 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "build:full": "tsc && vite build",
+    "build": "tsgo",
+    "build:full": "tsgo && vite build",
     "dev": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "@babel/standalone": "^7.29.2",
@@ -28,7 +29,6 @@
     "codemirror": "^6.0.2"
   },
   "devDependencies": {
-    "typescript": "6.0.2",
     "vite": "^8.0.2"
   },
   "files": [
@@ -53,9 +53,9 @@
     "directory": "packages/philjs-playground"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

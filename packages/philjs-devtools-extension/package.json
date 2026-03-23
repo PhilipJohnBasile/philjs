@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "zip": "node scripts/zip.js"
+    "zip": "node scripts/zip.js",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.38",
-    "typescript": "6.0.2",
     "vite": "^8.0.2"
   },
   "engines": {
@@ -29,5 +29,8 @@
     "framework",
     "devtools",
     "extension"
+  ],
+  "files": [
+    "dist"
   ]
 }

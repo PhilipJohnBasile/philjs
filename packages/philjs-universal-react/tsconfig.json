@@ -4,7 +4,6 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "declarationMap": false,
-    "paths": {},
     "strict": false,
     "noImplicitAny": false,
     "noImplicitOverride": false,

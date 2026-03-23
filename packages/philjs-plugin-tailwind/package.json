@@ -30,13 +30,13 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "npm run typecheck",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "clean": "rm -rf dist"
   },
   "keywords": [
@@ -67,7 +67,6 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "repository": {
@@ -76,7 +75,7 @@
     "directory": "packages/philjs-plugin-tailwind"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
   "homepage": "https://philjs.dev/plugins/tailwind",
   "sideEffects": false,

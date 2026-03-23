@@ -10,14 +10,12 @@
     "./registry": "./dist/registry.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsgo",
+    "dev": "tsgo --watch",
+    "test": "vitest run"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "6.0.2"
   },
   "files": [
     "dist",
@@ -40,9 +38,9 @@
     "directory": "packages/philjs-plugins"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

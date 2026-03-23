@@ -5,17 +5,17 @@
     "node": ">=24"
   },
   "description": "Zero-latency bridge to Python, Rust, and legacy systems",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "dependencies": {
@@ -36,5 +36,8 @@
     "typescript",
     "framework",
     "polyglot"
+  ],
+  "files": [
+    "dist"
   ]
 }

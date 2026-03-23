@@ -19,8 +19,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -33,7 +33,6 @@
   "devDependencies": {
     "@philjs/core": "workspace:*",
     "@types/node": "^25.5.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "license": "MIT",

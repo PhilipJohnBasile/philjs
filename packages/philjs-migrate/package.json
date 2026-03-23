@@ -15,7 +15,8 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsgo",
+    "test": "vitest run"
   },
   "dependencies": {
     "@babel/generator": "^7.29.1",
@@ -29,8 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "tsup": "^8.5.1",
-    "typescript": "6.0.2"
+    "tsup": "^8.5.1"
   },
   "license": "MIT",
   "engines": {
@@ -47,5 +47,8 @@
     "typescript",
     "framework",
     "migrate"
+  ],
+  "files": [
+    "dist"
   ]
 }

@@ -1,1 +1,0 @@
-{"version":3,"file":"DragOverlay.d.ts","sourceRoot":"","sources":["DragOverlay.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAQH,qBAAa,eAAgB,SAAQ,WAAW;IAC9C,OAAO,CAAC,OAAO,CAAS;IACxB,OAAO,CAAC,QAAQ,CAAkB;;IAOlC,iBAAiB,IAAI,IAAI;IAKzB,oBAAoB,IAAI,IAAI;IAI5B,OAAO,CAAC,iBAAiB,CAUvB;IAEF,OAAO,CAAC,cAAc;IAStB,OAAO,CAAC,MAAM;CAkBf"}

@@ -10,14 +10,13 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "devDependencies": {
     "@webgpu/types": "^0.1.69",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "dependencies": {
@@ -38,5 +37,8 @@
     "typescript",
     "framework",
     "science"
+  ],
+  "files": [
+    "dist"
   ]
 }

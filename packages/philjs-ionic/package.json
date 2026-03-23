@@ -21,5 +21,8 @@
     "typescript",
     "framework",
     "ionic"
+  ],
+  "files": [
+    "dist"
   ]
 }

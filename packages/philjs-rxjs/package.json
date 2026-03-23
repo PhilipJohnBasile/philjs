@@ -19,8 +19,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --skipLibCheck",
-    "dev": "tsc --watch",
+    "build": "tsgo --skipLibCheck",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "dependencies": {
@@ -33,7 +33,6 @@
     "@types/node": "^25.5.0",
     "rxjs": "^7.8.2",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "license": "MIT",

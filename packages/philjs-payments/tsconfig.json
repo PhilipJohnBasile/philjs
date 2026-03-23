@@ -7,7 +7,6 @@
     "jsxImportSource": "react",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "paths": {},
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,

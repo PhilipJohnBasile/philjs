@@ -6,8 +6,6 @@
     "types": ["vitest/globals", "node"],
     "exactOptionalPropertyTypes": false,
     "declarationMap": false,
-    "paths": {},
-    "baseUrl": ".",
     "skipLibCheck": true,
     "noImplicitAny": false
   },

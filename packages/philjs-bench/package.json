@@ -24,5 +24,8 @@
     "typescript",
     "framework",
     "bench"
+  ],
+  "files": [
+    "dist"
   ]
 }

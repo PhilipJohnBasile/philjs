@@ -74,11 +74,11 @@
     "rust"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsgo",
     "dev": "tsup src/index.ts src/server.ts src/handlers.ts src/middleware.ts src/fairing.ts src/guards.ts src/responders.ts src/templates.ts src/websocket.ts src/state.ts src/forms.ts src/cookies.ts src/ssr.ts --format cjs,esm --dts --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "build:rust": "cargo build --release"
   },
   "dependencies": {
@@ -88,7 +88,6 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

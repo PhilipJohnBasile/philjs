@@ -124,19 +124,17 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "lint": "eslint src --ext ts"
+    "compile": "tsgo -p ./",
+    "watch": "tsgo -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@types/vscode": "^1.110.0",
-    "tsx": "^4.21.0",
-    "typescript": "6.0.2"
+    "tsx": "^4.21.0"
   },
-  "peerDependencies": {
-    "typescript": "6.0.0-dev.20251230"
-  },
+  "peerDependencies": {},
   "files": [
     "dist",
     "snippets",
@@ -152,7 +150,7 @@
     "directory": "packages/philjs-vscode"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme"
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme"
 }

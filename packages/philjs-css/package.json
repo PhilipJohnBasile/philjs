@@ -19,7 +19,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "jest": {
     "preset": "ts-jest",
@@ -93,21 +93,18 @@
     "jest": "^30.3.0",
     "rollup": "^4.60.0",
     "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^29.4.6",
-    "typescript": "6.0.2"
+    "ts-jest": "^29.4.6"
   },
-  "peerDependencies": {
-    "typescript": "6.0.0-dev.20251230"
-  },
+  "peerDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-css"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/philjs/issues"
+    "url": "https://github.com/PhilipJohnBasile/philjs/issues"
   },
-  "homepage": "https://github.com/yourusername/philjs#readme",
+  "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
   }

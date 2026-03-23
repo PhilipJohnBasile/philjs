@@ -12,8 +12,6 @@
     "noPropertyAccessFromIndexSignature": false,
     "skipLibCheck": true,
     "verbatimModuleSyntax": false,
-    "baseUrl": ".",
-    "paths": {}
   },
   "include": [
     "src/**/*.ts", "src/**/*.tsx"

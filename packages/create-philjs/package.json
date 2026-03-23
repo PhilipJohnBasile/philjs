@@ -19,8 +19,9 @@
     "templates"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsgo",
+    "dev": "tsgo --watch",
+    "test": "vitest run"
   },
   "keywords": [
     "philjs",
@@ -47,8 +48,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.5.0",
-    "tsup": "^8.5.1",
-    "typescript": "6.0.2"
+    "tsup": "^8.5.1"
   },
   "engines": {
     "node": ">=24"

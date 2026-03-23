@@ -22,5 +22,8 @@
     "framework",
     "self",
     "healing"
+  ],
+  "files": [
+    "dist"
   ]
 }

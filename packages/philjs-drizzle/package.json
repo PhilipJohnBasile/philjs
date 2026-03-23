@@ -16,8 +16,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run"
   },
   "dependencies": {
@@ -32,7 +32,6 @@
     "better-sqlite3": "^12.8.0",
     "drizzle-orm": "^0.45.1",
     "tsup": "^8.5.1",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   },
   "keywords": [
@@ -51,5 +50,8 @@
     "type": "git",
     "url": "https://github.com/philjs/philjs.git",
     "directory": "packages/philjs-drizzle"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

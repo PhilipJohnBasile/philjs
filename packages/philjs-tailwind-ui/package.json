@@ -69,8 +69,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsgo",
+    "dev": "tsgo --watch",
     "test": "vitest run",
     "lint": "eslint src --ext .ts,.tsx"
   },
@@ -81,7 +81,6 @@
   "devDependencies": {
     "@philjs/core": "workspace:*",
     "@types/node": "^25.5.0",
-    "typescript": "6.0.2",
     "vitest": "^4.1.1"
   }
 }
