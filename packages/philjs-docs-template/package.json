@@ -24,7 +24,6 @@
     "marked": "^17.0.5",
     "shiki": "^4.0.2"
   },
-  "devDependencies": {},
   "keywords": [
     "philjs",
     "typescript",

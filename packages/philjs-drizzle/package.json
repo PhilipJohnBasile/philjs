@@ -20,9 +20,6 @@
     "dev": "tsgo --watch",
     "test": "vitest run"
   },
-  "dependencies": {
-    "@philjs/core": "workspace:*"
-  },
   "peerDependencies": {
     "@philjs/core": ">=0.1.0",
     "drizzle-orm": ">=0.29.0"
@@ -53,5 +50,8 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "@philjs/core": "workspace:*"
+  }
 }

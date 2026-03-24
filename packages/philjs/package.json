@@ -37,7 +37,6 @@
     "@philjs/social": "workspace:*",
     "@philjs/test": "workspace:*"
   },
-  "devDependencies": {},
   "author": "PhilJS Team",
   "repository": {
     "type": "git",

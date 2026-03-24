@@ -8,4 +8,4 @@
 export * from './auto-doc.js';
 
 // Documentation components
-export * from './components.js';
+export * from './components/index.js';

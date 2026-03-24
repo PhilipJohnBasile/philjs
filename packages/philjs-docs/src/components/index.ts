@@ -4,4 +4,4 @@
  * Reusable components for building interactive documentation.
  */
 
-export { LiveCode, liveCodeStyles, type LiveCodeProps, type LiveCodeState, type ConsoleEntry } from './LiveCode.js';
+export { LiveCode, getLiveCodeStyles, type LiveCodeProps } from './LiveCode.js';

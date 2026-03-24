@@ -54,12 +54,11 @@
     "build:rust": "cd rust && cargo build --release"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
     "@philjs/liveview": "workspace:*",
-    "@philjs/ssr": "workspace:*"
+    "@philjs/ssr": "workspace:*",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

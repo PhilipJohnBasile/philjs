@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 // Fix .value to .get()/.set() for PhilJS Signal API
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
 
 const file = process.argv[2];
 if (!file) {
-  console.error('Usage: node fix-signal-value.js <file>');
+  console.error('Usage: npx tsx fix-signal-value.ts <file>');
   process.exit(1);
 }
 
 let content = fs.readFileSync(file, 'utf8');
 
-// Replace assignments: x.value = y → x.set(y)
+// Replace assignments: x.value = y -> x.set(y)
 // This handles both single line and multi-line assignments
 content = content.replace(
   /(\w+)\.value\s*=\s*(\{[\s\S]*?\n\s*\};)/g,
@@ -22,7 +21,7 @@ content = content.replace(
   }
 );
 
-// Replace single-line assignments: x.value = y; → x.set(y);
+// Replace single-line assignments: x.value = y; -> x.set(y);
 content = content.replace(
   /(\w+)\.value\s*=\s*([^;{]+);/g,
   (match, varName, value) => {
@@ -30,7 +29,7 @@ content = content.replace(
   }
 );
 
-// Replace remaining reads: x.value → x.get()
+// Replace remaining reads: x.value -> x.get()
 // But not when it's inside a set() call we just created
 content = content.replace(/\.value\b(?!\s*\))/g, '.get()');
 

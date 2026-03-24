@@ -1,13 +1,13 @@
 {
   "name": "@philjs/bench",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "node": ">=24"
   },
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "bench": "ts-node src/index.ts",
+    "bench": "tsx src/index.ts",
     "build": "tsgo"
   },
   "dependencies": {

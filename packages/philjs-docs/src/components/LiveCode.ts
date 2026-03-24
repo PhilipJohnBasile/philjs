@@ -1245,12 +1245,4 @@ function formatOutput(value: unknown): string {
 }
 
 // ============================================================================
-// Exports
-// ============================================================================
-
-export type {
-  LiveCodeConfig,
-  LiveCodeProps,
-  CodeFile,
-  PreviewResult,
-};
+// Types are exported at their declaration sites above.

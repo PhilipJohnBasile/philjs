@@ -32,12 +32,11 @@
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
     "@philjs/realtime": "workspace:*",
-    "morphdom": "^2.7.8"
+    "morphdom": "^2.7.8",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

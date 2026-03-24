@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const packagesDir = path.resolve(__dirname, '../packages');
 const packages = fs.readdirSync(packagesDir);
@@ -17,7 +21,7 @@ packages.forEach(pkg => {
     const readmePath = path.join(pkgDir, 'README.md');
 
     if (!fs.existsSync(readmePath)) {
-        console.log(`${pkg} | N/A | ❌ Missing`);
+        console.log(`${pkg} | N/A | Missing`);
         emptyCount++;
         return;
     }
@@ -27,14 +31,14 @@ packages.forEach(pkg => {
     const isPlaceholder = content.includes('Official PhilJS package') && size < 200;
     const isTodo = content.includes('Coming soon') || content.includes('TODO');
 
-    let status = '✅ OK';
-    if (size < 100) status = '⚠️ Tiny';
-    if (isPlaceholder) status = '⚠️ Placeholder';
-    if (isTodo) status = '⚠️ TODO';
+    let status = 'OK';
+    if (size < 100) status = 'Tiny';
+    if (isPlaceholder) status = 'Placeholder';
+    if (isTodo) status = 'TODO';
 
     console.log(`${pkg} | ${size} | ${status}`);
 
-    if (status !== '✅ OK') placeholderCount++;
+    if (status !== 'OK') placeholderCount++;
 });
 
 console.log(`\nFound ${placeholderCount} potential documentation stubs.`);

@@ -49,9 +49,6 @@
     "design-system",
     "accessibility"
   ],
-  "dependencies": {
-    "@philjs/core": "workspace:*"
-  },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -79,5 +76,8 @@
   "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
+  },
+  "dependencies": {
+    "@philjs/core": "workspace:*"
   }
 }

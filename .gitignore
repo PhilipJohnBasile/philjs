@@ -106,3 +106,13 @@ broken_links*.txt
 # Declaration maps (only wanted in dist/)
 *.d.ts.map
 !**/dist/**/*.d.ts.map
+
+# Vitest config declarations
+**/vitest.config.d.ts
+**/vitest.config.d.ts.map
+
+# Script build artifacts
+scripts/*.d.ts
+scripts/*.d.mts
+scripts/*.d.mts.map
+scripts/*.mjs

@@ -34,10 +34,10 @@
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
-    "@philjs/core": "workspace:*",
     "chart.js": "^4.5.1",
     "d3": "^7.9.0",
-    "recharts": "^3.8.0"
+    "recharts": "^3.8.0",
+    "@philjs/core": "workspace:*"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
