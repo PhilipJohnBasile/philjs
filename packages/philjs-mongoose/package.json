@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "mongoose"
-  ]
+  ],
+  "sideEffects": false
 }

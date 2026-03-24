@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "railway"
-  ]
+  ],
+  "sideEffects": false
 }

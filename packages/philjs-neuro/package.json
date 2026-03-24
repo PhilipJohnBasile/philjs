@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "neuro"
-  ]
+  ],
+  "sideEffects": false
 }

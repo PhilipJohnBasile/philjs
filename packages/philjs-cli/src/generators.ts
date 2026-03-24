@@ -612,7 +612,7 @@ async function scaffoldStore(options: ScaffoldOptions): Promise<ScaffoldResult> 
 
     const storePath = path.join(storeDir, `${storeName}.${ext}`);
     if (!fs.existsSync(storePath) || overwrite) {
-        const storeContent = generateStore(storeName, typescript);
+        const storeContent = generateStoreContent(storeName, typescript);
         fs.writeFileSync(storePath, storeContent, 'utf-8');
         result.files.push(storePath);
         console.log(`  ✅ Created ${storePath}`);
@@ -812,7 +812,7 @@ export async function DELETE(request${reqType})${returnType} {
 `;
 }
 
-function generateStore(name: string, typescript: boolean): string {
+function generateStoreContent(name: string, typescript: boolean): string {
     const pascalName = toPascalCase(name);
     const stateType = typescript
         ? `\nexport interface ${pascalName}State {\n  count: number;\n  loading: boolean;\n  error: string | null;\n}\n`
@@ -943,3 +943,11 @@ export function listAvailableComponents(): string[] {
 export function getComponentInfo(name: string): ShadcnComponent | null {
     return SHADCN_COMPONENTS[name.toLowerCase()] || null;
 }
+
+// Convenience aliases for cli-old.ts compatibility
+interface GenerateOptions { name: string; directory?: string; typescript?: boolean; withTest?: boolean; withStyles?: boolean; }
+export const generateComponent = (opts: GenerateOptions) => scaffold('component', opts.name, opts.directory);
+export const generateRoute = (opts: GenerateOptions) => scaffold('route', opts.name, opts.directory);
+export const generatePage = (opts: GenerateOptions) => scaffold('route', opts.name, opts.directory);
+export const generateHook = (opts: GenerateOptions) => scaffold('component', opts.name, opts.directory);
+export const generateStore = (opts: GenerateOptions) => scaffold('store', opts.name, opts.directory);

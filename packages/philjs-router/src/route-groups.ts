@@ -274,8 +274,8 @@ function processGroupRoute(
             : undefined;
 
           return {
-            ...(groupData || {}),
-            ...(routeData || {}),
+            ...((groupData || {}) as Record<string, unknown>),
+            ...((routeData || {}) as Record<string, unknown>),
           };
         }
       : undefined;

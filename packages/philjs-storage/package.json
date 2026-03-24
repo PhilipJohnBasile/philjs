@@ -61,7 +61,6 @@
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
     "@vitest/coverage-v8": "^4.1.1",
-    "rollup": "^4.60.0",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

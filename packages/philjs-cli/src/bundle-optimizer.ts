@@ -389,7 +389,7 @@ export function bundleOptimizerPlugin(
                 imports: moduleWithImports.importedIds ?? [],
                 exports: [], // Would need AST analysis
                 usedExports: [],
-                sideEffects: !module.removedExports,
+                sideEffects: !(module as any).removedExports,
               });
             }
           }

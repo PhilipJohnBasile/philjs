@@ -152,7 +152,7 @@ export function useNexusCollection<T extends { id?: string } = { id?: string }>(
 
   return {
     items: () => currentItems,
-    get: (id: string) => collection.get(id),
+    get: async (id: string) => collection.get(id),
     add: async (item: T) => {
       try {
         return await collection.add(item);
@@ -177,7 +177,7 @@ export function useNexusCollection<T extends { id?: string } = { id?: string }>(
         throw e;
       }
     },
-    query: (filter: (item: T) => boolean) => collection.query(filter),
+    query: async (filter: (item: T) => boolean) => collection.query(filter),
     loading: () => isLoading,
     error: () => currentError,
   };

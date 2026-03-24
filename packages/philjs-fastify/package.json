@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "fastify"
-  ]
+  ],
+  "sideEffects": false
 }

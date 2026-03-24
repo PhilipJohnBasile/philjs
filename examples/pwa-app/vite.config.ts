@@ -1,7 +1,10 @@
+import { fileURLToPath } from "node:url";
+import path, { resolve } from "node:path";
 import { defineConfig } from "vite";
-import { resolve } from "node:path";
 import philjs from "../../packages/philjs-compiler/src/plugins/vite";
 import { VitePWA } from "vite-plugin-pwa";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [

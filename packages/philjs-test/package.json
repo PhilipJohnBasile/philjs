@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "test"
-  ]
+  ],
+  "sideEffects": false
 }

@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "immer"
-  ]
+  ],
+  "sideEffects": false
 }

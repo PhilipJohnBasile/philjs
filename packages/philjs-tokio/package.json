@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "tokio"
-  ]
+  ],
+  "sideEffects": false
 }

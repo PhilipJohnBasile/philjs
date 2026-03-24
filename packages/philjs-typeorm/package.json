@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "typeorm"
-  ]
+  ],
+  "sideEffects": false
 }

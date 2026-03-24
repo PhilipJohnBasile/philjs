@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "java"
-  ]
+  ],
+  "sideEffects": false
 }

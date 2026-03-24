@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
     "typecheck": "tsgo --noEmit"
@@ -25,9 +25,6 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-typescript": "^12.3.0",
-    "rollup": "^4.60.0",
     "vitest": "^4.1.1"
   },
   "keywords": [

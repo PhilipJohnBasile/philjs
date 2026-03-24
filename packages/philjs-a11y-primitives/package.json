@@ -43,5 +43,6 @@
     "framework",
     "a11y",
     "primitives"
-  ]
+  ],
+  "sideEffects": false
 }

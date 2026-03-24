@@ -127,17 +127,23 @@ export interface JSXElement<P = unknown> {
 }
 
 /**
- * Valid JSX child types
+ * Valid JSX child types (primitive)
  */
-export type JSXChild =
+type JSXChildPrimitive =
   | JSXElement
   | string
   | number
   | boolean
   | null
-  | undefined
-  | JSXChild[]
-  | Accessor<JSXChild>;
+  | undefined;
+
+/**
+ * Valid JSX child types
+ */
+export type JSXChild = JSXChildPrimitive | JSXChildArray | (() => JSXChildPrimitive);
+
+/** Array of JSX children (intermediate interface to break circular reference) */
+export interface JSXChildArray extends ReadonlyArray<JSXChild> {}
 
 /**
  * Virtual node - any valid renderable value

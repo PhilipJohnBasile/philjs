@@ -448,7 +448,7 @@ export class WebVitalsMonitor {
 
     if (!navEntry) return 'navigate';
 
-    switch (navEntry.type) {
+    switch (navEntry.type as string) {
       case 'reload':
         return 'reload';
       case 'back_forward':

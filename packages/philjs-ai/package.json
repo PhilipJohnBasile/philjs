@@ -51,7 +51,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.cjs",
+    "build": "tsgo",
     "test": "vitest run",
     "lint": "npm run typecheck",
     "typecheck": "tsgo --noEmit"
@@ -68,7 +68,6 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@types/vscode": "^1.110.0",
-    "rollup": "^4.60.0",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

@@ -99,5 +99,6 @@
     "revalidation",
     "cache",
     "stale-while-revalidate"
-  ]
+  ],
+  "sideEffects": false
 }

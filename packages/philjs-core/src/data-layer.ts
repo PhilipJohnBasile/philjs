@@ -267,7 +267,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       if (existing?.promise) {
         const result = await existing.promise;
         data.set(result as T);
-        return result;
+        return result as T;
       }
 
       // Create new promise
@@ -469,7 +469,7 @@ export async function prefetchQuery<T>(options: QueryOptions<T>): Promise<T> {
   // Check if already cached and fresh
   if (!queryCache.isStale(keyStr, staleTime)) {
     const cached = queryCache.get(keyStr);
-    if (cached?.data) return cached.data;
+    if (cached?.data) return cached.data as T;
   }
 
   // Fetch and cache

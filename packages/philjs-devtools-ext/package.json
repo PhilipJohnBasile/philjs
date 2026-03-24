@@ -43,5 +43,6 @@
     "framework",
     "devtools",
     "ext"
-  ]
+  ],
+  "sideEffects": false
 }

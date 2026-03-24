@@ -17,7 +17,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build": "tsgo",
     "test": "jest",
     "typecheck": "tsgo --noEmit"
   },
@@ -85,14 +85,9 @@
     "csstype": "^3.2.3"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^29.0.2",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-typescript": "^12.3.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.5.0",
     "jest": "^30.3.0",
-    "rollup": "^4.60.0",
-    "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^29.4.6"
   },
   "peerDependencies": {},
@@ -107,5 +102,6 @@
   "homepage": "https://github.com/PhilipJohnBasile/philjs#readme",
   "engines": {
     "node": ">=24"
-  }
+  },
+  "sideEffects": false
 }

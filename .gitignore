@@ -102,3 +102,7 @@ rollup.config-*.mjs
 
 # Temp debug files
 broken_links*.txt
+
+# Declaration maps (only wanted in dist/)
+*.d.ts.map
+!**/dist/**/*.d.ts.map

@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "hono"
-  ]
+  ],
+  "sideEffects": false
 }

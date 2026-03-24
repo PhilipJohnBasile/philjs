@@ -48,5 +48,6 @@
     "framework",
     "frontend",
     "adapters"
-  ]
+  ],
+  "sideEffects": false
 }

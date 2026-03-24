@@ -31,7 +31,7 @@ export function useValibotForm<T extends BaseSchema>(schema: T, initialValues: P
     };
 
     const setField = <K extends keyof Output<T>>(field: K, value: Output<T>[K]) => {
-        values.update(v => ({ ...v, [field]: value }));
+        values.set({ ...values(), [field]: value });
     };
 
     return { values, errors, isValid, validate, setField };

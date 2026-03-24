@@ -37,7 +37,6 @@
     "@philjs/core": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "engines": {
@@ -50,5 +49,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

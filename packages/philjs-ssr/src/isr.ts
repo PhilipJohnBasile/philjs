@@ -76,8 +76,8 @@ export interface CacheEntry {
   createdAt: number;
   /** Last revalidation timestamp */
   revalidatedAt: number;
-  /** Revalidation interval in seconds */
-  revalidate: number;
+  /** Revalidation interval in seconds (false = never revalidate) */
+  revalidate: number | false;
   /** ETag for conditional requests */
   etag?: string;
   /** Headers to include in response */
@@ -586,5 +586,4 @@ export function createKVCacheAdapter(kv: {
   };
 }
 
-// Export types
-export type { ISRConfig, CacheAdapter, CacheEntry, PageCacheConfig, RevalidateOptions };
+// Types are exported at their declaration sites above.

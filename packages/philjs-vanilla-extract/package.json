@@ -43,5 +43,6 @@
     "framework",
     "vanilla",
     "extract"
-  ]
+  ],
+  "sideEffects": false
 }

@@ -555,12 +555,4 @@ export function PasskeyInput(props: {
   };
 }
 
-// Export types
-export type {
-  WebAuthnConfig,
-  WebAuthnEndpoints,
-  PasskeyCredential,
-  RegistrationOptions,
-  AuthenticationOptions,
-  VerificationResult,
-};
+// Types are exported at their declaration sites above.

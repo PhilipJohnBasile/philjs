@@ -39,7 +39,6 @@
   "author": "PhilJS Team",
   "license": "MIT",
   "devDependencies": {
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "peerDependencies": {

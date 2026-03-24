@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "bio"
-  ]
+  ],
+  "sideEffects": false
 }

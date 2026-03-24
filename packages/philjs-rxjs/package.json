@@ -32,7 +32,6 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "rxjs": "^7.8.2",
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "license": "MIT",
@@ -47,5 +46,6 @@
     "typescript",
     "framework",
     "rxjs"
-  ]
+  ],
+  "sideEffects": false
 }

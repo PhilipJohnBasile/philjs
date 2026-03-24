@@ -1316,12 +1316,4 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 // Exports
 // ============================================================================
 
-export type {
-  VisualizerConfig,
-  RouteVisualization,
-  RouteMetadata,
-  MiddlewareInfo,
-  DiagramOptions,
-  SVGExportOptions,
-  PNGExportOptions,
-};
+// Types are exported at their declaration sites above.

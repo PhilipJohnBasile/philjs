@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "material"
-  ]
+  ],
+  "sideEffects": false
 }

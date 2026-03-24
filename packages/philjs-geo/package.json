@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "geo"
-  ]
+  ],
+  "sideEffects": false
 }

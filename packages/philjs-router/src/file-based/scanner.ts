@@ -16,6 +16,7 @@ import {
   type ParsedFilePath,
   type RouteFileType,
   type ParsedSegment,
+  type SegmentType,
 } from "./conventions.js";
 
 // ============================================================================
@@ -374,9 +375,9 @@ function scanDir(
     let childNode = parentNode.children.get(dir);
 
     if (!childNode) {
-      const parsedSegment = {
+      const parsedSegment: ParsedSegment & { includeInUrl: boolean } = {
         raw: dir,
-        type: "static" as const,
+        type: "static" as SegmentType,
         includeInUrl: true,
       };
       // Check for dynamic segments
@@ -384,15 +385,15 @@ function scanDir(
         if (dir.startsWith("[[...") && dir.endsWith("]]")) {
           const param = dir.slice(5, -2);
           parsedSegment.type = "optional-catch-all";
-          (parsedSegment as any).param = param;
+          parsedSegment.param = param;
         } else if (dir.startsWith("[...") && dir.endsWith("]")) {
           const param = dir.slice(4, -1);
           parsedSegment.type = "catch-all";
-          (parsedSegment as any).param = param;
+          parsedSegment.param = param;
         } else {
           const param = dir.slice(1, -1);
           parsedSegment.type = "dynamic";
-          (parsedSegment as any).param = param;
+          parsedSegment.param = param;
         }
       }
 

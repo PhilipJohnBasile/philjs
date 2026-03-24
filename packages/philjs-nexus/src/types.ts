@@ -204,7 +204,8 @@ export type SyncEvent =
   | { type: 'sync-error'; error: Error }
   | { type: 'conflict'; path: string; resolved: boolean }
   | { type: 'online' }
-  | { type: 'offline' };
+  | { type: 'offline' }
+  | { type: 'document-change'; documentId: string };
 
 /**
  * Sync event listener

@@ -186,9 +186,9 @@ const routerState = signal<RouterState>({
  */
 export function createFileRouter(config: FileRouterConfig): FileRouter {
   // Resolve configuration
-  const resolvedConfig: Required<FileRouterConfig> = {
+  const resolvedConfig = {
     extensions: [".tsx", ".ts", ".jsx", ".js"],
-    ignore: [],
+    ignore: [] as (string | RegExp)[],
     layouts: true,
     loading: true,
     errors: true,
@@ -197,16 +197,16 @@ export function createFileRouter(config: FileRouterConfig): FileRouter {
     lazy: true,
     generateTypes: false,
     basePath: "",
-    target: "#app",
+    target: "#app" as string | HTMLElement,
     transitions: false,
-    prefetch: "hover",
+    prefetch: "hover" as boolean | "hover" | "visible" | "intent",
     dev: false,
     ...config,
     moduleLoader: config.moduleLoader || defaultModuleLoader,
     onError: config.onError || defaultErrorHandler,
     onRoutesLoaded: config.onRoutesLoaded || (() => {}),
     onNavigate: config.onNavigate || (() => {}),
-  };
+  } as Required<FileRouterConfig>;
 
   // Scan and generate routes
   let scanResult = scanDirectory(resolvedConfig);
@@ -489,6 +489,7 @@ export function createFileRouter(config: FileRouterConfig): FileRouter {
     if (resolvedConfig.dev) {
       watcher = new RouteWatcher({
         ...resolvedConfig,
+        onError: (error: Error) => resolvedConfig.onError(error, ''),
         onRoutesUpdate: (newManifest) => {
           manifest = newManifest;
           moduleCache.clear();

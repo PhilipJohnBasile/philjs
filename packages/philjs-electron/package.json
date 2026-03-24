@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "electron"
-  ]
+  ],
+  "sideEffects": false
 }

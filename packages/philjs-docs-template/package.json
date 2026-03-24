@@ -24,9 +24,7 @@
     "marked": "^17.0.5",
     "shiki": "^4.0.2"
   },
-  "devDependencies": {
-    "tsup": "^8.5.1"
-  },
+  "devDependencies": {},
   "keywords": [
     "philjs",
     "typescript",
@@ -45,5 +43,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

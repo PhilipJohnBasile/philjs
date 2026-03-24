@@ -215,9 +215,9 @@ export const advancedValidators = {
       if (!value) return true;
 
       const supportsFileList = typeof FileList !== 'undefined';
-      const files = supportsFileList && value instanceof FileList
+      const files: File[] = supportsFileList && value instanceof FileList
         ? Array.from(value)
-        : Array.isArray(value) ? value : [value];
+        : Array.isArray(value) ? value : [value as File];
 
       if (options.maxFiles && files.length > options.maxFiles) {
         return false;
@@ -509,7 +509,7 @@ export class SchemaValidator<T extends FormValues = FormValues> {
         if (when(allValues) && !rule.validate(value, allValues)) {
           result.valid = false;
           result.error = typeof rule.message === 'function'
-            ? rule.message(value)
+            ? (rule.message as unknown as (v: unknown) => string)(value)
             : rule.message;
           return result;
         }

@@ -29,8 +29,7 @@
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "tsup": "^8.5.1"
+    "@types/node": "^25.5.0"
   },
   "license": "MIT",
   "engines": {
@@ -50,5 +49,6 @@
   ],
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

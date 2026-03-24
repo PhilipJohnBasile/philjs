@@ -202,7 +202,7 @@ export class NexusApp {
     const self = this;
     const subscribers = new Set<(docs: T[]) => void>();
 
-    return {
+    return ({
       get size(): number {
         // Synchronous size requires cached data
         return 0;
@@ -251,7 +251,7 @@ export class NexusApp {
 
         return () => subscribers.delete(listener);
       },
-    };
+    }) as unknown as NexusCollection<T>;
   }
 
   // ============================================================================

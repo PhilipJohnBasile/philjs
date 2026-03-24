@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "ar"
-  ]
+  ],
+  "sideEffects": false
 }

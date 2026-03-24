@@ -31,7 +31,6 @@
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.8.0",
     "drizzle-orm": "^0.45.1",
-    "tsup": "^8.5.1",
     "vitest": "^4.1.1"
   },
   "keywords": [
@@ -53,5 +52,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

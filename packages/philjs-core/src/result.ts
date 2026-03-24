@@ -42,16 +42,16 @@ export function map<T, E, U>(result: Result<T, E>, fn: (value: T) => U): Result<
 }
 
 export function mapErr<T, E, F>(result: Result<T, E>, fn: (error: E) => F): Result<T, F> {
-  return result.ok ? result : Err(fn(result.error));
+  return result.ok ? result : Err(fn((result as Err<E>).error));
 }
 
 export function andThen<T, E, U>(result: Result<T, E>, fn: (value: T) => Result<U, E>): Result<U, E> {
-  return result.ok ? fn(result.value) : result;
+  return result.ok ? fn(result.value) : result as unknown as Result<U, E>;
 }
 
 export function unwrap<T, E>(result: Result<T, E>): T {
   if (result.ok) return result.value;
-  throw new Error(safeErrorMessage(result.error));
+  throw new Error(safeErrorMessage((result as Err<E>).error));
 }
 
 export function unwrapOr<T, E>(result: Result<T, E>, fallback: T): T {
@@ -62,7 +62,7 @@ export function matchResult<T, E, U>(
   result: Result<T, E>,
   handlers: { ok: (value: T) => U; err: (error: E) => U }
 ): U {
-  return result.ok ? handlers.ok(result.value) : handlers.err(result.error);
+  return result.ok ? handlers.ok(result.value) : handlers.err((result as Err<E>).error);
 }
 
 function safeErrorMessage(error: unknown): string {

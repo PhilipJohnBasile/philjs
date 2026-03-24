@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "axum"
-  ]
+  ],
+  "sideEffects": false
 }

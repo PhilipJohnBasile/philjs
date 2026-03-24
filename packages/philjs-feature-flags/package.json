@@ -43,5 +43,6 @@
     "framework",
     "feature",
     "flags"
-  ]
+  ],
+  "sideEffects": false
 }

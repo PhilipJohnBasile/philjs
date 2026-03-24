@@ -37,9 +37,7 @@
     "@philjs/social": "workspace:*",
     "@philjs/test": "workspace:*"
   },
-  "devDependencies": {
-    "tsup": "^8.5.1"
-  },
+  "devDependencies": {},
   "author": "PhilJS Team",
   "repository": {
     "type": "git",
@@ -54,5 +52,6 @@
   ],
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

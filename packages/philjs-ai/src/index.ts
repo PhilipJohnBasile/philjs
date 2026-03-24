@@ -16,23 +16,74 @@ export * from './codegen.js';
 // Code analysis
 export * from './analysis.js';
 
-// AI Assistants
-export * from './assistant/index.js';
+// AI Assistants (exclude: AccessibilityIssue - from analysis.js)
+export {
+  AIAssistant, CodeReviewer, CodingAgent,
+  createAIAssistant, createAutoAssistant, createCodeReviewer, createCodingAgent, executeTask,
+  type AgentResult, type AgentStep, type AgentTask, type AssistantConfig,
+  type ChatResponse, type CodeGenRequest, type CodeGenResult, type CodeMetrics,
+  type CodingAgentConfig, type ConversationMessage, type CustomRule,
+  type FileReview, type LineComment, type PRReviewResult, type PerformanceCategory,
+  type PerformanceNote, type ProjectContext, type RefactorRequest, type ReviewConfig,
+  type ReviewFocus, type ReviewIssue, type ReviewResult, type ReviewSeverity,
+  type ReviewSuggestion, type ReviewSummary, type SecurityCategory,
+  type SecurityFinding, type StepResult, type TaskConstraints, type TaskContext,
+} from './assistant/index.js';
 
-// Autocomplete
-export * from './autocomplete/index.js';
+// Autocomplete (exclude: ProjectContext - from assistant)
+export {
+  AutocompleteEngine, CompletionItemKind,
+  createAutocompleteEngine, getSuggestions, getFixSuggestions,
+  getInlineCompletion, getSignatureHelp, getCompletions,
+  type AutocompleteContext, type ModuleInfo, type ComponentInfo, type PropInfo,
+  type TypeInfo, type UtilityInfo, type AutocompleteSuggestion, type SuggestionKind,
+  type ImportSuggestion, type TextEdit, type ErrorInfo, type FixSuggestion,
+  type InlineCompletionResult, type SignatureHelpResult, type SignatureInfo,
+  type ParameterInfo, type CodeContext, type CompletionItem,
+} from './autocomplete/index.js';
 
-// Documentation generation
-export * from './docs/index.js';
+// Documentation generation (exclude: GeneratedDocumentation - from types.js)
+export {
+  DocGenerator, addJSDoc, createDocGenerator, generateDocs, generateReadme,
+  type APIDocConfig, type APIReference, type BadgeConfig, type DocGenerationConfig,
+  type DocStyle, type ExportDoc, type GeneratedAPIDoc,
+  type GeneratedReadme, type ModuleDoc, type ParameterDoc, type ReadmeConfig,
+  type ReadmeSection,
+} from './docs/index.js';
 
 // Type inference
 export * from './inference/index.js';
 
-// LSP integration
-export * from './lsp/index.js';
+// LSP integration (exclude: CompletionItem, TextEdit - from autocomplete; CompletionOptions - from types.js)
+export {
+  CODE_ACTION_KINDS, DiagnosticSeverity, DiagnosticTag, DocumentStore,
+  InlineCompletionTriggerKind, LSPHandlers, PhilJSLanguageServer,
+  TextDocumentSyncKind, createLSPHandlers, createLanguageServer,
+  getDefaultCapabilities, getInitializeResult, hasCapability, startStdioServer,
+  type ClientCapabilities, type CodeAction, type CodeActionOptions,
+  type CodeActionParams, type CodeLensOptions, type CompletionList,
+  type CompletionParams, type Diagnostic, type DiagnosticOptions,
+  type ExperimentalCapabilities, type FileOperationFilter, type FileOperationPattern,
+  type Hover, type InitializeResult, type InlineCompletionItem,
+  type InlineCompletionList, type InlineCompletionOptions, type InlineCompletionParams,
+  type LSPMessage, type LSPNotification, type LSPRequest, type LSPResponse,
+  type MessageHandler, type NotificationHandler, type Position, type Range,
+  type RenameOptions, type SaveOptions, type ServerCapabilities,
+  type ServerConfig, type ServerState, type SignatureHelp,
+  type SignatureHelpOptions, type SignatureHelpParams,
+  type TextDocumentIdentifier, type TextDocumentPositionParams,
+  type TextDocumentSyncOptions, type WorkspaceCapabilities, type WorkspaceEdit,
+} from './lsp/index.js';
 
-// Refactoring
-export * from './refactor/index.js';
+// Refactoring (exclude: AccessibilityIssue - from analysis; RefactorResult, refactorCode - from codegen)
+export {
+  RefactoringEngine, analyzePerformance,
+  auditAccessibility, createRefactoringEngine,
+  type AccessibilityAudit, type AccessibilityFix,
+  type BestPracticeImprovement, type BestPracticeViolation, type BestPracticesResult,
+  type PerformanceAnalysis, type PerformanceIssue, type PerformanceOptimization,
+  type RefactorConfig, type RefactorFocusArea,
+} from './refactor/index.js';
 
 // Schema utilities
 export * from './schema/index.js';
@@ -40,8 +91,16 @@ export * from './schema/index.js';
 // Suggestions
 export * from './suggestions/index.js';
 
-// Testing utilities
-export * from './testing/index.js';
+// Testing utilities (exclude: TestCase, generateTests - from codegen; GeneratedTests - from types)
+export {
+  TestGenerator, createTestGenerator,
+  generateE2ETests, generateUnitTests,
+  type CoverageAnalysis, type CoverageTarget, type E2EScenario,
+  type E2ETestConfig, type E2ETestScenario,
+  type GeneratedE2ETests,
+  type MissingCoverage, type RiskArea, type SuggestedTest,
+  type TestFramework, type TestGenerationConfig, type TestType,
+} from './testing/index.js';
 
 // Predictive navigation
 export * from './predictive/navigation-predictor.js';
@@ -52,8 +111,13 @@ export * from './rag.js';
 // Structured outputs
 export * from './structured.js';
 
-// AI Tools
-export * from './tools.js';
+// AI Tools (exclude: AgentStep - from assistant)
+export {
+  Agent, ToolExecutor,
+  calculatorTool, codeExecutionTool, createAgent, createTool,
+  fileReadTool, tool, weatherTool, webSearchTool,
+  type AgentConfig, type ParameterDef, type ToolBuilder,
+} from './tools.js';
 
 // Caching
 export * from './cache.js';
@@ -69,7 +133,17 @@ export * from './langfuse.js';
 export * from './helicone.js';
 export * from './haystack.js';
 export * from './mastra.js';
-export * from './workers-ai.js';
+// Workers AI (exclude: ChatResponse - from assistant)
+export {
+  chat, classifyImage, cosineSimilarity, createWorkersAI,
+  embed, findSimilar, formatMessages, generateImage,
+  models, runModel, speechToText, textToSpeech, translate, useWorkersAI,
+  type Ai, type ChatMessage, type ChatOptions,
+  type EmbeddingOptions, type EmbeddingResponse,
+  type ImageClassificationOptions, type ImageGenerationOptions,
+  type SpeechToTextOptions, type TextToSpeechOptions,
+  type TranslationOptions, type WorkersAIConfig,
+} from './workers-ai.js';
 export * from './copilot.js';
 
 // VSCode extension

@@ -43,5 +43,6 @@
     "typescript",
     "framework",
     "mobile"
-  ]
+  ],
+  "sideEffects": false
 }

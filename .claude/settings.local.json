@@ -38,7 +38,19 @@
       "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(./node_modules/.bin/tsc)",
       "Bash(git commit:*)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Bash(sed 's/\"\"\"\".*//')",
+      "Bash(for ex:*)",
+      "Read(//c/Users/Phili/Git/philjs/$ex/**)",
+      "Bash(for d:*)",
+      "Read(//c/Users/Phili/Git/philjs/**)",
+      "Bash(grep -rn github.com/PhilipJohnBasile/philjs packages/*/package.json)",
+      "Bash(grep -rl github.com/PhilipJohnBasile/philjs packages/*/package.json)",
+      "Bash(for f:*)",
+      "Bash(for app:*)",
+      "Read(//c/Users/Phili/Git/philjs/examples/$app/**)",
+      "Bash(do node:*)",
+      "Bash(cd:*)"
     ]
   }
 }

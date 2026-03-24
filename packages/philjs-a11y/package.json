@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "a11y"
-  ]
+  ],
+  "sideEffects": false
 }

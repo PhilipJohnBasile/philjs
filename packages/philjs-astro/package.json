@@ -42,5 +42,6 @@
     "typescript",
     "framework",
     "astro"
-  ]
+  ],
+  "sideEffects": false
 }

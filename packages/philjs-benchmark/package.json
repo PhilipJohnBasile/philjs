@@ -85,5 +85,6 @@
   "author": "PhilJS Team",
   "files": [
     "dist"
-  ]
+  ],
+  "sideEffects": false
 }

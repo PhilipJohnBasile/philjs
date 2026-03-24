@@ -39,10 +39,10 @@ export async function buildProduction(options: BuildOptions): Promise<void> {
       outDir: options.outDir,
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Vendor splitting
-            vendor: ["@philjs/core"],
-            router: ["@philjs/router"],
+          manualChunks: (id: string) => {
+            if (id.includes('@philjs/core')) return 'vendor';
+            if (id.includes('@philjs/router')) return 'router';
+            return undefined;
           },
         },
       },

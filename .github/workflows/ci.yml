@@ -240,9 +240,9 @@ jobs:
         id: bundle-check
         run: |
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            node scripts/check-budgets.mjs --compare --ci --json > bundle-size-results.json || true
+            npx tsx scripts/check-budgets.ts --compare --ci --json > bundle-size-results.json || true
           else
-            node scripts/check-budgets.mjs --save-history --json > bundle-size-results.json
+            npx tsx scripts/check-budgets.ts --save-history --json > bundle-size-results.json
           fi
           cat bundle-size-results.json
 
@@ -332,7 +332,7 @@ jobs:
       - name: Fail if regressions detected
         if: github.event_name == 'pull_request'
         run: |
-          if ! node scripts/check-budgets.mjs --compare --ci; then
+          if ! npx tsx scripts/check-budgets.ts --compare --ci; then
             echo "Bundle size check failed - see report above"
             exit 1
           fi

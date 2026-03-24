@@ -136,7 +136,7 @@ export class RouteWatcher extends EventEmitter {
       onFileChange: config.onFileChange || (() => {}),
       onRoutesUpdate: config.onRoutesUpdate || (() => {}),
       onError: config.onError || ((err) => console.error(err)),
-    };
+    } as Required<WatcherConfig>;
   }
 
   /**

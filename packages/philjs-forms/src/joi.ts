@@ -30,7 +30,7 @@ export function useJoiForm<T>(schema: Schema<T>, initialValues: Partial<T> = {})
     };
 
     const setField = <K extends keyof T>(field: K, value: T[K]) => {
-        values.update(v => ({ ...v, [field]: value }));
+        values.set({ ...values(), [field]: value });
     };
 
     return { values, errors, isValid, validate, setField };

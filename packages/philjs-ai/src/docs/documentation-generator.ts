@@ -42,7 +42,7 @@ import { extractCode, extractJSON } from '../utils/parser.js';
 export class DocumentationGenerator {
     provider;
     defaultOptions;
-    constructor(provider, options) {
+    constructor(provider, options?) {
         this.provider = provider;
         this.defaultOptions = {
             temperature: 0.2,
@@ -91,7 +91,7 @@ export class DocumentationGenerator {
      * @param options - Generation options
      * @returns Component documentation
      */
-    async documentComponent(componentCode, options) {
+    async documentComponent(componentCode, options?) {
         const prompt = `Analyze and document this PhilJS component:
 
 \`\`\`typescript
@@ -139,7 +139,7 @@ Return JSON matching ComponentDoc interface:
      * @param options - Options
      * @returns Code with JSDoc added
      */
-    async addJSDoc(code, options) {
+    async addJSDoc(code, options?) {
         const prompt = `Add JSDoc comments to all functions, classes, and types in this code that don't have them:
 
 \`\`\`typescript
@@ -430,7 +430,15 @@ Guidelines:
             } : undefined;
             // Calculate insert line
             const insertLine = code.slice(0, match.index).split('\n').length;
-            const block = {
+            const block: {
+                type: string;
+                name: string;
+                documentation: string;
+                insertLine: number;
+                description: string;
+                params?: typeof params;
+                returns?: typeof returns;
+            } = {
                 type,
                 name,
                 documentation: match[0],

@@ -44,5 +44,6 @@
     "typescript",
     "framework",
     "express"
-  ]
+  ],
+  "sideEffects": false
 }
