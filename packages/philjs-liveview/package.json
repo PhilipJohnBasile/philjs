@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Server-driven UI for PhilJS - Phoenix LiveView-style real-time rendering",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {

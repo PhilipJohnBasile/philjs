@@ -4,12 +4,29 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "declarationMap": false,
-    "types": ["node"],
-    "typeRoots": ["./src/types", "../../node_modules/@types"],
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "./src/types",
+      "../../node_modules/@types"
+    ],
     "paths": {
-      "@philjs/router": ["./src/types/philjs-router.d.ts"]
+      "@philjs/router": [
+        "./src/types/philjs-router.d.ts"
+      ]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts"
+  ]
 }

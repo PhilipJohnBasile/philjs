@@ -1087,21 +1087,11 @@ if (typeof window !== 'undefined') {
 // ============================================================================
 
 export {
-    PhilAlpine,
     signal,
     computed,
     effect,
     batch,
-    defineComponent,
-    defineStore,
-    definePlugin,
-    addCloakStyle,
-    cloakStyle,
     type Signal,
-    type AlpineContext,
-    type AlpineDirective,
-    type DirectiveHandler,
-    type TransitionConfig,
 };
 
 export default PhilAlpine;

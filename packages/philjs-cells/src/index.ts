@@ -17,20 +17,20 @@ export function Cell<T>(props: CellProps<T>) {
     // Wrap async in self-invoking function inside effect for safe execution
     (async () => {
       try {
-        loading.value = true;
-        data.value = await props.query();
+        loading.set(true);
+        data.set(await props.query());
       } catch (e: any) {
-        error.value = e;
+        error.set(e);
       } finally {
-        loading.value = false;
+        loading.set(false);
       }
     })();
   });
 
   return () => {
-    if (loading.value) return props.Loading ? props.Loading() : 'Loading...';
-    if (error.value) return props.Error ? props.Error({ error: error.value! }) : 'Error';
+    if (loading()) return props.Loading ? props.Loading() : 'Loading...';
+    if (error()) return props.Error ? props.Error({ error: error()! }) : 'Error';
     // @ts-ignore
-    return props.Success({ data: data.value! });
+    return props.Success({ data: data()! });
   };
 }

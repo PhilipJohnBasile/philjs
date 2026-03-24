@@ -566,7 +566,7 @@ export function useQuery<TData = unknown, TError = Error>(
   const cache = client.getQueryCache();
   const defaults = client.getDefaultOptions().queries;
 
-  const mergedOptions = { ...defaults, ...options };
+  const mergedOptions = { ...defaults, ...options } as QueryOptions<TData, TError>;
   const hash = hashQueryKey(options.queryKey);
 
   // Get or create cache entry
@@ -1007,7 +1007,7 @@ export function useSuspenseQuery<TData = unknown, TError = Error>(
   }
 
   // Start fetching and throw the promise
-  pending = client.prefetchQuery(options).then(() => {
+  pending = client.prefetchQuery(options as QueryOptions<TData>).then(() => {
     pendingQueries.delete(hash);
   });
   pendingQueries.set(hash, pending);

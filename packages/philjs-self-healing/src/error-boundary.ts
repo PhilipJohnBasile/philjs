@@ -46,7 +46,7 @@ export class SelfHealingBarrier extends React.Component<Props, State> {
 
     render() {
         if (this.state.hasError) {
-            return this.props.fallback || <div>Attempting to self - heal...</div>;
+            return this.props.fallback || React.createElement('div', null, 'Attempting to self-heal...');
         }
         return this.props.children;
     }

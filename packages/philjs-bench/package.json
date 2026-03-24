@@ -5,9 +5,10 @@
     "node": ">=24"
   },
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "bench": "ts-node src/index.ts"
+    "bench": "ts-node src/index.ts",
+    "build": "tsgo"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"
@@ -28,5 +29,12 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "dist/index.d.ts",
+      "import": "dist/index.js"
+    }
+  }
 }

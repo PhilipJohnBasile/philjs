@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Map components for PhilJS with support for Google Maps, Mapbox, and Leaflet",
   "type": "module",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

@@ -353,7 +353,7 @@ export const errors = {
 
 class InMemoryRateLimitStore implements RateLimitStore {
     private store = new Map<string, { count: number; resetTime: number }>();
-    private cleanupInterval: Timer;
+    private cleanupInterval: ReturnType<typeof setInterval>;
 
     constructor(private windowMs: number = 60000) {
         this.cleanupInterval = setInterval(() => this.cleanup(), windowMs);
@@ -401,7 +401,7 @@ class InMemoryRateLimitStore implements RateLimitStore {
 
 class InMemorySessionStore implements SessionStore {
     private store = new Map<string, SessionData>();
-    private cleanupInterval: Timer;
+    private cleanupInterval: ReturnType<typeof setInterval>;
 
     constructor() {
         this.cleanupInterval = setInterval(() => this.cleanup(), 60000);
@@ -445,7 +445,7 @@ class InMemorySessionStore implements SessionStore {
         }
     }
 
-    destroy(): void {
+    shutdown(): void {
         clearInterval(this.cleanupInterval);
         this.store.clear();
     }
@@ -457,7 +457,7 @@ class InMemorySessionStore implements SessionStore {
 
 class InMemoryCache {
     private store = new Map<string, { value: any; expiresAt: number }>();
-    private cleanupInterval: Timer;
+    private cleanupInterval: ReturnType<typeof setInterval>;
 
     constructor() {
         this.cleanupInterval = setInterval(() => this.cleanup(), 60000);
@@ -1335,7 +1335,7 @@ export type ApiHandler<TBody = unknown, TParams = unknown, TQuery = unknown, TRe
 
 export function createHandler<TBody = unknown, TParams = unknown, TQuery = unknown, TResponse = unknown>(
     handler: ApiHandler<TBody, TParams, TQuery, TResponse>
-): Handler {
+): Handler<any, any> {
     return async (ctx: any) => {
         const url = new URL(ctx.request.url);
         const apiContext: ApiContext<TBody, TParams, TQuery> = {
@@ -1671,9 +1671,9 @@ export function validateBody<T>(schema: Record<string, ValidationSchema>) {
     return (ctx: any) => {
         const result = validate<T>(ctx.body, schema);
         if (!result.valid) {
-            throw new ValidationError(result.errors);
+            throw new ValidationError((result as any).errors);
         }
-        return result.data;
+        return (result as any).data;
     };
 }
 
@@ -1739,7 +1739,7 @@ export interface CreateAppOptions extends PhilJSPluginOptions {
 }
 
 export function createApp(options: CreateAppOptions) {
-    let app = new Elysia();
+    let app: any = new Elysia();
 
     // Error handler first
     if (options.errorHandler !== false) {

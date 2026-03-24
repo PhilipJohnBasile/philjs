@@ -12,20 +12,20 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@philjs/core": "^0.1.0",
-    "@philjs/router": "^0.1.0",
-    "@philjs/ssr": "^0.1.0",
-    "@philjs/islands": "^0.1.0",
-    "@philjs/devtools": "^0.1.0",
-    "@philjs/compiler": "^0.1.0"
+    "@philjs/core": "workspace:*",
+    "@philjs/router": "workspace:*",
+    "@philjs/ssr": "workspace:*",
+    "@philjs/islands": "workspace:*",
+    "@philjs/devtools": "workspace:*",
+    "@philjs/compiler": "workspace:*"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.0",
-    "@types/node": "^25.0.0",
-    "tsx": "^4.19.1",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16",
-    "playwright": "^1.48.0"
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1",
+    "playwright": "^1.58.2"
   },
   "engines": {
     "node": ">=24"

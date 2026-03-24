@@ -34,7 +34,7 @@
  * ```
  */
 
-import { signal, effect, memo, batch, memo } from '@philjs/core';
+import { signal, effect, memo, batch } from '@philjs/core';
 
 // Compatibility alias
 const computed = memo;
@@ -501,7 +501,7 @@ export function useAntdTable<T extends Record<string, unknown>>(
     return {
       dataSource: s.data,
       columns: options.columns,
-      pagination: options.pagination === false ? false : s.pagination,
+      pagination: options.pagination === false ? false as const : s.pagination,
       loading: s.loading,
       rowKey: options.rowKey || 'id',
       onChange: handleChange,
@@ -1088,7 +1088,8 @@ export function useAntdPopconfirm(options: UsePopconfirmOptions): {
 export {
   signal,
   effect,
-  computed,
   batch,
   memo,
 } from '@philjs/core';
+
+export { computed };

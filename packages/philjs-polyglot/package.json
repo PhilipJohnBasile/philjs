@@ -7,7 +7,7 @@
   "description": "Zero-latency bridge to Python, Rust, and legacy systems",
   "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsgo",

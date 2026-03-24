@@ -13,21 +13,21 @@ function runBenchmark() {
     const signals = Array.from({ length: count }, (_, i) => signal(i));
 
     const sum = computed(() => {
-        return signals.reduce((acc, s) => acc + s.value, 0);
+        return signals.reduce((acc, s) => acc + s(), 0);
     });
 
     const start = performance.now();
 
     // Force Read
-    const initial = sum.value;
+    const initial = sum();
 
     // Update all
     for (let i = 0; i < count; i++) {
-        signals[i].value += 1;
+        signals[i].set(signals[i]() + 1);
     }
 
     // Force Read again
-    const final = sum.value;
+    const final = sum();
 
     const end = performance.now();
 

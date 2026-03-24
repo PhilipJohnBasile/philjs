@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Rich text block editor for PhilJS - Notion-style blocks, slash commands, collaborative editing",
   "type": "module",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

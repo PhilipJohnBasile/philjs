@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Cross-platform native development for PhilJS - iOS, Android, and Desktop",
   "type": "module",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

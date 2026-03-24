@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "HTML-over-the-wire for PhilJS - server-driven UI updates with declarative attributes",
   "type": "module",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

@@ -10,6 +10,17 @@
  * Works with Cloudflare Workers and provides a local emulation mode.
  */
 
+// Cloudflare Workers WebSocket types
+declare class WebSocketPair {
+    0: WebSocket;
+    1: WebSocket;
+    [Symbol.iterator](): IterableIterator<WebSocket>;
+}
+
+interface CloudflareResponseInit extends ResponseInit {
+    webSocket?: WebSocket;
+}
+
 // =============================================================================
 // Core Types
 // =============================================================================
@@ -227,7 +238,7 @@ export abstract class WebSocketDurable extends PhilDurable {
 
     private async handleWebSocketUpgrade(request: Request): Promise<Response> {
         const pair = new WebSocketPair();
-        const [client, server] = Object.values(pair);
+        const [client, server] = Object.values(pair) as WebSocket[];
 
         const session: SessionInfo = {
             ws: server,
@@ -238,11 +249,11 @@ export abstract class WebSocketDurable extends PhilDurable {
 
         this.sessions.set(server, session);
 
-        server.accept();
+        (server as any).accept();
 
         server.addEventListener('message', async (event) => {
             try {
-                await this.handleMessage(session, event.data);
+                await this.handleMessage(session, event.data as string | ArrayBuffer);
             } catch (error) {
                 console.error('WebSocket message error:', error);
             }
@@ -250,7 +261,7 @@ export abstract class WebSocketDurable extends PhilDurable {
 
         server.addEventListener('close', async (event) => {
             this.sessions.delete(server);
-            await this.onSessionClose?.(session, event.code, event.reason);
+            await this.onSessionClose?.(session, (event as CloseEvent).code, (event as CloseEvent).reason);
         });
 
         server.addEventListener('error', async (event) => {
@@ -264,7 +275,7 @@ export abstract class WebSocketDurable extends PhilDurable {
         return new Response(null, {
             status: 101,
             webSocket: client,
-        });
+        } as CloudflareResponseInit);
     }
 
     /**
@@ -568,7 +579,7 @@ export class ChatRoom extends WebSocketDurable {
         );
     }
 
-    protected async onSessionOpen(session: SessionInfo): Promise<void> {
+    protected override async onSessionOpen(session: SessionInfo): Promise<void> {
         // Load message history from storage on first connection
         if (this.messageHistory.length === 0) {
             const stored = await this.get<ChatMessage[]>('messages');
@@ -578,7 +589,7 @@ export class ChatRoom extends WebSocketDurable {
         }
     }
 
-    protected async onSessionClose(
+    protected override async onSessionClose(
         session: SessionInfo,
         code: number,
         reason: string
@@ -627,6 +638,8 @@ class LocalStorage implements DurableObjectStorage {
         }
     }
 
+    async delete(key: string): Promise<boolean>;
+    async delete(keys: string[]): Promise<number>;
     async delete(keyOrKeys: string | string[]): Promise<boolean | number> {
         if (Array.isArray(keyOrKeys)) {
             let count = 0;
@@ -857,13 +870,4 @@ export function createKVDurable(): typeof PhilDurable {
 // Export Types
 // =============================================================================
 
-export type {
-    DurableObjectState,
-    DurableObjectId,
-    DurableObjectStorage,
-    DurableObjectTransaction,
-    DurableObjectNamespace,
-    DurableObjectStub,
-    ListOptions,
-    Env,
-};
+// Types are already exported at their declarations above

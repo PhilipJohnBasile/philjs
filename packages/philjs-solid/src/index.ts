@@ -24,8 +24,6 @@ import {
     Switch,
     Match,
     Index,
-    Portal,
-    Dynamic,
     type Accessor,
     type Setter,
     type Resource,
@@ -122,16 +120,18 @@ export function toSolid<T>(
     onCleanup(unsubscribe);
 
     // Create setter that updates both
-    const setter: Setter<T> = (valueOrFn: T | ((prev: T) => T)) => {
+    const setter = ((...args: any[]) => {
+        if (args.length === 0) return;
+        const valueOrFn = args[0];
         const newValue = typeof valueOrFn === 'function'
             ? (valueOrFn as (prev: T) => T)(philSignal())
             : valueOrFn;
         philSignal.set(newValue);
         setSolidValue(() => newValue);
         return newValue;
-    };
+    }) as Setter<T>;
 
-    return [solidValue, setter as Setter<T>];
+    return [solidValue, setter];
 }
 
 /**
@@ -1174,8 +1174,6 @@ export {
     Switch,
     Match,
     Index,
-    Portal,
-    Dynamic,
     // Solid types
     type Accessor,
     type Setter,

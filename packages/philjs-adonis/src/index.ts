@@ -1275,6 +1275,8 @@ export class HealthCheckService {
                 name: this.checks[index].name,
                 status: 'unhealthy' as const,
                 message: 'Check failed unexpectedly',
+                critical: true,
+                latency: 0,
             };
         });
 
@@ -1672,9 +1674,9 @@ export function validateOrThrow(
 ): Record<string, any> {
     const result = validate(data, rules);
     if (!result.valid) {
-        throw ValidationException.fromMessages(result.errors);
+        throw ValidationException.fromMessages((result as { valid: false; errors: Record<string, string[]> }).errors);
     }
-    return result.data;
+    return (result as { valid: true; data: Record<string, any> }).data;
 }
 
 // ============================================================================
@@ -1751,7 +1753,7 @@ export const request = {
         const sortOrder = ctx.request.input('sort_order', 'desc');
         return {
             sortBy: allowedFields.includes(sortBy) ? sortBy : defaultField,
-            sortOrder: sortOrder === 'asc' ? 'asc' : ('desc' as 'asc' | 'desc'),
+            sortOrder: (sortOrder as string) === 'asc' ? 'asc' as const : 'desc' as const,
         };
     },
 

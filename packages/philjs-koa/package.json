@@ -5,7 +5,7 @@
     "node": ">=24"
   },
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "peerDependencies": {
     "koa": "^2.0.0"
   },
@@ -26,7 +26,15 @@
     "dist"
   ],
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsgo"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "dist/index.d.ts",
+      "import": "dist/index.js"
+    }
+  }
 }

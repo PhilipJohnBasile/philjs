@@ -22,6 +22,6 @@ export function useIonicLifecycle() {
 }
 
 export function IonApp({ children }: { children: any }) {
-    // @ts-ignore
-    return <ion-app > { children } </ion-app>;
+    // Return a descriptor for ion-app custom element
+    return { tag: 'ion-app', children };
 }

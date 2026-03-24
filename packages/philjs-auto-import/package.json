@@ -5,7 +5,7 @@
     "node": ">=24"
   },
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "peerDependencies": {
     "vite": "^4.0.0"
   },
@@ -26,5 +26,15 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsgo"
+  },
+  "exports": {
+    ".": {
+      "types": "dist/index.d.ts",
+      "import": "dist/index.js"
+    }
+  }
 }
