@@ -3,6 +3,10 @@
 **Date:** December 27, 2025  
 **Read Time:** 5 minutes
 
+> **Historical snapshot:** This report describes the repository as reviewed on
+> December 27, 2025. Counts, coverage estimates, publication status, and roadmap
+> timing have not been revalidated against the current codebase.
+
 ---
 
 ## TL;DR

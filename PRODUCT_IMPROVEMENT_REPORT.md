@@ -1,7 +1,12 @@
 # PhilJS Product Improvement Report
 **Date:** December 27, 2025  
 **Version:** 1.0  
-**Status:** Comprehensive Analysis
+**Status:** Historical analysis
+
+> **Historical snapshot:** This report describes the repository as reviewed on
+> December 27, 2025. Counts, coverage estimates, feature status, publication
+> status, and roadmap timing have not been revalidated against the current
+> codebase.
 
 ---
 
