@@ -635,11 +635,13 @@ export class VisualTestUtils {
     interval = 500
   ): Promise<void> {
     const screenshots: Buffer[] = [];
-    const startTime = Date.now();
+    const frameCount = Math.max(1, Math.ceil(duration / interval));
 
-    while (Date.now() - startTime < duration) {
+    for (let frame = 0; frame < frameCount; frame++) {
       screenshots.push(await this.page.screenshot());
-      await this.page.waitForTimeout(interval);
+      if (frame + 1 < frameCount) {
+        await this.page.waitForTimeout(interval);
+      }
     }
 
     for (let i = 0; i < screenshots.length; i++) {
@@ -1499,28 +1501,32 @@ export abstract class PhilJSPageObject {
     role: string,
     options?: { name?: string | RegExp; exact?: boolean }
   ): Locator {
-    return this.page.getByRole(role as any, options);
+    return options
+      ? this.page.getByRole(role as any, options)
+      : this.page.getByRole(role as any);
   }
 
   /**
    * Get element by text
    */
   getByText(text: string | RegExp, options?: { exact?: boolean }): Locator {
-    return this.page.getByText(text, options);
+    return options ? this.page.getByText(text, options) : this.page.getByText(text);
   }
 
   /**
    * Get element by label
    */
   getByLabel(text: string | RegExp, options?: { exact?: boolean }): Locator {
-    return this.page.getByLabel(text, options);
+    return options ? this.page.getByLabel(text, options) : this.page.getByLabel(text);
   }
 
   /**
    * Get element by placeholder
    */
   getByPlaceholder(text: string | RegExp, options?: { exact?: boolean }): Locator {
-    return this.page.getByPlaceholder(text, options);
+    return options
+      ? this.page.getByPlaceholder(text, options)
+      : this.page.getByPlaceholder(text);
   }
 
   /**

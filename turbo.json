@@ -35,7 +35,7 @@
       "cache": true
     },
     "lint": {
-      "dependsOn": [],
+      "dependsOn": ["^build"],
       "inputs": ["src/**", ".eslintrc*", "eslint.config.*"],
       "outputs": [],
       "cache": true

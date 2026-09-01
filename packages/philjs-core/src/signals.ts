@@ -45,7 +45,19 @@ let currentNestedDisposers: Array<() => void> | null = null;
 // ============================================================================
 
 // HMR state is only tracked in development mode to reduce production bundle size
-const isDev = typeof process !== 'undefined' && process.env?.['NODE_ENV'] !== 'production';
+const isDev = typeof process !== 'undefined' && process.env?.['NODE_ENV'] === 'development';
+
+function signalValueGetter<T>(this: Signal<T> | LinkedSignal<T>): T {
+  return this();
+}
+
+function signalValueSetter<T>(this: Signal<T> | LinkedSignal<T>, nextValue: T): void {
+  this.set(nextValue);
+}
+
+function memoValueGetter<T>(this: Memo<T>): T {
+  return this();
+}
 
 /**
  * Global HMR state registry for preserving signal values across hot updates.
@@ -146,6 +158,11 @@ export function signal<T>(initialValue: T): Signal<T> {
   // Peek reads the value without tracking dependencies
   read.peek = () => value;
   read.get = read;
+  Object.defineProperty(read, 'value', {
+    get: signalValueGetter,
+    set: signalValueSetter,
+    enumerable: false,
+  });
 
   // Register signal for HMR tracking (development only)
   if (isDev && activeSignals && hmrStateRegistry) {
@@ -236,6 +253,10 @@ export function memo<T>(calc: () => T): Memo<T> {
   // Initialize the memo
   read();
   read.get = read;
+  Object.defineProperty(read, 'value', {
+    get: memoValueGetter,
+    enumerable: false,
+  });
 
   return read;
 }
@@ -367,6 +388,11 @@ export function linkedSignal<T>(
 
   read.isOverridden = () => isOverridden;
   read.get = read;
+  Object.defineProperty(read, 'value', {
+    get: signalValueGetter,
+    set: signalValueSetter,
+    enumerable: false,
+  });
 
   // Initialize
   read();

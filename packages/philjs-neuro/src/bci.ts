@@ -98,6 +98,7 @@ export interface BlinkEvent {
 }
 
 export interface BCIConfig {
+  type?: 'neurosky' | 'emotiv' | 'openbci' | 'muse' | 'synthetic';
   sampleRate?: number;
   bufferSize?: number;
   notchFilter?: 50 | 60;     // Power line frequency (Hz)
@@ -631,6 +632,7 @@ export class BCIDevice {
 
   constructor(config: BCIConfig = {}) {
     this.config = {
+      type: config.type ?? 'neurosky',
       sampleRate: config.sampleRate ?? 256,
       bufferSize: config.bufferSize ?? 256,
       notchFilter: config.notchFilter ?? 60,
@@ -638,6 +640,45 @@ export class BCIDevice {
       bandpassHigh: config.bandpassHigh ?? 45,
       artifactRejection: config.artifactRejection ?? true,
       channels: config.channels ?? [0, 1, 2, 3, 4, 5, 6, 7]
+    };
+  }
+
+  async connect(): Promise<void> {
+    if (this.config.type === 'synthetic') {
+      this.deviceInfo = {
+        type: 'generic',
+        name: 'Synthetic BCI',
+        connected: true,
+        sampleRate: this.config.sampleRate,
+        channels: this.config.channels.length,
+      };
+      this.eventEmitter.emit('connected', this.deviceInfo);
+      return;
+    }
+    await this.connectDevice(this.config.type);
+  }
+
+  get connected(): boolean {
+    return this.isConnected();
+  }
+
+  async readSample(): Promise<EEGSample> {
+    if (!this.isConnected()) throw new Error('BCI device is not connected');
+    const channels = new Float32Array(this.config.channels.length);
+    const sample = { timestamp: Date.now(), channels, quality: new Array(channels.length).fill(100) };
+    this.handleEEGSample(sample);
+    return sample;
+  }
+
+  computeBands(values: ArrayLike<number>): FrequencyBands {
+    const signal = Float32Array.from(values);
+    const spectrum = powerSpectrum(hanningWindow(signal), this.config.sampleRate);
+    return {
+      delta: bandPower(spectrum, 0.5, 4),
+      theta: bandPower(spectrum, 4, 8),
+      alpha: bandPower(spectrum, 8, 13),
+      beta: bandPower(spectrum, 13, 30),
+      gamma: bandPower(spectrum, 30, 45),
     };
   }
 

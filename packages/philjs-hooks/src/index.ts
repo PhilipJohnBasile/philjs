@@ -384,9 +384,14 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
 export function useThrottledValue<T>(value: Signal<T>, wait: number): Signal<T> {
   const throttled = signal<T>(value.get());
   let lastTime = 0;
+  let initialized = false;
 
   effect(() => {
     const current = value.get();
+    if (!initialized) {
+      initialized = true;
+      return;
+    }
     const now = Date.now();
     if (now - lastTime >= wait) {
       throttled.set(current);
@@ -406,6 +411,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
 ): T {
   let lastTime = 0;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let pendingArgs: Parameters<T> | null = null;
 
   return ((...args: Parameters<T>) => {
     const now = Date.now();
@@ -417,13 +423,21 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
         timeoutId = null;
       }
       lastTime = now;
+      pendingArgs = null;
       callback(...args);
-    } else if (!timeoutId) {
-      timeoutId = setTimeout(() => {
-        lastTime = Date.now();
-        timeoutId = null;
-        callback(...args);
-      }, remaining);
+    } else {
+      pendingArgs = args;
+      if (!timeoutId) {
+        timeoutId = setTimeout(() => {
+          lastTime = Date.now();
+          timeoutId = null;
+          if (pendingArgs) {
+            const latestArgs = pendingArgs;
+            pendingArgs = null;
+            callback(...latestArgs);
+          }
+        }, remaining);
+      }
     }
   }) as T;
 }
@@ -1445,11 +1459,17 @@ export function useInputState<T extends string | number>(
   const state = signal<T>(initialValue);
 
   const setValue = (eventOrValue: Event | T) => {
-    if (eventOrValue instanceof Event) {
-      const target = eventOrValue.target as HTMLInputElement;
-      state.set(target.value as T);
-    } else {
-      state.set(eventOrValue);
+    if (typeof eventOrValue === 'string' || typeof eventOrValue === 'number') {
+      state.set(eventOrValue as T);
+      return;
+    }
+
+    const target = eventOrValue.target as HTMLInputElement | null;
+    if (target && 'value' in target) {
+      const value = typeof initialValue === 'number'
+        ? Number(target.value)
+        : target.value;
+      state.set(value as T);
     }
   };
 
@@ -1676,9 +1696,7 @@ export function useId(prefix = 'id'): string {
 export function useMounted(): Signal<boolean> {
   const mounted = signal(false);
 
-  if (typeof window !== 'undefined') {
-    queueMicrotask(() => mounted.set(true));
-  }
+  setTimeout(() => mounted.set(true), 0);
 
   return mounted;
 }

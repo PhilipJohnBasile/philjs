@@ -17,6 +17,7 @@
 import { Command } from 'commander';
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, resolve, extname, basename } from 'path';
+import { pathToFileURL } from 'url';
 
 import { autoDetectProvider } from '../providers/index.js';
 import { ComponentGenerator } from '../codegen/component-generator.js';
@@ -522,7 +523,15 @@ async function main(): Promise<void> {
   await program.parseAsync(process.argv);
 }
 
-// Run CLI
-main().catch(console.error);
+const entryUrl = process.argv[1]
+  ? pathToFileURL(resolve(process.argv[1])).href
+  : '';
+
+if (entryUrl !== '' && import.meta.url === entryUrl) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
 
 export { createProgram };

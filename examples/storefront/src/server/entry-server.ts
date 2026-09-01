@@ -133,7 +133,7 @@ export async function render(req: IncomingMessage) {
 
   const parts = async function* () {
     yield "<!DOCTYPE html>";
-    yield html`
+    yield String(html`
       <html lang="en">
         <head>
           <meta charset="utf-8" />
@@ -156,7 +156,7 @@ export async function render(req: IncomingMessage) {
           )}
         </body>
       </html>
-    `;
+    `);
   };
 
   return {

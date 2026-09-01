@@ -142,6 +142,7 @@ export class NexusApp {
     const self = this;
     const subscribers = new Set<(value: T) => void>();
     let cachedValue: T | undefined;
+    let lastModified = Date.now();
 
     return {
       get id() {
@@ -149,7 +150,7 @@ export class NexusApp {
       },
 
       get lastModified() {
-        return cachedValue ? (cachedValue as any)._lastModified || Date.now() : Date.now();
+        return lastModified;
       },
 
       get(): T {
@@ -162,11 +163,12 @@ export class NexusApp {
       },
 
       async set(value: T): Promise<void> {
-        const valueWithMeta = { ...value, _lastModified: Date.now() };
+        lastModified = Date.now();
+        const valueWithMeta = { ...value, _lastModified: lastModified };
         await self.syncEngine.set('documents', id, valueWithMeta);
-        cachedValue = valueWithMeta;
+        cachedValue = value;
         for (const subscriber of subscribers) {
-          subscriber(valueWithMeta);
+          subscriber(value);
         }
         self.emit({ type: 'document-change', documentId: id });
       },
@@ -185,8 +187,10 @@ export class NexusApp {
         // Load initial value
         self.syncEngine.get<T>('documents', id).then((value) => {
           if (value !== undefined) {
-            cachedValue = value;
-            listener(value);
+            const { _lastModified, ...documentValue } = value as T & { _lastModified?: number };
+            if (_lastModified !== undefined) lastModified = _lastModified;
+            cachedValue = documentValue as T;
+            listener(cachedValue);
           }
         });
 

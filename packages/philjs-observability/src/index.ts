@@ -408,6 +408,7 @@ export class ConsoleTransport implements LogTransport {
 
   log(entry: LogEntry): void {
     if (this.format === 'json') {
+      console.log(JSON.stringify(entry));
       return;
     }
 

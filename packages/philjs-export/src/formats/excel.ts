@@ -280,7 +280,9 @@ export async function streamToExcel<T extends Record<string, unknown>>(
         onProgress?.(processedRows / totalRows, processedRows);
       }
       // Yield to event loop for large datasets
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise(resolve => {
+        setTimeout(resolve, 0);
+      });
     }
   }
 

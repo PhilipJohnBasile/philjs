@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "pnpm dev",
-    url: "http://localhost:3000",
+    url: "http://localhost:3000/healthz",
     reuseExistingServer: !process.env.CI
   }
 });

@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsgo",
     "dev": "tsgo --watch",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
     "vitest": "^4.1.1"

@@ -39,7 +39,7 @@
   "devDependencies": {
     "@typescript-eslint/parser": "^8.57.2",
     "@typescript-eslint/rule-tester": "^8.57.2",
-    "eslint": "^10.1.0",
+    "eslint": "^9.39.4",
     "vitest": "^4.1.1"
   },
   "engines": {

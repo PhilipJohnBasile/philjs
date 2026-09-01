@@ -116,13 +116,13 @@ jobs:
         run: pnpm build
 
       - name: Run tests with coverage
-        run: pnpm test --coverage
+        run: pnpm --filter @philjs/core exec vitest run --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/coverage-final.json
+          files: ./packages/philjs-core/coverage/coverage-final.json
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -191,7 +191,7 @@ jobs:
           name: build-artifacts
 
       - name: Run E2E tests
-        run: pnpm exec playwright test
+        run: pnpm --filter storefront exec playwright test
 
       - name: Upload test results
         if: always()

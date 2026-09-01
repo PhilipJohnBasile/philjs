@@ -1,6 +1,9 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // Vite 8 defaults to Oxc; this package's custom JSX runtime is configured
+  // through esbuild below.
+  oxc: false,
   test: {
     environment: 'jsdom',
     globals: true,
@@ -18,4 +21,3 @@ export default defineConfig({
     jsxImportSource: '@philjs/core',
   },
 });
-

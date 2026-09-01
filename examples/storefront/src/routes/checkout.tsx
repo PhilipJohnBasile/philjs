@@ -23,7 +23,8 @@ type ActionResult = {
   error?: string;
 };
 
-export const loader = defineLoader(async ({ db, url }) => {
+export const loader = defineLoader(async ({ db, request }) => {
+  const url = new URL(request.url);
   const cart = await db.cart.get("user-123");
 
   if (!cart || cart.items.length === 0) {

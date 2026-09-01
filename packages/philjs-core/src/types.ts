@@ -46,6 +46,7 @@ export interface Subscribable<T> {
  */
 export interface Signal<T> {
   (): T;
+  value: T;
   get: () => T;
   set: Setter<T>;
   subscribe: (fn: (value: T) => void) => () => void;
@@ -58,6 +59,7 @@ export interface Signal<T> {
  */
 export interface Memo<T> {
   (): T;
+  readonly value: T;
   get: () => T;
   subscribe?: (fn: (value: T) => void) => () => void;
 }
@@ -69,6 +71,7 @@ export interface Memo<T> {
  */
 export interface LinkedSignal<T> {
   (): T;
+  value: T;
   get: () => T;
   set: Setter<T>;
   reset: () => void;

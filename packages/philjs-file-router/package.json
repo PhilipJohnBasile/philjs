@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "tsgo",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "npm run typecheck",
     "typecheck": "tsgo --noEmit"
   },

@@ -22,6 +22,12 @@ const vite = await createViteServer({
 });
 
 const server = http.createServer((req, res) => {
+  if (req.url === "/healthz") {
+    res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
+    res.end("ok");
+    return;
+  }
+
   vite.middlewares(req, res, async (err) => {
     if (err) {
       vite.ssrFixStacktrace?.(err);

@@ -16,8 +16,8 @@ class SafeHTML {
 }
 
 /** Mark a string as pre-escaped HTML. */
-export function unsafeHTML(value: string) {
-  return new SafeHTML(value);
+export function unsafeHTML(value: string | SafeHTML) {
+  return value instanceof SafeHTML ? value : new SafeHTML(value);
 }
 
 type TemplateValue =
@@ -51,5 +51,5 @@ export function html(strings: TemplateStringsArray, ...values: TemplateValue[]) 
     }
   });
 
-  return result;
+  return new SafeHTML(result);
 }

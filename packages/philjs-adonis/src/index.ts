@@ -1457,7 +1457,7 @@ export class SignalStore {
         for (const [key, value] of Object.entries(state)) {
             const s = this.signals.get(key);
             if (s) {
-                (s as any)(value);
+                (s as any).set(value);
             }
         }
     }
@@ -1739,10 +1739,14 @@ export const response = {
 
 export const request = {
     pagination(ctx: HttpContext, defaults = { page: 1, perPage: 20 }) {
-        const page = Math.max(1, parseInt(ctx.request.input('page', String(defaults.page)), 10));
+        const pageInput = ctx.request.input('page', String(defaults.page)) ?? String(defaults.page);
+        const perPageInput = ctx.request.input('per_page', String(defaults.perPage)) ?? String(defaults.perPage);
+        const parsedPage = parseInt(pageInput, 10);
+        const parsedPerPage = parseInt(perPageInput, 10);
+        const page = Math.max(1, Number.isFinite(parsedPage) ? parsedPage : defaults.page);
         const perPage = Math.min(
             100,
-            Math.max(1, parseInt(ctx.request.input('per_page', String(defaults.perPage)), 10))
+            Math.max(1, Number.isFinite(parsedPerPage) ? parsedPerPage : defaults.perPage)
         );
         const offset = (page - 1) * perPage;
         return { page, perPage, offset };

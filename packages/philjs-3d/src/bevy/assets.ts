@@ -372,8 +372,6 @@ export async function preloadAssets(
       const handle = loadBevyAsset(path);
       await handle.wait();
       results.set(path, handle);
-      loaded++;
-      onProgress?.(loaded, paths.length);
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       onError?.(path, err);
@@ -388,6 +386,9 @@ export async function preloadAssets(
         isLoaded: () => false,
         wait: () => Promise.reject(err),
       });
+    } finally {
+      loaded++;
+      onProgress?.(loaded, paths.length);
     }
   });
 
