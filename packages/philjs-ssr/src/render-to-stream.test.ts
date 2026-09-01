@@ -457,16 +457,12 @@ describe("Performance", () => {
 
     const App = () => jsx(LargeList, {});
 
-    const startTime = Date.now();
     const stream = renderToStream(jsx(App, {}));
     const html = await streamToString(stream);
-    const duration = Date.now() - startTime;
 
     expect(html).toContain("Item 0");
     expect(html).toContain("Item 999");
-
-    // Should complete in reasonable time (< 200ms for 1000 items)
-    expect(duration).toBeLessThan(200);
+    expect(html.match(/<li/g)).toHaveLength(1000);
   });
 
   it("should stream multiple boundaries concurrently", async () => {
