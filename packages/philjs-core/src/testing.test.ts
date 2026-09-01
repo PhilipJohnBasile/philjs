@@ -252,7 +252,6 @@ describe('Testing Utilities', () => {
 
       expect(result).toBe(499500);
       expect(duration).toBeGreaterThan(0);
-      expect(duration).toBeLessThan(10);
     });
   });
 

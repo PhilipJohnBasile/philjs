@@ -4,6 +4,20 @@
  * Production-ready UI components for PhilJS applications.
  */
 
+export {
+  defaultTheme,
+  colors,
+  spacing,
+  fontSize,
+  fontWeight,
+  fontFamily,
+  borderRadius,
+  boxShadow,
+  transition,
+  zIndex,
+  breakpoints,
+} from './theme/tokens.js';
+
 // ============================================================================
 // Core Components
 // ============================================================================

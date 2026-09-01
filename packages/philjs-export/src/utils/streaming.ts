@@ -273,7 +273,9 @@ export async function* rateLimitStream<T>(
     const elapsed = now - lastYield;
 
     if (elapsed < interval) {
-      await new Promise(resolve => setTimeout(resolve, interval - elapsed));
+      await new Promise(resolve => {
+        setTimeout(resolve, interval - elapsed);
+      });
     }
 
     yield item;

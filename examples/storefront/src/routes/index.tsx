@@ -10,7 +10,8 @@ type LoaderData = {
   cartItemCount: number;
 };
 
-export const loader = defineLoader(async ({ url, db }) => {
+export const loader = defineLoader(async ({ request, db }) => {
+  const url = new URL(request.url);
   const category = url.searchParams.get("category") as Category | null;
   const search = url.searchParams.get("q");
 

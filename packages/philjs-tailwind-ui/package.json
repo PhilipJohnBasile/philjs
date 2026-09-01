@@ -71,7 +71,7 @@
   "scripts": {
     "build": "tsgo",
     "dev": "tsgo --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {

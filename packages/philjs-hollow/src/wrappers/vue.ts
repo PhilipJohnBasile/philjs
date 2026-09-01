@@ -346,7 +346,9 @@ export type { SwitchSize, SwitchVariant };
 export type { TabsVariant, TabsSize, TabsAlignment, TabDefinition };
 export type { AccordionVariant, AccordionItem };
 
-// Declare module augmentation for Vue
+// Declare module augmentation for the optional Vue peer. Consumers that install
+// Vue receive the augmentation; Hollow itself remains buildable without it.
+// @ts-ignore -- Vue is an optional peer dependency.
 declare module 'vue' {
   interface GlobalComponents {
     HollowButton: typeof HollowButton;

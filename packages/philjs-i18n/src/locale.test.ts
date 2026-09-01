@@ -9,8 +9,11 @@ import {
   isValidLocale,
   getLanguage,
   getRegion,
+  getBrowserLocale,
+  getBrowserLocales,
   matchLocale,
   negotiateLocales,
+  createLocaleManager,
 } from './locale';
 
 describe('Locale Parsing', () => {
@@ -158,8 +161,10 @@ describe('Browser Locale Detection', () => {
     });
   });
 
-  // Note: These tests would need jsdom or similar to properly test
-  // browser detection functions. Here we test the non-browser logic.
+  it('reads the browser locale preferences', () => {
+    expect(getBrowserLocales()).toEqual(['fr-FR', 'en-US']);
+    expect(getBrowserLocale()).toBe('fr-FR');
+  });
 });
 
 describe('Locale Manager', () => {
@@ -175,6 +180,15 @@ describe('Locale Manager', () => {
     },
   }));
 
-  // Note: Full createLocaleManager tests would require DOM mocks
-  // for localStorage, document, etc.
+  it('changes to an available locale without DOM persistence', () => {
+    const manager = createLocaleManager({
+      defaultLocale: 'en-US',
+      availableLocales: ['en-US', 'fr-FR'],
+      persistTo: [],
+      detectOnInit: false,
+    });
+
+    manager.setLocale('fr_FR');
+    expect(manager.locale()).toBe('fr-FR');
+  });
 });

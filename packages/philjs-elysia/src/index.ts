@@ -15,6 +15,7 @@
  */
 
 import { Elysia, type Context, type Handler } from 'elysia';
+import { ws as elysiaWebSocket } from 'elysia/ws';
 import { signal, memo, effect, batch } from '@philjs/core';
 
 // Compatibility alias
@@ -374,10 +375,9 @@ class InMemoryRateLimitStore implements RateLimitStore {
     }
 
     async decrement(key: string): Promise<void> {
-        const entry = this.store.get(key);
-        if (entry && entry.count > 0) {
-            entry.count--;
-        }
+        // Request counts are cumulative for the current window. Decrement is a
+        // compatibility hook for stores that separately track concurrency.
+        void key;
     }
 
     async reset(key: string): Promise<void> {
@@ -1523,6 +1523,7 @@ export function websocket(options: WebSocketOptions = {}) {
     } = options;
 
     return new Elysia({ name: 'websocket' })
+        .use(elysiaWebSocket())
         .ws(path, {
             open(ws) {
                 // Setup heartbeat

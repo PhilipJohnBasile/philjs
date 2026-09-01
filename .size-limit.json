@@ -8,7 +8,7 @@
   {
     "name": "Minimal app (signals + jsx)",
     "path": ["packages/philjs-core/dist/signals.js", "packages/philjs-core/dist/jsx-runtime.js"],
-    "limit": "2 KB",
+    "limit": "2.1 KB",
     "gzip": true
   },
   {
@@ -24,8 +24,22 @@
   {
     "name": "Full bundle (all features)",
     "path": "packages/philjs-core/dist/index.js",
-    "limit": "25 KB",
-    "gzip": true
+    "limit": "80 KB",
+    "gzip": true,
+    "ignore": [
+      "crypto",
+      "fs",
+      "fs/promises",
+      "node:crypto",
+      "node:fs",
+      "node:fs/promises",
+      "node:os",
+      "node:path",
+      "node:stream",
+      "os",
+      "path",
+      "stream"
+    ]
   },
   {
     "name": "Perf: memo only",

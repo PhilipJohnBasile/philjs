@@ -157,7 +157,7 @@ function deepClone<T>(value: T, seen = new WeakMap<object, unknown>()): T {
     }
 
     // Clone symbol keys as well
-    for (const sym of Object.getOwnPropertySymbols(value as object)) {
+    if (Object.getOwnPropertySymbols(value as object).length > 0) {
       throw new DOMException(
         'Failed to execute \'structuredClone\': Symbol cannot be cloned.',
         'DataCloneError'

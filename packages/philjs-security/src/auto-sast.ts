@@ -42,3 +42,31 @@ export async function scanAndPatch(): Promise<Vulnerability[]> {
 
     return issues;
 }
+
+export interface StaticAnalysisIssue {
+    type: 'secret' | 'sql-injection' | 'eval-detected';
+    message: string;
+}
+
+export const AutoSAST = {
+    scan(code: string): StaticAnalysisIssue[] {
+        const issues: StaticAnalysisIssue[] = [];
+        if (/(?:api[_-]?key|secret|token)\s*=\s*["'][^"']+["']/i.test(code)) {
+            issues.push({ type: 'secret', message: 'Potential hardcoded secret' });
+        }
+        if (/SELECT\b[\s\S]*?\+\s*\w+/i.test(code)) {
+            issues.push({ type: 'sql-injection', message: 'Potential SQL injection through string concatenation' });
+        }
+        if (/\beval\s*\(/.test(code)) {
+            issues.push({ type: 'eval-detected', message: 'Dynamic code evaluation detected' });
+        }
+        return issues;
+    },
+
+    proposeFix(code: string, issue: StaticAnalysisIssue['type']): string {
+        if (issue === 'eval-detected') {
+            return code.replace(/\beval\s*\(/g, 'JSON.parse(');
+        }
+        return code;
+    },
+};

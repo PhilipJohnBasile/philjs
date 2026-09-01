@@ -1907,6 +1907,14 @@ export function createPreset(
     theme: {
       ...philjsPreset.theme,
       ...config.theme,
+      tokens: {
+        ...philjsPreset.theme.tokens,
+        ...config.theme?.tokens,
+        colors: {
+          ...philjsPreset.theme.tokens?.colors,
+          ...config.theme?.tokens?.colors,
+        },
+      },
       extend: {
         ...philjsPreset.theme.extend,
         ...config.theme?.extend,

@@ -62,8 +62,8 @@ export {
 // Register all components
 import './components/index.js';
 
-// Framework wrappers available via separate entry points:
-// - @philjs/hollow/react
-// - @philjs/hollow/vue
-// - @philjs/hollow/svelte
-// - @philjs/hollow/philjs
+// Namespace exports complement the framework-specific package entry points.
+export * as react from './wrappers/react.js';
+export * as vue from './wrappers/vue.js';
+export * as svelte from './wrappers/svelte.js';
+export * as philjs from './wrappers/philjs.js';

@@ -334,6 +334,10 @@ export class Injector {
         }
     }
 
+    clearInstance(token: Token): void {
+        this.instances.delete(token);
+    }
+
     /**
      * Get an instance by token
      */
@@ -545,7 +549,7 @@ export class Injector {
         } else if (provider.useExisting) {
             instance = this.resolve(provider.useExisting);
         } else if (provider.useClass) {
-            instance = this.instantiateClass(provider.useClass);
+            instance = this.instantiateClass(provider.useClass, provider.deps);
         } else if (typeof provider.provide === 'function') {
             instance = this.instantiateClass(provider.provide as Constructor<T>);
         } else {
@@ -578,13 +582,13 @@ export class Injector {
     /**
      * Instantiate a class with constructor injection
      */
-    private instantiateClass<T>(target: Constructor<T>): T {
+    private instantiateClass<T>(target: Constructor<T>, explicitDeps: Token[] = []): T {
         const paramMeta = getParameterMetadata(target);
         const propMeta = getPropertyMetadata(target);
         const injectableMeta = getInjectableMetadata(target);
 
         // Determine constructor dependencies
-        const deps = injectableMeta?.deps || [];
+        const deps = explicitDeps.length > 0 ? explicitDeps : injectableMeta?.deps || [];
         const args: any[] = [];
 
         for (let i = 0; i < Math.max(target.length, deps.length, paramMeta.size); i++) {
@@ -908,6 +912,7 @@ export function createTestBed(): TestBed {
         },
 
         overrideProvider<T>(provider: Provider<T>) {
+            testInjector.clearInstance(provider.provide);
             testInjector.register(provider);
             return testBed;
         },

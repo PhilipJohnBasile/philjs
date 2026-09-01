@@ -17,7 +17,9 @@ const BUDGETS = {
     maxSingle: 50 * 1024 // 50 KB per file
   },
   "philjs-core": {
-    signals: 2 * 1024, // 2 KB gzipped
+    // This monitor reads the emitted, unminified module. Size Limit separately
+    // enforces the 2 KB minified-and-gzipped consumer bundle in .size-limit.json.
+    signals: 6 * 1024,
     "jsx-runtime": 1 * 1024, // 1 KB gzipped
     "minimal-app": 2 * 1024, // 2 KB gzipped (signals + jsx)
     "full-bundle": 25 * 1024 // 25 KB gzipped

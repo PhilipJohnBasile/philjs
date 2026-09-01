@@ -1,12 +1,15 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
+
+const workspaceRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   // Use Vite's cacheDir instead of deprecated test.cache.dir
   cacheDir: 'node_modules/.cache/vitest',
   resolve: {
     alias: [
-      { find: /^@philjs\/philjs$/, replacement: './packages/philjs/src/index.ts' },
-      { find: /^@philjs\/([^/]+)$/, replacement: './packages/philjs-$1/src/index.ts' },
+      { find: /^@philjs\/philjs$/, replacement: `${workspaceRoot}packages/philjs/src/index.ts` },
+      { find: /^@philjs\/([^/]+)$/, replacement: `${workspaceRoot}packages/philjs-$1/src/index.ts` },
       { find: /^philjs-core(\/.*)?$/, replacement: '@philjs/core$1' },
     ],
   },
@@ -43,4 +46,3 @@ export default defineConfig({
     },
   },
 });
-

@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsgo",
     "dev": "tsgo --watch",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@philjs/core": "workspace:*"

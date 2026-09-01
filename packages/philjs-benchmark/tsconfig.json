@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "moduleResolution": "NodeNext",
     "strict": false,
+    "exactOptionalPropertyTypes": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": false,

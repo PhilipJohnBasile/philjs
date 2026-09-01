@@ -11,7 +11,7 @@ import type { SelectVariant, SelectSize, SelectOption } from '../components/sele
 import type { CheckboxSize, CheckboxVariant } from '../components/checkbox.js';
 import type { SwitchSize, SwitchVariant } from '../components/switch.js';
 import type { TabsVariant, TabsSize, TabsAlignment, TabDefinition } from '../components/tabs.js';
-import type { AccordionVariant, AccordionItem } from '../components/accordion.js';
+import type { AccordionVariant, AccordionItem as AccordionItemDefinition } from '../components/accordion.js';
 
 // Import components to ensure registration
 import '../components/index.js';
@@ -525,7 +525,7 @@ export interface HollowAccordionProps {
   multiple?: boolean;
   collapsible?: boolean;
   expanded?: string | Accessor<string>;
-  items?: AccordionItem[] | Accessor<AccordionItem[]>;
+  items?: AccordionItemDefinition[] | Accessor<AccordionItemDefinition[]>;
   onChange?: (detail: { itemId?: string; expanded?: boolean; expandedItems: string[]; action?: string }) => void;
   children?: unknown;
   ref?: (el: HTMLElement) => void;
@@ -690,4 +690,4 @@ export type { SelectVariant, SelectSize, SelectOption };
 export type { CheckboxSize, CheckboxVariant };
 export type { SwitchSize, SwitchVariant };
 export type { TabsVariant, TabsSize, TabsAlignment, TabDefinition };
-export type { AccordionVariant, AccordionItem };
+export type { AccordionVariant, AccordionItemDefinition };

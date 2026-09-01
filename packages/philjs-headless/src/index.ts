@@ -1065,7 +1065,7 @@ export function createAccordion(options: AccordionOptions = {}): Accordion {
     defaultValue = [],
     value: controlledValue,
     onValueChange,
-    type = 'single',
+    type = 'multiple',
     collapsible = false,
     disabled = false,
     orientation = 'vertical',

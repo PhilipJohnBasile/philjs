@@ -905,7 +905,9 @@ export class InferenceEngine {
         };
 
         // Small delay to simulate streaming
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise(resolve => {
+          setTimeout(resolve, 10);
+        });
       }
     } else {
       // No ML runtime available - throw an error instead of returning fake data

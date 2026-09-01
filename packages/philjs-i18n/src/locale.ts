@@ -38,8 +38,11 @@ export function parseLocale(locale: string): ParsedLocale {
  * Normalize a locale string to standard format
  */
 export function normalizeLocale(locale: string): string {
+  const normalizedInput = locale.replaceAll('_', '-');
+  if (!isValidLocale(normalizedInput)) return locale;
+
   try {
-    return new Intl.Locale(locale).baseName;
+    return new Intl.Locale(normalizedInput).baseName;
   } catch {
     return locale;
   }
@@ -49,8 +52,15 @@ export function normalizeLocale(locale: string): string {
  * Check if a locale string is valid
  */
 export function isValidLocale(locale: string): boolean {
+  const normalizedInput = locale.replaceAll('_', '-');
+  // PhilJS accepts the common language[-Script][-REGION][-variant] subset of
+  // BCP 47. Intl.Locale is deliberately permissive enough to parse strings
+  // such as "not-a-locale-at-all", so validate the shape first.
+  const localePattern = /^[A-Za-z]{2,3}(?:-[A-Za-z]{4})?(?:-(?:[A-Za-z]{2}|\d{3}))?(?:-[A-Za-z0-9]{5,8})*$/;
+  if (!localePattern.test(normalizedInput)) return false;
+
   try {
-    new Intl.Locale(locale);
+    new Intl.Locale(normalizedInput);
     return true;
   } catch {
     return false;

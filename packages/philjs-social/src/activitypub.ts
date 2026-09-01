@@ -23,13 +23,35 @@ export interface Actor extends ActivityPubObject {
 export class ActivityPub {
     private static CONTEXT = "https://www.w3.org/ns/activitystreams";
 
-    static createNote(content: string, attributedTo: string, to: string[] = ['https://www.w3.org/ns/activitystreams#Public']): ActivityPubObject {
+    static createActor(options: { username: string; domain: string; name?: string }): Actor {
+        const id = `https://${options.domain}/users/${options.username}`;
+        return {
+            '@context': ActivityPub.CONTEXT,
+            id,
+            type: 'Person',
+            preferredUsername: options.username,
+            name: options.name,
+            inbox: `${id}/inbox`,
+            outbox: `${id}/outbox`,
+        };
+    }
+
+    static createNote(options: { content: string; attributedTo: string; to?: string[] }): ActivityPubObject;
+    static createNote(content: string, attributedTo: string, to?: string[]): ActivityPubObject;
+    static createNote(
+        contentOrOptions: string | { content: string; attributedTo: string; to?: string[] },
+        attributedTo?: string,
+        to: string[] = ['https://www.w3.org/ns/activitystreams#Public']
+    ): ActivityPubObject {
+        const content = typeof contentOrOptions === 'string' ? contentOrOptions : contentOrOptions.content;
+        const actor = typeof contentOrOptions === 'string' ? attributedTo! : contentOrOptions.attributedTo;
+        const recipients = typeof contentOrOptions === 'string' ? to : contentOrOptions.to ?? to;
         return {
             '@context': ActivityPub.CONTEXT,
             type: 'Note',
             content,
-            attributedTo,
-            to,
+            attributedTo: actor,
+            to: recipients,
             published: new Date().toISOString()
         };
     }

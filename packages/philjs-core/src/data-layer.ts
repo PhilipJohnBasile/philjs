@@ -242,7 +242,6 @@ function matchesKey(key: QueryKey, pattern: QueryKey | ((key: QueryKey) => boole
 export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
   const keyStr = getKeyString(options.key);
   const staleTime = options.staleTime ?? 0;
-  const cacheTime = options.cacheTime ?? 5 * 60 * 1000;
 
   // Signals for reactive state
   const data = signal<T | undefined>(options.initialData);
@@ -277,7 +276,9 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       const result = await promise;
 
       // Update cache and state
-      queryCache.set(keyStr, result, undefined, cacheTime);
+      // Active queries retain their cache entry. A caller-provided cacheTime
+      // still opts into timed eviction; prefetches always use the default.
+      queryCache.set(keyStr, result, undefined, options.cacheTime);
       data.set(result);
       error.set(undefined);
 
@@ -289,7 +290,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       const e = err instanceof Error ? err : new Error(String(err));
 
       // Update cache and state
-      queryCache.set(keyStr, undefined, e, cacheTime);
+      queryCache.set(keyStr, undefined, e, options.cacheTime);
       error.set(e);
 
       // Call error callback
@@ -314,7 +315,9 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
       throw fetchData();
     } else {
       // Client-side: fetch asynchronously
-      fetchData();
+      void fetchData().catch(() => {
+        // Query errors are exposed through the error signal and callbacks.
+      });
     }
   }
 
@@ -323,7 +326,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
     if (options.refetchOnFocus) {
       window.addEventListener("focus", () => {
         if (queryCache.isStale(keyStr, staleTime)) {
-          fetchData();
+          void fetchData().catch(() => {});
         }
       });
     }
@@ -331,14 +334,14 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
     // Set up refetch on reconnect
     if (options.refetchOnReconnect) {
       window.addEventListener("online", () => {
-        fetchData();
+        void fetchData().catch(() => {});
       });
     }
 
     // Set up refetch interval
     if (options.refetchInterval) {
       setInterval(() => {
-        fetchData();
+        void fetchData().catch(() => {});
       }, options.refetchInterval);
     }
   }
@@ -361,7 +364,7 @@ export function createQuery<T>(options: QueryOptions<T>): QueryResult<T> {
         : newData;
       data.set(updated);
       const existing = queryCache.get(keyStr);
-      queryCache.set(keyStr, updated, existing?.error, cacheTime);
+      queryCache.set(keyStr, updated, existing?.error, options.cacheTime);
     },
   };
 }
@@ -445,7 +448,7 @@ export function invalidateQueries(keyPattern?: QueryKey | ((key: QueryKey) => bo
   if (!keyPattern) {
     queryCache.clear();
     observers.forEach((observer) => {
-      observer.refetch();
+      void observer.refetch().catch(() => {});
     });
     return;
   }
@@ -453,7 +456,7 @@ export function invalidateQueries(keyPattern?: QueryKey | ((key: QueryKey) => bo
   for (const observer of observers) {
     if (matchesKey(observer.key, keyPattern)) {
       queryCache.invalidate(observer.keyStr);
-      observer.refetch();
+      void observer.refetch().catch(() => {});
     }
   }
 }

@@ -1300,10 +1300,6 @@ export function useRailwayLogs(deploymentId: string) {
         });
     }
 
-    effect(() => {
-        fetchLogs();
-    });
-
     return {
         logs,
         buildLogs,
@@ -1327,12 +1323,6 @@ export function useRailwayMetrics(serviceId: string) {
             loading.set(false);
         }
     }
-
-    effect(() => {
-        refresh();
-        const interval = setInterval(refresh, 60000);
-        return () => clearInterval(interval);
-    });
 
     return {
         metrics,

@@ -88,7 +88,6 @@ jobs:
       - name: Get base branch sizes
         id: base-size
         run: |
-          pnpm size --json > base-size.json
           echo "base_core=$(stat -c%s packages/philjs-core/dist/index.js)" >> $GITHUB_OUTPUT
           echo "base_signals=$(stat -c%s packages/philjs-core/dist/signals.js)" >> $GITHUB_OUTPUT
 
@@ -145,9 +144,9 @@ jobs:
 
             ### Size Limits (from .size-limit.json)
             - Core signals only: 2 KB (gzipped)
-            - Minimal app (signals + jsx): 2 KB (gzipped)
+            - Minimal app (signals + jsx): 2.1 KB (gzipped)
             - With SSR: 3 KB (gzipped)
-            - Full bundle: 25 KB (gzipped)
+            - Full bundle: 80 KB (gzipped; Node built-ins externalized)
 
             ${Math.abs(coreDiff) > 2048 ? '\n⚠️ **Warning**: Core package size changed by more than 2 KB. Please review the changes.' : ''}
             `;

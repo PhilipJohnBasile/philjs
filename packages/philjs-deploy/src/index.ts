@@ -6,3 +6,4 @@
 
 // Terraform configuration generation
 export * from './terraform.js';
+export * from './auto-deploy.js';

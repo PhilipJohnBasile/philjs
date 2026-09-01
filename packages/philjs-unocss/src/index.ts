@@ -1669,6 +1669,7 @@ export function defineConfig(config: {
   [key: string]: any;
 }): object {
   return {
+    ...config,
     presets: [presetPhilJS(), ...(config.presets || [])],
     theme: {
       ...philjsTheme,
@@ -1677,7 +1678,6 @@ export function defineConfig(config: {
     rules: [...philjsRules, ...(config.rules || [])],
     shortcuts: [...philjsShortcuts, ...(config.shortcuts || [])],
     variants: [...philjsVariants, ...(config.variants || [])],
-    ...config,
   };
 }
 

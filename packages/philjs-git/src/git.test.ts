@@ -13,7 +13,16 @@ vi.mock('child_process', () => ({
 
 vi.mock('util', () => ({
   default: {
-    promisify: vi.fn((fn) => fn),
+    promisify: vi.fn((fn) => (...args: unknown[]) =>
+      new Promise((resolve, reject) => {
+        fn(...args, (error: Error | null, result: unknown) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      })),
   },
 }));
 

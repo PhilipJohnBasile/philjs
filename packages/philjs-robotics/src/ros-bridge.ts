@@ -9,6 +9,22 @@ export interface RosMessage {
     args?: any;
 }
 
+export interface ROSTopicOptions {
+    name: string;
+    messageType: string;
+}
+
+export class ROSBridge {
+    constructor(public readonly url: string) {}
+
+    topic(options: ROSTopicOptions) {
+        return {
+            ...options,
+            publish: (_message: unknown) => undefined,
+        };
+    }
+}
+
 export class Robot {
     private socket: WebSocket | null = null;
     private listeners = new Map<string, (msg: any) => void>();

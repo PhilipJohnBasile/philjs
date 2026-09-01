@@ -11,7 +11,7 @@ import type { SelectVariant, SelectSize, SelectOption } from '../components/sele
 import type { CheckboxSize, CheckboxVariant } from '../components/checkbox.js';
 import type { SwitchSize, SwitchVariant } from '../components/switch.js';
 import type { TabsVariant, TabsSize, TabsAlignment, TabDefinition } from '../components/tabs.js';
-import type { AccordionVariant, AccordionItem } from '../components/accordion.js';
+import type { AccordionVariant, AccordionItem as AccordionItemDefinition } from '../components/accordion.js';
 
 // Import components to ensure registration
 import '../components/index.js';
@@ -29,6 +29,20 @@ interface ReactRef<T> {
   current: T | null;
 }
 
+interface ReactWrapperComponent<P extends object> {
+  (props: P & { ref?: ReactRef<HTMLElement> }): ReactElement<P>;
+  displayName?: string;
+}
+
+interface HollowIntrinsicAttributes {
+  id?: string;
+  class?: string;
+  className?: string;
+  slot?: string;
+  style?: string | Record<string, unknown>;
+  title?: string;
+}
+
 /**
  * Property definition for wrapper generation
  */
@@ -41,11 +55,11 @@ interface PropDefinition {
 /**
  * Create a React wrapper for a Hollow Web Component
  */
-export function createReactWrapper<P extends Record<string, unknown>>(
+export function createReactWrapper<P extends object>(
   tagName: string,
   propDefs: PropDefinition[],
   eventMappings: Record<string, string> = {}
-): React.ForwardRefExoticComponent<P & React.RefAttributes<HTMLElement>> {
+): ReactWrapperComponent<P> {
   // This is a factory that returns a React component
   // In production, React would be imported at runtime
 
@@ -101,7 +115,7 @@ export function createReactWrapper<P extends Record<string, unknown>>(
   // Add display name
   (Wrapper as unknown as { displayName: string }).displayName = displayName;
 
-  return Wrapper as unknown as React.ForwardRefExoticComponent<P & React.RefAttributes<HTMLElement>>;
+  return Wrapper as unknown as ReactWrapperComponent<P>;
 }
 
 /**
@@ -380,7 +394,7 @@ export interface AccordionProps {
   multiple?: boolean;
   collapsible?: boolean;
   expanded?: string;
-  items?: AccordionItem[];
+  items?: AccordionItemDefinition[];
   onChange?: (event: CustomEvent<{ itemId?: string; expanded?: boolean; expandedItems: string[]; action?: string }>) => void;
   children?: unknown;
   className?: string;
@@ -453,24 +467,20 @@ export type { SelectVariant, SelectSize, SelectOption };
 export type { CheckboxSize, CheckboxVariant };
 export type { SwitchSize, SwitchVariant };
 export type { TabsVariant, TabsSize, TabsAlignment, TabDefinition };
-export type { AccordionVariant, AccordionItem };
+export type { AccordionVariant, AccordionItemDefinition };
 
 // Declare global JSX types for TypeScript
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'hollow-button': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+      'hollow-button': HollowIntrinsicAttributes & {
           variant?: ButtonVariant;
           size?: ButtonSize;
           disabled?: boolean;
           loading?: boolean;
           type?: 'button' | 'submit' | 'reset';
-        },
-        HTMLElement
-      >;
-      'hollow-input': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-input': HollowIntrinsicAttributes & {
           variant?: InputVariant;
           size?: InputSize;
           type?: InputType;
@@ -481,20 +491,14 @@ declare global {
           required?: boolean;
           name?: string;
           error?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-card': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-card': HollowIntrinsicAttributes & {
           variant?: CardVariant;
           padding?: CardPadding;
           interactive?: boolean;
           selected?: boolean;
-        },
-        HTMLElement
-      >;
-      'hollow-modal': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-modal': HollowIntrinsicAttributes & {
           open?: boolean;
           size?: ModalSize;
           animation?: ModalAnimation;
@@ -502,11 +506,8 @@ declare global {
           'close-on-backdrop'?: boolean;
           'close-on-escape'?: boolean;
           persistent?: boolean;
-        },
-        HTMLElement
-      >;
-      'hollow-select': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-select': HollowIntrinsicAttributes & {
           variant?: SelectVariant;
           size?: SelectSize;
           value?: string;
@@ -516,11 +517,8 @@ declare global {
           clearable?: boolean;
           options?: string;
           error?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-checkbox': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-checkbox': HollowIntrinsicAttributes & {
           variant?: CheckboxVariant;
           size?: CheckboxSize;
           checked?: boolean;
@@ -528,11 +526,8 @@ declare global {
           disabled?: boolean;
           name?: string;
           value?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-switch': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-switch': HollowIntrinsicAttributes & {
           variant?: SwitchVariant;
           size?: SwitchSize;
           checked?: boolean;
@@ -541,38 +536,27 @@ declare global {
           value?: string;
           'label-on'?: string;
           'label-off'?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-tabs': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-tabs': HollowIntrinsicAttributes & {
           variant?: TabsVariant;
           size?: TabsSize;
           active?: string;
           alignment?: TabsAlignment;
           tabs?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-accordion': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-accordion': HollowIntrinsicAttributes & {
           variant?: AccordionVariant;
           multiple?: boolean;
           collapsible?: boolean;
           expanded?: string;
           items?: string;
-        },
-        HTMLElement
-      >;
-      'hollow-accordion-item': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
+        };
+      'hollow-accordion-item': HollowIntrinsicAttributes & {
           title?: string;
           expanded?: boolean;
           disabled?: boolean;
           icon?: string;
-        },
-        HTMLElement
-      >;
+        };
     }
   }
 }

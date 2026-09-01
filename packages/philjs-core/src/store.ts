@@ -108,7 +108,7 @@ export function createStore<T extends StoreNode>(
   }
 
   // Deep clone initial state
-  let state = structuredClone(initialState);
+  let state = cloneStoreValue(initialState);
 
   // Save initial snapshot
   if (options.devtools) {
@@ -388,7 +388,7 @@ export function createStore<T extends StoreNode>(
 
     const snapshot: StoreSnapshot<T> = {
       timestamp: Date.now(),
-      state: structuredClone(state),
+      state: cloneStoreValue(state),
     };
     if (action !== undefined) {
       snapshot.action = action;
@@ -423,8 +423,12 @@ export function createStore<T extends StoreNode>(
   // Create the store proxy
   const store = createProxy(state) as Store<T>;
 
-  // Attach store methods
-  (store as any)[STORE_SETTER] = setStore;
+  // Keep the internal setter off the reactive write path. Assigning through the
+  // proxy would run user middleware and create a phantom history entry.
+  Object.defineProperty(state, STORE_SETTER, {
+    value: setStore,
+    enumerable: false,
+  });
 
   return [store, setStore];
 }
@@ -507,6 +511,48 @@ function setNestedValue(obj: any, path: string, value: any): void {
 
 const pathSegmentsCache = new Map<string, string[]>();
 
+/** Clone store data while preserving enumerable symbol keys. */
+function cloneStoreValue<T>(value: T, seen = new WeakMap<object, any>()): T {
+  if (value === null || typeof value !== 'object') return value;
+  if (value instanceof Date) return new Date(value.getTime()) as T;
+  if (value instanceof RegExp) return new RegExp(value.source, value.flags) as T;
+
+  const cached = seen.get(value);
+  if (cached) return cached;
+
+  if (value instanceof Map) {
+    const clone = new Map();
+    seen.set(value, clone);
+    for (const [key, entry] of value) {
+      clone.set(cloneStoreValue(key, seen), cloneStoreValue(entry, seen));
+    }
+    return clone as T;
+  }
+
+  if (value instanceof Set) {
+    const clone = new Set();
+    seen.set(value, clone);
+    for (const entry of value) clone.add(cloneStoreValue(entry, seen));
+    return clone as T;
+  }
+
+  const clone: any = Array.isArray(value)
+    ? []
+    : Object.create(Object.getPrototypeOf(value));
+  seen.set(value, clone);
+
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (!descriptor?.enumerable) continue;
+    if ('value' in descriptor) {
+      descriptor.value = cloneStoreValue(descriptor.value, seen);
+    }
+    Object.defineProperty(clone, key, descriptor);
+  }
+
+  return clone;
+}
+
 function getPathSegments(path: string): string[] {
   let segments = pathSegmentsCache.get(path);
   if (!segments) {
@@ -528,7 +574,7 @@ function mergeState<T extends StoreNode>(
     return { ...initial, ...persisted };
   }
 
-  const result = structuredClone(initial);
+  const result = cloneStoreValue(initial);
   for (const path of paths) {
     const value = getValueAtPath(persisted, path);
     if (value !== undefined) {
@@ -584,7 +630,7 @@ export function produce<T extends StoreNode>(
   state: T,
   recipe: (draft: T) => void
 ): T {
-  const draft = structuredClone(state);
+  const draft = cloneStoreValue(state);
   recipe(draft);
   return draft;
 }
@@ -670,18 +716,20 @@ export function createUndoableStore<T extends StoreNode>(
   initialState: T,
   options: StoreOptions<T> & { historyLimit?: number } = {}
 ): UndoRedoStore<T> {
-  const history: T[] = [structuredClone(initialState)];
+  const history: T[] = [cloneStoreValue(initialState)];
   let index = 0;
+  let restoring = false;
 
   const [store, baseSetStore] = createStore(initialState, {
     ...options,
     middleware: [
       (state) => {
+        if (restoring) return;
         // Save state to history on change
         if (index < history.length - 1) {
           history.splice(index + 1);
         }
-        history.push(structuredClone(state));
+        history.push(cloneStoreValue(state));
         if (history.length > (options.historyLimit ?? 100)) {
           history.shift();
         } else {
@@ -694,17 +742,26 @@ export function createUndoableStore<T extends StoreNode>(
 
   const setStore: SetStoreFunction<T> = baseSetStore;
 
+  const restore = (snapshot: T) => {
+    restoring = true;
+    try {
+      Object.assign(store, cloneStoreValue(snapshot));
+    } finally {
+      restoring = false;
+    }
+  };
+
   const undo = () => {
     if (index > 0) {
       index--;
-      Object.assign(store, structuredClone(history[index]));
+      restore(history[index]!);
     }
   };
 
   const redo = () => {
     if (index < history.length - 1) {
       index++;
-      Object.assign(store, structuredClone(history[index]));
+      restore(history[index]!);
     }
   };
 

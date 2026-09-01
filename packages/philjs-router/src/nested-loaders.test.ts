@@ -735,16 +735,25 @@ describe('Integration', () => {
   });
 
   it('should handle parallel nested loaders', async () => {
-    const startTimes: Record<string, number> = {};
-    const endTimes: Record<string, number> = {};
+    const started = new Set<string>();
+    let releaseLoaders!: () => void;
+    const bothLoadersStarted = new Promise<void>(resolve => {
+      releaseLoaders = resolve;
+    });
+
+    const waitForPeer = async (routeId: string) => {
+      started.add(routeId);
+      if (started.size === 2) {
+        releaseLoaders();
+      }
+      await bothLoadersStarted;
+    };
 
     const routes = [
       {
         routeId: 'layout',
         loader: async () => {
-          startTimes.layout = Date.now();
-          await new Promise(r => setTimeout(r, 20));
-          endTimes.layout = Date.now();
+          await waitForPeer('layout');
           return { layout: true };
         },
         params: {},
@@ -752,9 +761,7 @@ describe('Integration', () => {
       {
         routeId: 'users',
         loader: async () => {
-          startTimes.users = Date.now();
-          await new Promise(r => setTimeout(r, 20));
-          endTimes.users = Date.now();
+          await waitForPeer('users');
           return { users: [] };
         },
         params: {},
@@ -762,10 +769,10 @@ describe('Integration', () => {
     ];
 
     const request = new Request('http://localhost/users');
-    await executeNestedLoaders(routes, request);
+    const results = await executeNestedLoaders(routes, request);
 
-    // Both loaders should start at nearly the same time (parallel)
-    const startDiff = Math.abs(startTimes.layout - startTimes.users);
-    expect(startDiff).toBeLessThan(10); // Within 10ms of each other
+    // Each loader waits for its peer. A serial implementation cannot complete.
+    expect(started).toEqual(new Set(['layout', 'users']));
+    expect(results).toHaveLength(2);
   });
 });

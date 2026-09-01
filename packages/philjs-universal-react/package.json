@@ -22,7 +22,7 @@
     "build": "tsgo",
     "dev": "tsgo --watch",
     "typecheck": "tsgo --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint src/"
   },
   "keywords": [

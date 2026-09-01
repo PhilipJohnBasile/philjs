@@ -58,6 +58,8 @@ jobs:
 
       - name: Run performance tests
         id: perf-tests
+        env:
+          PHILJS_RUN_PERFORMANCE_TESTS: '1'
         run: |
           # Run performance tests and capture output
           echo "Running performance tests..."
