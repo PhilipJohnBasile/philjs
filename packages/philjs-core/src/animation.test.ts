@@ -65,7 +65,14 @@ describe("Animation - Animated Values", () => {
     expect(anim.isAnimating).toBe(false);
   });
 
-  it("should support spring physics", async () => {
+  it("should support spring physics", () => {
+    const frames: FrameRequestCallback[] = [];
+    const requestFrame = vi
+      .spyOn(globalThis, "requestAnimationFrame")
+      .mockImplementation((callback) => {
+        frames.push(callback);
+        return frames.length;
+      });
     const spring: SpringConfig = {
       stiffness: 0.2,
       damping: 0.9,
@@ -73,17 +80,23 @@ describe("Animation - Animated Values", () => {
     };
 
     const anim = createAnimatedValue(0);
-
-    await new Promise<void>((resolve) => {
+    try {
       anim.set(100, {
         easing: spring,
-        onComplete: () => {
-          expect(anim.value).toBeCloseTo(100, 0);
-          resolve();
-        },
       });
-    });
-  }, 2000);
+
+      for (let frame = 0; anim.isAnimating && frame < 1000; frame++) {
+        const callback = frames.shift();
+        expect(callback).toBeDefined();
+        callback?.(frame * 16);
+      }
+
+      expect(anim.isAnimating).toBe(false);
+      expect(anim.value).toBeCloseTo(100, 0);
+    } finally {
+      requestFrame.mockRestore();
+    }
+  });
 
   it("should track velocity during spring animation", () => {
     const anim = createAnimatedValue(0);
