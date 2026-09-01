@@ -183,7 +183,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm --filter storefront exec playwright install --with-deps chromium
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4

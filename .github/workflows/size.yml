@@ -88,7 +88,6 @@ jobs:
       - name: Get base branch sizes
         id: base-size
         run: |
-          pnpm size --json > base-size.json
           echo "base_core=$(stat -c%s packages/philjs-core/dist/index.js)" >> $GITHUB_OUTPUT
           echo "base_signals=$(stat -c%s packages/philjs-core/dist/signals.js)" >> $GITHUB_OUTPUT
 
