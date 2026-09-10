@@ -56,85 +56,18 @@ jobs:
             echo "{}" > baseline.json
           fi
 
+      - name: Test benchmark report parser
+        run: node --test scripts/parse-benchmark-results.test.mjs
+
       - name: Run performance tests
-        id: perf-tests
         env:
           PHILJS_RUN_PERFORMANCE_TESTS: '1'
         run: |
-          # Run performance tests and capture output
-          echo "Running performance tests..."
-          pnpm --filter philjs-core vitest run src/performance.test.ts src/benchmarks.test.ts --reporter=verbose --reporter=json --outputFile=test-results.json 2>&1 | tee test-output.txt
-
-          # Check if tests passed
-          if [ ${PIPESTATUS[0]} -eq 0 ]; then
-            echo "status=passed" >> $GITHUB_OUTPUT
-          else
-            echo "status=failed" >> $GITHUB_OUTPUT
-          fi
+          set -euo pipefail
+          pnpm --filter @philjs/core --fail-if-no-match exec vitest run src/performance.test.ts src/benchmarks.test.ts --reporter=verbose --reporter=json --outputFile="$GITHUB_WORKSPACE/test-results.json" 2>&1 | tee test-output.txt
 
       - name: Parse benchmark results
-        id: parse
-        run: |
-          # Create a simple results JSON from test output
-          node -e "
-          const fs = require('fs');
-          const output = fs.readFileSync('test-output.txt', 'utf-8');
-
-          // Extract timing information from test output
-          const results = {
-            timestamp: new Date().toISOString(),
-            node_version: process.version,
-            platform: process.platform,
-            tests: []
-          };
-
-          // Parse test results
-          const lines = output.split('\\n');
-          for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-
-            // Match test completions with timing
-            const testMatch = line.match(/✓\s+(.+?)\s+\((\d+)\s*ms\)/);
-            if (testMatch) {
-              results.tests.push({
-                name: testMatch[1].trim(),
-                duration: parseInt(testMatch[2])
-              });
-            }
-
-            // Match console.log outputs with performance metrics
-            const perfMatch = line.match(/→\s+(.+?)\s+in\s+([\d.]+)ms/);
-            if (perfMatch) {
-              results.tests.push({
-                name: perfMatch[1].trim(),
-                duration: parseFloat(perfMatch[2])
-              });
-            }
-          }
-
-          // Calculate summary
-          if (results.tests.length > 0) {
-            const durations = results.tests.map(t => t.duration);
-            results.summary = {
-              totalTests: results.tests.length,
-              totalTime: durations.reduce((a, b) => a + b, 0),
-              avgTime: durations.reduce((a, b) => a + b, 0) / durations.length,
-              maxTime: Math.max(...durations),
-              minTime: Math.min(...durations)
-            };
-          } else {
-            results.summary = {
-              totalTests: 0,
-              totalTime: 0,
-              avgTime: 0,
-              maxTime: 0,
-              minTime: 0
-            };
-          }
-
-          fs.writeFileSync('benchmark-results.json', JSON.stringify(results, null, 2));
-          console.log('Parsed', results.tests.length, 'benchmark results');
-          "
+        run: node scripts/parse-benchmark-results.mjs test-results.json benchmark-results.json
 
       - name: Compare against baseline (if PR)
         if: github.event_name == 'pull_request' && steps.baseline.outputs.has_baseline == 'true'
@@ -144,6 +77,10 @@ jobs:
           const fs = require('fs');
           const current = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf-8'));
           const baseline = JSON.parse(fs.readFileSync('baseline.json', 'utf-8'));
+          if (baseline.measurement !== current.measurement || !baseline.tests?.length) {
+            console.log('No comparable nonempty baseline; retain this run as a new baseline.');
+            process.exit(0);
+          }
 
           const comparison = {
             regressions: [],
@@ -156,7 +93,7 @@ jobs:
           for (const test of current.tests) {
             const baselineTest = baseline.tests?.find(t => t.name === test.name);
 
-            if (!baselineTest) {
+            if (!baselineTest || !Number.isFinite(baselineTest.duration) || baselineTest.duration <= 0) {
               comparison.new_tests.push(test);
               continue;
             }
@@ -228,6 +165,7 @@ jobs:
 
             // Summary
             body += '### Summary\n\n';
+            body += 'Durations cover complete Vitest tests, including setup and assertions. They are not operation-level throughput measurements.\n\n';
             body += '| Metric | Value |\n';
             body += '|--------|-------|\n';
             body += `| Total Tests | ${results.summary.totalTests} |\n`;
@@ -287,7 +225,7 @@ jobs:
                 body += '**✅ OK**: No significant performance changes detected.\n\n';
               }
             } else {
-              body += '> No baseline available for comparison. This will be the new baseline after merge.\n\n';
+              body += '> No comparable baseline available. This will be the new baseline after merge.\n\n';
 
               // Show top 10 slowest tests
               const sorted = [...results.tests].sort((a, b) => b.duration - a.duration).slice(0, 10);
