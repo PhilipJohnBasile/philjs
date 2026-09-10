@@ -116,3 +116,6 @@ scripts/*.d.ts
 scripts/*.d.mts
 scripts/*.d.mts.map
 scripts/*.mjs
+# Benchmark CI helpers run directly in Node.
+!scripts/parse-benchmark-results.mjs
+!scripts/parse-benchmark-results.test.mjs
